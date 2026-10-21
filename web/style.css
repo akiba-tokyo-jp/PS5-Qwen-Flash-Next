@@ -1,0 +1,34 @@
+/* SPDX-License-Identifier: MIT */
+:root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#e9e9df;background:#151a19;font-synthesis:none;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0}
+main{max-width:1000px;margin:0 auto;padding:56px 28px 32px}
+.eyebrow{font-size:11px;letter-spacing:.22em;color:#acc4b4}
+h1{font-size:clamp(32px,5vw,52px);font-weight:500;letter-spacing:-.04em;margin:16px 0 12px}
+header>p{color:#9ea9a2;margin:0 0 30px}
+.notice{padding:13px 18px;border:1px solid #746b43;border-radius:9px;background:#302d20;color:#e4d49d;font-size:13px;margin-bottom:18px}
+.workspace{border:1px solid #3a4640;border-radius:14px;background:#1b2220;overflow:hidden}
+.conversation{min-height:260px;max-height:54vh;overflow:auto;padding:26px}
+.empty{color:#8a9990;font-size:14px}
+.message{margin:0 0 26px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;font-size:15px}
+.message strong{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8db49d;margin-bottom:8px}
+form{border-top:1px solid #344039;padding:22px}
+form>label{display:block;color:#a4b3a9;font-size:12px;margin-bottom:10px}
+textarea{display:block;resize:vertical;width:100%;background:#131a16;border:1px solid #3c4e42;color:#f0f2e9;border-radius:8px;font:inherit;padding:14px;line-height:1.5}
+textarea:focus{outline:2px solid #a1bd8b;outline-offset:2px}
+.controls{display:flex;align-items:center;gap:12px;margin-top:16px;font-size:12px;color:#adb8b0}
+.thinking{margin-right:auto}
+input[type=number]{width:72px;padding:6px;border:1px solid #45554a;background:#19221b;border-radius:5px}
+button{font:inherit;border:1px solid #53624b;border-radius:7px;background:transparent;color:#d1dfcc;padding:9px 15px;cursor:pointer}
+button[type=submit]{background:#c2d39b;color:#182214;border-color:#c2d39b;font-weight:600}
+button:disabled{opacity:.4;cursor:default}
+footer{display:flex;gap:16px;align-items:center;padding:18px 0;color:#94a69a;font-size:12px}
+#state{color:#c6d5b4}
+footer button{margin-left:auto;font-size:11px;padding:6px 10px}
+.footnote{font-size:11px;color:#73857a}
+@media(max-width:600px){main{padding:28px 16px}
+.controls{flex-wrap:wrap}
+.thinking{width:100%}
+footer{flex-wrap:wrap}
+.conversation{padding:20px;min-height:200px}
+}

@@ -24,6 +24,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--workspace", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--cache", type=Path)
     a = p.parse_args()
     workspace, out = a.workspace.resolve(), a.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -45,11 +46,22 @@ def main():
          "-fexceptions", "-fcxx-exceptions", "-frtti",
          "-nostdinc++", "-isystem", sdk / "target/include/c++/v1", "-isystem", sdk / "target/include",
          "-c", source, "-o", obj]]
+    names = ["host_compile", "fake_backend_scenarios", "ps5_object_compile"]
+    if a.cache:
+        lock = json.loads((ROOT / "native/qwen_flash_next/dependencies.lock.json").read_text())
+        upstream = a.cache.resolve() / "upstream" / ("llama.cpp-" + lock["llama_cpp"]["revision"])
+        adapter_test = out / "adapter-api-tests.exe"
+        commands.extend([
+            [host / "clang++.exe", "-std=c++17", "-O2", "-Wall", "-Wextra", "-Werror",
+             "-I", source.parent, "-I", upstream / "include", "-I", upstream / "ggml/include",
+             source.parent / "llama_engine.cpp", ROOT / "tests/llama_adapter.cpp", "-o", adapter_test],
+            [adapter_test]])
+        names.extend(["adapter_stub_compile", "adapter_api_scenarios"])
     receipt = {"schema": "ps5-qwen-application-check-v1", "console_access": False,
                "driver_linked": False, "model_loaded": False, "learned_host_inference": False,
                "source_sha256": sha(source), "header_sha256": sha(source.with_suffix(".h")),
                "tests_sha256": sha(tests), "steps": []}
-    for name, command in zip(("host_compile", "fake_backend_scenarios", "ps5_object_compile"), commands):
+    for name, command in zip(names, commands):
         result = subprocess.run(list(map(str, command)), env=env, capture_output=True, text=True)
         (out / (name + ".private.log")).write_text(result.stdout + result.stderr, encoding="utf-8")
         receipt["steps"].append({"name": name, "returncode": result.returncode})

@@ -1,0 +1,29 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PS5 Qwen · Application preview</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><span class="eyebrow">PS5 QWEN / FLASH NEXT</span><h1>A window into reasoning.</h1>
+      <p>Original BF16 · one console · application development</p></header>
+    <div class="notice" id="backend">Checking backend…</div>
+    <section class="workspace">
+      <div class="conversation" id="conversation" aria-live="polite"><p class="empty">Start a conversation to test the interface.</p></div>
+      <form id="compose">
+        <label for="prompt">Your message</label>
+        <textarea id="prompt" rows="4" placeholder="What would you like to explore?" required maxlength="20000"></textarea>
+        <div class="controls"><label class="thinking"><input id="thinking" type="checkbox" checked> Enable thinking</label>
+          <label>Output limit <input id="limit" type="number" min="1" max="1024" value="256"></label>
+          <button id="stop" type="button" disabled>Stop</button><button id="send" type="submit">Send ↗</button></div>
+      </form>
+    </section>
+    <footer><span id="state" role="status">Idle</span><span id="metrics">No generation yet</span><button id="clear" type="button">Clear conversation</button></footer>
+    <p class="footnote">Console deployment and validation are deferred while driver qualification is pending.</p>
+  </main>
+</body>
+</html>

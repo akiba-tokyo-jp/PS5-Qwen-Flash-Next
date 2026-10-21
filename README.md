@@ -20,11 +20,13 @@ An application PR or passing host check does not authorize console work.
 
 ## Application development
 
-The application session layer handles bounded text-generation requests, token
-events, cancellation, timing and backend-fault quarantine. Its manual tests use
-a fake engine on the host. The production model adapter and frontend transport
-are still pending. See [application.md](docs/application.md) for the interface
-contract and the host-only check command.
+The application includes session control, a Qwen/llama.cpp adapter, a chat web
+interface and streaming HTTP API. The interface runs on the host with an explicit
+demo backend; the real model adapter has API-stub tests and PS5 object compilation.
+A guarded native entry point and BF16 conversion tool are implemented, but a
+complete native application link and full-model execution are still pending.
+See [application.md](docs/application.md) for exact check coverage and remaining
+work. The demo is not evidence of Qwen inference or console performance.
 
 ## Current state
 

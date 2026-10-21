@@ -31,11 +31,13 @@ CPU and GPU memory share physical backing on PS5. Moving a weight to a CPU
 buffer does not create capacity. Filesystem mappings, resident allocations,
 staging, device caches and KV/state must be accounted for together.
 
-The current upstream loader requests prefetch for ordinary mapped tensors;
-architecture-marked lazy tensors are excluded. Enabling mmap alone is therefore
-insufficient for this checkpoint. Before full-model console loading, the runtime
-must also exclude routed expert ranges from eager prefetch and measure resident
-pages under sustained cache misses. That integration is not implemented yet.
+The upstream loader requests prefetch for ordinary mapped tensors. The application
+patch adds an explicit opt-out, `LLAMA_APP_NO_MMAP_PREFETCH=1`, which the native
+entry point sets before backend initialization. A required link symbol prevents
+using an older unpatched loader silently. The patch applies and passes target
+syntax checking on a separate source copy. This removes eager prefetch; it does
+not prove a resident-memory bound or console support for the model's very large
+virtual mapping. Physical residency under sustained cache misses is unqualified.
 
 Only the converted model needs to reside on the console SSD. Retain original
 checkpoint shards on the host data disk; keeping both complete containers on the
