@@ -14,6 +14,11 @@
 #include <mutex>
 #include <thread>
 #include <ctime>
+#ifdef _WIN32
+#include <process.h>
+#else
+#include <unistd.h>
+#endif
 extern "C" bool qwen_native_faulted();
 
 namespace qwen_app {
@@ -243,6 +248,9 @@ int serve_http(Engine & engine, const std::string & assets,
                std::function<void(const MonitorSnapshot &)> monitor, bool monitor_only) {
     Service service(engine, chat_template);
     httplib::Server server;
+    // One stream, one status observer and one cancellation request fit without
+    // creating a hardware-sized thread pool on the console.
+    server.new_task_queue = [] { return new httplib::ThreadPool(3, 3, 8); };
     server.set_payload_max_length(1 << 20);
     server.set_read_timeout(10);
     server.set_write_timeout(10);
@@ -253,6 +261,11 @@ int serve_http(Engine & engine, const std::string & assets,
         auto data = service.status();
         data["backend"] = demo ? "demo" : monitor_only ? "monitor-validation" : "model";
         data["model_loaded"] = !demo && !monitor_only;
+#ifdef _WIN32
+        data["process_id"] = _getpid();
+#else
+        data["process_id"] = getpid();
+#endif
         data["server_epoch_ms"] = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now().time_since_epoch()).count();
         Json process_cpu = nullptr;

@@ -5,12 +5,12 @@
   "driver_profile": "cumulative-idle",
   "driver_archive_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
   "native_pie": {
-    "bytes": 124801008,
-    "sha256": "d5e1e3e73cb8b870c5bd2334726546dfa050a472a810b05ebbed7b21c9ddf97f"
+    "bytes": 124804576,
+    "sha256": "0a84582b0c123d4b3430e2ddf8422fe99090818babcd040a47ae3fcc022fbfd1"
   },
   "SELF": {
-    "bytes": 57506010,
-    "sha256": "eb0c77699316e0115e032547d11235f245e2fa220907952ac6d25439cc9ba370"
+    "bytes": 57507978,
+    "sha256": "51fb251543728178adc851d5e4f15ddf77664ff76d3c585a072d2d8ea49bdda4"
   },
   "initializer_slots": 16,
   "runtime_providers": [
@@ -36,12 +36,20 @@
     "browser-independent status observer",
     "generation rejected without a model",
     "HTTP request/stream/cancel and invalid-chat recovery",
-    "15 Python tests"
+    "15 Python tests",
+    "reported HTTP process identity matches the owned test process"
   ],
   "allowed_console_modes": [
     "display-validation"
   ],
   "console_executed": false,
   "full_model_inference_completed": false,
-  "CI": false
+  "CI": false,
+  "previous_host_SELF": {
+    "bytes": 57506010,
+    "sha256": "eb0c77699316e0115e032547d11235f245e2fa220907952ac6d25439cc9ba370"
+  },
+  "HTTP_worker_limit": 3,
+  "HTTP_queued_request_limit": 8,
+  "status_contains_actual_process_id": true
 }
