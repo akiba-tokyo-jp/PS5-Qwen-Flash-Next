@@ -1,7 +1,9 @@
 {
-  "phase": "application-development",
-  "driver_qualification": "pending",
+  "phase": "native-driver-integration",
+  "driver_qualification": "bounded-evidence-reviewed",
   "console_operations_enabled": false,
   "deployment_enabled": false,
-  "console_validation_enabled": false
+  "console_validation_enabled": false,
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "application_qualification": "pending"
 }

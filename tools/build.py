@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+from driver_inputs import validate_driver
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = json.loads((ROOT / "native/qwen_flash_next/dependencies.lock.json").read_text())
@@ -34,6 +35,9 @@ def main():
     if not 1 <= a.jobs <= 12:
         p.error("jobs must be between 1 and 12")
     workspace, driver, cache = a.workspace.resolve(), a.driver_root.resolve(), a.cache.resolve()
+    driver_input = validate_driver(driver, a.driver_manifest, LOCK["ps5_vulkan_inference"])
+    archive = Path(driver_input["archive_path"])
+    revision = driver_input["source_revision"]
     source = cache / "upstream" / ("llama.cpp-" + LOCK["llama_cpp"]["revision"])
     if not (source / "src/models/qwen4exp.cpp").is_file():
         raise ValueError("Pinned upstream source is missing")
@@ -62,15 +66,6 @@ def main():
         raise ValueError("Existing expert policy overlay has unrecognized local changes")
     overlay_target.write_bytes(overlay_source.read_bytes())
     overlay_receipt.write_text(json.dumps({"source": "native/app/expert_policy.h", "sha256": overlay_hash}) + "\n")
-    profile = json.loads(a.driver_manifest.read_text())
-    archive = a.driver_manifest.resolve().parent / "libvulkan_radeon.experimental.a"
-    if profile.get("profile") != "cumulative-idle" or sha(archive) != profile["archive_sha256"]:
-        raise ValueError("Current selected driver profile does not match its receipt")
-    revision = subprocess.check_output(["git", "-C", str(driver), "rev-parse", "HEAD"], text=True).strip()
-    if revision != LOCK["ps5_vulkan_inference"]["revision"]:
-        raise ValueError("Driver source revision differs from the selected dependency lock")
-    if sha(archive) != LOCK["ps5_vulkan_inference"]["archive_sha256"]:
-        raise ValueError("Driver archive differs from the selected dependency lock")
     sdk = workspace / "toolchain/ps5-sdk-radv/ps5-payload-sdk"
     llvm = workspace / "toolchain/llvm-mingw-20261006-ucrt-x86_64/bin"
     host = workspace / "toolchain/msys-clang64/clang64/bin"
@@ -102,7 +97,8 @@ def main():
                "-DLLAMA_BUILD_TOOLS=OFF", "-DLLAMA_BUILD_SERVER=OFF", "-DLLAMA_OPENSSL=OFF"]
     receipt = {"schema": "ps5-qwen-static-build-v1", "upstream_revision": LOCK["llama_cpp"]["revision"],
                "driver_repository": "akiba-tokyo-jp/PS5-Vulkan-Inference", "driver_revision": revision,
-               "driver_profile": profile["profile"], "driver_archive_sha256": sha(archive),
+               "driver_profile": driver_input["profile"], "driver_archive_sha256": sha(archive),
+               "driver_inputs": driver_input,
                "persistent_caches_disabled_required": True, "CI": False, "console_executed": False,
                "learned_host_inference": False, "spirv_header_sha256": sha(spirv_header),
                "upstream_patches": patches,
@@ -124,7 +120,7 @@ def main():
                  "ggml/src/libggml-cpu.a", "ggml/src/ggml-vulkan/libggml-vulkan.a"]
         receipt["artifacts"] = [{"path": str(out / name), "bytes": (out / name).stat().st_size, "sha256": sha(out / name)} for name in paths]
         (out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
-    print(json.dumps({"out": str(out), "driver_revision": revision, "profile": profile["profile"], "console_executed": False}))
+    print(json.dumps({"out": str(out), "driver_revision": revision, "profile": driver_input["profile"], "console_executed": False}))
 
 
 if __name__ == "__main__":

@@ -17,17 +17,20 @@ and credential hashes outside commits. Build and model data belong on the data d
 GitHub Actions and other CI must remain disabled. Use focused manual checks.
 Do not spawn agents or delegate without the owner's explicit authorization.
 
-## Current development restriction
+## Current integration phase
 
-Driver qualification is still in progress. Develop the application in this
-private GitHub repository and use manual host builds and tests. Do not access
-the PS5, inspect its processes, close applications, upload files, install,
-launch, release, or run console validation during this phase. Do not change
-the driver repository or advance its dependency pin as part of application work.
-The existing driver pin is a development dependency, not a qualified release.
-Resume console work only after driver qualification is confirmed complete.
-An application merge or successful host test does not satisfy that condition.
-Keep config/development.json in the restricted state until then.
+On 2026-10-22 the owner supplied the updated driver and authorized acquisition
+and application integration. Use the current PS5-Vulkan-Inference source and
+its integration contract. Pin the exact source revision, explicit profile,
+artifact and application link provenance. Existing bounded driver evidence
+does not establish this Qwen client's numerical quality or memory admission.
+Persistent shader/pipeline caches remain disabled before backend initialization.
+
+Implement and verify the native build/link path manually on the host. Console
+operations and release remain disabled in config/development.json while this
+integration is prepared. This phase does not require accessing the PS5 or
+replacing another running application. A host build or application merge is
+separate from native execution and full-model qualification.
 
 Use one identified native GPU title. Close existing applications through the
 ordinary OS path. Never force-kill, reset the GPU, change firmware, or release

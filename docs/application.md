@@ -2,8 +2,9 @@
 
 The application has session control, a llama.cpp adapter, a web interface and an
 HTTP transport. Development checks use only a host demo or API stubs. No real
-model execution or console access is part of those checks. A complete linked
-native application and full-model qualification are still outstanding.
+model execution or console access is part of those checks. The real application now links to an intermediate
+native PIE with the selected latest driver. SELF packaging, runtime admission
+and full-model qualification remain outstanding; see [driver integration](driver-integration.md).
 
 ## Request ownership and events
 
@@ -81,7 +82,7 @@ When future console work is permitted, it requires a conversion receipt, rejects
 reduced-precision GGUF tensor types, checks the Qwen architecture and required
 exact 64-bit PLE metadata, and uses the embedded original chat template. Failed
 native admission retains resources for ordinary process close. The entry point
-has compiled to an object only; it has not been linked or run on PS5.
+is now included in the intermediate native PIE. It has not run on PS5.
 
 `tools/convert_model.py` requires every original shard and verifies its size and
 SHA256 before invoking the pinned BF16 converter. It records output file digests
@@ -132,10 +133,11 @@ D:/PS5-AI/qwen-flash-next/build/application-preview/app-demo.exe --demo C:/Users
 
 ## Remaining work
 
-- Complete a native application link and platform startup integration after the
-  driver dependency is qualified. The current products are objects and a host demo.
+- Complete SELF conversion/packaging and verify native loader, imports, static
+  constructors, IEEE state, TLS/unwind and platform startup on the console. The
+  intermediate PIE has linked on the host with the selected driver.
 - Finish original checkpoint acquisition, BF16 conversion and layout verification.
-- After driver qualification, measure native memory admission, required PLE and
+- After runtime admission, measure native memory admission, required PLE and
   expert reads, complete generation, quality, cancellation and sustained residency.
 - Keep release packaging and console qualification deferred under
   `config/development.json`. Application merges do not remove that restriction.

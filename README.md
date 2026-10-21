@@ -5,18 +5,20 @@ The goal is to execute the complete text model with its original BF16 weights,
 streaming weights from SSD into bounded shared memory. No quantized substitute,
 expert pruning, or PC/cloud model execution is part of this goal.
 
-## Development restriction
+## Native driver integration
 
-The owner has deferred console release and validation until driver qualification
-is complete. Current work is application development in this private GitHub
-repository with manual host checks. Do not access the PS5, upload, install,
-launch, close applications, deploy, or run console tests during this phase.
-The driver repository and dependency pin remain unchanged. The previously
-selected driver is not a qualified release dependency.
+The owner authorized integration of the updated driver on 2026-10-22. The source
+is PS5-Vulkan-Inference at `872cc1264ad8ba5d6b888b092968fa5858a38c58`, explicitly
+selecting `cumulative-idle`. Persistent shader/pipeline caches remain disabled.
+The new profile is rebuilt from this source; older artifacts remain historical
+controls. See [driver-integration.md](docs/driver-integration.md) for provenance,
+manual build commands and the remaining native runtime/model gates.
 
-[development.json](config/development.json) records this restriction. The
-existing console tool rejects commands before network access or local writes.
-An application PR or passing host check does not authorize console work.
+Current work is host development and native build/link integration in this
+private repository. [development.json](config/development.json) keeps console
+operations, deployment and validation disabled while the application artifact
+is prepared. Bounded driver tests do not establish Qwen quality or memory
+admission. Application merges and host checks remain separate from PS5 execution.
 
 ## Application development
 
@@ -26,8 +28,8 @@ shows CPU/GPU information, date/time, generation tokens/s, TTFT and expert-cache
 counters. It contains no chat input or operation controls. The host preview uses
 an explicit demo backend; unknown hardware counters remain unavailable.
 The real model adapter has API-stub tests and PS5 object compilation.
-A guarded native entry point and BF16 conversion tool are implemented, but a
-complete native application link and full-model execution are still pending.
+A guarded native entry point and BF16 conversion tool are implemented. The
+native integration build and full-model qualification are recorded separately.
 See [application.md](docs/application.md) for exact check coverage and remaining
 work. The demo is not evidence of Qwen inference or console performance.
 
@@ -39,12 +41,13 @@ header was inspected through bounded HTTP ranges: 359,999,962,848 bytes of BF16
 weights and 280 bytes of exact I64 constants. This is metadata verification,
 not a full-shard checksum or an inference result.
 
-The manual PS5 cross-build completed on 2026-10-21: `libllama.a`, `libggml.a`,
-`libggml-base.a`, `libggml-cpu.a` and `libggml-vulkan.a` were generated. The build
-selects the owner's pinned cumulative-idle driver archive for the eventual
-application link. These static libraries are not a linked, deployed or validated
-inference application. Nine acquisition checks pass; original shard download
-and full checksumming are still in progress.
+The engine was rebuilt with the latest selected driver source on 2026-10-22.
+The real application, original-BF16 adapter, HTTP service, Strata/Maya cache
+patches and selected RADV archive now link into one intermediate native PIE.
+All link inputs retained their digests, and 16 static initializer slots and six
+native runtime providers are recorded. This is a host link, not a deployed SELF
+or successful console inference. Original shard acquisition and full checksumming
+remain incomplete. See [the integration record](docs/driver-integration-20261022.json).
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the
@@ -92,7 +95,7 @@ and build directory on the data disk.
 
 ```powershell
 python tools/fetch_engine.py --cache D:/PS5-AI/qwen-flash-next
-python tools/build.py --workspace C:/Users/User/ps5-ai --driver-root C:/Users/User/ps5-ai/driver-work/PS5-Vulkan-Inference --driver-manifest C:/Users/User/ps5-ai/driver-work/PS5-Vulkan-Inference/.local/profile-cumulative-idle-001/manifest.private.json --cache D:/PS5-AI/qwen-flash-next --jobs 4
+python tools/build.py --workspace C:/Users/User/ps5-ai --driver-root C:/Users/User/ps5-ai/driver-work/PS5-Vulkan-Inference --driver-manifest C:/Users/User/ps5-ai/driver-work/PS5-Vulkan-Inference/.local/qwen-cumulative-872cc126-001/manifest.private.json --cache D:/PS5-AI/qwen-flash-next --jobs 4
 python -m unittest discover -s tests -v
 ```
 

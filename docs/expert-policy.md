@@ -2,7 +2,8 @@
 
 This application code is connected to the pinned engine's real expert-cache
 planner and copy callback. Full-model PS5 execution remains unverified. The
-driver is unchanged and console work remains disabled.
+selected shared-driver source is updated for native integration; console work
+remains disabled.
 
 ## Pinned sources and adaptations
 
@@ -63,7 +64,7 @@ SSD traffic, GPU throughput or saved time. Demos report no real cache counters.
 
 The read-only monitor shows these counters alongside CPU/GPU identity, current
 date/time, TTFT and generation tokens/s. Use measured cold/warm console runs
-after driver qualification to assess benefit.
+after application runtime admission to assess benefit.
 
 ## Manual evidence
 
@@ -82,4 +83,4 @@ arithmetic and advice bounds. Both patched engine sources compile to PS5 objects
 These checks do not execute GGML kernels, actual SSD reads, model inference or a
 PS5. App API-stub and HTTP checks separately cover telemetry forwarding and the
 read-only monitor. `tools/build.py` installs the same header overlay and records
-its digest for a future static engine build. The driver pin remains unchanged.
+its digest for a future static engine build. The selected driver pin and native build are recorded in [driver-integration.md](driver-integration.md).

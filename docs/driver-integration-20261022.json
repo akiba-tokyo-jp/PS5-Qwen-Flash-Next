@@ -1,0 +1,43 @@
+{
+  "schema": "ps5-qwen-driver-integration-v1",
+  "date": "2026-10-22",
+  "driver_repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+  "driver_source_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "driver_archive_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+  "driver_manifest_sha256": "f3643fa639b12a0573067356cf8dd703fc17861e7f9761d85f50e0eab188bc6e",
+  "mesa_revision": "1ba9874f478657ccf6da72ce55f0260164cc0bd0",
+  "capture_isa": false,
+  "persistent_shader_and_pipeline_caches_enabled": false,
+  "driver_changed_members": [
+    [
+      "radv_shader.c.o",
+      0
+    ],
+    [
+      "winsys_ps5_radv_ps5_winsys.c.o",
+      0
+    ]
+  ],
+  "untouched_driver_members_preserved": 702,
+  "native_link_returncode": 0,
+  "native_pie_bytes": 136255816,
+  "native_pie_sha256": "e2f865009160b6dbee9faeae2f2e9dde056d5558187342d3e8c4307b01d6408f",
+  "initializer_slots": 16,
+  "runtime_providers": [
+    "libSceAgc.prx",
+    "libSceAgcDriver.prx",
+    "libSceLibcInternal.sprx",
+    "libkernel.sprx",
+    "libSceNet.sprx",
+    "libSceVideoOut.sprx"
+  ],
+  "link_input_hashes_stable": true,
+  "console_access": false,
+  "SELF_packaged": false,
+  "model_loaded": false,
+  "model_precision": "original BF16",
+  "quantization": false,
+  "full_model_quality_qualified": false,
+  "CI": false
+}

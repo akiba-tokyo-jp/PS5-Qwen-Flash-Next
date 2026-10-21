@@ -53,9 +53,10 @@ not establish a working RAM budget or a successful model load.
 
 ## Driver
 
-Use the owner's PS5-Vulkan-Inference repository and explicit cumulative-idle
-profile recorded in the lock file. The archive contains the current H1/H3
-compiler and completion changes. It does not advertise native BF16 arithmetic
+Use the owner's PS5-Vulkan-Inference repository at the revision and explicit
+`cumulative-idle` profile recorded in the lock file. The 2026-10-22 integration
+is documented in [driver-integration.md](driver-integration.md). The archive
+contains the current H1/H3 compiler and completion changes. It does not advertise native BF16 arithmetic
 or matrix hardware. BF16 support in the application must use supported shader
 operations or explicit exact widening, rather than enabling an unsupported
 device feature. Keep accumulation and numerical validation explicit.
@@ -64,10 +65,11 @@ Persistent shader and pipeline caches remain disabled as required by the
 current driver integration contract. A successful build or API feature query
 does not prove numerical acceptance.
 
-The static engine libraries do not contain a final linked PS5 application.
-Selecting the RADV archive during configuration records the intended dependency;
-the native application's final link and console admission must verify that same
-archive before claiming driver integration.
+Static engine libraries alone do not establish application integration. The
+2026-10-22 native build links the actual application and the exact selected RADV
+archive into one intermediate PIE, with stable input digests and required
+integration symbols. SELF conversion, runtime admission and console validation
+remain separate from this host link.
 
 ## Milestones and evidence
 
