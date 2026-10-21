@@ -1,0 +1,68 @@
+# PS5 Qwen Flash Next
+
+Experimental original-precision **Qwen3.8-Flash-Next on one PlayStation 5**.
+The goal is to execute the complete text model with its original BF16 weights,
+streaming weights from SSD into bounded shared memory. No quantized substitute,
+expert pruning, or PC/cloud model execution is part of this goal.
+
+## Current state
+
+Construction is in progress. Full-model PS5 inference has **not** been achieved.
+The pinned original checkpoint has 131 shards and 1,658 tensors. Every shard
+header was inspected through bounded HTTP ranges: 359,999,962,848 bytes of BF16
+weights and 280 bytes of exact I64 constants. This is metadata verification,
+not a full-shard checksum or an inference result.
+
+The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
+hybrid attention, hyper-connections, expert-cache and scheduler paths are the
+starting point. Strata and Project Maya inform the tiering design; their
+quantized PC performance figures do not predict this project's console speed.
+
+## Dependencies
+
+- [Qwen3.8-Flash-Next](https://huggingface.co/Qwen/Qwen3.8-Flash-Next),
+  pinned in [dependencies.lock.json](native/qwen_flash_next/dependencies.lock.json).
+  Its Qwen Community License applies to the model, separately from this code.
+- [llama.cpp / GGML](https://github.com/ggml-org/llama.cpp), MIT.
+- The owner's private [PS5-Vulkan-Inference](https://github.com/akiba-tokyo-jp/PS5-Vulkan-Inference),
+  an unofficial derivative of [PS5_Vulkan](https://github.com/mihawk-99/PS5_Vulkan)
+  and [PS5_Mesa](https://github.com/mihawk-99/PS5_Mesa). Imported notices apply.
+- Design references: [Strata](https://github.com/Niko1221/Strata) and
+  [Project Maya](https://github.com/mw00/project-maya).
+
+No models, native binaries, proprietary SDK material or private device captures
+are distributed in this repository. GitHub Actions and other CI are disabled.
+
+## Inspect and acquire the original checkpoint
+
+Python 3.11+ is sufficient for metadata and acquisition. Point `--cache` at a
+data disk with room for the original model and subsequent lossless GGUF output.
+
+```powershell
+python tools/qwen_flash_next.py prepare --cache D:/PS5-AI/qwen-flash-next --jobs 6
+python tools/qwen_flash_next.py download --cache D:/PS5-AI/qwen-flash-next --jobs 4
+```
+
+`prepare` fetches metadata, tokenizer and shard headers. `download` explicitly
+fetches all original shards, resumes partial files, verifies their original
+SHA256 digests and publishes each shard only after verification. It performs
+no inference or console operations.
+
+## Manual PS5 build
+
+The build uses the owner's local PS5 SDK, compiler, Vulkan headers and selected
+driver archive. These dependencies are not redistributed. Keep the model cache
+and build directory on the data disk.
+
+```powershell
+python tools/build.py --workspace C:/Users/User/ps5-ai --driver-root C:/Users/User/ps5-ai/driver-work/PS5-Vulkan-Inference --driver-manifest C:/Users/User/ps5-ai/driver-work/PS5-Vulkan-Inference/.local/profile-cumulative-idle-001/manifest.private.json --cache D:/PS5-AI/qwen-flash-next --jobs 4
+python -m unittest discover -s tests -v
+```
+
+This cross-builds static engine libraries and records local archive digests.
+It does not install or launch an application. Console execution and numerical
+acceptance remain separate milestones in [architecture.md](docs/architecture.md).
+
+`tools/console.py` inspects a native application before an explicitly requested
+ordinary OS close. It records the PID, process start time, application ID and
+title identity locally. It never sends force-kill signals or resets the GPU.

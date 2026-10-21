@@ -1,0 +1,28 @@
+{
+  "schema": "ps5-qwen-flash-next-dependencies-v1",
+  "model": {
+    "repository": "Qwen/Qwen3.8-Flash-Next",
+    "revision": "de4b8e4d43b917e7706784d8bb445c9af86a3540",
+    "dtype": "BF16",
+    "quantization": false,
+    "license": "Qwen Community License 1.0"
+  },
+  "llama_cpp": {
+    "repository": "ggml-org/llama.cpp",
+    "revision": "0a1ef309cdbb9f2024f58a38fb4c42352c5db569",
+    "license": "MIT"
+  },
+  "ps5_vulkan_inference": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "51bbc63d51c40614e7069912e0d6b48a56d3510a",
+    "profile": "cumulative-idle",
+    "archive_sha256": "0f9409a3af8027c81c6bad625c0aaa91265df8850b0f481ac497114c91cb2dba",
+    "capture_isa": true,
+    "persistent_caches_enabled": false,
+    "mesa_revision": "1ba9874f478657ccf6da72ce55f0260164cc0bd0"
+  },
+  "design_references": [
+    "https://github.com/Niko1221/Strata",
+    "https://github.com/mw00/project-maya"
+  ]
+}
