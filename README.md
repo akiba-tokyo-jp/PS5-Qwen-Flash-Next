@@ -14,11 +14,13 @@ The new profile is rebuilt from this source; older artifacts remain historical
 controls. See [driver-integration.md](docs/driver-integration.md) for provenance,
 manual build commands and the remaining native runtime/model gates.
 
-Current work is host development and native build/link integration in this
-private repository. [development.json](config/development.json) keeps console
-operations, deployment and validation disabled while the application artifact
-is prepared. Bounded driver tests do not establish Qwen quality or memory
-admission. Application merges and host checks remain separate from PS5 execution.
+The owner subsequently authorized console validation and required careful
+prevention of hangs and uncertain completion. [development.json](config/development.json)
+permits only bounded `display-validation` after host checks; model loading and
+GPU compute modes remain rejected. Release deployment is disabled. See
+[native-validation.md](docs/native-validation.md) for the staged gates and exact
+preservation/restoration requirements. Driver tests do not establish Qwen quality
+or memory admission.
 
 ## Application development
 
@@ -30,6 +32,8 @@ an explicit demo backend; unknown hardware counters remain unavailable.
 The real model adapter has API-stub tests and PS5 object compilation.
 A guarded native entry point and BF16 conversion tool are implemented. The
 native integration build and full-model qualification are recorded separately.
+The native TV monitor uses two fixed VideoOut buffers and updates independently
+of browser polling. Its no-model validation mode never initializes Vulkan.
 See [application.md](docs/application.md) for exact check coverage and remaining
 work. The demo is not evidence of Qwen inference or console performance.
 
@@ -44,10 +48,13 @@ not a full-shard checksum or an inference result.
 The engine was rebuilt with the latest selected driver source on 2026-10-22.
 The real application, original-BF16 adapter, HTTP service, Strata/Maya cache
 patches and selected RADV archive now link into one intermediate native PIE.
-All link inputs retained their digests, and 16 static initializer slots and six
-native runtime providers are recorded. This is a host link, not a deployed SELF
-or successful console inference. Original shard acquisition and full checksumming
-remain incomplete. See [the integration record](docs/driver-integration-20261022.json).
+The earlier host link is retained in [the integration record](docs/driver-integration-20261022.json).
+The subsequent native monitor build preserves 16 initializer slots and seven
+runtime providers, passes 344 real-module import checks and produces an
+integrity-checked SELF with six verified reconstructed segments. See
+[the monitor host record](docs/native-monitor-20261022.json). These host results
+do not establish console execution or successful Qwen inference. Original shard
+acquisition and full checksumming remain incomplete.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the

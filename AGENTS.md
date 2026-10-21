@@ -26,11 +26,16 @@ artifact and application link provenance. Existing bounded driver evidence
 does not establish this Qwen client's numerical quality or memory admission.
 Persistent shader/pipeline caches remain disabled before backend initialization.
 
-Implement and verify the native build/link path manually on the host. Console
-operations and release remain disabled in config/development.json while this
-integration is prepared. This phase does not require accessing the PS5 or
-replacing another running application. A host build or application merge is
-separate from native execution and full-model qualification.
+The owner subsequently authorized real-console validation after implementation,
+and explicitly required avoiding hangs and uncertain completion. The native
+build, actual module import audit, SELF integrity/segment roundtrip and focused
+host checks must pass before console work. Initial console execution is limited
+to `display-validation`: no model load, Vulkan initialization or compute. The
+configuration's `allowed_modes` must reject later modes until their preceding
+gates pass. Release deployment remains disabled. Temporary validation publication
+is authorized with exact preservation and restoration of the original title.
+A host build or application merge is separate from native execution and
+full-model qualification.
 
 Use one identified native GPU title. Close existing applications through the
 ordinary OS path. Never force-kill, reset the GPU, change firmware, or release

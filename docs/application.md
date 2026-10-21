@@ -3,8 +3,10 @@
 The application has session control, a llama.cpp adapter, a web interface and an
 HTTP transport. Development checks use only a host demo or API stubs. No real
 model execution or console access is part of those checks. The real application now links to an intermediate
-native PIE with the selected latest driver. SELF packaging, runtime admission
-and full-model qualification remain outstanding; see [driver integration](driver-integration.md).
+native PIE with the selected latest driver. The native monitor now packages to
+an integrity-checked SELF; see [the host record](native-monitor-20261022.json).
+Runtime admission and full-model qualification remain separate; see
+[staged native validation](native-validation.md).
 
 ## Request ownership and events
 
@@ -53,7 +55,7 @@ and adapter API-stub checks on the host. It also compiles the session source int
 a PS5 object. It neither links the driver nor deploys a release. The scenarios cover
 streaming and timing, cancellation, context admission and integer overflow,
 empty and split UTF-8 output, and quarantine for each backend operation.
-The Python checks also prove that the current console restriction stops the
+The Python checks also prove that a disabled console policy stops the
 console helper before any network, build, or directory creation.
 
 ## Qwen adapter and model preparation
@@ -78,11 +80,12 @@ patched engine sources compile to target objects on an isolated host copy.
 Model performance remains unmeasured.
 
 `native_main.cpp` checks the development restriction before backend initialization.
-When future console work is permitted, it requires a conversion receipt, rejects
+For a separately admitted inference mode, it requires a conversion receipt, rejects
 reduced-precision GGUF tensor types, checks the Qwen architecture and required
 exact 64-bit PLE metadata, and uses the embedded original chat template. Failed
 native admission retains resources for ordinary process close. The entry point
-is now included in the intermediate native PIE. It has not run on PS5.
+is now included in the native SELF. Only display validation is enabled; native
+execution must be recorded independently of the host checks.
 
 `tools/convert_model.py` requires every original shard and verifies its size and
 SHA256 before invoking the pinned BF16 converter. It records output file digests
@@ -109,6 +112,12 @@ token's prefill wait. All generated tokens, including reasoning, are counted.
 The chart retains up to 60 polling samples. Cache counters are process totals
 sampled at completed engine operations; page-advice bytes are not SSD traffic.
 An explicit demo banner identifies synthetic requests and unsampled hardware.
+
+The TV interface uses the same typed status snapshot through a CPU observer
+once per second, without browser requests or backend calls on that observer.
+It rasterizes into two fixed tiled VideoOut buffers. Host tests check first-frame
+completion, every pixel address and retained no-retry faults. These are API-stub
+checks, not hardware evidence. The native clock is explicitly labelled UTC.
 
 `http_app.cpp` applies the original chat template using the pinned upstream Jinja
 implementation. It supports text messages only; media and tool calls are rejected.

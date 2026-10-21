@@ -29,18 +29,26 @@ the pinned engine with the actual Strata/Maya policy and loader patches.
 
 `tools/build_native.py` compiles the real session, model adapter, HTTP service,
 native entry point and pinned native CRT, then links them with the engine and
-selected driver. The resulting intermediate native PIE is 136,255,816 bytes.
+selected driver. The initial intermediate native PIE was 136,255,816 bytes.
 Its required engine/driver symbols and 16 initializer slots are present; all
 recorded link inputs retain their digests. Six native runtime providers are
 recorded, including `libkernel.sprx`. Source, compiler, linker, object/archive,
 runtime-import and layout identities are retained in the private build receipt.
 The public-safe [integration record](driver-integration-20261022.json) identifies
-the exact artifact; binaries and raw build records stay on the data disk.
+the exact initial artifact; binaries and raw build records stay on the data disk.
+The subsequent native monitor/guarded SELF is recorded separately in
+[native-monitor-20261022.json](native-monitor-20261022.json), preserving the
+earlier milestone. It retains 16 initializers and seven runtime providers.
+Its 344 imports resolve through actual module stubs, excluding weak convenience
+stubs as runtime evidence. SELF integrity and all six reconstructed segments pass.
 
 ## Native adapters and layout
 
-`vulkan_bridge.cpp` forwards static Vulkan entry points to RADV/Mesa. It does
-not change routing, feature advertisement, arithmetic, memory or synchronization.
+`vulkan_bridge.cpp` forwards static Vulkan entry points to RADV/Mesa without
+altering feature advertisement or arithmetic. Client blocking waits have a
+finite ceiling, and failed submit/wait operations halt before unwinding or
+resource reuse. The native entry point selects serialized one-node submissions
+with asynchronous transfers disabled. See [native validation](native-validation.md).
 `native_socket.cpp` implements the SDK's missing `accept4` using `accept` and
 checked descriptor flags. This app never forks or execs; the fallback is not a
 general atomic close-on-exec replacement for a process that does. Flag failures
@@ -52,11 +60,12 @@ map. The pinned driver's CRT and PIE layout preserve IEEE startup, static
 initializers and unwind boundaries at the source/link level. Their actual
 execution, imports, TLS/unwind and loader behavior still need console admission.
 
-The CRT/layout originate in BlackBearReloaded's native boilerplate, inherited
+The CRT/layout and adapted glyph/tile primitives originate in BlackBearReloaded's native boilerplate, inherited
 through Mihawk-99's PS5_Vulkan and the selected derivative. The public SDK's
 platform runtime carries Mihawk's GPL-3.0-or-later notices. These external
-sources are referenced in place and hashed, not copied into this MIT application
-repository. Their license obligations apply to any future bundled artifact;
+CRT/runtime sources are referenced in place and hashed. Adapted raster/tile code
+retains its original GPL notices and a bundled license/attribution notice.
+Their license obligations apply to any future bundled artifact;
 no runtime or native binary is distributed here.
 
 ## Manual reproduction
@@ -82,10 +91,10 @@ argument forwarding, flags, failure cleanup and error preservation.
 
 ## Remaining gates
 
-This is a successful host build/link, not a deployed SELF or a successful model
-run. SELF conversion/packaging, native startup, model-independent GPU admission,
+Host SELF conversion/packaging now passes. Native startup, model-independent GPU admission,
 the read-only display's native presentation, original checkpoint acquisition,
 lossless conversion, large mappings, PLE, sustained shared-memory residency,
 full-model output quality and measured tokens/s remain separate work.
-No PS5 access, model execution, release or CI occurred. Console operations remain
-disabled in `config/development.json` while the application artifact is prepared.
+These remaining gates are separate from those host results. The first console
+mode is limited to CPU display validation with no model/Vulkan initialization.
+Full inference modes remain rejected by policy. Release and CI remain disabled.

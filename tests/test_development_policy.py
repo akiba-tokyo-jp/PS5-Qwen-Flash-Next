@@ -20,6 +20,7 @@ class DevelopmentRestriction(unittest.TestCase):
             argv = ["console.py", command, "--host", "example.invalid", "--workspace", str(ROOT),
                     "--out", str(ROOT / "never-created-by-policy-test")]
             with self.subTest(command=command), patch.object(sys, "argv", argv), \
+                 patch.object(Path, "read_text", return_value='{"console_operations_enabled":false}'), \
                  patch.object(console.urllib.request, "build_opener") as network, \
                  patch.object(console.subprocess, "run") as build, \
                  patch.object(Path, "mkdir") as mkdir, contextlib.redirect_stderr(io.StringIO()), \

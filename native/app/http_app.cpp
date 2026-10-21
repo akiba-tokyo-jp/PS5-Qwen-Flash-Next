@@ -14,6 +14,7 @@
 #include <mutex>
 #include <thread>
 #include <ctime>
+extern "C" bool qwen_native_faulted();
 
 namespace qwen_app {
 using Json = nlohmann::json;
@@ -110,7 +111,7 @@ public:
         job->messages = data["messages"];
         job->thinking = data.value("enable_thinking", true);
         std::lock_guard<std::mutex> lock(mutex_);
-        if (active_ || quarantined_) return {};
+        if (active_ || quarantined_ || qwen_native_faulted()) return {};
         active_ = job;
         last_started_ = now_ms();
         first_token_ = 0;
@@ -137,7 +138,7 @@ public:
         for (double stamp : token_times_) if (stamp > start) ++intervals;
         request["live_tokens_per_second"] = active_ && first_token_ > 0 && now > start
             ? Json(1000.0 * intervals / (now - start)) : Json(nullptr);
-        return {{"busy", bool(active_)}, {"quarantined", quarantined_}, {"request", request}, {"expert_cache", expert_cache_}};
+        return {{"busy", bool(active_)}, {"quarantined", quarantined_ || qwen_native_faulted()}, {"request", request}, {"expert_cache", expert_cache_}};
     }
 private:
     void publish(const std::shared_ptr<Job> & job, const Json & data, bool terminal = false) {
@@ -238,7 +239,8 @@ private:
 };
 
 int serve_http(Engine & engine, const std::string & assets,
-               const std::string & chat_template, int port, bool demo, HardwareInfo hardware) {
+               const std::string & chat_template, int port, bool demo, HardwareInfo hardware,
+               std::function<void(const MonitorSnapshot &)> monitor, bool monitor_only) {
     Service service(engine, chat_template);
     httplib::Server server;
     server.set_payload_max_length(1 << 20);
@@ -247,10 +249,10 @@ int serve_http(Engine & engine, const std::string & assets,
     std::mutex cpu_mutex;
     double last_cpu_wall = now_ms();
     std::clock_t last_cpu = std::clock();
-    server.Get("/api/status", [&](const auto &, auto & response) {
+    auto capture_status = [&] {
         auto data = service.status();
-        data["backend"] = demo ? "demo" : "model";
-        data["model_loaded"] = !demo;
+        data["backend"] = demo ? "demo" : monitor_only ? "monitor-validation" : "model";
+        data["model_loaded"] = !demo && !monitor_only;
         data["server_epoch_ms"] = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now().time_since_epoch()).count();
         Json process_cpu = nullptr;
@@ -271,10 +273,15 @@ int serve_http(Engine & engine, const std::string & assets,
                 {"usage_percent", nullptr}, {"memory_sample", "driver report at startup"},
                 {"total_bytes", hardware.gpu_total_bytes ? Json(*hardware.gpu_total_bytes) : Json(nullptr)},
                 {"free_bytes", hardware.gpu_free_bytes ? Json(*hardware.gpu_free_bytes) : Json(nullptr)}}}};
+        return data;
+    };
+    server.Get("/api/status", [&](const auto &, auto & response) {
+        const auto data = capture_status();
         response.set_header("Cache-Control", "no-store");
         response.set_content(data.dump(), "application/json");
     });
     server.Post("/api/generate", [&](const auto & request, auto & response) {
+        if (monitor_only) { response.status = 503; response.set_content("{\"error\":\"inference_not_loaded\"}", "application/json"); return; }
         try {
             auto job = service.submit(Json::parse(request.body));
             if (!job) { response.status = 409; response.set_content("{\"error\":\"busy_or_quarantined\"}", "application/json"); return; }
@@ -306,7 +313,51 @@ int serve_http(Engine & engine, const std::string & assets,
         } catch (...) { response.status = 400; }
     });
     if (!server.set_mount_point("/", assets)) throw std::runtime_error("Application assets not found");
+    // Native presentation is independent of browser polls and model operations.
+    std::mutex monitor_mutex;
+    std::condition_variable monitor_changed;
+    bool stop_monitor = false;
+    std::thread monitor_worker;
+    if (monitor) monitor_worker = std::thread([&] {
+        for (;;) {
+            try {
+                const auto data = capture_status();
+                const auto & request = data.at("request");
+                const auto metrics = request.value("metrics", Json::object());
+                MonitorSnapshot snapshot;
+                snapshot.state = request.value("state", "idle"); snapshot.request_id = request.value("id", "");
+                snapshot.busy = data.at("busy"); snapshot.quarantined = data.at("quarantined");
+                snapshot.model_loaded = !demo && !monitor_only; snapshot.epoch_ms = data.at("server_epoch_ms");
+                snapshot.cpu_name = hardware.cpu_name; snapshot.gpu_name = hardware.gpu_name;
+                snapshot.cpu_threads = hardware.logical_cpu_threads;
+                snapshot.gpu_total_bytes = hardware.gpu_total_bytes; snapshot.gpu_free_bytes = hardware.gpu_free_bytes;
+                const auto cpu = data["hardware"]["cpu"]["app_usage_percent"];
+                if (cpu.is_number()) snapshot.cpu_percent = cpu.get<double>();
+                snapshot.generated_tokens = metrics.value("generated_tokens", std::uint64_t(0));
+                snapshot.elapsed_ms = request.value("elapsed_ms", 0.0);
+                if (metrics.contains("ttft_ms") && metrics["ttft_ms"].is_number()) snapshot.ttft_ms = metrics["ttft_ms"].get<double>();
+                const auto rate = snapshot.busy ? request["live_tokens_per_second"] : metrics.value("decode_tokens_per_second", Json(nullptr));
+                if (rate.is_number()) snapshot.tokens_per_second = rate.get<double>();
+                const auto & cache = data["expert_cache"];
+                if (cache.is_object()) snapshot.expert_cache = ExpertCacheMetrics{cache.at("hits"), cache.at("misses"),
+                    cache.at("uploaded_bytes"), cache.at("prefetch_advice_bytes")};
+                if (demo) snapshot.message = "HOST DEMO / NO MODEL OR PS5 HARDWARE IS SAMPLED";
+                else if (monitor_only) snapshot.message = "NATIVE MONITOR VALIDATION / NO MODEL LOADED";
+                monitor(snapshot);
+            } catch (...) { /* Observation failure never issues backend work. */ }
+            std::unique_lock<std::mutex> lock(monitor_mutex);
+            if (monitor_changed.wait_for(lock, std::chrono::seconds(1), [&] { return stop_monitor; })) return;
+        }
+    });
+    auto finish_monitor = [&] {
+        { std::lock_guard<std::mutex> lock(monitor_mutex); stop_monitor = true; }
+        monitor_changed.notify_all();
+        if (monitor_worker.joinable()) monitor_worker.join();
+    };
     // During development, the preview is reachable only from this computer.
-    return server.listen("127.0.0.1", port) ? 0 : 1;
+    try {
+        const int result = server.listen("127.0.0.1", port) ? 0 : 1;
+        finish_monitor(); return result;
+    } catch (...) { finish_monitor(); throw; }
 }
 } // namespace qwen_app

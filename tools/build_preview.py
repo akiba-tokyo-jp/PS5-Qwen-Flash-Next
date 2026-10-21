@@ -35,7 +35,7 @@ def main():
     includes = [ROOT / "native/app", source / "include", source / "ggml/include", source / "common",
                 source / "src", source / "vendor", source / "vendor/nlohmann", source / "vendor/cpp-httplib"]
     flags = [flag for path in includes for flag in ("-I", str(path))]
-    files = [ROOT / "native/app" / name for name in ("session.cpp", "http_app.cpp", "demo_main.cpp", "demo_support.cpp")]
+    files = [ROOT / "native/app" / name for name in ("session.cpp", "http_app.cpp", "demo_main.cpp", "demo_support.cpp", "monitor_raster.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp", source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
     env = os.environ.copy(); env["PATH"] = str(host) + os.pathsep + env.get("PATH", "")

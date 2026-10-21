@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "http_app.h"
+#include "nlohmann/json.hpp"
 #include <chrono>
 #include <fstream>
 #include <iostream>
@@ -25,8 +26,8 @@ public:
 };
 
 int main(int argc, char ** argv) {
-    if (argc != 5 || std::string(argv[1]) != "--demo") {
-        std::cerr << "Usage: app-demo --demo ASSETS CHAT_TEMPLATE PORT\n"
+    if ((argc != 5 && argc != 6) || (std::string(argv[1]) != "--demo" && std::string(argv[1]) != "--monitor-demo")) {
+        std::cerr << "Usage: app-demo --demo|--monitor-demo ASSETS CHAT_TEMPLATE PORT [MONITOR_LOG]\n"
                      "Development preview only; console release remains disabled.\n";
         return 2;
     }
@@ -37,8 +38,19 @@ int main(int argc, char ** argv) {
         const int port = std::stoi(argv[4]);
         if (port < 1024 || port > 65535) throw std::invalid_argument("Invalid preview port");
         DemoEngine engine;
+        std::function<void(const qwen_app::MonitorSnapshot &)> observer;
+        if (argc == 6) {
+            const std::string path = argv[5];
+            observer = [path](const qwen_app::MonitorSnapshot & value) {
+                std::ofstream log(path, std::ios::app);
+                log << nlohmann::json({{"epoch_ms", value.epoch_ms}, {"busy", value.busy},
+                    {"model_loaded", value.model_loaded}, {"generated_tokens", value.generated_tokens},
+                    {"state", value.state}, {"message", value.message}}).dump() << '\n';
+            };
+        }
         std::cout << "Demo backend; no model loaded. Preview: http://127.0.0.1:" << port << std::endl;
-        return qwen_app::serve_http(engine, argv[2], source, port, true);
+        return qwen_app::serve_http(engine, argv[2], source, port, true, {}, observer,
+                                    std::string(argv[1]) == "--monitor-demo");
     } catch (const std::exception & error) {
         std::cerr << error.what() << '\n'; return 1;
     }

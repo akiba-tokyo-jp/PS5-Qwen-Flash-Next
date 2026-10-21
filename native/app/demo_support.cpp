@@ -5,6 +5,9 @@
 #include <cstdio>
 #include <cstdlib>
 
+// The host demonstration never initializes a native resource owner.
+extern "C" bool qwen_native_faulted() { return false; }
+
 extern "C" void ggml_abort(const char * file, int line, const char * format, ...) {
     std::fprintf(stderr, "%s:%d: ", file, line);
     va_list arguments;

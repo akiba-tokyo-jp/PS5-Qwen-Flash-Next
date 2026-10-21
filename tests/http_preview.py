@@ -11,6 +11,7 @@ from pathlib import Path
 import socket
 import subprocess
 import time
+import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -25,8 +26,9 @@ def main():
     env["PATH"] = str(a.workspace / "toolchain/msys-clang64/clang64/bin") + os.pathsep + env.get("PATH", "")
     with socket.socket() as reserved:
         reserved.bind(("127.0.0.1", 0)); port = reserved.getsockname()[1]
+    monitor_log = out / ("monitor-observer-" + uuid.uuid4().hex + ".private.jsonl")
     process = subprocess.Popen([str(out / "app-demo.exe"), "--demo", str(ROOT / "web"),
-        str(a.cache / "model/chat_template.jinja"), str(port)], env=env,
+        str(a.cache / "model/chat_template.jinja"), str(port), str(monitor_log)], env=env,
         stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
 
     def request(method, path, body=None):
@@ -49,6 +51,14 @@ def main():
         data = json.loads(response.read()); connection.close(); return data
 
     try:
+        # No HTTP request is issued until two independent observer ticks exist.
+        for _ in range(100):
+            rows = [json.loads(line) for line in monitor_log.read_text().splitlines()] if monitor_log.exists() else []
+            if len(rows) >= 2: break
+            if process.poll() is not None: raise RuntimeError(process.stderr.read().decode())
+            time.sleep(.1)
+        else: raise RuntimeError("Monitor observer did not update independently")
+        assert rows[1]["epoch_ms"] > rows[0]["epoch_ms"] and not any(row["model_loaded"] for row in rows)
         for _ in range(100):
             try:
                 initial = status(); break
@@ -120,7 +130,7 @@ def main():
         assert not status()["quarantined"], "Invalid user input quarantined a healthy backend"
         receipt = {"demo_http_scenarios_passed": True, "console_access": False,
                    "model_loaded": False, "tests": ["read_only_assets", "time_and_unknown_hardware", "live_and_completed_metrics",
-                       "request_validation", "streaming", "busy", "cancel", "invalid_chat_recovery"]}
+                       "request_validation", "streaming", "busy", "cancel", "invalid_chat_recovery", "observer_without_browser"]}
         (out / "http-check.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
         print(json.dumps(receipt))
     finally:
@@ -129,6 +139,24 @@ def main():
         except subprocess.TimeoutExpired:
             process.kill(); process.wait()
         process.stderr.close()
+
+    # The native no-model mode uses this same route guard. Verify it never
+    # reaches the demo engine, including for a syntactically valid request.
+    process = subprocess.Popen([str(out / "app-demo.exe"), "--monitor-demo", str(ROOT / "web"),
+        str(a.cache / "model/chat_template.jinja"), str(port)], env=env,
+        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
+    try:
+        for _ in range(100):
+            try: initial = status(); break
+            except OSError: time.sleep(.1)
+        else: raise RuntimeError("Monitor-only host fixture did not start")
+        connection, response = request("POST", "/api/generate", payload("must-not-execute"))
+        assert response.status == 503 and json.loads(response.read())["error"] == "inference_not_loaded"
+        connection.close()
+        assert not status()["busy"] and not status()["model_loaded"]
+        print("No-model generation rejection passed; host fixture only")
+    finally:
+        process.terminate(); process.wait(timeout=10); process.stderr.close()
 
 
 if __name__ == "__main__":
