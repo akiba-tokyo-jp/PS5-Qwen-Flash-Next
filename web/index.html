@@ -1,29 +1,21 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>PS5 Qwen · Application preview</title>
-  <link rel="stylesheet" href="/style.css">
-  <script src="/app.js" defer></script>
-</head>
-<body>
-  <main>
-    <header><span class="eyebrow">PS5 QWEN / FLASH NEXT</span><h1>A window into reasoning.</h1>
-      <p>Original BF16 · one console · application development</p></header>
-    <div class="notice" id="backend">Checking backend…</div>
-    <section class="workspace">
-      <div class="conversation" id="conversation" aria-live="polite"><p class="empty">Start a conversation to test the interface.</p></div>
-      <form id="compose">
-        <label for="prompt">Your message</label>
-        <textarea id="prompt" rows="4" placeholder="What would you like to explore?" required maxlength="20000"></textarea>
-        <div class="controls"><label class="thinking"><input id="thinking" type="checkbox" checked> Enable thinking</label>
-          <label>Output limit <input id="limit" type="number" min="1" max="1024" value="256"></label>
-          <button id="stop" type="button" disabled>Stop</button><button id="send" type="submit">Send ↗</button></div>
-      </form>
-    </section>
-    <footer><span id="state" role="status">Idle</span><span id="metrics">No generation yet</span><button id="clear" type="button">Clear conversation</button></footer>
-    <p class="footnote">Console deployment and validation are deferred while driver qualification is pending.</p>
-  </main>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PS5 Qwen · Inference monitor</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body><main>
+<header><div><span class="eyebrow">PS5 QWEN / FLASH NEXT</span><h1>Inference monitor</h1><p>Original BF16 · live information · read-only display</p></div><div class="clock"><time id="clock">—</time><span id="timezone">Synchronizing time</span></div></header>
+<div class="notice" id="backend">Connecting to telemetry…</div>
+<section class="metrics" aria-label="Inference metrics">
+<article class="hero"><span class="label" id="rate-label">Generation rate</span><div class="value"><strong id="rate">—</strong><span>tokens/s</span></div><p>All generated tokens, including reasoning</p><canvas id="chart" height="90" aria-label="Generation rate over time"></canvas></article>
+<article><span class="label">Generated tokens</span><strong class="number" id="tokens">0</strong><p>Includes thinking and answer tokens</p></article>
+<article><span class="label">Time to first token</span><strong class="number" id="ttft">—</strong><p>Request admission to first token</p></article>
+<article><span class="label">Elapsed time</span><strong class="number" id="elapsed">—</strong><p id="state">Idle</p></article>
+</section>
+<section class="hardware" aria-label="Hardware information">
+<article><span class="label">CPU</span><h2 id="cpu-name">Not sampled</h2><dl><div><dt>Logical threads</dt><dd id="cpu-threads">—</dd></div><div><dt>Application CPU use</dt><dd id="cpu-usage">—</dd></div></dl><p>Share of available CPU thread capacity</p></article>
+<article><span class="label">GPU</span><h2 id="gpu-name">Not sampled</h2><dl><div><dt>GPU utilization</dt><dd id="gpu-usage">Unavailable</dd></div><div><dt>Reported memory · total / free</dt><dd id="gpu-memory">—</dd></div></dl><p>Memory is the driver report at startup; shared memory is not extra RAM.</p></article>
+</section>
+<section class="storage"><span class="label">Expert streaming</span><dl><div><dt>Cache hit rate</dt><dd id="cache-hit">—</dd></div><div><dt>Expert bytes uploaded</dt><dd id="cache-bytes">—</dd></div><div><dt>Read-ahead advice</dt><dd id="prefetch-bytes">—</dd></div></dl><p>Unavailable counters stay blank. Advice bytes are not measured SSD traffic.</p></section>
+<footer><span id="connection">Waiting for telemetry</span><span id="request">No active request</span></footer>
+<p class="footnote">Inference is controlled externally. This display sends no generation or control requests. Console release and validation remain deferred while driver qualification is pending.</p>
+</main></body></html>

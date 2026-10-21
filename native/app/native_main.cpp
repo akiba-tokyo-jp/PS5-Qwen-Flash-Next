@@ -2,11 +2,13 @@
 // Compile during development; packaging and console execution remain deferred.
 #include "http_app.h"
 #include "llama_engine.h"
+#include "expert_policy.h"
 #include "ggml-cpu.h"
 #include "gguf.h"
 #include "nlohmann/json.hpp"
 
 #include <cstdlib>
+#include <cstring>
 #include <chrono>
 #include <fstream>
 #include <iostream>
@@ -14,6 +16,7 @@
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include <sys/sysctl.h>
 
 using Json = nlohmann::json;
 // A required link symbol prevents accidental use of an unpatched eager loader.
@@ -80,18 +83,48 @@ int main(int argc, char ** argv) {
         const auto first_path = model_file(argv[2], receipt.at("files").at(0).at("path").get<std::string>());
         const int port = std::stoi(argv[4]);
         if (port < 1024 || port > 65535) throw std::invalid_argument("Invalid HTTP port");
-        if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) || setenv("LLAMA_APP_NO_MMAP_PREFETCH", "1", 1))
+        if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) || setenv("LLAMA_APP_NO_MMAP_PREFETCH", "1", 1) ||
+            setenv("LLAMA_APP_EXPERT_POLICY", "maya-aged-lfu", 1))
             throw std::runtime_error("Required cache policy could not be set");
         if (!llama_app_mmap_prefetch_disabled()) throw std::runtime_error("The streaming loader patch is required");
+        if (!llama_app_expert_policy_enabled()) throw std::runtime_error("The adaptive expert cache patch is required");
         llama_backend_init();
         model = llama_model_load_from_file(first_path.c_str(), qwen_app::streaming_model_params(ggml_backend_cpu_buffer_type()));
         if (!model) throw std::runtime_error("Model load failed; restart through the ordinary OS path");
-        context = llama_init_from_model(model, qwen_app::streaming_context_params(4096, 512u << 20));
+        auto device = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU);
+        if (!device) device = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_IGPU);
+        std::size_t driver_free = 0, driver_total = 0;
+        if (device) ggml_backend_dev_memory(device, &driver_free, &driver_total);
+        std::uint32_t free_pages = 0, page_size = 0;
+        std::size_t free_size = sizeof(free_pages), page_size_size = sizeof(page_size);
+        if (sysctlbyname("vm.stats.vm.v_free_count", &free_pages, &free_size, nullptr, 0) ||
+            sysctlbyname("vm.stats.vm.v_page_size", &page_size, &page_size_size, nullptr, 0) ||
+            free_size != sizeof(free_pages) || page_size_size != sizeof(page_size))
+            throw std::runtime_error("OS free-memory observation is required for UMA cache admission");
+        // Initial, unqualified limits: do not infer extra RAM from the GPU pool.
+        const auto cache_bytes = qwen_app::uma_cache_budget(512u << 20, driver_free,
+            std::uint64_t(free_pages) * page_size, 256u << 20);
+        if (cache_bytes < (128u << 20)) throw std::runtime_error("Insufficient observed UMA cache headroom");
+        context = llama_init_from_model(model, qwen_app::streaming_context_params(4096, cache_bytes));
         if (!context) throw std::runtime_error("Context admission failed; restart through the ordinary OS path");
         engine = std::make_unique<qwen_app::LlamaEngine>(model, context);
         const auto * chat_template = llama_model_chat_template(model, nullptr);
         if (!chat_template || !*chat_template) throw std::runtime_error("The original chat template is required");
-        const int result = qwen_app::serve_http(*engine, argv[3], chat_template, port, false);
+        qwen_app::HardwareInfo hardware;
+        char cpu_name[256] = {};
+        std::size_t cpu_name_size = sizeof(cpu_name);
+        if (!sysctlbyname("hw.model", cpu_name, &cpu_name_size, nullptr, 0) && cpu_name_size &&
+            std::memchr(cpu_name, 0, sizeof(cpu_name))) hardware.cpu_name = cpu_name;
+        hardware.logical_cpu_threads = std::thread::hardware_concurrency();
+        hardware.sample_process_cpu = true;
+        if (device) {
+            const char * description = ggml_backend_dev_description(device);
+            if (description) hardware.gpu_name = description;
+            std::size_t free = 0, total = 0;
+            ggml_backend_dev_memory(device, &free, &total);
+            if (total) { hardware.gpu_total_bytes = total; hardware.gpu_free_bytes = free; }
+        }
+        const int result = qwen_app::serve_http(*engine, argv[3], chat_template, port, false, hardware);
         if (engine->failed()) throw std::runtime_error("Model resources retained after an uncertain backend result");
         engine.reset(); llama_free(context); context = nullptr; llama_model_free(model); model = nullptr;
         return result;

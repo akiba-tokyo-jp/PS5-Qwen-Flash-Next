@@ -1,62 +1,58 @@
 /* SPDX-License-Identifier: MIT */
 "use strict";
-const ui = Object.fromEntries(["backend", "conversation", "compose", "prompt", "thinking", "limit", "stop", "send", "state", "metrics", "clear"].map(id => [id, document.getElementById(id)]));
-let messages = [], active = null;
-function busy(value) { ui.send.disabled = value; ui.stop.disabled = !value; ui.clear.disabled = value; }
-function message(role, text) {
-  ui.conversation.querySelector(".empty")?.remove();
-  const item = document.createElement("div"), label = document.createElement("strong"), content = document.createElement("span");
-  item.className = "message"; label.textContent = role; content.textContent = text;
-  item.append(label, content); ui.conversation.append(item); return content;
+const byId = id => document.getElementById(id);
+let offset = 0, samples = [], lastRequest = null, polling = false;
+const number = value => typeof value === "number" && Number.isFinite(value);
+const show = (id, text) => { byId(id).textContent = text; };
+const bytes = value => !number(value) ? "—" : value >= 2 ** 30 ? (value / 2 ** 30).toFixed(2) + " GiB" : (value / 2 ** 20).toFixed(1) + " MiB";
+function tick() {
+  const date = new Date(Date.now() + offset);
+  show("clock", new Intl.DateTimeFormat(undefined, {dateStyle: "medium", timeStyle: "medium"}).format(date));
+  show("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
 }
-function metrics(data) {
-  if (!data) return;
-  ui.metrics.textContent = `${data.generated_tokens} tokens · TTFT ${data.ttft_ms == null ? "—" : (data.ttft_ms / 1000).toFixed(2) + " s"} · ${data.decode_tokens_per_second == null ? "—" : data.decode_tokens_per_second.toFixed(2) + " tokens/s"}`;
+function chart() {
+  const canvas = byId("chart"), ratio = devicePixelRatio || 1;
+  const width = canvas.clientWidth || 300, height = 90;
+  canvas.width = width * ratio; canvas.height = height * ratio;
+  const context = canvas.getContext("2d"); context.scale(ratio, ratio);
+  const maximum = Math.max(1, ...samples);
+  context.strokeStyle = "#334539"; context.lineWidth = 1;
+  context.beginPath(); context.moveTo(0, height - 1); context.lineTo(width, height - 1); context.stroke();
+  context.strokeStyle = "#c7db9d"; context.lineWidth = 2; context.beginPath();
+  samples.forEach((value, index) => { const x = index * width / 59, y = height - 5 - value / maximum * (height - 10); index ? context.lineTo(x, y) : context.moveTo(x, y); });
+  context.stroke();
 }
-ui.compose.addEventListener("submit", async event => {
-  event.preventDefault(); if (active || !ui.prompt.value.trim()) return;
-  const prompt = ui.prompt.value; ui.prompt.value = ""; message("You", prompt);
-  messages.push({role: "user", content: prompt}); const output = message("Assistant", "");
-  const id = crypto.randomUUID(); active = id; busy(true); ui.state.textContent = "Preparing";
-  const decoder = new TextDecoder("utf-8"), networkDecoder = new TextDecoder("utf-8");
-  let text = "", terminal = false;
+async function poll() {
+  if (polling) return; polling = true;
   try {
-    const response = await fetch("/api/generate", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({id, messages, max_output_tokens: Number(ui.limit.value), context_tokens: 4096, enable_thinking: ui.thinking.checked})});
-    if (!response.ok) throw new Error(`Request rejected (${response.status})`);
-    const reader = response.body.getReader(); let buffer = "";
-    for (;;) {
-      const chunk = await reader.read(); buffer += networkDecoder.decode(chunk.value, {stream: !chunk.done});
-      let boundary;
-      while ((boundary = buffer.indexOf("\n\n")) !== -1) {
-        const frame = buffer.slice(0, boundary); buffer = buffer.slice(boundary + 2);
-        if (!frame.startsWith("data: ")) continue;
-        const data = JSON.parse(frame.slice(6)); if (data.id !== id) throw new Error("Response request ID mismatch");
-        ui.state.textContent = data.state; metrics(data.metrics);
-        if (data.type === "token") {
-          const bytes = Uint8Array.from(atob(data.piece_b64), c => c.charCodeAt(0));
-          text += decoder.decode(bytes, {stream: true}); output.textContent = text;
-          ui.conversation.scrollTop = ui.conversation.scrollHeight;
-        }
-        if (data.type === "finished") { terminal = true; if (data.state === "failed") throw new Error(`Generation failed (${data.error})`); }
-      }
-      if (chunk.done) break;
-    }
-    if (!terminal) throw new Error("Stream ended without a completion event");
-    text += decoder.decode(); output.textContent = text;
-    // A stopped response is displayed but excluded from later model history.
-    if (ui.state.textContent === "completed") messages.push({role: "assistant", content: text}); else messages.pop();
-  } catch (error) {
-    ui.state.textContent = error.message; messages.pop();
-    output.textContent = text || "The request did not complete.";
-    await fetch("/api/cancel", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({id})}).catch(() => {});
-  } finally { active = null; busy(false); }
-});
-ui.stop.addEventListener("click", async () => {
-  if (!active) return; ui.stop.disabled = true; ui.state.textContent = "Stopping after the current backend operation…";
-  try { await fetch("/api/cancel", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({id: active})}); }
-  catch { ui.state.textContent = "Cancellation could not be delivered."; ui.stop.disabled = false; }
-});
-ui.clear.addEventListener("click", () => { if (active) return; messages = []; ui.conversation.replaceChildren(); ui.state.textContent = "Idle"; });
-fetch("/api/status").then(response => response.json()).then(data => {
-  ui.backend.textContent = data.backend === "demo" ? "DEMO BACKEND · No model is loaded. Text and timings are interface test data." : "MODEL BACKEND · Console qualification results must be checked separately.";
-}).catch(() => { ui.backend.textContent = "Backend unavailable"; ui.send.disabled = true; });
+    const response = await fetch("/api/status", {cache: "no-store", signal: AbortSignal.timeout(5000)});
+    if (!response.ok) throw new Error("Telemetry unavailable");
+    const data = await response.json(), request = data.request || {}, metrics = request.metrics || {};
+    if (number(data.server_epoch_ms)) offset = data.server_epoch_ms - Date.now();
+    show("backend", data.backend === "demo" ? "DEMO TELEMETRY · No model or PS5 hardware is sampled. Generation counters come only from external demo requests." : "MODEL TELEMETRY · Missing hardware counters are shown as unavailable.");
+    if (request.id !== lastRequest) { samples = []; lastRequest = request.id; }
+    const rate = data.busy ? request.live_tokens_per_second : metrics.decode_tokens_per_second;
+    show("rate", number(rate) ? rate.toFixed(2) : "—");
+    show("rate-label", data.busy ? "Generation rate · last 5 seconds" : "Last session · decode average");
+    samples.push(number(rate) ? rate : 0); if (samples.length > 60) samples.shift(); chart();
+    show("tokens", (metrics.generated_tokens || 0).toLocaleString());
+    show("ttft", number(metrics.ttft_ms) ? (metrics.ttft_ms / 1000).toFixed(2) + " s" : "—");
+    show("elapsed", number(request.elapsed_ms) ? (request.elapsed_ms / 1000).toFixed(1) + " s" : "—");
+    show("state", data.quarantined ? "Backend quarantined" : request.state || "Idle");
+    const cpu = data.hardware?.cpu || {}, gpu = data.hardware?.gpu || {};
+    show("cpu-name", cpu.name || "Not sampled"); show("cpu-threads", cpu.logical_threads || "—");
+    show("cpu-usage", number(cpu.app_usage_percent) ? cpu.app_usage_percent.toFixed(1) + "%" : "—");
+    show("gpu-name", gpu.name || "Not sampled");
+    show("gpu-usage", number(gpu.usage_percent) ? gpu.usage_percent.toFixed(1) + "%" : "Unavailable");
+    show("gpu-memory", bytes(gpu.total_bytes) + " / " + bytes(gpu.free_bytes));
+    const cache = data.expert_cache || {};
+    const total = (cache.hits || 0) + (cache.misses || 0);
+    show("cache-hit", total ? (100 * cache.hits / total).toFixed(1) + "%" : "—");
+    show("cache-bytes", bytes(cache.uploaded_bytes)); show("prefetch-bytes", bytes(cache.prefetch_advice_bytes));
+    show("connection", "Telemetry connected · 1 s refresh");
+    show("request", request.id ? "Request " + request.id : "No active request");
+    tick();
+  } catch { show("connection", "Telemetry disconnected · last values retained"); }
+  finally { polling = false; }
+}
+tick(); poll(); setInterval(tick, 1000); setInterval(poll, 1000); addEventListener("resize", chart);

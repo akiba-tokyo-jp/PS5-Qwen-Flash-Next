@@ -13,9 +13,14 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <ctime>
 
 namespace qwen_app {
 using Json = nlohmann::json;
+
+static double now_ms() {
+    return std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now().time_since_epoch()).count();
+}
 
 static const char * name(State state) {
     switch (state) {
@@ -107,6 +112,10 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         if (active_ || quarantined_) return {};
         active_ = job;
+        last_started_ = now_ms();
+        first_token_ = 0;
+        token_times_.clear();
+        last_request_ = {{"id", job->request.id}, {"state", "preparing"}, {"metrics", Json::object()}};
         changed_.notify_one();
         return job;
     }
@@ -119,7 +128,16 @@ public:
     }
     Json status() {
         std::lock_guard<std::mutex> lock(mutex_);
-        return {{"busy", bool(active_)}, {"quarantined", quarantined_}};
+        auto request = last_request_;
+        if (active_) request["elapsed_ms"] = now_ms() - last_started_;
+        else request["elapsed_ms"] = request.value("metrics", Json::object()).value("total_ms", 0.0);
+        const auto now = now_ms();
+        const auto start = std::max(first_token_, now - 5000.0);
+        std::size_t intervals = 0;
+        for (double stamp : token_times_) if (stamp > start) ++intervals;
+        request["live_tokens_per_second"] = active_ && first_token_ > 0 && now > start
+            ? Json(1000.0 * intervals / (now - start)) : Json(nullptr);
+        return {{"busy", bool(active_)}, {"quarantined", quarantined_}, {"request", request}, {"expert_cache", expert_cache_}};
     }
 private:
     void publish(const std::shared_ptr<Job> & job, const Json & data, bool terminal = false) {
@@ -170,6 +188,22 @@ private:
                         {"ttft_ms", metrics.ttft_ms ? Json(*metrics.ttft_ms) : Json(nullptr)},
                         {"decode_tokens_per_second", metrics.decode_tokens_per_second ? Json(*metrics.decode_tokens_per_second) : Json(nullptr)}};
                     data["error"] = int(event.error);
+                    const auto cache = engine_.expert_cache_metrics();
+                    {
+                        std::lock_guard<std::mutex> lock(mutex_);
+                        if (cache) expert_cache_ = {{"hits", cache->hits}, {"misses", cache->misses},
+                            {"uploaded_bytes", cache->uploaded_bytes}, {"prefetch_advice_bytes", cache->prefetch_advice_bytes},
+                            {"scope", "process lifetime; completed owner operations"}, {"policy", "maya-aged-lfu"}};
+                        last_request_ = {{"id", job->request.id}, {"state", name(event.state)},
+                            {"metrics", data["metrics"]}, {"error", data["error"]}};
+                        if (event.token) {
+                            const auto stamp = now_ms();
+                            if (first_token_ == 0) first_token_ = stamp;
+                            token_times_.push_back(stamp);
+                            while (token_times_.size() > 1 && token_times_.front() < stamp - 5000.0)
+                                token_times_.pop_front();
+                        }
+                    }
                     const bool terminal = event.kind == EventKind::finished;
                     publish(job, data, terminal);
                     if (terminal) break;
@@ -177,6 +211,7 @@ private:
             } catch (const std::exception &) {
                 // No backend call follows an unexpected application exception.
                 if (backend_entered) { std::lock_guard<std::mutex> lock(mutex_); quarantined_ = true; }
+                { std::lock_guard<std::mutex> lock(mutex_); last_request_["state"] = "failed"; }
                 publish(job, {{"id", job->request.id}, {"type", "finished"}, {"state", "failed"},
                     {"error", backend_entered ? "application_failure" : "invalid_chat"}}, true);
             }
@@ -195,20 +230,48 @@ private:
     std::condition_variable changed_;
     std::shared_ptr<Job> active_;
     bool stop_ = false, quarantined_ = false;
+    Json last_request_ = {{"state", "idle"}, {"metrics", Json::object()}};
+    Json expert_cache_ = nullptr;
+    double last_started_ = 0, first_token_ = 0;
+    std::deque<double> token_times_;
     std::thread worker_;
 };
 
 int serve_http(Engine & engine, const std::string & assets,
-               const std::string & chat_template, int port, bool demo) {
+               const std::string & chat_template, int port, bool demo, HardwareInfo hardware) {
     Service service(engine, chat_template);
     httplib::Server server;
     server.set_payload_max_length(1 << 20);
     server.set_read_timeout(10);
     server.set_write_timeout(10);
+    std::mutex cpu_mutex;
+    double last_cpu_wall = now_ms();
+    std::clock_t last_cpu = std::clock();
     server.Get("/api/status", [&](const auto &, auto & response) {
         auto data = service.status();
         data["backend"] = demo ? "demo" : "model";
         data["model_loaded"] = !demo;
+        data["server_epoch_ms"] = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+        Json process_cpu = nullptr;
+        if (hardware.sample_process_cpu && hardware.logical_cpu_threads) {
+            std::lock_guard<std::mutex> lock(cpu_mutex);
+            const auto wall = now_ms();
+            const auto cpu = std::clock();
+            if (cpu != std::clock_t(-1) && last_cpu != std::clock_t(-1) && cpu >= last_cpu && wall > last_cpu_wall)
+                process_cpu = std::min(100.0, 100000.0 * double(cpu - last_cpu) / CLOCKS_PER_SEC /
+                    (wall - last_cpu_wall) / hardware.logical_cpu_threads);
+            last_cpu = cpu; last_cpu_wall = wall;
+        }
+        data["hardware"] = {
+            {"cpu", {{"name", hardware.cpu_name.empty() ? Json(nullptr) : Json(hardware.cpu_name)},
+                {"logical_threads", hardware.logical_cpu_threads ? Json(hardware.logical_cpu_threads) : Json(nullptr)},
+                {"app_usage_percent", process_cpu}}},
+            {"gpu", {{"name", hardware.gpu_name.empty() ? Json(nullptr) : Json(hardware.gpu_name)},
+                {"usage_percent", nullptr}, {"memory_sample", "driver report at startup"},
+                {"total_bytes", hardware.gpu_total_bytes ? Json(*hardware.gpu_total_bytes) : Json(nullptr)},
+                {"free_bytes", hardware.gpu_free_bytes ? Json(*hardware.gpu_free_bytes) : Json(nullptr)}}}};
+        response.set_header("Cache-Control", "no-store");
         response.set_content(data.dump(), "application/json");
     });
     server.Post("/api/generate", [&](const auto & request, auto & response) {

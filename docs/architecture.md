@@ -34,10 +34,17 @@ staging, device caches and KV/state must be accounted for together.
 The upstream loader requests prefetch for ordinary mapped tensors. The application
 patch adds an explicit opt-out, `LLAMA_APP_NO_MMAP_PREFETCH=1`, which the native
 entry point sets before backend initialization. A required link symbol prevents
-using an older unpatched loader silently. The patch applies and passes target
-syntax checking on a separate source copy. This removes eager prefetch; it does
+using an older unpatched loader silently. The patch applies and compiles to a
+target object on a separate source copy. This removes eager prefetch; it does
 not prove a resident-memory bound or console support for the model's very large
 virtual mapping. Physical residency under sustained cache misses is unqualified.
+
+The [application expert policy](expert-policy.md) extends that same cache callback.
+It keeps the selected IDs, coefficients, original tensor types and upload sources
+unchanged. Its UMA admission limit is the minimum of requested cache size, driver
+free memory and observed OS free memory after an explicit reserve. This admits
+only the expert bank budget; it does not bound all context, page-cache or PLE
+allocations. Native memory admission remains a separate qualification milestone.
 
 Only the converted model needs to reside on the console SSD. Retain original
 checkpoint shards on the host data disk; keeping both complete containers on the

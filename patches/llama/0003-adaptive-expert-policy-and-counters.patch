@@ -1,0 +1,129 @@
+--- a/src/llama-moe-cache.cpp
++++ b/src/llama-moe-cache.cpp
+@@ -4,6 +4,41 @@
+ #include "llama-model.h"
+ 
+ #include "ggml-cpp.h"
++
++#include "llama-app-expert-policy.h"
++#include <atomic>
++#include <cstdlib>
++#include <cstring>
++#if defined(__unix__) || defined(__APPLE__)
++#include <sys/mman.h>
++#include <unistd.h>
++#endif
++
++static std::atomic<uint64_t> app_hits{0}, app_misses{0}, app_upload{0}, app_advice{0};
++
++extern "C" bool llama_app_expert_policy_enabled() {
++    const char * policy = std::getenv("LLAMA_APP_EXPERT_POLICY");
++    return policy && std::strcmp(policy, "maya-aged-lfu") == 0;
++}
++
++extern "C" void llama_app_expert_counters(llama_app_expert_stats * result) {
++    if (result) *result = {app_hits.load(std::memory_order_relaxed), app_misses.load(std::memory_order_relaxed),
++        app_upload.load(std::memory_order_relaxed), app_advice.load(std::memory_order_relaxed)};
++}
++
++static size_t app_advise_expert(const void * source, size_t bytes, size_t & budget) {
++#if defined(__unix__) || defined(__APPLE__)
++    const long page = sysconf(_SC_PAGESIZE);
++    if (page <= 0) return 0;
++    const auto range = qwen_app::expert_advice_range(reinterpret_cast<uintptr_t>(source), bytes, size_t(page), budget);
++    if (!range.bytes) return 0;
++    budget -= range.bytes;
++    return madvise(reinterpret_cast<void *>(range.address), range.bytes, MADV_WILLNEED) == 0 ? range.bytes : 0;
++#else
++    (void) source; (void) bytes; (void) budget;
++    return 0;
++#endif
++}
+ 
+ #include <algorithm>
+ #include <stdexcept>
+@@ -16,6 +51,8 @@
+ struct moe_cache_slru {
+     int32_t n_expert = 0;
+     int32_t n_slots  = 0;
++    bool adaptive = false;
++    qwen_app::ExpertPolicy policy;
+ 
+     std::vector<int32_t *> slot_map; // [n_layer] data of the slot maps, -1 if the expert is not cached
+     std::vector<int32_t>   key_of;   // [n_slots] il*n_expert + expert, -1 if empty
+@@ -32,9 +69,11 @@
+     uint32_t seen_gen = 0;
+     std::vector<int32_t> uniq;
+ 
+-    void init(int32_t n_layer, int32_t n_expert, int32_t n_slots) {
++    void init(int32_t n_layer, int32_t n_expert, int32_t n_slots, int32_t n_cached_layers) {
+         this->n_expert = n_expert;
+         this->n_slots  = n_slots;
++        adaptive = llama_app_expert_policy_enabled();
++        if (adaptive) policy.reset(n_layer, n_expert, n_slots, n_cached_layers);
+         slot_map.assign(n_layer, nullptr);
+         key_of.assign(n_slots, -1);
+         prev.resize(n_slots);
+@@ -85,7 +124,12 @@
+         }
+     }
+ 
+-    int32_t victim(int32_t il) const {
++    int32_t victim(int32_t il) {
++        if (adaptive) {
++            const int32_t slot = policy.victim(key_of, il, uniq);
++            GGML_ASSERT(slot >= 0);
++            return slot;
++        }
+         for (int segment = 0; segment < 2; ++segment) {
+             for (int32_t s = head[segment]; s >= 0; s = next[s]) {
+                 const int32_t key = key_of[s];
+@@ -125,6 +169,7 @@
+             return false;
+         }
+ 
++        if (adaptive) policy.observe(il, uniq);
+         int32_t * slots = slot_map[il];
+ 
+         // promote hits before choosing victims for misses
+@@ -357,7 +402,7 @@
+                 g.n_slots = 0;
+                 continue;
+             }
+-            g.slru.init(model.layers.size(), n_expert, g.n_slots);
++            g.slru.init(model.layers.size(), n_expert, g.n_slots, g.layers.size());
+             n_tensors[g.id] += g.ref.size()*(1 + g.layers.size());
+             n_tensors_host  += g.layers.size();
+         }
+@@ -586,6 +631,18 @@
+         size_t n_hit = 0;
+         if (!g.slru.plan(il, ids.data(), ids.size(), fills, n_hit)) {
+             GGML_ABORT("the MoE cache is too small for the experts selected in layer %d", il);
++        }
++
++        // A bounded page-in hint for actual misses, before any upload. This is
++        // advice accepted by the OS, not measured disk I/O or predicted routing.
++        size_t advice = 0;
++        if (g.slru.adaptive) {
++            size_t remaining = 64u << 20;
++            for (const ggml_tensor * w : l.experts) {
++                for (const auto & fill : fills) {
++                    advice += app_advise_expert((const uint8_t *) w->data + fill.expert*w->nb[2], w->nb[2], remaining);
++                }
++            }
+         }
+ 
+         // upload the missing experts, consecutive experts going to consecutive slots are uploaded together
+@@ -609,6 +666,12 @@
+         st.hits   += n_hit;
+         st.misses += fills.size();
+         st.bytes  += bytes;
++        if (g.slru.adaptive) {
++            app_hits.fetch_add(n_hit, std::memory_order_relaxed);
++            app_misses.fetch_add(fills.size(), std::memory_order_relaxed);
++            app_upload.fetch_add(bytes, std::memory_order_relaxed);
++            app_advice.fetch_add(advice, std::memory_order_relaxed);
++        }
+ 
+         // the next copy synchronizes the backend before it changes the slot map again
+         ggml_backend_tensor_set_async(backend, dst, src->data, 0, ggml_nbytes(src));

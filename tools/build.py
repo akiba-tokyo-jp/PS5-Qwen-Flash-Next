@@ -53,6 +53,15 @@ def main():
             if reverse.returncode:
                 raise ValueError("Upstream patch does not apply cleanly: " + patch.name)
         patches.append({"name": patch.name, "sha256": sha(patch)})
+    overlay_source = ROOT / "native/app/expert_policy.h"
+    overlay_target = source / "src/llama-app-expert-policy.h"
+    overlay_receipt = cache / "upstream/application-overlay.private.json"
+    expected_previous = json.loads(overlay_receipt.read_text())["sha256"] if overlay_receipt.exists() else None
+    overlay_hash = sha(overlay_source)
+    if overlay_target.exists() and sha(overlay_target) not in (overlay_hash, expected_previous):
+        raise ValueError("Existing expert policy overlay has unrecognized local changes")
+    overlay_target.write_bytes(overlay_source.read_bytes())
+    overlay_receipt.write_text(json.dumps({"source": "native/app/expert_policy.h", "sha256": overlay_hash}) + "\n")
     profile = json.loads(a.driver_manifest.read_text())
     archive = a.driver_manifest.resolve().parent / "libvulkan_radeon.experimental.a"
     if profile.get("profile") != "cumulative-idle" or sha(archive) != profile["archive_sha256"]:
@@ -97,6 +106,7 @@ def main():
                "persistent_caches_disabled_required": True, "CI": False, "console_executed": False,
                "learned_host_inference": False, "spirv_header_sha256": sha(spirv_header),
                "upstream_patches": patches,
+               "application_overlay_sha256": overlay_hash,
                "configure_command": command}
     for name, cmd in [("configure", command), ("compile", [str(cmake), "--build", str(out), "--target", "llama", "--parallel", str(a.jobs)])]:
         if name == "compile" and a.configure_only:

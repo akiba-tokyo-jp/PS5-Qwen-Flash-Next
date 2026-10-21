@@ -19,6 +19,7 @@ public:
     void prefill(std::uint32_t context_tokens) override;
     Token next() override;
     void finish() override;
+    std::optional<ExpertCacheMetrics> expert_cache_metrics() const override;
     bool failed() const { return failed_; }
 
 private:

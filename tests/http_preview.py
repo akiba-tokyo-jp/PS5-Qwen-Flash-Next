@@ -4,6 +4,7 @@
 import argparse
 import base64
 import http.client
+from html.parser import HTMLParser
 import json
 import os
 from pathlib import Path
@@ -56,9 +57,20 @@ def main():
                 time.sleep(.1)
         else: raise RuntimeError("Local preview did not become ready")
         assert initial["backend"] == "demo" and not initial["model_loaded"]
+        assert abs(initial["server_epoch_ms"] - time.time() * 1000) < 5000
+        assert initial["hardware"]["cpu"]["app_usage_percent"] is None
+        assert initial["hardware"]["gpu"]["usage_percent"] is None and initial["expert_cache"] is None
         connection, response = request("GET", "/")
-        assert response.status == 200 and b"Application preview" in response.read()
+        html = response.read().decode()
+        assert response.status == 200 and "Inference monitor" in html
+        class DisplayParser(HTMLParser):
+            def handle_starttag(self, tag, attrs):
+                assert tag not in {"form", "input", "textarea", "button", "select"}, "Monitor contains a control"
+        DisplayParser().feed(html)
         connection.close()
+        connection, response = request("GET", "/app.js")
+        script = response.read().decode(); connection.close()
+        assert "/api/status" in script and "/api/generate" not in script and "/api/cancel" not in script
         connection, response = request("POST", "/api/generate", {"id": "bad"})
         assert response.status == 400; response.read(); connection.close()
         for field, value in (("tools", []), ("context_tokens", 8192)):
@@ -75,10 +87,18 @@ def main():
         for _ in range(100):
             if not status()["busy"]: break
             time.sleep(.01)
+        completed = status()["request"]
+        assert completed["state"] == "completed" and completed["live_tokens_per_second"] is None
+        assert completed["metrics"] == received[-1]["metrics"]
         connection, response = request("POST", "/api/generate", payload("cancel"))
         assert response.status == 200
         iterator = events(response)
-        while next(iterator)["type"] != "token": pass
+        token_count = 0
+        while token_count < 3:
+            if next(iterator)["type"] == "token": token_count += 1
+        live = status()
+        assert live["busy"] and live["request"]["live_tokens_per_second"] > 0
+        assert live["request"]["metrics"]["generated_tokens"] >= 3
         second, rejected = request("POST", "/api/generate", payload("busy"))
         assert rejected.status == 409; rejected.read(); second.close()
         second, cancelled = request("POST", "/api/cancel", {"id": "cancel"})
@@ -99,7 +119,8 @@ def main():
             time.sleep(.01)
         assert not status()["quarantined"], "Invalid user input quarantined a healthy backend"
         receipt = {"demo_http_scenarios_passed": True, "console_access": False,
-                   "model_loaded": False, "tests": ["assets", "request_validation", "streaming", "busy", "cancel", "invalid_chat_recovery"]}
+                   "model_loaded": False, "tests": ["read_only_assets", "time_and_unknown_hardware", "live_and_completed_metrics",
+                       "request_validation", "streaming", "busy", "cancel", "invalid_chat_recovery"]}
         (out / "http-check.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
         print(json.dumps(receipt))
     finally:

@@ -20,9 +20,12 @@ An application PR or passing host check does not authorize console work.
 
 ## Application development
 
-The application includes session control, a Qwen/llama.cpp adapter, a chat web
-interface and streaming HTTP API. The interface runs on the host with an explicit
-demo backend; the real model adapter has API-stub tests and PS5 object compilation.
+The application includes session control, a Qwen/llama.cpp adapter, a read-only
+inference monitor and a streaming HTTP API for external requests. The monitor
+shows CPU/GPU information, date/time, generation tokens/s, TTFT and expert-cache
+counters. It contains no chat input or operation controls. The host preview uses
+an explicit demo backend; unknown hardware counters remain unavailable.
+The real model adapter has API-stub tests and PS5 object compilation.
 A guarded native entry point and BF16 conversion tool are implemented, but a
 complete native application link and full-model execution are still pending.
 See [application.md](docs/application.md) for exact check coverage and remaining
@@ -45,8 +48,11 @@ and full checksumming are still in progress.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the
-starting point. Strata and Project Maya inform the tiering design; their
-quantized PC performance figures do not predict this project's console speed.
+starting point. Strata/Maya principles are now wired into the actual engine cache:
+UMA budget admission, aged-frequency eviction with recency ties, feasible layer
+floors, active-expert protection and bounded miss read-ahead advice. See
+[expert-policy.md](docs/expert-policy.md) for pinned sources, adaptations and
+manual checks. Host fixtures preserve BF16 bits; they do not predict console speed.
 
 ## Dependencies
 

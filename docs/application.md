@@ -41,6 +41,7 @@ measurements; fake-backend timings are not model-performance evidence.
 
 ```powershell
 python tools/check_app.py --workspace C:/Users/User/ps5-ai --cache D:/PS5-AI/qwen-flash-next --out D:/PS5-AI/qwen-flash-next/build/application-session
+python tools/check_expert_policy.py --workspace C:/Users/User/ps5-ai --cache D:/PS5-AI/qwen-flash-next
 python tools/build_preview.py --workspace C:/Users/User/ps5-ai --cache D:/PS5-AI/qwen-flash-next
 python tests/http_preview.py --workspace C:/Users/User/ps5-ai --cache D:/PS5-AI/qwen-flash-next
 python -m unittest discover -s tests -v
@@ -69,6 +70,12 @@ and six CPU threads are initial settings, not a qualified memory budget. The
 application loader patch disables eager mmap prefetch explicitly. Mapped pages,
 the PLE working set and actual console virtual-memory limits remain unmeasured.
 
+The [Strata/Maya policy](expert-policy.md) is connected to the actual expert-cache
+planner/copy callback. It adds UMA admission, aged-frequency eviction, feasible
+layer floors, active-set protection, bounded miss advice and telemetry. Both
+patched engine sources compile to target objects on an isolated host copy.
+Model performance remains unmeasured.
+
 `native_main.cpp` checks the development restriction before backend initialization.
 When future console work is permitted, it requires a conversion receipt, rejects
 reduced-precision GGUF tensor types, checks the Qwen architecture and required
@@ -85,25 +92,39 @@ file identities; a receipt alone is not a fresh console integrity check.
 
 ## Interface and HTTP transport
 
-The web interface accepts a text conversation, streams output, supports stopping
-and displays state, TTFT and generation rate. The explicit demo banner distinguishes
-test text from model output. It inserts text through `textContent` and incrementally
-decodes UTF-8 bytes, including fragments split across tokens.
+The web interface is a read-only monitor. It contains no chat input, forms,
+generation, cancellation or other operation controls. It fetches only
+`GET /api/status` once per second and inserts text through `textContent`.
+It displays CPU/GPU identity, logical CPU threads, sampled application CPU use,
+startup GPU memory, current date/time, request state, generated tokens, TTFT,
+elapsed time and generation tokens/s. CPU use is process CPU time divided by
+wall time and available logical threads. GPU utilization remains unavailable
+until a qualified counter exists; demos never invent hardware values.
+
+The clock follows the server epoch and displays the browser's local timezone.
+During generation, tokens/s uses intervals in the last five seconds; after a
+request, it shows the session decode average. The denominator excludes the first
+token's prefill wait. All generated tokens, including reasoning, are counted.
+The chart retains up to 60 polling samples. Cache counters are process totals
+sampled at completed engine operations; page-advice bytes are not SSD traffic.
+An explicit demo banner identifies synthetic requests and unsampled hardware.
 
 `http_app.cpp` applies the original chat template using the pinned upstream Jinja
 implementation. It supports text messages only; media and tool calls are rejected.
 One owner worker drives the engine. HTTP threads submit, stream bounded event
 queues and request cancellation; concurrent generation receives HTTP 409.
 Routes are `GET /api/status`, `POST /api/generate` and `POST /api/cancel`.
+Only external clients use the POST routes; the monitor never sends them.
 The current application context limit is 4,096 tokens; larger requests are
 rejected before they reach the model adapter.
 Generation returns SSE; token bytes use base64 to preserve incomplete UTF-8.
 Invalid chat input does not quarantine a healthy model. Disconnects request
 cancellation at the next synchronous boundary.
 
-The local preview binds only `127.0.0.1`. Its host HTTP checks cover assets,
-invalid input, a complete stream, concurrent rejection, cancellation and invalid
-chat recovery with the original template. These are demo checks, not Qwen results.
+The local preview binds only `127.0.0.1`. Its host HTTP checks cover read-only
+assets, time and unknown hardware, live/completed metrics, invalid input, a
+complete stream, concurrent rejection, cancellation and invalid chat recovery
+with the original template. These are demo checks, not Qwen results.
 
 ```powershell
 D:/PS5-AI/qwen-flash-next/build/application-preview/app-demo.exe --demo C:/Users/User/ps5-ai/llm-work/PS5-Qwen-Flash-Next/web D:/PS5-AI/qwen-flash-next/model/chat_template.jinja 41027

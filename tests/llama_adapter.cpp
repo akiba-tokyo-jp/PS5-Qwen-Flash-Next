@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // These are API stubs for adapter control-flow checks, never model inference.
 #include "llama_engine.h"
+#include "expert_policy.h"
 #include <cstring>
 #include <iostream>
 #include <limits>
@@ -20,6 +21,7 @@ static std::vector<int> decoded;
 static void check(bool value, const char * message) { if (!value) throw std::runtime_error(message); }
 
 extern "C" {
+void llama_app_expert_counters(llama_app_expert_stats * result) { *result = {7, 3, 4096, 8192}; }
 llama_model_params llama_model_default_params() { return {}; }
 llama_context_params llama_context_default_params() { return {}; }
 const llama_vocab * llama_model_get_vocab(const llama_model *) { return &vocabulary; }
@@ -65,6 +67,8 @@ int main() {
         llama_model model; llama_context context;
         {
             qwen_app::LlamaEngine engine(&model, &context);
+            check(engine.expert_cache_metrics()->hits == 7 && engine.expert_cache_metrics()->uploaded_bytes == 4096,
+                  "Cache counters did not come from the engine patch");
             check(engine.tokenize("test") == 3, "Adapter tokenization failed");
             engine.prefill(64);
             check(decodes == 3 && synchronizes == 3, "Prefill did not use synchronous single-token batches");

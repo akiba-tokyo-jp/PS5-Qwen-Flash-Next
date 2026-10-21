@@ -1,11 +1,18 @@
 // SPDX-License-Identifier: MIT
 #include "llama_engine.h"
+#include "expert_policy.h"
 
 #include <cmath>
 #include <limits>
 #include <stdexcept>
 
 namespace qwen_app {
+
+std::optional<ExpertCacheMetrics> LlamaEngine::expert_cache_metrics() const {
+    llama_app_expert_stats stats{};
+    llama_app_expert_counters(&stats);
+    return ExpertCacheMetrics{stats.hits, stats.misses, stats.uploaded_bytes, stats.prefetch_advice_bytes};
+}
 
 llama_model_params streaming_model_params(ggml_backend_buffer_type_t cpu_buffer) {
     if (!cpu_buffer) throw std::invalid_argument("A mapped CPU buffer type is required");

@@ -44,6 +44,10 @@ struct Event {
     Error error = Error::none;
 };
 
+struct ExpertCacheMetrics {
+    std::uint64_t hits = 0, misses = 0, uploaded_bytes = 0, prefetch_advice_bytes = 0;
+};
+
 // Calls run on one owner thread. A backend may return only after its work has
 // completed; cancellation must never free or interrupt uncertain GPU work.
 class Engine {
@@ -55,6 +59,8 @@ public:
     virtual Token next() = 0;
     // Called only after successful, synchronous work at a request boundary.
     virtual void finish() = 0;
+    // Read on the engine owner after a completed operation; demos report absent.
+    virtual std::optional<ExpertCacheMetrics> expert_cache_metrics() const { return {}; }
 };
 
 // One session owns one backend's request state. Its frontend serializes these

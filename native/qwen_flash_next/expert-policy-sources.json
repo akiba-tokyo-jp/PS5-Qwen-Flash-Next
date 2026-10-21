@@ -1,0 +1,94 @@
+{
+  "schema": "ps5-qwen-expert-policy-sources-v1",
+  "license": "MIT",
+  "sources": [
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "011c9e600a93bbc9fd451c563501b5831c32bbca",
+      "path": "LICENSE",
+      "bytes": 1093,
+      "sha256": "949b9b0aada7476006469e58ee4ffb0e0f68c2d9137e90a356757b61a09d37f0",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/011c9e600a93bbc9fd451c563501b5831c32bbca/LICENSE"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "011c9e600a93bbc9fd451c563501b5831c32bbca",
+      "path": "include/strata/core/expert_cache.hpp",
+      "bytes": 19688,
+      "sha256": "37301cc04f5356c73452ab0bd2eb581036aad6f93434adad3b5e757391f39cec",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/011c9e600a93bbc9fd451c563501b5831c32bbca/include/strata/core/expert_cache.hpp"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "011c9e600a93bbc9fd451c563501b5831c32bbca",
+      "path": "src/core/expert_cache.cpp",
+      "bytes": 34507,
+      "sha256": "9176bc1516acd49c097727dc12725ef52a95ddf0f5961a56fd36603b548ec340",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/011c9e600a93bbc9fd451c563501b5831c32bbca/src/core/expert_cache.cpp"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "011c9e600a93bbc9fd451c563501b5831c32bbca",
+      "path": "include/strata/core/uma_cache.hpp",
+      "bytes": 2003,
+      "sha256": "11205ca6f0975dd82566eb17db3915efd3731dce588203257000d929a8a366e9",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/011c9e600a93bbc9fd451c563501b5831c32bbca/include/strata/core/uma_cache.hpp"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "011c9e600a93bbc9fd451c563501b5831c32bbca",
+      "path": "docs/DISJOINT_EXPERT_CACHE.md",
+      "bytes": 2844,
+      "sha256": "a679f9e592600444990f35f0cd2641ee02475fd4191b28eb0f96a8f694e70b33",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/011c9e600a93bbc9fd451c563501b5831c32bbca/docs/DISJOINT_EXPERT_CACHE.md"
+    },
+    {
+      "repository": "mw00/project-maya",
+      "revision": "451f9cb6a21ea65673bdde2e57b4a670ae2b8859",
+      "path": "LICENSE",
+      "bytes": 1160,
+      "sha256": "574cffb7c57769a9271043ac0c2b07c5e7e7621cfb81081b901d8981e791d121",
+      "url": "https://raw.githubusercontent.com/mw00/project-maya/451f9cb6a21ea65673bdde2e57b4a670ae2b8859/LICENSE"
+    },
+    {
+      "repository": "mw00/project-maya",
+      "revision": "451f9cb6a21ea65673bdde2e57b4a670ae2b8859",
+      "path": "include/strata/core/expert_cache.hpp",
+      "bytes": 12740,
+      "sha256": "85ced9aac7635decc0766c42b92c001c557a83c61943eb272adb9dd05bd17fd1",
+      "url": "https://raw.githubusercontent.com/mw00/project-maya/451f9cb6a21ea65673bdde2e57b4a670ae2b8859/include/strata/core/expert_cache.hpp"
+    },
+    {
+      "repository": "mw00/project-maya",
+      "revision": "451f9cb6a21ea65673bdde2e57b4a670ae2b8859",
+      "path": "src/core/expert_cache.cpp",
+      "bytes": 19082,
+      "sha256": "f8bbe8008771391274a2b1e12424fb4dde894514290d2655c78f38165520b325",
+      "url": "https://raw.githubusercontent.com/mw00/project-maya/451f9cb6a21ea65673bdde2e57b4a670ae2b8859/src/core/expert_cache.cpp"
+    },
+    {
+      "repository": "mw00/project-maya",
+      "revision": "451f9cb6a21ea65673bdde2e57b4a670ae2b8859",
+      "path": "tools/glm_tier_replay.py",
+      "bytes": 14358,
+      "sha256": "23e913ce69300f560a476216b0d7c9dfa086ba49d67f8ea67a97b2e7b7ce634b",
+      "url": "https://raw.githubusercontent.com/mw00/project-maya/451f9cb6a21ea65673bdde2e57b4a670ae2b8859/tools/glm_tier_replay.py"
+    },
+    {
+      "repository": "mw00/project-maya",
+      "revision": "451f9cb6a21ea65673bdde2e57b4a670ae2b8859",
+      "path": "src/core/glm_fast_path.cu",
+      "bytes": 393378,
+      "sha256": "aaf548851c37b4f4a4762a333c7f771b597b7e09a0455b3df5d2c9e660021370",
+      "url": "https://raw.githubusercontent.com/mw00/project-maya/451f9cb6a21ea65673bdde2e57b4a670ae2b8859/src/core/glm_fast_path.cu"
+    },
+    {
+      "repository": "mw00/project-maya",
+      "revision": "451f9cb6a21ea65673bdde2e57b4a670ae2b8859",
+      "path": "src/kernels/cuda/glm_fast.cu",
+      "bytes": 301646,
+      "sha256": "94ff7d38f93ae3e02699e595f7c3eaeeaa39182fea786aa49968531f9a3e6f2c",
+      "url": "https://raw.githubusercontent.com/mw00/project-maya/451f9cb6a21ea65673bdde2e57b4a670ae2b8859/src/kernels/cuda/glm_fast.cu"
+    }
+  ]
+}
