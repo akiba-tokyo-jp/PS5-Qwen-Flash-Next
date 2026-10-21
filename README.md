@@ -18,6 +18,14 @@ selected driver is not a qualified release dependency.
 existing console tool rejects commands before network access or local writes.
 An application PR or passing host check does not authorize console work.
 
+## Application development
+
+The application session layer handles bounded text-generation requests, token
+events, cancellation, timing and backend-fault quarantine. Its manual tests use
+a fake engine on the host. The production model adapter and frontend transport
+are still pending. See [application.md](docs/application.md) for the interface
+contract and the host-only check command.
+
 ## Current state
 
 Construction is in progress. Full-model PS5 inference has **not** been achieved.
