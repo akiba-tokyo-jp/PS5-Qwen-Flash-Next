@@ -55,6 +55,7 @@ driver archive. These dependencies are not redistributed. Keep the model cache
 and build directory on the data disk.
 
 ```powershell
+python tools/fetch_engine.py --cache D:/PS5-AI/qwen-flash-next
 python tools/build.py --workspace C:/Users/User/ps5-ai --driver-root C:/Users/User/ps5-ai/driver-work/PS5-Vulkan-Inference --driver-manifest C:/Users/User/ps5-ai/driver-work/PS5-Vulkan-Inference/.local/profile-cumulative-idle-001/manifest.private.json --cache D:/PS5-AI/qwen-flash-next --jobs 4
 python -m unittest discover -s tests -v
 ```
@@ -62,6 +63,8 @@ python -m unittest discover -s tests -v
 This cross-builds static engine libraries and records local archive digests.
 It does not install or launch an application. Console execution and numerical
 acceptance remain separate milestones in [architecture.md](docs/architecture.md).
+The tracked source patch links the required SPIRV-Headers include dependency;
+the build receipt records its digest separately from the pinned upstream source.
 
 `tools/console.py` inspects a native application before an explicitly requested
 ordinary OS close. It records the PID, process start time, application ID and

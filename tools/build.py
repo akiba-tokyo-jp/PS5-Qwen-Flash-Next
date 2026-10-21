@@ -39,8 +39,20 @@ def main():
         raise ValueError("Pinned upstream source is missing")
     source_receipt = json.loads((cache / "upstream/source-receipt.json").read_text())
     archive_source = cache / ("llama-" + LOCK["llama_cpp"]["revision"] + ".zip")
-    if source_receipt["revision"] != LOCK["llama_cpp"]["revision"] or sha(archive_source) != source_receipt["archive_sha256"]:
+    if (source_receipt["revision"] != LOCK["llama_cpp"]["revision"]
+            or source_receipt["archive_sha256"] != LOCK["llama_cpp"]["archive_sha256"]
+            or sha(archive_source) != LOCK["llama_cpp"]["archive_sha256"]):
         raise ValueError("Upstream source archive identity mismatch")
+    patches = []
+    for patch in sorted((ROOT / "patches/llama").glob("*.patch")):
+        check = subprocess.run(["git", "apply", "--check", str(patch)], cwd=source, capture_output=True)
+        if check.returncode == 0:
+            subprocess.run(["git", "apply", str(patch)], cwd=source, check=True)
+        else:
+            reverse = subprocess.run(["git", "apply", "--reverse", "--check", str(patch)], cwd=source, capture_output=True)
+            if reverse.returncode:
+                raise ValueError("Upstream patch does not apply cleanly: " + patch.name)
+        patches.append({"name": patch.name, "sha256": sha(patch)})
     profile = json.loads(a.driver_manifest.read_text())
     archive = a.driver_manifest.resolve().parent / "libvulkan_radeon.experimental.a"
     if profile.get("profile") != "cumulative-idle" or sha(archive) != profile["archive_sha256"]:
@@ -84,6 +96,7 @@ def main():
                "driver_profile": profile["profile"], "driver_archive_sha256": sha(archive),
                "persistent_caches_disabled_required": True, "CI": False, "console_executed": False,
                "learned_host_inference": False, "spirv_header_sha256": sha(spirv_header),
+               "upstream_patches": patches,
                "configure_command": command}
     for name, cmd in [("configure", command), ("compile", [str(cmake), "--build", str(out), "--target", "llama", "--parallel", str(a.jobs)])]:
         if name == "compile" and a.configure_only:

@@ -10,6 +10,8 @@
   "llama_cpp": {
     "repository": "ggml-org/llama.cpp",
     "revision": "0a1ef309cdbb9f2024f58a38fb4c42352c5db569",
+    "archive_sha256": "1e8acbe578c49f32d9b039d938ca7efd291ed3e0d0efa597efb0074463249437",
+    "archive_bytes": 40661071,
     "license": "MIT"
   },
   "ps5_vulkan_inference": {
