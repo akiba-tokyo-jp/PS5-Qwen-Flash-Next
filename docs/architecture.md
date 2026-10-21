@@ -31,6 +31,17 @@ CPU and GPU memory share physical backing on PS5. Moving a weight to a CPU
 buffer does not create capacity. Filesystem mappings, resident allocations,
 staging, device caches and KV/state must be accounted for together.
 
+The current upstream loader requests prefetch for ordinary mapped tensors;
+architecture-marked lazy tensors are excluded. Enabling mmap alone is therefore
+insufficient for this checkpoint. Before full-model console loading, the runtime
+must also exclude routed expert ranges from eager prefetch and measure resident
+pages under sustained cache misses. That integration is not implemented yet.
+
+Only the converted model needs to reside on the console SSD. Retain original
+checkpoint shards on the host data disk; keeping both complete containers on the
+console would exceed the currently observed free space. Storage capacity does
+not establish a working RAM budget or a successful model load.
+
 ## Driver
 
 Use the owner's PS5-Vulkan-Inference repository and explicit cumulative-idle
@@ -43,6 +54,11 @@ device feature. Keep accumulation and numerical validation explicit.
 Persistent shader and pipeline caches remain disabled as required by the
 current driver integration contract. A successful build or API feature query
 does not prove numerical acceptance.
+
+The static engine libraries do not contain a final linked PS5 application.
+Selecting the RADV archive during configuration records the intended dependency;
+the native application's final link and console admission must verify that same
+archive before claiming driver integration.
 
 ## Milestones and evidence
 

@@ -13,6 +13,13 @@ header was inspected through bounded HTTP ranges: 359,999,962,848 bytes of BF16
 weights and 280 bytes of exact I64 constants. This is metadata verification,
 not a full-shard checksum or an inference result.
 
+The manual PS5 cross-build completed on 2026-10-21: `libllama.a`, `libggml.a`,
+`libggml-base.a`, `libggml-cpu.a` and `libggml-vulkan.a` were generated. The build
+selects the owner's pinned cumulative-idle driver archive for the eventual
+application link. These static libraries are not a linked, deployed or validated
+inference application. Nine acquisition checks pass; original shard download
+and full checksumming are still in progress.
+
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the
 starting point. Strata and Project Maya inform the tiering design; their
