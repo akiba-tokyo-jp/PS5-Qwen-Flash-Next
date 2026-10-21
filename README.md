@@ -5,6 +5,19 @@ The goal is to execute the complete text model with its original BF16 weights,
 streaming weights from SSD into bounded shared memory. No quantized substitute,
 expert pruning, or PC/cloud model execution is part of this goal.
 
+## Development restriction
+
+The owner has deferred console release and validation until driver qualification
+is complete. Current work is application development in this private GitHub
+repository with manual host checks. Do not access the PS5, upload, install,
+launch, close applications, deploy, or run console tests during this phase.
+The driver repository and dependency pin remain unchanged. The previously
+selected driver is not a qualified release dependency.
+
+[development.json](config/development.json) records this restriction. The
+existing console tool rejects commands before network access or local writes.
+An application PR or passing host check does not authorize console work.
+
 ## Current state
 
 Construction is in progress. Full-model PS5 inference has **not** been achieved.

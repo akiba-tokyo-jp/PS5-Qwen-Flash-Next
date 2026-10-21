@@ -1,0 +1,7 @@
+{
+  "phase": "application-development",
+  "driver_qualification": "pending",
+  "console_operations_enabled": false,
+  "deployment_enabled": false,
+  "console_validation_enabled": false
+}
