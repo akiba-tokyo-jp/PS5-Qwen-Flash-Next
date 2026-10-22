@@ -38,9 +38,15 @@ def main():
     parser.add_argument("--runtime-imports", type=Path, required=True,
                         help="Local source-generated SceAgc import stubs; never copied to the repository")
     parser.add_argument("--jobs", type=int, default=4)
+    parser.add_argument("--link-threads", type=int, default=2,
+                        help="Bound host linker workers independently from compilation")
+    parser.add_argument("--link-timeout-seconds", type=int, default=600,
+                        help="Host-only link deadline; does not change console deadlines")
     a = parser.parse_args()
     if not 1 <= a.jobs <= 8:
         parser.error("jobs must be between 1 and 8")
+    if not 1 <= a.link_threads <= 8 or not 60 <= a.link_timeout_seconds <= 3600:
+        parser.error("link threads must be 1..8 and host link deadline 60..3600 seconds")
     lock = json.loads((ROOT / "native/qwen_flash_next/dependencies.lock.json").read_text())
     selected = validate_driver(a.driver_root, a.driver_manifest, lock["ps5_vulkan_inference"])
     native_platform=validate_native_platform(a.native_platform_manifest,selected,lock['native_platform_base']) if a.native_platform_manifest else None
@@ -177,6 +183,7 @@ def main():
     inputs = [*(obj for obj, _ in compiled), *engine_archives, driver_archive, *static_runtime, builtins, *imports,
               ROOT / "cmake/native-unwind.ld", ROOT / "cmake/native-symbols.map",
               a.driver_root / "tooling/native/ps5-pie.ld", receipt_path]
+    command.append("--threads=" + str(a.link_threads))
     before = [record(path) for path in inputs]
     receipt = {"schema": "ps5-qwen-native-link-v1", "driver": selected, "engine_receipt": record(receipt_path),
                "GPU_modes_enabled": False, "native_allocator_frontend_integrated": native_platform is not None,
@@ -189,9 +196,10 @@ def main():
                "CRT_derived_from": record(a.driver_root / "tooling/native/app_crt.cpp"),
                "console_access": False, "model_loaded": False, "learned_host_inference": False,
                "SELF_packaged": False, "CI": False, "compile_commands": [cmd for _, cmd in compiled],
-               "link_command": command, "inputs_before": before}
+               "link_command": command, "inputs_before": before,
+               "host_link_threads": a.link_threads, "host_link_timeout_seconds": a.link_timeout_seconds}
     try:
-        result = subprocess.run(command, env=env, capture_output=True, timeout=600)
+        result = subprocess.run(command, env=env, capture_output=True, timeout=a.link_timeout_seconds)
     except subprocess.TimeoutExpired as error:
         (out / "link.private.log").write_bytes((error.stdout or b"") + (error.stderr or b"") + b"\nHost link deadline exceeded\n")
         receipt.update(link_returncode=None, phase="failed", error_type="TimeoutExpired", input_hashes_stable=False)

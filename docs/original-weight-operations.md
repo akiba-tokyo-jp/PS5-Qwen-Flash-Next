@@ -39,3 +39,10 @@ bind the private policy/source slice into a single ordinary launch. Finish by
 ordinary close, exact original restoration, numerical readmission, normal
 shutdown, fresh CPU guards and a final full readback. Committed execution and
 deployment flags remain disabled.
+
+The first host link for this diagnostic reached its 600-second deadline while
+the data disk was also verifying the original checkpoint. No console operation
+occurred for that failed build. Its local receipt and timeout log are preserved.
+The host linker now has a separate bounded worker count and explicit deadline:
+`--link-threads 1 --link-timeout-seconds 1800` for this rebuild. These options
+do not change console waits, numerical limits, native sources or execution gates.
