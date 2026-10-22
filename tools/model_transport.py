@@ -150,9 +150,16 @@ def upload_file_once(ftp, source_directory, row, record_directory, nonce, *,
             raise TimeoutError("Model file verification deadline exceeded")
         ftp.voidcmd("TYPE I")
         if ftp.size(partial) != row["bytes"]: raise ValueError("Remote partial size differs")
-        listing = []; ftp.retrlines("LIST " + partial, listing.append)
-        if len(listing) != 1: raise ValueError("One regular remote split is required")
-        mode = listing[0].split()[0]
+        listing = []
+        def metadata_line(line):
+            if len(listing) >= 1024 or len(line) > 4096:
+                raise ValueError("Remote model directory metadata exceeded its bound")
+            listing.append(line)
+        # This console server implements LIST for directories, not file paths.
+        ftp.retrlines("LIST " + REMOTE_ROOT, metadata_line)
+        matches = [line for line in listing if line.split() and line.split()[-1] == PurePosixPath(partial).name]
+        if len(matches) != 1: raise ValueError("One regular remote split is required")
+        mode = matches[0].split()[0]
         if len(mode) != 10 or mode[0] != "-" or mode[7] != "r":
             raise ValueError("The native title must be able to read the remote regular file")
         guard(); absent(destination)

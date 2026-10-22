@@ -7,9 +7,9 @@ source/configuration facts. They do not establish operation support or quality
 on the physical console.
 
 The completed 32x16 BF16 matvec admission covers one small arithmetic path.
-The original-weight 2560x16 matvec and F32 RMS/SiLU diagnostic is a separate,
-implemented stage whose physical execution is still pending. Neither stage
-covers all operations of the complete model.
+The separate [original-weight 2560x16 matvec and F32 RMS/SiLU diagnostic](native-original-operations-20261022.md)
+subsequently passed all 5,136 outputs on the physical PS5. Neither stage covers
+all operations of the complete model.
 
 | Operation family | Inspected pinned source contract | Remaining physical coverage |
 | --- | --- | --- |

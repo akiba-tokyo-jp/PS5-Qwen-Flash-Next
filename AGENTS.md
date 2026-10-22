@@ -226,3 +226,12 @@ ordinary-launch preservation/restoration. This small diagnostic is separate
 from the complete v2 model receipt, model loading, full-model quality and tokens/s.
 See docs/original-weight-operations.md. Never repeat an ambiguous launch or use
 this mode to bypass the still-rejected full inference stage.
+
+That distinct original-weight artifact subsequently passed on the physical PS5:
+all 5,136 matvec/RMS/SiLU outputs met the fixed limits, positive device idle and
+completion-epoch retirement passed, and two passive HTTP observations passed.
+The exact original was restored, numerically readmitted, normally closed and
+fully read back after fresh final CPU guards. See
+docs/native-original-operations-20261022.md and JSON. The reservation remains
+held, with no native owner. Full-model gates and disabled committed execution,
+deployment, release and CI controls remain unchanged.

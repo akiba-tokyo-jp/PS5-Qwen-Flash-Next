@@ -30,6 +30,10 @@ rename. Positive FTP 250 and final size precede the local transfer record.
 Failure retains remote data and durable failure evidence. An existing attempt
 cannot be repeated automatically, including an ambiguous transfer or rename.
 No remote deletion or existing-file overwrite is implemented.
+The console FTP service supports directory listings, so permission checks use
+one bounded parent-directory listing and select the exact partial basename.
+Unrelated entries cannot satisfy the file check; a file-directed `LIST` is not
+used. This preserves the regular-file/world-readability requirements.
 
 A successful transfer record explicitly says `native_SHA_verified=false` and
 `awaiting_native_SHA_admission`. Source-stream SHA plus remote size does not

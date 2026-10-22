@@ -32,6 +32,12 @@ fixture path pass; the native policy rejects 159 malformed/out-of-scope cases
 including full-inference attempts. Host checks are not physical operation
 admission.
 
+The distinct candidate subsequently passed on the physical PS5, including all
+5,136 readbacks, fixed numeric limits, positive completion/retirement, ordinary
+close and complete original restoration/readmission. See
+[the physical result](native-original-operations-20261022.md) and its JSON.
+This does not qualify full-model inference.
+
 Before execution, require the exact native link, actual-module imports, SELF
 roundtrips, six callback targets, all three BF16 and the actual F32 RMS/SiLU
 SPIR-V modules. Preserve the original title, take fresh unchanged CPU guards and

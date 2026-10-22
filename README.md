@@ -23,6 +23,10 @@ The subsequent [combined admission](docs/native-combined-success-20261022.md)
 also passed: completed BF16 computation and retirement, the first native TV
 monitor frame, two passive HTTP responses and app-local UTC calibration.
 The original app was again restored, numerically readmitted and normally closed.
+The later [original-weight operation admission](docs/native-original-operations-20261022.md)
+passed a 2560x16 BF16 matvec plus F32 RMS/SiLU: all 5,136 outputs met the fixed
+numeric limits, followed by positive completion/retirement and complete original
+restoration/readmission. Full-model inference and tokens/s remain unqualified.
 Committed console/deployment flags remain disabled in
 [development.json](config/development.json). A private frozen fixture policy
 and guarded ordinary launch are required; full-model inference remains rejected.

@@ -31,7 +31,12 @@ class FTP:
         assert command == "TYPE I"
 
     def size(self, path): return len(self.files[path])
-    def retrlines(self, command, callback): callback(self.mode + " 1 0 0 1 Jan 1 00:00 model")
+    def retrlines(self, command, callback):
+        if command != "LIST " + transfer.REMOTE_ROOT:
+            raise ValueError("550 Not a directory")
+        callback("-rw------- 1 0 0 10 Jan 1 00:00 unrelated")
+        for path in self.files:
+            callback(self.mode + " 1 0 0 1 Jan 1 00:00 " + path.rsplit("/", 1)[1])
 
     def rename(self, source, destination):
         self.renames += 1
@@ -102,6 +107,28 @@ class ModelTransport(unittest.TestCase):
     def test_native_unreadable_file_prevents_rename(self):
         self.ftp.mode = "-rw-------"
         with self.assertRaisesRegex(ValueError, "must be able to read"): self.upload()
+        self.assertEqual(self.ftp.renames, 0)
+
+    def test_incomplete_remote_payload_prevents_rename(self):
+        def truncate():
+            for data in self.ftp.files.values(): del data[-1:]
+        self.ftp.after_store = truncate
+        with self.assertRaisesRegex(ValueError, "Remote partial size differs"): self.upload()
+        self.assertEqual(self.ftp.renames, 0)
+
+    def test_duplicate_matching_directory_entries_reject(self):
+        original = self.ftp.retrlines
+        def duplicated(command, callback):
+            original(command, callback); original(command, callback)
+        self.ftp.retrlines = duplicated
+        with self.assertRaisesRegex(ValueError, "One regular remote split"): self.upload()
+        self.assertEqual(self.ftp.renames, 0)
+
+    def test_excessive_directory_metadata_rejects(self):
+        def excessive(command, callback):
+            for _ in range(1025): callback("unrelated")
+        self.ftp.retrlines = excessive
+        with self.assertRaisesRegex(ValueError, "metadata exceeded"): self.upload()
         self.assertEqual(self.ftp.renames, 0)
 
     def test_ambiguous_rename_is_not_repeated_or_deleted(self):
