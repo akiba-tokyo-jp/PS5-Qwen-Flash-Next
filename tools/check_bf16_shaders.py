@@ -16,6 +16,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--workspace", type=Path, required=True)
     p.add_argument("--cache", type=Path, required=True)
+    p.add_argument("--out", type=Path, help="Fresh evidence directory; preserve earlier shader checks")
     a = p.parse_args()
     linked = json.loads((a.cache / "build/application-native/receipt.private.json").read_text())
     image = Path(linked["artifact"]["path"]).read_bytes()
@@ -25,8 +26,8 @@ def main():
     directory = a.cache / "build/llama-ps5/ggml/src/ggml-vulkan/vulkan-shaders.spv"
     binaries = a.workspace / "toolchain/msys-clang64/clang64/bin"
     env = dict(os.environ, PATH=str(binaries) + os.pathsep + os.environ.get("PATH", ""))
-    out = a.cache / "build/bf16-shader-check"
-    out.mkdir(parents=True, exist_ok=True)
+    out = a.out or a.cache / "build/bf16-shader-check"
+    out.mkdir(parents=True, exist_ok=a.out is None)
     rows = []
     for suffix in ("", "_subgroup", "_subgroup_no_shmem"):
         name = "mul_mat_vec_bf16_f32_f32" + suffix

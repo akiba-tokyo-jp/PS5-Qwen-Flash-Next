@@ -221,11 +221,13 @@ def run(args):
             len({out, previous, attempt}) != 3 or args.checkpoint.resolve().parent != cache):
         raise ValueError("Distinct original/new cache directories are required")
     args.attempt.mkdir(parents=True, exist_ok=False); out.mkdir(exist_ok=False)
-    started = time.monotonic(); frozen = tool_hashes((*ORIGINAL_TOOLS, *RESUME_TOOLS))
+    started = time.monotonic(); frozen = tool_hashes((*ORIGINAL_TOOLS, *RESUME_TOOLS)); writer_completed = False
     def status(phase, **fields):
-        json_write(out / "conversion-status.private.json", dict(schema="ps5-qwen-conversion-status-v1", phase=phase,
+        value = dict(schema="ps5-qwen-conversion-status-v1", phase=phase,
             pid=os.getpid(), updated_at=datetime.now(timezone.utc).isoformat(), elapsed_seconds=time.monotonic()-started,
-            console_access=False, learned_inference_performed=False, **fields))
+            console_access=False, learned_inference_performed=False, **fields)
+        json_write(args.attempt / "status.private.json", value)
+        if writer_completed or phase == "failed": json_write(out / "conversion-status.private.json", value)
     try:
         with writer_lease(cache / "model-preparation.lock.private"), writer_lease(cache / "model-download.lock.private"), ExitStack() as leases:
             validate_checkpoint(args, leases)
@@ -240,10 +242,13 @@ def run(args):
                 audit_timeout_seconds=86400, hashing_timeout_seconds=43200, automatic_retries=0,
                 direct_worker_interpreter=record(command[0]), original_source_read_leases_held=True,
                 console_access=False, learned_inference_performed=False))
+            status("resuming_BF16", timeout_seconds=14400, progress=str(args.attempt / "resume-writer-progress.private.json"))
             with (args.attempt / "conversion.private.log").open("x", encoding="utf-8") as log:
                 result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, timeout=14400,
                     env=dict(os.environ, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1"))
             if result.returncode: raise RuntimeError("The one-attempt resumed writer failed")
+            writer_completed = True
+            status("planning_complete_payload_audit")
             adapter = read(args.attempt / "resumed-copy-receipt.private.json")
             validate_adapter(adapter, {name: frozen[name] for name in ORIGINAL_TOOLS},
                 {name: frozen[name] for name in RESUME_TOOLS})
