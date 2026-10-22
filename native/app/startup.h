@@ -11,6 +11,8 @@ struct Startup {
     bool display_validation = false;
     bool runtime_validation = false;
     bool model_validation = false;
+    bool operator_validation = false;
+    std::string weight_fixture;
     bool vulkan_global_discovery = false;
     std::optional<ClockCalibration> clock_calibration;
     std::string admission_report = "/app0/qwen-runtime/gpu-admission.json";

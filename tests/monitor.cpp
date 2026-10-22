@@ -73,6 +73,14 @@ int main(int argc, char ** argv) {
         const auto model_startup = read_startup(2, args);
         check(model_startup.model_validation && !model_startup.monitor_validation &&
               !model_startup.runtime_validation && !model_startup.native_display, "Model CPU validation was not isolated");
+        { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"mode\":\"operator-validation\",\"native_display\":false,\"weight_fixture\":\"/app0/qwen-runtime/original-weight-fixture.bf16\"}"; }
+        const auto operation_startup = read_startup(2, args);
+        check(operation_startup.operator_validation && !operation_startup.model_validation &&
+              !operation_startup.monitor_validation && !operation_startup.native_display,
+              "Original-weight diagnostic mode was not isolated");
+        { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"mode\":\"operator-validation\",\"weight_fixture\":\"/data/outside-fixture.bf16\"}"; }
+        bool invalid_fixture=false;try{read_startup(2,args);}catch(const std::exception &){invalid_fixture=true;}
+        check(invalid_fixture,"An unbound original-weight fixture path was admitted");
         { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"port\":-1}"; }
         bool rejected = false; try { read_startup(2, args); } catch (const std::exception &) { rejected = true; }
         check(rejected, "Invalid native port was accepted");

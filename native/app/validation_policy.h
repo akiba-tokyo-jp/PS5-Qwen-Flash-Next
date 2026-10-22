@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <string>
 #include <nlohmann/json.hpp>
+#include "operator_admission.h"
 
 namespace qwen_app {
 // A private, frozen fixture policy is also bound to the exact SELF and fresh
@@ -11,6 +12,25 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
                                              const std::string & mode,
                                              bool native_display) {
     if (mode == "display-validation" || mode == "runtime-validation") return;
+    if (mode == "operator-validation") {
+        const auto & ops = policy.at("native_operator_validation");
+        if (native_display || !ops.is_object() ||
+            ops.at("schema") != "ps5-qwen-native-operator-validation-v1" ||
+            ops.at("preceding_combined_SELF_sha256") != "54c2803c6fce4a654f5c351878eb717dfa0f58c874868b14c0d868fa7630fea9" ||
+            ops.at("driver_revision") != "872cc1264ad8ba5d6b888b092968fa5858a38c58" ||
+            ops.at("profile") != "cumulative-idle" ||
+            ops.at("native_archive_sha256") != "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925" ||
+            ops.at("original_revision") != "de4b8e4d43b917e7706784d8bb445c9af86a3540" ||
+            ops.at("source_shard_sha256") != "1da92de7cf72dcca86faf05007925389ceb24427609e8d3b478d53d97fd97a63" ||
+            ops.at("fixture_sha256") != original_weight_fixture_sha256 ||
+            ops.at("original_restoration_and_numerical_readmission_passed") != true ||
+            ops.at("fresh_idle_session_bound_by_launcher") != true ||
+            ops.at("model_loading_enabled") != false || ops.at("persistent_caches_enabled") != false ||
+            !ops.at("maximum_graph_compute_calls").is_number_integer() || ops.at("maximum_graph_compute_calls") != 1 ||
+            !ops.at("fixture_bytes").is_number_integer() || ops.at("fixture_bytes") != 81920)
+            throw std::runtime_error("The exact no-display original-weight operation policy is required");
+        return;
+    }
     if (mode == "model-validation") {
         const auto & model = policy.at("native_model_validation");
         if (native_display || !model.is_object() ||

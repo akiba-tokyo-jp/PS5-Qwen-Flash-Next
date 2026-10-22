@@ -110,6 +110,38 @@ int main() {
         changed["native_model_validation"][key] = model["native_model_validation"][key].get<double>();
         reject(changed, "model-validation");
     }
+    const Json operators = {{"native_operator_validation", {
+        {"schema", "ps5-qwen-native-operator-validation-v1"},
+        {"preceding_combined_SELF_sha256", "54c2803c6fce4a654f5c351878eb717dfa0f58c874868b14c0d868fa7630fea9"},
+        {"driver_revision", "872cc1264ad8ba5d6b888b092968fa5858a38c58"}, {"profile", "cumulative-idle"},
+        {"native_archive_sha256", "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925"},
+        {"original_revision", "de4b8e4d43b917e7706784d8bb445c9af86a3540"},
+        {"source_shard_sha256", "1da92de7cf72dcca86faf05007925389ceb24427609e8d3b478d53d97fd97a63"},
+        {"fixture_sha256", qwen_app::original_weight_fixture_sha256},
+        {"original_restoration_and_numerical_readmission_passed", true}, {"fresh_idle_session_bound_by_launcher", true},
+        {"model_loading_enabled", false}, {"persistent_caches_enabled", false},
+        {"maximum_graph_compute_calls", 1}, {"fixture_bytes", 81920}}}};
+    qwen_app::require_native_validation_policy(operators, "operator-validation", false);
+    reject(operators, "operator-validation", true); reject(operators, "inference");
+    for (auto field = operators.at("native_operator_validation").begin(); field != operators.at("native_operator_validation").end(); ++field) {
+        auto changed = operators; changed["native_operator_validation"].erase(field.key()); reject(changed, "operator-validation");
+        changed = operators; changed["native_operator_validation"][field.key()] = nullptr; reject(changed, "operator-validation");
+    }
+    for (const auto * key : {"schema", "preceding_combined_SELF_sha256", "driver_revision", "profile", "native_archive_sha256",
+                            "original_revision", "source_shard_sha256", "fixture_sha256"}) {
+        auto changed = operators; changed["native_operator_validation"][key] = "incorrect"; reject(changed, "operator-validation");
+    }
+    for (const auto * key : {"original_restoration_and_numerical_readmission_passed", "fresh_idle_session_bound_by_launcher",
+                            "model_loading_enabled", "persistent_caches_enabled"}) {
+        auto changed = operators; const bool prior = changed["native_operator_validation"][key].get<bool>();
+        changed["native_operator_validation"][key] = !prior; reject(changed, "operator-validation");
+        changed["native_operator_validation"][key] = prior ? 1 : 0; reject(changed, "operator-validation");
+    }
+    for (const auto * key : {"maximum_graph_compute_calls", "fixture_bytes"}) {
+        auto changed = operators; changed["native_operator_validation"][key] = 0; reject(changed, "operator-validation");
+        changed["native_operator_validation"][key] = operators["native_operator_validation"][key].get<double>();
+        reject(changed, "operator-validation");
+    }
     reject(valid, "inference");
     reject(valid, "unrecognized");
     auto arbitrary = valid;

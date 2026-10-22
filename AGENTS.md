@@ -216,3 +216,13 @@ fetch_engine.py or prepare_model.py until its verification/audit/hashing ends;
 their digests are frozen in the resulting receipt. See
 docs/bounded-conversion-20261022.md. Acquisition may retain unverified files,
 but every original shard still requires SHA256 before converter execution.
+
+After the successful combined admission and completed original restoration,
+a distinct `operator-validation` artifact may run the fixed original-weight
+2560x16 BF16 matvec plus F32 RMS/SiLU diagnostic in one graph without display.
+Require the pinned source-shard/slice hashes and unchanged numeric limits,
+all host/import/SELF/callback/SPIR-V gates, fresh session/headroom and exact
+ordinary-launch preservation/restoration. This small diagnostic is separate
+from the complete v2 model receipt, model loading, full-model quality and tokens/s.
+See docs/original-weight-operations.md. Never repeat an ambiguous launch or use
+this mode to bypass the still-rejected full inference stage.
