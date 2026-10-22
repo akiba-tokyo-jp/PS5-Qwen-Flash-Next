@@ -42,6 +42,13 @@ implementation without editing the upstream tree during active conversion.
 `tools/check_moe_shaders.py` verifies actual linked indexed-matrix, expert-count
 and activation-copy modules with `spirv-val --target-env vulkan1.3`, and rejects
 native BF16, cooperative-matrix and integer-dot capability requirements.
+The initial host inventory also requested an unused BF16/F16-accumulation
+module; the byte-embedding check refused it before any console access. The
+corrected inventory checks the four scalar BF16 data references in the pinned
+implementation, which has no BF16/F16-accumulation data reference. All eight
+required indexed-matrix, expert-count and copy modules still require exact
+embedding and SPIR-V/capability checks. The original refusal is preserved;
+no numerical, memory or execution gate changes.
 
 Use the selected driver revision
 `872cc1264ad8ba5d6b888b092968fa5858a38c58`, profile `cumulative-idle`, native
