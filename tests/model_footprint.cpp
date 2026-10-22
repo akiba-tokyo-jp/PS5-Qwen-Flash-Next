@@ -29,12 +29,19 @@ int main(int argc,char ** argv) {
         MemoryBudget budget;
         check(budget.device_requirement(model)==plan.at("planned_device_requirement_bytes").get<std::uint64_t>());
         const auto needed=budget.device_requirement(model);
-        MemoryObservation synthetic{needed,needed,budget.cpu_working+budget.os_reserve,model.largest_device_tensor};
+        MemoryObservation synthetic{needed,needed,budget.cpu_working+budget.os_reserve,model.largest_device_tensor,256};
         budget.admit(model,synthetic);
         auto insufficient=synthetic;--insufficient.driver_free;reject([&]{budget.admit(model,insufficient);});
         insufficient=synthetic;--insufficient.direct_largest;reject([&]{budget.admit(model,insufficient);});
         insufficient=synthetic;--insufficient.os_free;reject([&]{budget.admit(model,insufficient);});
         insufficient=synthetic;--insufficient.device_max_buffer;reject([&]{budget.admit(model,insufficient);});
+        for(auto alignment:{0ull,3ull,131072ull}) {
+            insufficient=synthetic;insufficient.device_buffer_alignment=alignment;
+            reject([&]{budget.admit(model,insufficient);});
+        }
+        auto unaligned=model;++unaligned.largest_device_tensor;
+        insufficient=synthetic;++insufficient.device_max_buffer;
+        reject([&]{budget.admit(unaligned,insufficient);});
         reject([&]{budget.admit(model,{});});
         std::cout<<model.tensors<<" actual planned tensors match native placement and budget; synthetic observations only\n";
     } catch(const std::exception & error) {std::cerr<<error.what()<<'\n';return 1;}

@@ -33,7 +33,13 @@ struct ModelFootprint {
         }
     }
 };
-struct MemoryObservation { std::uint64_t driver_free=0, direct_largest=0, os_free=0, device_max_buffer=0; };
+struct MemoryObservation {
+    std::uint64_t driver_free=0, direct_largest=0, os_free=0;
+    // Conservative client limit: the backend's requested batching target is
+    // reduced by its queried hard allocation/buffer limit. Require all aligned
+    // tensors to fit so the upstream planner never emits an oversized buffer.
+    std::uint64_t device_max_buffer=0, device_buffer_alignment=0;
+};
 struct MemoryBudget {
     std::uint64_t expert_cache=512ull<<20, context=1024ull<<20, workspace=512ull<<20;
     std::uint64_t staging=128ull<<20, cpu_working=128ull<<20, os_reserve=256ull<<20, direct_reserve=512ull<<20;
@@ -46,9 +52,13 @@ struct MemoryBudget {
         if(!model.device_weights||!model.mapped_experts||!model.lazy_ple||!model.mapped_embeddings||
            !model.mapped_files||model.mapped_files>(512ull<<30))
             throw std::runtime_error("Complete original model footprint is required before loading");
-        if(!observed.driver_free||!observed.direct_largest||!observed.os_free||!observed.device_max_buffer)
+        if(!observed.driver_free||!observed.direct_largest||!observed.os_free||!observed.device_max_buffer||
+           !observed.device_buffer_alignment||observed.device_buffer_alignment>65536||
+           (observed.device_buffer_alignment&(observed.device_buffer_alignment-1)))
             throw std::runtime_error("Fresh driver, Direct and OS memory observations are required");
-        if(model.largest_device_tensor>observed.device_max_buffer)
+        const auto aligned_largest=checked_memory_sum(model.largest_device_tensor,
+            observed.device_buffer_alignment-1)&~(observed.device_buffer_alignment-1);
+        if(aligned_largest>observed.device_max_buffer)
             throw std::runtime_error("A resident model tensor exceeds the device buffer limit");
         const auto needed=device_requirement(model);
         if(needed>observed.driver_free||needed>observed.direct_largest||

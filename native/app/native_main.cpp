@@ -412,6 +412,13 @@ int main(int argc, char ** argv) {
         qwen_app::admit_cpu_runtime(qwen_native_stage);
         qwen_app::inspect_vulkan_globals();
         if(!qwen_native_gpu_frontend_linked())throw std::runtime_error("Native driver frontend is not linked");
+        // Upstream get_max_size is its batching target, not a hard tensor limit.
+        // The 1,271,398,400-byte original output exceeds its 1 GiB default.
+        // The requested 2 GiB target is reduced by upstream to the queried hard
+        // allocation/buffer limit. Admission below requires every tensor to fit
+        // that reduced target; no physical feature or hard limit is overridden.
+        if(setenv("GGML_VK_SUBALLOCATION_BLOCK_SIZE","2147483648",1))
+            throw std::runtime_error("The conservative native buffer batching target could not be set");
         qwen_native_gpu_initialize((startup.admission_report+".driver.log").c_str());
         qwen_native_driver_begin();
         llama_backend_init();
@@ -424,13 +431,17 @@ int main(int argc, char ** argv) {
         if(pool<=0||sceKernelAvailableDirectMemorySize(0,pool,65536,&physical,&direct)<0)
             throw std::runtime_error("A fresh Direct-memory observation is required before model loading");
         qwen_app::MemoryBudget memory_budget;
-        memory_budget.admit(footprint,{driver_free,direct,observed_os_free(),
-            ggml_backend_buft_get_max_size(ggml_backend_dev_buffer_type(device))});
+        const auto buffer_type=ggml_backend_dev_buffer_type(device);
+        const qwen_app::MemoryObservation memory_observation{driver_free,direct,observed_os_free(),
+            ggml_backend_buft_get_max_size(buffer_type),ggml_backend_buft_get_alignment(buffer_type)};
+        memory_budget.admit(footprint,memory_observation);
         write_fresh_report(startup.admission_report+".memory",{{"schema","ps5-qwen-memory-admission-v1"},
             {"pid",getpid()},{"model_loaded",false},{"device_weights_bytes",footprint.device_weights},
             {"mapped_experts_bytes",footprint.mapped_experts},{"required_lazy_PLE_bytes",footprint.lazy_ple},
             {"mapped_embedding_bytes",footprint.mapped_embeddings},{"mapped_file_bytes",footprint.mapped_files},
             {"planned_resident_headroom_bytes",memory_budget.device_requirement(footprint)},
+            {"device_buffer_batch_limit_bytes",memory_observation.device_max_buffer},
+            {"device_buffer_alignment_bytes",memory_observation.device_buffer_alignment},
             {"resident_set_qualified",false}});
         qwen_native_stage("model_memory_preflight_passed_before_model_load");
         screen.state="loading original BF16 model";if(display)display->publish(screen);

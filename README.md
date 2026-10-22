@@ -121,6 +121,8 @@ app-local UTC calibration. Long-term clock drift, original-model mapping/residen
 full-model quality and tokens/s remain unqualified.
 The next [CPU model preflight](docs/model-preflight.md) independently verifies
 complete model hashes/metadata and read-only virtual mappings before Vulkan.
+The [resident buffer admission](docs/model-buffer-admission.md) now distinguishes
+the upstream batching target from hard limits and checks aligned tensor sizes.
 Host conversion now [bounds original BF16 copies](docs/bounded-conversion-20261022.md)
 while retaining the pinned dense transformations and complete output audit.
 
