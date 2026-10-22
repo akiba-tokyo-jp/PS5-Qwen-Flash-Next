@@ -261,3 +261,14 @@ it never retries, launches a title, initializes Vulkan or loads the model.
 Successful transfer still requires independent native SHA/mapping admission.
 Documentation and unrelated runtime development may continue without mutating
 those frozen inputs. Keep committed execution/deployment/CI controls disabled.
+
+A separate bounded synthetic CPU hash timing probe may assess the cost of the
+later full-file SHA stage during that no-console preparation wait. Require the
+exact already-qualified native SHA object, unchanged credential-preserving CRT,
+actual runtime-export audit, host timer/digest checks, fresh unchanged CPU session
+and existing reservation. Use one new nonce and the model data writer lease;
+require a fresh idle CPU guard afterward. Limit it to the 1 MiB synthetic RAM
+buffer, 512 verified passes, a 10-second target and 15-second observation boundary.
+No model/file payload, title, GPU, ownership change or execution retry is included.
+Its compute-only extrapolation never qualifies disk I/O or full-model integrity.
+See docs/cpu-hash-probe.md. Keep the active continuation's recorded sources frozen.
