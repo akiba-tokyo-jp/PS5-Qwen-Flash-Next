@@ -158,3 +158,19 @@ status file. The 11,976,330,752-byte planned memory requirement is not measured
 available PS5 capacity. See docs/model-preparation-20261022.md.
 Keep the native v2 receipt and complete original footprint gates before backend
 initialization. A metadata fixture or legacy receipt must never bypass them.
+
+## Latest physical-console result
+
+The distinct corrected-link artifact at source
+`f645d9303f105e363d00dc42fd72c4d3a25cb476` passed the one-graph no-display BF16
+fixture: all 16 outputs exact, maximum absolute error 0, positive device idle
+and matching completion-epoch retirement. Its passive monitor returned two
+HTTP 200 responses. See docs/native-bf16-success-20261022.md and JSON.
+The exact original SELF was restored, numerically readmitted, normally closed
+and fully read back after shutdown. Fresh CPU guards passed with no native
+owner and the same boot/services. The earlier hold and failures above are
+historical checkpoints, superseded only by these explicit completed gates.
+The reservation remains held. Keep committed console/deployment flags disabled.
+Full-model inference, resident-memory admission and tokens/s are unqualified.
+Native VideoOut combined with Vulkan and accurate UTC calibration remain
+separate stages; an advancing device wall clock does not establish UTC accuracy.

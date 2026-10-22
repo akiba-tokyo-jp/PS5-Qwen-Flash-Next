@@ -33,8 +33,11 @@ then checks the six required implementation symbols and exact nonzero table
 targets. The immutable failed SELF's source PIE fails this audit specifically at
 `GetPhysicalDeviceProperties2`, reproducing the omission without console code
 execution. A successful audit is now required by the native builder and packager.
-The correction must still pass host linking, real-module imports, SELF and
-shader checks and a distinct bounded physical-console admission.
+At this discovery checkpoint the correction still required host linking,
+real-module imports, SELF/shader checks and a distinct physical-console admission.
+The subsequent artifact passed those checks and the BF16 fixture with 16 exact
+outputs; see [the later result](native-bf16-success-20261022.md). The failed
+candidate's outcome remains unchanged.
 
 The failed candidate, phase records, kernel-log capture, symbolization and
 owner-private journals are preserved outside Git. Its completed CPU log-copy

@@ -14,11 +14,11 @@ The new profile is rebuilt from this source; older artifacts remain historical
 controls. See [driver-integration.md](docs/driver-integration.md) for provenance,
 manual build commands and the remaining native runtime/model gates.
 
-After the corrected BF16 initialization attempt exited, console work was held
-pending state admission. The subsequent [physical-console reassessment](docs/console-reassessment-20261022.md)
-passed fresh CPU guards, restored the exact original SELF, passed its startup
-numerical checks and normally closed it. No native owner remains. The
-reservation stays with this task for a distinct bounded BF16 fixture.
+The corrected application [passed the BF16 Vulkan fixture on the physical PS5](docs/native-bf16-success-20261022.md):
+one 32x16 graph, 16 finite outputs, maximum absolute error 0. The passive monitor
+also returned two HTTP 200 responses. The exact original SELF was restored,
+numerically readmitted, normally closed and fully read back again. Fresh CPU
+metadata confirmed no native owner. The task retains the console reservation.
 Committed console/deployment flags remain disabled in
 [development.json](config/development.json). A private frozen fixture policy
 and guarded ordinary launch are required; full-model inference remains rejected.
@@ -67,7 +67,7 @@ calibration remain unqualified; tokens/s stays unavailable without inference.
 The exact original executable was restored, numerically admitted and normally
 closed. Fresh observations confirmed no native owner and an unchanged boot.
 Original shard acquisition and full checksumming remain incomplete. These
-restoration results belong to the earlier display test, not the latest attempt.
+display results are separate from the later successful no-display BF16 fixture.
 
 The separate no-display [BF16 fixture attempt](docs/native-bf16-20261022.json)
 persisted its headroom and clock checks, then exited before owner admission or a
@@ -99,8 +99,13 @@ initialization but exited during enumeration. The
 [physical-console discovery record](docs/native-dispatch-discovery-20261022.md)
 identifies a missing weakly referenced static Vulkan callback. Native linking
 now retains the selected driver archive as the admitted original does, and
-packaging requires an audit of the actual callback-table targets. This correction
-remains separate from a successful BF16 compute result.
+packaging requires an audit of the actual callback-table targets. The distinct
+[corrected artifact](docs/native-bf16-success-20261022.json) subsequently passed
+the physical BF16 fixture and positive completion/retirement checks. Its
+117.013471 ms fixture interval is not model throughput. Native BF16 arithmetic
+units were not advertised; the shader widens original BF16 storage to F32.
+Combined native display/Vulkan execution, accurate UTC calibration and full-model
+inference remain separate qualification stages.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the
