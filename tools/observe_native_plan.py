@@ -21,7 +21,7 @@ from urllib.parse import quote
 from first_generation_result import read_record, validate, require, integer, number
 
 MODEL_ROOT = "/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/"
-PROMPT = "Count from 1 to 20, separated by commas."
+PROMPT = "Count from 1 to 8, separated by commas. Reply with only the sequence."
 
 
 def exclusive(path, value):

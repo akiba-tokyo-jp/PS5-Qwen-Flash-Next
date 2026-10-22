@@ -749,6 +749,7 @@ int main(int argc, char ** argv) {
                         publish(event);
                     }, qwen_native_stage);
                     engine->set_work_guard({});
+                    qwen_app::require_demo_sequence(generated.output_bytes);
                     if (display->failed() || generated.token_ids.size() < 2 ||
                         !generated.metrics.decode_tokens_per_second || !generated.metrics.ttft_ms)
                         throw std::runtime_error("The external request did not produce a measurable completed token sequence");

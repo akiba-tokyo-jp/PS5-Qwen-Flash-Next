@@ -78,7 +78,7 @@ def main():
                 pass
             if time.monotonic() - started > 15: raise RuntimeError("Synthetic listener readiness deadline")
             time.sleep(0.05)
-        valid = dict(id="a"*32 + "-1", messages=[dict(role="user", content="Count from 1 to 20, separated by commas.")],
+        valid = dict(id="a"*32 + "-1", messages=[dict(role="user", content="Count from 1 to 8, separated by commas. Reply with only the sequence.")],
             context_tokens=256, max_output_tokens=32, enable_thinking=False)
         mutations = [dict(max_output_tokens=33), dict(context_tokens=2048), dict(enable_thinking=True),
             dict(id="a"*32 + "-2"), dict(extra=True), dict(messages=[dict(role="user", content="Different prompt")]),

@@ -70,6 +70,12 @@ context and creates a new bounded context while retaining the model. This gives
 the first identical API benchmark an empty expert cache and the next benchmark
 the retained cache. File pages and shader pipelines may already be warm; do not
 call this a cold process/storage benchmark or assume the second request is faster.
+Both fixed API requests ask for the comma-separated sequence 1 through 8 and
+require that complete sequence, ignoring ASCII whitespace. The earlier draft
+1-through-20 answer needs 69 tokens in the original tokenizer and cannot fit
+the 32-token output bound. This shorter response leaves room for completion;
+the output limit is unchanged. This checks these specific answers, not general
+model quality.
 
 The external native listener accepts exactly two fixed text requests on port
 8086. HTTP threads transport data; all learned model work stays on the admitted

@@ -74,7 +74,7 @@ class FirstGenerationRecords(unittest.TestCase):
             **{key: copy.deepcopy(self.records[""][key]) for key in ("stop_reason", "token_ids", "output_bytes", "metrics")})
         self.records[".demo.ready"] = dict(schema="ps5-qwen-bounded-demo-ready-v1", **owner,
             run_id="a"*32, maximum_requests=2, context_tokens=256, maximum_output_tokens=32,
-            prompt="Count from 1 to 20, separated by commas.", listener_bind="0.0.0.0", model_loaded=True, native_display_started=True)
+            prompt="Count from 1 to 8, separated by commas. Reply with only the sequence.", listener_bind="0.0.0.0", model_loaded=True, native_display_started=True)
         self.records[".demo.cache"] = dict(schema="ps5-qwen-demo-cold-cache-admission-v1", **owner,
             run_id="a"*32, context_recreated_after_positive_completion=True, expert_cache_initially_empty=True,
             model_reloaded=False, model_loaded=True, file_pages_and_pipelines_cold=False)
@@ -88,12 +88,12 @@ class FirstGenerationRecords(unittest.TestCase):
             self.records[prefix + ".intent"] = dict(schema="ps5-qwen-demo-request-intent-v1", **owner,
                 run_id="a"*32, id=request_id, ordinal=ordinal, context_tokens=256, maximum_prompt_tokens=64,
                 maximum_output_tokens=32, maximum_generation_seconds=3600, enable_thinking=False,
-                prompt="Count from 1 to 20, separated by commas.", rendered_prompt="Synthetic original-template request")
+                prompt="Count from 1 to 8, separated by commas. Reply with only the sequence.", rendered_prompt="Synthetic original-template request")
             terminal = dict(schema="ps5-qwen-demo-request-result-v1", **owner, run_id="a"*32,
                 id=request_id, ordinal=ordinal, request_reset_completed=True,
                 cache_condition="empty expert cache" if ordinal == 1 else "retained expert cache",
                 GPU_completion_and_retirement_passed=True, model_loaded=True,
-                token_ids=[3, 4], output_bytes=[49, 50], stop_reason="end_of_generation",
+                token_ids=[3, 4], output_bytes=list(b"1, 2, 3, 4, 5, 6, 7, 8"), stop_reason="end_of_generation",
                 metrics=dict(prompt_tokens=10, generated_tokens=2, prefill_ms=90, total_ms=140,
                     ttft_ms=100, decode_tokens_per_second=50))
             self.records[prefix + ".result"] = terminal
@@ -103,9 +103,9 @@ class FirstGenerationRecords(unittest.TestCase):
                 evidence="CPU raster after the matching completed VideoOut flip", epoch_ms=1792675000000,
                 TTFT_ms=100, decode_tokens_per_second=50)
             demo["requests"].append(terminal)
-            for index, value in ((1, 49), (2, 50)):
+            for index, piece in ((1, [49]), (2, list(b", 2, 3, 4, 5, 6, 7, 8"))):
                 self.records[prefix + ".token-" + str(index)] = dict(id=request_id, type="token", state="generating",
-                    ordinal=index, token_id=index + 2, error=0, piece_bytes=[value], elapsed_ms=80 + index*20)
+                    ordinal=index, token_id=index + 2, error=0, piece_bytes=piece, elapsed_ms=80 + index*20)
         self.records[".demo.result"] = demo
         self.records[""]["demonstration"] = demo
 
@@ -196,6 +196,14 @@ class FirstGenerationRecords(unittest.TestCase):
         self.save()
         self.result.write_text('{"schema":"a","schema":"b"}')
         with self.assertRaises(ValueError):
+            validate(self.result, self.binding)
+
+    def test_self_consistent_but_incomplete_external_answer_is_rejected(self):
+        terminal = self.records[".demo1.result"]
+        terminal["output_bytes"] = list(b"1, 2, 3")
+        self.records[".demo1.token-2"]["piece_bytes"] = list(b", 2, 3")
+        self.save()
+        with self.assertRaisesRegex(ValueError, "counting sequence"):
             validate(self.result, self.binding)
 
 

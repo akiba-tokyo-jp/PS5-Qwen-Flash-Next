@@ -169,7 +169,7 @@ def validate(path, expected):
         require(first.get(key) == result[key], "First-request terminal record differs")
     ready = record(".demo.ready", "ps5-qwen-bounded-demo-ready-v1", ("run_id",))
     exact(ready, dict(maximum_requests=2, context_tokens=256, maximum_output_tokens=32,
-        prompt="Count from 1 to 20, separated by commas.", listener_bind="0.0.0.0", model_loaded=True, native_display_started=True))
+        prompt="Count from 1 to 8, separated by commas. Reply with only the sequence.", listener_bind="0.0.0.0", model_loaded=True, native_display_started=True))
     cold = record(".demo.cache", "ps5-qwen-demo-cold-cache-admission-v1", ("run_id",))
     exact(cold, dict(context_recreated_after_positive_completion=True, expert_cache_initially_empty=True,
         model_reloaded=False, model_loaded=True, file_pages_and_pipelines_cold=False))
@@ -188,7 +188,7 @@ def validate(path, expected):
         intent = record(prefix + ".intent", "ps5-qwen-demo-request-intent-v1", ("run_id",))
         exact(intent, dict(id=request_id, ordinal=ordinal, context_tokens=256, maximum_prompt_tokens=64,
             maximum_output_tokens=32, maximum_generation_seconds=3600, enable_thinking=False,
-            prompt="Count from 1 to 20, separated by commas."))
+            prompt="Count from 1 to 8, separated by commas. Reply with only the sequence."))
         rendered = intent.get("rendered_prompt")
         require(type(rendered) is str and 0 < len(rendered.encode("utf-8")) <= 16384 and "\0" not in rendered,
             "The original-template external request is absent")
@@ -223,6 +223,8 @@ def validate(path, expected):
                 "External token timestamps are inconsistent")
             reconstructed.extend(piece); stamps.append(elapsed)
         require(reconstructed == pieces, "External output differs from durable token pieces")
+        require(bytes(byte for byte in pieces if byte not in b" \t\r\n") == b"1,2,3,4,5,6,7,8",
+            "The external response is an incomplete or incorrect counting sequence")
         require(number(values.get("ttft_ms")) and abs(values["ttft_ms"] - stamps[0]) < 1e-6 and
             stamps[0] >= values["prefill_ms"] and stamps[-1] > stamps[0], "External TTFT or decode interval differs")
         speed = (len(token_ids) - 1) * 1000 / (stamps[-1] - stamps[0])

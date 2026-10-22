@@ -15,6 +15,14 @@ int main(int argc, char ** argv) {
     const auto now = qwen_app::MonitorClock::system_epoch_ms();
     qwen_app::monitor_clock().initialize(qwen_app::ClockCalibration{now, now, 0});
     try {
+        const std::string correct = "1, 2, 3, 4, 5, 6, 7, 8\n";
+        qwen_app::require_demo_sequence({correct.begin(), correct.end()});
+        for (const std::string invalid : {"1, 2, 3", "1,2,3,4,5,6,7,9", "1,2,3,4,5,6,7,8,9"}) {
+            bool rejected = false;
+            try { qwen_app::require_demo_sequence({invalid.begin(), invalid.end()}); }
+            catch (const std::runtime_error &) { rejected = true; }
+            if (!rejected) throw std::runtime_error("An incomplete or incorrect benchmark answer was accepted");
+        }
         const auto result = qwen_app::serve_bounded_demo(std::string(32, 'a'), argv[2], "127.0.0.1", std::stoi(argv[1]), {},
             [&](unsigned ordinal, const auto & alive, const auto & publish) {
                 if (std::this_thread::get_id() != owner || ++calls != ordinal || !alive())
