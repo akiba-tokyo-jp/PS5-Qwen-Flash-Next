@@ -364,3 +364,24 @@ it prepare/run data continuation 003: at most five reviewed CPU-only ELF
 requests and one bounded data transfer; no native title, model load or GPU.
 Keep all its recorded inputs unchanged until it ends. Physical first generation,
 passive monitor/API measurements and exact final restoration remain pending.
+
+The original audit/waiter processes were subsequently found absent, with their
+last progress at 16:50 UTC and no model receipt, data batch or console access.
+Their immutable records remain preserved. A distinct finite host-only
+`finish_conversion.py` attempt reuses all 76 completed writer outputs and repeats
+the complete audit and final hashes. It does not repeat conversion or accept the
+interrupted partial audit as admission. The audit and its data-only waiter now
+run detached from the interactive process job. Keep `finish_conversion.py`, all
+nine preparation/resume sources above, and every source/context/reservation in
+data waiter 004 unchanged while they run. The unchanged data continuation 003
+may execute only after the new complete receipt/status; all physical first
+generation and restoration requirements remain part of the unfinished plan.
+
+The one finite full-plan continuation 019 may wait for positive data completion
+and the identified data waiter's exit, then invoke the existing case preparer
+and reviewed operator steps once, including final ordinary close, exact original
+restoration and numerical readmission. Keep every source in its private intent
+unchanged while it runs. A failure or uncertain step forbids subsequent actions;
+it implements no retry, forced close, GPU reset or automatic recovery. See
+`docs/host-audit-continuation-20261023.md`. Detached launch is process isolation,
+not evidence of successful inference or completed physical validation.
