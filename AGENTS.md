@@ -315,10 +315,13 @@ The original indexed-MoE case subsequently passed at SELF
 `0b187cac25c3e322bd4244474a935d191ce85b7bcbb3d2559ead26f05198d057`,
 with all diagnostic experts, fixed numerical limits and positive retirement.
 The exact original was restored, numerically readmitted, normally closed and
-fully read back with fresh idle guards. The active data-only continuation is
-`model-data-continuation-002`, bound to that completed context; the earlier
-001 continuation was positively stopped before the MoE case. Keep 002's recorded
-inputs/context frozen. No new console execution is part of current host work.
+fully read back with fresh idle guards. The data-only continuation 002 was bound to that completed context; the earlier
+001 continuation was positively stopped before the MoE case. Batch 002 then
+failed while waiting when original host conversion 001 reached its fixed
+six-hour deadline. All known original writer/controller processes ended, with
+351,317,227,759 partial output bytes preserved and no console access.
+The original SHA journal and all 131 source identities were rechecked before
+a distinct resumed host attempt. Preserve every old failure and partial file.
 
 The owner's completion criterion covers every implementation and physical check
 in all three deliverables, including passive display/API measurements, ordinary
@@ -335,3 +338,29 @@ Full link/package/import and complete model data remain mandatory before that
 distinct physical case. Keep the active preparation/002 inputs unchanged and
 retain every earlier failed admission. Host implementation does not establish
 that the full model fits, computes correctly or reaches a particular token rate.
+
+
+## Current bounded continuation (2026-10-23)
+
+The final native candidate SELF is
+`b380e755daf7ecfa3b10a46ed3aefc867bca80d5917d831d1815262f18f4bfc0`
+(58,586,023 bytes), with six roundtrip segments, 289 resolved real-module imports
+and no missing imports. The BF16/operator/MoE shader suites passed. It has not
+been launched. The driver and cache policy remain the exact pinned 872cc126
+cumulative-idle source/profile; the newer driver checkout commit changes only
+documentation. Use the existing pinned Qwen source checkout and exact manifests.
+
+Host conversion-resume-002 is active for converted-bf16-002, initially reusing
+72 complete splits. Do not edit convert_model.py, bounded_conversion.py,
+audit_conversion.py, qwen_flash_next.py, fetch_engine.py, prepare_model.py,
+resume_conversion.py, resumable_gguf.py or resume_provenance.py while its
+writer/audit/hash pass runs. Original source and converted output read-only OS
+leases plus unchanged identity checks remain mandatory. Structural retention
+never replaces the complete original payload audit and final file hashes.
+
+The single data waiter 003 freezes its recorded data sources and the unchanged
+completed MoE context/reservation. Only after resumed conversion completes may
+it prepare/run data continuation 003: at most five reviewed CPU-only ELF
+requests and one bounded data transfer; no native title, model load or GPU.
+Keep all its recorded inputs unchanged until it ends. Physical first generation,
+passive monitor/API measurements and exact final restoration remain pending.

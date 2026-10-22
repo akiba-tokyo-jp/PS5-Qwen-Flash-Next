@@ -140,9 +140,21 @@ requires positive observation/finish acknowledgement, and stops its listener
 before model retirement. Native frame capture records the exact CPU raster
 after a matching positive VideoOut flip; it is not a TV photograph.
 
-Remaining deliverable-1 work is the coherent final native link/package/import
-audit and full data readiness. The independent host observer is implemented;
-its physical use still requires the existing fresh owner/ordinary-launch gates.
-No first-generation SELF has been packaged or run. Model conversion/audit/hash
-and transfer must finish before title execution; physical model capacity,
-full-model quality and performance remain unqualified.
+The coherent final native link, SELF integrity/segment roundtrip, actual import
+resolution and linked BF16/operator/MoE shader checks passed on the host at SELF
+`b380e755daf7ecfa3b10a46ed3aefc867bca80d5917d831d1815262f18f4bfc0`.
+Its five isolated overrides include the internal Vulkan workspace reservation.
+See `native-first-generation-build-20261023.json`. It has not been launched.
+
+Original conversion 001 reached its unchanged six-hour deadline. Its actual
+writer, redirector, preparation and data waiter all ended; 351,317,227,759 partial
+output bytes remain intact. The distinct resumed attempt reuses 72 complete
+splits and writes the remaining four. It still requires the complete independent
+payload audit and new final hashes. Data waiter 003 may then execute the reviewed
+CPU-only directory/transfer sequence once. These host/data outcomes do not
+establish physical model capacity, generated text or performance.
+
+Remaining deliverable-1 work is complete data readiness. After positive transfer,
+use fresh owner/ordinary-launch gates for deliverables 2 and 3 in one native
+session. Ordinary close, exact original restoration/numerical readmission and
+final idle/readback evidence remain part of completion.
