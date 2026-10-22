@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 from types import SimpleNamespace
+import threading
 import unittest
 from unittest.mock import patch
 
@@ -45,6 +46,32 @@ class CheckpointIO(unittest.TestCase):
     def test_exact_range(self):
         with patch.object(acquire, "request", return_value=Response(b"12345678", 206, "bytes 8-15/100")):
             self.assertEqual(acquire.fetch_range("https://example.invalid/model", 8, 8), b"12345678")
+
+    def test_pinned_redirect_is_reused_with_the_new_range_and_expiry_refreshes_from_origin(self):
+        origin = acquire.BASE + "fixture.safetensors"
+        response = SimpleNamespace(geturl=lambda: "https://cdn.example.invalid/signed", close=lambda: None)
+        with patch.object(acquire, "_redirect", threading.local()), \
+             patch.object(acquire.urllib.request, "urlopen", return_value=response) as opened:
+            acquire.request(origin, 0, 7)
+            self.assertEqual(opened.call_args.args[0].full_url, origin)
+            acquire.request(origin, 8, 15)
+            self.assertEqual(opened.call_args.args[0].full_url, "https://cdn.example.invalid/signed")
+            self.assertEqual(opened.call_args.args[0].get_header("Range"), "bytes=8-15")
+            expired = acquire.urllib.error.HTTPError("https://cdn.example.invalid/signed", 403, "Expired", {}, None)
+            opened.side_effect = [expired, response]
+            acquire.request(origin, 16, 23)
+            self.assertEqual(opened.call_args.args[0].full_url, origin)
+            self.assertEqual(opened.call_args.args[0].get_header("Range"), "bytes=16-23")
+            opened.side_effect = None
+            acquire.request(acquire.BASE + "other.safetensors", 0, 7)
+            self.assertEqual(opened.call_args.args[0].full_url, acquire.BASE + "other.safetensors")
+
+    def test_ranges_remain_bounded_and_full_responses_are_rejected(self):
+        with patch.object(acquire, "request") as request:
+            for length in (0, acquire.MAX_RANGE + 1):
+                with self.assertRaises(ValueError):
+                    acquire.fetch_range(acquire.BASE + "fixture", 0, length)
+            request.assert_not_called()
 
     def header(self, tensors, data_bytes):
         raw = json.dumps(tensors).encode()

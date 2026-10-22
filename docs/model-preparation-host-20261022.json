@@ -16,6 +16,12 @@
     "PLE_parts": 128,
     "exact_expert_copy_projections": 147,
     "planned_expert_copy_bytes": 246625075200,
+    "embedding_copy_bytes": 2542796800,
+    "dense_source_tensors": 1094,
+    "dense_output_tensors": 1106,
+    "dense_output_bytes": 7667558912,
+    "total_converted_tensor_bytes": 359235922432,
+    "largest_dense_verification_input_bytes": 62914560,
     "text_lane_excluded_vision_tensors": 333,
     "tensor_layout_sha256": "8f558e3ad4114c6b733d2a871394187557c24d430f4b38352146c1082bddd260",
     "device_weights_bytes": 8755105280,
@@ -28,14 +34,18 @@
     "native_memory_policy_replay": "passed"
   },
   "manual_checks": {
-    "Python_tests_passed": 39,
+    "Python_tests_passed": 44,
     "actual_GGUF_writer_reader_fixture_cases_passed": 6,
     "complete_model_native_footprint_replay": "passed",
     "incomplete_precision_shape_split_and_integer_metadata": "rejected",
     "PLE_and_strided_expert_payload_mutation": "rejected",
     "deadline_and_corrupt_shard_receipt_publication": "rejected",
     "duplicate_host_writer": "rejected",
-    "bounded_Windows_status_sharing_retry": "passed"
+    "bounded_Windows_status_sharing_retry": "passed",
+    "actual_original_dense_inputs": 4,
+    "actual_dense_transform_outputs_verified": 5,
+    "actual_dense_changed_bit_and_oversized_input": "rejected",
+    "pinned_range_redirect_reuse_and_expiry_refresh": "passed"
   },
   "implemented_conversion_gates": {
     "original_full_SHA256_before_conversion": true,
@@ -43,6 +53,9 @@
     "exact_PLE_64bit_constants": true,
     "all_original_PLE_payload_bytes": true,
     "all_original_expert_payload_bytes": true,
+    "original_embedding_payload_bytes": true,
+    "all_dense_transformation_outputs": true,
+    "one_payload_check_for_every_converted_tensor": true,
     "final_GGUF_file_SHA256": true,
     "durable_receipt_only_after_all_gates": true
   },

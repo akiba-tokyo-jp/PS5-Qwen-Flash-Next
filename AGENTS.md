@@ -125,7 +125,8 @@ Use one bounded host preparation batch with OS writer leases. Retained files
 may skip redundant acquisition rereads, but every original shard must pass
 SHA256 before conversion. Require the complete pinned-converter tensor plan,
 exact BF16/F32 shapes, every expert and PLE part, exact 64-bit PLE constants,
-byte comparison of all expert/PLE copies and final GGUF hashes before publishing
+byte comparison of all expert/PLE/embedding copies, complete dense transformation
+replay and final GGUF hashes before publishing
 a model receipt. Keep failed/partial outputs; do not infer success from a stale
 status file. The 11,976,330,752-byte planned memory requirement is not measured
 available PS5 capacity. See docs/model-preparation-20261022.md.

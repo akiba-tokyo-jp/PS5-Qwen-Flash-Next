@@ -55,7 +55,7 @@ class ConversionAudit(unittest.TestCase):
     def run_audit(self, root, changed=lambda fields, actual: None):
         out, path, plan, gguf, manifest, fields, actual = self.fixture(root)
         changed(fields, actual)
-        with patch.object(audit, "expected_plan", return_value=(plan, gguf, manifest)), \
+        with patch.object(audit, "expected_plan", return_value=(plan, gguf, manifest, None, None, {})), \
              patch.object(audit, "inspect_gguf", return_value=(fields, actual)):
             return audit.audit_conversion(root, out, [path])
 
@@ -109,7 +109,7 @@ class ConversionAudit(unittest.TestCase):
                 actual[name] = {**plan["tensors"][name], "offset": 8, "path": path.name}
                 plan["raw_expert_copies"] = [{"tensor": name, "file": "expert.safetensors", "source_offset": 0,
                                                "count": 2, "size": 2, "source_stride": 4, "output_stride": 2}]
-                with patch.object(audit, "expected_plan", return_value=(plan, gguf, manifest)), \
+                with patch.object(audit, "expected_plan", return_value=(plan, gguf, manifest, None, None, {})), \
                      patch.object(audit, "inspect_gguf", return_value=(fields, actual)):
                     if corrupt:
                         with self.assertRaisesRegex(ValueError, "expert bytes"):
@@ -118,6 +118,38 @@ class ConversionAudit(unittest.TestCase):
                     else:
                         report = audit.audit_conversion(root, out, [path])
                         self.assertEqual(report["expert_payload_bytes_verified"], 4)
+
+    def test_dense_byte_comparison_rejects_changed_tail_truncation_and_deadline(self):
+        encoded = bytearray(b"x" * (8 << 20) + b"tail")
+        audit.compare_encoded(io.BytesIO(encoded), 0, encoded, len(encoded), time.monotonic() + 10)
+        for contents in (encoded[:-1], encoded[:-1] + b"X"):
+            with self.assertRaisesRegex(ValueError, "dense bytes"):
+                audit.compare_encoded(io.BytesIO(contents), 0, encoded, len(encoded), time.monotonic() + 10)
+        with self.assertRaises(TimeoutError):
+            audit.compare_encoded(io.BytesIO(encoded), 0, encoded, len(encoded), 0)
+        with self.assertRaisesRegex(ValueError, "size"):
+            audit.compare_encoded(io.BytesIO(encoded), 0, encoded, len(encoded) + 1, time.monotonic() + 10)
+
+    def test_unchecked_converted_tensor_cannot_publish_a_complete_payload_audit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            out, path, plan, gguf, manifest, fields, actual = self.fixture(root)
+            name = "unverified_dense.weight"
+            plan["tensors"][name] = {"shape": [1], "dtype": "F32", "bytes": 4, "placement": "device_weights"}
+            actual[name] = {**plan["tensors"][name], "path": path.name, "offset": 0}
+            with patch.object(audit, "expected_plan", return_value=(plan, gguf, manifest, None, None, {})), \
+                 patch.object(audit, "inspect_gguf", return_value=(fields, actual)), self.assertRaisesRegex(ValueError, "Every converted tensor"):
+                audit.audit_conversion(root, out, [path])
+            self.assertFalse((out / "conversion-audit.private.json").exists())
+
+    def test_dense_source_bound_is_checked_before_file_access_or_tensor_materialization(self):
+        model = SimpleNamespace(model_tensors={"filtered": None}, _mtp_fc={})
+        manifest = {"tensors": {"original": {"dtype": "BF16", "shape": [1 << 26],
+                                               "file": "must-not-open", "file_offset": 0}}}
+        with self.assertRaisesRegex(ValueError, "host verification bound"):
+            audit.verify_dense_payload(Path("missing"), Path("missing"), {"dense_source_tensors": ["original"]},
+                manifest, {}, model, object(), {"filtered": "original"}, None,
+                time.monotonic() + 10, lambda *args, **kwargs: None)
 
 
 if __name__ == "__main__":

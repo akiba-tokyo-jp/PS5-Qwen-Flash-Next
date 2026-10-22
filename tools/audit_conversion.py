@@ -80,7 +80,7 @@ def placement(name, layers):
     return "device_weights"
 
 
-def expected_plan(cache):
+def expected_plan(cache, return_transformer=False):
     gguf, torch, model_class, manifest, config, identity = inputs(cache)
     layers = config["text_config"]["num_hidden_layers"]
     if (layers, config["text_config"]["num_experts"], config["text_config"]["num_experts_per_tok"],
@@ -90,6 +90,7 @@ def expected_plan(cache):
     constants = {}
     original_names = {}
     raw_copies = []
+    embedding_copies = []
 
     class MetadataModel(model_class):
         model_arch = model_class.model_arch
@@ -152,7 +153,7 @@ def expected_plan(cache):
             if name.endswith(("mlp.experts.down_proj", "mlp.experts.down_proj.weight")):
                 if dtype != "BF16" or shape != original["shape"]:
                     raise ValueError("Original expert down projection must remain a BF16 copy")
-                raw_copies.append({"tensor": mapped, "file": original["file"],
+                raw_copies.append({"tensor": mapped, "original_tensor": original_names[name], "file": original["file"],
                                    "source_offset": original["file_offset"], "size": math.prod(shape) * 2,
                                    "count": 1, "source_stride": 0, "output_stride": 0})
             elif name.endswith(("mlp.experts.gate_up_proj", "mlp.experts.gate_up_proj.weight")):
@@ -163,10 +164,17 @@ def expected_plan(cache):
                 half = 0 if mapped.endswith(".ffn_gate_exps.weight") else 1
                 if not mapped.endswith((".ffn_gate_exps.weight", ".ffn_up_exps.weight")):
                     raise ValueError("Unexpected converted expert gate/up name")
-                raw_copies.append({"tensor": mapped, "file": original["file"],
+                raw_copies.append({"tensor": mapped, "original_tensor": original_names[name], "file": original["file"],
                                    "source_offset": original["file_offset"] + half * size,
                                    "size": size, "count": shape[0], "source_stride": size * 2,
                                    "output_stride": size})
+            elif mapped in ("token_embd.weight", "output.weight"):
+                if dtype != "BF16" or shape != original["shape"]:
+                    raise ValueError("Original token/output embeddings must remain BF16 copies")
+                embedding_copies.append({"tensor": mapped, "original_tensor": original_names[name],
+                                         "file": original["file"], "source_offset": original["file_offset"],
+                                         "size": math.prod(shape) * 2, "count": 1,
+                                         "source_stride": 0, "output_stride": 0})
     if model._mtp_fc or (model._experts and any(model._experts)):
         raise ValueError("Converter left incomplete model components")
     if set(constants) != set(HASH_KEYS.values()):
@@ -179,6 +187,14 @@ def expected_plan(cache):
         raise ValueError("Original PLE part indices are incomplete")
     if len(raw_copies) != model.block_count * 3:
         raise ValueError("Every original expert projection must have an exact byte-copy plan")
+    if len(embedding_copies) != 2:
+        raise ValueError("Both original embedding matrices must have exact byte-copy plans")
+    copied_inputs = {row["original_tensor"] for row in raw_copies + embedding_copies} | set(ple_parts)
+    dense_inputs = [original_names[name] for name in model.model_tensors
+                    if original_names[name] not in copied_inputs and manifest["tensors"][original_names[name]]["dtype"] == "BF16"]
+    largest_dense_input = max(math.prod(manifest["tensors"][name]["shape"]) * 2 for name in dense_inputs)
+    if largest_dense_input > (64 << 20):
+        raise ValueError("A dense verification input exceeds the bounded host transform size")
     footprint = Counter()
     largest = 0
     for name, row in expected.items():
@@ -198,6 +214,8 @@ def expected_plan(cache):
             "converter_sources": identity, "trunk_layers": layers, "mtp_layers": model.block_count - layers,
             "tensor_count": len(expected), "tensors": expected, "ple_parts": ple_parts,
             "raw_expert_copies": raw_copies,
+            "raw_embedding_copies": embedding_copies, "dense_source_tensors": dense_inputs,
+            "largest_dense_verification_input_bytes": largest_dense_input,
             "integer_constants": constants, "ple_layers": [value - 1 for value in config["text_config"]["ple_layer_ids"]],
             "text_lane_excluded_vision_tensors": excluded, "original_vision_shards_retained": True,
             "footprint_bytes": dict(footprint), "largest_device_tensor_bytes": largest,
@@ -205,6 +223,8 @@ def expected_plan(cache):
             "physical_memory_admitted": False, "original_shards_verified": False,
             "console_access": False, "learned_inference_performed": False}
     plan["tensor_layout_sha256"] = hashlib.sha256(json.dumps(expected, sort_keys=True).encode()).hexdigest()
+    if return_transformer:
+        return plan, gguf, manifest, model, torch, original_names
     return plan, gguf, manifest
 
 
@@ -252,8 +272,71 @@ def compare_span(source, output, source_offset, output_offset, size, deadline, l
         remaining -= length
 
 
+def compare_encoded(output, offset, encoded, expected_bytes, deadline):
+    view = memoryview(encoded).cast("B")
+    if view.nbytes != expected_bytes:
+        raise ValueError("Dense transformed payload size differs from its plan")
+    output.seek(offset)
+    for position in range(0, view.nbytes, 8 << 20):
+        if time.monotonic() >= deadline:
+            raise TimeoutError("Dense payload verification deadline exceeded")
+        expected = view[position:position + (8 << 20)]
+        if output.read(len(expected)) != expected:
+            raise ValueError("Converted dense bytes differ from the pinned transformation replay")
+
+
+def verify_dense_payload(cache, out, plan, manifest, actual, model, torch, original_names,
+                         gguf, deadline, progress):
+    """Replay weight-format transforms only; never execute a model forward pass."""
+    selected = set(plan.get("dense_source_tensors", []))
+    if not selected:
+        return set(), 0
+    if model is None or torch is None:
+        raise ValueError("Pinned converter transformer is required for dense payload verification")
+    verified = set()
+    verified_bytes = 0
+    processed = 0
+    for name in model.model_tensors:
+        original_name = original_names[name]
+        if original_name not in selected:
+            continue
+        if time.monotonic() >= deadline:
+            raise TimeoutError("Dense payload verification deadline exceeded")
+        row = manifest["tensors"][original_name]
+        size = math.prod(row["shape"]) * 2
+        if row["dtype"] != "BF16" or size > (64 << 20):
+            raise ValueError("Dense source exceeds the original BF16 host verification bound")
+        with (cache / "model" / safe_name(row["file"])).open("rb") as source:
+            source.seek(row["file_offset"])
+            raw = bytearray(source.read(size))
+        if len(raw) != size:
+            raise ValueError("Truncated original dense tensor")
+        tensor = torch.frombuffer(raw, dtype=torch.bfloat16).reshape(row["shape"]).to(torch.float32)
+        bid = next((int(part) for part in name.split(".") if part.isdecimal()), None)
+        for mapped, transformed in model.modify_tensors(tensor, name, bid):
+            if mapped not in actual or mapped in verified:
+                raise ValueError("Unexpected or duplicate dense replay output")
+            target = actual[mapped]
+            if list(transformed.shape) != target["shape"] or transformed.numel() * 4 > (256 << 20):
+                raise ValueError("Dense transformed shape or bounded workspace differs")
+            values = transformed.contiguous().numpy()
+            encoded = gguf.quantize(values, gguf.GGMLQuantizationType[target["dtype"]])
+            with (out / target["path"]).open("rb") as output:
+                compare_encoded(output, target["offset"], encoded, target["bytes"], deadline)
+            verified.add(mapped)
+            verified_bytes += target["bytes"]
+            del encoded, values, transformed
+        processed += 1
+        if processed % 8 == 0 or processed == len(selected):
+            progress("verifying_dense_transformation_replay", verified=processed, total=len(selected), bytes=verified_bytes)
+        del tensor, raw
+    if processed != len(selected) or model._mtp_fc:
+        raise ValueError("Original dense inputs or MTP projections were not completely replayed")
+    return verified, verified_bytes
+
+
 def audit_conversion(cache, out, files, progress=lambda *args, **kwargs: None, timeout_seconds=21600):
-    plan, gguf, manifest = expected_plan(cache)
+    plan, gguf, manifest, transformer, torch, original_names = expected_plan(cache, return_transformer=True)
     actual = {}
     first_fields = None
     for index, path in enumerate(files):
@@ -310,19 +393,34 @@ def audit_conversion(cache, out, files, progress=lambda *args, **kwargs: None, t
             offset += size
             verified_bytes += size
     expert_bytes = 0
-    for number, copy in enumerate(plan.get("raw_expert_copies", [])):
-        progress("verifying_original_expert_payload", verified=number, total=len(plan["raw_expert_copies"]), bytes=expert_bytes)
-        target = actual[copy["tensor"]]
-        with (cache / "model" / safe_name(copy["file"])).open("rb") as source, (out / target["path"]).open("rb") as output:
-            for index in range(copy["count"]):
-                compare_span(source, output, copy["source_offset"] + index * copy["source_stride"],
-                             target["offset"] + index * copy["output_stride"], copy["size"], deadline, "expert")
-                expert_bytes += copy["size"]
-    report = {key: value for key, value in plan.items() if key not in ("tensors", "ple_parts", "integer_constants", "raw_expert_copies")}
+    embedding_bytes = 0
+    covered = {"per_layer_token_embd.weight"}
+    for label, copies in (("expert", plan.get("raw_expert_copies", [])), ("embedding", plan.get("raw_embedding_copies", []))):
+        copied_bytes = 0
+        for number, copy in enumerate(copies):
+            progress("verifying_original_" + label + "_payload", verified=number, total=len(copies), bytes=copied_bytes)
+            target = actual[copy["tensor"]]
+            with (cache / "model" / safe_name(copy["file"])).open("rb") as source, (out / target["path"]).open("rb") as output:
+                for index in range(copy["count"]):
+                    compare_span(source, output, copy["source_offset"] + index * copy["source_stride"],
+                                 target["offset"] + index * copy["output_stride"], copy["size"], deadline, label)
+                    copied_bytes += copy["size"]
+            covered.add(copy["tensor"])
+        if label == "expert":
+            expert_bytes = copied_bytes
+        else:
+            embedding_bytes = copied_bytes
+    dense_names, dense_bytes = verify_dense_payload(cache, out, plan, manifest, actual, transformer, torch,
+                                                    original_names, gguf, deadline, progress)
+    if covered.intersection(dense_names) or covered | dense_names != set(expected):
+        raise ValueError("Every converted tensor must have exactly one completed payload verification")
+    report = {key: value for key, value in plan.items() if key not in ("tensors", "ple_parts", "integer_constants", "raw_expert_copies", "raw_embedding_copies", "dense_source_tensors")}
     report.update(schema="ps5-qwen-conversion-audit-v1", complete_tensor_set=True,
                   exact_shapes_and_precision=True, exact_PLE_integer_constants=True,
                   PLE_payload_bytes_verified=verified_bytes, PLE_parts_verified=len(plan["ple_parts"]),
                   expert_payload_bytes_verified=expert_bytes, expert_projection_tensors_verified=len(plan.get("raw_expert_copies", [])),
+                  embedding_payload_bytes_verified=embedding_bytes, dense_payload_bytes_replayed=dense_bytes,
+                  dense_tensors_replayed=len(dense_names), complete_converted_tensor_payload_verified=True,
                   dense_payload_numerically_verified=False, original_shards_verified=True,
                   mapped_file_bytes=sum(path.stat().st_size for path in files))
     json_write(out / "conversion-audit.private.json", report)

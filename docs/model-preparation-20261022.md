@@ -16,6 +16,14 @@ every original shard must still pass SHA256 before converter execution. Newly
 downloaded shards are verified before atomic publication. Interrupted partial
 files remain resumable. Phase status is persisted with flush/fsync and replacement.
 
+Acquisition now uses bounded 32 MiB ranges by default. Each worker retains only
+its current immutable file's HTTPS redirect in memory; expired signed redirects
+refresh from the pinned origin, preserving the requested range. No signed URL
+is logged. A byte-checked host sample took 3.047 seconds for 8 MiB and 2.781
+seconds for 32 MiB with redirect reuse. This sample informed acquisition only;
+it does not predict complete-checkpoint or console throughput. Metadata headers
+remain limited to 8 MiB, and every data response must honor its exact range.
+
 ## Complete metadata plan
 
 `tools/audit_conversion.py` checks the pinned source ZIP and all 237 executed
@@ -63,24 +71,36 @@ successful model loading. Fresh observations remain mandatory.
   147 output tensors and 246,625,075,200 bytes. Gate/up comparison follows each
   expert's original strided half, rather than treating the split as one contiguous
   source range. Comparisons use two buffers of at most 8 MiB each.
+- Compare both original embedding matrices (2,542,796,800 bytes) directly. Replay
+  the pinned weight-format transforms for 1,094 remaining source tensors and
+  compare all 1,106 dense outputs (7,667,558,912 bytes). Each source is bounded to
+  64 MiB; the actual largest input is 60 MiB, and each transformed F32 array is
+  bounded to 256 MiB. No model forward pass or matrix inference is involved.
+- Require exactly one completed payload check for every converted tensor. The
+  total is 359,235,922,432 tensor bytes, including retained MTP tensors.
 - Hash every final GGUF split and recheck converter-source identity. Publish the
   fsynced model receipt only after all checks pass. A failure or timeout retains
   partial output and a failed phase, without a model receipt.
 
-Dense arithmetic transformations are not yet independently numerically verified.
+The dense replay checks the saved weights against the pinned converter; it does
+not independently validate that converter's arithmetic or model forward results.
 Host format/copy checks do not establish console model quality or tokens/s. Full
 checkpoint acquisition and the real conversion/payload checks are still pending;
 the complete metadata plan and small fixture checks have passed.
 
 ## Manual checks
 
-The Python suite passes 39 tests. Actual pinned GGUF fixtures accept BF16/F32 and
+The Python suite passes 44 tests. Actual pinned GGUF fixtures accept BF16/F32 and
 exact large integer constants, and reject F16, big endian files, truncation and
 overlapping spans. The full 1,256-tensor plan passes the native memory replay.
 The first metadata subclass attempt and initial generic integer-array fixture
 failed during host development; they produced no accepted model receipt and
 their evidence remains preserved. The corrected fixture uses the actual PLE
 64-bit writer method.
+
+Four retained original dense inputs exercise actual exp, norm, V-head reorder
+and indexer-split transformations, producing five verified output tensors.
+Changing one output bit or exceeding the source input bound is rejected.
 
 Windows status replacement also tolerates transient scanner sharing conflicts
 with at most five attempts and 0.75 seconds of delay. Persistent conflicts and
@@ -92,6 +112,7 @@ python tools/prepare_model.py --cache D:/PS5-AI/qwen-flash-next --out D:/PS5-AI/
 python tools/audit_conversion.py --cache D:/PS5-AI/qwen-flash-next --plan-out D:/PS5-AI/qwen-flash-next/audit/conversion-plan-FRESH.private.json
 python tools/check_conversion_audit.py --cache D:/PS5-AI/qwen-flash-next --out D:/PS5-AI/qwen-flash-next/build/conversion-audit-check-FRESH
 python tools/check_model_footprint.py --workspace C:/Users/User/ps5-ai --cache D:/PS5-AI/qwen-flash-next --plan D:/PS5-AI/qwen-flash-next/audit/conversion-plan-FRESH.private.json --out D:/PS5-AI/qwen-flash-next/build/model-footprint-FRESH
+python tools/check_dense_replay.py --cache D:/PS5-AI/qwen-flash-next --out D:/PS5-AI/qwen-flash-next/build/dense-replay-FRESH
 ```
 
 Use the CPU-only conversion virtual environment for conversion and metadata

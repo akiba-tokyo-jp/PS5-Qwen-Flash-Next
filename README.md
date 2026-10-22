@@ -134,7 +134,8 @@ no inference or console operations.
 conversion as one host batch with OS writer leases and durable phase records.
 The [complete conversion audit](docs/model-preparation-20261022.md) derives all
 1,256 expected tensors from the pinned converter, checks split metadata and exact
-precision, compares the original PLE and every expert byte, then publishes final
+precision, compares all original PLE/expert/embedding copies and replays every
+dense weight-format transform, then publishes final
 file digests. The derived memory footprint also matches the native admission
 policy. Full acquisition/conversion and physical PS5 memory admission remain
 pending.

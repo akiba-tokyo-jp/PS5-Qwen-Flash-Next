@@ -24,6 +24,7 @@ import struct
 import sys
 import threading
 import time
+import urllib.error
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,6 +33,8 @@ MODEL = LOCK["model"]["repository"]
 REVISION = LOCK["model"]["revision"]
 BASE = f"https://huggingface.co/{MODEL}/resolve/{REVISION}/"
 MAX_HEADER = 8 * 1024 * 1024
+MAX_RANGE = 64 * 1024 * 1024
+_redirect = threading.local()
 WIDTH = {"BF16": 2, "F32": 4, "I64": 8}
 
 
@@ -99,7 +102,24 @@ def request(url: str, start: int | None = None, end: int | None = None):
     headers = {"User-Agent": "ps5-qwen-flash-next/1", "Accept-Encoding": "identity"}
     if start is not None:
         headers["Range"] = f"bytes={start}-" + (str(end) if end is not None else "")
-    return urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30)
+    pinned = start is not None and url.startswith(BASE)
+    cached = getattr(_redirect, "target", None)
+    target = cached[1] if pinned and cached and cached[0] == url else url
+    try:
+        response = urllib.request.urlopen(urllib.request.Request(target, headers=headers), timeout=30)
+    except urllib.error.HTTPError as error:
+        # Expired signed redirects are refreshed from the immutable revision URL.
+        if target == url or error.code not in (401, 403, 404):
+            raise
+        error.close()
+        response = urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30)
+    if pinned:
+        resolved = response.geturl()
+        if not resolved.startswith("https://"):
+            response.close()
+            raise ValueError("Model acquisition requires an HTTPS redirect")
+        _redirect.target = (url, resolved)
+    return response
 
 
 def fetch_small(url: str, maximum: int) -> bytes:
@@ -111,7 +131,7 @@ def fetch_small(url: str, maximum: int) -> bytes:
 
 
 def fetch_range(url: str, start: int, length: int) -> bytes:
-    if start < 0 or not 0 < length <= MAX_HEADER:
+    if start < 0 or not 0 < length <= MAX_RANGE:
         raise ValueError("Invalid bounded range")
     end = start + length - 1
     with request(url, start, end) as response:
@@ -228,14 +248,17 @@ def prepare(cache: Path, jobs: int) -> None:
                       "shards": len(file_rows), "dtype_bytes": dict(dtype_bytes)}, indent=2), flush=True)
 
 
-def download(cache: Path, jobs: int, timeout_seconds: int = 43200, *, verify_existing: bool = True) -> None:
+def download(cache: Path, jobs: int, timeout_seconds: int = 43200, *, verify_existing: bool = True,
+             range_bytes: int = 32 << 20) -> None:
     if not 1 <= timeout_seconds <= 86400:
         raise ValueError("Invalid host acquisition deadline")
+    if range_bytes not in (8 << 20, 16 << 20, 32 << 20, 64 << 20):
+        raise ValueError("Invalid bounded download range")
     with writer_lease(cache / "model-download.lock.private"):
-        _download(cache, jobs, timeout_seconds, verify_existing)
+        _download(cache, jobs, timeout_seconds, verify_existing, range_bytes)
 
 
-def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: bool) -> None:
+def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: bool, range_bytes: int) -> None:
     manifest = json.loads((cache / "metadata/checkpoint.json").read_text())
     if manifest["revision"] != REVISION or manifest["quantization"]:
         raise ValueError("Checkpoint identity mismatch")
@@ -284,7 +307,7 @@ def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: boo
                 position = offset
                 while position < row["bytes"]:
                     boundary()
-                    length = min(MAX_HEADER, row["bytes"] - position)
+                    length = min(range_bytes, row["bytes"] - position)
                     for attempt in range(4):
                         boundary()
                         try:
@@ -331,6 +354,7 @@ def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: boo
                  "total_shards": len(rows), "local_bytes": local_bytes(),
                  "received_bytes_this_run": max(0, local_bytes() - initial_bytes),
                  "elapsed_seconds": time.monotonic() - started, "deadline_seconds": timeout_seconds,
+                 "range_bytes": range_bytes,
                  "complete": phase == "completed", "console_access": False,
                  "learned_inference_performed": False, **fields}
         json_write(cache / "download-progress.json", value)
@@ -394,6 +418,7 @@ def main() -> None:
     parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--jobs", type=int, default=4)
     parser.add_argument("--timeout-seconds", type=int, default=43200)
+    parser.add_argument("--range-mib", type=int, choices=(8, 16, 32, 64), default=32)
     parser.add_argument("--tensor")
     parser.add_argument("--expert", type=int, default=0)
     parser.add_argument("--out", type=Path)
@@ -403,7 +428,7 @@ def main() -> None:
     if args.command == "prepare":
         prepare(args.cache.resolve(), args.jobs)
     elif args.command == "download":
-        download(args.cache.resolve(), args.jobs, args.timeout_seconds)
+        download(args.cache.resolve(), args.jobs, args.timeout_seconds, range_bytes=args.range_mib << 20)
     else:
         if not args.tensor or args.out is None:
             parser.error("sample requires --tensor and --out")
