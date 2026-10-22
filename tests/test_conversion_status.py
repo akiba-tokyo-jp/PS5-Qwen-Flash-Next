@@ -71,6 +71,21 @@ class ConversionFailureStatus(unittest.TestCase):
                 run.assert_not_called()
                 self.assertFalse((out / "model-receipt.json").exists())
 
+    def test_failed_post_conversion_audit_cannot_publish_a_model_receipt(self):
+        for error in (ValueError("Missing original expert"), TimeoutError("Payload audit deadline")):
+            with self.subTest(error=type(error).__name__), tempfile.TemporaryDirectory() as folder:
+                cache, _, archive = self.fixture(Path(folder)); out = Path(folder) / "out"
+                def converted(*args, **kwargs):
+                    (out / "fixture.gguf").write_bytes(b"unqualified fixture")
+                    return type("Result", (), {"returncode": 0})()
+                with patch.object(conversion.subprocess, "run", side_effect=converted), \
+                     patch("audit_conversion.audit_conversion", side_effect=error), self.assertRaises(type(error)):
+                    self.run_tool(cache, out, archive)
+                state = json.loads((out / "conversion-status.private.json").read_text())
+                self.assertEqual((state["phase"], state["receipt_published"]), ("failed", False))
+                self.assertTrue((out / "fixture.gguf").exists())
+                self.assertFalse((out / "model-receipt.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

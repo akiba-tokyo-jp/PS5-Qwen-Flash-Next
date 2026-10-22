@@ -6,6 +6,8 @@ import io
 import json
 from pathlib import Path
 import struct
+import subprocess
+import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -102,6 +104,77 @@ class CheckpointIO(unittest.TestCase):
                 acquire.download(root, 1)
             self.assertFalse((root / "model/model.safetensors").exists())
             self.assertEqual((root / "model/model.safetensors.partial").read_bytes(), payload)
+            status = json.loads((root / "download-progress.json").read_text())
+            self.assertEqual(status["phase"], "failed")
+            self.assertFalse(status["complete"])
+
+    def test_writer_lease_blocks_another_process_and_releases_after_exit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            lease = Path(directory) / "writer.lock"
+            code = ("import sys; sys.path.insert(0,sys.argv[1]); from qwen_flash_next import writer_lease; "
+                    "from pathlib import Path; exec('with writer_lease(Path(sys.argv[2])): pass')")
+            command = [sys.executable, "-B", "-c", code, str(Path(acquire.__file__).parent), str(lease)]
+            with acquire.writer_lease(lease):
+                rejected = subprocess.run(command, capture_output=True, timeout=15)
+                self.assertNotEqual(rejected.returncode, 0)
+                self.assertIn(b"Another host writer", rejected.stderr)
+            accepted = subprocess.run(command, capture_output=True, timeout=15)
+            self.assertEqual(accepted.returncode, 0, accepted.stderr)
+
+    def test_deadline_retains_partial_and_records_failure(self):
+        payload = b"original-bf16-weights"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.download_fixture(root, payload, hashlib.sha256(payload).hexdigest())
+            with patch.object(acquire.shutil, "disk_usage", return_value=SimpleNamespace(free=1 << 40)), \
+                 patch.object(acquire.time, "monotonic", side_effect=lambda: self.clock()), \
+                 patch.object(acquire, "fetch_range") as fetch, self.assertRaises(TimeoutError):
+                self.tick = 0
+                acquire.download(root, 1, 1)
+            fetch.assert_not_called()
+            status = json.loads((root / "download-progress.json").read_text())
+            self.assertEqual((status["phase"], status["error_type"]), ("failed", "TimeoutError"))
+            self.assertFalse((root / "model/model.safetensors").exists())
+
+    def test_deferred_retained_file_verification_does_not_claim_original_digest_success(self):
+        payload = b"original-bf16-weights"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.download_fixture(root, payload, hashlib.sha256(payload).hexdigest())
+            (root / "model/model.safetensors").write_bytes(b"X" * len(payload))
+            with patch.object(acquire.shutil, "disk_usage", return_value=SimpleNamespace(free=1 << 40)), \
+                 patch.object(acquire, "fetch_range") as fetch:
+                acquire.download(root, 1, verify_existing=False)
+            fetch.assert_not_called()
+            status = json.loads((root / "download-progress.json").read_text())
+            self.assertTrue(status["complete"])
+            self.assertFalse(status["original_shards_verified"])
+            self.assertEqual((status["verified_shards"], status["reused_unverified_shards"]), (0, 1))
+            with patch.object(acquire.shutil, "disk_usage", return_value=SimpleNamespace(free=1 << 40)), \
+                 self.assertRaisesRegex(ValueError, "SHA256"):
+                acquire.download(root, 1)
+
+    def clock(self):
+        self.tick += 1
+        return self.tick
+
+    @unittest.skipUnless(acquire.os.name == "nt", "Windows sharing behavior")
+    def test_status_replace_retries_only_bounded_windows_sharing_errors(self):
+        conflict = PermissionError("Scanner still holds the status file")
+        conflict.winerror = 32
+        with patch.object(acquire.os, "replace", side_effect=[conflict, None]) as replace, \
+             patch.object(acquire.time, "sleep") as sleep:
+            acquire.atomic_replace(Path("status.next"), Path("status.json"))
+            self.assertEqual(replace.call_count, 2)
+            self.assertEqual(sleep.call_count, 1)
+        with patch.object(acquire.os, "replace", side_effect=conflict) as replace, \
+             patch.object(acquire.time, "sleep") as sleep, self.assertRaises(PermissionError):
+            acquire.atomic_replace(Path("status.next"), Path("status.json"))
+        self.assertEqual((replace.call_count, sleep.call_count), (5, 4))
+        with patch.object(acquire.os, "replace", side_effect=OSError("Disk failure")) as replace, \
+             self.assertRaises(OSError):
+            acquire.atomic_replace(Path("status.next"), Path("status.json"))
+        self.assertEqual(replace.call_count, 1)
 
 
 if __name__ == "__main__":

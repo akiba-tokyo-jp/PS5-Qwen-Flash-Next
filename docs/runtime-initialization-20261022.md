@@ -73,13 +73,20 @@ contain no prompts or generated text; the journal fails explicitly before
 exceeding its bounded capacity. Backend wait failure still retains resources
 before unwinding for ordinary OS close.
 
-`tools/prepare_model.py` is a bounded host batch command which waits for the
-existing downloader, then invokes original-shard verification and BF16
-conversion. It does not start another writer or perform console actions.
+`tools/prepare_model.py` is a bounded host batch command which waits for an
+existing downloader, or resumes acquisition with `--acquire`, then invokes
+original-shard verification and BF16 conversion. OS leases reject duplicate
+preparation/acquisition writers. It performs no console actions.
 Conversion publishes durable verification/conversion/hashing/completed/failed
 states and has a process deadline. A corrupt shard or timed-out converter cannot
 publish a model receipt. Full checkpoint acquisition, console mapping/residency,
 model output and measured tokens/s remain separate requirements.
+
+The subsequent [complete conversion audit](model-preparation-20261022.md) derives
+the exact tensor set using the pinned converter's metadata-only transformations,
+requires every expert and PLE component, checks the actual GGUF structure, and
+compares all original expert/PLE bytes before receipt publication. Its derived
+1,256-tensor footprint matches the native memory policy on the host.
 
 The converter also checks all 237 Python files in its source tree against the
 original pinned ZIP before execution and again before receipt publication.

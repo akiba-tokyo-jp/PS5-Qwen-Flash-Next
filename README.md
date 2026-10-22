@@ -130,6 +130,15 @@ fetches all original shards, resumes partial files, verifies their original
 SHA256 digests and publishes each shard only after verification. It performs
 no inference or console operations.
 
+`tools/prepare_model.py --acquire` runs resumable acquisition and bounded BF16
+conversion as one host batch with OS writer leases and durable phase records.
+The [complete conversion audit](docs/model-preparation-20261022.md) derives all
+1,256 expected tensors from the pinned converter, checks split metadata and exact
+precision, compares the original PLE and every expert byte, then publishes final
+file digests. The derived memory footprint also matches the native admission
+policy. Full acquisition/conversion and physical PS5 memory admission remain
+pending.
+
 ## Manual PS5 build
 
 The build uses the owner's local PS5 SDK, compiler, Vulkan headers and selected

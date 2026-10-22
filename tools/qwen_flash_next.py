@@ -11,6 +11,8 @@ from __future__ import annotations
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
 from collections import Counter
+from contextlib import contextmanager
+from datetime import datetime, timezone
 import hashlib
 import json
 import math
@@ -33,11 +35,57 @@ MAX_HEADER = 8 * 1024 * 1024
 WIDTH = {"BF16": 2, "F32": 4, "I64": 8}
 
 
+def atomic_replace(source: Path, destination: Path) -> None:
+    """Bound retries to transient Windows file sharing/permission conflicts."""
+    for attempt in range(5):
+        try:
+            os.replace(source, destination)
+            return
+        except PermissionError as error:
+            if os.name != "nt" or getattr(error, "winerror", None) not in (5, 32, 33) or attempt == 4:
+                raise
+            time.sleep(0.05 * 2 ** attempt)
+
+
 def json_write(path: Path, data) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(path.name + ".tmp")
-    temporary.write_text(json.dumps(data, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
-    os.replace(temporary, path)
+    with temporary.open("w", encoding="utf-8") as stream:
+        stream.write(json.dumps(data, indent=2, ensure_ascii=True) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+    atomic_replace(temporary, path)
+
+
+@contextmanager
+def writer_lease(path: Path):
+    """Hold a nonblocking OS lock; process exit releases it without stale-lock deletion."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a+b") as stream:
+        if not stream.seek(0, os.SEEK_END):
+            stream.write(b"\0")
+            stream.flush()
+        stream.seek(0)
+        if os.name == "nt":
+            import msvcrt
+            try:
+                msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+            except OSError as error:
+                raise RuntimeError("Another host writer owns the model preparation lease") from error
+        else:
+            import fcntl
+            try:
+                fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except OSError as error:
+                raise RuntimeError("Another host writer owns the model preparation lease") from error
+        try:
+            yield
+        finally:
+            stream.seek(0)
+            if os.name == "nt":
+                msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(stream, fcntl.LOCK_UN)
 
 
 def safe_name(name: str) -> str:
@@ -180,7 +228,14 @@ def prepare(cache: Path, jobs: int) -> None:
                       "shards": len(file_rows), "dtype_bytes": dict(dtype_bytes)}, indent=2), flush=True)
 
 
-def download(cache: Path, jobs: int) -> None:
+def download(cache: Path, jobs: int, timeout_seconds: int = 43200, *, verify_existing: bool = True) -> None:
+    if not 1 <= timeout_seconds <= 86400:
+        raise ValueError("Invalid host acquisition deadline")
+    with writer_lease(cache / "model-download.lock.private"):
+        _download(cache, jobs, timeout_seconds, verify_existing)
+
+
+def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: bool) -> None:
     manifest = json.loads((cache / "metadata/checkpoint.json").read_text())
     if manifest["revision"] != REVISION or manifest["quantization"]:
         raise ValueError("Checkpoint identity mismatch")
@@ -194,16 +249,33 @@ def download(cache: Path, jobs: int) -> None:
     started = time.monotonic()
     stopped = threading.Event()
 
+    def boundary():
+        if stopped.is_set():
+            raise RuntimeError("Download stopped; verified ranges retained for resume")
+        if time.monotonic() - started >= timeout_seconds:
+            raise TimeoutError("Host acquisition deadline exceeded; partial files retained")
+
+    def verify(path, expected):
+        result = hashlib.sha256()
+        with path.open("rb") as stream:
+            while True:
+                boundary()
+                block = stream.read(1 << 20)
+                if not block:
+                    break
+                result.update(block)
+        if result.hexdigest() != expected:
+            raise ValueError("SHA256 mismatch, source retained: " + path.name)
+
     def one(row):
         target = destination / safe_name(row["name"])
         temporary = target.with_name(target.name + ".partial")
         if target.exists():
             if target.stat().st_size != row["bytes"]:
                 raise ValueError(f"Existing shard size mismatch: {target.name}")
-            with target.open("rb") as stream:
-                if hashlib.file_digest(stream, "sha256").hexdigest() != row["sha256"]:
-                    raise ValueError(f"Existing shard SHA256 mismatch: {target.name}")
-            return target.name, 0
+            if verify_existing:
+                verify(target, row["sha256"])
+            return target.name, 0, verify_existing
         offset = temporary.stat().st_size if temporary.exists() else 0
         if offset > row["bytes"]:
             raise ValueError("Partial file is larger than the original shard")
@@ -211,10 +283,10 @@ def download(cache: Path, jobs: int) -> None:
             with temporary.open("ab" if offset else "wb", buffering=0) as stream:
                 position = offset
                 while position < row["bytes"]:
-                    if stopped.is_set():
-                        raise RuntimeError("Download stopped; verified ranges retained for resume")
+                    boundary()
                     length = min(MAX_HEADER, row["bytes"] - position)
                     for attempt in range(4):
+                        boundary()
                         try:
                             block = fetch_range(BASE + row["name"], position, length)
                             break
@@ -226,14 +298,13 @@ def download(cache: Path, jobs: int) -> None:
                         raise OSError("Incomplete local shard write")
                     position += length
                 os.fsync(stream.fileno())
-        with temporary.open("rb") as stream:
-            if hashlib.file_digest(stream, "sha256").hexdigest() != row["sha256"]:
-                raise ValueError(f"SHA256 mismatch, partial retained: {target.name}")
+        verify(temporary, row["sha256"])
         os.replace(temporary, target)
         json_write(cache / "receipts" / (target.name + ".json"), row)
-        return target.name, row["bytes"] - offset
+        return target.name, row["bytes"] - offset, True
 
     verified = 0
+    processed = 0
 
     def local_bytes():
         total = 0
@@ -251,20 +322,37 @@ def download(cache: Path, jobs: int) -> None:
         return total
 
     initial_bytes = local_bytes()
+    def report(phase, **fields):
+        value = {"schema": "ps5-qwen-download-progress-v2", "phase": phase, "pid": os.getpid(),
+                 "updated_at": datetime.now(timezone.utc).isoformat(), "verified_shards": verified,
+                 "processed_shards": processed, "reused_unverified_shards": processed - verified,
+                 "existing_shards_reverified": verify_existing,
+                 "original_shards_verified": phase == "completed" and verified == len(rows),
+                 "total_shards": len(rows), "local_bytes": local_bytes(),
+                 "received_bytes_this_run": max(0, local_bytes() - initial_bytes),
+                 "elapsed_seconds": time.monotonic() - started, "deadline_seconds": timeout_seconds,
+                 "complete": phase == "completed", "console_access": False,
+                 "learned_inference_performed": False, **fields}
+        json_write(cache / "download-progress.json", value)
+        return value
+
+    report("downloading")
     with ThreadPoolExecutor(max_workers=jobs) as pool:
         pending = {pool.submit(one, row) for row in rows}
         try:
             while pending:
+                boundary()
                 done, pending = wait(pending, timeout=10, return_when=FIRST_COMPLETED)
                 for future in done:
-                    name, _ = future.result()
-                    verified += 1
-                    print(f"Verified {verified}/{len(rows)} shards; {name}", flush=True)
-                report = {"schema": "ps5-qwen-download-progress-v1", "verified_shards": verified,
-                          "total_shards": len(rows), "received_bytes_this_run": max(0, local_bytes() - initial_bytes),
-                          "elapsed_seconds": time.monotonic() - started, "complete": not pending}
-                json_write(cache / "download-progress.json", report)
-                print(f"Progress: {verified}/{len(rows)} verified; {report['received_bytes_this_run']/1e9:.2f} GB received", flush=True)
+                    name, _, checked = future.result()
+                    processed += 1
+                    verified += int(checked)
+                    print(f"{'Verified' if checked else 'Retained for conversion verification'} {processed}/{len(rows)} shards; {name}", flush=True)
+                current = report("downloading" if pending else "completed")
+                print(f"Progress: {verified}/{len(rows)} verified; {current['received_bytes_this_run']/1e9:.2f} GB received", flush=True)
+        except BaseException as error:
+            report("failed", error_type=type(error).__name__)
+            raise
         finally:
             stopped.set()
             for future in pending:
@@ -305,6 +393,7 @@ def main() -> None:
     parser.add_argument("command", choices=("prepare", "download", "sample"))
     parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--jobs", type=int, default=4)
+    parser.add_argument("--timeout-seconds", type=int, default=43200)
     parser.add_argument("--tensor")
     parser.add_argument("--expert", type=int, default=0)
     parser.add_argument("--out", type=Path)
@@ -314,7 +403,7 @@ def main() -> None:
     if args.command == "prepare":
         prepare(args.cache.resolve(), args.jobs)
     elif args.command == "download":
-        download(args.cache.resolve(), args.jobs)
+        download(args.cache.resolve(), args.jobs, args.timeout_seconds)
     else:
         if not args.tensor or args.out is None:
             parser.error("sample requires --tensor and --out")
