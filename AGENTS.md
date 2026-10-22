@@ -272,3 +272,16 @@ buffer, 512 verified passes, a 10-second target and 15-second observation bounda
 No model/file payload, title, GPU, ownership change or execution retry is included.
 Its compute-only extrapolation never qualifies disk I/O or full-model integrity.
 See docs/cpu-hash-probe.md. Keep the active continuation's recorded sources frozen.
+
+That CPU probe completed on the physical console with fresh unchanged guards:
+512 MiB in 3.056937667 s, 167.4878770107418 MiB/s. The original SELF/app directories
+were untouched. See docs/native-cpu-hash-20261022.md and JSON. Its approximately
+34.09-minute compute-only full-payload projection supersedes the earlier native
+preflight's 30-minute planning budget. Use the distinct v2 native model-validation
+policy with one fixed 7,200-second whole-model deadline and structured progress;
+do not execute the earlier 30-minute binary as full-model preflight. The revised
+entry point has host policy/parser checks and PS5 object compilation, but requires
+a fresh complete link/package/import/SELF gate before any physical execution.
+This changes no receipt/data-transfer gate, mapping limit, GPU/model rejection
+or active continuation source. Complete original files and independent native
+SHA/mapping admission remain mandatory.

@@ -121,6 +121,10 @@ app-local UTC calibration. Long-term clock drift, original-model mapping/residen
 full-model quality and tokens/s remain unqualified.
 The next [CPU model preflight](docs/model-preflight.md) independently verifies
 complete model hashes/metadata and read-only virtual mappings before Vulkan.
+The [physical CPU hash probe](docs/native-cpu-hash-20261022.md) measured 512 MiB
+at 167.49 MiB/s with the production SHA object. Its compute-only projection led
+to a fixed two-hour verification budget and structured progress; full-file disk
+performance and integrity remain separate admissions.
 The [resident buffer admission](docs/model-buffer-admission.md) now distinguishes
 the upstream batching target from hard limits and checks aligned tensor sizes.
 Host conversion now [bounds original BF16 copies](docs/bounded-conversion-20261022.md)

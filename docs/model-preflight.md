@@ -8,11 +8,21 @@ evidence. Native display, learned model loading and Vulkan initialization are
 rejected in this stage. Committed execution and deployment flags remain disabled.
 
 The application streams SHA256 for every file before backend initialization.
-One 30-minute deadline covers the entire verification sequence, rather than
+One fixed two-hour deadline covers the entire verification sequence, rather than
 restarting the allowance for every split. Checks occur between completed reads;
-64 MiB progress boundaries persist phase observations. GGUF metadata, exact
+64 MiB progress boundaries persist file/total byte counts, elapsed time and the
+deadline. A matched SHA has its own completed-file marker; byte progress alone
+cannot qualify integrity. GGUF metadata, exact
 precision, PLE constants, dimensions, counts and the full footprint are checked
 before any address-space admission.
+
+The v2 policy also binds the completed [physical CPU hash probe](native-cpu-hash-20261022.md).
+Its compute-only projection was approximately 34.09 minutes, before file I/O,
+so the earlier v1/30-minute budget remains a historical implementation. Legacy
+policies are rejected. The revised two-hour budget is finite and includes I/O
+margin; whole-file performance has not been physically measured. The local-only
+`model_integrity_progress.py` parser rejects inconsistent/legacy records and
+requires final native reports even after all completed SHA markers are observed.
 
 The native mapper opens regular files read-only without following symlinks,
 checks actual sizes, and maps each using non-fixed `PROT_READ | MAP_SHARED`.

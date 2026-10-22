@@ -33,3 +33,8 @@ untouched. Any uncertain result remains preserved without automatic retry.
 This measures hashing of cached synthetic RAM only. Disk throughput and complete
 model integrity remain unmeasured. A whole-payload time extrapolation is a
 compute-only estimate; it must not become a file-integrity or inference result.
+
+The physical probe subsequently passed with fresh unchanged CPU guards before
+and after: 512 MiB in 3.056937667 seconds, or 167.4878770107418 MiB/s. See the
+[measured result and verification budget](native-cpu-hash-20261022.md). The
+original SELF/app directories were not modified and no native title was launched.

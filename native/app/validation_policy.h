@@ -6,6 +6,7 @@
 #include "operator_admission.h"
 
 namespace qwen_app {
+inline constexpr unsigned native_model_verification_seconds = 7200;
 // A private, frozen fixture policy is also bound to the exact SELF and fresh
 // session by the ordinary OS launcher. This checks scope, not console health.
 inline void require_native_validation_policy(const nlohmann::json & policy,
@@ -34,15 +35,17 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
     if (mode == "model-validation") {
         const auto & model = policy.at("native_model_validation");
         if (native_display || !model.is_object() ||
-            model.at("schema") != "ps5-qwen-native-model-validation-v1" ||
+            model.at("schema") != "ps5-qwen-native-model-validation-v2" ||
             model.at("preceding_combined_SELF_sha256") != "54c2803c6fce4a654f5c351878eb717dfa0f58c874868b14c0d868fa7630fea9" ||
+            model.at("preceding_CPU_hash_probe_ELF_sha256") != "cbd7964f9b46e9e817bce99a53228058a0183d12cda901755fb4c3d13f2f181b" ||
+            model.at("preceding_CPU_hash_probe_passed") != true ||
             model.at("original_restoration_and_numerical_readmission_passed") != true ||
             model.at("fresh_idle_session_bound_by_launcher") != true ||
             model.at("complete_v2_model_receipt_required") != true ||
             model.at("Vulkan_initialization_enabled") != false ||
             model.at("model_loading_enabled") != false ||
             !model.at("maximum_verification_seconds").is_number_integer() ||
-            model.at("maximum_verification_seconds") != 1800 ||
+            model.at("maximum_verification_seconds") != native_model_verification_seconds ||
             !model.at("maximum_mapped_bytes").is_number_integer() ||
             model.at("maximum_mapped_bytes") != (512ull << 30))
             throw std::runtime_error("The exact no-GPU original model validation policy is required");

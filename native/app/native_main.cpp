@@ -359,24 +359,43 @@ int main(int argc, char ** argv) {
         // check. Deployment must independently verify every transferred file.
         qwen_app::ModelFootprint footprint; std::unordered_set<std::string> tensor_names;
         std::vector<qwen_app::ModelMappingFile> mapping_files;
-        const auto verification_deadline = std::chrono::steady_clock::now() + std::chrono::minutes(30);
+        const auto verification_started = std::chrono::steady_clock::now();
+        const auto verification_deadline = verification_started +
+            std::chrono::seconds(qwen_app::native_model_verification_seconds);
         bool first = true;
         unsigned file_index=0;
+        std::uint64_t fully_verified_bytes=0;
         for (const auto & file : receipt.at("files")) {
             ++file_index;
+            const auto file_bytes=file.at("bytes").get<std::uint64_t>();
             screen.state="verifying original model bytes";
             const auto remaining = std::chrono::duration_cast<std::chrono::seconds>(
                 verification_deadline - std::chrono::steady_clock::now()).count();
             if (remaining <= 0) throw std::runtime_error("Complete original-model verification deadline expired before backend initialization");
             qwen_native_stage("model_file_integrity_started_before_backend_initialization");
             qwen_app::verify_model_file(model_file(startup.model_receipt,file.at("path").get<std::string>()),
-                file.at("bytes").get<std::uint64_t>(),file.at("sha256").get<std::string>(),[&](std::uint64_t verified){
+                file_bytes,file.at("sha256").get<std::string>(),[&](std::uint64_t verified){
                     screen.message="File "+std::to_string(file_index)+"/"+std::to_string(receipt.at("files").size())+
                         ": "+std::to_string(verified>>20)+" MiB verified";
                     if(display)display->publish(screen);
-                    qwen_native_stage("model_file_integrity_progress");
+                    const auto elapsed=std::chrono::duration_cast<std::chrono::milliseconds>(
+                        std::chrono::steady_clock::now()-verification_started).count();
+                    const auto total=qwen_app::checked_memory_sum(fully_verified_bytes,verified);
+                    if(verified>file_bytes||total>expected_mapped_files)
+                        throw std::runtime_error("Original-model integrity progress escaped its admitted byte count");
+                    const auto stage="model_file_integrity_progress file="+std::to_string(file_index)+
+                        " files="+std::to_string(receipt.at("files").size())+
+                        " verified_file_bytes="+std::to_string(verified)+" file_bytes="+std::to_string(file_bytes)+
+                        " total_verified_bytes="+std::to_string(total)+" total_bytes="+std::to_string(expected_mapped_files)+
+                        " elapsed_ms="+std::to_string(elapsed)+" deadline_seconds="+
+                        std::to_string(qwen_app::native_model_verification_seconds);
+                    qwen_native_stage(stage.c_str());
                 }, static_cast<unsigned>(remaining));
-            qwen_native_stage("model_file_integrity_completed");
+            fully_verified_bytes=qwen_app::checked_memory_sum(fully_verified_bytes,file_bytes);
+            const auto completed="model_file_integrity_completed file="+std::to_string(file_index)+
+                " bytes="+std::to_string(file_bytes)+" total_verified_bytes="+std::to_string(fully_verified_bytes)+
+                " SHA256_matched=1";
+            qwen_native_stage(completed.c_str());
             inspect_container(model_file(startup.model_receipt, file.at("path").get<std::string>()), first,
                 footprint,tensor_names,file.at("bytes").get<std::uint64_t>()); first = false;
             mapping_files.push_back({model_file(startup.model_receipt, file.at("path").get<std::string>()),
@@ -388,7 +407,11 @@ int main(int argc, char ** argv) {
         const auto first_path = model_file(startup.model_receipt, receipt.at("files").at(0).at("path").get<std::string>());
         write_fresh_report(startup.admission_report+".integrity",{{"schema","ps5-qwen-model-integrity-v1"},
             {"pid",getpid()},{"files_verified",file_index},{"all_SHA256_matched",true},
-            {"mapped_file_bytes",footprint.mapped_files},{"model_loaded",false},{"Vulkan_initialized",false}});
+            {"mapped_file_bytes",footprint.mapped_files},{"verified_file_bytes",fully_verified_bytes},
+            {"maximum_verification_seconds",qwen_app::native_model_verification_seconds},
+            {"verification_elapsed_ms",std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now()-verification_started).count()},
+            {"model_loaded",false},{"Vulkan_initialized",false}});
         screen.message.clear();
 
         if (startup.model_validation) {
