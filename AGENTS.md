@@ -394,3 +394,13 @@ deadlines. The original audit and data waiter remain unchanged and active. Keep
 the sources recorded in continuation 020 unchanged while it runs. Only local
 metadata observations/publication may repeat for a sharing conflict; physical
 operations and exclusive execution intents must never be retried this way.
+
+Data waiter 004 subsequently ended during its pre-console wait on progress-file
+replacement; continuation 020 rejected that failure before any physical step.
+The audit remained active. After preserving both terminal records and checking
+absence of execution intents/processes, data waiter 005 and full-plan
+continuation 021 were started with current source bindings. Local
+`model_transport.atomic_progress` replacement is now bounded for sharing
+conflicts; exclusive intents and remote uploads remain one-attempt operations.
+Six actual Windows sharing tests and 14 existing transport tests passed. Keep
+every input recorded by the active waiters unchanged until they end.

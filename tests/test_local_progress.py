@@ -14,6 +14,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 from local_progress import read_progress, publish_progress
+from model_transport import atomic_progress
 
 
 @unittest.skipUnless(os.name == "nt", "Windows file sharing test")
@@ -57,6 +58,20 @@ class LocalProgressTests(unittest.TestCase):
     def test_publish_waits_for_reader_denying_delete(self):
         self.under_temporary_lock(3, lambda: publish_progress(self.path, {"phase": "new"}))
         self.assertEqual(read_progress(self.path), {"phase": "new"})
+
+    def test_transport_progress_waits_for_reader_denying_delete(self):
+        self.under_temporary_lock(3, lambda: atomic_progress(self.path, {"phase": "new"}))
+        self.assertEqual(read_progress(self.path), {"phase": "new"})
+
+    def test_transport_progress_permanent_conflict_is_bounded(self):
+        handle = self.lock(3)
+        try:
+            started = time.monotonic()
+            with self.assertRaises(PermissionError):
+                atomic_progress(self.path, {"phase": "new"}, timeout_seconds=.1)
+            self.assertLess(time.monotonic()-started, 1)
+        finally: self.kernel.CloseHandle(handle)
+        self.assertEqual(read_progress(self.path), {"phase": "old"})
 
     def test_permanent_conflict_has_deadline(self):
         handle = self.lock(0)

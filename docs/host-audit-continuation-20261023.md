@@ -64,3 +64,18 @@ real Windows file handles, without console access. A distinct full-plan
 continuation binds the positively ended pre-console failure and the unchanged
 audit/data processes before waiting again. All original physical gates and
 the complete-plan criterion remain unchanged.
+
+The unchanged data waiter later encountered the complementary conflict while
+replacing its own local progress file. It ended during its pre-console wait;
+the dependent full-plan waiter then rejected that failure before any physical
+step. The audit process continued without restart. Both failed records and the
+absence of data/physical execution intents were checked before new waiters.
+
+`model_transport.atomic_progress` now applies the same five-second bound to
+replacement of its already-written local progress file. This changes neither
+exclusive execution intents nor upload/request behavior. Six Windows sharing
+tests and all 14 existing transport tests passed, including direct transport
+progress publication under a conflicting reader and its persistent-conflict
+deadline. New data/full-plan waiters bind these current sources and the exact
+still-running audit. No conversion, audit or physical action was repeated to
+recover the local metadata waiters.

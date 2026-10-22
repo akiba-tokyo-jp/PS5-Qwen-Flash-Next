@@ -26,12 +26,24 @@ def exclusive_json(path, value):
         stream.write("\n"); stream.flush(); os.fsync(stream.fileno())
 
 
-def atomic_progress(path, value):
+def atomic_progress(path, value, timeout_seconds=5.0):
+    """Publish local progress, tolerating a bounded Windows sharing conflict.
+
+    Exclusive intents and remote/model operations must not use this repetition.
+    """
     path = Path(path); temporary = path.with_suffix(path.suffix + ".next")
     with temporary.open("w", encoding="utf-8", newline="\n") as stream:
         json.dump(value, stream, allow_nan=False)
         stream.write("\n"); stream.flush(); os.fsync(stream.fileno())
-    os.replace(temporary, path)
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        try:
+            os.replace(temporary, path)
+            return
+        except PermissionError:
+            if time.monotonic() >= deadline:
+                raise
+            time.sleep(.025)
 
 
 @contextmanager
