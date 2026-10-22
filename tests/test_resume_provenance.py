@@ -67,5 +67,22 @@ class ResumeAdmission(unittest.TestCase):
         adapter["maximum_source_read_bytes"] = 1
         with self.assertRaises(ValueError): gate.validate_adapter(adapter, self.tools, self.resume)
 
+    def test_transfer_preparation_gate_uses_the_resumed_provenance_branch(self):
+        import plan_model_transfer as planner
+        original = {name: planner.sha(planner.ROOT / "tools" / name) for name in planner.PREPARATION_TOOLS}
+        adapter = deepcopy(self.adapter); adapter["preparation_tool_sources"] = original
+        checkpoint = json.loads(Path(adapter["checkpoint"]["path"]).read_text())
+        checkpoint["preparation_tool_sources"] = original
+        adapter["checkpoint"] = self.record("transfer-checkpoint.json", checkpoint)
+        receipt = dict(schema="ps5-qwen-bf16-conversion-v2", files=[{}], preparation_tool_sources=original,
+            resume_tool_sources=self.resume, conversion_adapter=adapter)
+        status = dict(schema="ps5-qwen-conversion-status-v1", phase="completed", receipt="model-receipt.json",
+            verified=1, total=1, console_access=False, learned_inference_performed=False)
+        # This is only the host preparation gate. These metadata objects cannot
+        # pass the separate compiled full-original receipt gate or create a plan.
+        planner.preparation_gate(receipt, status)
+        adapter["written_copy_tensors"] = 2
+        with self.assertRaises(ValueError): planner.preparation_gate(receipt, status)
+
 
 if __name__ == "__main__": unittest.main()

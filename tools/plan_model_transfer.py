@@ -39,6 +39,10 @@ def preparation_gate(receipt, status):
     if set(tools) != set(PREPARATION_TOOLS) or any(sha(ROOT / "tools" / name) != tools[name] for name in PREPARATION_TOOLS):
         raise ValueError("Frozen preparation source provenance differs")
     adapter = receipt.get("conversion_adapter", {})
+    if adapter.get("schema") == "ps5-qwen-resumed-copy-adapter-v1":
+        from resume_provenance import validate_adapter
+        validate_adapter(adapter, tools, receipt.get("resume_tool_sources", {}))
+        return
     exact = dict(schema="ps5-qwen-bounded-copy-adapter-v1", adapter_sha256=tools["bounded_conversion.py"],
         pinned_sources_modified=False, complete_planned_copies_streamed=True, chunk_limit_bytes=8 << 20,
         streamed_tensors=150, streamed_BF16_bytes=351568363520, console_access=False, learned_inference_performed=False)
