@@ -28,7 +28,7 @@ class PS5ModelConnection:
         self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
     def model_get(self, remote, limit):
-        if not remote.startswith(REMOTE_ROOT + "/") or any(x in remote for x in ("..", "\\", "\r", "\n", "?", "#")):
+        if (remote != REMOTE_ROOT and not remote.startswith(REMOTE_ROOT + "/")) or any(x in remote for x in ("..", "\\", "\r", "\n", "?", "#")):
             raise ValueError("Only the admitted model directory may be read")
         if type(limit) is not int or not 0 <= limit <= 1 << 20:
             raise ValueError("Bounded model metadata reads are required")

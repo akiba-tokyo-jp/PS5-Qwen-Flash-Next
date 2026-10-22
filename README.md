@@ -56,8 +56,9 @@ work. The demo is not evidence of Qwen inference or console performance.
 Construction is in progress. Full-model PS5 inference has **not** been achieved.
 The pinned original checkpoint has 131 shards and 1,658 tensors. Every shard
 header was inspected through bounded HTTP ranges: 359,999,962,848 bytes of BF16
-weights and 280 bytes of exact I64 constants. This is metadata verification,
-not a full-shard checksum or an inference result.
+weights and 280 bytes of exact I64 constants. All 131 original files have now
+also passed their complete SHA256 checks. Bounded BF16 conversion is running;
+independent output auditing and final GGUF hashing are still required.
 
 The engine was rebuilt with the latest selected driver source on 2026-10-22.
 The real application, original-BF16 adapter, HTTP service, Strata/Maya cache
@@ -76,8 +77,9 @@ native CPU percentage and wall-clock calibration were unqualified; tokens/s
 stays unavailable without inference.
 The exact original executable was restored, numerically admitted and normally
 closed. Fresh observations confirmed no native owner and an unchanged boot.
-Original shard acquisition and full checksumming remain incomplete. These
-display results are separate from the later successful no-display BF16 fixture.
+At that display-only checkpoint, original acquisition and full checksumming
+were incomplete. These display results are separate from the later successful
+no-display BF16 fixture and the subsequent host model-preparation progress.
 
 The separate no-display [BF16 fixture attempt](docs/native-bf16-20261022.json)
 persisted its headroom and clock checks, then exited before owner admission or a
@@ -167,8 +169,9 @@ The [complete conversion audit](docs/model-preparation-20261022.md) derives all
 precision, compares all original PLE/expert/embedding copies and replays every
 dense weight-format transform, then publishes final
 file digests. The derived memory footprint also matches the native admission
-policy. All 131 original files have now been acquired. Whole-checkpoint SHA
-verification, conversion/auditing and physical PS5 memory admission remain pending.
+policy. All 131 original files have now been acquired and independently SHA256
+verified. Conversion is running; output auditing, final hashes and physical PS5
+memory admission remain pending.
 The native client requires the complete v2 conversion audit and exact original
 footprint before backend initialization; legacy receipts are rejected.
 [The native contract build](docs/native-model-contract-host-20261022.json)

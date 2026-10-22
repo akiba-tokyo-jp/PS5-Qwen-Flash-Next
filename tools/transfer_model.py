@@ -57,15 +57,12 @@ def require_admission(admission, plan_sha):
         raise ValueError("An exact private data-only transfer admission is required")
 
 
-def validate_local(args):
-    cache = args.cache.resolve(); workspace = args.workspace.resolve()
-    if args.plan.is_symlink(): raise ValueError("A regular admitted transfer plan is required")
-    plan_path = args.plan.resolve()
+def validate_original_plan(workspace, cache, plan_path):
+    """Shared original-model gate; it grants no remote operation by itself."""
+    if plan_path.is_symlink(): raise ValueError("A regular admitted transfer plan is required")
+    plan_path = plan_path.resolve()
     if not plan_path.is_relative_to(cache): raise ValueError("The original transfer plan must remain on the data disk")
     plan = bounded_json(plan_path)
-    plan_sha = sha(plan_path)
-    admission = bounded_json(args.admission)
-    require_admission(admission, plan_sha)
     receipt_bytes = record_bytes(plan["receipt_copy"], cache)
     original_bytes = record_bytes(plan["original_receipt"], cache)
     if original_bytes != receipt_bytes: raise ValueError("The original receipt copy differs")
@@ -95,6 +92,11 @@ def validate_local(args):
     if result.returncode: raise ValueError("The actual native original-model receipt gate rejected execution")
     native = json.loads(result.stdout)
     if native != plan["native_receipt_gate"]: raise ValueError("The actual native receipt result changed")
+    return dict(plan=plan, receipt_bytes=receipt_bytes)
+
+
+def validate_console_evidence(admission, workspace, cache, reservation):
+    """Shared unchanged-CPU/restoration gate; directory and bulk scopes differ."""
     context_raw = record_bytes(admission["completed_context"], cache)
     context = json.loads(context_raw)
     if (context.get("original_restored") is not True or context.get("original_numerical_re_admission") != "passed" or
@@ -111,7 +113,8 @@ def validate_local(args):
     reference_source = cache / "build/display-metadata-observer-016/observer.c"
     sources = [row for row in manifest["frozen_inputs"] if Path(row["path"]).name == "observer.c"]
     nonce = manifest["nonce"]
-    if len(sources) != 1 or sha(sources[0]["path"]) != sha(reference_source):
+    if (len(sources) != 1 or sha(sources[0]["path"]) != sources[0]["sha256"] or
+            sources[0]["sha256"] != sha(reference_source)):
         raise ValueError("The unchanged reviewed metadata-only CPU observer is required")
     if not re.fullmatch(r"[0-9a-f]{32}", nonce) or not any(
             line.startswith(b"END success=1 log_healthy=1 ") and ("nonce=" + nonce).encode() in line for line in log.splitlines()):
@@ -125,6 +128,23 @@ def validate_local(args):
     if (not 0 <= age <= 300000 or not 0 <= interval["host_elapsed_ms"] <= 8000 or
             interval["host_after_epoch_ms"] < interval["host_before_epoch_ms"]):
         raise ValueError("The initial CPU observation must be fresh and bounded")
+    reservation_path = reservation.resolve()
+    if not reservation_path.is_relative_to(workspace / "driver-work") or reservation_path.name != "active-context.private.json":
+        raise ValueError("The existing shared driver reservation path is required")
+    pointer_raw = reservation_path.read_bytes()
+    if Path(json.loads(pointer_raw)["context"]).resolve() != Path(admission["completed_context"]["path"]).resolve():
+        raise ValueError("This task no longer owns the console reservation")
+    return dict(context_raw=context_raw, context_path=Path(admission["completed_context"]["path"]),
+        reservation_path=reservation_path, pointer_raw=pointer_raw, session=fresh)
+
+
+def validate_local(args):
+    cache = args.cache.resolve(); workspace = args.workspace.resolve()
+    admission = bounded_json(args.admission)
+    require_admission(admission, sha(args.plan))
+    original = validate_original_plan(workspace, cache, args.plan)
+    state = validate_console_evidence(admission, workspace, cache, args.reservation)
+    plan = original["plan"]
     prepared = json.loads(record_bytes(admission["directory_preparation"], cache))
     exact = dict(remote_root=REMOTE_ROOT, directory_created=True, directory_uid=0, directory_mode="0755",
                  parent_ownership_restored=True, symlinks_rejected=True, marker_full_readback_verified=True,
@@ -136,18 +156,10 @@ def validate_local(args):
     if (marker.get("schema") != "ps5-qwen-model-directory-owner-v1" or marker.get("nonce") != plan["nonce"] or
             marker.get("original_receipt_sha256") != plan["original_receipt"]["sha256"]):
         raise ValueError("The model directory owner differs from this original plan")
-    reservation_path = args.reservation.resolve()
-    if not reservation_path.is_relative_to(workspace / "driver-work") or reservation_path.name != "active-context.private.json":
-        raise ValueError("The existing shared driver reservation path is required")
-    pointer_raw = reservation_path.read_bytes()
-    if Path(json.loads(pointer_raw)["context"]).resolve() != Path(admission["completed_context"]["path"]).resolve():
-        raise ValueError("This task no longer owns the console reservation")
     # The context remains immutable throughout data transfer. Progress lives in
     # the separate batch directory; it is not a new GPU/runtime admission.
     connection_data = bounded_json(args.connection, 4096)
-    return dict(plan=plan, receipt_bytes=receipt_bytes, context_raw=context_raw,
-        context_path=Path(admission["completed_context"]["path"]), reservation_path=reservation_path,
-        pointer_raw=pointer_raw, session=fresh, marker_bytes=marker_bytes, host=connection_data["host"])
+    return dict(**original, **state, marker_bytes=marker_bytes, host=connection_data["host"])
 
 
 def main():

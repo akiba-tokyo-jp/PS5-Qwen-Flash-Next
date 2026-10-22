@@ -80,6 +80,7 @@ class ModelConnection(unittest.TestCase):
         def missing(*args, **kwargs): raise urllib.error.HTTPError("synthetic", 404, "missing", {}, None)
         self.client.opener = type("Opener", (), {"open": missing})()
         self.client.absent(connection.REMOTE_ROOT + "/new.gguf")
+        self.client.absent(connection.REMOTE_ROOT)
 
     def test_capacity_requires_separate_completed_marker(self):
         data = b"/user/data 625.1G 69.3G 536.5G 11% /data\n" + self.marker + b"\n$ "

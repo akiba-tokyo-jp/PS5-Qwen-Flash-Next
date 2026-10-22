@@ -60,6 +60,17 @@ and was never executed on the console. The three build-admission tests reject a
 marked model fixture, an altered recipe and literal command-template injection
 before tools run. Actual model-directory preparation remains unexecuted.
 
+`tools/model_directory_stage.py` implements the separately admitted metadata
+sequence. It has no CLI, console address or controller launcher. Its caller must
+first pass the complete original-plan and fresh unchanged CPU/restoration gates,
+also shared with the bulk uploader, and admit the exact controller build.
+Exclusive attempt records precede parent preparation, new-directory creation,
+small marker upload and parent finalization. Exact positive controller logs,
+full marker readbacks and the final readable directory listing precede proof
+publication. A failure retains the attempt and partial data without automatic
+retry or ownership recovery. Eight host fault-injection cases passed; no actual
+model directory or bulk model data was published by these checks.
+
 Each new file receives an immutable attempt record before its first write and
 uploads to a nonce-specific partial path. Sequential reads use at most 1 MiB;
 their complete SHA256 must match the original receipt. Stable file identity,
