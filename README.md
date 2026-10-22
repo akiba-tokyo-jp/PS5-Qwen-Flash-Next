@@ -162,13 +162,17 @@ The [complete conversion audit](docs/model-preparation-20261022.md) derives all
 precision, compares all original PLE/expert/embedding copies and replays every
 dense weight-format transform, then publishes final
 file digests. The derived memory footprint also matches the native admission
-policy. Full acquisition/conversion and physical PS5 memory admission remain
-pending.
+policy. All 131 original files have now been acquired. Whole-checkpoint SHA
+verification, conversion/auditing and physical PS5 memory admission remain pending.
 The native client requires the complete v2 conversion audit and exact original
 footprint before backend initialization; legacy receipts are rejected.
 [The native contract build](docs/native-model-contract-host-20261022.json)
 passes 289 actual-module imports, SELF integrity and six segment roundtrips.
 That artifact has not been installed on the console.
+
+[Offline transfer planning and per-file transport](docs/model-transfer.md) now
+require the complete original receipt and preserve ambiguous transfer outcomes
+without retry or deletion. Full-model console transfer has not started.
 
 ## Manual PS5 build
 
