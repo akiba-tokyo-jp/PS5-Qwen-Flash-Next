@@ -38,6 +38,28 @@ without opening a connection; `--execute` additionally requires every private
 admission. The directory-preparation proof and full original model are not yet
 available, so no bulk model transfer has been admitted or started.
 
+`tools/build_model_directory.py` prepares a CPU-only controller after the complete
+plan exists. It accepts only the qualified ownership-controller source and an
+exact compiler/linker command-template fingerprint, records stable source/header/
+object/link inputs, and rejects new unqualified imports. It never executes the
+controller. Private owner nonces, exact marker bytes and binaries stay on the
+data disk.
+
+The controller retains the established prepare/finalize contract for the two
+task-owned parent directories and six known configuration/assets. It validates
+the new model directory and exact new marker through no-follow descriptors,
+guarded native stat results, UID/GID/type/link-count/size checks and exact marker
+bytes. Only those positively owned new objects receive normalized modes. Parent
+ownership is restored and independently rechecked before a positive result.
+No title, GPU or process-credential operation is included.
+
+`tools/check_model_directory.py` passed 33 in-memory API checks, compiled the
+actual PS5 syscall-provider object and verified that its imports are a subset of
+the physically qualified controller. The fixture has no linked native executable
+and was never executed on the console. The three build-admission tests reject a
+marked model fixture, an altered recipe and literal command-template injection
+before tools run. Actual model-directory preparation remains unexecuted.
+
 Each new file receives an immutable attempt record before its first write and
 uploads to a nonce-specific partial path. Sequential reads use at most 1 MiB;
 their complete SHA256 must match the original receipt. Stable file identity,

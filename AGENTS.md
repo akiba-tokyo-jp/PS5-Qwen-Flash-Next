@@ -235,3 +235,16 @@ fully read back after fresh final CPU guards. See
 docs/native-original-operations-20261022.md and JSON. The reservation remains
 held, with no native owner. Full-model gates and disabled committed execution,
 deployment, release and CI controls remain unchanged.
+
+Model data preparation uses tools/plan_model_transfer.py, build_model_directory.py
+and transfer_model.py. Do not execute a model-directory controller or start bulk
+transfer before the complete original v2 receipt/plan, exact local build proof,
+fresh unchanged CPU session, reservation and verified existing parent-owner
+marker. Bulk transfer additionally requires positive new owned-directory evidence
+after controller finalization; that evidence cannot precede directory preparation.
+The CPU controller changes only the established task-directory ownership and
+positively verified new model/marker modes; restore the parent ownership before
+publishing its admission. Compile fixtures must never be executed on the PS5.
+The transport never grants native model/GPU admission. Require independent
+native SHA verification afterward, retain uncertain partials and immutable failed
+records, and never automatically resend an uncertain file or receipt publication.
