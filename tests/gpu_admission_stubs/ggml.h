@@ -4,10 +4,10 @@
 #include <cstdint>
 struct ggml_context {};
 struct ggml_cgraph {};
-enum ggml_type { GGML_TYPE_F32, GGML_TYPE_BF16 };
+enum ggml_type { GGML_TYPE_F32, GGML_TYPE_BF16, GGML_TYPE_I32 };
 enum ggml_status { GGML_STATUS_SUCCESS, GGML_STATUS_FAILED };
 struct ggml_bf16_t { std::uint16_t bits; };
-struct ggml_tensor { ggml_type type; std::int64_t width, height; int tag; };
+struct ggml_tensor { ggml_type type; std::int64_t width, height; int tag; std::int64_t depth = 1; };
 struct ggml_init_params { std::size_t mem_size; void * mem_buffer; bool no_alloc; };
 using ggml_backend_t = void *;
 using ggml_backend_buffer_t = void *;
@@ -18,7 +18,9 @@ std::size_t ggml_tensor_overhead();
 std::size_t ggml_graph_overhead_custom(std::size_t, bool);
 ggml_context * ggml_init(ggml_init_params);
 ggml_tensor * ggml_new_tensor_2d(ggml_context *, ggml_type, std::int64_t, std::int64_t);
+ggml_tensor * ggml_new_tensor_3d(ggml_context *, ggml_type, std::int64_t, std::int64_t, std::int64_t);
 ggml_tensor * ggml_mul_mat(ggml_context *, ggml_tensor *, ggml_tensor *);
+ggml_tensor * ggml_mul_mat_id(ggml_context *, ggml_tensor *, ggml_tensor *, ggml_tensor *);
 ggml_tensor * ggml_rms_norm(ggml_context *, ggml_tensor *, float);
 ggml_tensor * ggml_silu(ggml_context *, ggml_tensor *);
 void ggml_set_input(ggml_tensor *);

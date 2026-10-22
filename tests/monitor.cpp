@@ -81,6 +81,18 @@ int main(int argc, char ** argv) {
         { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"mode\":\"operator-validation\",\"weight_fixture\":\"/data/outside-fixture.bf16\"}"; }
         bool invalid_fixture=false;try{read_startup(2,args);}catch(const std::exception &){invalid_fixture=true;}
         check(invalid_fixture,"An unbound original-weight fixture path was admitted");
+        { std::ofstream out(config); out << R"({"schema":"ps5-qwen-app-v1","development_policy":"policy","model_receipt":"model","web_assets":"web","mode":"moe-validation","native_display":false,"weight_fixture":"/app0/qwen-runtime/original-moe-fixture.bf16"})"; }
+        const auto moe_startup = read_startup(2, args);
+        check(moe_startup.moe_validation && !moe_startup.operator_validation && !moe_startup.model_validation &&
+              !moe_startup.monitor_validation && !moe_startup.native_display, "MoE validation was not isolated");
+        for (const char * bad : {
+            R"({"schema":"ps5-qwen-app-v1","development_policy":"p","model_receipt":"m","web_assets":"w","mode":"moe-validation","native_display":true,"weight_fixture":"/app0/qwen-runtime/original-moe-fixture.bf16"})",
+            R"({"schema":"ps5-qwen-app-v1","development_policy":"p","model_receipt":"m","web_assets":"w","mode":"moe-validation","native_display":false,"weight_fixture":"/app0/qwen-runtime/original-weight-fixture.bf16"})",
+            R"({"schema":"ps5-qwen-app-v1","development_policy":"p","model_receipt":"m","web_assets":"w","mode":"inference","weight_fixture":"/app0/qwen-runtime/original-moe-fixture.bf16"})"}) {
+            { std::ofstream out(config); out << bad; }
+            bool refused = false; try { read_startup(2, args); } catch (const std::exception &) { refused = true; }
+            check(refused, "An invalid MoE startup scope was admitted");
+        }
         { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"port\":-1}"; }
         bool rejected = false; try { read_startup(2, args); } catch (const std::exception &) { rejected = true; }
         check(rejected, "Invalid native port was accepted");

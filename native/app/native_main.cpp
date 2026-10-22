@@ -7,6 +7,7 @@
 #include "startup.h"
 #include "gpu_admission.h"
 #include "operator_admission.h"
+#include "moe_admission.h"
 #include "runtime_admission.h"
 #include "vulkan_admission.h"
 #include "memory_admission.h"
@@ -167,7 +168,7 @@ int main(int argc, char ** argv) {
         const auto policy = Json::parse(policy_file);
         if (!policy.at("console_operations_enabled").get<bool>())
             throw std::runtime_error("Console execution is disabled for this application integration phase");
-        const auto mode = startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : "inference";
+        const auto mode = startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : startup.moe_validation ? "moe-validation" : "inference";
         if (!policy.contains("allowed_modes") || !policy.at("allowed_modes").is_array() ||
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
@@ -189,7 +190,7 @@ int main(int argc, char ** argv) {
         if (!ggml_app_bounded_staging_enabled()) throw std::runtime_error("Bounded native transfer staging is required");
         if (!ggml_app_dispatch_contract_enabled()) throw std::runtime_error("The static Vulkan dispatch contract is required");
 
-        screen.state = startup.display_validation ? "display validation" : startup.runtime_validation ? "CPU runtime admission" : startup.monitor_validation || startup.operator_validation ? "BF16 GPU admission" : "verifying model";
+        screen.state = startup.display_validation ? "display validation" : startup.runtime_validation ? "CPU runtime admission" : startup.monitor_validation || startup.operator_validation || startup.moe_validation ? "BF16 GPU admission" : "verifying model";
         screen.cpu_threads = std::thread::hardware_concurrency();
         char cpu_name[256] = {};
         std::size_t cpu_name_size = sizeof(cpu_name);
@@ -204,13 +205,13 @@ int main(int argc, char ** argv) {
             display->start(screen);
             qwen_native_stage("first_display_frame_completed compute_dispatches=0 model_loaded=0");
         }
-        if (startup.monitor_validation || startup.display_validation || startup.runtime_validation || startup.operator_validation) {
+        if (startup.monitor_validation || startup.display_validation || startup.runtime_validation || startup.operator_validation || startup.moe_validation) {
             if (!policy.value("console_validation_enabled", false)) throw std::runtime_error("Native validation is not enabled");
             std::vector<std::uint16_t> original_weights;
-            if (startup.operator_validation) {
+            if (startup.operator_validation || startup.moe_validation) {
                 qwen_native_stage("before_original_weight_fixture_hash GPU_not_started=1 model_loaded=0");
-                original_weights = qwen_app::load_original_weight_fixture(startup.weight_fixture,
-                    qwen_app::original_weight_fixture_sha256);
+                original_weights = startup.moe_validation ? qwen_app::load_original_moe_fixture(startup.weight_fixture) :
+                    qwen_app::load_original_weight_fixture(startup.weight_fixture, qwen_app::original_weight_fixture_sha256);
                 qwen_native_stage("original_weight_fixture_hash_and_finite_check_passed GPU_not_started=1");
             }
             if (startup.display_validation) {
@@ -240,7 +241,8 @@ int main(int argc, char ** argv) {
                 std::int64_t physical = 0; std::size_t available = 0, flexible = 0;
                 const auto pool = sceKernelGetDirectMemorySize();
                 if (pool <= 0 || sceKernelAvailableDirectMemorySize(0, pool, 65536, &physical, &available) < 0 ||
-                    sceKernelAvailableFlexibleMemorySize(&flexible) < 0 || available < (1ull << 30) || flexible < (64u << 20))
+                    sceKernelAvailableFlexibleMemorySize(&flexible) < 0 || available < (1ull << 30) ||
+                    flexible < (startup.moe_validation ? (192u << 20) : (64u << 20)))
                     throw std::runtime_error("Observed memory headroom is insufficient for bounded GPU admission");
                 const auto clock_start = std::chrono::steady_clock::now();
                 if (usleep(250000)) throw std::runtime_error("Native clock interval observation failed");
@@ -259,7 +261,27 @@ int main(int argc, char ** argv) {
                 qwen_native_stage("before_llama_backend_initialization model_loaded=0");
                 llama_backend_init();
                 qwen_native_stage("llama_backend_initialization_completed model_loaded=0");
-                if (startup.operator_validation) {
+                if (startup.moe_validation) {
+                    const auto admission = qwen_app::admit_original_moe(original_weights, qwen_native_stage);
+                    qwen_native_driver_complete();
+                    const auto & metric = admission.metric;
+                    write_fresh_report(startup.admission_report, {{"schema", "ps5-qwen-original-moe-admission-v1"},
+                        {"pid", getpid()}, {"model_loaded", false}, {"full_model_inference", false},
+                        {"fixture_sha256", qwen_app::moe_fixture_sha256}, {"fixture_bytes", original_weights.size() * 2},
+                        {"matrix_columns", qwen_app::moe_columns}, {"matrix_rows", qwen_app::moe_rows},
+                        {"experts", qwen_app::moe_experts}, {"selected_experts", qwen_app::moe_selected},
+                        {"expert_ids", qwen_app::moe_expert_ids}, {"tokens", 1}, {"operation", "GGML_OP_MUL_MAT_ID"},
+                        {"CPU_reference", "PS5 scalar double accumulation"},
+                        {"absolute_tolerance", 1e-5}, {"relative_tolerance", 1e-5}, {"normalized_rmse_limit", 0.01},
+                        {"graph_compute_calls", 1}, {"maximum_upload_chunk_bytes", 8u << 20},
+                        {"backend", admission.backend}, {"passed", admission.passed}, {"values", metric.values},
+                        {"finite", metric.finite},
+                        {"max_absolute_error", metric.finite ? Json(metric.max_absolute_error) : Json(nullptr)},
+                        {"normalized_rmse", std::isfinite(metric.normalized_rmse) ? Json(metric.normalized_rmse) : Json(nullptr)},
+                        {"expected", admission.expected}, {"actual", admission.actual}, {"elapsed_ms", admission.elapsed_ms}});
+                    if (!admission.passed) throw std::runtime_error("Original BF16 MoE admission failed fixed numerical gates");
+                    qwen_native_stage("original_MoE_admission_passed model_loaded=0");
+                } else if (startup.operator_validation) {
                     const auto admission = qwen_app::admit_original_weight_operations(original_weights, qwen_native_stage);
                     qwen_native_driver_complete();
                     auto metric = [](const qwen_app::OperatorMetric & value) {
@@ -305,8 +327,8 @@ int main(int argc, char ** argv) {
             // units have not passed qualification. Keep CPU percentage absent.
             hardware.sample_process_cpu = false;
             // Display-only admission must not enumerate or initialize Vulkan.
-            auto device = startup.monitor_validation || startup.operator_validation ? ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU) : nullptr;
-            if ((startup.monitor_validation || startup.operator_validation) && !device) device = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_IGPU);
+            auto device = startup.monitor_validation || startup.operator_validation || startup.moe_validation ? ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU) : nullptr;
+            if ((startup.monitor_validation || startup.operator_validation || startup.moe_validation) && !device) device = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_IGPU);
             if (device) {
                 if (const auto * name = ggml_backend_dev_description(device)) hardware.gpu_name = name;
                 std::size_t available = 0, total = 0; ggml_backend_dev_memory(device, &available, &total);

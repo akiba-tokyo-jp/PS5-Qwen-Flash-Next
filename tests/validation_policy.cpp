@@ -152,6 +152,38 @@ int main() {
         changed["native_operator_validation"][key] = operators["native_operator_validation"][key].get<double>();
         reject(changed, "operator-validation");
     }
+    const Json moe = {{"native_moe_validation", {
+        {"schema", "ps5-qwen-native-moe-validation-v1"},
+        {"preceding_operator_SELF_sha256", "5abd9fab586ed30431ddf26a95a1a112065f2958c6cbbd0a41b107a62c67da47"},
+        {"driver_revision", "872cc1264ad8ba5d6b888b092968fa5858a38c58"}, {"profile", "cumulative-idle"},
+        {"native_archive_sha256", "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925"},
+        {"original_revision", "de4b8e4d43b917e7706784d8bb445c9af86a3540"},
+        {"source_shard_sha256", "1da92de7cf72dcca86faf05007925389ceb24427609e8d3b478d53d97fd97a63"},
+        {"fixture_sha256", qwen_app::moe_fixture_sha256},
+        {"original_restoration_and_numerical_readmission_passed", true}, {"fresh_idle_session_bound_by_launcher", true},
+        {"model_loading_enabled", false}, {"persistent_caches_enabled", false},
+        {"maximum_graph_compute_calls", 1}, {"fixture_bytes", 41943040}, {"experts", 512},
+        {"selected_experts", 10}, {"maximum_upload_chunk_bytes", 8u << 20},
+        {"expert_ids", qwen_app::moe_expert_ids}}}};
+    qwen_app::require_native_validation_policy(moe, "moe-validation", false);
+    reject(moe, "moe-validation", true); reject(moe, "inference");
+    for (auto field = moe.at("native_moe_validation").begin(); field != moe.at("native_moe_validation").end(); ++field) {
+        auto changed = moe; changed["native_moe_validation"].erase(field.key()); reject(changed, "moe-validation");
+        changed = moe; changed["native_moe_validation"][field.key()] = nullptr; reject(changed, "moe-validation");
+        changed = moe;
+        if (field.value().is_string()) changed["native_moe_validation"][field.key()] = "incorrect";
+        else if (field.value().is_boolean()) changed["native_moe_validation"][field.key()] = !field.value().get<bool>();
+        else changed["native_moe_validation"][field.key()] = 0;
+        reject(changed, "moe-validation");
+        if (field.value().is_number_integer() || field.value().is_boolean()) {
+            changed = moe;
+            changed["native_moe_validation"][field.key()] = field.value().is_boolean() ? Json(field.value().get<bool>() ? 1 : 0) : Json(field.value().get<double>());
+            reject(changed, "moe-validation");
+        }
+    }
+    for (unsigned index = 0; index < 10; ++index) for (const auto & bad : {Json(-1), Json(512), Json(true), Json(qwen_app::moe_expert_ids[index] * 1.0)}) {
+        auto changed = moe; changed["native_moe_validation"]["expert_ids"][index] = bad; reject(changed, "moe-validation");
+    }
     reject(valid, "inference");
     reject(valid, "unrecognized");
     auto arbitrary = valid;

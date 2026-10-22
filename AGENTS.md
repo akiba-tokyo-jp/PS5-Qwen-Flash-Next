@@ -285,3 +285,15 @@ a fresh complete link/package/import/SELF gate before any physical execution.
 This changes no receipt/data-transfer gate, mapping limit, GPU/model rejection
 or active continuation source. Complete original files and independent native
 SHA/mapping admission remain mandatory.
+
+The owner's subsequent instruction to implement and run continues bounded
+physical qualification. A distinct `moe-validation` case may test the original
+BF16 indexed expert graph described in docs/original-moe-diagnostic.md after
+its full host/link/import/callback/SELF/shader gates. Keep all 512 diagnostic
+experts, ten fixed IDs, unchanged numerical thresholds and one compute graph;
+native display and full-model loading remain disabled. Positively stop the
+waiting data-only continuation before changing its frozen console context or
+reservation, preserving evidence and leaving model conversion untouched.
+Require fresh idle guards and complete exact original preservation, restoration,
+numerical readmission, ordinary close and final readback before binding a fresh
+data-only continuation. Host tests do not establish physical MoE success.

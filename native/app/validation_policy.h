@@ -4,6 +4,7 @@
 #include <string>
 #include <nlohmann/json.hpp>
 #include "operator_admission.h"
+#include "moe_admission.h"
 
 namespace qwen_app {
 inline constexpr unsigned native_model_verification_seconds = 7200;
@@ -13,6 +14,34 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
                                              const std::string & mode,
                                              bool native_display) {
     if (mode == "display-validation" || mode == "runtime-validation") return;
+    if (mode == "moe-validation") {
+        const auto & moe = policy.at("native_moe_validation");
+        if (native_display || !moe.is_object() ||
+            moe.at("schema") != "ps5-qwen-native-moe-validation-v1" ||
+            moe.at("preceding_operator_SELF_sha256") != "5abd9fab586ed30431ddf26a95a1a112065f2958c6cbbd0a41b107a62c67da47" ||
+            moe.at("driver_revision") != "872cc1264ad8ba5d6b888b092968fa5858a38c58" ||
+            moe.at("profile") != "cumulative-idle" ||
+            moe.at("native_archive_sha256") != "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925" ||
+            moe.at("original_revision") != "de4b8e4d43b917e7706784d8bb445c9af86a3540" ||
+            moe.at("source_shard_sha256") != "1da92de7cf72dcca86faf05007925389ceb24427609e8d3b478d53d97fd97a63" ||
+            moe.at("fixture_sha256") != moe_fixture_sha256 ||
+            moe.at("original_restoration_and_numerical_readmission_passed") != true ||
+            moe.at("fresh_idle_session_bound_by_launcher") != true ||
+            moe.at("model_loading_enabled") != false || moe.at("persistent_caches_enabled") != false ||
+            !moe.at("maximum_graph_compute_calls").is_number_integer() || moe.at("maximum_graph_compute_calls") != 1 ||
+            !moe.at("fixture_bytes").is_number_integer() || moe.at("fixture_bytes") != moe_fixture_bytes ||
+            !moe.at("experts").is_number_integer() || moe.at("experts") != moe_experts ||
+            !moe.at("selected_experts").is_number_integer() || moe.at("selected_experts") != moe_selected ||
+            !moe.at("maximum_upload_chunk_bytes").is_number_integer() || moe.at("maximum_upload_chunk_bytes") != (8u << 20))
+            throw std::runtime_error("The exact no-display original BF16 MoE diagnostic policy is required");
+        const auto & ids = moe.at("expert_ids");
+        if (!ids.is_array() || ids.size() != moe_selected)
+            throw std::runtime_error("The complete fixed MoE expert ID sequence is required");
+        for (unsigned i = 0; i < moe_selected; ++i)
+            if (!ids.at(i).is_number_integer() || ids.at(i) != moe_expert_ids[i])
+                throw std::runtime_error("The fixed MoE expert ID order is required");
+        return;
+    }
     if (mode == "operator-validation") {
         const auto & ops = policy.at("native_operator_validation");
         if (native_display || !ops.is_object() ||
