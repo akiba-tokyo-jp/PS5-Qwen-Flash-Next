@@ -11,7 +11,7 @@ from __future__ import annotations
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
 from collections import Counter
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -98,6 +98,48 @@ def safe_name(name: str) -> str:
     return name
 
 
+class SessionResponse:
+    """Keep the bounded reader interface while returning a pooled HTTPS connection."""
+    def __init__(self, response):
+        self.response = response
+        self.status = response.status_code
+        self.headers = response.headers
+
+    def geturl(self):
+        return self.response.url
+
+    def read(self, maximum):
+        try:
+            return self.response.raw.read(maximum, decode_content=False)
+        except Exception as error:
+            # Transport exceptions may include a signed URL. Never log that URL.
+            raise OSError("Bounded model HTTPS read failed: " + type(error).__name__) from None
+
+    def close(self):
+        self.response.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
+
+def open_request(target, headers):
+    session = getattr(_redirect, "http_session", None)
+    if session is None:
+        return urllib.request.urlopen(urllib.request.Request(target, headers=headers), timeout=30)
+    try:
+        response = session.get(target, headers=headers, stream=True, timeout=(10, 30), allow_redirects=True)
+    except Exception as error:
+        raise OSError("Bounded model HTTPS request failed: " + type(error).__name__) from None
+    if response.status_code >= 400:
+        status = response.status_code
+        response.close()
+        raise urllib.error.HTTPError("redacted-model-range", status, "Bounded model HTTPS status failure", {}, None)
+    return SessionResponse(response)
+
+
 def request(url: str, start: int | None = None, end: int | None = None):
     headers = {"User-Agent": "ps5-qwen-flash-next/1", "Accept-Encoding": "identity"}
     if start is not None:
@@ -106,13 +148,13 @@ def request(url: str, start: int | None = None, end: int | None = None):
     cached = getattr(_redirect, "target", None)
     target = cached[1] if pinned and cached and cached[0] == url else url
     try:
-        response = urllib.request.urlopen(urllib.request.Request(target, headers=headers), timeout=30)
+        response = open_request(target, headers)
     except urllib.error.HTTPError as error:
         # Expired signed redirects are refreshed from the immutable revision URL.
         if target == url or error.code not in (401, 403, 404):
             raise
         error.close()
-        response = urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30)
+        response = open_request(url, headers)
     if pinned:
         resolved = response.geturl()
         if not resolved.startswith("https://"):
@@ -249,16 +291,20 @@ def prepare(cache: Path, jobs: int) -> None:
 
 
 def download(cache: Path, jobs: int, timeout_seconds: int = 43200, *, verify_existing: bool = True,
-             range_bytes: int = 32 << 20) -> None:
+             range_bytes: int = 32 << 20, http_client: str = "stdlib") -> None:
     if not 1 <= timeout_seconds <= 86400:
         raise ValueError("Invalid host acquisition deadline")
     if range_bytes not in (8 << 20, 16 << 20, 32 << 20, 64 << 20):
         raise ValueError("Invalid bounded download range")
+    if http_client not in ("stdlib", "requests"):
+        raise ValueError("Unknown host acquisition client")
     with writer_lease(cache / "model-download.lock.private"):
-        _download(cache, jobs, timeout_seconds, verify_existing, range_bytes)
+        _download(cache, jobs, timeout_seconds, verify_existing, range_bytes, http_client)
 
 
-def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: bool, range_bytes: int) -> None:
+def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: bool, range_bytes: int, http_client: str) -> None:
+    if http_client == "requests":
+        import requests
     manifest = json.loads((cache / "metadata/checkpoint.json").read_text())
     if manifest["revision"] != REVISION or manifest["quantization"]:
         raise ValueError("Checkpoint identity mismatch")
@@ -346,6 +392,13 @@ def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: boo
 
     initial_bytes = local_bytes()
     def report(phase, **fields):
+        nonlocal processed, verified
+        if phase == "worker_completed":
+            processed += 1
+            verified += int(fields["checked"])
+            label = "Verified" if fields["checked"] else "Retained for conversion verification"
+            print(f"{label} {processed}/{len(rows)} shards; {fields['name']}", flush=True)
+            return
         value = {"schema": "ps5-qwen-download-progress-v2", "phase": phase, "pid": os.getpid(),
                  "updated_at": datetime.now(timezone.utc).isoformat(), "verified_shards": verified,
                  "processed_shards": processed, "reused_unverified_shards": processed - verified,
@@ -355,13 +408,28 @@ def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: boo
                  "received_bytes_this_run": max(0, local_bytes() - initial_bytes),
                  "elapsed_seconds": time.monotonic() - started, "deadline_seconds": timeout_seconds,
                  "range_bytes": range_bytes,
+                 "http_client": http_client,
                  "complete": phase == "completed", "console_access": False,
                  "learned_inference_performed": False, **fields}
         json_write(cache / "download-progress.json", value)
         return value
 
     report("downloading")
-    with ThreadPoolExecutor(max_workers=jobs) as pool:
+    with ExitStack() as transports:
+        transport_lock = threading.Lock()
+        def initialize_worker():
+            if http_client == "requests":
+                session = requests.Session()
+                session.max_redirects = 5
+                _redirect.http_session = session
+                with transport_lock:
+                    transports.callback(session.close)
+        _download_workers(rows, one, jobs, initialize_worker, boundary, report, stopped)
+
+
+def _download_workers(rows, one, jobs, initialize_worker, boundary, report, stopped):
+    # Completion counters are changed only by this main-thread callback.
+    with ThreadPoolExecutor(max_workers=jobs, initializer=initialize_worker) as pool:
         pending = {pool.submit(one, row) for row in rows}
         try:
             while pending:
@@ -369,11 +437,9 @@ def _download(cache: Path, jobs: int, timeout_seconds: int, verify_existing: boo
                 done, pending = wait(pending, timeout=10, return_when=FIRST_COMPLETED)
                 for future in done:
                     name, _, checked = future.result()
-                    processed += 1
-                    verified += int(checked)
-                    print(f"{'Verified' if checked else 'Retained for conversion verification'} {processed}/{len(rows)} shards; {name}", flush=True)
+                    report("worker_completed", name=name, checked=checked)
                 current = report("downloading" if pending else "completed")
-                print(f"Progress: {verified}/{len(rows)} verified; {current['received_bytes_this_run']/1e9:.2f} GB received", flush=True)
+                print(f"Progress: {current['verified_shards']}/{len(rows)} verified; {current['received_bytes_this_run']/1e9:.2f} GB received", flush=True)
         except BaseException as error:
             report("failed", error_type=type(error).__name__)
             raise
@@ -419,6 +485,7 @@ def main() -> None:
     parser.add_argument("--jobs", type=int, default=4)
     parser.add_argument("--timeout-seconds", type=int, default=43200)
     parser.add_argument("--range-mib", type=int, choices=(8, 16, 32, 64), default=32)
+    parser.add_argument("--http-client", choices=("stdlib", "requests"), default="stdlib")
     parser.add_argument("--tensor")
     parser.add_argument("--expert", type=int, default=0)
     parser.add_argument("--out", type=Path)
@@ -428,7 +495,8 @@ def main() -> None:
     if args.command == "prepare":
         prepare(args.cache.resolve(), args.jobs)
     elif args.command == "download":
-        download(args.cache.resolve(), args.jobs, args.timeout_seconds, range_bytes=args.range_mib << 20)
+        download(args.cache.resolve(), args.jobs, args.timeout_seconds, range_bytes=args.range_mib << 20,
+                 http_client=args.http_client)
     else:
         if not args.tensor or args.out is None:
             parser.error("sample requires --tensor and --out")

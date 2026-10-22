@@ -14,13 +14,15 @@ The new profile is rebuilt from this source; older artifacts remain historical
 controls. See [driver-integration.md](docs/driver-integration.md) for provenance,
 manual build commands and the remaining native runtime/model gates.
 
-The owner cannot physically operate the console. After the corrected BF16
-initialization attempt exited and shell-state admission failed, all console
-operations and validation deployment were disabled in
-[development.json](config/development.json). Development continues on the host.
-GPU modes are also rejected by the native entry point throughout the console
-hold, independently of configuration changes. The native allocator/lifecycle
-integration is implemented and verified separately on the host. See
+After the corrected BF16 initialization attempt exited, console work was held
+pending state admission. The subsequent [physical-console reassessment](docs/console-reassessment-20261022.md)
+passed fresh CPU guards, restored the exact original SELF, passed its startup
+numerical checks and normally closed it. No native owner remains. The
+reservation stays with this task for a distinct bounded BF16 fixture.
+Committed console/deployment flags remain disabled in
+[development.json](config/development.json). A private frozen fixture policy
+and guarded ordinary launch are required; full-model inference remains rejected.
+The native allocator/lifecycle integration is implemented and host-verified. See
 [native-validation.md](docs/native-validation.md) for the staged gates and exact
 preservation/restoration requirements. Driver tests do not establish Qwen quality
 or memory admission.
@@ -75,10 +77,10 @@ original SELF was restored. This is a failed admission, not a compute result.
 The later [corrected initialization attempt](docs/native-bf16-fixed-20261022.json)
 completed instance creation and checked instance dispatch, then exited before
 physical-device enumeration returned. No BF16 compute or completed readback was
-observed. The shell-state check then failed; original restoration and fresh
-numerical admission remain pending for this attempt. No additional console
-launch, helper, close, restart or recovery is permitted under the current hold.
-The original bytes and failed evidence remain preserved.
+observed. The shell-state check then failed. The later
+[reassessment and restoration](docs/console-reassessment-20261022.json) completed
+on the physical PS5 without changing that failed result. The original bytes
+and failed evidence remain preserved.
 
 Host implementation now adds streaming model SHA256 checks before loading,
 original-dimension/PLE verification, checked memory budgets, 64 MiB completed
@@ -90,7 +92,7 @@ shared-driver members. The frontend now implements own-log initialization,
 sole AGC8 ownership and retirement after device idle plus matching completion
 epochs. [The source review](docs/native-driver-examples-20261022.md) records the
 actual PS5LM/RADV and native MOSS examples and the implementation decisions.
-Host integration does not establish console compatibility or lift the hold.
+Host integration does not establish Qwen console compatibility or numerical quality.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the
@@ -141,6 +143,9 @@ policy. Full acquisition/conversion and physical PS5 memory admission remain
 pending.
 The native client requires the complete v2 conversion audit and exact original
 footprint before backend initialization; legacy receipts are rejected.
+[The native contract build](docs/native-model-contract-host-20261022.json)
+passes 289 actual-module imports, SELF integrity and six segment roundtrips.
+That artifact has not been installed on the console.
 
 ## Manual PS5 build
 

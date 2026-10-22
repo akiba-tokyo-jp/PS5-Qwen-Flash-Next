@@ -11,6 +11,7 @@
 #include "memory_admission.h"
 #include "model_integrity.h"
 #include "model_receipt.h"
+#include "validation_policy.h"
 #include "native_gpu.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -168,10 +169,9 @@ int main(int argc, char ** argv) {
         if (!policy.contains("allowed_modes") || !policy.at("allowed_modes").is_array() ||
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
-        // Host integration does not lift the console hold. A policy edit alone
-        // must never enable the GPU while shell-state admission is unresolved.
-        if (startup.monitor_validation || (!startup.display_validation && !startup.runtime_validation))
-            throw std::runtime_error("Native GPU execution remains disabled by the console hold; host integration is not console admission");
+        // A frozen fixture policy does not replace the launcher's fresh console
+        // guards. Full-model inference remains independently rejected here.
+        qwen_app::require_native_validation_policy(policy, mode, startup.native_display);
         qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");
         llama_log_set(native_log, nullptr); ggml_log_set(native_log, nullptr);
         qwen_native_set_fault_report((startup.admission_report + ".fatal").c_str());

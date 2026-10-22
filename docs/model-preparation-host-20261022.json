@@ -34,7 +34,7 @@
     "native_memory_policy_replay": "passed"
   },
   "manual_checks": {
-    "Python_tests_passed": 44,
+    "Python_tests_passed": 46,
     "actual_GGUF_writer_reader_fixture_cases_passed": 6,
     "complete_model_native_footprint_replay": "passed",
     "incomplete_precision_shape_split_and_integer_metadata": "rejected",
@@ -47,7 +47,10 @@
     "actual_dense_changed_bit_and_oversized_input": "rejected",
     "pinned_range_redirect_reuse_and_expiry_refresh": "passed",
     "actual_native_model_receipt_rejected_cases": 38,
-    "native_receipt_and_complete_footprint_gate": "passed"
+    "native_receipt_and_complete_footprint_gate": "passed",
+    "pooled_HTTP_original_shard_SHA256_check": "passed",
+    "pooled_HTTP_verified_fixture_bytes": 1040155944,
+    "pooled_HTTP_fixture_is_full_model_preparation": false
   },
   "implemented_conversion_gates": {
     "original_full_SHA256_before_conversion": true,

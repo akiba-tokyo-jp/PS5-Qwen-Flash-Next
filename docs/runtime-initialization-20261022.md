@@ -1,10 +1,11 @@
 # Runtime initialization implementation
 
-All further console execution is disabled. The owner cannot physically operate
-the console. The native GPU entry paths also fail before backend initialization
-throughout the console hold. The native lifecycle is now implemented for host
-verification. Host builds
-and tests below do not lift this restriction.
+The [subsequent physical-console reassessment](console-reassessment-20261022.md)
+passed fresh CPU guards and completed exact original restoration, startup
+numerical admission and ordinary shutdown. The next Qwen gate is a distinct
+no-display, one-graph BF16 fixture bound to the exact native archive and a fresh
+idle launch session. Committed console/deployment flags remain disabled;
+full-model inference is independently rejected by the native entry point.
 
 The CPU prerequisite completed on the console with SELF
 `86d425e61006525dd22bdde3fc1c7f91121593c251892a15c58676fa6348986d`:
@@ -23,9 +24,9 @@ The distinct corrected BF16 SELF
 `dfb9c1c5361634bc5ac15dac8c9d26cc712c45f9aa7ad137f018b0bd13da11a1`
 completed instance creation and checked instance dispatch, then exited before
 physical-device enumeration returned. No device, compute or BF16 result was
-admitted. The subsequent CPU observer failed the shell-state gate. No additional
-console helper or application is being executed, and original restoration and
-fresh numerical admission remain pending. See
+admitted. The subsequent CPU observer failed the shell-state gate. Original
+restoration and numerical admission were pending at that checkpoint and were
+completed by the later reassessment. See
 [the preserved record](native-bf16-fixed-20261022.json).
 
 The selected generic driver archive did not retain the required native
@@ -87,6 +88,10 @@ the exact tensor set using the pinned converter's metadata-only transformations,
 requires every expert and PLE component, checks the actual GGUF structure, and
 compares all original expert/PLE bytes before receipt publication. Its derived
 1,256-tensor footprint matches the native memory policy on the host.
+The native client now requires the complete v2 receipt before initialization,
+and checks the transferred footprint after file hashing. Its [subsequent host
+link and SELF checks](native-model-contract-host-20261022.json) pass without
+console execution.
 
 The converter also checks all 237 Python files in its source tree against the
 original pinned ZIP before execution and again before receipt publication.

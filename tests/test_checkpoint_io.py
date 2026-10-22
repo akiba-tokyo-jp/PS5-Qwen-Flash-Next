@@ -73,6 +73,35 @@ class CheckpointIO(unittest.TestCase):
                     acquire.fetch_range(acquire.BASE + "fixture", 0, length)
             request.assert_not_called()
 
+    def test_optional_session_transport_keeps_exact_range_and_closes_each_response(self):
+        class Raw(io.BytesIO):
+            def read(self, maximum, decode_content=False):
+                return super().read(maximum)
+        raw = Raw(b"12345678")
+        response = SimpleNamespace(status_code=206, headers={"Content-Range": "bytes 8-15/100"},
+                                   url="https://cdn.example.invalid/signed", raw=raw, close=raw.close)
+        class Session:
+            def get(self, url, **options):
+                self.options = options
+                return response
+        session = Session()
+        state = threading.local(); state.http_session = session
+        with patch.object(acquire, "_redirect", state):
+            self.assertEqual(acquire.fetch_range(acquire.BASE + "fixture", 8, 8), b"12345678")
+        self.assertEqual(session.options["headers"]["Range"], "bytes=8-15")
+        self.assertEqual(session.options["timeout"], (10, 30))
+        self.assertTrue(raw.closed)
+
+    def test_session_transport_errors_do_not_expose_signed_urls(self):
+        class Session:
+            def get(self, *args, **kwargs):
+                raise RuntimeError("https://cdn.example.invalid/?secret=must-not-log")
+        state = threading.local(); state.http_session = Session()
+        with patch.object(acquire, "_redirect", state), self.assertRaises(OSError) as failure:
+            acquire.request(acquire.BASE + "fixture", 0, 7)
+        self.assertNotIn("secret", str(failure.exception))
+        self.assertTrue(failure.exception.__suppress_context__)
+
     def header(self, tensors, data_bytes):
         raw = json.dumps(tensors).encode()
         with patch.object(acquire, "fetch_range", side_effect=(struct.pack("<Q", len(raw)), raw)):

@@ -1,0 +1,51 @@
+{
+  "schema": "ps5-qwen-native-model-contract-host-result-v1",
+  "date": "2026-10-22",
+  "application_source_commit": "fa44a32e91fce7cd2b64eb154016e1c8303c4802",
+  "model_receipt_schema": "ps5-qwen-bf16-conversion-v2",
+  "model_audit_schema": "ps5-qwen-conversion-audit-v2",
+  "native_receipt_header_sha256": "94a636c8cd083d0d7e05c9899f746a522c9daeb2aac38fdc342d78628e45dfb6",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "profile": "cumulative-idle",
+  "shared_profile_archive_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+  "linked_native_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+  "persistent_caches_enabled": false,
+  "PIE": {
+    "bytes": 125183360,
+    "sha256": "0ba18079826ccb93182c9f8cffe4e4230917b257047834cf274ff5bbace98e0b"
+  },
+  "SELF": {
+    "bytes": 57765655,
+    "sha256": "c12a75ba08019ac462be8ae057cc9ccbe117e925b4041f2ba47196f3233923a3"
+  },
+  "manual_checks": {
+    "native_link": "passed",
+    "native_receipt_rejected_cases": 38,
+    "initializer_slots": 17,
+    "preinitializer_slots": 1,
+    "runtime_providers": 6,
+    "actual_module_imports_resolved": 289,
+    "actual_module_imports_missing": 0,
+    "weak_stubs_accepted_as_providers": false,
+    "SELF_integrity": "passed",
+    "loadable_segment_roundtrips": 6,
+    "source_header_and_link_input_hashes_stable": true
+  },
+  "prior_native_PIE_preserved_and_SHA256_matched": "3c8e4e48702a4d68a105bbd3fe87dd9a2857f239894df35716c55272144281cd",
+  "immutable_package_snapshots": [
+    "engine build receipt",
+    "native platform receipt",
+    "application native link receipt"
+  ],
+  "console_access": false,
+  "installed": false,
+  "GPU_modes_enabled": false,
+  "physical_memory_admitted": false,
+  "model_loaded": false,
+  "full_original_model_preparation_completed": false,
+  "full_model_qualified": false,
+  "tokens_per_second_measured": false,
+  "original_console_restoration": "still_pending_from_prior_attempt",
+  "release_qualified": false,
+  "CI": false
+}

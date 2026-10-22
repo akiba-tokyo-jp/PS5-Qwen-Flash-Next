@@ -24,6 +24,13 @@ seconds for 32 MiB with redirect reuse. This sample informed acquisition only;
 it does not predict complete-checkpoint or console throughput. Metadata headers
 remain limited to 8 MiB, and every data response must honor its exact range.
 
+The optional `--http-client requests` uses one connection pool per worker;
+stdlib acquisition remains the default and needs no third-party package.
+Responses retain the same exact range and length checks, expired redirects
+refresh at the pinned origin, and transport errors redact signed URLs. A full
+1,040,155,944-byte original shard passed its pinned SHA256 in a separate
+transport test. That single-shard test is not full model preparation.
+
 ## Complete metadata plan
 
 `tools/audit_conversion.py` checks the pinned source ZIP and all 237 executed
@@ -108,7 +115,7 @@ the complete metadata plan and small fixture checks have passed.
 
 ## Manual checks
 
-The Python suite passes 44 tests. Actual pinned GGUF fixtures accept BF16/F32 and
+The Python suite passes 46 tests. Actual pinned GGUF fixtures accept BF16/F32 and
 exact large integer constants, and reject F16, big endian files, truncation and
 overlapping spans. The full 1,256-tensor plan passes the native memory replay.
 The first metadata subclass attempt and initial generic integer-array fixture

@@ -101,6 +101,32 @@ timeout or a successful host build. Keep console operations and all validation
 deployment disabled in config/development.json. Preserve the reservation and
 all failed evidence; do not report a normal or restored console state.
 
+### Subsequent bounded reassessment
+
+The owner's subsequent request to use the PS5 resumes examination of the
+existing console under the previously authorized validation task. The earlier
+host-only hold must not prevent a fresh bounded CPU-only state assessment.
+Existing management GETs have responded with no native owner. Permit one
+fresh-nonce copy of the reviewed metadata-only observer, preserving every
+boot, process identity, process state and double-snapshot guard. This is not
+permission to relax a failed guard or repeat an ambiguous execution. If the
+fresh assessment passes, restore the exact preserved original SELF while its
+title is inactive and verify a complete readback before considering an ordinary
+original-title admission. Keep GPU validation, release deployment and full-model
+execution disabled until separately admitted. Preserve the existing reservation
+and failed records throughout.
+
+The reassessment subsequently passed. The exact original SELF was restored,
+numerically readmitted on the physical PS5, normally closed, and verified by
+fresh idle CPU metadata and a complete post-shutdown readback. See
+docs/console-reassessment-20261022.md and its JSON result. The reservation is
+still held by this task. A distinct native-frontend artifact may now run the
+single no-display BF16 32x16/F32-vector fixture after its host link, module,
+SELF, SPIR-V, fresh session, exact original preservation and headroom gates.
+Use the native validation policy's exact archive/profile and one-graph scope;
+keep committed console/deployment flags disabled. This is separate from
+full-model admission and never authorizes repeating an ambiguous launch.
+
 ## Native frontend implementation
 
 The subsequent host implementation follows actual PS5LM static RADV dispatch,

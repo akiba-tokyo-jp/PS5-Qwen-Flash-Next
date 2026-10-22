@@ -24,6 +24,7 @@ def main():
     p.add_argument("--acquire", action="store_true", help="Resume verified acquisition before conversion")
     p.add_argument("--jobs", type=int, default=4)
     p.add_argument("--download-range-mib", type=int, choices=(8, 16, 32, 64), default=32)
+    p.add_argument("--http-client", choices=("stdlib", "requests"), default="stdlib")
     p.add_argument("--conversion-timeout-seconds", type=int, default=21600)
     a = p.parse_args()
     if not 0 <= a.wait_seconds <= 86400 or not 1 <= a.conversion_timeout_seconds <= 86400:
@@ -57,7 +58,7 @@ def run(a):
             # Every original file is hashed before converter execution below.
             # Avoid concurrent rereads of retained files on the acquisition disk.
             qwen_flash_next.download(a.cache, a.jobs, a.wait_seconds, verify_existing=False,
-                                     range_bytes=a.download_range_mib << 20)
+                                     range_bytes=a.download_range_mib << 20, http_client=a.http_client)
         manifest = json.loads((a.cache / "metadata/checkpoint.json").read_text())
         while True:
             ready = sum((a.cache / "model" / row["name"]).is_file() and
