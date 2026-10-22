@@ -130,3 +130,5 @@ replay and final GGUF hashes before publishing
 a model receipt. Keep failed/partial outputs; do not infer success from a stale
 status file. The 11,976,330,752-byte planned memory requirement is not measured
 available PS5 capacity. See docs/model-preparation-20261022.md.
+Keep the native v2 receipt and complete original footprint gates before backend
+initialization. A metadata fixture or legacy receipt must never bypass them.

@@ -45,7 +45,9 @@
     "actual_original_dense_inputs": 4,
     "actual_dense_transform_outputs_verified": 5,
     "actual_dense_changed_bit_and_oversized_input": "rejected",
-    "pinned_range_redirect_reuse_and_expiry_refresh": "passed"
+    "pinned_range_redirect_reuse_and_expiry_refresh": "passed",
+    "actual_native_model_receipt_rejected_cases": 38,
+    "native_receipt_and_complete_footprint_gate": "passed"
   },
   "implemented_conversion_gates": {
     "original_full_SHA256_before_conversion": true,
@@ -56,6 +58,7 @@
     "original_embedding_payload_bytes": true,
     "all_dense_transformation_outputs": true,
     "one_payload_check_for_every_converted_tensor": true,
+    "native_v2_audit_required_before_backend_initialization": true,
     "final_GGUF_file_SHA256": true,
     "durable_receipt_only_after_all_gates": true
   },

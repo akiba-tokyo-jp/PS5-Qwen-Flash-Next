@@ -415,7 +415,7 @@ def audit_conversion(cache, out, files, progress=lambda *args, **kwargs: None, t
     if covered.intersection(dense_names) or covered | dense_names != set(expected):
         raise ValueError("Every converted tensor must have exactly one completed payload verification")
     report = {key: value for key, value in plan.items() if key not in ("tensors", "ple_parts", "integer_constants", "raw_expert_copies", "raw_embedding_copies", "dense_source_tensors")}
-    report.update(schema="ps5-qwen-conversion-audit-v1", complete_tensor_set=True,
+    report.update(schema="ps5-qwen-conversion-audit-v2", complete_tensor_set=True,
                   exact_shapes_and_precision=True, exact_PLE_integer_constants=True,
                   PLE_payload_bytes_verified=verified_bytes, PLE_parts_verified=len(plan["ple_parts"]),
                   expert_payload_bytes_verified=expert_bytes, expert_projection_tensors_verified=len(plan.get("raw_expert_copies", [])),

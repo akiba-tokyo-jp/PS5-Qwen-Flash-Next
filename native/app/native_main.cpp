@@ -10,6 +10,7 @@
 #include "vulkan_admission.h"
 #include "memory_admission.h"
 #include "model_integrity.h"
+#include "model_receipt.h"
 #include "native_gpu.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -286,16 +287,10 @@ int main(int argc, char ** argv) {
             qwen_native_stage("monitor_HTTP_service_returned");
             throw std::runtime_error(served ? "Monitor HTTP listener failed" : "Monitor HTTP listener stopped unexpectedly");
         }
-        std::ifstream receipt_file(startup.model_receipt);
-        const auto receipt = Json::parse(receipt_file);
-        if (receipt.at("schema") != "ps5-qwen-bf16-conversion-v1" ||
-            receipt.at("original_revision") != "de4b8e4d43b917e7706784d8bb445c9af86a3540" ||
-            receipt.at("outtype") != "bf16" || !receipt.at("original_shards_verified").get<bool>() ||
-            !receipt.at("files").is_array() || receipt.at("files").empty())
-            throw std::runtime_error("Verified original BF16 conversion receipt required");
+        const auto receipt = qwen_app::read_model_receipt(startup.model_receipt);
+        const auto expected_mapped_files=qwen_app::validate_model_receipt(receipt);
         // A receipt records host conversion provenance, not a fresh console hash
         // check. Deployment must independently verify every transferred file.
-        if(receipt.at("files").size()>256) throw std::runtime_error("Converted model file count exceeds its bound");
         qwen_app::ModelFootprint footprint; std::unordered_set<std::string> tensor_names;
         bool first = true;
         unsigned file_index=0;
@@ -314,6 +309,7 @@ int main(int argc, char ** argv) {
             inspect_container(model_file(startup.model_receipt, file.at("path").get<std::string>()), first,
                 footprint,tensor_names,file.at("bytes").get<std::uint64_t>()); first = false;
         }
+        qwen_app::validate_original_footprint(footprint,expected_mapped_files);
         const auto first_path = model_file(startup.model_receipt, receipt.at("files").at(0).at("path").get<std::string>());
         write_fresh_report(startup.admission_report+".integrity",{{"schema","ps5-qwen-model-integrity-v1"},
             {"pid",getpid()},{"files_verified",file_index},{"all_SHA256_matched",true},

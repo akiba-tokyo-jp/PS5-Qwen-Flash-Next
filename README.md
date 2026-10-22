@@ -139,6 +139,8 @@ dense weight-format transform, then publishes final
 file digests. The derived memory footprint also matches the native admission
 policy. Full acquisition/conversion and physical PS5 memory admission remain
 pending.
+The native client requires the complete v2 conversion audit and exact original
+footprint before backend initialization; legacy receipts are rejected.
 
 ## Manual PS5 build
 

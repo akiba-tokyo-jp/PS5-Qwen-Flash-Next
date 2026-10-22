@@ -128,7 +128,7 @@ def main():
             outputs.append({"path": path.name, "bytes": path.stat().st_size, "sha256": digest(path, hashing_deadline)})
         if source_identity != converter_sources(archive, upstream):
             raise ValueError("Converter source identity changed during conversion")
-        receipt = {"schema": "ps5-qwen-bf16-conversion-v1", "original_revision": manifest["revision"],
+        receipt = {"schema": "ps5-qwen-bf16-conversion-v2", "original_revision": manifest["revision"],
                    "upstream_revision": LOCK["llama_cpp"]["revision"], "outtype": "bf16", "original_shards_verified": True,
                    "files": outputs, "converter_sources": source_identity,
                    "conversion_audit": audit,

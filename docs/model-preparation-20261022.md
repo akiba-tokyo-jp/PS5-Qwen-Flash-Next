@@ -82,6 +82,24 @@ successful model loading. Fresh observations remain mandatory.
   fsynced model receipt only after all checks pass. A failure or timeout retains
   partial output and a failed phase, without a model receipt.
 
+## Native receipt boundary
+
+The application now requires `ps5-qwen-bf16-conversion-v2` and its v2 audit.
+It rejects old receipts before backend initialization. The receipt is bounded
+to 1 MiB and must match the original model/converter identities, pinned Python
+source tree, complete layout, all expert/PLE/embedding/dense counts and exact
+byte totals. Counts must be integers and gates must be booleans. File basenames,
+digests, duplicates and the 512 GiB mapping bound are checked. Explicit metadata
+test fixtures are rejected.
+
+After every transferred file passes SHA256 and GGUF inspection, the actual
+1256-tensor footprint must equal the complete original plan before initialization
+continues. This host provenance gate does not replace fresh file hashes, fresh
+physical memory observations, GPU admission or independent model-quality checks.
+The actual native policy accepts the valid in-memory metadata fixture and rejects
+38 legacy/malformed/incomplete cases. No learned tensors or GPU APIs are accessed
+by that policy test.
+
 The dense replay checks the saved weights against the pinned converter; it does
 not independently validate that converter's arithmetic or model forward results.
 Host format/copy checks do not establish console model quality or tokens/s. Full
@@ -113,6 +131,7 @@ python tools/audit_conversion.py --cache D:/PS5-AI/qwen-flash-next --plan-out D:
 python tools/check_conversion_audit.py --cache D:/PS5-AI/qwen-flash-next --out D:/PS5-AI/qwen-flash-next/build/conversion-audit-check-FRESH
 python tools/check_model_footprint.py --workspace C:/Users/User/ps5-ai --cache D:/PS5-AI/qwen-flash-next --plan D:/PS5-AI/qwen-flash-next/audit/conversion-plan-FRESH.private.json --out D:/PS5-AI/qwen-flash-next/build/model-footprint-FRESH
 python tools/check_dense_replay.py --cache D:/PS5-AI/qwen-flash-next --out D:/PS5-AI/qwen-flash-next/build/dense-replay-FRESH
+python tools/check_model_receipt.py --workspace C:/Users/User/ps5-ai --cache D:/PS5-AI/qwen-flash-next --plan D:/PS5-AI/qwen-flash-next/build/dense-replay-FRESH/complete-plan.private.json --out D:/PS5-AI/qwen-flash-next/build/model-receipt-FRESH
 ```
 
 Use the CPU-only conversion virtual environment for conversion and metadata

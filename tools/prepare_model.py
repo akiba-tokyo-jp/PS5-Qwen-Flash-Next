@@ -73,7 +73,7 @@ def run(a):
                     "--timeout-seconds", str(a.conversion_timeout_seconds)]
         convert_model.main()
         receipt = json.loads((a.out / "model-receipt.json").read_text())
-        if not receipt["original_shards_verified"] or receipt["outtype"] != "bf16":
+        if receipt["schema"] != "ps5-qwen-bf16-conversion-v2" or not receipt["original_shards_verified"] or receipt["outtype"] != "bf16":
             raise ValueError("BF16 preparation did not produce the expected receipt")
         audit = receipt.get("conversion_audit", {})
         if not all(audit.get(key) for key in ("complete_tensor_set", "exact_shapes_and_precision",

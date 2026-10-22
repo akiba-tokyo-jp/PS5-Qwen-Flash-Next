@@ -100,7 +100,12 @@ def main():
         obj = objects / (path.stem + "-" + identity[:20] + ".o")
         command = [str(llvm / "clang++.exe"), *local_flags, "-c", str(path), "-o", str(obj)]
         if not obj.exists():
-            result = subprocess.run(command, env=env, capture_output=True)
+            try:
+                result = subprocess.run(command, env=env, capture_output=True, timeout=300)
+            except subprocess.TimeoutExpired as error:
+                obj.unlink(missing_ok=True)
+                (objects / (obj.stem + ".private.log")).write_bytes((error.stdout or b"") + (error.stderr or b"") + b"\nHost compilation deadline exceeded\n")
+                raise RuntimeError("Host native compilation deadline exceeded: " + path.name) from error
             (objects / (obj.stem + ".private.log")).write_bytes(result.stdout + result.stderr)
             if result.returncode:
                 obj.unlink(missing_ok=True)
@@ -180,7 +185,13 @@ def main():
                "console_access": False, "model_loaded": False, "learned_host_inference": False,
                "SELF_packaged": False, "CI": False, "compile_commands": [cmd for _, cmd in compiled],
                "link_command": command, "inputs_before": before}
-    result = subprocess.run(command, env=env, capture_output=True)
+    try:
+        result = subprocess.run(command, env=env, capture_output=True, timeout=600)
+    except subprocess.TimeoutExpired as error:
+        (out / "link.private.log").write_bytes((error.stdout or b"") + (error.stderr or b"") + b"\nHost link deadline exceeded\n")
+        receipt.update(link_returncode=None, phase="failed", error_type="TimeoutExpired", input_hashes_stable=False)
+        (out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        raise RuntimeError("Host native link deadline exceeded; candidate is not admitted") from error
     (out / "link.private.log").write_bytes(result.stdout + result.stderr)
     receipt["link_returncode"] = result.returncode
     (out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
