@@ -8,6 +8,14 @@ sources and complete copy-adapter provenance, and pins local file identities.
 The plan uses one upload connection and includes a separate 32 GiB storage
 reserve. Planning performs no console access, model evaluation or GPU work.
 
+`tools/storage_capacity.py` parses only the unique expected `/data` filesystem
+row from a bounded, completed CPU capture. Human-readable quantities use decimal
+units with one displayed quantum subtracted, conservatively allowing for unit
+choice and rounding. The original payload, receipt and 32 GiB reserve must fit
+that lower bound. The parser does not prove command completion or freshness;
+the coordinator must bind both separately. A preserved historical capture
+parsed successfully, but is not fresh admission for a later bulk transfer.
+
 `tools/model_transport.py` provides the per-file transport operation. The
 coordinator must first admit a fresh unchanged idle session, the shared console
 reservation, current capacity and an owned destination directory. It must hold
