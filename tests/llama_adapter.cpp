@@ -19,6 +19,13 @@ static bool decode_failure = false;
 static float logits[] = {1, 2, 3, 4};
 static std::vector<int> decoded;
 static std::vector<std::string> stages;
+static int gpu_begins=0,gpu_completes=0,gpu_retains=0;
+static bool gpu_completion_failure=false;
+static int gpu_checkpoints=0;
+static void gpu_checkpoint(){++gpu_checkpoints;}
+static void gpu_begin(){++gpu_begins;}
+static void gpu_complete(){++gpu_completes;if(gpu_completion_failure)throw std::runtime_error("Boundary did not complete");}
+static void gpu_retain(){++gpu_retains;}
 static void observe(const char * value) { stages.emplace_back(value); }
 static void check(bool value, const char * message) { if (!value) throw std::runtime_error(message); }
 
@@ -70,6 +77,7 @@ int main() {
         {
             qwen_app::LlamaEngine engine(&model, &context);
             engine.set_stage_observer(observe);
+            engine.set_gpu_boundaries(gpu_begin,gpu_complete,gpu_retain,gpu_checkpoint);
             check(engine.expert_cache_metrics()->hits == 7 && engine.expert_cache_metrics()->uploaded_bytes == 4096,
                   "Cache counters did not come from the engine patch");
             check(engine.tokenize("test") == 3, "Adapter tokenization failed");
@@ -82,6 +90,8 @@ int main() {
             engine.finish();
         }
         check(freed == 2 && clears == 2, "Healthy adapter did not clear and release its owned objects");
+        check(gpu_begins==5&&gpu_completes==5&&!gpu_retains,"Successful prefill/token/EOG/reset boundaries were not paired");
+        check(gpu_checkpoints==5,"Completed decode boundaries did not drain retired native allocations");
         const int healthy_freed = freed;
         {
             qwen_app::LlamaEngine engine(&model, &context);
@@ -96,12 +106,21 @@ int main() {
         {
             qwen_app::LlamaEngine engine(&model, &context);
             engine.set_stage_observer(observe);
+            engine.set_gpu_boundaries(gpu_begin,gpu_complete,gpu_retain);
             engine.tokenize("test");
             try { engine.prefill(64); throw std::logic_error("Decode failure accepted"); }
             catch (const std::runtime_error &) {}
         }
         check(stages.back()=="inference_before_decode_call", "Failed decode incorrectly reported completion");
         check(freed == healthy_freed, "Failed prefill released uncertain resources");
+        check(gpu_begins==6&&gpu_completes==5&&gpu_retains==1,"Failed decode incorrectly completed its GPU boundary");
+        decode_failure=false;gpu_completion_failure=true;
+        {
+            qwen_app::LlamaEngine engine(&model,&context);engine.set_gpu_boundaries(gpu_begin,gpu_complete,gpu_retain);
+            engine.tokenize("test");bool failed=false;
+            try{engine.prefill(64);}catch(const std::runtime_error&){failed=true;}
+            check(failed&&engine.failed()&&gpu_retains==2,"Failed native completion was not retained");
+        }
         std::cout << "Adapter API-stub scenarios passed; no model was loaded\n";
     } catch (const std::exception & error) { std::cerr << error.what() << '\n'; return 1; }
 }

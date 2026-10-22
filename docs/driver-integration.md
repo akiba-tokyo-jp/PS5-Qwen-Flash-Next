@@ -122,12 +122,14 @@ unchanged, then publishes a private candidate manifest. Its output is explicitly
 not application-linked or deployment-qualified. It does not silently change
 the selected generic archive lock or claim that the native frontend is ready.
 
-The native frontend must still own its log before explicit AGC initialization,
-prepare its per-BO owner metadata and use its required address/Flexible memory
-contract. Deferred retirement requires the sole producer's positively completed
-quiet boundary. The existing native member has other-client log paths and
-frontend hooks; it cannot simply be dropped into Qwen. This is an identified
-integration omission, not a proven cause of the console exit.
+The native frontend now owns its log before explicit AGC initialization,
+prepares its per-BO owner metadata and preserves the address contract. Deferred
+retirement requires the sole producer's positively completed quiet boundary.
+The adopted member has Qwen-owned log paths and explicit frontend hooks; its
+optional import-only pool reports zero because Qwen does not own one. See
+[the actual Vulkan examples and implementation](native-driver-examples-20261022.md).
+The earlier allocator integration omission is not a proven cause of the console
+exit, and host integration does not admit another console launch.
 
 Host SELF conversion/packaging and bounded native startup/display/status now pass.
 Model-independent GPU admission, original checkpoint acquisition,

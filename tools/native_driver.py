@@ -196,6 +196,37 @@ def compose(native_base, reference, selected, native_lock, llvm_ar, out, timeout
         raise
 
 
+def validate_native_platform(manifest_path, selected, native_lock):
+    manifest_path=Path(manifest_path).resolve()
+    value=json.loads(manifest_path.read_text())
+    if (value.get('schema')!='ps5-qwen-native-platform-build-v1' or value.get('selected_driver')!=selected or
+        value.get('composition_archive_sha256')!=native_lock['selected_composition_sha256'] or
+        value.get('modified_members')!=[list(NATIVE_PLATFORM)] or value.get('unmodified_members_preserved')!=703 or
+        value.get('other_application_log_fallback') is not False or value.get('deployment_allowed') is not False or
+        value.get('console_access') is not False or value.get('GPU_executed') is not False or
+        value.get('persistent_caches_disabled_required') is not True or value.get('CI') is not False):
+        raise ValueError('Native platform manifest does not match the host-only integration contract')
+    current=sorted(path.resolve()for path in (ROOT/'native/driver').iterdir()if path.is_file())
+    recorded=sorted(Path(row['path']).resolve()for row in value['native_source'])
+    if recorded!=current:raise ValueError('Native platform source set changed')
+    for row in value['native_source']+value['native_headers']+value['inputs_before_after']:
+        if sha(row['path'])!=row['sha256']:raise ValueError('Native platform source, header or build input changed')
+    archive=Path(value['archive_path'])
+    if sha(archive)!=value['archive_sha256']:raise ValueError('Native platform archive digest mismatch')
+    inputs=value['inputs_before_after']
+    if not inputs or inputs[0]['sha256']!=native_lock['selected_composition_sha256']:
+        raise ValueError('Native platform composition donor is not pinned')
+    before=hashes(read_archive(inputs[0]['path']));after=hashes(read_archive(archive))
+    if len(before)!=704 or before.keys()!=after.keys() or {key for key in before if before[key]!=after[key]}!={NATIVE_PLATFORM}:
+        raise ValueError('Native platform changed an unrelated member occurrence')
+    native_object=manifest_path.parent/NATIVE_PLATFORM[0]
+    if after[NATIVE_PLATFORM]!=sha(native_object):raise ValueError('Native platform object does not match the archive')
+    return {'manifest_path':str(manifest_path),'manifest_sha256':sha(manifest_path),
+            'archive_path':str(archive),'archive_sha256':value['archive_sha256'],
+            'selected_shared_driver':selected,'source_inputs':value['native_source'],
+            'unmodified_native_members_preserved':703,'console_qualified':False}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("native-base", "reference", "driver-root", "driver-manifest", "llvm-ar", "out"):

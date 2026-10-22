@@ -100,3 +100,21 @@ request physical console interaction. Do not automatically resume after a
 timeout or a successful host build. Keep console operations and all validation
 deployment disabled in config/development.json. Preserve the reservation and
 all failed evidence; do not report a normal or restored console state.
+
+## Native frontend implementation
+
+The subsequent host implementation follows actual PS5LM static RADV dispatch,
+PS5 Mesa platform initialization and the preserved MIT native MOSS per-BO
+lifetime code. See docs/native-driver-examples-20261022.md and the native source
+provenance. Keep one explicit AGC8 owner, a Qwen-owned exclusive bounded journal,
+one frontend producer, externally synchronized queue access and positive device
+idle plus a matching worker completion epoch before deferred retirement.
+Unknown or failed completion retains the resource graph. Qwen owns no optional
+import-only heap; do not invent its capacity or import unowned CPU pointers.
+
+Use tools/build_native_platform.py and --native-platform-manifest for native
+frontend integration. The generic selected archive remains the exact shared
+compiler/winsys donor, not an allocator substitute. Preserve all other native
+member occurrences and immutable source/header/link receipts. Host native
+integration and SELF checks do not lift the current console hold. Do not remove
+the native GPU execution rejection merely because the host link succeeds.

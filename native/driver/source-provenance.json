@@ -1,0 +1,23 @@
+{
+  "schema": "ps5-qwen-native-platform-source-v1",
+  "origin": "akiba-tokyo-jp/PS5-AI-MOSS-Image native/app",
+  "upstream_platform": "mihawk-99/PS5_Mesa",
+  "license": "MIT; original notices retained",
+  "original_native_base_sha256": "6dbafa051c378d03190b45667825bda5faaaa2f6e0823a4e522c39560baafb0a",
+  "source_files": {
+    "radv_ps5_platform_native.c": "975e83762fadc5c4b838a1e4a97b7165736149ebd81934bae3eb4d9ac6146207",
+    "perbo_owner_impl.c": "b79ed77ac3ec4537b4737a6b9e6618548328d9d67f7ba6cb0ea5f338946efe56",
+    "driver_journal_impl.inc": "3b35ccabbf53d50f016313223023b54e31cb46849533e9daa63fac7b4c0f614b",
+    "kick_impl32.c": "e81480e731add25418fe54a1a2348543c0928e5d7a52a7725eb21789b1ceee91",
+    "arena.h": "01110dd93c490a4198748923db3a2f7e6b2b4d64fe3594910bb1d43f9cb73bb8",
+    "journal_metrics.h": "326ee6978e0f5c543c1c07e8d3693c534ce45470a6ff166c0f50f55f4f82e234",
+    "placement.h": "60ca863a67b2b07200aa3e28fb2c397c6abe711b14e3fa25789124a97d550786"
+  },
+  "changes": [
+    "Own exclusive Qwen journal path; no fallback to another application",
+    "Bounded 64 MiB journal; retain evidence instead of rotation",
+    "Omit unrelated optional MOSS GPU timestamp diagnostics"
+  ],
+  "console_execution": false,
+  "qualification": "host implementation only"
+}

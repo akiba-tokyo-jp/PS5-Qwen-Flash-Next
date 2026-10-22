@@ -11,6 +11,7 @@ import subprocess
 import struct
 
 from driver_inputs import sha, validate_driver
+from native_driver import validate_native_platform
 from audit_native_imports import audit
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,6 +35,9 @@ def main():
     linked = json.loads(link_receipt.read_text(encoding="utf-8"))
     if linked.get("link_returncode") != 0 or not linked.get("input_hashes_stable") or linked["driver"] != selected:
         raise ValueError("A successful matching native link receipt is required")
+    if linked.get('native_platform'):
+        platform=validate_native_platform(linked['native_platform']['manifest_path'],selected,lock['native_platform_base'])
+        if platform!=linked['native_platform']:raise ValueError('Linked native platform provenance changed')
     image = Path(linked["artifact"]["path"])
     if sha(image) != linked["artifact"]["sha256"]:
         raise ValueError("Native PIE differs from the link receipt")
@@ -58,6 +62,13 @@ def main():
         (tool_dir / "compile.private.log").write_bytes(result.stdout + result.stderr)
         if result.returncode: raise RuntimeError(result.stderr.decode("utf-8", "replace"))
     a.out.mkdir(parents=True)
+    native_platform_snapshot=None
+    if linked.get('native_platform'):
+        origin=Path(linked['native_platform']['manifest_path'])
+        native_platform_snapshot=a.out/'native-platform.receipt.private.json'
+        shutil.copyfile(origin,native_platform_snapshot)
+        if sha(native_platform_snapshot)!=linked['native_platform']['manifest_sha256']:
+            raise ValueError('Native platform manifest changed while snapshotting')
     engine_origin = Path(linked["engine_receipt"]["path"])
     if sha(engine_origin) != linked["engine_receipt"]["sha256"]:
         raise ValueError("Engine build receipt changed after the native link")
@@ -96,11 +107,13 @@ def main():
         ("extract", [str(tool), "self", "--extract", "--file", str(executable), "--out", str(extracted)]),
     ]
     receipt = {"schema": "ps5-qwen-local-self-v1", "driver": selected, "native_link_receipt": record(link_snapshot),
+               "linked_driver":linked.get('linked_driver',selected),
                "engine_build_receipt": record(engine_snapshot),
                "native_link_receipt_origin": record(link_receipt),
                "native_pie": record(image), "format_tool": record(tool), "format_tool_sources": [record(path) for path in sources + headers],
                "format_tool_compile": compile_command, "console_access": False, "installed": False,
                "model_loaded": False, "release_qualified": False, "steps": []}
+    if native_platform_snapshot:receipt['native_platform_build_receipt']=record(native_platform_snapshot)
     for name, command in commands:
         result = subprocess.run(command, env=env, capture_output=True)
         (a.out / (name + ".private.log")).write_bytes(result.stdout + result.stderr)

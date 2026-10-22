@@ -22,6 +22,7 @@ public:
     std::optional<ExpertCacheMetrics> expert_cache_metrics() const override;
     bool failed() const { return failed_; }
     void set_stage_observer(void (*observer)(const char *)) { stage_ = observer; }
+    void set_gpu_boundaries(void (*begin)(),void (*complete)(),void (*retain)(),void (*checkpoint)()=nullptr);
 
 private:
     void process(llama_token token, llama_pos position, bool output);
@@ -37,6 +38,10 @@ private:
     bool ready_ = false;
     bool failed_ = false;
     void (*stage_)(const char *) = nullptr;
+    void (*gpu_begin_)() = nullptr;
+    void (*gpu_complete_)() = nullptr;
+    void (*gpu_retain_)() = nullptr;
+    void (*gpu_checkpoint_)() = nullptr;
     void stage(const char * value) const { if (stage_) stage_(value); }
 };
 

@@ -10,6 +10,7 @@
 #include "vulkan_admission.h"
 #include "memory_admission.h"
 #include "model_integrity.h"
+#include "native_gpu.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <ps5platform/kernel.h>
@@ -166,11 +167,10 @@ int main(int argc, char ** argv) {
         if (!policy.contains("allowed_modes") || !policy.at("allowed_modes").is_array() ||
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
-        // The generic profile preserves its generic allocator, not the native
-        // frontend's allocator/address contract. A policy edit cannot qualify it.
-        // Re-enable GPU modes only with an implemented, audited native lifecycle.
+        // Host integration does not lift the console hold. A policy edit alone
+        // must never enable the GPU while shell-state admission is unresolved.
         if (startup.monitor_validation || (!startup.display_validation && !startup.runtime_validation))
-            throw std::runtime_error("Native GPU initialization is disabled pending application allocator and lifecycle integration");
+            throw std::runtime_error("Native GPU execution remains disabled by the console hold; host integration is not console admission");
         qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");
         llama_log_set(native_log, nullptr); ggml_log_set(native_log, nullptr);
         qwen_native_set_fault_report((startup.admission_report + ".fatal").c_str());
@@ -240,10 +240,14 @@ int main(int argc, char ** argv) {
                 qwen_native_stage("before_BF16_GPU_admission model_loaded=0");
                 qwen_app::admit_cpu_runtime(qwen_native_stage);
                 qwen_app::inspect_vulkan_globals();
+                if(!qwen_native_gpu_frontend_linked())throw std::runtime_error("Native driver frontend is not linked");
+                qwen_native_gpu_initialize((startup.admission_report+".driver.log").c_str());
+                qwen_native_driver_begin();
                 qwen_native_stage("before_llama_backend_initialization model_loaded=0");
                 llama_backend_init();
                 qwen_native_stage("llama_backend_initialization_completed model_loaded=0");
                 const auto admission = qwen_app::admit_bf16_gpu(qwen_native_stage);
+                qwen_native_driver_complete();
                 const bool finite = std::all_of(admission.actual.begin(), admission.actual.end(), [](float value) { return std::isfinite(value); });
                 const Json record = {{"schema", "ps5-qwen-bf16-admission-v1"}, {"model_loaded", false}, {"pid", getpid()},
                     {"fixture", "BF16 32x16 weights times F32 32-vector; F32 output"},
@@ -321,6 +325,9 @@ int main(int argc, char ** argv) {
         native_resources_started = true;
         qwen_app::admit_cpu_runtime(qwen_native_stage);
         qwen_app::inspect_vulkan_globals();
+        if(!qwen_native_gpu_frontend_linked())throw std::runtime_error("Native driver frontend is not linked");
+        qwen_native_gpu_initialize((startup.admission_report+".driver.log").c_str());
+        qwen_native_driver_begin();
         llama_backend_init();
         auto device = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU);
         if (!device) device = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_IGPU);
@@ -347,6 +354,7 @@ int main(int argc, char ** argv) {
         model = llama_model_load_from_file(first_path.c_str(), model_params);
         if (!model) throw std::runtime_error("Model load failed; restart through the ordinary OS path");
         qwen_native_stage("model_load_completed");
+        qwen_native_driver_checkpoint();
         ggml_backend_dev_memory(device, &driver_free, &driver_total);
         // Initial, unqualified limits: do not infer extra RAM from the GPU pool.
         const auto remaining=qwen_app::checked_memory_sum(memory_budget.context,
@@ -361,6 +369,7 @@ int main(int argc, char ** argv) {
         if (!context) throw std::runtime_error("Context admission failed; restart through the ordinary OS path");
         engine = std::make_unique<qwen_app::LlamaEngine>(model, context);
         engine->set_stage_observer(qwen_native_stage);
+        engine->set_gpu_boundaries(qwen_native_driver_begin,qwen_native_driver_complete,qwen_native_driver_retain,qwen_native_driver_checkpoint);
         const auto * chat_template = llama_model_chat_template(model, nullptr);
         if (!chat_template || !*chat_template) throw std::runtime_error("The original chat template is required");
         qwen_app::HardwareInfo hardware;
@@ -374,13 +383,16 @@ int main(int argc, char ** argv) {
             ggml_backend_dev_memory(device, &free, &total);
             if (total) { hardware.gpu_total_bytes = total; hardware.gpu_free_bytes = free; }
         }
+        qwen_native_driver_complete();
         qwen_native_stage("inference_before_HTTP_listener_after_model_and_context_admission");
         const int result = qwen_app::serve_http(*engine, startup.web_assets, chat_template, startup.port, false, hardware,
             display ? std::function<void(const qwen_app::MonitorSnapshot &)>([&](const auto & snapshot) { display->publish(snapshot); })
                     : std::function<void(const qwen_app::MonitorSnapshot &)>{});
         if (result) throw std::runtime_error("Inference HTTP listener failed");
         if (engine->failed()) throw std::runtime_error("Model resources retained after an uncertain backend result");
+        qwen_native_driver_begin();
         engine.reset(); llama_free(context); context = nullptr; llama_model_free(model); model = nullptr;
+        qwen_native_driver_complete();
         if (display) {
             screen.state = "service stopped"; screen.message = "CLOSE THE TITLE THROUGH THE ORDINARY OS PATH";
             display->publish(screen);
@@ -388,6 +400,7 @@ int main(int argc, char ** argv) {
         }
         return result;
     } catch (const std::exception & error) {
+        if(native_resources_started)qwen_native_driver_retain();
         // No manual release or automatic retry after a failed native admission.
         // The owning process must remain available for ordinary OS shutdown.
         qwen_native_stage("native_exception_admission_failed");
@@ -409,6 +422,7 @@ int main(int argc, char ** argv) {
         return 1;
     } catch (...) {
         if (native_resources_started) {
+            qwen_native_driver_retain();
             engine.release();
             for (;;) (void) usleep(1000000);
         }

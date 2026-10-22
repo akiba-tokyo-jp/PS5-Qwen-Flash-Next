@@ -7,6 +7,25 @@
 #include <stdexcept>
 
 namespace qwen_app {
+namespace {
+class GpuBoundary {
+    void (*complete_)();
+    void (*retain_)();
+    bool completed_=false;
+public:
+    GpuBoundary(void (*begin)(),void (*complete)(),void (*retain)()) : complete_(complete),retain_(retain) {
+        if(begin)begin();
+    }
+    void complete() {if(complete_)complete_();completed_=true;}
+    ~GpuBoundary() {if(!completed_ && retain_)retain_();}
+};
+}
+
+void LlamaEngine::set_gpu_boundaries(void (*begin)(),void (*complete)(),void (*retain)(),void (*checkpoint)()) {
+    if(!begin || !complete || !retain || ready_)throw std::invalid_argument("Complete GPU boundary hooks are required before requests");
+    gpu_begin_=begin;gpu_complete_=complete;gpu_retain_=retain;
+    gpu_checkpoint_=checkpoint;
+}
 
 std::optional<ExpertCacheMetrics> LlamaEngine::expert_cache_metrics() const {
     llama_app_expert_stats stats{};
@@ -93,6 +112,7 @@ void LlamaEngine::process(llama_token token, llama_pos position, bool output) {
     stage("inference_decode_call_returned_before_synchronize");
     llama_synchronize(context_);
     stage("inference_decode_synchronization_completed");
+    if(gpu_checkpoint_)gpu_checkpoint_();
 }
 
 void LlamaEngine::prefill(std::uint32_t context_tokens) {
@@ -100,6 +120,7 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
     if (prompt_.empty() || prompt_.size() >= context_tokens || context_tokens > llama_n_ctx(context_))
         throw std::invalid_argument("Invalid context admission");
     try {
+        GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);
         stage("inference_before_prefill");
         llama_memory_clear(llama_get_memory(context_), true);
         llama_sampler_reset(sampler_);
@@ -108,7 +129,7 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
         for (std::size_t i = 0; i < prompt_.size(); ++i) {
             process(prompt_[i], position_++, i + 1 == prompt_.size());
         }
-        ready_ = true;
+        boundary.complete();ready_ = true;
         stage("inference_prefill_completed");
     } catch (...) { failed_ = true; throw; }
 }
@@ -117,6 +138,7 @@ Token LlamaEngine::next() {
     require_healthy();
     if (!ready_) throw std::logic_error("Prefill required before decoding");
     try {
+        GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);
         if (pending_ != LLAMA_TOKEN_NULL) {
             if (std::uint32_t(position_) >= llama_n_ctx(context_)) throw std::runtime_error("Context exhausted");
             process(pending_, position_++, true);
@@ -130,7 +152,7 @@ Token LlamaEngine::next() {
         stage("inference_before_sampling");
         pending_ = llama_sampler_sample(sampler_, context_, -1);
         if (pending_ < 0 || pending_ >= count) throw std::runtime_error("Invalid sampled token");
-        if (llama_vocab_is_eog(vocabulary_, pending_)) { stage("inference_end_of_generation_observed"); return {pending_, {}, true}; }
+        if (llama_vocab_is_eog(vocabulary_, pending_)) { boundary.complete();stage("inference_end_of_generation_observed"); return {pending_, {}, true}; }
         std::string piece(256, '\0');
         int size = llama_token_to_piece(vocabulary_, pending_, piece.data(), int(piece.size()), 0, true);
         if (size < 0) {
@@ -140,20 +162,23 @@ Token LlamaEngine::next() {
         }
         if (size < 0 || std::size_t(size) > piece.size()) throw std::runtime_error("Token rendering failed");
         piece.resize(std::size_t(size));
-        stage("inference_token_ready");
+        boundary.complete();stage("inference_token_ready");
         return {pending_, std::move(piece), false};
     } catch (...) { failed_ = true; throw; }
 }
 
 void LlamaEngine::finish() {
     require_healthy();
+    try {
+    GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);
     stage("inference_before_successful_request_reset");
     llama_memory_clear(llama_get_memory(context_), true);
     llama_sampler_reset(sampler_);
     ready_ = false;
     pending_ = LLAMA_TOKEN_NULL;
     prompt_.clear();
-    stage("inference_request_reset_completed");
+    boundary.complete();stage("inference_request_reset_completed");
+    } catch (...) {failed_=true;throw;}
 }
 
 } // namespace qwen_app

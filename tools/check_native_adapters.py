@@ -14,7 +14,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--workspace", type=Path, required=True)
     p.add_argument("--cache", type=Path, required=True)
-    p.add_argument("--only", choices=["vulkan_bridge", "native_socket", "native_memory", "native_addr", "native_bootstrap", "native_fault", "gpu_admission", "runtime_admission"])
+    p.add_argument("--only", choices=["vulkan_bridge", "native_socket", "native_memory", "native_addr", "native_bootstrap", "native_fault", "gpu_admission", "runtime_admission", "native_import_pool"])
     a = p.parse_args()
     host = a.workspace / "toolchain/msys-clang64/clang64/bin"
     out = a.cache / "build/native-adapter-checks"
@@ -25,7 +25,8 @@ def main():
                           ("native_socket", ROOT / "tests/socket_stubs"), ("native_memory", ROOT / "tests/memory_stubs"),
                           ("native_addr", ROOT / "tests/address_stubs"), ("native_bootstrap", ROOT / "tests/bootstrap_stubs"),
                           ("native_fault", ROOT / "tests/bootstrap_stubs"), ("gpu_admission", ROOT / "tests/gpu_admission_stubs"),
-                          ("runtime_admission", ROOT / "tests/gpu_admission_stubs")):
+                          ("runtime_admission", ROOT / "tests/gpu_admission_stubs"),
+                          ("native_import_pool",ROOT / "native/app")):
         if a.only and a.only != name: continue
         exe = out / (name + ".exe")
         command = [str(host / "clang++.exe"), "-std=c++17", "-O2", "-Wall", "-Wextra", "-Werror", "-I", str(include),

@@ -2,7 +2,8 @@
 
 All further console execution is disabled. The owner cannot physically operate
 the console. The native GPU entry paths also fail before backend initialization
-until the application's allocator/lifecycle contract is implemented. Host builds
+throughout the console hold. The native lifecycle is now implemented for host
+verification. Host builds
 and tests below do not lift this restriction.
 
 The CPU prerequisite completed on the console with SELF
@@ -30,8 +31,10 @@ fresh numerical admission remain pending. See
 The selected generic driver archive did not retain the required native
 application allocator and compatibility objects. Host tooling now composes the
 exact shared-driver pair into a pinned native base while retaining its other
-702 member occurrences. Native frontend integration remains incomplete; the
-source/allocator omission is not established as the exit's root cause.
+702 member occurrences. At that checkpoint native frontend integration remained
+incomplete; the source/allocator omission is not established as the exit's root
+cause. The subsequent [implementation from actual Vulkan examples](native-driver-examples-20261022.md)
+adds the frontend lifecycle and native links without console execution.
 
 The application implementation now validates required static dispatch pointers
 before use and omits `VkLayerSettingsCreateInfoEXT` when its extension is not
@@ -78,11 +81,13 @@ states and has a process deadline. A corrupt shard or timed-out converter cannot
 publish a model receipt. Full checkpoint acquisition, console mapping/residency,
 model output and measured tokens/s remain separate requirements.
 
-The converter also checks all 237 executed Python source files against the
+The converter also checks all 237 Python files in its source tree against the
 original pinned ZIP before execution and again before receipt publication.
 Changed or additional Python modules are rejected. The latest host-only native
 build, local SELF checks, 24 Python tests, API-stub checks and native-driver
 composition are recorded in [the host result](host-only-implementation-20261022.json).
 The composed archive retains all 702 native member occurrences outside the
-selected pair. It is not linked into the application: frontend integration is
-still incomplete. No new artifact in that host result has been sent to the PS5.
+selected pair. At that earlier checkpoint it was not linked into the application.
+The subsequent native frontend is implemented and host-linked separately; see
+[the actual Vulkan examples](native-driver-examples-20261022.md). No artifact
+from these host results has been sent to the PS5.

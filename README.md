@@ -18,8 +18,9 @@ The owner cannot physically operate the console. After the corrected BF16
 initialization attempt exited and shell-state admission failed, all console
 operations and validation deployment were disabled in
 [development.json](config/development.json). Development continues on the host.
-GPU modes are also rejected by the native entry point pending application
-allocator/lifecycle integration, independently of configuration changes. See
+GPU modes are also rejected by the native entry point throughout the console
+hold, independently of configuration changes. The native allocator/lifecycle
+integration is implemented and verified separately on the host. See
 [native-validation.md](docs/native-validation.md) for the staged gates and exact
 preservation/restoration requirements. Driver tests do not establish Qwen quality
 or memory admission.
@@ -85,9 +86,11 @@ transfer chunks, loader progress and separate inference phase records.
 [Runtime implementation](docs/runtime-initialization-20261022.md) records their
 scope. A host-only driver composition tool preserves the native allocator and
 three native compatibility objects while applying the exact two selected
-shared-driver members. Frontend initialization, log ownership, positive quiet
-and resource retirement must still be integrated before it can be linked for
-GPU execution; composing an archive does not establish that contract.
+shared-driver members. The frontend now implements own-log initialization,
+sole AGC8 ownership and retirement after device idle plus matching completion
+epochs. [The source review](docs/native-driver-examples-20261022.md) records the
+actual PS5LM/RADV and native MOSS examples and the implementation decisions.
+Host integration does not establish console compatibility or lift the hold.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the

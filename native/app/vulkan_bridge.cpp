@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <cstring>
 #include <algorithm>
+#include <atomic>
 
 extern "C" {
 PFN_vkVoidFunction vk_icdGetInstanceProcAddr(VkInstance, const char *);
@@ -16,7 +17,26 @@ void vk_common_CmdCopyBuffer(VkCommandBuffer, VkBuffer, VkBuffer, std::uint32_t,
 VkResult vk_common_QueueSubmit(VkQueue, std::uint32_t, const VkSubmitInfo *, VkFence);
 [[noreturn]] void qwen_native_halt(const char *);
 void qwen_native_stage(const char *);
+void qwen_native_driver_before_submit() __attribute__((weak));
+void qwen_native_driver_after_submit() __attribute__((weak));
+void qwen_native_driver_register_device(std::uintptr_t) __attribute__((weak));
 void ggml_app_backend_phase(const char * value) { qwen_native_stage(value); }
+static std::atomic<PFN_vkCreateDevice> original_create_device{nullptr};
+static std::atomic<PFN_vkQueueSubmit2> original_queue_submit2{nullptr};
+
+static VkResult VKAPI_CALL checked_create_device(VkPhysicalDevice physical,const VkDeviceCreateInfo * info,
+                                                const VkAllocationCallbacks * allocator,VkDevice * device) {
+    const auto operation=original_create_device.load();
+    if(!operation)qwen_native_halt("missing_create_device_entrypoint");
+    qwen_native_stage("Vulkan_before_native_device_creation");
+    const auto result=operation(physical,info,allocator,device);
+    if(result==VK_SUCCESS) {
+        if(!device || !*device)qwen_native_halt("successful_device_creation_without_handle");
+        if(qwen_native_driver_register_device)qwen_native_driver_register_device(reinterpret_cast<std::uintptr_t>(*device));
+        qwen_native_stage("Vulkan_native_device_registered");
+    }
+    return result;
+}
 
 static VkResult VKAPI_CALL checked_instance_version(std::uint32_t * version) {
     auto operation = reinterpret_cast<PFN_vkEnumerateInstanceVersion>(vk_icdGetInstanceProcAddr(nullptr,"vkEnumerateInstanceVersion"));
@@ -62,8 +82,19 @@ static VkResult VKAPI_CALL bounded_wait_semaphores(VkDevice device, const VkSema
     return result;
 }
 static VkResult VKAPI_CALL checked_queue_submit(VkQueue queue, std::uint32_t count, const VkSubmitInfo * submits, VkFence fence) {
+    if(qwen_native_driver_before_submit)qwen_native_driver_before_submit();
     const auto result = vk_common_QueueSubmit(queue, count, submits, fence);
     if (result != VK_SUCCESS) qwen_native_halt("queue_submit_failed");
+    if(qwen_native_driver_after_submit)qwen_native_driver_after_submit();
+    return result;
+}
+static VkResult VKAPI_CALL checked_queue_submit2(VkQueue queue,std::uint32_t count,const VkSubmitInfo2 * submits,VkFence fence) {
+    const auto operation=original_queue_submit2.load();
+    if(!operation)qwen_native_halt("missing_queue_submit2_entrypoint");
+    if(qwen_native_driver_before_submit)qwen_native_driver_before_submit();
+    const auto result=operation(queue,count,submits,fence);
+    if(result!=VK_SUCCESS)qwen_native_halt("queue_submit2_failed");
+    if(qwen_native_driver_after_submit)qwen_native_driver_after_submit();
     return result;
 }
 
@@ -77,6 +108,11 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetDeviceProcAddr(VkDevice device, co
         return reinterpret_cast<PFN_vkVoidFunction>(bounded_wait_semaphores);
     if (std::strcmp(name, "vkQueueSubmit") == 0)
         return reinterpret_cast<PFN_vkVoidFunction>(checked_queue_submit);
+    if (std::strcmp(name,"vkQueueSubmit2")==0 || std::strcmp(name,"vkQueueSubmit2KHR")==0) {
+        const auto operation=vk_common_GetDeviceProcAddr(device,name);
+        if(operation)original_queue_submit2.store(reinterpret_cast<PFN_vkQueueSubmit2>(operation));
+        return operation?reinterpret_cast<PFN_vkVoidFunction>(checked_queue_submit2):nullptr;
+    }
     return vk_common_GetDeviceProcAddr(device, name);
 }
 
@@ -92,6 +128,16 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(VkInstance instan
         return vk_icdGetInstanceProcAddr(nullptr,name) ? reinterpret_cast<PFN_vkVoidFunction>(checked_instance_extensions) : nullptr;
     if (std::strcmp(name,"vkCreateInstance") == 0)
         return vk_icdGetInstanceProcAddr(nullptr,name) ? reinterpret_cast<PFN_vkVoidFunction>(checked_create_instance) : nullptr;
+    if (std::strcmp(name,"vkCreateDevice")==0) {
+        const auto operation=vk_icdGetInstanceProcAddr(instance,name);
+        if(operation)original_create_device.store(reinterpret_cast<PFN_vkCreateDevice>(operation));
+        return operation?reinterpret_cast<PFN_vkVoidFunction>(checked_create_device):nullptr;
+    }
+    if (std::strcmp(name,"vkQueueSubmit2")==0 || std::strcmp(name,"vkQueueSubmit2KHR")==0) {
+        const auto operation=vk_icdGetInstanceProcAddr(instance,name);
+        if(operation)original_queue_submit2.store(reinterpret_cast<PFN_vkQueueSubmit2>(operation));
+        return operation?reinterpret_cast<PFN_vkVoidFunction>(checked_queue_submit2):nullptr;
+    }
     if (std::strcmp(name, "vkGetDeviceProcAddr") == 0)
         return reinterpret_cast<PFN_vkVoidFunction>(vkGetDeviceProcAddr);
     if (std::strcmp(name, "vkWaitForFences") == 0)

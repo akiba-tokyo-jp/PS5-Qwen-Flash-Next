@@ -16,6 +16,7 @@ import re
 import subprocess
 
 from driver_inputs import sha, validate_driver
+from native_driver import validate_native_platform
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -30,6 +31,8 @@ def main():
     parser.add_argument("--workspace", type=Path, required=True)
     parser.add_argument("--driver-root", type=Path, required=True)
     parser.add_argument("--driver-manifest", type=Path, required=True)
+    parser.add_argument("--native-platform-manifest", type=Path,
+                        help="Exact host-built native platform manifest; does not authorize console execution")
     parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--runtime-imports", type=Path, required=True,
                         help="Local source-generated SceAgc import stubs; never copied to the repository")
@@ -39,6 +42,7 @@ def main():
         parser.error("jobs must be between 1 and 8")
     lock = json.loads((ROOT / "native/qwen_flash_next/dependencies.lock.json").read_text())
     selected = validate_driver(a.driver_root, a.driver_manifest, lock["ps5_vulkan_inference"])
+    native_platform=validate_native_platform(a.native_platform_manifest,selected,lock['native_platform_base']) if a.native_platform_manifest else None
     workspace, cache = a.workspace.resolve(), a.cache.resolve()
     engine = cache / "build/llama-ps5"
     receipt_path = engine / "receipt.private.json"
@@ -66,11 +70,12 @@ def main():
              "-fvisibility-nodllstorageclass=default", "-fexceptions", "-fcxx-exceptions", "-frtti",
              "-nostdinc++", "-isystem", str(sdk / "target/include/c++/v1"), "-isystem", str(sdk / "target/include")]
     flags += [value for path in includes for value in ("-I", str(path))]
+    flags += ["-DQWEN_NATIVE_PLATFORM="+str(int(native_platform is not None))]
     files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "http_app.cpp", "native_main.cpp",
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
-                                                   "model_integrity.cpp", "sha256_backend.cpp")]
+                                                   "model_integrity.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
@@ -79,6 +84,7 @@ def main():
                     for path in sorted(directory.glob("*.h"))]
     header_paths += [source / "vendor/hash" / name for name in
                      ("sha256/sha256.c","sha256/sha256.h","sha256/LICENSE","rotate-bits/rotate-bits.h")]
+    header_paths += sorted((ROOT/'native/driver').glob('*.h'))
     header_inputs = [record(path) for path in header_paths]
     headers = b"".join(path.read_bytes() for path in header_paths)
     compiler_hash = sha(llvm / "clang++.exe")
@@ -87,7 +93,7 @@ def main():
     env["PATH"] = str(workspace / "toolchain/msys-clang64/clang64/bin") + os.pathsep + env.get("PATH", "")
 
     def compile_one(path):
-        local_flags = flags + (["-I", str(workspace / "toolchain/Vulkan-Headers/include")] if path.name in {"vulkan_bridge.cpp", "vulkan_admission.cpp"} else [])
+        local_flags = flags + (["-I", str(workspace / "toolchain/Vulkan-Headers/include")] if path.name in {"vulkan_bridge.cpp", "vulkan_admission.cpp", "native_gpu.cpp"} else [])
         if path.name == "httplib.cpp":
             local_flags += ["-Daccept4=qwen_native_accept_http"]
         identity = hashlib.sha256((str(path) + json.dumps(local_flags) + compiler_hash).encode() + path.read_bytes() + headers).hexdigest()
@@ -108,7 +114,7 @@ def main():
         raise ValueError("An application source changed during compilation")
     # Keep deterministic source/link order and all static constructor sections.
     elf = out / "qwen-native.pie.elf"
-    driver_archive = Path(selected["archive_path"])
+    driver_archive = Path((native_platform or selected)["archive_path"])
     engine_archives = [Path(row["path"]) for row in built["artifacts"]]
     static_runtime = [library / name for name in ("libc++.a", "libc++abi.a", "libunwind.a", "libps5platform.a", "libc.a")]
     builtins = workspace / "toolchain/llvm-mingw-20261006-ucrt-x86_64/lib/clang/23/lib/linux/libclang_rt.builtins-x86_64.a"
@@ -122,6 +128,7 @@ def main():
     # flush/close wrappers publish the caller-owned buffer; preserve both hooks.
     command += ["--defsym=open_memstream=ps5_open_memstream", "--wrap=fclose", "--wrap=fflush"]
     command += ["--wrap=abort"]
+    if native_platform:command += ['--wrap=sceAgcInit']
     command += ["--defsym=mprotect=qwen_native_mprotect"]
     command += ["--defsym=kernel_mprotect=qwen_native_reject_payload_mprotect"]
     # SDK dlfcn wrappers test these optional payload-loader hooks for null.
@@ -162,8 +169,10 @@ def main():
               a.driver_root / "tooling/native/ps5-pie.ld", receipt_path]
     before = [record(path) for path in inputs]
     receipt = {"schema": "ps5-qwen-native-link-v1", "driver": selected, "engine_receipt": record(receipt_path),
-               "GPU_modes_enabled": False, "native_allocator_frontend_integrated": False,
-               "platform_contract": "generic archive; GPU entry rejected before backend initialization",
+               "GPU_modes_enabled": False, "native_allocator_frontend_integrated": native_platform is not None,
+               "native_platform": native_platform,
+               "linked_driver": native_platform or selected,
+               "platform_contract": "own native journal, sole AGC8, per-BO owner and completed-producer retirement" if native_platform else "generic archive; GPU entry rejected before backend initialization",
                "engine_build_provenance": built,
                "compiler": record(llvm / "clang++.exe"), "linker": record(llvm / "ld.lld.exe"),
                "application_sources": source_inputs, "application_headers": header_inputs,
@@ -184,6 +193,11 @@ def main():
     for name in ("_start", "main", "catchReturnFromMain", "qwen_native_halt", "qwen_native_accept_http", "_Znwm", "__gxx_personality_v0", "llama_app_mmap_prefetch_disabled", "llama_app_expert_policy_enabled", "llama_app_expert_counters", "ggml_app_bounded_staging_enabled", "vkGetInstanceProcAddr"):
         if not re.search(r"\b" + re.escape(name) + r"$", symbols, re.M):
             raise ValueError("Required native integration symbol is absent: " + name)
+    if native_platform:
+        for name in ('__wrap_sceAgcInit','qwen_ps5_driver_open_log','qwen_native_driver_before_submit',
+                     'qwen_native_driver_after_submit','qwen_native_driver_complete','qwen_native_driver_checkpoint','qwen_native_driver_register_device'):
+            if not re.search(r'\b'+re.escape(name)+r'$',symbols,re.M):
+                raise ValueError('Native platform frontend hook is absent: '+name)
     sections = subprocess.check_output([str(llvm / "llvm-readelf.exe"), "--wide", "--sections", str(elf)], text=True)
     initializers = re.search(r"\]\s+\.init_array\s+\S+\s+\S+\s+\S+\s+([0-9a-fA-F]+)", sections)
     if not initializers or not int(initializers[1], 16):

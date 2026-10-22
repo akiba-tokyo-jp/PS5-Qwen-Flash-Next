@@ -88,10 +88,11 @@
     ]
   },
   "native_platform_base": {
-    "purpose": "host-only composition candidate; frontend lifecycle integration pending",
+    "purpose": "preserved native ABI base; frontend implementation is recorded by the application link receipt",
     "provenance": "Preserved native Direct per-BO application archive; not a replacement for the selected shared-driver profile",
     "base_archive_sha256": "6dbafa051c378d03190b45667825bda5faaaa2f6e0823a4e522c39560baafb0a",
     "reference_archive_sha256": "149ad31788c0c8bc78de971f0f95b931832f3db94eafda38b28bdf2aff1218fa",
+    "selected_composition_sha256": "ad88e3688d8c3e0f17f8f51525baa70fd75088dded410cbe43a4d48de7ac092a",
     "native_frontend_integrated": false,
     "deployment_allowed": false
   },

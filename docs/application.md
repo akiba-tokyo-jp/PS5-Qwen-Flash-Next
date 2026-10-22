@@ -3,7 +3,9 @@
 All console operations are currently disabled after the later initialization
 exit and failed shell-state admission. The owner cannot physically operate the
 console. Native GPU modes also reject execution before backend initialization
-pending allocator/lifecycle integration. Host implementation and checks continue;
+throughout the console hold. The allocator/lifecycle integration has now been
+implemented on the host; see [the actual Vulkan examples](native-driver-examples-20261022.md).
+Host implementation and checks continue;
 see [the latest failure record](native-bf16-fixed-20261022.json).
 
 The application has session control, a llama.cpp adapter, a web interface and an
