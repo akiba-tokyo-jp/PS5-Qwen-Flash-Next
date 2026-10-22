@@ -172,6 +172,7 @@ int main(int argc, char ** argv) {
         // A frozen fixture policy does not replace the launcher's fresh console
         // guards. Full-model inference remains independently rejected here.
         qwen_app::require_native_validation_policy(policy, mode, startup.native_display);
+        qwen_app::monitor_clock().initialize(startup.clock_calibration);
         qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");
         llama_log_set(native_log, nullptr); ggml_log_set(native_log, nullptr);
         qwen_native_set_fault_report((startup.admission_report + ".fatal").c_str());
@@ -192,7 +193,9 @@ int main(int argc, char ** argv) {
         std::size_t cpu_name_size = sizeof(cpu_name);
         if (!sysctlbyname("hw.model", cpu_name, &cpu_name_size, nullptr, 0) && cpu_name_size &&
             std::memchr(cpu_name, 0, sizeof(cpu_name))) screen.cpu_name = cpu_name;
-        if (startup.native_display) {
+        // Combined admission starts scanout only after the current graph has
+        // passed numerical verification and positive completed retirement.
+        if (startup.native_display && !startup.monitor_validation) {
             qwen_native_stage("before_display_start compute_dispatches=0 model_loaded=0");
             display = std::make_unique<qwen_app::NativeDisplay>();
             native_resources_started = true;
@@ -273,6 +276,32 @@ int main(int argc, char ** argv) {
                 if (const auto * name = ggml_backend_dev_description(device)) hardware.gpu_name = name;
                 std::size_t available = 0, total = 0; ggml_backend_dev_memory(device, &available, &total);
                 if (total) { hardware.gpu_total_bytes = total; hardware.gpu_free_bytes = available; }
+            }
+            if (startup.monitor_validation && startup.native_display) {
+                std::int64_t physical = 0; std::size_t available = 0;
+                const auto pool = sceKernelGetDirectMemorySize();
+                if (pool <= 0 || sceKernelAvailableDirectMemorySize(0, pool, 65536, &physical, &available) < 0 ||
+                    available < (128u << 20))
+                    throw std::runtime_error("Fresh post-compute display memory headroom is insufficient");
+                screen.state = "BF16 validated / monitor idle";
+                screen.gpu_name = hardware.gpu_name;
+                screen.gpu_total_bytes = hardware.gpu_total_bytes; screen.gpu_free_bytes = hardware.gpu_free_bytes;
+                qwen_native_stage("before_display_start_after_BF16_completed graph_compute_calls=1 model_loaded=0");
+                display = std::make_unique<qwen_app::NativeDisplay>();
+                display->start(screen);
+                if (display->failed()) throw std::runtime_error("Post-compute native display failed; backing retained");
+                qwen_native_stage("first_display_frame_after_BF16_completed graph_compute_calls=1 model_loaded=0");
+                const auto & clock = qwen_app::monitor_clock();
+                const auto uncertainty = clock.initial_uncertainty_ms();
+                write_fresh_report(startup.admission_report + ".display", {
+                    {"schema", "ps5-qwen-display-after-bf16-v1"}, {"pid", getpid()},
+                    {"first_frame_completed", true}, {"BF16_passed_before_display", true},
+                    {"positive_completion_and_retirement_before_display", true},
+                    {"Vulkan_initialized", true}, {"model_loaded", false}, {"graph_compute_calls", 1},
+                    {"display_buffer_bytes", 32u << 20}, {"pre_display_direct_available_bytes", available},
+                    {"clock_source", clock.source()}, {"clock_calibrated", clock.calibrated()},
+                    {"initial_clock_uncertainty_ms", uncertainty ? Json(*uncertainty) : Json(nullptr)},
+                    {"monitor_epoch_ms", clock.now()}});
             }
             class NoInference final : public qwen_app::Engine {
                 std::uint32_t tokenize(const std::string &) override { throw std::logic_error("No model loaded"); }

@@ -11,7 +11,7 @@ namespace qwen_app {
 struct MonitorSnapshot {
     std::string state = "starting", request_id, cpu_name, gpu_name, message;
     unsigned cpu_threads = 0;
-    bool model_loaded = false, busy = false, quarantined = false;
+    bool model_loaded = false, busy = false, quarantined = false, clock_calibrated = false;
     std::uint64_t epoch_ms = 0, generated_tokens = 0;
     std::optional<double> tokens_per_second, ttft_ms, elapsed_ms, cpu_percent, gpu_percent;
     std::optional<std::uint64_t> gpu_total_bytes, gpu_free_bytes;

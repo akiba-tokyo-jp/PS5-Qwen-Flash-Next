@@ -69,6 +69,8 @@ def main():
         assert initial["backend"] == "demo" and not initial["model_loaded"]
         assert initial["process_id"] == process.pid
         assert abs(initial["server_epoch_ms"] - time.time() * 1000) < 5000
+        assert initial["clock"] == {"source": "device time (unverified)", "calibrated": False,
+                                    "initial_uncertainty_ms": None}
         assert initial["hardware"]["cpu"]["app_usage_percent"] is None
         assert initial["hardware"]["gpu"]["usage_percent"] is None and initial["expert_cache"] is None
         connection, response = request("GET", "/")

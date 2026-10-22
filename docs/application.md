@@ -40,7 +40,7 @@ or release the engine.
 
 ## Timing
 
-All clocks use monotonic milliseconds. Tokenization and prefill have separate
+All duration measurements use monotonic milliseconds. Tokenization and prefill have separate
 durations. TTFT runs from request admission to the first generated non-EOG token.
 It remains absent when no token is generated. Decode rate uses intervals after
 the first token: `(generated_tokens - 1) / decode_seconds`. It remains absent
@@ -124,7 +124,9 @@ is disabled because its provider clock units remain unqualified. GPU utilization
 until a qualified counter exists; demos never invent hardware values.
 
 The clock follows the server epoch and displays the browser's local timezone.
-It does not establish host/console wall-clock synchronization.
+Status names its source and initial calibration uncertainty. An optional bounded
+host/CPU-observer calibration corrects only the application's UTC anchor, which
+then advances monotonically. Uncalibrated device time remains explicitly labelled.
 During generation, tokens/s uses intervals in the last five seconds; after a
 request, it shows the session decode average. The denominator excludes the first
 token's prefill wait. All generated tokens, including reasoning, are counted.
@@ -137,7 +139,9 @@ The TV interface uses the same typed status snapshot through a CPU observer
 once per second, without browser requests or backend calls on that observer.
 It rasterizes into two fixed tiled VideoOut buffers. Host tests check first-frame
 completion, every pixel address and retained no-retry faults. These are API-stub
-checks, not hardware evidence. The native clock is explicitly labelled CONSOLE UTC.
+checks, not hardware evidence. The native clock distinguishes UTC SYNC from
+unverified DEVICE TIME. Calibration and combined display/Vulkan qualification
+remain separate from the earlier no-display compute result.
 The separate display/status record confirms bounded first-frame and HTTP
 completion on the console; physical TV observation is not claimed.
 

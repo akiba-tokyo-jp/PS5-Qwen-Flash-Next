@@ -13,6 +13,29 @@ int main(int argc, char ** argv) {
     try {
         using namespace qwen_app;
         check(argc == 2, "Supply a host fixture output path");
+        const std::int64_t console_epoch = 1792649360000LL;
+        const auto steady = MonitorClock::Steady::time_point(std::chrono::seconds(100));
+        MonitorClock clock;
+        clock.initialize(ClockCalibration{console_epoch, console_epoch - 677000, 1500}, console_epoch + 2000, steady);
+        check(clock.calibrated() && clock.now(steady) == console_epoch - 675000,
+              "Observed console offset was not corrected locally");
+        check(clock.now(steady + std::chrono::seconds(3)) == console_epoch - 672000,
+              "Calibrated UTC must advance with the monotonic clock");
+        auto reject_clock = [&](ClockCalibration calibration, std::int64_t now) {
+            MonitorClock invalid; bool refused = false;
+            try { invalid.initialize(calibration, now, steady); } catch (const std::exception &) { refused = true; }
+            check(refused, "Invalid or stale clock calibration was admitted");
+        };
+        reject_clock({console_epoch, console_epoch, 5001}, console_epoch);
+        reject_clock({console_epoch, console_epoch, -1}, console_epoch);
+        reject_clock({console_epoch, console_epoch, 1000}, console_epoch + 900001);
+        reject_clock({console_epoch, console_epoch, 1000}, console_epoch - 1001);
+        reject_clock({console_epoch, console_epoch - 86400001, 1000}, console_epoch);
+        reject_clock({0, console_epoch, 1000}, console_epoch);
+        MonitorClock uncalibrated; uncalibrated.initialize({}, console_epoch, steady);
+        check(!uncalibrated.calibrated() && !uncalibrated.initial_uncertainty_ms() &&
+              uncalibrated.now(steady + std::chrono::seconds(1)) == console_epoch + 1000,
+              "Uncalibrated clock source must remain explicit");
         std::vector<bool> addresses(16u << 18, false);
         for (unsigned y = 0; y < MonitorRaster::height; ++y) for (unsigned x = 0; x < MonitorRaster::width; ++x) {
             const auto address = video_tiled_offset(x, y);
@@ -35,6 +58,15 @@ int main(int argc, char ** argv) {
         char app[] = "app"; char * args[] = {app, config.data()};
         const auto startup = read_startup(2, args);
         check(startup.monitor_validation && startup.native_display && startup.port == 8086, "Native startup configuration was not applied");
+        const std::string base = "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"clock_calibration\":";
+        { std::ofstream out(config); out << base << "{\"schema\":\"ps5-qwen-clock-offset-v1\",\"console_epoch_ms\":1792649360000,\"utc_epoch_ms\":1792648683000,\"uncertainty_ms\":1500}}"; }
+        check(read_startup(2, args).clock_calibration->utc_epoch_ms == console_epoch - 677000,
+              "Clock calibration must retain exact epoch integers");
+        for (const char * bad : {"true", "1.5", "-1", "18446744073709551615", "\"1792649360000\""}) {
+            { std::ofstream out(config); out << base << "{\"schema\":\"ps5-qwen-clock-offset-v1\",\"console_epoch_ms\":" << bad << ",\"utc_epoch_ms\":1792648683000,\"uncertainty_ms\":1500}}"; }
+            bool refused = false; try { read_startup(2, args); } catch (const std::exception &) { refused = true; }
+            check(refused, "Malformed clock epoch was accepted");
+        }
         { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"mode\":\"display-validation\"}"; }
         check(read_startup(2, args).display_validation && !read_startup(2, args).monitor_validation, "Display-only validation was not isolated");
         { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"port\":-1}"; }

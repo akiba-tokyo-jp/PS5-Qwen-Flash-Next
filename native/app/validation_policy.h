@@ -13,8 +13,6 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
     if (mode == "display-validation" || mode == "runtime-validation") return;
     if (mode != "monitor-validation")
         throw std::runtime_error("Full-model console inference has not passed its preceding qualification stages");
-    if (native_display)
-        throw std::runtime_error("The first native BF16 fixture must run without display ownership");
     const auto & fixture = policy.at("native_BF16_validation");
     if (!fixture.is_object() ||
         fixture.at("schema") != "ps5-qwen-native-bf16-validation-v1" ||
@@ -30,5 +28,17 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
         !fixture.at("maximum_graph_compute_calls").is_number_integer() ||
         fixture.at("maximum_graph_compute_calls") != 1)
         throw std::runtime_error("The exact bounded native BF16 fixture policy is required");
+    if (native_display) {
+        const auto & display = policy.at("native_display_after_BF16_validation");
+        if (!display.is_object() ||
+            display.at("schema") != "ps5-qwen-display-after-bf16-v1" ||
+            display.at("preceding_SELF_sha256") != "5c808d43cbe49f5d790707cc7fd67055b8de3e4bc1aa860c57ffa30c9ea6d427" ||
+            display.at("preceding_BF16_passed") != true ||
+            display.at("preceding_completion_and_retirement_passed") != true ||
+            display.at("start_only_after_current_BF16_completion") != true ||
+            !display.at("maximum_display_buffer_bytes").is_number_integer() ||
+            display.at("maximum_display_buffer_bytes") != (32u << 20))
+            throw std::runtime_error("Completed BF16 admission is required before native display validation");
+    }
 }
 }

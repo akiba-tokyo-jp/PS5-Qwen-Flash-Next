@@ -1,12 +1,12 @@
 # Native monitoring and staged validation
 
-Current restriction: all console operations and validation deployment are
-disabled. The owner cannot physically operate the console. The corrected BF16
-attempt exited before physical-device discovery returned, and the subsequent
-shell-state check was not admitted. Original restoration and numerical
-re-admission remain pending. Do not execute the procedures below under this
-hold. Continue host work only, without new helpers, titles, closes or recovery.
-See [the retained failure](native-bf16-fixed-20261022.json).
+Committed console/deployment flags remain disabled. The earlier
+[failed initialization](native-bf16-fixed-20261022.json) and shell-state refusal
+are preserved. A subsequent guarded reassessment restored and numerically
+readmitted the original application. The distinct corrected-link artifact then
+[passed the physical BF16 fixture](native-bf16-success-20261022.md), followed by
+complete original restoration, numerical readmission, ordinary shutdown and
+fresh CPU guards. The task retains its reservation for staged validation.
 
 The owner authorized console validation after implementation on 2026-10-22,
 then explicitly required avoiding console hangs and uncertain completion.
@@ -31,6 +31,24 @@ exactly representable CPU fixture inputs. The fixed gate is `abs(error) <=
 record precedes backend initialization. This mode requires observed Direct and
 Flexible headroom, serialized submissions and disabled asynchronous transfers.
 It does not establish full-model quality or BF16 support before execution.
+
+After the successful no-display fixture, a distinct combined validation artifact
+may present the monitor only after its own unchanged one-graph numerical gate,
+positive device completion and retirement have passed. The private frozen
+policy must name the preceding successful SELF and fixed 32 MiB display limit.
+A fresh post-compute Direct observation must admit at least 128 MiB before
+allocating display backing. Record first-frame completion separately. This
+implementation is not combined console qualification until measured on-device.
+
+The device wall clock was observed to differ from the host by about 11 minutes.
+An optional app-local calibration uses one freshly guarded CPU observer's
+second-resolution epoch and a bounded host observation interval. Reject
+intervals wider than 8 seconds, discontinuous host clocks, uncertainty above
+5 seconds, offsets beyond one day and startup observations older than 15 minutes.
+Once initialized, both HTTP and native display advance the same UTC anchor with
+the monotonic clock. This never sets the console system clock. Status identifies
+the clock source and initial uncertainty; without calibration, the display
+explicitly labels device time. Long-term clock drift is not qualified.
 
 Application blocking fence/semaphore waits are capped at ten seconds. Zero-time
 polls retain their original semantics. Failed submits, device errors or an

@@ -174,3 +174,15 @@ The reservation remains held. Keep committed console/deployment flags disabled.
 Full-model inference, resident-memory admission and tokens/s are unqualified.
 Native VideoOut combined with Vulkan and accurate UTC calibration remain
 separate stages; an advancing device wall clock does not establish UTC accuracy.
+
+A distinct combined validation artifact may now run the unchanged one-graph
+fixture and start the fixed 32 MiB native display only after its own numerical,
+positive completion and retirement gates pass. Require the exact preceding
+successful SELF in the private policy, fresh session/original preservation and
+fresh post-compute Direct headroom. App-local UTC calibration may use one
+freshly guarded CPU observation and a bounded host interval; never set the
+console system clock. Its source and uncertainty must remain visible. Preserve
+and restore the exact original executable, then repeat its numerical admission,
+ordinary shutdown, fresh CPU guards and complete final readback. Full-model
+inference remains independently rejected. Host checks alone do not qualify
+combined display/compute or calibrated UTC on the physical console.

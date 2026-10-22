@@ -49,6 +49,36 @@ int main() {
         auto changed = valid; changed["native_BF16_validation"]["maximum_graph_compute_calls"] = count; reject(changed);
     }
     reject(valid, "monitor-validation", true);
+    auto combined = valid;
+    combined["native_display_after_BF16_validation"] = {
+        {"schema", "ps5-qwen-display-after-bf16-v1"},
+        {"preceding_SELF_sha256", "5c808d43cbe49f5d790707cc7fd67055b8de3e4bc1aa860c57ffa30c9ea6d427"},
+        {"preceding_BF16_passed", true}, {"preceding_completion_and_retirement_passed", true},
+        {"start_only_after_current_BF16_completion", true}, {"maximum_display_buffer_bytes", 32u << 20}};
+    qwen_app::require_native_validation_policy(combined, "monitor-validation", true);
+    for (auto field = combined.at("native_display_after_BF16_validation").begin();
+         field != combined.at("native_display_after_BF16_validation").end(); ++field) {
+        auto changed = combined; changed["native_display_after_BF16_validation"].erase(field.key());
+        reject(changed, "monitor-validation", true);
+        changed = combined; changed["native_display_after_BF16_validation"][field.key()] = nullptr;
+        reject(changed, "monitor-validation", true);
+    }
+    for (const auto * key : {"preceding_BF16_passed", "preceding_completion_and_retirement_passed",
+                            "start_only_after_current_BF16_completion"}) {
+        auto changed = combined; changed["native_display_after_BF16_validation"][key] = false;
+        reject(changed, "monitor-validation", true);
+        changed["native_display_after_BF16_validation"][key] = 1;
+        reject(changed, "monitor-validation", true);
+    }
+    for (const auto * key : {"schema", "preceding_SELF_sha256"}) {
+        auto changed = combined; changed["native_display_after_BF16_validation"][key] = "incorrect";
+        reject(changed, "monitor-validation", true);
+    }
+    for (const Json & bytes : {Json(0), Json(64u << 20), Json(33554432.0), Json(true)}) {
+        auto changed = combined; changed["native_display_after_BF16_validation"]["maximum_display_buffer_bytes"] = bytes;
+        reject(changed, "monitor-validation", true);
+    }
+    reject(combined, "inference", true);
     reject(valid, "inference");
     reject(valid, "unrecognized");
     auto arbitrary = valid;

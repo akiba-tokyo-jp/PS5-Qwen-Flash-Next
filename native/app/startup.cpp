@@ -25,6 +25,19 @@ Startup read_startup(int argc, char ** argv) {
         result.web_assets = data.at("web_assets").get<std::string>();
         result.port = data.value("port", 8086);
         result.native_display = data.value("native_display", true);
+        if (data.contains("clock_calibration")) {
+            const auto & clock = data.at("clock_calibration");
+            if (!clock.is_object() || clock.at("schema") != "ps5-qwen-clock-offset-v1")
+                throw std::invalid_argument("Unknown monitor clock calibration schema");
+            auto integer = [&](const char * key) {
+                const auto & value = clock.at(key);
+                if (!value.is_number_integer() || value < 0 || value > 4102444800000LL)
+                    throw std::invalid_argument("Monitor clock calibration requires bounded integer fields");
+                return value.get<std::int64_t>();
+            };
+            result.clock_calibration = ClockCalibration{integer("console_epoch_ms"),
+                integer("utc_epoch_ms"), integer("uncertainty_ms")};
+        }
         const auto mode = data.value("mode", std::string("inference"));
         if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation")
             throw std::invalid_argument("Unknown application mode");

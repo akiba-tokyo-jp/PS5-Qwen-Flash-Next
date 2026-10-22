@@ -1,14 +1,14 @@
 /* SPDX-License-Identifier: MIT */
 "use strict";
 const byId = id => document.getElementById(id);
-let offset = 0, samples = [], lastRequest = null, polling = false;
+let offset = 0, clockSource = "Browser clock", samples = [], lastRequest = null, polling = false;
 const number = value => typeof value === "number" && Number.isFinite(value);
 const show = (id, text) => { byId(id).textContent = text; };
 const bytes = value => !number(value) ? "—" : value >= 2 ** 30 ? (value / 2 ** 30).toFixed(2) + " GiB" : (value / 2 ** 20).toFixed(1) + " MiB";
 function tick() {
   const date = new Date(Date.now() + offset);
   show("clock", new Intl.DateTimeFormat(undefined, {dateStyle: "medium", timeStyle: "medium"}).format(date));
-  show("timezone", "Server clock · " + Intl.DateTimeFormat().resolvedOptions().timeZone);
+  show("timezone", clockSource + " · " + Intl.DateTimeFormat().resolvedOptions().timeZone);
 }
 function chart() {
   const canvas = byId("chart"), ratio = devicePixelRatio || 1;
@@ -34,6 +34,7 @@ async function poll() {
     if (!response.ok) throw new Error("Telemetry unavailable");
     const data = await response.json(), request = data.request || {}, metrics = request.metrics || {};
     if (number(data.server_epoch_ms)) offset = data.server_epoch_ms - Date.now();
+    clockSource = data.clock?.source || "Server clock (unverified)";
     show("backend", data.backend === "demo" ? "DEMO TELEMETRY · No model or PS5 hardware is sampled. Generation counters come only from external demo requests."
       : data.model_loaded ? "MODEL TELEMETRY · Missing hardware counters are shown as unavailable."
       : "MONITOR ONLY · No model loaded. Inference rates remain unavailable.");

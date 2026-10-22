@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "http_app.h"
+#include "monitor_clock.h"
 #include "httplib.h"
 #include "nlohmann/json.hpp"
 #include "jinja/lexer.h"
@@ -278,8 +279,11 @@ int serve_http(Engine & engine, const std::string & assets,
 #else
         data["process_id"] = getpid();
 #endif
-        data["server_epoch_ms"] = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count();
+        const auto & clock = monitor_clock();
+        data["server_epoch_ms"] = clock.now();
+        const auto uncertainty = clock.initial_uncertainty_ms();
+        data["clock"] = {{"source", clock.source()}, {"calibrated", clock.calibrated()},
+            {"initial_uncertainty_ms", uncertainty ? Json(*uncertainty) : Json(nullptr)}};
         Json process_cpu = nullptr;
         if (hardware.sample_process_cpu && hardware.logical_cpu_threads) {
             std::lock_guard<std::mutex> lock(cpu_mutex);
@@ -364,6 +368,7 @@ int serve_http(Engine & engine, const std::string & assets,
                 snapshot.state = request.value("state", "idle"); snapshot.request_id = request.value("id", "");
                 snapshot.busy = data.at("busy"); snapshot.quarantined = data.at("quarantined");
                 snapshot.model_loaded = !demo && !monitor_only; snapshot.epoch_ms = data.at("server_epoch_ms");
+                snapshot.clock_calibrated = data.at("clock").at("calibrated");
                 snapshot.cpu_name = hardware.cpu_name; snapshot.gpu_name = hardware.gpu_name;
                 snapshot.cpu_threads = hardware.logical_cpu_threads;
                 snapshot.gpu_total_bytes = hardware.gpu_total_bytes; snapshot.gpu_free_bytes = hardware.gpu_free_bytes;

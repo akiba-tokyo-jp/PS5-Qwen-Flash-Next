@@ -2,6 +2,7 @@
 // CPU VideoOut presentation uses the pinned public platform declarations.
 #include "native_display.h"
 #include "tiled_frame.h"
+#include "monitor_clock.h"
 #include <ps5platform/kernel.h>
 #include <ps5platform/videoout.h>
 #include <atomic>
@@ -76,8 +77,8 @@ struct NativeDisplay::Impl {
                     current.quarantined = true; current.state = "native operation failed";
                     current.message = "CLOSE THE TITLE NORMALLY / RESOURCE BACKING IS RETAINED";
                 }
-                current.epoch_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-                    std::chrono::system_clock::now().time_since_epoch()).count();
+                current.epoch_ms = monitor_clock().now();
+                current.clock_calibrated = monitor_clock().calibrated();
                 raster.draw(current);
                 const int target = 1 - front;
                 auto * output = static_cast<unsigned char *>(mapped) + target * frame_bytes;

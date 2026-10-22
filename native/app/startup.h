@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #pragma once
+#include "monitor_clock.h"
 #include <string>
 namespace qwen_app {
 struct Startup {
@@ -10,6 +11,7 @@ struct Startup {
     bool display_validation = false;
     bool runtime_validation = false;
     bool vulkan_global_discovery = false;
+    std::optional<ClockCalibration> clock_calibration;
     std::string admission_report = "/app0/qwen-runtime/gpu-admission.json";
 };
 // No-argument title startup reads this app's own data directory. Explicit
