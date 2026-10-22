@@ -150,6 +150,29 @@ int main() {
             });
             rejected([&] { budget.reserve(1); });
         }
-        std::cout << "Bounded source windows, exact bytes, VA retirement, device allocation limits and failure quarantine passed\n";
+        {
+            DeviceBufferBudget budget; budget.enable();
+            budget.workspace(reinterpret_cast<void *>(10), {0, 1, 64u << 20, 64u << 20});
+            check(budget.stats().live == model_internal_workspace_budget, "The internal workspace was omitted from the aggregate pool");
+            budget.workspace(reinterpret_cast<void *>(10), {64u << 20, 64u << 20, 64u << 20, 64u << 20});
+            check(budget.stats().allocations == 1, "A retained workspace was charged twice");
+            for (std::uintptr_t key = 1; key <= 3; ++key) { budget.reserve(512u << 20); budget.commit(reinterpret_cast<void *>(key)); }
+            check(budget.stats().live == model_postload_device_budget, "GGML buffers and internal workspace do not share one pool");
+            for (std::uintptr_t key : {1, 2, 3, 10}) budget.released(reinterpret_cast<void *>(key));
+            budget.close_completed();
+        }
+        for (unsigned failure = 0; failure < 3; ++failure) {
+            DeviceBufferBudget budget; budget.enable();
+            rejected([&] {
+                if (failure == 0) budget.workspace(reinterpret_cast<void *>(10), {(256u << 20) + 1, 0, 0, 0});
+                if (failure == 1) budget.workspace(reinterpret_cast<void *>(10), {128u << 20, 128u << 20, 1, 0});
+                if (failure == 2) {
+                    budget.reserve(256u << 20); budget.commit(reinterpret_cast<void *>(10));
+                    budget.workspace(reinterpret_cast<void *>(10), {0, 0, 0, 0});
+                }
+            });
+            rejected([&] { budget.reserve(1); });
+        }
+        std::cout << "Bounded source windows, exact bytes, VA retirement, device/workspace limits and failure quarantine passed\n";
     } catch (const std::exception & error) { std::cerr << error.what() << '\n'; return 1; }
 }

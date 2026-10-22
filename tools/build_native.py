@@ -239,7 +239,8 @@ def main():
                 raise ValueError('Native platform frontend hook is absent: '+name)
     for name in ("llama_app_mapped_source_hooks", "llama_app_bounded_expert_advice_hooks",
                  "ggml_app_mapped_upload_hooks", "ggml_app_mapped_async_hooks",
-                 "ggml_app_bounded_cpu_fallback_hooks", "ggml_app_bounded_device_buffers_hooks", "qwen_app_model_source_chunk"):
+                 "ggml_app_bounded_cpu_fallback_hooks", "ggml_app_bounded_device_buffers_hooks", "ggml_app_bounded_workspace_hooks",
+                 "qwen_app_model_source_chunk"):
         if not re.search(r'\b' + re.escape(name) + r'$', symbols, re.M):
             raise ValueError("A bounded model-source integration hook is absent: " + name)
     sections = subprocess.check_output([str(llvm / "llvm-readelf.exe"), "--wide", "--sections", str(elf)], text=True)

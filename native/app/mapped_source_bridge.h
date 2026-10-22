@@ -13,6 +13,8 @@ bool ggml_app_mapped_upload_hooks();
 bool ggml_app_mapped_async_hooks();
 bool ggml_app_bounded_cpu_fallback_hooks();
 bool ggml_app_bounded_device_buffers_hooks();
+bool ggml_app_bounded_workspace_hooks();
+void qwen_app_model_workspace_admit(const void *, const std::size_t *, std::size_t);
 void qwen_app_model_device_buffer_reserve(std::size_t);
 void qwen_app_model_device_buffer_commit(const void *);
 void qwen_app_model_device_buffer_released(const void *);

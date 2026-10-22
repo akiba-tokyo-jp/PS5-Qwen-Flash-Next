@@ -9,9 +9,11 @@
 namespace qwen_app {
 inline constexpr std::uint64_t model_postload_device_budget = 1792ull << 20;
 inline constexpr std::uint64_t model_postload_single_buffer = 512ull << 20;
+inline constexpr std::uint64_t model_internal_workspace_budget = 256ull << 20;
 struct DeviceBufferStats { std::uint64_t live = 0, peak = 0, allocations = 0; };
-// This tracks GGML device buffers allocated after resident model loading. It
-// excludes the already admitted model and separately reserved transfer staging.
+// This tracks GGML device buffers and one fixed internal workspace reservation
+// per active backend after resident model loading. It excludes the already
+// admitted model and separately reserved transfer staging.
 // Round conservatively to 2 MiB, above the selected native BO granularity.
 class DeviceBufferBudget {
 public:
@@ -47,12 +49,30 @@ public:
         if (entry != entries_.end() && entry->key) { stats_.live -= entry->bytes; *entry = {}; }
     }
     DeviceBufferStats stats() { healthy(); return stats_; }
+    void workspace(const void * key, const std::array<std::uint64_t, 4> & capacities) {
+        healthy();
+        std::uint64_t total = 0;
+        for (const auto bytes : capacities) {
+            if (bytes > model_internal_workspace_budget) fail("An internal Vulkan workspace buffer exceeds its fixed bound");
+            const auto aligned = (std::max<std::uint64_t>(1, bytes) + (2u << 20) - 1) & ~std::uint64_t((2u << 20) - 1);
+            if (aligned > model_internal_workspace_budget - total) fail("The four internal Vulkan buffers exceed the workspace budget");
+            total += aligned;
+        }
+        const auto entry = std::find_if(entries_.begin(), entries_.end(), [&](const auto & item) { return item.key == key; });
+        if (entry != entries_.end() && entry->key) {
+            if (!entry->workspace) fail("The internal workspace aliases another live device allocation");
+            return;
+        }
+        reserve(model_internal_workspace_budget); commit(key);
+        auto added = std::find_if(entries_.begin(), entries_.end(), [&](const auto & item) { return item.key == key; });
+        added->workspace = true;
+    }
     void close_completed() {
         healthy();
         if (pending_ || stats_.live) fail("Post-load device buffers have not all completed their release");
     }
 private:
-    struct Entry { const void * key = nullptr; std::uint64_t bytes = 0; };
+    struct Entry { const void * key = nullptr; std::uint64_t bytes = 0; bool workspace = false; };
     std::array<Entry, 8192> entries_{};
     DeviceBufferStats stats_;
     std::thread::id owner_;

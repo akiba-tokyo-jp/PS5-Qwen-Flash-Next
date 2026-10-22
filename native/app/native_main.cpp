@@ -215,7 +215,8 @@ int main(int argc, char ** argv) {
             throw std::runtime_error("The bounded external demonstration requires its exact admitted port");
         if (startup.first_generation_validation && (!llama_app_mapped_source_hooks() ||
             !llama_app_bounded_expert_advice_hooks() || !ggml_app_mapped_upload_hooks() ||
-            !ggml_app_mapped_async_hooks() || !ggml_app_bounded_cpu_fallback_hooks() || !ggml_app_bounded_device_buffers_hooks()))
+            !ggml_app_mapped_async_hooks() || !ggml_app_bounded_cpu_fallback_hooks() || !ggml_app_bounded_device_buffers_hooks() ||
+            !ggml_app_bounded_workspace_hooks()))
             throw std::runtime_error("Every bounded source-read engine integration hook is required");
         qwen_app::monitor_clock().initialize(startup.clock_calibration);
         qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");

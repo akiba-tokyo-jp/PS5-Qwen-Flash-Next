@@ -57,6 +57,16 @@ be retried. All tracked buffers must be released before the terminal result.
 The driver's independently owned BO lifetime and positive completion contract
 are unchanged. Internal transfer staging and driver resources retain their
 separate allowances; this is not a replacement device allocator.
+The four internal Vulkan conversion/split-K/normalization work buffers bypass
+the ordinary GGML buffer allocator. They now receive one fixed 256 MiB
+reservation per active backend in that same 1,792 MiB aggregate pool. Their
+individual capacities are conservatively rounded and their sum is checked
+before allocation/resizing, with fresh Direct reserve for the largest new
+buffer. The reservation is released only after synchronization and destruction
+of all four buffers in backend cleanup. It is reused across graphs and never
+added to the aggregate budget a second time. The isolated patch and provider
+compiled for PS5; focused checks covered shared-pool accounting, retained
+workspace reuse, oversized capacity and alias rejection.
 
 Every actual launch still requires fresh driver/Direct/OS observations, aligned
 tensor limits and positive full-model mapping/integrity. A budget declaration

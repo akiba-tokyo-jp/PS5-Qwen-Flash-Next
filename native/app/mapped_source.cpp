@@ -110,6 +110,19 @@ extern "C" void qwen_app_model_device_buffer_reserve(std::size_t bytes) {
         available < reserved + (512ull << 20))
         throw std::runtime_error("Fresh Direct reserve cannot admit the post-load device buffer");
 }
+extern "C" void qwen_app_model_workspace_admit(const void * key, const std::size_t * capacities, std::size_t largest_new) {
+    if (!qwen_app_model_compute_limits_enabled()) return;
+    required().require_completed_window();
+    if (!capacities || largest_new > qwen_app::model_internal_workspace_budget)
+        throw std::runtime_error("The internal Vulkan workspace plan is invalid");
+    device_budget.workspace(key, {capacities[0], capacities[1], capacities[2], capacities[3]});
+    const auto pool = sceKernelGetDirectMemorySize();
+    std::int64_t physical = 0; std::size_t available = 0;
+    const auto aligned = largest_new ? ((largest_new + (2u << 20) - 1) & ~std::size_t((2u << 20) - 1)) : 0;
+    if (pool <= 0 || sceKernelAvailableDirectMemorySize(0, pool, 65536, &physical, &available) < 0 ||
+        available < aligned + (512ull << 20))
+        throw std::runtime_error("Fresh Direct reserve cannot admit the internal Vulkan workspace");
+}
 extern "C" void qwen_app_model_device_buffer_commit(const void * key) {
     if (qwen_app_model_compute_limits_enabled()) device_budget.commit(key);
 }
