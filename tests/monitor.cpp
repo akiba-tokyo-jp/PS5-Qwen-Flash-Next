@@ -69,6 +69,10 @@ int main(int argc, char ** argv) {
         }
         { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"mode\":\"display-validation\"}"; }
         check(read_startup(2, args).display_validation && !read_startup(2, args).monitor_validation, "Display-only validation was not isolated");
+        { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"mode\":\"model-validation\",\"native_display\":false}"; }
+        const auto model_startup = read_startup(2, args);
+        check(model_startup.model_validation && !model_startup.monitor_validation &&
+              !model_startup.runtime_validation && !model_startup.native_display, "Model CPU validation was not isolated");
         { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"port\":-1}"; }
         bool rejected = false; try { read_startup(2, args); } catch (const std::exception &) { rejected = true; }
         check(rejected, "Invalid native port was accepted");

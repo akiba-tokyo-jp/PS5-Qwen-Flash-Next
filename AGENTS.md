@@ -196,3 +196,23 @@ numerically readmitted, normally closed and fully verified again with fresh
 CPU guards. See docs/native-combined-success-20261022.md and JSON. No native
 owner remains. Preserve this result separately from full-model admission;
 committed console/deployment flags remain disabled and the reservation is held.
+
+The next model CPU preflight is implemented as `model-validation`. Do not execute
+it until the complete v2 model receipt and every transferred file are available.
+It must verify all SHA256/metadata/footprint gates and read-only virtual mappings
+before any backend initialization. Keep display and model loading disabled,
+bounded whole-model verification and mapping deadlines, no mapped-payload reads,
+and no automatic retry or cleanup after uncertain mapping results. A successful
+terminal report precedes explicit idle ownership for ordinary OS close. See
+docs/model-preflight.md. Host checks do not admit physical model mapping.
+
+Use tools/bounded_conversion.py through tools/convert_model.py for current
+original-precision conversion. It retains the pinned source tree and dense
+transformations, while bounding all 150 expert/embedding/PLE copy outputs to
+8 MiB input chunks. Require its complete copy provenance and the independent
+full output audit. Once the active batch reaches conversion, do not edit
+convert_model.py, bounded_conversion.py, audit_conversion.py, qwen_flash_next.py,
+fetch_engine.py or prepare_model.py until its verification/audit/hashing ends;
+their digests are frozen in the resulting receipt. See
+docs/bounded-conversion-20261022.md. Acquisition may retain unverified files,
+but every original shard still requires SHA256 before converter execution.

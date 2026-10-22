@@ -168,11 +168,13 @@ D:/PS5-AI/qwen-flash-next/build/application-preview/app-demo.exe --demo C:/Users
 
 ## Remaining work
 
-- Host SELF conversion/packaging and bounded display/status admission pass.
-  Qualify the separate no-display BF16 fixture and required model operations;
+- Host SELF packaging, physical BF16 and combined display/local-UTC admission pass.
+  Qualify required model operations and complete model mapping/residency;
   preserve all failed startup attempts in the
   [display record](native-display-20261022.json).
 - Finish original checkpoint acquisition, BF16 conversion and layout verification.
+- Run the isolated [CPU model preflight](model-preflight.md) after complete model
+  transfer and before allocating resident GPU weights.
 - After runtime admission, measure native memory admission, required PLE and
   expert reads, complete generation, quality, cancellation and sustained residency.
 - Keep release deployment disabled and advance console qualification only through

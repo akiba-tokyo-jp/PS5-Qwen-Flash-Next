@@ -11,6 +11,7 @@
 #include "memory_admission.h"
 #include "model_integrity.h"
 #include "model_receipt.h"
+#include "model_mapping.h"
 #include "validation_policy.h"
 #include "native_gpu.h"
 #include <fcntl.h>
@@ -165,7 +166,7 @@ int main(int argc, char ** argv) {
         const auto policy = Json::parse(policy_file);
         if (!policy.at("console_operations_enabled").get<bool>())
             throw std::runtime_error("Console execution is disabled for this application integration phase");
-        const auto mode = startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : "inference";
+        const auto mode = startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : "inference";
         if (!policy.contains("allowed_modes") || !policy.at("allowed_modes").is_array() ||
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
@@ -316,16 +317,23 @@ int main(int argc, char ** argv) {
             qwen_native_stage("monitor_HTTP_service_returned");
             throw std::runtime_error(served ? "Monitor HTTP listener failed" : "Monitor HTTP listener stopped unexpectedly");
         }
+        if (startup.model_validation && !policy.value("console_validation_enabled", false))
+            throw std::runtime_error("Original model CPU validation is not enabled");
         const auto receipt = qwen_app::read_model_receipt(startup.model_receipt);
         const auto expected_mapped_files=qwen_app::validate_model_receipt(receipt);
         // A receipt records host conversion provenance, not a fresh console hash
         // check. Deployment must independently verify every transferred file.
         qwen_app::ModelFootprint footprint; std::unordered_set<std::string> tensor_names;
+        std::vector<qwen_app::ModelMappingFile> mapping_files;
+        const auto verification_deadline = std::chrono::steady_clock::now() + std::chrono::minutes(30);
         bool first = true;
         unsigned file_index=0;
         for (const auto & file : receipt.at("files")) {
             ++file_index;
             screen.state="verifying original model bytes";
+            const auto remaining = std::chrono::duration_cast<std::chrono::seconds>(
+                verification_deadline - std::chrono::steady_clock::now()).count();
+            if (remaining <= 0) throw std::runtime_error("Complete original-model verification deadline expired before backend initialization");
             qwen_native_stage("model_file_integrity_started_before_backend_initialization");
             qwen_app::verify_model_file(model_file(startup.model_receipt,file.at("path").get<std::string>()),
                 file.at("bytes").get<std::uint64_t>(),file.at("sha256").get<std::string>(),[&](std::uint64_t verified){
@@ -333,17 +341,36 @@ int main(int argc, char ** argv) {
                         ": "+std::to_string(verified>>20)+" MiB verified";
                     if(display)display->publish(screen);
                     qwen_native_stage("model_file_integrity_progress");
-                });
+                }, static_cast<unsigned>(remaining));
             qwen_native_stage("model_file_integrity_completed");
             inspect_container(model_file(startup.model_receipt, file.at("path").get<std::string>()), first,
                 footprint,tensor_names,file.at("bytes").get<std::uint64_t>()); first = false;
+            mapping_files.push_back({model_file(startup.model_receipt, file.at("path").get<std::string>()),
+                                     file.at("bytes").get<std::uint64_t>()});
         }
+        if (std::chrono::steady_clock::now() > verification_deadline)
+            throw std::runtime_error("Complete original-model verification deadline expired before backend initialization");
         qwen_app::validate_original_footprint(footprint,expected_mapped_files);
         const auto first_path = model_file(startup.model_receipt, receipt.at("files").at(0).at("path").get<std::string>());
         write_fresh_report(startup.admission_report+".integrity",{{"schema","ps5-qwen-model-integrity-v1"},
             {"pid",getpid()},{"files_verified",file_index},{"all_SHA256_matched",true},
             {"mapped_file_bytes",footprint.mapped_files},{"model_loaded",false},{"Vulkan_initialized",false}});
         screen.message.clear();
+
+        if (startup.model_validation) {
+            const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
+                [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
+            write_fresh_report(startup.admission_report, {{"schema", "ps5-qwen-model-mapping-admission-v1"},
+                {"pid", getpid()}, {"all_SHA256_matched", true}, {"original_footprint_matched", true},
+                {"mapped_files", mapping.files}, {"mapped_file_bytes", mapping.bytes},
+                {"completed_unmaps", mapping.unmapped}, {"model_loaded", false},
+                {"Vulkan_initialized", false}, {"GPU_compute_calls", 0}, {"mapped_payload_reads", 0},
+                {"resident_set_qualified", false}, {"state", "completed_waiting_for_ordinary_close"}});
+            qwen_native_stage("model_validation_completed GPU_not_started=1 model_loaded=0");
+            // Successful validation is explicit idle ownership. Returning from
+            // main would intentionally enter the CRT's fault-retention hook.
+            for (;;) std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
 
         screen.state = "admitting original BF16 memory";
         if (display) display->publish(screen);

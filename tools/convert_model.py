@@ -99,6 +99,9 @@ def main():
     try:
         status("verifying_converter_sources")
         source_identity = converter_sources(archive, upstream)
+        preparation_tools = {name: digest(ROOT / "tools" / name) for name in (
+            "convert_model.py", "bounded_conversion.py", "audit_conversion.py",
+            "qwen_flash_next.py", "fetch_engine.py", "prepare_model.py")}
         status("verifying_original_shards", verified=0, total=len(manifest["files"]))
         verification_deadline = time.monotonic() + a.timeout_seconds
         for number, row in enumerate(manifest["files"], 1):
@@ -107,15 +110,24 @@ def main():
                 raise ValueError("Original shard verification failed: " + row["name"])
             status("verifying_original_shards", verified=number, total=len(manifest["files"]))
             print(f"Original shard verified: {number}/{len(manifest['files'])}", flush=True)
-        command = [sys.executable, str(upstream / "convert_hf_to_gguf.py"), str(cache / "model"),
-                   "--outtype", "bf16", "--outfile", str(out / "qwen-flash-next-bf16.gguf"), "--split-max-size", "4G"]
-        status("converting_BF16", timeout_seconds=a.timeout_seconds)
+        command = [sys.executable, str(ROOT / "tools/bounded_conversion.py"), "--cache", str(cache), "--out", str(out)]
+        status("converting_BF16", timeout_seconds=a.timeout_seconds, original_copy_chunk_limit_bytes=8 << 20)
         with (out / "conversion.private.log").open("w", encoding="utf-8") as stream:
             result = subprocess.run(command, cwd=upstream, stdout=stream, stderr=subprocess.STDOUT,
                                     timeout=a.timeout_seconds,
                                     env=dict(os.environ, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1"))
         if result.returncode:
             raise RuntimeError("BF16 conversion failed; inspect conversion.private.log before resuming")
+        adapter = json.loads((out / "bounded-copy-receipt.private.json").read_text())
+        if (adapter.get("schema") != "ps5-qwen-bounded-copy-adapter-v1" or
+            adapter.get("adapter_sha256") != preparation_tools["bounded_conversion.py"] or
+            adapter.get("pinned_sources_modified") is not False or
+            adapter.get("complete_planned_copies_streamed") is not True or
+            adapter.get("chunk_limit_bytes") != 8 << 20 or
+            not 0 < adapter.get("maximum_source_read_bytes", 0) <= 8 << 20 or
+            adapter.get("streamed_tensors") != 150 or adapter.get("streamed_BF16_bytes") != 351568363520 or
+            adapter.get("console_access") is not False or adapter.get("learned_inference_performed") is not False):
+            raise ValueError("Complete bounded original-BF16 copy provenance is required")
         files = sorted(out.glob("*.gguf"))
         if not files:
             raise RuntimeError("Converter did not produce GGUF files")
@@ -128,10 +140,13 @@ def main():
             outputs.append({"path": path.name, "bytes": path.stat().st_size, "sha256": digest(path, hashing_deadline)})
         if source_identity != converter_sources(archive, upstream):
             raise ValueError("Converter source identity changed during conversion")
+        if preparation_tools != {name: digest(ROOT / "tools" / name) for name in preparation_tools}:
+            raise ValueError("Application preparation sources changed during conversion or audit")
         receipt = {"schema": "ps5-qwen-bf16-conversion-v2", "original_revision": manifest["revision"],
                    "upstream_revision": LOCK["llama_cpp"]["revision"], "outtype": "bf16", "original_shards_verified": True,
                    "files": outputs, "converter_sources": source_identity,
                    "conversion_audit": audit,
+                   "conversion_adapter": adapter, "preparation_tool_sources": preparation_tools,
                    "console_access": False, "learned_inference_performed": False}
         temporary_receipt = out / "model-receipt.next.private.json"
         with temporary_receipt.open("x", encoding="utf-8") as stream:

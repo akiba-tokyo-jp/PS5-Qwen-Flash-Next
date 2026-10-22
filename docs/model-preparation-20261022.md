@@ -115,7 +115,7 @@ the complete metadata plan and small fixture checks have passed.
 
 ## Manual checks
 
-The Python suite passes 46 tests. Actual pinned GGUF fixtures accept BF16/F32 and
+At the initial audit checkpoint the Python suite passed 46 tests. Actual pinned GGUF fixtures accept BF16/F32 and
 exact large integer constants, and reject F16, big endian files, truncation and
 overlapping spans. The full 1,256-tensor plan passes the native memory replay.
 The first metadata subclass attempt and initial generic integer-array fixture
@@ -143,5 +143,13 @@ python tools/check_model_receipt.py --workspace C:/Users/User/ps5-ai --cache D:/
 
 Use the CPU-only conversion virtual environment for conversion and metadata
 planning. Outputs above require fresh names. GitHub Actions remain disabled.
-The [current console hold](../AGENTS.md#current-console-hold-2026-10-22) is unchanged;
-none of these commands deploys or launches console software.
+The [later physical combined admission](native-combined-success-20261022.md)
+qualifies the monitor fixture separately. None of these preparation commands
+deploys or launches console software.
+
+The current converter uses [bounded original-BF16 copies](bounded-conversion-20261022.md)
+through the unchanged pinned writer and transformations. Its complete adapter
+record and six immutable application preparation-source digests now accompany
+the independently audited v2 receipt. The current Python suite has 49 passing
+cases; the native model-validation scope rejects 109 malformed/out-of-scope
+cases while full inference remains rejected.

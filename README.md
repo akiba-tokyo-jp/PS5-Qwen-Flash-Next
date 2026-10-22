@@ -112,6 +112,10 @@ units were not advertised; the shader widens original BF16 storage to F32.
 The later combined artifact passed native first-frame presentation and bounded
 app-local UTC calibration. Long-term clock drift, original-model mapping/residency,
 full-model quality and tokens/s remain unqualified.
+The next [CPU model preflight](docs/model-preflight.md) independently verifies
+complete model hashes/metadata and read-only virtual mappings before Vulkan.
+Host conversion now [bounds original BF16 copies](docs/bounded-conversion-20261022.md)
+while retaining the pinned dense transformations and complete output audit.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the

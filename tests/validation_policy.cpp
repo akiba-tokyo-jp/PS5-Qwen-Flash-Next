@@ -79,6 +79,37 @@ int main() {
         reject(changed, "monitor-validation", true);
     }
     reject(combined, "inference", true);
+    const Json model = {{"native_model_validation", {
+        {"schema", "ps5-qwen-native-model-validation-v1"},
+        {"preceding_combined_SELF_sha256", "54c2803c6fce4a654f5c351878eb717dfa0f58c874868b14c0d868fa7630fea9"},
+        {"original_restoration_and_numerical_readmission_passed", true},
+        {"fresh_idle_session_bound_by_launcher", true}, {"complete_v2_model_receipt_required", true},
+        {"Vulkan_initialization_enabled", false}, {"model_loading_enabled", false},
+        {"maximum_verification_seconds", 1800}, {"maximum_mapped_bytes", 512ull << 30}}}};
+    qwen_app::require_native_validation_policy(model, "model-validation", false);
+    reject(model, "model-validation", true);
+    reject(model, "inference");
+    for (auto field = model.at("native_model_validation").begin(); field != model.at("native_model_validation").end(); ++field) {
+        auto changed = model; changed["native_model_validation"].erase(field.key());
+        reject(changed, "model-validation");
+        changed = model; changed["native_model_validation"][field.key()] = nullptr;
+        reject(changed, "model-validation");
+    }
+    for (const auto * key : {"original_restoration_and_numerical_readmission_passed", "fresh_idle_session_bound_by_launcher",
+                            "complete_v2_model_receipt_required", "Vulkan_initialization_enabled", "model_loading_enabled"}) {
+        auto changed = model;
+        const bool prior = changed["native_model_validation"][key].get<bool>();
+        changed["native_model_validation"][key] = !prior; reject(changed, "model-validation");
+        changed["native_model_validation"][key] = prior ? 1 : 0; reject(changed, "model-validation");
+    }
+    for (const auto * key : {"schema", "preceding_combined_SELF_sha256"}) {
+        auto changed = model; changed["native_model_validation"][key] = "incorrect"; reject(changed, "model-validation");
+    }
+    for (const auto * key : {"maximum_verification_seconds", "maximum_mapped_bytes"}) {
+        auto changed = model; changed["native_model_validation"][key] = 0; reject(changed, "model-validation");
+        changed["native_model_validation"][key] = model["native_model_validation"][key].get<double>();
+        reject(changed, "model-validation");
+    }
     reject(valid, "inference");
     reject(valid, "unrecognized");
     auto arbitrary = valid;

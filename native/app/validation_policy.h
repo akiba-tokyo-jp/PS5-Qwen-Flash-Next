@@ -11,6 +11,23 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
                                              const std::string & mode,
                                              bool native_display) {
     if (mode == "display-validation" || mode == "runtime-validation") return;
+    if (mode == "model-validation") {
+        const auto & model = policy.at("native_model_validation");
+        if (native_display || !model.is_object() ||
+            model.at("schema") != "ps5-qwen-native-model-validation-v1" ||
+            model.at("preceding_combined_SELF_sha256") != "54c2803c6fce4a654f5c351878eb717dfa0f58c874868b14c0d868fa7630fea9" ||
+            model.at("original_restoration_and_numerical_readmission_passed") != true ||
+            model.at("fresh_idle_session_bound_by_launcher") != true ||
+            model.at("complete_v2_model_receipt_required") != true ||
+            model.at("Vulkan_initialization_enabled") != false ||
+            model.at("model_loading_enabled") != false ||
+            !model.at("maximum_verification_seconds").is_number_integer() ||
+            model.at("maximum_verification_seconds") != 1800 ||
+            !model.at("maximum_mapped_bytes").is_number_integer() ||
+            model.at("maximum_mapped_bytes") != (512ull << 30))
+            throw std::runtime_error("The exact no-GPU original model validation policy is required");
+        return;
+    }
     if (mode != "monitor-validation")
         throw std::runtime_error("Full-model console inference has not passed its preceding qualification stages");
     const auto & fixture = policy.at("native_BF16_validation");

@@ -39,11 +39,12 @@ Startup read_startup(int argc, char ** argv) {
                 integer("utc_epoch_ms"), integer("uncertainty_ms")};
         }
         const auto mode = data.value("mode", std::string("inference"));
-        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation")
+        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation" && mode != "model-validation")
             throw std::invalid_argument("Unknown application mode");
         result.monitor_validation = mode == "monitor-validation";
         result.display_validation = mode == "display-validation";
         result.runtime_validation = mode == "runtime-validation";
+        result.model_validation = mode == "model-validation";
         result.vulkan_global_discovery = data.value("vulkan_global_discovery", false);
         if (result.vulkan_global_discovery && !result.runtime_validation)
             throw std::invalid_argument("Global-only Vulkan discovery requires runtime-validation");

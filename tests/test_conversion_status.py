@@ -53,7 +53,8 @@ class ConversionFailureStatus(unittest.TestCase):
     def test_timeout_retains_failed_status_without_receipt(self):
         with tempfile.TemporaryDirectory() as folder:
             cache, _, archive = self.fixture(Path(folder)); out = Path(folder) / "out"
-            with self.assertRaises(conversion.subprocess.TimeoutExpired):
+            with patch.object(conversion.subprocess, "run", side_effect=conversion.subprocess.TimeoutExpired("bounded-converter", 1)), \
+                 self.assertRaises(conversion.subprocess.TimeoutExpired):
                 self.run_tool(cache, out, archive)
             status = json.loads((out / "conversion-status.private.json").read_text())
             self.assertEqual((status["phase"], status["error_type"]), ("failed", "TimeoutExpired"))
@@ -77,6 +78,13 @@ class ConversionFailureStatus(unittest.TestCase):
                 cache, _, archive = self.fixture(Path(folder)); out = Path(folder) / "out"
                 def converted(*args, **kwargs):
                     (out / "fixture.gguf").write_bytes(b"unqualified fixture")
+                    (out / "bounded-copy-receipt.private.json").write_text(json.dumps({
+                        "schema": "ps5-qwen-bounded-copy-adapter-v1",
+                        "adapter_sha256": conversion.digest(ROOT / "tools/bounded_conversion.py"),
+                        "pinned_sources_modified": False, "complete_planned_copies_streamed": True,
+                        "chunk_limit_bytes": 8 << 20, "maximum_source_read_bytes": 8 << 20,
+                        "streamed_tensors": 150, "streamed_BF16_bytes": 351568363520,
+                        "console_access": False, "learned_inference_performed": False}))
                     return type("Result", (), {"returncode": 0})()
                 with patch.object(conversion.subprocess, "run", side_effect=converted), \
                      patch("audit_conversion.audit_conversion", side_effect=error), self.assertRaises(type(error)):
@@ -85,6 +93,19 @@ class ConversionFailureStatus(unittest.TestCase):
                 self.assertEqual((state["phase"], state["receipt_published"]), ("failed", False))
                 self.assertTrue((out / "fixture.gguf").exists())
                 self.assertFalse((out / "model-receipt.json").exists())
+
+    def test_incomplete_bounded_copy_proof_cannot_reach_audit_or_receipt(self):
+        with tempfile.TemporaryDirectory() as folder:
+            cache, _, archive = self.fixture(Path(folder)); out = Path(folder) / "out"
+            def converted(*args, **kwargs):
+                (out / "fixture.gguf").write_bytes(b"unqualified fixture")
+                (out / "bounded-copy-receipt.private.json").write_text('{"schema":"incomplete"}')
+                return type("Result", (), {"returncode": 0})()
+            with patch.object(conversion.subprocess, "run", side_effect=converted), \
+                 patch("audit_conversion.audit_conversion") as audit, self.assertRaisesRegex(ValueError, "bounded"):
+                self.run_tool(cache, out, archive)
+            audit.assert_not_called()
+            self.assertFalse((out / "model-receipt.json").exists())
 
 
 if __name__ == "__main__":
