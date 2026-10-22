@@ -29,7 +29,8 @@ and guarded ordinary launch are required; full-model inference remains rejected.
 The native allocator/lifecycle integration is implemented and host-verified. See
 [native-validation.md](docs/native-validation.md) for the staged gates and exact
 preservation/restoration requirements. Driver tests do not establish Qwen quality
-or memory admission.
+or memory admission. The [required-operation inventory](docs/qwen-operation-coverage.md)
+keeps specialized Qwen graph paths separate from completed small-fixture coverage.
 
 ## Application development
 
@@ -42,7 +43,7 @@ The real model adapter has API-stub tests and PS5 object compilation.
 A guarded native entry point and BF16 conversion tool are implemented. The
 native integration build and full-model qualification are recorded separately.
 The native TV monitor uses two fixed VideoOut buffers and updates independently
-of browser polling. Its no-model validation mode never initializes Vulkan.
+of browser polling. Its display-only validation mode never initializes Vulkan.
 See [application.md](docs/application.md) for exact check coverage and remaining
 work. The demo is not evidence of Qwen inference or console performance.
 
