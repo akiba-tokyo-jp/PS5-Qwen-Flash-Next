@@ -14,6 +14,8 @@ from pathlib import Path
 import re
 import stat
 
+MAX_NEW_PAYLOAD_BYTES = 64 << 30
+
 
 def identity(path):
     value = Path(path).stat()
@@ -98,6 +100,8 @@ def install(writer_class, states, previous, destination, persist):
                 outcome["retained_payload_bytes"] += payload
                 for ti in tensors.values(): ti.tensor = None
             else:
+                if outcome["newly_written_payload_bytes"] + payload > MAX_NEW_PAYLOAD_BYTES:
+                    raise ValueError("The resumed writer would exceed its fixed new-payload bound")
                 output = Path(target).open("xb"); payload_handles.append(output); output.write(header)
                 for name, ti in tensors.items():
                     if ti.tensor is None or ti.tensor.nbytes != ti.nbytes:

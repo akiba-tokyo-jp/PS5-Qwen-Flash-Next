@@ -27,6 +27,7 @@ class ResumeAdmission(unittest.TestCase):
             chunk_limit_bytes=8 << 20, maximum_source_read_bytes=8 << 20, complete_planned_copy_partition=True,
             original_copy_tensors=150, original_copy_BF16_bytes=351568363520,
             independent_payload_audit_required=True, console_access=False, learned_inference_performed=False,
+            maximum_new_payload_bytes=64 << 30,
             preparation_tool_sources=self.tools, resume_tool_sources=self.resume, retained_copy_tensors=149,
             written_copy_tensors=1, retained_copy_BF16_bytes=351568363488, written_copy_BF16_bytes=32,
             retention_record=self.record("retention.json", self.retention), checkpoint=self.record("checkpoint.json", checkpoint))

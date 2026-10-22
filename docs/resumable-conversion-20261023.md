@@ -27,6 +27,10 @@ may be hard-linked into the new output; partial/missing/different splits are
 written anew using the existing 8 MiB source-copy adapter. Each tensor belongs
 to one complete retained/new partition. If an orphaned original writer finishes
 all splits, all splits may be retained and no new copy reads are claimed.
+Newly written payload is capped at 64 GiB; an unexpected header mismatch must
+not silently become a whole-checkpoint rewrite. Converted outputs also hold
+read-only OS handles across the entire audit/hash pass, and their identities
+must still match before receipt publication.
 
 Structural retention does not admit payload fidelity. The existing independent
 audit still compares every expert, embedding and PLE byte with the original
@@ -42,7 +46,7 @@ These do not extend the old job. Console access and learned host inference
 are absent. Transfer planning must explicitly accept the reviewed resumed
 provenance after the old data continuation ends; old admission is unchanged.
 
-Five synthetic writer tests passed, including incomplete writes and journal
+Six synthetic writer tests passed, including the rewrite bound, incomplete writes and journal
 failure. The actual pinned GGUF writer also reproduced byte-identical tiny
 synthetic splits while retaining two complete files and regenerating one
 partial file. Five provenance tests reject incomplete partitions, changed

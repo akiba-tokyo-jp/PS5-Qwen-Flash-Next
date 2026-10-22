@@ -16,6 +16,7 @@ def validate_adapter(adapter, original_tools, resume_tools):
     exact = dict(schema="ps5-qwen-resumed-copy-adapter-v1", pinned_sources_modified=False,
         chunk_limit_bytes=8 << 20, complete_planned_copy_partition=True, original_copy_tensors=150,
         original_copy_BF16_bytes=351568363520, independent_payload_audit_required=True,
+        maximum_new_payload_bytes=64 << 30,
         console_access=False, learned_inference_performed=False)
     if any(type(adapter.get(key)) is not type(value) or adapter[key] != value for key, value in exact.items()):
         raise ValueError("The complete resumed original-copy provenance is required")
@@ -47,7 +48,7 @@ def validate_adapter(adapter, original_tools, resume_tools):
         raise ValueError("The complete retained/new tensor partition differs")
     counts = [retention.get(key) for key in ("retained_payload_bytes", "newly_written_payload_bytes")]
     if (any(type(value) is not int or value < 0 for value in counts) or counts[0] <= 0 or
-            sum(counts) != 359235922432 or bool(counts[1]) != bool(retention["written"])):
+            counts[1] > 64 << 30 or sum(counts) != 359235922432 or bool(counts[1]) != bool(retention["written"])):
         raise ValueError("The complete retained/new payload byte count differs")
     checkpoint = json.loads(Path(adapter["checkpoint"]["path"]).read_text(encoding="utf-8"))
     if (checkpoint.get("schema") != "ps5-qwen-source-verification-checkpoint-v1" or

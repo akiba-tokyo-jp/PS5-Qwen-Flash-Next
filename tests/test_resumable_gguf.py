@@ -7,6 +7,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from resumable_gguf import install
 
@@ -104,6 +105,17 @@ class ResumeWriterTests(unittest.TestCase):
         self.assertFalse(outcome["all_splits_written"])
         file = self.new / "model-0.gguf"
         self.assertTrue(file.is_file()); file.rename(self.new / "partial.gguf")
+
+    def test_unexpected_rewrite_volume_is_rejected_before_exceeding_the_bound(self):
+        outcome, restore = install(Writer, State, self.old, self.new, lambda _: None)
+        writer = Writer(self.new)
+        try:
+            with patch("resumable_gguf.MAX_NEW_PAYLOAD_BYTES", 128):
+                with self.assertRaisesRegex(ValueError, "new-payload bound"): writer.run()
+        finally: restore()
+        self.assertEqual(outcome["newly_written_payload_bytes"], 65)
+        self.assertFalse((self.new / "model-1.gguf").exists())
+        self.assertFalse(outcome["all_splits_written"])
 
 
 if __name__ == "__main__": unittest.main()

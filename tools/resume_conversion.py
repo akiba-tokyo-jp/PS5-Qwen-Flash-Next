@@ -125,7 +125,8 @@ def validate_checkpoint(args, leases):
     value = read(args.checkpoint)
     if (value["schema"] != "ps5-qwen-source-verification-checkpoint-v1" or
             Path(value["cache"]).resolve() != cache or Path(value["previous"]).resolve() != previous or
-            value["preparation_tool_sources"] != tool_hashes(ORIGINAL_TOOLS)):
+            value["preparation_tool_sources"] != tool_hashes(ORIGINAL_TOOLS) or
+            value.get("original_verification_reused") is not True or value.get("fresh_original_payload_rehash") is not False):
         raise ValueError("The exact unchanged original verification checkpoint is required")
     if leases is not None:
         read_only_leases([cache / "model" / row["name"] for row in value["sources"]] +
@@ -136,13 +137,22 @@ def validate_checkpoint(args, leases):
             raise ValueError("An original verified source identity changed")
     if value["metadata"] != [record(row["path"]) for row in value["metadata"]]:
         raise ValueError("Pinned original metadata changed")
+    journal = value["completed_original_SHA_journal"]
+    if record(journal["path"]) != journal:
+        raise ValueError("The completed original SHA journal changed")
+    manifest = read(cache / "metadata/checkpoint.json")
+    expected = {row["name"]: (row["sha256"], row["bytes"]) for row in manifest["files"]}
+    supplied = {row["name"]: (row["expected_sha256"], row["identity"]["bytes"]) for row in value["sources"]}
+    if (manifest["revision"] != LOCK["model"]["revision"] or manifest["quantization"] or
+            len(expected) != 131 or len(value["sources"]) != 131 or expected != supplied):
+        raise ValueError("The complete original SHA-verified source set differs")
     return value
 
 
 def worker(args):
     from audit_conversion import inputs, expected_plan
     from bounded_conversion import wrap_transforms, CHUNK_BYTES
-    from resumable_gguf import install
+    from resumable_gguf import install, MAX_NEW_PAYLOAD_BYTES
     cache, out = args.cache.resolve(), args.out.resolve()
     gguf, _, model_class, manifest, config, sources_before = inputs(cache)
     plan, _, _ = expected_plan(cache)
@@ -173,6 +183,7 @@ def worker(args):
             chunk_limit_bytes=CHUNK_BYTES, maximum_source_read_bytes=max(c.maximum_read_bytes for c in cursors.values()),
             complete_planned_copy_partition=True, original_copy_tensors=len(copies),
             original_copy_BF16_bytes=sum(plan["tensors"][name]["bytes"] for name in copies),
+            maximum_new_payload_bytes=MAX_NEW_PAYLOAD_BYTES,
             retained_copy_tensors=sum(name in retained for name in copies),
             written_copy_tensors=sum(name in written for name in copies),
             retained_copy_BF16_bytes=sum(plan["tensors"][name]["bytes"] for name in copies if name in retained),
@@ -237,6 +248,8 @@ def run(args):
             validate_adapter(adapter, {name: frozen[name] for name in ORIGINAL_TOOLS},
                 {name: frozen[name] for name in RESUME_TOOLS})
             files = sorted(out.glob("*.gguf"))
+            read_only_leases(files, leases)
+            output_identities = {path.name: identity(path) for path in files}
             from audit_conversion import audit_conversion, inputs
             _, _, _, manifest, _, sources = inputs(cache)
             audit = audit_conversion(cache, out, files, status, 86400)
@@ -245,6 +258,8 @@ def run(args):
                 status("hashing_converted_files", verified=index, total=len(files))
                 outputs.append(dict(path=path.name, bytes=path.stat().st_size, sha256=digest(path, deadline)))
             validate_checkpoint(args, None)
+            if output_identities != {path.name: identity(path) for path in files}:
+                raise ValueError("A converted output changed during its complete audit or final hash pass")
             if frozen != tool_hashes((*ORIGINAL_TOOLS, *RESUME_TOOLS)):
                 raise ValueError("A resumed preparation source changed")
             if sources != converter_sources(cache / ("llama-" + LOCK["llama_cpp"]["revision"] + ".zip"),
