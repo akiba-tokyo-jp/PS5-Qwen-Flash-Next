@@ -25,6 +25,7 @@
 #include <string>
 #include <thread>
 #include <sys/sysctl.h>
+#include <sys/stat.h>
 
 using Json = nlohmann::json;
 // A required link symbol prevents accidental use of an unpatched eager loader.
@@ -33,8 +34,10 @@ extern "C" void qwen_native_set_fault_report(const char *);
 
 static void write_fresh_report(const std::string & path, const Json & value) {
     const auto bytes = value.dump(2) + "\n";
-    const int fd = open(path.c_str(), O_WRONLY | O_CREAT | O_EXCL, 0600);
+    // Reports contain status/fixture metadata only, never prompts or secrets.
+    const int fd = open(path.c_str(), O_WRONLY | O_CREAT | O_EXCL, 0644);
     if (fd < 0) throw std::runtime_error("Fresh native report could not be created");
+    if (fchmod(fd, 0644)) { close(fd); throw std::runtime_error("Native metadata report permissions could not be set"); }
     const bool saved = write(fd, bytes.data(), bytes.size()) == static_cast<ssize_t>(bytes.size()) && fsync(fd) == 0;
     const bool closed = close(fd) == 0;
     if (!saved || !closed) throw std::runtime_error("Native report could not be persisted");

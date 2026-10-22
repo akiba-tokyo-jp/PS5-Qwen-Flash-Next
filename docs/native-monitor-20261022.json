@@ -6,11 +6,11 @@
   "driver_archive_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
   "native_pie": {
     "bytes": 124804576,
-    "sha256": "0a84582b0c123d4b3430e2ddf8422fe99090818babcd040a47ae3fcc022fbfd1"
+    "sha256": "fe55debc6317ea00f6f395c231e2de924df22a23a25ba267396866a48049b30b"
   },
   "SELF": {
-    "bytes": 57507978,
-    "sha256": "51fb251543728178adc851d5e4f15ddf77664ff76d3c585a072d2d8ea49bdda4"
+    "bytes": 57508170,
+    "sha256": "5e384cb09b43f17aa397e17eeecdd3d204fc30bae2b0c4e0c730dccf77c4e731"
   },
   "initializer_slots": 16,
   "runtime_providers": [
@@ -45,11 +45,18 @@
   "console_executed": false,
   "full_model_inference_completed": false,
   "CI": false,
-  "previous_host_SELF": {
-    "bytes": 57506010,
-    "sha256": "eb0c77699316e0115e032547d11235f245e2fa220907952ac6d25439cc9ba370"
-  },
   "HTTP_worker_limit": 3,
   "HTTP_queued_request_limit": 8,
-  "status_contains_actual_process_id": true
+  "status_contains_actual_process_id": true,
+  "earlier_host_SELFS": [
+    {
+      "bytes": 57506010,
+      "sha256": "eb0c77699316e0115e032547d11235f245e2fa220907952ac6d25439cc9ba370"
+    },
+    {
+      "bytes": 57507978,
+      "sha256": "51fb251543728178adc851d5e4f15ddf77664ff76d3c585a072d2d8ea49bdda4"
+    }
+  ],
+  "native_metadata_report_mode": "0644, explicitly applied to status/fixture metadata only"
 }

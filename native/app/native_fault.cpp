@@ -4,6 +4,7 @@
 #include <atomic>
 #include <fcntl.h>
 #include <cstring>
+#include <sys/stat.h>
 #include <unistd.h>
 namespace { std::atomic<bool> fatal{false}; char report_path[1100] = {}; }
 extern "C" bool qwen_native_faulted() { return fatal.load(); }
@@ -17,8 +18,9 @@ extern "C" [[noreturn]] void qwen_native_halt(const char * operation) {
     static constexpr char message[] = "Native operation failed; resources retained for ordinary OS close\n";
     (void) write(2, message, sizeof(message) - 1);
     if (report_path[0]) {
-        const int fd = open(report_path, O_WRONLY | O_CREAT | O_EXCL, 0600);
+        const int fd = open(report_path, O_WRONLY | O_CREAT | O_EXCL, 0644);
         if (fd >= 0) {
+            (void) fchmod(fd, 0644);
             static constexpr char prefix[] = "{\"schema\":\"ps5-qwen-native-fatal-v1\",\"backing_retained\":true,\"operation\":\"";
             (void) write(fd, prefix, sizeof(prefix) - 1);
             // Operation names are fixed application literals, never user data.
