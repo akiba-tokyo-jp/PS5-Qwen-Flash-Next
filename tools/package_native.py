@@ -41,6 +41,11 @@ def main():
     image = Path(linked["artifact"]["path"])
     if sha(image) != linked["artifact"]["sha256"]:
         raise ValueError("Native PIE differs from the link receipt")
+    dispatch = linked.get("native_dispatch_audit", {})
+    if (dispatch.get("schema") != "ps5-qwen-native-dispatch-audit-v1" or
+        dispatch.get("passed") is not True or dispatch.get("image_sha256") != sha(image) or
+        len(dispatch.get("required_physical_callbacks", [])) != 6):
+        raise ValueError("The actual native Vulkan callback-table audit is required before packaging")
     imported = audit(a.workspace, a.cache)
     if imported["missing"]:
         raise ValueError("Real module import audit failed: " + ", ".join(imported["missing"]))

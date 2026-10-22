@@ -94,6 +94,14 @@ epochs. [The source review](docs/native-driver-examples-20261022.md) records the
 actual PS5LM/RADV and native MOSS examples and the implementation decisions.
 Host integration does not establish Qwen console compatibility or numerical quality.
 
+The distinct native-frontend trial subsequently passed explicit AGC8 and owner
+initialization but exited during enumeration. The
+[physical-console discovery record](docs/native-dispatch-discovery-20261022.md)
+identifies a missing weakly referenced static Vulkan callback. Native linking
+now retains the selected driver archive as the admitted original does, and
+packaging requires an audit of the actual callback-table targets. This correction
+remains separate from a successful BF16 compute result.
+
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the
 starting point. Strata/Maya principles are now wired into the actual engine cache:

@@ -17,6 +17,7 @@ import subprocess
 
 from driver_inputs import sha, validate_driver
 from native_driver import validate_native_platform
+from native_dispatch import audit as audit_dispatch
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -167,7 +168,11 @@ def main():
     # native libc DSO to satisfy C++ symbols can mix incompatible STL/RTTI ABIs.
     public_imports = [path for path in imports if not path.name.endswith("_stub_weak.so")]
     weak_imports = [path for path in imports if path.name.endswith("_stub_weak.so")]
-    command += ["--start-group", *map(str, engine_archives), str(driver_archive), *map(str, static_runtime), str(builtins), "--end-group"]
+    # Mesa's entrypoint tables contain weak references. An ordinary archive
+    # scan drops required common implementations while leaving callable
+    # trampolines present. Match the admitted native client's driver retention.
+    command += ["--start-group", *map(str, engine_archives), "--whole-archive", str(driver_archive),
+                "--no-whole-archive", *map(str, static_runtime), str(builtins), "--end-group"]
     command += ["--as-needed", *map(str, public_imports), *map(str, weak_imports)]
     inputs = [*(obj for obj, _ in compiled), *engine_archives, driver_archive, *static_runtime, builtins, *imports,
               ROOT / "cmake/native-unwind.ld", ROOT / "cmake/native-symbols.map",
@@ -228,6 +233,13 @@ def main():
                    preinitializer_slots=int(preinitializers[1], 16) // 8,
                    runtime_providers=providers,
                    required_engine_and_driver_symbols_present=True)
+    dispatch_out = out / "dispatch-audits" / sha(elf) / sha(ROOT / "tools/native_dispatch.py")[:20]
+    dispatch = audit_dispatch(workspace, a.driver_root, elf, dispatch_out)
+    receipt["native_dispatch_audit"] = dispatch
+    if not dispatch["passed"]:
+        receipt["phase"] = "failed_static_dispatch"
+        (out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        raise ValueError("Required native Vulkan table callbacks are incomplete")
     (out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
     ledger = json.dumps(receipt, indent=2) + "\n"
     ledger_dir = out / "receipts"; ledger_dir.mkdir(exist_ok=True)
