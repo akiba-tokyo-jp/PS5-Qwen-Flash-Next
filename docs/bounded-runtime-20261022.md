@@ -76,6 +76,9 @@ require that complete sequence, ignoring ASCII whitespace. The earlier draft
 the 32-token output bound. This shorter response leaves room for completion;
 the output limit is unchanged. This checks these specific answers, not general
 model quality.
+The actual application renderer and original tokenizer measured 26 prompt
+tokens for the arithmetic request, 30 for the counting request and 22 for the
+expected counting response. No learned host inference was performed.
 
 The external native listener accepts exactly two fixed text requests on port
 8086. HTTP threads transport data; all learned model work stays on the admitted

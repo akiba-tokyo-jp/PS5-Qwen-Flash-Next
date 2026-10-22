@@ -6,6 +6,10 @@ and outputs are unchanged. A controller timeout is a failed attempt, never a
 completed model receipt. On Windows the virtual-environment redirector and actual
 writer are distinct processes: the actual writer may outlive its controller.
 Require positive absence of every recorded process before any new writer.
+The new attempt invokes the actual Python interpreter directly while retaining
+the conversion environment's import paths and prefixes. Its host controller
+therefore tracks the actual writer. A library-import-only check passed in
+79.58 seconds; the earlier 90-second probe failure remains preserved.
 
 `resume_conversion.py checkpoint` records the original completed 131-file SHA256
 journal, frozen preparation sources, active process identities, pinned metadata
@@ -44,3 +48,5 @@ synthetic splits while retaining two complete files and regenerating one
 partial file. Five provenance tests reject incomplete partitions, changed
 records, source drift and invalid bounds, including the fully retained case.
 These host checks are separate from original model auditing and PS5 execution.
+An actual Windows share-mode check also confirmed that the source lease allows
+reads while rejecting writes and deletion, then releases ordinary access.
