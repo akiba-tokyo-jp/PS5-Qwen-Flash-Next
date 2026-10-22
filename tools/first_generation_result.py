@@ -8,6 +8,7 @@ Missing, inconsistent or failed records never establish completion.
 import argparse
 import json
 import math
+import struct
 from pathlib import Path
 
 
@@ -60,12 +61,13 @@ def validate(path, expected):
                 "Native run/provenance differs from independent binding")
         return data
     common = ("run_id", "candidate_SELF_sha256", "model_receipt_sha256")
-    record("", "ps5-qwen-first-generation-result-v1", common)
+    record("", "ps5-qwen-plan-validation-result-v1", common)
     start = record(".first.start", "ps5-qwen-first-generation-start-v1", common)
     intent = record(".first.intent", "ps5-qwen-first-generation-intent-v1", ("run_id",))
     integrity = record(".integrity", "ps5-qwen-model-integrity-v1", ())
     mapping = record(".mapping", "ps5-qwen-model-mapping-admission-v1", ())
     memory = record(".memory", "ps5-qwen-memory-admission-v1", ())
+    source = record(".source", "ps5-qwen-bounded-source-admission-v1", ())
     def exact(data, values):
         for key, value in values.items():
             require(type(data.get(key)) is type(value) and data[key] == value, "Native phase outcome differs: " + key)
@@ -85,8 +87,19 @@ def validate(path, expected):
         Vulkan_initialized=False, GPU_compute_calls=0, mapped_payload_reads=0, resident_set_qualified=False,
         state="mapping_completed_before_backend"))
     exact(memory, dict(model_loaded=False, resident_set_qualified=False))
+    exact(source, dict(direct_read_preflight_passed=True, maximum_window_bytes=8 << 20,
+        maximum_open_handles=8, mapped_source_upload_dereferences_enabled=False,
+        CPU_matrix_fallback_enabled=False, maximum_CPU_workspace_bytes=16 << 20,
+        model_loaded=False, Vulkan_initialized=False))
     exact(memory, dict(device_weights_bytes=8755105280, mapped_file_bytes=expected["bytes"],
-        planned_resident_headroom_bytes=11976330752))
+        planned_resident_headroom_bytes=12110548480, CPU_budget_bytes=512 << 20,
+        maximum_explicitly_addressed_CPU_model_page_bytes=160432128,
+        maximum_CPU_heap_bytes=(512 << 20) - 160432128,
+        maximum_postload_device_buffer_bytes=512 << 20,
+        maximum_aggregate_postload_device_buffer_bytes=1792 << 20))
+    require(integer(memory.get("driver_free_bytes"), 12110548480, 2**63-1) and
+        integer(memory.get("Direct_largest_available_bytes"), 12110548480, 2**63-1) and
+        integer(memory.get("OS_free_bytes"), 768 << 20, 2**63-1), "Fresh memory observations do not admit the bounded model")
     alignment = memory.get("device_buffer_alignment_bytes")
     limit = memory.get("device_buffer_batch_limit_bytes")
     require(integer(alignment, 1, 65536) and not alignment & (alignment-1) and
@@ -95,9 +108,18 @@ def validate(path, expected):
     exact(result, dict(state="completed_waiting_for_ordinary_close", request_reset_completed=True,
         GPU_completion_and_retirement_passed=True, model_resources_released_after_completion=True,
         model_loaded=False, full_model_inference_executed=True, answer_quality_qualified=False,
-        native_display_started=False, external_requests_accepted=0,
+        native_display_started=True, external_requests_accepted=2, arithmetic_smoke_passed=True,
+        source_IO_completed=True,
         driver_revision="872cc1264ad8ba5d6b888b092968fa5858a38c58", profile="cumulative-idle",
         native_archive_sha256="b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925"))
+    require(integer(result.get("source_read_bytes"), 8755105280, 2**63-1) and
+        integer(result.get("source_read_chunks"), 1, 2**63-1) and
+        integer(result.get("maximum_source_read_bytes"), 1, 8 << 20), "Missing bounded completed source-I/O evidence")
+    exact(result, dict(postload_device_live_bytes=0, untracked_libc_heap_fallbacks=0))
+    require(integer(result.get("postload_device_peak_bytes"), 1, 1792 << 20) and
+        integer(result.get("postload_device_allocations"), 1, 2**31-1) and
+        integer(result.get("CPU_heap_peak_bytes"), 1, (512 << 20) - 160432128),
+        "The completed device/CPU allocation peaks exceed their admitted budgets")
     ids, output, metrics = result.get("token_ids"), result.get("output_bytes"), result.get("metrics")
     require(type(ids) is list and len(ids) <= 32 and all(integer(x, 0, 2**31-1) for x in ids), "Invalid token IDs")
     require(type(output) is list and len(output) <= 65536 and all(integer(x, 0, 255) for x in output), "Invalid output bytes")
@@ -140,8 +162,90 @@ def validate(path, expected):
         text, valid_utf8 = raw.decode("utf-8"), True
     except UnicodeDecodeError:
         text, valid_utf8 = raw.decode("utf-8", errors="replace"), False
-    return dict(state="generation_completed", stop_reason=reason, text=text,
+    require(valid_utf8 and text.strip(" \t\r\n") == "4", "The original-model arithmetic smoke answer differs")
+    first = record(".first.result", "ps5-qwen-first-request-result-v1", ("run_id",))
+    exact(first, dict(model_loaded=True, request_reset_completed=True))
+    for key in ("stop_reason", "token_ids", "output_bytes", "metrics"):
+        require(first.get(key) == result[key], "First-request terminal record differs")
+    ready = record(".demo.ready", "ps5-qwen-bounded-demo-ready-v1", ("run_id",))
+    exact(ready, dict(maximum_requests=2, context_tokens=256, maximum_output_tokens=32,
+        prompt="Count from 1 to 20, separated by commas.", listener_bind="0.0.0.0", model_loaded=True, native_display_started=True))
+    cold = record(".demo.cache", "ps5-qwen-demo-cold-cache-admission-v1", ("run_id",))
+    exact(cold, dict(context_recreated_after_positive_completion=True, expert_cache_initially_empty=True,
+        model_reloaded=False, model_loaded=True, file_pages_and_pipelines_cold=False))
+    demo = record(".demo.result", "ps5-qwen-bounded-demo-result-v1", ("run_id",))
+    require(result.get("demonstration") == demo, "The demonstration result differs from its durable record")
+    exact(demo, dict(external_requests_accepted=2, external_requests_completed=2,
+        all_monitor_assets_requested=True, finish_acknowledgement_delivered=True, listener_stopped=True,
+        model_loaded=True))
+    require(integer(demo.get("status_observations"), 2, 2**31-1) and
+        integer(demo.get("observed_clock_advance_ms"), 1000, 3*60*60*1000), "Missing passive monitor clock observations")
+    require(type(demo.get("requests")) is list and len(demo["requests"]) == 2, "Two measured external requests are required")
+    measured = []
+    for ordinal in (1, 2):
+        prefix = ".demo" + str(ordinal)
+        request_id = expected["run_id"] + "-" + str(ordinal)
+        intent = record(prefix + ".intent", "ps5-qwen-demo-request-intent-v1", ("run_id",))
+        exact(intent, dict(id=request_id, ordinal=ordinal, context_tokens=256, maximum_prompt_tokens=64,
+            maximum_output_tokens=32, maximum_generation_seconds=3600, enable_thinking=False,
+            prompt="Count from 1 to 20, separated by commas."))
+        rendered = intent.get("rendered_prompt")
+        require(type(rendered) is str and 0 < len(rendered.encode("utf-8")) <= 16384 and "\0" not in rendered,
+            "The original-template external request is absent")
+        terminal = record(prefix + ".result", "ps5-qwen-demo-request-result-v1", ("run_id",))
+        require(terminal == demo["requests"][ordinal - 1], "An external request terminal differs")
+        exact(terminal, dict(id=request_id, ordinal=ordinal, request_reset_completed=True,
+            GPU_completion_and_retirement_passed=True, model_loaded=True,
+            cache_condition="empty expert cache" if ordinal == 1 else "retained expert cache"))
+        token_ids, pieces, values = terminal.get("token_ids"), terminal.get("output_bytes"), terminal.get("metrics")
+        require(type(token_ids) is list and 2 <= len(token_ids) <= 32 and all(integer(t, 0, 2**31-1) for t in token_ids),
+            "The external token sequence is not measurable")
+        require(type(pieces) is list and 0 < len(pieces) <= 65536 and all(integer(b, 0, 255) for b in pieces),
+            "Invalid external output bytes")
+        require(type(values) is dict and integer(values.get("prompt_tokens"), 1, 64) and
+            type(values.get("generated_tokens")) is int and values["generated_tokens"] == len(token_ids),
+            "Invalid external token counts")
+        require(number(values.get("total_ms")) and values["total_ms"] <= 3600000 and
+            number(values.get("prefill_ms")) and values["prefill_ms"] <= values["total_ms"], "Invalid external timings")
+        stop = terminal.get("stop_reason")
+        require((stop == "output_token_limit" and len(token_ids) == 32) or
+            (stop == "end_of_generation" and len(token_ids) < 32), "Unproven external request completion")
+        observed = set(path.parent.glob(path.name + prefix + ".token-*"))
+        wanted = {Path(str(path) + prefix + ".token-" + str(i)) for i in range(1, len(token_ids) + 1)}
+        require(observed == wanted, "Missing or extra external token records")
+        reconstructed, stamps = [], []
+        for i, token_id in enumerate(token_ids, 1):
+            event = read_record(Path(str(path) + prefix + ".token-" + str(i)))
+            exact(event, dict(id=request_id, type="token", state="generating", ordinal=i, token_id=token_id, error=0))
+            piece, elapsed = event.get("piece_bytes"), event.get("elapsed_ms")
+            require(type(piece) is list and all(integer(b, 0, 255) for b in piece), "Invalid external token bytes")
+            require(number(elapsed) and (not stamps or elapsed >= stamps[-1]) and elapsed <= values["total_ms"],
+                "External token timestamps are inconsistent")
+            reconstructed.extend(piece); stamps.append(elapsed)
+        require(reconstructed == pieces, "External output differs from durable token pieces")
+        require(number(values.get("ttft_ms")) and abs(values["ttft_ms"] - stamps[0]) < 1e-6 and
+            stamps[0] >= values["prefill_ms"] and stamps[-1] > stamps[0], "External TTFT or decode interval differs")
+        speed = (len(token_ids) - 1) * 1000 / (stamps[-1] - stamps[0])
+        require(number(values.get("decode_tokens_per_second")) and
+            math.isclose(values["decode_tokens_per_second"], speed, rel_tol=1e-9), "External decode rate differs")
+        frame = record(prefix + ".display.json", "ps5-qwen-displayed-frame-v1", ("run_id",))
+        exact(frame, dict(id=request_id, width=1920, height=1080, BMP_bytes=8294454,
+            generated_tokens=len(token_ids), clock_calibrated=True, model_loaded=True,
+            positive_VideoOut_completion=True, evidence="CPU raster after the matching completed VideoOut flip"))
+        require(integer(frame.get("epoch_ms"), 946684800000, 4102444800000) and
+            frame.get("TTFT_ms") == values["ttft_ms"] and frame.get("decode_tokens_per_second") == values["decode_tokens_per_second"],
+            "The completed native frame does not contain the measured request/time")
+        bitmap = Path(str(path) + prefix + ".display.bmp")
+        require(bitmap.is_file() and bitmap.stat().st_size == 8294454, "The completed scanout-source bitmap is missing")
+        with bitmap.open("rb") as image:
+            header = image.read(54)
+        require(header[:2] == b"BM" and struct.unpack_from("<I", header, 2)[0] == 8294454 and
+            struct.unpack_from("<III", header, 10) == (54, 40, 1920) and
+            struct.unpack_from("<IHH", header, 22) == (1080, 1, 32), "The completed scanout-source bitmap layout differs")
+        measured.append(dict(id=request_id, text=bytes(pieces).decode("utf-8", errors="replace"), metrics=values))
+    return dict(state="native_plan_requests_completed", stop_reason=reason, text=text,
         output_is_complete_UTF8=valid_utf8, metrics=metrics, answer_quality_qualified=False,
+        external_requests=measured, native_display_started=True,
         ordinary_close_and_original_restoration_verified=False)
 
 

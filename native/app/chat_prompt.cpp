@@ -20,10 +20,14 @@ std::string render_chat_prompt(const std::string & source, const jinja::program 
 }
 
 std::string render_first_generation_prompt(const std::string & source) {
+    return render_bounded_user_prompt(source, first_generation_prompt);
+}
+
+std::string render_bounded_user_prompt(const std::string & source, const std::string & prompt) {
     if (source.empty() || source.size() > (256u << 10))
         throw std::invalid_argument("The bounded original chat template is required");
     const auto program = jinja::parse_from_tokens(jinja::lexer().tokenize(source));
     return render_chat_prompt(source, program,
-        nlohmann::json::array({{{"role", "user"}, {"content", first_generation_prompt}}}), false);
+        nlohmann::json::array({{{"role", "user"}, {"content", prompt}}}), false);
 }
 }

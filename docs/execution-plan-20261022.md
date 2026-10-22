@@ -15,15 +15,17 @@ final hashes and transfer are pending. The data-only continuation is waiting
 without console access. The converted tensor payload is 359,235,922,432 bytes
 before container overhead. Component/display evidence does not establish model
 compatibility. Full inference is still rejected by `validation_policy.h`, and
-the planned 11,976,330,752-byte memory requirement is not observed residency.
+the old 11,976,330,752-byte memory estimate is not observed residency. The
+bounded application now plans 12,110,548,480 bytes, including a larger tracked
+CPU allowance and a capped aggregate pool for post-load device buffers.
 
 ## Three deliverables
 
 | Deliverable | Work | Exit evidence |
 | --- | --- | --- |
 | 1. Ready data and runtime | Continue conversion/audit/hash/transfer. In parallel, implement the missing bounded first-generation admission using existing integrity, mapping, memory and engine code. | Complete original-model receipt and positive transfer record; focused checks and exact candidate link/package proof. |
-| 2. First real generation | One identified title launch executes ordered native integrity, mapping, memory, load and short-generation gates. | Actual token IDs/text, finite logits, exact model/driver identity, measured timings, positive GPU completion and normal close/restoration. |
-| 3. Working demonstration | Connect the qualified model path to the existing API and passive TV/web monitor. Measure one cold and one warm short request before tuning. | Actual visible output and clock provenance, TTFT, output count, decode tokens/s and successful shutdown records. |
+| 2. First real generation | One identified title launch executes ordered native integrity, mapping, memory, load and short-generation gates. | Actual token IDs/text, finite logits, expected arithmetic smoke answer, exact model/driver identity, measured timings and positive GPU completion. |
+| 3. Working demonstration | In that same title session, retain the model and recreate only the completed context. Run two identical fixed external requests with initially empty and then retained expert cache. | Passive TV/web output, calibrated time, displayed-frame evidence, independently reconstructed TTFT/token rates, listener shutdown, ordinary title close and exact original restoration/readmission. |
 
 Deliverable 1 has concurrent data and runtime work streams. Data preparation owns
 bulk disk work; avoid competing large reads or repeated full builds. Change the
@@ -56,11 +58,18 @@ Start with one original-template greedy request: context at most 256 tokens,
 rendered prompt at most 64 tokens, output at most 32 tokens, one-token
 microbatches. Reject oversized prompts instead of truncating. These are proposed
 implementation maxima, not qualified context capacity. Persist the exact request
-before its single execution. No second request or automatic retry is permitted.
+before its single execution. No retry is permitted. Only after that smoke
+request positively completes and returns the expected answer may the two fixed
+API demonstration requests proceed. They each have the same context/prompt/
+output bounds and a separate durable intent; the full model is never reloaded.
 Distinguish end-of-generation, token limit, rejection and backend failure.
 A partial reasoning trace is not a completed answer.
 
 ## Completion, safety and reuse
+
+Completion means every implementation and physical verification required by all
+three deliverables. A host check, component test, first token, model load or one
+request is an intermediate result. Keep working through the remaining gates.
 
 Persist phase progress and terminal outcomes under fixed deadlines with an
 independent host observer. Check cancellation/deadlines at completed backend
@@ -117,8 +126,23 @@ original was restored, numerically readmitted and normally closed. The current
 data-only continuation is bound to that completed context. This is reusable
 component evidence, not full-model generation.
 
-Remaining deliverable-1 work is the candidate's full native link/package/import
-audit, bounded independent host observation using the existing ordinary launcher,
-and the unresolved model/context/graph memory bounds. Model conversion/audit/hash
-and transfer must finish before any title execution. No first-generation SELF
-has been packaged or run, and full-model quality/performance remain unqualified.
+The runtime now includes one 8 MiB direct-read window, at most eight direct
+source descriptors, original mapping-identity tracking and positive unmap
+retirement. CPU matrix fallback is rejected after model load; CPU workspace is
+capped at 16 MiB. Post-load GGML device allocations are admitted before creation:
+at most 512 MiB each and 1,792 MiB in aggregate, with fresh physical Direct
+reserve checks. Their tracked peak and completed release must be reported.
+See `bounded-runtime-20261022.md` for scope and limitations.
+
+The finite API transports two exact requests onto the existing model producer
+thread. It serves only the passive assets/status, streams durable token events,
+requires positive observation/finish acknowledgement, and stops its listener
+before model retirement. Native frame capture records the exact CPU raster
+after a matching positive VideoOut flip; it is not a TV photograph.
+
+Remaining deliverable-1 work is the coherent final native link/package/import
+audit and full data readiness. The independent host observer is implemented;
+its physical use still requires the existing fresh owner/ordinary-launch gates.
+No first-generation SELF has been packaged or run. Model conversion/audit/hash
+and transfer must finish before title execution; physical model capacity,
+full-model quality and performance remain unqualified.

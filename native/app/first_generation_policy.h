@@ -4,12 +4,9 @@
 #include <nlohmann/json.hpp>
 
 namespace qwen_app {
-inline void require_first_generation_policy(const nlohmann::json & policy, bool native_display) {
-    const auto & gate = policy.at("native_first_generation_validation");
-    if (native_display || !gate.is_object())
-        throw std::runtime_error("First generation requires its no-display private admission");
-    const nlohmann::json expected = {
-        {"schema", "ps5-qwen-first-generation-v1"},
+inline nlohmann::json first_generation_scope() {
+    return {
+        {"schema", "ps5-qwen-first-generation-v2"},
         {"preceding_moe_SELF_sha256", "0b187cac25c3e322bd4244474a935d191ce85b7bcbb3d2559ead26f05198d057"},
         {"driver_revision", "872cc1264ad8ba5d6b888b092968fa5858a38c58"},
         {"profile", "cumulative-idle"},
@@ -21,13 +18,32 @@ inline void require_first_generation_policy(const nlohmann::json & policy, bool 
         {"complete_transfer_and_data_lease_bound_by_launcher", true},
         {"complete_v2_model_receipt_required", true},
         {"native_integrity_and_mapping_before_backend_required", true},
-        {"persistent_caches_enabled", false}, {"external_requests_enabled", false},
+        {"bounded_mapped_source_reads_required", true}, {"source_window_bytes", 8u << 20},
+        {"maximum_source_handles", 8}, {"CPU_matrix_fallback_enabled", false},
+        {"maximum_CPU_workspace_bytes", 16u << 20},
+        {"persistent_caches_enabled", false}, {"unrestricted_external_requests_enabled", false},
         {"maximum_requests", 1}, {"maximum_context_tokens", first_context_tokens},
+        {"bounded_demonstration_required", true}, {"demonstration_external_requests", 2},
+        {"demonstration_listener_bind", "0.0.0.0"}, {"demonstration_listener_port", 8086},
+        {"native_display_after_first_request_required", true}, {"maximum_display_buffer_bytes", 32u << 20},
+        {"demonstration_idle_deadline_seconds", 900}, {"demonstration_total_deadline_seconds", 10800},
+        {"recreate_completed_context_before_benchmark_required", true}, {"model_reload_before_benchmark_enabled", false},
+        {"CPU_budget_bytes", 512ull << 20}, {"maximum_explicitly_addressed_CPU_model_page_bytes", 160432128},
+        {"maximum_CPU_heap_bytes", (512ull << 20) - 160432128},
+        {"graph_workspace_budget_bytes", 256ull << 20},
+        {"maximum_postload_device_buffer_bytes", 512ull << 20},
+        {"maximum_aggregate_postload_device_buffer_bytes", 1792ull << 20},
         {"maximum_prompt_tokens", first_prompt_tokens}, {"maximum_output_tokens", first_output_tokens},
         {"maximum_generation_seconds", first_generation_seconds},
         {"maximum_verification_seconds", 7200}, {"maximum_model_load_seconds", 1200},
         {"maximum_context_creation_seconds", 600}, {"maximum_mapped_bytes", 512ull << 30},
         {"prompt", first_generation_prompt}, {"enable_thinking", false}};
+}
+inline void require_first_generation_policy(const nlohmann::json & policy, bool native_display) {
+    const auto & gate = policy.at("native_first_generation_validation");
+    if (native_display || !gate.is_object())
+        throw std::runtime_error("First generation requires its no-display private admission");
+    const auto expected = first_generation_scope();
     for (auto item = expected.begin(); item != expected.end(); ++item) {
         const auto & actual = gate.at(item.key());
         const auto & wanted = item.value();

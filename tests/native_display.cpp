@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <thread>
+#include <fstream>
 #ifdef _WIN32
 #include <malloc.h>
 #endif
@@ -51,12 +52,24 @@ int sceVideoOutSubmitFlip(std::int32_t handle, std::int32_t buffer, std::uint32_
 int sceVideoOutGetFlipStatus(std::int32_t, std::uint64_t * status) { status[3] = shown.load(); return 0; }
 int sceVideoOutIsFlipPending(std::int32_t) { return 0; }
 }
-int main() {
+int main(int argc, char ** argv) {
     try {
         {
             qwen_app::NativeDisplay display; display.start({});
             check(flips >= 2 && !display.failed());
-            qwen_app::MonitorSnapshot data; data.state = "host fixture"; display.publish(data);
+            qwen_app::MonitorSnapshot data; data.state = "host fixture"; data.request_id = "synthetic-host-request";
+            data.generated_tokens = 2; data.tokens_per_second = 50; data.ttft_ms = 20;
+            display.publish(data);
+            if (argc == 2) {
+                const auto frame = display.capture(argv[1], data.request_id, 2);
+                check(frame.request_id == data.request_id && frame.generated_tokens == 2 && *frame.tokens_per_second == 50);
+                std::ifstream file(argv[1], std::ios::binary | std::ios::ate);
+                check(file && file.tellg() == 8294454); file.seekg(0);
+                char magic[2] = {}; file.read(magic, 2); check(magic[0] == 'B' && magic[1] == 'M');
+                bool refused = false;
+                try { display.capture(argv[1], data.request_id, 2); } catch (const std::exception &) { refused = true; }
+                check(refused && display.failed());
+            }
         }
         // Only the host fixture frees its synthetic backing after its worker joins.
 #ifdef _WIN32
@@ -64,7 +77,7 @@ int main() {
 #else
         std::free(backing);
 #endif
-        flips = 0; shown = 0; fail = true;
+        flips = 0; shown = 0; faulted = false; fail = true;
         {
             qwen_app::NativeDisplay display;
             bool rejected = false; try { display.start({}); } catch (const std::exception &) { rejected = true; }

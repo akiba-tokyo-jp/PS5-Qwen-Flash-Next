@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: MIT
+// Emit and validate the exact native scope with caller-supplied input bindings.
+// This is an offline configuration tool, never a console launcher.
+#include "first_generation_policy.h"
+#include <fstream>
+#include <iostream>
+
+int main(int argc, char ** argv) {
+    try {
+        if (argc != 2) throw std::runtime_error("Expected one original-input binding JSON file");
+        std::ifstream input(argv[1]);
+        if (!input) throw std::runtime_error("The input binding is absent");
+        const auto binding = nlohmann::json::parse(input);
+        auto scope = qwen_app::first_generation_scope();
+        for (const auto * key : {"candidate_SELF_sha256", "candidate_SELF_bytes", "model_receipt_sha256", "model_receipt_bytes", "run_id"})
+            scope[key] = binding.at(key);
+        nlohmann::json policy{{"native_first_generation_validation", scope}};
+        qwen_app::require_first_generation_policy(policy, false);
+        std::cout << scope.dump(2) << '\n';
+    } catch (const std::exception & error) { std::cerr << error.what() << '\n'; return 1; }
+}

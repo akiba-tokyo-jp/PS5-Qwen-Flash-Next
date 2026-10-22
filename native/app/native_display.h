@@ -14,6 +14,10 @@ public:
     NativeDisplay & operator=(const NativeDisplay &) = delete;
     void start(MonitorSnapshot initial);
     void publish(const MonitorSnapshot & snapshot);
+    // Capture the exact CPU raster only after its positive VideoOut completion.
+    // This is scanout-source evidence, not a photograph of the physical TV.
+    MonitorSnapshot capture(const std::string & fresh_path, const std::string & request_id,
+                            std::uint64_t minimum_tokens);
     bool failed() const;
 private:
     struct Impl;

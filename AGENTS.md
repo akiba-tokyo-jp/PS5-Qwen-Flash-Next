@@ -319,3 +319,19 @@ fully read back with fresh idle guards. The active data-only continuation is
 `model-data-continuation-002`, bound to that completed context; the earlier
 001 continuation was positively stopped before the MoE case. Keep 002's recorded
 inputs/context frozen. No new console execution is part of current host work.
+
+The owner's completion criterion covers every implementation and physical check
+in all three deliverables, including passive display/API measurements, ordinary
+close, exact restoration and numerical readmission. Individual host/component
+checks are intermediate results and must not end the overall work.
+
+The private first-generation policy is now v2. It includes bounded direct source
+reads, tracked CPU/post-load device budgets, one arithmetic smoke request, and
+two fixed external requests on the same producer thread after recreating only
+the positively completed context. The native display starts after the smoke
+result and fresh model-resident headroom. The first benchmark has an empty expert
+cache; file pages/pipelines may be warm. See docs/bounded-runtime-20261022.md.
+Full link/package/import and complete model data remain mandatory before that
+distinct physical case. Keep the active preparation/002 inputs unchanged and
+retain every earlier failed admission. Host implementation does not establish
+that the full model fits, computes correctly or reaches a particular token rate.

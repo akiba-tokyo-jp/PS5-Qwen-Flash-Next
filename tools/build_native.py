@@ -18,6 +18,7 @@ import subprocess
 from driver_inputs import sha, validate_driver
 from native_driver import validate_native_platform
 from native_dispatch import audit as audit_dispatch
+from build_model_io import validate_overrides
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -37,6 +38,8 @@ def main():
     parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--runtime-imports", type=Path, required=True,
                         help="Local source-generated SceAgc import stubs; never copied to the repository")
+    parser.add_argument("--model-io-manifest", type=Path, required=True,
+                        help="Five exact isolated source-reader overrides; original archives stay immutable")
     parser.add_argument("--jobs", type=int, default=4)
     parser.add_argument("--link-threads", type=int, default=2,
                         help="Bound host linker workers independently from compilation")
@@ -63,6 +66,8 @@ def main():
     for artifact in built["artifacts"]:
         if sha(artifact["path"]) != artifact["sha256"]:
             raise ValueError("Engine archive changed after its build receipt")
+    model_io = validate_overrides(a.model_io_manifest, receipt_path)
+    model_io_objects = [Path(row["object"]["path"]) for row in model_io["objects"]]
     out = cache / "build/application-native"
     objects = out / "objects"
     objects.mkdir(parents=True, exist_ok=True)
@@ -78,11 +83,11 @@ def main():
              "-nostdinc++", "-isystem", str(sdk / "target/include/c++/v1"), "-isystem", str(sdk / "target/include")]
     flags += [value for path in includes for value in ("-I", str(path))]
     flags += ["-DQWEN_NATIVE_PLATFORM="+str(int(native_platform is not None))]
-    files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "http_app.cpp", "chat_prompt.cpp", "native_main.cpp",
+    files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "http_app.cpp", "bounded_demo.cpp", "chat_prompt.cpp", "native_main.cpp",
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
-                                                   "model_integrity.cpp", "model_mapping.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
+                                                   "model_integrity.cpp", "model_mapping.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
@@ -170,6 +175,7 @@ def main():
     # Discard unreachable payload-only SDK routines and their private imports.
     command += ["--gc-sections"]
     command += [str(obj) for obj, _ in compiled]
+    command += list(map(str, model_io_objects))
     # Match the admitted client's static C++/ABI runtime ordering. Allowing the
     # native libc DSO to satisfy C++ symbols can mix incompatible STL/RTTI ABIs.
     public_imports = [path for path in imports if not path.name.endswith("_stub_weak.so")]
@@ -180,7 +186,7 @@ def main():
     command += ["--start-group", *map(str, engine_archives), "--whole-archive", str(driver_archive),
                 "--no-whole-archive", *map(str, static_runtime), str(builtins), "--end-group"]
     command += ["--as-needed", *map(str, public_imports), *map(str, weak_imports)]
-    inputs = [*(obj for obj, _ in compiled), *engine_archives, driver_archive, *static_runtime, builtins, *imports,
+    inputs = [*(obj for obj, _ in compiled), *model_io_objects, a.model_io_manifest, *engine_archives, driver_archive, *static_runtime, builtins, *imports,
               ROOT / "cmake/native-unwind.ld", ROOT / "cmake/native-symbols.map",
               a.driver_root / "tooling/native/ps5-pie.ld", receipt_path]
     command.append("--threads=" + str(a.link_threads))
@@ -191,6 +197,8 @@ def main():
                "linked_driver": native_platform or selected,
                "platform_contract": "own native journal, sole AGC8, per-BO owner and completed-producer retirement" if native_platform else "generic archive; GPU entry rejected before backend initialization",
                "engine_build_provenance": built,
+               "bounded_model_source_overrides": model_io,
+               "bounded_model_source_manifest": record(a.model_io_manifest),
                "compiler": record(llvm / "clang++.exe"), "linker": record(llvm / "ld.lld.exe"),
                "application_sources": source_inputs, "application_headers": header_inputs,
                "CRT_derived_from": record(a.driver_root / "tooling/native/app_crt.cpp"),
@@ -213,6 +221,13 @@ def main():
     after = [record(path) for path in inputs]
     if before != after:
         raise ValueError("A native link input changed during the build")
+    validate_overrides(a.model_io_manifest, receipt_path)
+    link_map = (out / "native-link.private.map").read_text().replace("\\", "/")
+    for row in model_io["objects"]:
+        original_member = Path(row["archive"]["path"]).name + "(" + row["member"] + ")"
+        if original_member in link_map or Path(row["object"]["path"]).as_posix() not in link_map:
+            raise ValueError("A model-I/O override was omitted or its original archive member was linked")
+    receipt["bounded_model_source_link_map_passed"] = True
     symbols = subprocess.check_output([str(llvm / "llvm-nm.exe"), "--defined-only", str(elf)], text=True)
     for name in ("_start", "main", "catchReturnFromMain", "qwen_native_halt", "qwen_native_accept_http", "_Znwm", "__gxx_personality_v0", "llama_app_mmap_prefetch_disabled", "llama_app_expert_policy_enabled", "llama_app_expert_counters", "ggml_app_bounded_staging_enabled", "vkGetInstanceProcAddr"):
         if not re.search(r"\b" + re.escape(name) + r"$", symbols, re.M):
@@ -222,6 +237,11 @@ def main():
                      'qwen_native_driver_after_submit','qwen_native_driver_complete','qwen_native_driver_checkpoint','qwen_native_driver_register_device'):
             if not re.search(r'\b'+re.escape(name)+r'$',symbols,re.M):
                 raise ValueError('Native platform frontend hook is absent: '+name)
+    for name in ("llama_app_mapped_source_hooks", "llama_app_bounded_expert_advice_hooks",
+                 "ggml_app_mapped_upload_hooks", "ggml_app_mapped_async_hooks",
+                 "ggml_app_bounded_cpu_fallback_hooks", "ggml_app_bounded_device_buffers_hooks", "qwen_app_model_source_chunk"):
+        if not re.search(r'\b' + re.escape(name) + r'$', symbols, re.M):
+            raise ValueError("A bounded model-source integration hook is absent: " + name)
     sections = subprocess.check_output([str(llvm / "llvm-readelf.exe"), "--wide", "--sections", str(elf)], text=True)
     initializers = re.search(r"\]\s+\.init_array\s+\S+\s+\S+\s+\S+\s+([0-9a-fA-F]+)", sections)
     if not initializers or not int(initializers[1], 16):

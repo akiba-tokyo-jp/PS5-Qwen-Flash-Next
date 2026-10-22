@@ -1,0 +1,69 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -1,3 +1,4 @@
++#include "mapped_source_bridge.h"
+ #include "ggml-vulkan-common.h"
+ 
+ extern "C" void ggml_app_backend_phase(const char *) __attribute__((weak));
+@@ -13071,6 +13072,7 @@
+     VK_LOG_MEMORY("ggml_backend_vk_buffer_free_buffer()");
+     ggml_backend_vk_buffer_context * ctx = (ggml_backend_vk_buffer_context *)buffer->context;
+     ggml_vk_destroy_buffer(ctx->dev_buffer);
++    qwen_app_model_device_buffer_released(ctx);
+     delete ctx;
+ }
+ 
+@@ -13192,6 +13194,7 @@
+     VK_LOG_MEMORY("ggml_backend_vk_buffer_type_alloc_buffer(" << size << ")");
+     ggml_backend_vk_buffer_type_context * ctx = (ggml_backend_vk_buffer_type_context *) buft->context;
+ 
++    qwen_app_model_device_buffer_reserve(size);
+     vk_buffer dev_buffer = nullptr;
+     try {
+         dev_buffer = ggml_vk_create_buffer_device(ctx->device, size);
+@@ -13201,6 +13204,7 @@
+ 
+     ggml_backend_vk_buffer_context * bufctx = new ggml_backend_vk_buffer_context(ctx->device, std::move(dev_buffer), ctx->name);
+ 
++    qwen_app_model_device_buffer_commit(bufctx);
+     return ggml_backend_buffer_init(buft, ggml_backend_vk_buffer_interface, bufctx, size);
+ }
+ 
+@@ -13328,6 +13332,29 @@
+         return;
+     }
+ 
++    if (qwen_app_model_reads_enabled() && n_copies) {
++        if (n_copies > 1 && stride_data > (SIZE_MAX - size) / (n_copies - 1))
++            throw std::length_error("Original model source stride overflow");
++        const size_t span = size + (n_copies - 1) * stride_data;
++        if (qwen_app_model_source_range(data, span)) {
++            if (offset > SIZE_MAX - size ||
++                (n_copies > 1 && stride_tensor > (SIZE_MAX - offset - size) / (n_copies - 1)))
++                throw std::length_error("Original model destination stride overflow");
++            ggml_vk_synchronize(ctx);
++            for (size_t row = 0; row < n_copies; ++row) {
++                for (size_t done = 0; done < size;) {
++                    size_t part = 0;
++                    const void * window = qwen_app_model_source_chunk(
++                        (const uint8_t *) data + row * stride_data + done, size - done, &part);
++                    GGML_ASSERT(part && part <= size - done);
++                    ggml_backend_tensor_set(tensor, window, offset + row * stride_tensor + done, part);
++                    qwen_app_model_source_chunk_completed();
++                    done += part;
++                }
++            }
++            return;
++        }
++    }
+     ggml_backend_vk_buffer_context * buf_ctx = (ggml_backend_vk_buffer_context *)tensor->buffer->context;
+ 
+     vk_context cpy_ctx;
+@@ -16747,3 +16774,7 @@
+     ggml_vk_cmd_label_begin(subctx->s->buffer->buf, subctx->debug_labels.back().c_str());
+ }
+ 
++
++extern "C" bool ggml_app_mapped_async_hooks() { return true; }
++
++extern "C" bool ggml_app_bounded_device_buffers_hooks() { return true; }

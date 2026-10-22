@@ -16,6 +16,12 @@
 #include "model_mapping.h"
 #include "validation_policy.h"
 #include "native_gpu.h"
+#include "mapped_source.h"
+#include "mapped_source_bridge.h"
+#include "bounded_demo.h"
+#include "chat_prompt.h"
+#include "model_cpu_budget.h"
+#include "device_buffer_budget.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <ps5platform/kernel.h>
@@ -105,7 +111,9 @@ static void inspect_container(const std::string & path, bool first, qwen_app::Mo
         if(!all||all>512||next>=all) throw std::runtime_error("Invalid model layer count");
         footprint.trunk_layers=all-next;
         for(const auto & requirement : {std::pair<const char *,std::uint32_t>{"qwen4exp.expert_count",512},
-             {"qwen4exp.expert_used_count",10},{"qwen4exp.embedding_length",2560}}) {
+             {"qwen4exp.expert_used_count",10},{"qwen4exp.embedding_length",2560},
+             {"qwen4exp.ple.ngram_size",3},{"qwen4exp.ple.heads_per_ngram",8},
+             {"qwen4exp.embedding_length_per_layer_input",160}}) {
             const auto key=gguf_find_key(metadata.get(),requirement.first);
             if(key<0||gguf_get_kv_type(metadata.get(),key)!=GGUF_TYPE_UINT32||
                gguf_get_val_u32(metadata.get(),key)!=requirement.second)
@@ -124,6 +132,9 @@ static void inspect_container(const std::string & path, bool first, qwen_app::Mo
         if(!name||!names.insert(name).second||names.size()>8192||end>expected_bytes)
             throw std::runtime_error("Invalid or duplicate GGUF tensor span");
         footprint.tensor(name,bytes);
+        if ((std::string(name) == "token_embd.weight" && gguf_get_tensor_ne(metadata.get(), i)[0] != 2560) ||
+            (std::string(name) == "per_layer_token_embd.weight" && gguf_get_tensor_ne(metadata.get(), i)[0] != 160))
+            throw std::runtime_error("The original CPU row-access dimensions differ from their admitted budget");
         if(std::strstr(name,".ffn_")&&std::strstr(name,"_exps.weight")&&gguf_get_tensor_ne(metadata.get(),i)[2]!=512)
             throw std::runtime_error("Every original expert must remain present");
     }
@@ -156,9 +167,17 @@ struct LoadProgress {
     std::chrono::steady_clock::time_point started=std::chrono::steady_clock::now();
     unsigned reported=0;
 };
+static void require_model_CPU_budget() {
+    struct ps5_heap_stats heap{}; ps5_heap_stats(&heap);
+    if (heap.libc_fallbacks || heap.mapped_bytes > qwen_app::maximum_model_CPU_heap_bytes ||
+        heap.peak_bytes > qwen_app::maximum_model_CPU_heap_bytes || observed_os_free() < qwen_app::model_read_os_reserve)
+        throw std::runtime_error("The model CPU heap/page budget or fresh OS reserve is not admitted");
+}
 static bool observe_model_load(float progress,void * opaque) {
     auto & state=*static_cast<LoadProgress *>(opaque);
     if(!std::isfinite(progress)||progress<0||progress>1) return false;
+    try { require_model_CPU_budget(); }
+    catch (...) { qwen_native_stage("model_load_CPU_memory_bound_reached_at_completed_boundary"); return false; }
     // Cancellation happens only at the loader's completed transfer boundaries.
     if(std::chrono::steady_clock::now()-state.started>std::chrono::minutes(20)) {
         qwen_native_stage("model_load_deadline_reached_at_completed_boundary");return false;
@@ -192,6 +211,12 @@ int main(int argc, char ** argv) {
         // A frozen fixture policy does not replace the launcher's fresh console
         // guards. Full-model inference remains independently rejected here.
         qwen_app::require_native_validation_policy(policy, mode, startup.native_display);
+        if (startup.first_generation_validation && startup.port != 8086)
+            throw std::runtime_error("The bounded external demonstration requires its exact admitted port");
+        if (startup.first_generation_validation && (!llama_app_mapped_source_hooks() ||
+            !llama_app_bounded_expert_advice_hooks() || !ggml_app_mapped_upload_hooks() ||
+            !ggml_app_mapped_async_hooks() || !ggml_app_bounded_cpu_fallback_hooks() || !ggml_app_bounded_device_buffers_hooks()))
+            throw std::runtime_error("Every bounded source-read engine integration hook is required");
         qwen_app::monitor_clock().initialize(startup.clock_calibration);
         qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");
         llama_log_set(native_log, nullptr); ggml_log_set(native_log, nullptr);
@@ -501,6 +526,19 @@ int main(int argc, char ** argv) {
         require_unchanged_model();
 
         screen.state = "admitting original BF16 memory";
+        if (startup.first_generation_validation) {
+            std::vector<qwen_app::SourceFile> sources;
+            for (std::size_t i = 0; i < mapping_files.size(); ++i)
+                sources.push_back({mapping_files[i].path, mapping_files[i].bytes, file_identities[i]});
+            qwen_app::start_native_model_sources(std::move(sources));
+            write_fresh_report(startup.admission_report + ".source", {
+                {"schema", "ps5-qwen-bounded-source-admission-v1"}, {"pid", getpid()},
+                {"direct_read_preflight_passed", true}, {"maximum_window_bytes", qwen_app::model_read_window},
+                {"maximum_open_handles", 8}, {"mapped_source_upload_dereferences_enabled", false},
+                {"CPU_matrix_fallback_enabled", false}, {"maximum_CPU_workspace_bytes", 16u << 20},
+                {"model_loaded", false}, {"Vulkan_initialized", false}});
+            qwen_native_stage("bounded_model_source_preflight_passed_before_backend");
+        }
         if (display) display->publish(screen);
         native_resources_started = true;
         qwen_app::admit_cpu_runtime(qwen_native_stage);
@@ -525,6 +563,10 @@ int main(int argc, char ** argv) {
         if(pool<=0||sceKernelAvailableDirectMemorySize(0,pool,65536,&physical,&direct)<0)
             throw std::runtime_error("A fresh Direct-memory observation is required before model loading");
         qwen_app::MemoryBudget memory_budget;
+        if (startup.first_generation_validation) {
+            memory_budget.cpu_working = qwen_app::model_CPU_budget_bytes;
+            memory_budget.workspace = 256ull << 20;
+        }
         const auto buffer_type=ggml_backend_dev_buffer_type(device);
         const qwen_app::MemoryObservation memory_observation{driver_free,direct,observed_os_free(),
             ggml_backend_buft_get_max_size(buffer_type),ggml_backend_buft_get_alignment(buffer_type)};
@@ -534,6 +576,13 @@ int main(int argc, char ** argv) {
             {"mapped_experts_bytes",footprint.mapped_experts},{"required_lazy_PLE_bytes",footprint.lazy_ple},
             {"mapped_embedding_bytes",footprint.mapped_embeddings},{"mapped_file_bytes",footprint.mapped_files},
             {"planned_resident_headroom_bytes",memory_budget.device_requirement(footprint)},
+            {"CPU_budget_bytes",memory_budget.cpu_working},
+            {"maximum_explicitly_addressed_CPU_model_page_bytes",qwen_app::maximum_addressed_model_CPU_bytes},
+            {"maximum_CPU_heap_bytes",qwen_app::maximum_model_CPU_heap_bytes},
+            {"maximum_postload_device_buffer_bytes",qwen_app::model_postload_single_buffer},
+            {"maximum_aggregate_postload_device_buffer_bytes",qwen_app::model_postload_device_budget},
+            {"driver_free_bytes",memory_observation.driver_free},
+            {"Direct_largest_available_bytes",memory_observation.direct_largest}, {"OS_free_bytes",memory_observation.os_free},
             {"device_buffer_batch_limit_bytes",memory_observation.device_max_buffer},
             {"device_buffer_alignment_bytes",memory_observation.device_buffer_alignment},
             {"resident_set_qualified",false}});
@@ -543,11 +592,14 @@ int main(int argc, char ** argv) {
         LoadProgress load_progress;model_params.progress_callback=observe_model_load;model_params.progress_callback_user_data=&load_progress;
         qwen_native_stage("model_load_started_after_memory_admission");
         require_unchanged_model();
+        if (startup.first_generation_validation) require_model_CPU_budget();
         model = llama_model_load_from_file(first_path.c_str(), model_params);
         if (!model) throw std::runtime_error("Model load failed; restart through the ordinary OS path");
         qwen_native_stage("model_load_completed");
         qwen_native_driver_checkpoint();
         require_unchanged_model();
+        if (startup.first_generation_validation) qwen_app::enforce_native_model_compute_limits();
+        if (startup.first_generation_validation) require_model_CPU_budget();
         ggml_backend_dev_memory(device, &driver_free, &driver_total);
         // Initial, unqualified limits: do not infer extra RAM from the GPU pool.
         const auto remaining=qwen_app::checked_memory_sum(memory_budget.context,
@@ -562,6 +614,7 @@ int main(int argc, char ** argv) {
         context = llama_init_from_model(model, qwen_app::streaming_context_params(
             startup.first_generation_validation ? qwen_app::first_context_tokens : 4096, cache_bytes));
         if (!context) throw std::runtime_error("Context admission failed; restart through the ordinary OS path");
+        if (startup.first_generation_validation) require_model_CPU_budget();
         if (startup.first_generation_validation && std::chrono::steady_clock::now() - context_started > std::chrono::seconds(600))
             throw std::runtime_error("Context creation exceeded its first-generation boundary deadline");
         engine = std::make_unique<qwen_app::LlamaEngine>(model, context);
@@ -587,6 +640,7 @@ int main(int argc, char ** argv) {
             qwen_app::FirstGeneration trial(*engine);
             engine->set_work_guard([&] {
                 trial.require_time();
+                require_model_CPU_budget();
                 // A fresh OS reserve is checked before and after each completed
                 // single-token graph. This is not a page-cache residency proof.
                 if (observed_os_free() < memory_budget.os_reserve)
@@ -611,29 +665,151 @@ int main(int argc, char ** argv) {
             }, qwen_native_stage);
             require_unchanged_model();
             engine->set_work_guard({});
-            // Release only after the request's positive native completion.
-            qwen_native_driver_begin();
-            engine.reset(); llama_free(context); context = nullptr; llama_model_free(model); model = nullptr;
-            qwen_native_driver_complete();
             Json metrics{{"prompt_tokens", result.metrics.prompt_tokens}, {"generated_tokens", result.metrics.generated_tokens},
                 {"prefill_ms", result.metrics.prefill_ms}, {"total_ms", result.metrics.total_ms},
                 {"TTFT_ms", nullptr}, {"decode_tokens_per_second", nullptr}};
             if (result.metrics.ttft_ms) metrics["TTFT_ms"] = *result.metrics.ttft_ms;
             if (result.metrics.decode_tokens_per_second) metrics["decode_tokens_per_second"] = *result.metrics.decode_tokens_per_second;
+            write_fresh_report(startup.admission_report + ".first.result", {
+                {"schema", "ps5-qwen-first-request-result-v1"}, {"pid", getpid()}, {"run_id", request.id},
+                {"stop_reason", result.stop_reason}, {"token_ids", result.token_ids},
+                {"output_bytes", result.output_bytes}, {"metrics", metrics},
+                {"request_reset_completed", result.request_reset_completed}, {"model_loaded", true}});
+            const std::string answer(result.output_bytes.begin(), result.output_bytes.end());
+            const auto first = answer.find_first_not_of(" \t\r\n"), last = answer.find_last_not_of(" \t\r\n");
+            if (first == std::string::npos || answer.substr(first, last - first + 1) != "4")
+                throw std::runtime_error("The first original-model arithmetic smoke response was not the expected answer");
+            // Recreate only the completed context. Resident model weights and
+            // verified mappings stay alive; the first benchmark starts with an
+            // empty expert cache while file pages/pipelines may already be warm.
+            qwen_native_driver_begin();
+            engine.reset(); llama_free(context); context = nullptr;
+            qwen_native_driver_complete();
+            require_model_CPU_budget(); require_unchanged_model();
+            const auto benchmark_context_started = std::chrono::steady_clock::now();
+            qwen_native_driver_begin();
+            context = llama_init_from_model(model, qwen_app::streaming_context_params(qwen_app::first_context_tokens, cache_bytes));
+            if (!context || std::chrono::steady_clock::now() - benchmark_context_started > std::chrono::seconds(600))
+                throw std::runtime_error("The bounded cold-cache context recreation did not complete");
+            engine = std::make_unique<qwen_app::LlamaEngine>(model, context);
+            engine->set_stage_observer(qwen_native_stage);
+            engine->set_gpu_boundaries(qwen_native_driver_begin, qwen_native_driver_complete,
+                qwen_native_driver_retain, qwen_native_driver_checkpoint);
+            qwen_native_driver_complete(); require_model_CPU_budget();
+            write_fresh_report(startup.admission_report + ".demo.cache", {
+                {"schema", "ps5-qwen-demo-cold-cache-admission-v1"}, {"pid", getpid()}, {"run_id", request.id},
+                {"context_recreated_after_positive_completion", true}, {"expert_cache_initially_empty", true},
+                {"model_reloaded", false}, {"model_loaded", true}, {"file_pages_and_pipelines_cold", false}});
+            std::int64_t display_physical = 0; std::size_t display_available = 0;
+            const auto display_pool = sceKernelGetDirectMemorySize();
+            if (display_pool <= 0 || sceKernelAvailableDirectMemorySize(0, display_pool, 65536,
+                &display_physical, &display_available) < 0 || display_available < memory_budget.direct_reserve + (32u << 20))
+                throw std::runtime_error("Fresh model-resident display headroom is insufficient");
+            screen.state = "original BF16 model ready"; screen.model_loaded = true;
+            screen.gpu_name = hardware.gpu_name; screen.gpu_total_bytes = hardware.gpu_total_bytes;
+            screen.gpu_free_bytes = hardware.gpu_free_bytes;
+            display = std::make_unique<qwen_app::NativeDisplay>(); display->start(screen);
+            qwen_native_stage("model_resident_native_first_frame_completed");
+            const auto demo = qwen_app::serve_bounded_demo(request.id, startup.web_assets, "0.0.0.0", startup.port, hardware,
+                [&](unsigned ordinal, const std::function<bool()> & alive, const std::function<void(const Json &)> & publish) {
+                    require_unchanged_model();
+                    qwen_app::FirstGeneration attempt(*engine);
+                    engine->set_work_guard([&] {
+                        attempt.require_time();
+                        require_model_CPU_budget();
+                        if (!alive() || display->failed() || observed_os_free() < memory_budget.os_reserve)
+                            throw std::runtime_error("The bounded inference observer, display or memory reserve failed");
+                    }, qwen_app::first_prompt_tokens);
+                    const auto prefix = startup.admission_report + ".demo" + std::to_string(ordinal);
+                    qwen_app::Request external{request.id + "-" + std::to_string(ordinal),
+                        qwen_app::render_bounded_user_prompt(chat_template, qwen_app::demo_prompt),
+                        qwen_app::first_context_tokens, qwen_app::first_output_tokens};
+                    auto external_metrics = [](const qwen_app::Metrics & value) {
+                        return Json{{"prompt_tokens", value.prompt_tokens}, {"generated_tokens", value.generated_tokens},
+                            {"prefill_ms", value.prefill_ms}, {"total_ms", value.total_ms},
+                            {"ttft_ms", value.ttft_ms ? Json(*value.ttft_ms) : Json(nullptr)},
+                            {"decode_tokens_per_second", value.decode_tokens_per_second ? Json(*value.decode_tokens_per_second) : Json(nullptr)}};
+                    };
+                    const auto & generated = attempt.run(external, [&](const auto & bound) {
+                        write_fresh_report(prefix + ".intent", {{"schema", "ps5-qwen-demo-request-intent-v1"},
+                            {"pid", getpid()}, {"run_id", request.id}, {"ordinal", ordinal}, {"id", bound.id},
+                            {"rendered_prompt", bound.rendered_prompt}, {"prompt", qwen_app::demo_prompt},
+                            {"context_tokens", bound.context_tokens}, {"maximum_prompt_tokens", qwen_app::first_prompt_tokens},
+                            {"maximum_output_tokens", bound.max_output_tokens}, {"enable_thinking", false},
+                            {"maximum_generation_seconds", qwen_app::first_generation_seconds}});
+                    }, [&](const auto & token, const auto & current) {
+                        const auto counter = engine->expert_cache_metrics();
+                        Json event{{"id", external.id}, {"type", "token"}, {"state", "generating"},
+                            {"ordinal", current.generated_tokens}, {"token_id", token.id},
+                            {"piece_bytes", std::vector<unsigned char>(token.piece.begin(), token.piece.end())},
+                            {"elapsed_ms", current.total_ms}, {"metrics", external_metrics(current)}, {"error", 0}};
+                        if (counter) event["expert_cache"] = {{"hits", counter->hits}, {"misses", counter->misses},
+                            {"uploaded_bytes", counter->uploaded_bytes}, {"prefetch_advice_bytes", counter->prefetch_advice_bytes}};
+                        write_fresh_report(prefix + ".token-" + std::to_string(current.generated_tokens), event);
+                        publish(event);
+                    }, qwen_native_stage);
+                    engine->set_work_guard({});
+                    if (display->failed() || generated.token_ids.size() < 2 ||
+                        !generated.metrics.decode_tokens_per_second || !generated.metrics.ttft_ms)
+                        throw std::runtime_error("The external request did not produce a measurable completed token sequence");
+                    const Json report{{"schema", "ps5-qwen-demo-request-result-v1"}, {"pid", getpid()},
+                        {"run_id", request.id}, {"id", external.id}, {"ordinal", ordinal},
+                        {"cache_condition", ordinal == 1 ? "empty expert cache" : "retained expert cache"},
+                        {"stop_reason", generated.stop_reason}, {"token_ids", generated.token_ids},
+                        {"output_bytes", generated.output_bytes}, {"metrics", external_metrics(generated.metrics)},
+                        {"request_reset_completed", generated.request_reset_completed},
+                        {"GPU_completion_and_retirement_passed", true}, {"model_loaded", true}};
+                    write_fresh_report(prefix + ".result", report);
+                    publish({{"id", external.id}, {"type", "finished"}, {"state", "completed"}, {"error", 0},
+                        {"metrics", report.at("metrics")}, {"stop_reason", generated.stop_reason}});
+                    const auto frame = display->capture(prefix + ".display.bmp", external.id, generated.token_ids.size());
+                    write_fresh_report(prefix + ".display.json", {{"schema", "ps5-qwen-displayed-frame-v1"},
+                        {"pid", getpid()}, {"run_id", request.id}, {"id", frame.request_id},
+                        {"width", 1920}, {"height", 1080}, {"BMP_bytes", 8294454},
+                        {"generated_tokens", frame.generated_tokens}, {"epoch_ms", frame.epoch_ms},
+                        {"clock_calibrated", frame.clock_calibrated}, {"model_loaded", frame.model_loaded},
+                        {"TTFT_ms", frame.ttft_ms ? Json(*frame.ttft_ms) : Json(nullptr)},
+                        {"decode_tokens_per_second", frame.tokens_per_second ? Json(*frame.tokens_per_second) : Json(nullptr)},
+                        {"positive_VideoOut_completion", true}, {"evidence", "CPU raster after the matching completed VideoOut flip"}});
+                    return report;
+                }, [&](const auto & snapshot) {
+                    if (display->failed()) throw std::runtime_error("The passive native display failed");
+                    display->publish(snapshot);
+                }, [&](const auto & ready) { write_fresh_report(startup.admission_report + ".demo.ready", ready); });
+            write_fresh_report(startup.admission_report + ".demo.result", demo);
+            require_unchanged_model();
+            require_model_CPU_budget();
+            if (display->failed()) throw std::runtime_error("Native presentation failed before model retirement");
+            // All requests and the listener completed before model retirement.
+            qwen_native_driver_begin();
+            engine.reset(); llama_free(context); context = nullptr; llama_model_free(model); model = nullptr;
+            qwen_native_driver_complete();
+            const auto source_stats = qwen_app::native_model_source_stats();
+            const auto device_stats = qwen_app::native_model_device_stats();
+            struct ps5_heap_stats final_heap{}; ps5_heap_stats(&final_heap);
+            qwen_app::stop_native_model_sources();
             write_fresh_report(startup.admission_report, {
-                {"schema", "ps5-qwen-first-generation-result-v1"}, {"run_id", request.id},
+                {"schema", "ps5-qwen-plan-validation-result-v1"}, {"run_id", request.id},
                 {"pid", getpid()}, {"candidate_SELF_sha256", gate.at("candidate_SELF_sha256")},
                 {"model_receipt_sha256", gate.at("model_receipt_sha256")},
                 {"driver_revision", gate.at("driver_revision")}, {"profile", gate.at("profile")},
                 {"native_archive_sha256", gate.at("native_archive_sha256")},
+                {"source_IO_completed", true}, {"source_read_bytes", source_stats.bytes},
+                {"source_read_chunks", source_stats.chunks}, {"maximum_source_read_bytes", source_stats.maximum_chunk},
+                {"postload_device_peak_bytes", device_stats.peak}, {"postload_device_live_bytes", device_stats.live},
+                {"postload_device_allocations", device_stats.allocations},
+                {"CPU_heap_peak_bytes", final_heap.peak_bytes}, {"untracked_libc_heap_fallbacks", final_heap.libc_fallbacks},
                 {"state", "completed_waiting_for_ordinary_close"}, {"stop_reason", result.stop_reason},
                 {"token_ids", result.token_ids}, {"output_bytes", result.output_bytes}, {"metrics", metrics},
                 {"request_reset_completed", result.request_reset_completed}, {"GPU_completion_and_retirement_passed", true},
                 {"model_resources_released_after_completion", true}, {"model_loaded", false},
                 {"full_model_inference_executed", true}, {"answer_quality_qualified", false},
                 {"text_generation_observed", !result.output_bytes.empty()},
-                {"native_display_started", false}, {"external_requests_accepted", 0}});
-            qwen_native_stage("first_generation_completed_waiting_for_ordinary_close");
+                {"native_display_started", true}, {"external_requests_accepted", 2}, {"demonstration", demo},
+                {"arithmetic_smoke_passed", true}});
+            screen.state = "validation requests finished"; screen.model_loaded = false;
+            screen.message = "CLOSE THE TITLE THROUGH THE ORDINARY OS PATH"; display->publish(screen);
+            qwen_native_stage("plan_requests_completed_waiting_for_ordinary_close");
             for (;;) std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         qwen_native_stage("inference_before_HTTP_listener_after_model_and_context_admission");

@@ -57,6 +57,8 @@ llama_context_params streaming_context_params(std::uint32_t context_tokens,
     params.n_ctx = context_tokens;
     params.n_batch = params.n_ubatch = params.n_seq_max = 1;
     params.n_threads = params.n_threads_batch = 6;
+    params.offload_kqv = true;
+    params.op_offload = true;
     params.moe_cache_size = expert_cache_bytes;
     params.no_perf = false;
     params.type_k = params.type_v = GGML_TYPE_F32;

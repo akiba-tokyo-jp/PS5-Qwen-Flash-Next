@@ -13,6 +13,7 @@ import struct
 from driver_inputs import sha, validate_driver
 from native_driver import validate_native_platform
 from audit_native_imports import audit
+from build_model_io import validate_overrides
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,6 +36,12 @@ def main():
     linked = json.loads(link_receipt.read_text(encoding="utf-8"))
     if linked.get("link_returncode") != 0 or not linked.get("input_hashes_stable") or linked["driver"] != selected:
         raise ValueError("A successful matching native link receipt is required")
+    if linked.get("bounded_model_source_link_map_passed") is not True:
+        raise ValueError("Every bounded source-reader override must be proven in the final link map")
+    io_manifest = linked["bounded_model_source_manifest"]
+    if record(Path(io_manifest["path"])) != io_manifest or validate_overrides(
+        Path(io_manifest["path"]), Path(linked["engine_receipt"]["path"])) != linked["bounded_model_source_overrides"]:
+        raise ValueError("The source-reader integration changed after the native link")
     if linked.get('native_platform'):
         platform=validate_native_platform(linked['native_platform']['manifest_path'],selected,lock['native_platform_base'])
         if platform!=linked['native_platform']:raise ValueError('Linked native platform provenance changed')
