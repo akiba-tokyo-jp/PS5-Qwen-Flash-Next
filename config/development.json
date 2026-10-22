@@ -1,11 +1,11 @@
 {
-  "phase": "physical-BF16-passed-combined-display-preparation",
+  "phase": "physical-BF16-display-UTC-passed-model-preparation",
   "driver_qualification": "bounded-evidence-reviewed",
   "console_operations_enabled": false,
   "deployment_enabled": false,
   "console_validation_enabled": false,
   "validation_deployment_enabled": false,
   "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
-  "application_qualification": "physical-BF16-passed; original-restored-numerically-readmitted-and-closed; combined-display-and-calibration-pending; full-model-pending",
+  "application_qualification": "physical-BF16-and-native-display-passed; app-local-UTC-passed; original-restored-numerically-readmitted-and-closed; full-model-pending",
   "allowed_modes": []
 }

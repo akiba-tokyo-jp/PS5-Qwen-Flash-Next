@@ -39,6 +39,9 @@ policy must name the preceding successful SELF and fixed 32 MiB display limit.
 A fresh post-compute Direct observation must admit at least 128 MiB before
 allocating display backing. Record first-frame completion separately. This
 implementation is not combined console qualification until measured on-device.
+The distinct source subsequently passed that physical gate and bounded local
+UTC checks; see [the combined result](native-combined-success-20261022.md).
+Full-model qualification remains pending.
 
 The device wall clock was observed to differ from the host by about 11 minutes.
 An optional app-local calibration uses one freshly guarded CPU observer's

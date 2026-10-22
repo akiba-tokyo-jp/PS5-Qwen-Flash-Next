@@ -19,6 +19,10 @@ one 32x16 graph, 16 finite outputs, maximum absolute error 0. The passive monito
 also returned two HTTP 200 responses. The exact original SELF was restored,
 numerically readmitted, normally closed and fully read back again. Fresh CPU
 metadata confirmed no native owner. The task retains the console reservation.
+The subsequent [combined admission](docs/native-combined-success-20261022.md)
+also passed: completed BF16 computation and retirement, the first native TV
+monitor frame, two passive HTTP responses and app-local UTC calibration.
+The original app was again restored, numerically readmitted and normally closed.
 Committed console/deployment flags remain disabled in
 [development.json](config/development.json). A private frozen fixture policy
 and guarded ordinary launch are required; full-model inference remains rejected.
@@ -62,8 +66,9 @@ The subsequent [display/status admission](docs/native-display-20261022.json)
 completed all 16 initializers, the first native frame and two HTTP 200 status
 responses from the same verified owner. It initialized no model or Vulkan.
 This artifact has six runtime providers, 289 verified actual-module imports and
-six verified reconstructed SELF segments. Native CPU percentage and wall-clock
-calibration remain unqualified; tokens/s stays unavailable without inference.
+six verified reconstructed SELF segments. At that display-only checkpoint,
+native CPU percentage and wall-clock calibration were unqualified; tokens/s
+stays unavailable without inference.
 The exact original executable was restored, numerically admitted and normally
 closed. Fresh observations confirmed no native owner and an unchanged boot.
 Original shard acquisition and full checksumming remain incomplete. These
@@ -104,8 +109,9 @@ packaging requires an audit of the actual callback-table targets. The distinct
 the physical BF16 fixture and positive completion/retirement checks. Its
 117.013471 ms fixture interval is not model throughput. Native BF16 arithmetic
 units were not advertised; the shader widens original BF16 storage to F32.
-Combined native display/Vulkan execution, accurate UTC calibration and full-model
-inference remain separate qualification stages.
+The later combined artifact passed native first-frame presentation and bounded
+app-local UTC calibration. Long-term clock drift, original-model mapping/residency,
+full-model quality and tokens/s remain unqualified.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the

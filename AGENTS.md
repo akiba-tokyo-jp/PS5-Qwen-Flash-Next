@@ -186,3 +186,13 @@ and restore the exact original executable, then repeat its numerical admission,
 ordinary shutdown, fresh CPU guards and complete final readback. Full-model
 inference remains independently rejected. Host checks alone do not qualify
 combined display/compute or calibrated UTC on the physical console.
+
+The distinct combined artifact at source
+`e60e947e0954618a05543ee8ecbc3d041e3e1ee2` subsequently passed its physical
+one-graph BF16 gate, positive completion/retirement, native first-frame completion
+and two passive HTTP/clock observations. Initial UTC uncertainty was 2,209 ms;
+the console system clock was unchanged. The original app was restored,
+numerically readmitted, normally closed and fully verified again with fresh
+CPU guards. See docs/native-combined-success-20261022.md and JSON. No native
+owner remains. Preserve this result separately from full-model admission;
+committed console/deployment flags remain disabled and the reservation is held.
