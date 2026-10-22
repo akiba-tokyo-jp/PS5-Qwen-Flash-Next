@@ -31,6 +31,7 @@ using Json = nlohmann::json;
 // A required link symbol prevents accidental use of an unpatched eager loader.
 extern "C" bool llama_app_mmap_prefetch_disabled();
 extern "C" void qwen_native_set_fault_report(const char *);
+extern "C" void qwen_native_stage(const char *);
 
 static void write_fresh_report(const std::string & path, const Json & value) {
     const auto bytes = value.dump(2) + "\n";
@@ -76,6 +77,7 @@ static void inspect_container(const std::string & path, bool first) {
 }
 
 int main(int argc, char ** argv) {
+    qwen_native_stage("main_entered GPU_not_started=1 model_loaded=0");
     llama_model * model = nullptr;
     llama_context * context = nullptr;
     std::unique_ptr<qwen_app::LlamaEngine> engine;
@@ -85,6 +87,7 @@ int main(int argc, char ** argv) {
     std::string validation_report;
     try {
         const auto startup = qwen_app::read_startup(argc, argv);
+        qwen_native_stage("configuration_read GPU_not_started=1 model_loaded=0");
         if (startup.monitor_validation || startup.display_validation) validation_report = startup.admission_report;
         std::ifstream policy_file(startup.development_policy);
         const auto policy = Json::parse(policy_file);
@@ -94,6 +97,7 @@ int main(int argc, char ** argv) {
         if (!policy.contains("allowed_modes") || !policy.at("allowed_modes").is_array() ||
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
+        qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");
         qwen_native_set_fault_report((startup.admission_report + ".fatal").c_str());
         if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) || setenv("LLAMA_APP_NO_MMAP_PREFETCH", "1", 1) ||
             setenv("LLAMA_APP_EXPERT_POLICY", "maya-aged-lfu", 1) ||
@@ -110,9 +114,11 @@ int main(int argc, char ** argv) {
         if (!sysctlbyname("hw.model", cpu_name, &cpu_name_size, nullptr, 0) && cpu_name_size &&
             std::memchr(cpu_name, 0, sizeof(cpu_name))) screen.cpu_name = cpu_name;
         if (startup.native_display) {
+            qwen_native_stage("before_display_start compute_dispatches=0 model_loaded=0");
             display = std::make_unique<qwen_app::NativeDisplay>();
             native_resources_started = true;
             display->start(screen);
+            qwen_native_stage("first_display_frame_completed compute_dispatches=0 model_loaded=0");
         }
         if (startup.monitor_validation || startup.display_validation) {
             if (!policy.value("console_validation_enabled", false)) throw std::runtime_error("Native validation is not enabled");

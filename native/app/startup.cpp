@@ -13,7 +13,7 @@ Startup read_startup(int argc, char ** argv) {
         if (length != std::string(argv[4]).size()) throw std::invalid_argument("Invalid HTTP port");
     } else {
         if (argc > 2) throw std::invalid_argument("Usage: app-native [APP_CONFIG]");
-        const std::string path = argc == 2 ? argv[1] : "/data/ai/qwen-flash-next/app.json";
+        const std::string path = argc == 2 ? argv[1] : "/app0/qwen-runtime/app.json";
         std::ifstream file(path, std::ios::binary);
         if (!file) throw std::runtime_error("Application startup configuration was not found");
         file.seekg(0, std::ios::end); const auto bytes = file.tellg(); file.seekg(0);

@@ -68,7 +68,8 @@ def main():
     flags += [value for path in includes for value in ("-I", str(path))]
     files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "http_app.cpp", "native_main.cpp",
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
-                                                   "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp")]
+                                                   "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp",
+                                                   "native_addr.cpp", "native_bootstrap.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp",
@@ -118,6 +119,7 @@ def main():
     command += ["--defsym=open_memstream=ps5_open_memstream", "--wrap=fclose", "--wrap=fflush"]
     command += ["--wrap=abort"]
     command += ["--defsym=mprotect=qwen_native_mprotect"]
+    command += ["--defsym=kernel_mprotect=qwen_native_reject_payload_mprotect"]
     # SDK dlfcn wrappers test these optional payload-loader hooks for null.
     # This statically linked native title has no payload dynamic loader. Preserve
     # the normal absent-weak-symbol semantics without inventing native imports.
@@ -132,11 +134,12 @@ def main():
         "strcoll_l", "strxfrm_l", "strftime_l", "wcscoll_l", "wcsxfrm_l", "btowc_l", "wctob_l", "iswctype_l", "mbrlen_l",
         "mbrtowc_l", "mbsrtowcs_l", "mbsnrtowcs_l", "wcrtomb_l", "wcsnrtombs_l", "mbtowc_l", "___mb_cur_max_l",
         "___runetype_l", "___tolower_l", "___toupper_l", "__runes_for_locale", "catopen", "catgets", "catclose", "backtrace",
-        "backtrace_symbols_fd", "getaddrinfo", "freeaddrinfo", "if_nameindex", "if_freenameindex", "opendir", "fdopendir",
+        "backtrace_symbols_fd", "if_nameindex", "if_freenameindex", "opendir", "fdopendir",
         "readdir", "rewinddir", "dirfd", "closedir", "nl_langinfo", "nl_langinfo_l", "getpwuid_r", "posix_fallocate",
         "access", "openat", "unlinkat", "fchmodat", "fstatat", "mkdirat", "renameat", "memfd_create",
         "arc4random", "arc4random_buf", "arc4random_uniform", "clock_nanosleep")
     command += ["--defsym=" + name + "=ps5_" + name for name in compatibility]
+    command += ["--defsym=" + name + "=qwen_native_" + name for name in ("getaddrinfo", "freeaddrinfo", "getnameinfo")]
     command += ["--wrap=" + name for name in ("malloc", "calloc", "realloc", "free", "posix_memalign",
                 "aligned_alloc", "memalign", "malloc_usable_size", "reallocf", "reallocarray", "getline", "getdelim")]
     command += ["--version-script", str(ROOT / "cmake/native-symbols.map")]
@@ -144,13 +147,12 @@ def main():
     # Discard unreachable payload-only SDK routines and their private imports.
     command += ["--gc-sections"]
     command += [str(obj) for obj, _ in compiled]
-    # Prefer actual native libc/kernel exports. The payload SDK's libc archive
-    # contains optional payload-loader/kernel helpers unsuitable for a title.
+    # Match the admitted client's static C++/ABI runtime ordering. Allowing the
+    # native libc DSO to satisfy C++ symbols can mix incompatible STL/RTTI ABIs.
     public_imports = [path for path in imports if not path.name.endswith("_stub_weak.so")]
     weak_imports = [path for path in imports if path.name.endswith("_stub_weak.so")]
-    command += ["--as-needed", *map(str, public_imports)]
     command += ["--start-group", *map(str, engine_archives), str(driver_archive), *map(str, static_runtime), str(builtins), "--end-group"]
-    command += [*map(str, weak_imports)]
+    command += ["--as-needed", *map(str, public_imports), *map(str, weak_imports)]
     inputs = [*(obj for obj, _ in compiled), *engine_archives, driver_archive, *static_runtime, builtins, *imports,
               ROOT / "cmake/native-unwind.ld", ROOT / "cmake/native-symbols.map",
               a.driver_root / "tooling/native/ps5-pie.ld", receipt_path]
@@ -171,13 +173,16 @@ def main():
     if before != after:
         raise ValueError("A native link input changed during the build")
     symbols = subprocess.check_output([str(llvm / "llvm-nm.exe"), "--defined-only", str(elf)], text=True)
-    for name in ("_start", "main", "catchReturnFromMain", "qwen_native_halt", "llama_app_mmap_prefetch_disabled", "llama_app_expert_policy_enabled", "llama_app_expert_counters", "vkGetInstanceProcAddr"):
+    for name in ("_start", "main", "catchReturnFromMain", "qwen_native_halt", "_Znwm", "__gxx_personality_v0", "llama_app_mmap_prefetch_disabled", "llama_app_expert_policy_enabled", "llama_app_expert_counters", "vkGetInstanceProcAddr"):
         if not re.search(r"\b" + re.escape(name) + r"$", symbols, re.M):
             raise ValueError("Required native integration symbol is absent: " + name)
     sections = subprocess.check_output([str(llvm / "llvm-readelf.exe"), "--wide", "--sections", str(elf)], text=True)
     initializers = re.search(r"\]\s+\.init_array\s+\S+\s+\S+\s+\S+\s+([0-9a-fA-F]+)", sections)
     if not initializers or not int(initializers[1], 16):
         raise ValueError("Native static constructors were lost")
+    preinitializers = re.search(r"\]\s+\.preinit_array\s+\S+\s+\S+\s+\S+\s+([0-9a-fA-F]+)", sections)
+    if not preinitializers or int(preinitializers[1], 16) != 8:
+        raise ValueError("Exactly one native bootstrap preinitializer is required")
     dynamic = subprocess.check_output([str(llvm / "llvm-readelf.exe"), "--dynamic", str(elf)], text=True)
     providers = re.findall(r"Shared library: \[([^\]]+)\]", dynamic)
     expected_providers = {"libSceAgc.prx", "libSceAgcDriver.prx", "libSceLibcInternal.sprx",
@@ -187,6 +192,7 @@ def main():
         raise ValueError("Unexpected native runtime provider set")
     receipt.update(inputs_after=after, input_hashes_stable=True, artifact=record(elf),
                    initializer_slots=int(initializers[1], 16) // 8,
+                   preinitializer_slots=int(preinitializers[1], 16) // 8,
                    runtime_providers=providers,
                    required_engine_and_driver_symbols_present=True)
     (out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")

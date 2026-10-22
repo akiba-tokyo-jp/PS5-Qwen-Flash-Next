@@ -8,7 +8,7 @@ struct Startup {
     bool native_display = true;
     bool monitor_validation = false;
     bool display_validation = false;
-    std::string admission_report = "/data/ai/qwen-flash-next/gpu-admission.json";
+    std::string admission_report = "/app0/qwen-runtime/gpu-admission.json";
 };
 // No-argument title startup reads this app's own data directory. Explicit
 // config/legacy CLI arguments remain available for controlled native tests.

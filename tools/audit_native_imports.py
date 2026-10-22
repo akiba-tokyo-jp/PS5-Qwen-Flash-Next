@@ -31,6 +31,11 @@ def audit(workspace, cache):
                 providers.setdefault(parts[0], name)
     output = subprocess.check_output([str(llvm / "llvm-nm.exe"), "-D", "--undefined-only", "--format=posix", str(image)], text=True)
     required = [line.split()[0] for line in output.splitlines() if line.strip()]
+    cpp_runtime = [name for name in required if name.startswith("_Z") or
+                   name in {"__gxx_personality_v0", "__dynamic_cast", "__cxa_get_globals", "__cxa_get_globals_fast",
+                            "__cxa_demangle", "__cxa_guard_acquire", "__cxa_guard_release", "__cxa_guard_abort", "__cxa_pure_virtual"}]
+    if cpp_runtime:
+        raise ValueError("Native C++ runtime ABI must remain static: " + ", ".join(sorted(cpp_runtime)))
     return {"schema": "ps5-qwen-native-import-audit-v1", "console_access": False,
             "image_sha256": sha(image), "weak_stubs_accepted_as_providers": False,
             "missing": sorted(set(required) - providers.keys()),

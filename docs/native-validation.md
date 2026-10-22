@@ -43,6 +43,19 @@ Before any launch, audit imports against actual public module exports. Weak
 convenience stubs are not runtime ABI evidence. Package the exact verified PIE,
 check SELF integrity and compare its reconstructed headers and loadable segments.
 Preserve exact source, driver profile, compile/link inputs and SELF hashes.
+The C++ runtime, RTTI, exception personality and allocation operators must resolve
+to the matching static SDK libraries; an exported native-module symbol alone does
+not prove C++ ABI compatibility. Numeric IPv4 resolution is application-owned:
+the SDK resolver placeholder rejects even loopback. Native configuration/assets
+live beneath `/app0/qwen-runtime`, the existing title's application sandbox.
+
+An exclusive raw-fd preinit journal records fixed startup stages before C++
+constructors. General stdout/stderr use a separate owner-only file. Missing or
+unwritable journals retain the process before display/model work. An external
+observer must distinguish OS launch acceptance, a live process, first-frame
+completion and advancing HTTP timestamps. A deadline without the required
+evidence is an explicit failed admission, never an implicit success or a reason
+to resubmit the same launch.
 
 For console work, freshly identify the sole native owner and verify idle native
 and gateway services. Preserve the original SELF and settings before replacing
@@ -52,6 +65,16 @@ Do not advance a stage with unresolved allocation, instruction, synchronization
 or completion behavior. No manual GPU release, reset or force termination is
 part of this procedure. Restore the exact original SELF and validate its
 numerical startup admission and idle services after the test.
+
+The first console attempt is recorded in
+[native-startup-20261022.json](native-startup-20261022.json). The OS accepted one
+ordinary launch, but a bounded observation found no native owner or admission
+report. No repeat launch followed. The original SELF was restored byte-for-byte;
+fresh CPU-only observations confirmed no native owner, no running big application
+and an unchanged boot. Console display and GPU/model admission have not passed.
+The startup cause is unresolved. Host review found incorrect sandbox paths,
+mixed C++ runtime imports and the failing resolver placeholder; correcting those
+issues does not by itself establish which one caused the observed startup failure.
 
 The raster, date/time and status observer run independently of browser polling.
 The screen contains no chat or operation controls. Tokens/s stays unavailable

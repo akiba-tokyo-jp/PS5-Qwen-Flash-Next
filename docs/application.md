@@ -142,11 +142,13 @@ D:/PS5-AI/qwen-flash-next/build/application-preview/app-demo.exe --demo C:/Users
 
 ## Remaining work
 
-- Complete SELF conversion/packaging and verify native loader, imports, static
-  constructors, IEEE state, TLS/unwind and platform startup on the console. The
-  intermediate PIE has linked on the host with the selected driver.
+- Host SELF conversion/packaging passes. Correct and qualify native startup after
+  the first failed admission; verify loader, static constructors, IEEE state,
+  TLS/unwind and platform startup on the console. See the
+  [startup record](native-startup-20261022.json).
 - Finish original checkpoint acquisition, BF16 conversion and layout verification.
 - After runtime admission, measure native memory admission, required PLE and
   expert reads, complete generation, quality, cancellation and sustained residency.
-- Keep release packaging and console qualification deferred under
-  `config/development.json`. Application merges do not remove that restriction.
+- Keep release deployment disabled and advance console qualification only through
+  the allowed stage in `config/development.json`. Application merges do not remove
+  that restriction.

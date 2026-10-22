@@ -52,9 +52,17 @@ The earlier host link is retained in [the integration record](docs/driver-integr
 The subsequent native monitor build preserves 16 initializer slots and seven
 runtime providers, passes 344 real-module import checks and produces an
 integrity-checked SELF with six verified reconstructed segments. See
-[the monitor host record](docs/native-monitor-20261022.json). These host results
-do not establish console execution or successful Qwen inference. Original shard
-acquisition and full checksumming remain incomplete.
+[the monitor host record](docs/native-monitor-20261022.json). Its first ordinary
+console launch was accepted by the OS, but no native process or admission report
+was observed. Startup is **not admitted**; see
+[the startup record](docs/native-startup-20261022.json). The exact original SELF
+was restored and read back, with no native application running and the same boot
+still responding. Original numerical re-admission remains pending before final
+console release. A distinct corrected build passes host verification with a
+preinit journal, a static C++ ABI and 290 actual-module imports; see
+[its host record](docs/native-monitor-corrected-20261022.json). This does not
+establish corrected console startup. Original shard acquisition and full
+checksumming remain incomplete.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the

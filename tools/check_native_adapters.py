@@ -21,7 +21,8 @@ def main():
     env = os.environ.copy(); env["PATH"] = str(host) + os.pathsep + env.get("PATH", "")
     receipt = {"console_access": False, "driver_loaded": False, "model_loaded": False, "steps": []}
     for name, include in (("vulkan_bridge", a.workspace / "toolchain/Vulkan-Headers/include"),
-                          ("native_socket", ROOT / "tests/socket_stubs"), ("native_memory", ROOT / "tests/memory_stubs")):
+                          ("native_socket", ROOT / "tests/socket_stubs"), ("native_memory", ROOT / "tests/memory_stubs"),
+                          ("native_addr", ROOT / "tests/address_stubs")):
         exe = out / (name + ".exe")
         command = [str(host / "clang++.exe"), "-std=c++17", "-O2", "-Wall", "-Wextra", "-Werror", "-I", str(include),
                    str(ROOT / "native/app" / (name + ".cpp")), str(ROOT / "tests" / (name + ".cpp")), "-o", str(exe)]

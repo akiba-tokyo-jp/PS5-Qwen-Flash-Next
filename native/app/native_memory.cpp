@@ -6,6 +6,12 @@
 #include <cerrno>
 #include <cstddef>
 #include <cstdint>
+#include <sys/types.h>
+// SDK payload mmap code retains an optional executable-protection hook. A
+// native title has no payload kernel writer; unsupported requests fail closed.
+extern "C" int qwen_native_reject_payload_mprotect(pid_t, std::intptr_t, std::size_t, int) {
+    errno = EPERM; return -1;
+}
 extern "C" int qwen_native_mprotect(void * address, std::size_t bytes, int protection) {
     static_assert(PROT_READ == 1 && PROT_WRITE == 2 && PROT_EXEC == 4, "Unexpected CPU protection bits");
     if (protection & ~(PROT_READ | PROT_WRITE)) { errno = EPERM; return -1; }
