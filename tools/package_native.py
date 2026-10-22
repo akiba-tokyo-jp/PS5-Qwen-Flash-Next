@@ -58,6 +58,13 @@ def main():
         (tool_dir / "compile.private.log").write_bytes(result.stdout + result.stderr)
         if result.returncode: raise RuntimeError(result.stderr.decode("utf-8", "replace"))
     a.out.mkdir(parents=True)
+    engine_origin = Path(linked["engine_receipt"]["path"])
+    if sha(engine_origin) != linked["engine_receipt"]["sha256"]:
+        raise ValueError("Engine build receipt changed after the native link")
+    engine_snapshot = a.out / "engine-build.receipt.private.json"
+    shutil.copyfile(engine_origin, engine_snapshot)
+    if sha(engine_snapshot) != linked["engine_receipt"]["sha256"]:
+        raise ValueError("Engine build receipt changed while snapshotting")
     # Keep an immutable ledger in every package. A later build may replace the
     # working link receipt; retaining only its path/digest would lose provenance.
     link_snapshot = a.out / "native-link.receipt.private.json"
@@ -89,6 +96,7 @@ def main():
         ("extract", [str(tool), "self", "--extract", "--file", str(executable), "--out", str(extracted)]),
     ]
     receipt = {"schema": "ps5-qwen-local-self-v1", "driver": selected, "native_link_receipt": record(link_snapshot),
+               "engine_build_receipt": record(engine_snapshot),
                "native_link_receipt_origin": record(link_receipt),
                "native_pie": record(image), "format_tool": record(tool), "format_tool_sources": [record(path) for path in sources + headers],
                "format_tool_compile": compile_command, "console_access": False, "installed": False,

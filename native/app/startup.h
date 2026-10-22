@@ -8,6 +8,8 @@ struct Startup {
     bool native_display = true;
     bool monitor_validation = false;
     bool display_validation = false;
+    bool runtime_validation = false;
+    bool vulkan_global_discovery = false;
     std::string admission_report = "/app0/qwen-runtime/gpu-admission.json";
 };
 // No-argument title startup reads this app's own data directory. Explicit

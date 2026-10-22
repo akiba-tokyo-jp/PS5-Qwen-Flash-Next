@@ -26,10 +26,14 @@ Startup read_startup(int argc, char ** argv) {
         result.port = data.value("port", 8086);
         result.native_display = data.value("native_display", true);
         const auto mode = data.value("mode", std::string("inference"));
-        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation")
+        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation")
             throw std::invalid_argument("Unknown application mode");
         result.monitor_validation = mode == "monitor-validation";
         result.display_validation = mode == "display-validation";
+        result.runtime_validation = mode == "runtime-validation";
+        result.vulkan_global_discovery = data.value("vulkan_global_discovery", false);
+        if (result.vulkan_global_discovery && !result.runtime_validation)
+            throw std::invalid_argument("Global-only Vulkan discovery requires runtime-validation");
         result.admission_report = data.value("admission_report", result.admission_report);
     }
     for (const auto * path : {&result.development_policy, &result.model_receipt, &result.web_assets, &result.admission_report})

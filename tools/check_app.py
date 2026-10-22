@@ -47,6 +47,12 @@ def main():
          "-nostdinc++", "-isystem", sdk / "target/include/c++/v1", "-isystem", sdk / "target/include",
          "-c", source, "-o", obj]]
     names = ["host_compile", "fake_backend_scenarios", "ps5_object_compile"]
+    memory_test = out / "memory-admission-tests.exe"
+    commands.extend([
+        [host / "clang++.exe", "-std=c++17", "-O2", "-Wall", "-Wextra", "-Werror",
+         "-I", source.parent, ROOT / "tests/memory_admission.cpp", "-o", memory_test],
+        [memory_test]])
+    names.extend(["memory_budget_compile", "memory_budget_scenarios"])
     if a.cache:
         lock = json.loads((ROOT / "native/qwen_flash_next/dependencies.lock.json").read_text())
         upstream = a.cache.resolve() / "upstream" / ("llama.cpp-" + lock["llama_cpp"]["revision"])

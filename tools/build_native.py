@@ -59,7 +59,7 @@ def main():
     llvm = workspace / "toolchain/llvm-mingw-20261006-ucrt-x86_64/bin"
     sdk = workspace / "toolchain/ps5-sdk-radv/ps5-payload-sdk"
     library = sdk / "target/lib"
-    includes = [ROOT / "native/app", source / "include", source / "ggml/include", source / "common",
+    includes = [ROOT / "native/app", source / "include", source / "ggml/include", source / "common", source / "vendor/hash",
                 source / "src", source / "vendor", source / "vendor/nlohmann", source / "vendor/cpp-httplib"]
     flags = ["--no-default-config", "--target=x86_64-sie-ps5", "-fno-stack-protector", "-fno-plt",
              "-femulated-tls", "-fdenormal-fp-math=ieee", "-fPIC", "-std=c++17", "-O1", "-DNDEBUG",
@@ -69,13 +69,16 @@ def main():
     files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "http_app.cpp", "native_main.cpp",
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp",
-                                                   "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp")]
+                                                   "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
+                                                   "model_integrity.cpp", "sha256_backend.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
     # Fingerprint header changes as well as translation units and compiler flags.
     header_paths = [path for directory in (ROOT / "native/app", source / "common/jinja", source / "vendor/cpp-httplib")
                     for path in sorted(directory.glob("*.h"))]
+    header_paths += [source / "vendor/hash" / name for name in
+                     ("sha256/sha256.c","sha256/sha256.h","sha256/LICENSE","rotate-bits/rotate-bits.h")]
     header_inputs = [record(path) for path in header_paths]
     headers = b"".join(path.read_bytes() for path in header_paths)
     compiler_hash = sha(llvm / "clang++.exe")
@@ -84,7 +87,7 @@ def main():
     env["PATH"] = str(workspace / "toolchain/msys-clang64/clang64/bin") + os.pathsep + env.get("PATH", "")
 
     def compile_one(path):
-        local_flags = flags + (["-I", str(workspace / "toolchain/Vulkan-Headers/include")] if path.name == "vulkan_bridge.cpp" else [])
+        local_flags = flags + (["-I", str(workspace / "toolchain/Vulkan-Headers/include")] if path.name in {"vulkan_bridge.cpp", "vulkan_admission.cpp"} else [])
         if path.name == "httplib.cpp":
             local_flags += ["-Daccept4=qwen_native_accept_http"]
         identity = hashlib.sha256((str(path) + json.dumps(local_flags) + compiler_hash).encode() + path.read_bytes() + headers).hexdigest()
@@ -159,6 +162,9 @@ def main():
               a.driver_root / "tooling/native/ps5-pie.ld", receipt_path]
     before = [record(path) for path in inputs]
     receipt = {"schema": "ps5-qwen-native-link-v1", "driver": selected, "engine_receipt": record(receipt_path),
+               "GPU_modes_enabled": False, "native_allocator_frontend_integrated": False,
+               "platform_contract": "generic archive; GPU entry rejected before backend initialization",
+               "engine_build_provenance": built,
                "compiler": record(llvm / "clang++.exe"), "linker": record(llvm / "ld.lld.exe"),
                "application_sources": source_inputs, "application_headers": header_inputs,
                "CRT_derived_from": record(a.driver_root / "tooling/native/app_crt.cpp"),
@@ -175,7 +181,7 @@ def main():
     if before != after:
         raise ValueError("A native link input changed during the build")
     symbols = subprocess.check_output([str(llvm / "llvm-nm.exe"), "--defined-only", str(elf)], text=True)
-    for name in ("_start", "main", "catchReturnFromMain", "qwen_native_halt", "qwen_native_accept_http", "_Znwm", "__gxx_personality_v0", "llama_app_mmap_prefetch_disabled", "llama_app_expert_policy_enabled", "llama_app_expert_counters", "vkGetInstanceProcAddr"):
+    for name in ("_start", "main", "catchReturnFromMain", "qwen_native_halt", "qwen_native_accept_http", "_Znwm", "__gxx_personality_v0", "llama_app_mmap_prefetch_disabled", "llama_app_expert_policy_enabled", "llama_app_expert_counters", "ggml_app_bounded_staging_enabled", "vkGetInstanceProcAddr"):
         if not re.search(r"\b" + re.escape(name) + r"$", symbols, re.M):
             raise ValueError("Required native integration symbol is absent: " + name)
     sections = subprocess.check_output([str(llvm / "llvm-readelf.exe"), "--wide", "--sections", str(elf)], text=True)

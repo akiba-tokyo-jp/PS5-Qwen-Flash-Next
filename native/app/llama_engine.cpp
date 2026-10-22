@@ -68,6 +68,7 @@ void LlamaEngine::require_healthy() const {
 
 std::uint32_t LlamaEngine::tokenize(const std::string & prompt) {
     require_healthy();
+    stage("inference_before_tokenization");
     if (ready_ || prompt.size() > std::size_t(std::numeric_limits<std::int32_t>::max()))
         throw std::invalid_argument("Invalid prompt state or length");
     const int length = static_cast<int>(prompt.size());
@@ -77,6 +78,7 @@ std::uint32_t LlamaEngine::tokenize(const std::string & prompt) {
     const int count = llama_tokenize(vocabulary_, prompt.data(), length, prompt_.data(), int(prompt_.size()), true, true);
     if (count <= 0 || std::size_t(count) > prompt_.size()) throw std::runtime_error("Tokenization failed");
     prompt_.resize(std::size_t(count));
+    stage("inference_tokenization_completed");
     return std::uint32_t(count);
 }
 
@@ -85,9 +87,12 @@ void LlamaEngine::process(llama_token token, llama_pos position, bool output) {
     const auto index = llama_batch_ext_add_token(batch_, 0, token);
     if (index < 0 || !llama_batch_ext_set_pos(batch_, index, &position) ||
         !llama_batch_ext_set_output_logits(batch_, index, output)) throw std::runtime_error("Batch setup failed");
+    stage("inference_before_decode_call");
     if (llama_process(context_, LLAMA_PROCESS_TYPE_DECODE, batch_) != 0)
         throw std::runtime_error("Model decode failed");
+    stage("inference_decode_call_returned_before_synchronize");
     llama_synchronize(context_);
+    stage("inference_decode_synchronization_completed");
 }
 
 void LlamaEngine::prefill(std::uint32_t context_tokens) {
@@ -95,6 +100,7 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
     if (prompt_.empty() || prompt_.size() >= context_tokens || context_tokens > llama_n_ctx(context_))
         throw std::invalid_argument("Invalid context admission");
     try {
+        stage("inference_before_prefill");
         llama_memory_clear(llama_get_memory(context_), true);
         llama_sampler_reset(sampler_);
         position_ = 0;
@@ -103,6 +109,7 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
             process(prompt_[i], position_++, i + 1 == prompt_.size());
         }
         ready_ = true;
+        stage("inference_prefill_completed");
     } catch (...) { failed_ = true; throw; }
 }
 
@@ -120,9 +127,10 @@ Token LlamaEngine::next() {
         for (int i = 0; i < count; ++i) {
             if (!std::isfinite(logits[i])) throw std::runtime_error("Non-finite model logits");
         }
+        stage("inference_before_sampling");
         pending_ = llama_sampler_sample(sampler_, context_, -1);
         if (pending_ < 0 || pending_ >= count) throw std::runtime_error("Invalid sampled token");
-        if (llama_vocab_is_eog(vocabulary_, pending_)) return {pending_, {}, true};
+        if (llama_vocab_is_eog(vocabulary_, pending_)) { stage("inference_end_of_generation_observed"); return {pending_, {}, true}; }
         std::string piece(256, '\0');
         int size = llama_token_to_piece(vocabulary_, pending_, piece.data(), int(piece.size()), 0, true);
         if (size < 0) {
@@ -132,17 +140,20 @@ Token LlamaEngine::next() {
         }
         if (size < 0 || std::size_t(size) > piece.size()) throw std::runtime_error("Token rendering failed");
         piece.resize(std::size_t(size));
+        stage("inference_token_ready");
         return {pending_, std::move(piece), false};
     } catch (...) { failed_ = true; throw; }
 }
 
 void LlamaEngine::finish() {
     require_healthy();
+    stage("inference_before_successful_request_reset");
     llama_memory_clear(llama_get_memory(context_), true);
     llama_sampler_reset(sampler_);
     ready_ = false;
     pending_ = LLAMA_TOKEN_NULL;
     prompt_.clear();
+    stage("inference_request_reset_completed");
 }
 
 } // namespace qwen_app

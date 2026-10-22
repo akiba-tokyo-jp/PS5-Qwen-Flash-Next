@@ -66,3 +66,37 @@ completed readback. See `docs/native-bf16-20261022.json`. Do not repeat this
 artifact. `monitor-validation` is disabled pending initialization investigation;
 the finer host phase diagnostics do not qualify another console launch by
 themselves. Preserve the unresolved cause and every original restoration gate.
+
+The next initialization investigation separates `runtime-validation`: CPU time
+initialization, a bounded 32 KiB GGML metadata context, release of that completed
+CPU context and a C++ exception roundtrip. It must never access the backend
+registry or initialize Vulkan. It is an implementation prerequisite, separate
+from permission to repeat the failed GPU artifact.
+After this CPU prerequisite passes, a distinct runtime-validation artifact may
+query static Vulkan global version/extension metadata and verify required global
+entry points without creating an instance/device or submitting GPU work. Keep
+that discovery separate from Vulkan initialization and numerical admission.
+
+Both CPU prerequisites have now passed on the console. The corrected backend
+adds mandatory dispatch checks and removes an unenabled layer-settings pNext
+chain, in addition to bounded staging and pre-load memory admission. A distinct
+SELF may run the same fixed no-display 32x16 BF16 fixture after native import,
+SELF, linked SPIR-V, ownership and headroom checks. This does not authorize
+repeating the earlier failed SELF or skipping full-model qualification.
+
+## Current console hold (2026-10-22)
+
+The corrected BF16 artifact exited after Vulkan instance dispatch initialization,
+before physical-device discovery returned. The subsequent CPU observer did not
+admit the shell process state. No completed BF16 readback exists. The original
+SELF remains preserved on the host and in the remote backup, but restoration
+and fresh numerical admission have not completed for this attempt.
+
+The owner cannot physically operate the console. Continue implementation and
+manual verification on the host only. This supersedes all earlier permissions
+above for additional console execution: do not launch a title, ELF observer,
+GPU fixture or original application, attempt recovery/restart/force-close, or
+request physical console interaction. Do not automatically resume after a
+timeout or a successful host build. Keep console operations and all validation
+deployment disabled in config/development.json. Preserve the reservation and
+all failed evidence; do not report a normal or restored console state.

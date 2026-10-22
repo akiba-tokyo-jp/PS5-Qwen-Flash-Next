@@ -18,6 +18,8 @@ static int decodes = 0, synchronizes = 0, clears = 0, freed = 0, samples = 0;
 static bool decode_failure = false;
 static float logits[] = {1, 2, 3, 4};
 static std::vector<int> decoded;
+static std::vector<std::string> stages;
+static void observe(const char * value) { stages.emplace_back(value); }
 static void check(bool value, const char * message) { if (!value) throw std::runtime_error(message); }
 
 extern "C" {
@@ -67,10 +69,12 @@ int main() {
         llama_model model; llama_context context;
         {
             qwen_app::LlamaEngine engine(&model, &context);
+            engine.set_stage_observer(observe);
             check(engine.expert_cache_metrics()->hits == 7 && engine.expert_cache_metrics()->uploaded_bytes == 4096,
                   "Cache counters did not come from the engine patch");
             check(engine.tokenize("test") == 3, "Adapter tokenization failed");
             engine.prefill(64);
+            check(stages.back()=="inference_prefill_completed", "Completed prefill stage is missing");
             check(decodes == 3 && synchronizes == 3, "Prefill did not use synchronous single-token batches");
             check(engine.next().piece.size() == 300 && decodes == 3, "First sample unnecessarily decoded or truncated a piece");
             engine.next(); check(decodes == 4 && decoded.back() == 1, "Previous sampled token was not decoded");
@@ -88,12 +92,15 @@ int main() {
         }
         check(freed == healthy_freed, "Uncertain adapter resources were freed");
         logits[0] = 1; decode_failure = true;
+        stages.clear();
         {
             qwen_app::LlamaEngine engine(&model, &context);
+            engine.set_stage_observer(observe);
             engine.tokenize("test");
             try { engine.prefill(64); throw std::logic_error("Decode failure accepted"); }
             catch (const std::runtime_error &) {}
         }
+        check(stages.back()=="inference_before_decode_call", "Failed decode incorrectly reported completion");
         check(freed == healthy_freed, "Failed prefill released uncertain resources");
         std::cout << "Adapter API-stub scenarios passed; no model was loaded\n";
     } catch (const std::exception & error) { std::cerr << error.what() << '\n'; return 1; }

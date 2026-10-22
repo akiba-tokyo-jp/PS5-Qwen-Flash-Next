@@ -14,11 +14,12 @@ The new profile is rebuilt from this source; older artifacts remain historical
 controls. See [driver-integration.md](docs/driver-integration.md) for provenance,
 manual build commands and the remaining native runtime/model gates.
 
-The owner subsequently authorized console validation and required careful
-prevention of hangs and uncertain completion. [development.json](config/development.json)
-currently permits only bounded `display-validation`. The separate BF16 fixture
-failed during initialization and is disabled pending investigation. Full-model
-inference remains rejected. Release deployment is disabled. See
+The owner cannot physically operate the console. After the corrected BF16
+initialization attempt exited and shell-state admission failed, all console
+operations and validation deployment were disabled in
+[development.json](config/development.json). Development continues on the host.
+GPU modes are also rejected by the native entry point pending application
+allocator/lifecycle integration, independently of configuration changes. See
 [native-validation.md](docs/native-validation.md) for the staged gates and exact
 preservation/restoration requirements. Driver tests do not establish Qwen quality
 or memory admission.
@@ -62,12 +63,31 @@ six verified reconstructed SELF segments. Native CPU percentage and wall-clock
 calibration remain unqualified; tokens/s stays unavailable without inference.
 The exact original executable was restored, numerically admitted and normally
 closed. Fresh observations confirmed no native owner and an unchanged boot.
-Original shard acquisition and full checksumming remain incomplete.
+Original shard acquisition and full checksumming remain incomplete. These
+restoration results belong to the earlier display test, not the latest attempt.
 
 The separate no-display [BF16 fixture attempt](docs/native-bf16-20261022.json)
 persisted its headroom and clock checks, then exited before owner admission or a
 completed GPU readback. Its cause is unresolved. It was not retried; the exact
 original SELF was restored. This is a failed admission, not a compute result.
+
+The later [corrected initialization attempt](docs/native-bf16-fixed-20261022.json)
+completed instance creation and checked instance dispatch, then exited before
+physical-device enumeration returned. No BF16 compute or completed readback was
+observed. The shell-state check then failed; original restoration and fresh
+numerical admission remain pending for this attempt. No additional console
+launch, helper, close, restart or recovery is permitted under the current hold.
+The original bytes and failed evidence remain preserved.
+
+Host implementation now adds streaming model SHA256 checks before loading,
+original-dimension/PLE verification, checked memory budgets, 64 MiB completed
+transfer chunks, loader progress and separate inference phase records.
+[Runtime implementation](docs/runtime-initialization-20261022.md) records their
+scope. A host-only driver composition tool preserves the native allocator and
+three native compatibility objects while applying the exact two selected
+shared-driver members. Frontend initialization, log ownership, positive quiet
+and resource retirement must still be integrated before it can be linked for
+GPU execution; composing an archive does not establish that contract.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the

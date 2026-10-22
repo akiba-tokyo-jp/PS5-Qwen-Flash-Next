@@ -15,6 +15,14 @@ spec.loader.exec_module(console)
 
 
 class DevelopmentRestriction(unittest.TestCase):
+    def test_committed_policy_keeps_the_unadmitted_console_on_hold(self):
+        import json
+        policy = json.loads((ROOT / "config/development.json").read_text())
+        for flag in ("console_operations_enabled", "deployment_enabled",
+                     "console_validation_enabled", "validation_deployment_enabled"):
+            self.assertIs(policy[flag], False)
+        self.assertEqual(policy["allowed_modes"], [])
+
     def test_console_commands_are_blocked_before_network_builds_or_local_writes(self):
         for command in ("inspect", "close"):
             argv = ["console.py", command, "--host", "example.invalid", "--workspace", str(ROOT),

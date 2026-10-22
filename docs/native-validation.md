@@ -1,5 +1,13 @@
 # Native monitoring and staged validation
 
+Current restriction: all console operations and validation deployment are
+disabled. The owner cannot physically operate the console. The corrected BF16
+attempt exited before physical-device discovery returned, and the subsequent
+shell-state check was not admitted. Original restoration and numerical
+re-admission remain pending. Do not execute the procedures below under this
+hold. Continue host work only, without new helpers, titles, closes or recovery.
+See [the retained failure](native-bf16-fixed-20261022.json).
+
 The owner authorized console validation after implementation on 2026-10-22,
 then explicitly required avoiding console hangs and uncertain completion.
 Host compilation alone does not authorize skipping a runtime prerequisite.

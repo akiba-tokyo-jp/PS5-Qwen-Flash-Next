@@ -1,5 +1,11 @@
 # Application session development
 
+All console operations are currently disabled after the later initialization
+exit and failed shell-state admission. The owner cannot physically operate the
+console. Native GPU modes also reject execution before backend initialization
+pending allocator/lifecycle integration. Host implementation and checks continue;
+see [the latest failure record](native-bf16-fixed-20261022.json).
+
 The application has session control, a llama.cpp adapter, a web interface and an
 HTTP transport. Development checks use only a host demo or API stubs. No real
 model execution or console access is part of those checks. The real application now links to an intermediate
@@ -52,7 +58,8 @@ python -m unittest discover -s tests -v
 
 The first command compiles and runs five deterministic fake-backend scenarios
 and adapter API-stub checks on the host. It also compiles the session source into
-a PS5 object. It neither links the driver nor deploys a release. The scenarios cover
+a PS5 object and checks actual memory-budget accounting, placement and overflow.
+It neither links the driver nor deploys a release. The scenarios cover
 streaming and timing, cancellation, context admission and integer overflow,
 empty and split UTF-8 output, and quarantine for each backend operation.
 The Python checks also prove that a disabled console policy stops the
@@ -94,6 +101,11 @@ disabled. Full-model inference remains rejected. See
 SHA256 before invoking the pinned BF16 converter. It records output file digests
 and relative names in a model receipt. It performs no inference or transfer.
 Full conversion has not run because original checkpoint acquisition is incomplete.
+The converter verifies its actual Python source tree against the pinned ZIP,
+in addition to the original shards. Changed or extra Python modules are rejected
+before execution. It has a finite process deadline, durable progress/failure
+states and an atomically published receipt. Host-only preparation waits for the
+existing downloader without starting another writer or touching the console.
 The future release must verify converted tensor layout/precision and transferred
 file identities; a receipt alone is not a fresh console integrity check.
 

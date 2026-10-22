@@ -21,6 +21,7 @@ public:
     void finish() override;
     std::optional<ExpertCacheMetrics> expert_cache_metrics() const override;
     bool failed() const { return failed_; }
+    void set_stage_observer(void (*observer)(const char *)) { stage_ = observer; }
 
 private:
     void process(llama_token token, llama_pos position, bool output);
@@ -35,6 +36,8 @@ private:
     llama_token pending_ = LLAMA_TOKEN_NULL;
     bool ready_ = false;
     bool failed_ = false;
+    void (*stage_)(const char *) = nullptr;
+    void stage(const char * value) const { if (stage_) stage_(value); }
 };
 
 // Original BF16 remains in its container. Required PLE uses the upstream lazy

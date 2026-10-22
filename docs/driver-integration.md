@@ -1,5 +1,12 @@
 # Latest shared-driver integration
 
+Current restriction: console execution and deployment are disabled. The generic
+profile archive below is valid as a shared-driver build, but its generic
+platform allocator does not implement this native frontend's contract. It must
+not be used for GPU execution. The native entry point rejects GPU modes before
+backend initialization. The latest exit and unresolved shell-state admission
+are recorded in [the failure record](native-bf16-fixed-20261022.json).
+
 The owner authorized acquisition and application integration of the updated
 driver on 2026-10-22. Remote `main` was fetched and matched local source at
 `872cc1264ad8ba5d6b888b092968fa5858a38c58`. The selected profile is explicitly
@@ -14,7 +21,8 @@ using Mesa `1ba9874f478657ccf6da72ce55f0260164cc0bd0` and pristine base archive
 `149ad31788c0c8bc78de971f0f95b931832f3db94eafda38b28bdf2aff1218fa`.
 ISA capture is disabled for this client build. Only `radv_shader.c.o` and
 `winsys_ps5_radv_ps5_winsys.c.o` changed; all 702 other member identities were
-preserved. The driver source checkout was not edited.
+preserved from the generic base. This does not preserve the native application's
+allocator. The driver source checkout was not edited.
 
 The new archive SHA256 is
 `67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9`.
@@ -92,11 +100,34 @@ python -m unittest discover -s tests -v
 
 The runtime-import argument identifies local SceAgc import stubs, never a model
 or a host inference engine. No build command accesses the PS5. Fifteen Python
-tests pass, including source/profile/artifact integrity and the console guard.
+tests passed at the initial integration checkpoint. The current host-only result
+has 24 passing Python tests, including native-member preservation and explicit
+timeout failures; see [the host result](host-only-implementation-20261022.json).
 Host API-stub checks pass for the real Vulkan bridge and socket adapter, including
 argument forwarding, flags, failure cleanup and error preservation.
 
 ## Remaining gates
+
+Host investigation found that the preserved native application base also has
+different `radv_device.c.o`, `radv_device_memory.c.o` and
+`radv_physical_device.c.o`, in addition to its native platform member. Replacing
+only the platform object would discard those compatibility inputs. The
+integration contract explicitly permits keeping native client members while
+updating the shared compiler/winsys pair.
+
+`tools/native_driver.py` pins the native base and original reference, checks
+all 704 member occurrences and copies only the exact two selected-profile
+members. It verifies that all other 702 native member identities and bytes are
+unchanged, then publishes a private candidate manifest. Its output is explicitly
+not application-linked or deployment-qualified. It does not silently change
+the selected generic archive lock or claim that the native frontend is ready.
+
+The native frontend must still own its log before explicit AGC initialization,
+prepare its per-BO owner metadata and use its required address/Flexible memory
+contract. Deferred retirement requires the sole producer's positively completed
+quiet boundary. The existing native member has other-client log paths and
+frontend hooks; it cannot simply be dropped into Qwen. This is an identified
+integration omission, not a proven cause of the console exit.
 
 Host SELF conversion/packaging and bounded native startup/display/status now pass.
 Model-independent GPU admission, original checkpoint acquisition,

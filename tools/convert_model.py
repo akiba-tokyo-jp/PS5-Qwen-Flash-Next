@@ -7,12 +7,18 @@ upstream converter. It does not perform learned inference or console access.
 The converter's Python dependencies must already be installed in this runtime.
 """
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
 import sys
+import time
+import zipfile
+
+from fetch_engine import source_relative
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = json.loads((ROOT / "native/qwen_flash_next/dependencies.lock.json").read_text())
@@ -23,12 +29,41 @@ def digest(path):
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
+def converter_sources(archive, upstream):
+    """Verify the executed Python tree, not only the downloaded source ZIP."""
+    prefix = "llama.cpp-" + LOCK["llama_cpp"]["revision"]
+    expected = {}
+    with zipfile.ZipFile(archive) as bundle:
+        for entry in bundle.infolist():
+            if entry.is_dir() or not entry.filename.endswith(".py"):
+                continue
+            relative = source_relative(entry.filename, prefix)
+            name = relative.as_posix()
+            if name in expected:
+                raise ValueError("Duplicate converter Python source")
+            expected[name] = hashlib.sha256(bundle.read(entry)).hexdigest()
+    actual = {}
+    for path in upstream.rglob("*.py"):
+        if path.is_symlink() or not path.resolve().is_relative_to(upstream.resolve()):
+            raise ValueError("Converter Python source escapes the pinned source root")
+        actual[path.relative_to(upstream).as_posix()] = digest(path)
+    if not expected or expected != actual:
+        raise ValueError("Executed converter Python sources differ from the pinned archive")
+    identity = hashlib.sha256(json.dumps(expected, sort_keys=True).encode()).hexdigest()
+    return {"python_files": len(expected), "python_tree_sha256": identity,
+            "source_archive_sha256": LOCK["llama_cpp"]["archive_sha256"]}
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--cache", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--timeout-seconds", type=int, default=21600,
+                   help="Maximum converter process duration; failures retain explicit status and partial output")
     a = p.parse_args()
     cache, out = a.cache.resolve(), a.out.resolve()
+    if not 1 <= a.timeout_seconds <= 86400:
+        p.error("timeout-seconds must be between 1 and 86400")
     manifest = json.loads((cache / "metadata/checkpoint.json").read_text())
     if manifest["revision"] != LOCK["model"]["revision"] or manifest["quantization"]:
         raise ValueError("Original model identity mismatch")
@@ -44,26 +79,58 @@ def main():
     archive = cache / ("llama-" + LOCK["llama_cpp"]["revision"] + ".zip")
     if digest(archive) != LOCK["llama_cpp"]["archive_sha256"]:
         raise ValueError("Converter source archive identity mismatch")
-    for number, row in enumerate(manifest["files"], 1):
-        path = cache / "model" / row["name"]
-        if path.name != row["name"] or path.stat().st_size != row["bytes"] or digest(path) != row["sha256"]:
-            raise ValueError("Original shard verification failed: " + row["name"])
-        print(f"Original shard verified: {number}/{len(manifest['files'])}", flush=True)
     out.mkdir()
-    command = [sys.executable, str(upstream / "convert_hf_to_gguf.py"), str(cache / "model"),
-               "--outtype", "bf16", "--outfile", str(out / "qwen-flash-next-bf16.gguf"), "--split-max-size", "4G"]
-    with (out / "conversion.private.log").open("w", encoding="utf-8") as stream:
-        result = subprocess.run(command, cwd=upstream, stdout=stream, stderr=subprocess.STDOUT)
-    if result.returncode:
-        raise RuntimeError("BF16 conversion failed; inspect conversion.private.log before resuming")
-    files = sorted(out.glob("*.gguf"))
-    if not files:
-        raise RuntimeError("Converter did not produce GGUF files")
-    receipt = {"schema": "ps5-qwen-bf16-conversion-v1", "original_revision": manifest["revision"],
-               "upstream_revision": LOCK["llama_cpp"]["revision"], "outtype": "bf16", "original_shards_verified": True,
-               "files": [{"path": path.name, "bytes": path.stat().st_size, "sha256": digest(path)} for path in files],
-               "console_access": False, "learned_inference_performed": False}
-    (out / "model-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    started = time.monotonic()
+    def status(phase, **fields):
+        value = {"schema": "ps5-qwen-conversion-status-v1", "phase": phase,
+                 "pid": os.getpid(), "updated_at": datetime.now(timezone.utc).isoformat(),
+                 "elapsed_seconds": time.monotonic() - started,
+                 "console_access": False, "learned_inference_performed": False, **fields}
+        temporary = out / "conversion-status.next.private.json"
+        temporary.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+        os.replace(temporary, out / "conversion-status.private.json")
+    try:
+        status("verifying_converter_sources")
+        source_identity = converter_sources(archive, upstream)
+        status("verifying_original_shards", verified=0, total=len(manifest["files"]))
+        for number, row in enumerate(manifest["files"], 1):
+            path = cache / "model" / row["name"]
+            if path.name != row["name"] or path.stat().st_size != row["bytes"] or digest(path) != row["sha256"]:
+                raise ValueError("Original shard verification failed: " + row["name"])
+            status("verifying_original_shards", verified=number, total=len(manifest["files"]))
+            print(f"Original shard verified: {number}/{len(manifest['files'])}", flush=True)
+        command = [sys.executable, str(upstream / "convert_hf_to_gguf.py"), str(cache / "model"),
+                   "--outtype", "bf16", "--outfile", str(out / "qwen-flash-next-bf16.gguf"), "--split-max-size", "4G"]
+        status("converting_BF16", timeout_seconds=a.timeout_seconds)
+        with (out / "conversion.private.log").open("w", encoding="utf-8") as stream:
+            result = subprocess.run(command, cwd=upstream, stdout=stream, stderr=subprocess.STDOUT,
+                                    timeout=a.timeout_seconds)
+        if result.returncode:
+            raise RuntimeError("BF16 conversion failed; inspect conversion.private.log before resuming")
+        files = sorted(out.glob("*.gguf"))
+        if not files:
+            raise RuntimeError("Converter did not produce GGUF files")
+        outputs = []
+        for index, path in enumerate(files):
+            status("hashing_converted_files", verified=index, total=len(files))
+            outputs.append({"path": path.name, "bytes": path.stat().st_size, "sha256": digest(path)})
+        if source_identity != converter_sources(archive, upstream):
+            raise ValueError("Converter source identity changed during conversion")
+        receipt = {"schema": "ps5-qwen-bf16-conversion-v1", "original_revision": manifest["revision"],
+                   "upstream_revision": LOCK["llama_cpp"]["revision"], "outtype": "bf16", "original_shards_verified": True,
+                   "files": outputs, "converter_sources": source_identity,
+                   "console_access": False, "learned_inference_performed": False}
+        temporary_receipt = out / "model-receipt.next.private.json"
+        with temporary_receipt.open("x", encoding="utf-8") as stream:
+            stream.write(json.dumps(receipt, indent=2) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary_receipt, out / "model-receipt.json")
+        status("completed", verified=len(files), total=len(files), receipt="model-receipt.json")
+    except BaseException as error:
+        (out / "model-receipt.json").unlink(missing_ok=True)
+        status("failed", error_type=type(error).__name__, receipt_published=False)
+        raise
     print("BF16 conversion and host file digests complete; console qualification is still required")
 
 

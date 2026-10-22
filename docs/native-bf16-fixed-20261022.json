@@ -1,0 +1,51 @@
+{
+  "schema": "ps5-qwen-native-initialization-result-v1",
+  "date": "2026-10-22",
+  "SELF_sha256": "dfb9c1c5361634bc5ac15dac8c9d26cc712c45f9aa7ad137f018b0bd13da11a1",
+  "PIE_sha256": "91f25e46bcd3613b97f2fc6e1f506bd81bde05acd46809add07b5ba589d79d99",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "profile": "cumulative-idle",
+  "linked_driver_archive_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+  "persistent_caches_enabled": false,
+  "host_checks": {
+    "actual_module_imports": "passed",
+    "SELF_integrity": "passed",
+    "loadable_segments_roundtrip": 6,
+    "static_initializers": 16,
+    "runtime_providers": 6,
+    "linked_BF16_SPIRV_modules_validated": 3
+  },
+  "console": {
+    "ordinary_launch_calls": 1,
+    "candidate_exited": true,
+    "CPU_runtime_prerequisite": "passed",
+    "Vulkan_global_queries": "passed",
+    "Vulkan_instance_creation": "returned_success",
+    "required_instance_dispatch_pointers": "present",
+    "physical_device_enumeration_return": "not_observed",
+    "device_or_compute_admitted": false,
+    "BF16_completed_readback": false,
+    "terminal_BF16_report": false,
+    "model_loaded": false,
+    "post_exit_shell_state": "not_admitted",
+    "root_cause": "unresolved",
+    "original_SELF_preserved": true,
+    "original_SELF_restored": false,
+    "fresh_original_numerical_admission": false,
+    "reservation_released": false
+  },
+  "source_investigation": {
+    "generic_native_allocator_mismatch_identified": true,
+    "native_frontend_lifecycle_integrated": false,
+    "mismatch_established_as_exit_root_cause": false
+  },
+  "current_restriction": {
+    "host_implementation_only": true,
+    "console_operations_enabled": false,
+    "validation_deployment_enabled": false,
+    "additional_native_or_helper_launches": false,
+    "restart_or_forced_recovery": false,
+    "release_qualified": false,
+    "CI": false
+  }
+}

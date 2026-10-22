@@ -18,6 +18,7 @@ namespace {
 int journal = -1;
 int diagnostic = -1;
 std::atomic<std::size_t> diagnostic_bytes{0};
+std::atomic<std::size_t> stage_bytes{0};
 [[noreturn]] void stop_bootstrap(const char * reason) {
     if (journal >= 0) {
         (void) write(journal, reason, std::strlen(reason));
@@ -82,6 +83,10 @@ __attribute__((used, section(".preinit_array"))) Initializer early = qwen_native
 extern "C" void qwen_native_stage(const char * stage) {
     if (journal < 0) stop_bootstrap("bootstrap_stage_without_journal");
     const std::size_t bytes = std::strlen(stage);
+    // Retain a fixed failure record before the journal can grow without bound.
+    // Never start an unrecordable backend operation or delete prior evidence.
+    if (bytes > 1024 || stage_bytes.fetch_add(bytes + 1) > (8u << 20) - 1025)
+        stop_bootstrap("bootstrap_stage_capacity_exhausted");
     if (write(journal, stage, bytes) != static_cast<ssize_t>(bytes) || write(journal, "\n", 1) != 1 || fsync(journal)) stop_bootstrap("bootstrap_stage_persist_failed");
 }
 extern "C" void qwen_native_trace_initializer(std::size_t index, std::uintptr_t address, bool completed) {

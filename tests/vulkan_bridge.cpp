@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <iostream>
 #include <stdexcept>
+#include "../native/app/vulkan_admission.h"
 
 static int instance_calls = 0, device_calls = 0, feature_calls = 0, copies = 0;
 static VkInstance instance = reinterpret_cast<VkInstance>(1);
@@ -18,6 +19,16 @@ static void sentinel() {}
 static VkResult wait_result = VK_SUCCESS, submit_result = VK_SUCCESS;
 static std::uint64_t received_timeout = 0;
 static int waits = 0, submits = 0;
+static bool globals_available = true;
+static VkResult global_result = VK_SUCCESS;
+static int global_creates = 0, global_queries = 0, phases = 0;
+static VkResult VKAPI_CALL fake_version(std::uint32_t * value) { ++global_queries;*value=VK_API_VERSION_1_3;return global_result; }
+static VkResult VKAPI_CALL fake_extensions(const char * layer,std::uint32_t * count,VkExtensionProperties * values) {
+    check(!layer&&!values);++global_queries;*count=3;return global_result;
+}
+static VkResult VKAPI_CALL fake_create_instance(const VkInstanceCreateInfo * info,const VkAllocationCallbacks * allocator,VkInstance * value) {
+    check(!info&&!allocator);++global_creates;*value=instance;return global_result;
+}
 struct Halt : std::runtime_error { using std::runtime_error::runtime_error; };
 static VkResult VKAPI_CALL fake_wait_fences(VkDevice value, std::uint32_t count, const VkFence * fences,
                                            VkBool32 all, std::uint64_t timeout) {
@@ -29,7 +40,15 @@ static VkResult VKAPI_CALL fake_wait_semaphores(VkDevice value, const VkSemaphor
 }
 extern "C" {
 [[noreturn]] void qwen_native_halt(const char * operation) { throw Halt(operation); }
+void qwen_native_stage(const char *) { ++phases; }
 PFN_vkVoidFunction vk_icdGetInstanceProcAddr(VkInstance value, const char * name) {
+    if (!value) {
+        if(!globals_available)return nullptr;
+        if(!std::strcmp(name,"vkEnumerateInstanceVersion"))return reinterpret_cast<PFN_vkVoidFunction>(fake_version);
+        if(!std::strcmp(name,"vkEnumerateInstanceExtensionProperties"))return reinterpret_cast<PFN_vkVoidFunction>(fake_extensions);
+        if(!std::strcmp(name,"vkCreateInstance"))return reinterpret_cast<PFN_vkVoidFunction>(fake_create_instance);
+        check(false);
+    }
     check(value == instance && !std::strcmp(name, "vkCreateDevice")); ++instance_calls; return sentinel;
 }
 PFN_vkVoidFunction vk_common_GetDeviceProcAddr(VkDevice value, const char * name) {
@@ -87,6 +106,19 @@ int main() {
         submit_result = VK_ERROR_DEVICE_LOST; halted = false;
         try { submit(VK_NULL_HANDLE, 1, nullptr, VK_NULL_HANDLE); } catch (const Halt &) { halted = true; }
         check(halted && submits == 2);
+        const auto discovery=qwen_app::inspect_vulkan_globals();
+        check(discovery.api_version==VK_API_VERSION_1_3&&discovery.instance_extensions==3&&global_queries==2&&global_creates==0&&phases==4);
+        globals_available=false;
+        check(!vkGetInstanceProcAddr(nullptr,"vkCreateInstance"));
+        bool rejected=false;
+        try{qwen_app::inspect_vulkan_globals();}catch(const std::runtime_error &){rejected=true;}
+        check(rejected&&global_queries==2&&global_creates==0);
+        globals_available=true;global_result=VK_ERROR_INITIALIZATION_FAILED;rejected=false;
+        try{qwen_app::inspect_vulkan_globals();}catch(const std::runtime_error &){rejected=true;}
+        check(rejected&&global_queries==3&&global_creates==0);
+        global_result=VK_SUCCESS;
+        const auto create=reinterpret_cast<PFN_vkCreateInstance>(vkGetInstanceProcAddr(nullptr,"vkCreateInstance"));
+        VkInstance created=nullptr;check(create(nullptr,nullptr,&created)==VK_SUCCESS&&created==instance&&global_creates==1);
         std::cout << "Static forwarding, bounded waits, preserved polling and halt-before-unwind on failed submit/wait passed; API stubs only\n";
     } catch (const std::exception & error) { std::cerr << error.what() << '\n'; return 1; }
 }

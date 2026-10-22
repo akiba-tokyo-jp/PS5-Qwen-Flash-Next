@@ -87,6 +87,14 @@
       }
     ]
   },
+  "native_platform_base": {
+    "purpose": "host-only composition candidate; frontend lifecycle integration pending",
+    "provenance": "Preserved native Direct per-BO application archive; not a replacement for the selected shared-driver profile",
+    "base_archive_sha256": "6dbafa051c378d03190b45667825bda5faaaa2f6e0823a4e522c39560baafb0a",
+    "reference_archive_sha256": "149ad31788c0c8bc78de971f0f95b931832f3db94eafda38b28bdf2aff1218fa",
+    "native_frontend_integrated": false,
+    "deployment_allowed": false
+  },
   "design_references": [
     "https://github.com/Niko1221/Strata",
     "https://github.com/mw00/project-maya"

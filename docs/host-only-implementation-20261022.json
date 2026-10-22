@@ -1,0 +1,54 @@
+{
+  "schema": "ps5-qwen-host-implementation-result-v1",
+  "date": "2026-10-22",
+  "console_access": false,
+  "learned_inference_performed": false,
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "profile": "cumulative-idle",
+  "persistent_caches_enabled": false,
+  "native_build": {
+    "compiled_and_linked": true,
+    "PIE_sha256": "06ba20e98e4795cc725ea4d784baf6fe7bb3a93ab82260a08080e919a5e17f8f",
+    "SELF_sha256": "70540e9612835094f6ec9cf9ca20f397d4e6f4cc3909d0e265fddde8ef177924",
+    "actual_module_import_audit": "passed",
+    "SELF_integrity": "passed",
+    "reconstructed_loadable_segments_verified": 6,
+    "initializer_slots": 16,
+    "runtime_providers": 6,
+    "GPU_modes_enabled": false,
+    "installed_or_executed": false
+  },
+  "manual_checks": {
+    "Python_tests_passed": 24,
+    "session_and_adapter_API_stubs": "passed",
+    "memory_accounting_and_overflow": "passed",
+    "Vulkan_forwarding_and_global_discovery_API_stubs": "passed",
+    "CPU_runtime_API_stubs": "passed",
+    "bounded_bootstrap_log_API_stubs": "passed",
+    "actual_patched_transfer_loops": "raw bytes preserved; chunks bounded; failed chunk not retried",
+    "streaming_SHA256": "independent Python digest matched; corruption and growth rejected",
+    "converter_source_files_verified_against_pinned_archive": 237,
+    "converter_python_tree_sha256": "7d14bdf4f3a7422efb04945f9bc56c6b324b1ef15b6762fb11606fe493bff94c"
+  },
+  "native_driver_composition": {
+    "base_archive_sha256": "6dbafa051c378d03190b45667825bda5faaaa2f6e0823a4e522c39560baafb0a",
+    "selected_donor_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+    "candidate_archive_sha256": "ad88e3688d8c3e0f17f8f51525baa70fd75088dded410cbe43a4d48de7ac092a",
+    "exact_selected_driver_member_occurrences_copied": 2,
+    "native_member_occurrences_preserved": 702,
+    "first_host_archiver_attempt": "timed out at 120 seconds; failed output retained without accepted manifest",
+    "second_fresh_host_attempt": "completed and all member identities verified within a 600-second archiver deadline",
+    "application_linked": false,
+    "native_frontend_integrated": false,
+    "deployment_allowed": false
+  },
+  "remaining": [
+    "Native frontend allocator, AGC/log ownership and positive-quiet retirement integration",
+    "Complete original checkpoint acquisition and lossless conversion",
+    "Console shell-state admission and original restoration; no console execution currently permitted",
+    "Original-BF16 operation, mapping/residency and full-model quality qualification",
+    "Measured console tokens/s and TTFT"
+  ],
+  "release_qualified": false,
+  "CI": false
+}

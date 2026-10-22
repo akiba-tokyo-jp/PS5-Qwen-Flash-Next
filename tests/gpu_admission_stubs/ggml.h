@@ -12,6 +12,8 @@ struct ggml_init_params { std::size_t mem_size; void * mem_buffer; bool no_alloc
 using ggml_backend_t = void *;
 using ggml_backend_buffer_t = void *;
 extern "C" {
+void ggml_time_init();
+std::size_t ggml_get_mem_size(const ggml_context *);
 std::size_t ggml_tensor_overhead();
 std::size_t ggml_graph_overhead_custom(std::size_t, bool);
 ggml_context * ggml_init(ggml_init_params);
