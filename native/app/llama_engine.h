@@ -23,6 +23,10 @@ public:
     bool failed() const { return failed_; }
     void set_stage_observer(void (*observer)(const char *)) { stage_ = observer; }
     void set_gpu_boundaries(void (*begin)(),void (*complete)(),void (*retain)(),void (*checkpoint)()=nullptr);
+    // Called before work and after synchronized decode/checkpoint boundaries.
+    void set_work_guard(std::function<void()> guard, std::uint32_t prompt_token_limit = 0) {
+        work_guard_ = std::move(guard); prompt_token_limit_ = prompt_token_limit;
+    }
 
 private:
     void process(llama_token token, llama_pos position, bool output);
@@ -42,6 +46,9 @@ private:
     void (*gpu_complete_)() = nullptr;
     void (*gpu_retain_)() = nullptr;
     void (*gpu_checkpoint_)() = nullptr;
+    std::function<void()> work_guard_;
+    std::uint32_t prompt_token_limit_ = 0;
+    void guard() const { if (work_guard_) work_guard_(); }
     void stage(const char * value) const { if (stage_) stage_(value); }
 };
 

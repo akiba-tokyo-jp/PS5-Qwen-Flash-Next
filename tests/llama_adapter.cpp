@@ -121,6 +121,24 @@ int main() {
             try{engine.prefill(64);}catch(const std::runtime_error&){failed=true;}
             check(failed&&engine.failed()&&gpu_retains==2,"Failed native completion was not retained");
         }
-        std::cout << "Adapter API-stub scenarios passed; no model was loaded\n";
+        gpu_completion_failure=false;
+        {
+            qwen_app::LlamaEngine engine(&model,&context);engine.set_work_guard({},2);
+            const int before=decodes;
+            bool refused=false;try{engine.tokenize("test");}catch(const std::invalid_argument&){refused=true;}
+            check(refused&&decodes==before,"Prompt cap reached learned work");
+        }
+        {
+            qwen_app::LlamaEngine engine(&model,&context);
+            engine.set_gpu_boundaries(gpu_begin,gpu_complete,gpu_retain,gpu_checkpoint);
+            int guards=0;engine.set_work_guard([&]{if(++guards==4)throw std::runtime_error("Completed-boundary deadline");},64);
+            engine.tokenize("test");const int before=decodes, sync_before=synchronizes, retained=gpu_retains;
+            bool refused=false;try{engine.prefill(64);}catch(const std::runtime_error&){refused=true;}
+            check(refused&&engine.failed()&&decodes==before+1&&synchronizes==sync_before+1&&gpu_retains==retained+1,
+                "Deadline did not stop before the second graph or retained backing incorrectly");
+            refused=false;try{engine.next();}catch(const std::runtime_error&){refused=true;}
+            check(refused&&decodes==before+1,"Quarantined adapter submitted more work");
+        }
+        std::cout << "Adapter API-stub scenarios and completed-boundary guards passed; no model was loaded\n";
     } catch (const std::exception & error) { std::cerr << error.what() << '\n'; return 1; }
 }

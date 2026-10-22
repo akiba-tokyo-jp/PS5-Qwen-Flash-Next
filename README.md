@@ -5,6 +5,12 @@ The goal is to execute the complete text model with its original BF16 weights,
 streaming weights from SSD into bounded shared memory. No quantized substitute,
 expert pruning, or PC/cloud model execution is part of this goal.
 
+The [active execution plan](docs/execution-plan-20261022.md) starts from complete
+PS5 text generation: finish model data while implementing bounded generation,
+run one ordered full-model session, then integrate the passive monitor and measure
+performance. Earlier milestone lists remain historical evidence. Full-model
+generation has not yet been attempted.
+
 ## Native driver integration
 
 The owner authorized integration of the updated driver on 2026-10-22. The source

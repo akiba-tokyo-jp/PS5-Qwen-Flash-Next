@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "http_app.h"
 #include "monitor_clock.h"
+#include "chat_prompt.h"
 #include "httplib.h"
 #include "nlohmann/json.hpp"
 #include "jinja/lexer.h"
@@ -183,13 +184,7 @@ private:
             }
             bool backend_entered = false;
             try {
-                jinja::context context(source_);
-                const auto variables = Json{{"messages", job->messages}, {"tools", Json::array()},
-                    {"add_generation_prompt", true}, {"enable_thinking", job->thinking}};
-                jinja::global_from_json(context, common_json::parse(variables.dump()), true);
-                jinja::runtime runtime(context);
-                job->request.rendered_prompt = runtime.gather_string_parts(runtime.execute(program_))->as_string().str();
-                if (job->request.rendered_prompt.size() > (1u << 20)) throw std::runtime_error("Rendered prompt is too large");
+                job->request.rendered_prompt = render_chat_prompt(source_, program_, job->messages, job->thinking);
                 backend_entered = true;
                 session.begin(job->request);
                 for (;;) {

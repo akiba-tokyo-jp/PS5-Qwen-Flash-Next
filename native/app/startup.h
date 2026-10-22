@@ -13,6 +13,7 @@ struct Startup {
     bool model_validation = false;
     bool operator_validation = false;
     bool moe_validation = false;
+    bool first_generation_validation = false;
     std::string weight_fixture;
     bool vulkan_global_discovery = false;
     std::optional<ClockCalibration> clock_calibration;

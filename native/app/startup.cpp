@@ -40,7 +40,7 @@ Startup read_startup(int argc, char ** argv) {
                 integer("utc_epoch_ms"), integer("uncertainty_ms")};
         }
         const auto mode = data.value("mode", std::string("inference"));
-        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation" && mode != "model-validation" && mode != "operator-validation" && mode != "moe-validation")
+        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation" && mode != "model-validation" && mode != "operator-validation" && mode != "moe-validation" && mode != "first-generation-validation")
             throw std::invalid_argument("Unknown application mode");
         result.monitor_validation = mode == "monitor-validation";
         result.display_validation = mode == "display-validation";
@@ -48,6 +48,7 @@ Startup read_startup(int argc, char ** argv) {
         result.model_validation = mode == "model-validation";
         result.operator_validation = mode == "operator-validation";
         result.moe_validation = mode == "moe-validation";
+        result.first_generation_validation = mode == "first-generation-validation";
         if (result.operator_validation || result.moe_validation) {
             result.weight_fixture = data.at("weight_fixture").get<std::string>();
             if (result.weight_fixture != (result.moe_validation ? moe_fixture_path : "/app0/qwen-runtime/original-weight-fixture.bf16"))
@@ -57,6 +58,8 @@ Startup read_startup(int argc, char ** argv) {
         }
         if (result.moe_validation && result.native_display)
             throw std::invalid_argument("MoE validation requires native display disabled");
+        if (result.first_generation_validation && result.native_display)
+            throw std::invalid_argument("First generation requires native display disabled");
         result.vulkan_global_discovery = data.value("vulkan_global_discovery", false);
         if (result.vulkan_global_discovery && !result.runtime_validation)
             throw std::invalid_argument("Global-only Vulkan discovery requires runtime-validation");

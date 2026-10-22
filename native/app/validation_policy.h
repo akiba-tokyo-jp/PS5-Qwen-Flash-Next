@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 #include "operator_admission.h"
 #include "moe_admission.h"
+#include "first_generation_policy.h"
 
 namespace qwen_app {
 inline constexpr unsigned native_model_verification_seconds = 7200;
@@ -14,6 +15,10 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
                                              const std::string & mode,
                                              bool native_display) {
     if (mode == "display-validation" || mode == "runtime-validation") return;
+    if (mode == "first-generation-validation") {
+        require_first_generation_policy(policy, native_display);
+        return;
+    }
     if (mode == "moe-validation") {
         const auto & moe = policy.at("native_moe_validation");
         if (native_display || !moe.is_object() ||

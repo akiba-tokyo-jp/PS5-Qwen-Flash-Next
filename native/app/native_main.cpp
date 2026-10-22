@@ -26,6 +26,7 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <array>
 #include <cstring>
 #include <chrono>
 #include <cmath>
@@ -53,7 +54,7 @@ static void native_log(enum ggml_log_level, const char * text, void *) {
 
 static void write_fresh_report(const std::string & path, const Json & value) {
     const auto bytes = value.dump(2) + "\n";
-    // Reports contain status/fixture metadata only, never prompts or secrets.
+    // Reports contain metadata and controlled validation output, never credentials.
     const int fd = open(path.c_str(), O_WRONLY | O_CREAT | O_EXCL, 0644);
     if (fd < 0) throw std::runtime_error("Fresh native report could not be created");
     if (fchmod(fd, 0644)) { close(fd); throw std::runtime_error("Native metadata report permissions could not be set"); }
@@ -67,6 +68,22 @@ static std::string model_file(const std::string & receipt, const std::string & n
         throw std::runtime_error("Receipt model files must use relative basenames");
     const auto separator = receipt.find_last_of("/\\");
     return separator == std::string::npos ? name : receipt.substr(0, separator + 1) + name;
+}
+
+using ModelFileIdentity = std::array<std::uint64_t, 10>;
+static ModelFileIdentity model_file_identity(const std::string & path, std::uint64_t bytes) {
+    const int fd = open(path.c_str(), O_RDONLY | O_NOFOLLOW);
+    if (fd < 0) throw std::runtime_error("Original model identity could not be observed read-only");
+    struct stat info{};
+    const bool observed = fstat(fd, &info) == 0;
+    const bool closed = close(fd) == 0;
+    if (!observed || !closed || !S_ISREG(info.st_mode) || !info.st_ino || info.st_size < 0 ||
+        static_cast<std::uint64_t>(info.st_size) != bytes || (info.st_mode & 0022))
+        throw std::runtime_error("Original model identity or owned file permissions are not admitted");
+    return {std::uint64_t(info.st_dev), std::uint64_t(info.st_ino), std::uint64_t(info.st_mode),
+        std::uint64_t(info.st_uid), std::uint64_t(info.st_gid), std::uint64_t(info.st_size),
+        std::uint64_t(info.st_mtim.tv_sec), std::uint64_t(info.st_mtim.tv_nsec),
+        std::uint64_t(info.st_ctim.tv_sec), std::uint64_t(info.st_ctim.tv_nsec)};
 }
 
 static void inspect_container(const std::string & path, bool first, qwen_app::ModelFootprint & footprint,
@@ -168,7 +185,7 @@ int main(int argc, char ** argv) {
         const auto policy = Json::parse(policy_file);
         if (!policy.at("console_operations_enabled").get<bool>())
             throw std::runtime_error("Console execution is disabled for this application integration phase");
-        const auto mode = startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : startup.moe_validation ? "moe-validation" : "inference";
+        const auto mode = startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : startup.moe_validation ? "moe-validation" : startup.first_generation_validation ? "first-generation-validation" : "inference";
         if (!policy.contains("allowed_modes") || !policy.at("allowed_modes").is_array() ||
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
@@ -373,14 +390,29 @@ int main(int argc, char ** argv) {
             qwen_native_stage("monitor_HTTP_service_returned");
             throw std::runtime_error(served ? "Monitor HTTP listener failed" : "Monitor HTTP listener stopped unexpectedly");
         }
-        if (startup.model_validation && !policy.value("console_validation_enabled", false))
+        if ((startup.model_validation || startup.first_generation_validation) && !policy.value("console_validation_enabled", false))
             throw std::runtime_error("Original model CPU validation is not enabled");
+        if (startup.first_generation_validation) {
+            const auto & gate = policy.at("native_first_generation_validation");
+            // This exclusive marker consumes the attempt before verification,
+            // model loading or any GPU work. It is never overwritten or removed.
+            write_fresh_report(startup.admission_report + ".first.start", {
+                {"schema", "ps5-qwen-first-generation-start-v1"}, {"run_id", gate.at("run_id")}, {"pid", getpid()},
+                {"candidate_SELF_sha256", gate.at("candidate_SELF_sha256")},
+                {"model_receipt_sha256", gate.at("model_receipt_sha256")},
+                {"model_loaded", false}, {"Vulkan_initialized", false}});
+            qwen_app::verify_model_file("/app0/eboot.bin", gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                gate.at("candidate_SELF_sha256").get<std::string>(), {}, 60);
+            qwen_app::verify_model_file(startup.model_receipt, gate.at("model_receipt_bytes").get<std::uint64_t>(),
+                gate.at("model_receipt_sha256").get<std::string>(), {}, 30);
+        }
         const auto receipt = qwen_app::read_model_receipt(startup.model_receipt);
         const auto expected_mapped_files=qwen_app::validate_model_receipt(receipt);
         // A receipt records host conversion provenance, not a fresh console hash
         // check. Deployment must independently verify every transferred file.
         qwen_app::ModelFootprint footprint; std::unordered_set<std::string> tensor_names;
         std::vector<qwen_app::ModelMappingFile> mapping_files;
+        std::vector<ModelFileIdentity> file_identities;
         const auto verification_started = std::chrono::steady_clock::now();
         const auto verification_deadline = verification_started +
             std::chrono::seconds(qwen_app::native_model_verification_seconds);
@@ -390,6 +422,9 @@ int main(int argc, char ** argv) {
         for (const auto & file : receipt.at("files")) {
             ++file_index;
             const auto file_bytes=file.at("bytes").get<std::uint64_t>();
+            if (startup.first_generation_validation)
+                file_identities.push_back(model_file_identity(
+                    model_file(startup.model_receipt,file.at("path").get<std::string>()), file_bytes));
             screen.state="verifying original model bytes";
             const auto remaining = std::chrono::duration_cast<std::chrono::seconds>(
                 verification_deadline - std::chrono::steady_clock::now()).count();
@@ -436,20 +471,34 @@ int main(int argc, char ** argv) {
             {"model_loaded",false},{"Vulkan_initialized",false}});
         screen.message.clear();
 
-        if (startup.model_validation) {
+        auto require_unchanged_model = [&] {
+            if (!startup.first_generation_validation) return;
+            if (file_identities.size() != mapping_files.size())
+                throw std::runtime_error("Complete original-model identity binding is missing");
+            for (std::size_t i = 0; i < mapping_files.size(); ++i)
+                if (model_file_identity(mapping_files[i].path, mapping_files[i].bytes) != file_identities[i])
+                    throw std::runtime_error("Original model changed after its native verification");
+        };
+        require_unchanged_model();
+
+        if (startup.model_validation || startup.first_generation_validation) {
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
                 [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
-            write_fresh_report(startup.admission_report, {{"schema", "ps5-qwen-model-mapping-admission-v1"},
+            write_fresh_report(startup.admission_report + (startup.first_generation_validation ? ".mapping" : ""), {{"schema", "ps5-qwen-model-mapping-admission-v1"},
                 {"pid", getpid()}, {"all_SHA256_matched", true}, {"original_footprint_matched", true},
                 {"mapped_files", mapping.files}, {"mapped_file_bytes", mapping.bytes},
                 {"completed_unmaps", mapping.unmapped}, {"model_loaded", false},
                 {"Vulkan_initialized", false}, {"GPU_compute_calls", 0}, {"mapped_payload_reads", 0},
-                {"resident_set_qualified", false}, {"state", "completed_waiting_for_ordinary_close"}});
+                {"resident_set_qualified", false}, {"state", startup.first_generation_validation ?
+                    "mapping_completed_before_backend" : "completed_waiting_for_ordinary_close"}});
             qwen_native_stage("model_validation_completed GPU_not_started=1 model_loaded=0");
             // Successful validation is explicit idle ownership. Returning from
             // main would intentionally enter the CRT's fault-retention hook.
-            for (;;) std::this_thread::sleep_for(std::chrono::seconds(1));
+            if (startup.model_validation)
+                for (;;) std::this_thread::sleep_for(std::chrono::seconds(1));
         }
+
+        require_unchanged_model();
 
         screen.state = "admitting original BF16 memory";
         if (display) display->publish(screen);
@@ -493,10 +542,12 @@ int main(int argc, char ** argv) {
         auto model_params=qwen_app::streaming_model_params(ggml_backend_cpu_buffer_type());
         LoadProgress load_progress;model_params.progress_callback=observe_model_load;model_params.progress_callback_user_data=&load_progress;
         qwen_native_stage("model_load_started_after_memory_admission");
+        require_unchanged_model();
         model = llama_model_load_from_file(first_path.c_str(), model_params);
         if (!model) throw std::runtime_error("Model load failed; restart through the ordinary OS path");
         qwen_native_stage("model_load_completed");
         qwen_native_driver_checkpoint();
+        require_unchanged_model();
         ggml_backend_dev_memory(device, &driver_free, &driver_total);
         // Initial, unqualified limits: do not infer extra RAM from the GPU pool.
         const auto remaining=qwen_app::checked_memory_sum(memory_budget.context,
@@ -507,8 +558,12 @@ int main(int argc, char ** argv) {
         if (cache_bytes < (128u << 20)) throw std::runtime_error("Insufficient observed UMA cache headroom");
         screen.state = "admitting inference context";
         if (display) display->publish(screen);
-        context = llama_init_from_model(model, qwen_app::streaming_context_params(4096, cache_bytes));
+        const auto context_started = std::chrono::steady_clock::now();
+        context = llama_init_from_model(model, qwen_app::streaming_context_params(
+            startup.first_generation_validation ? qwen_app::first_context_tokens : 4096, cache_bytes));
         if (!context) throw std::runtime_error("Context admission failed; restart through the ordinary OS path");
+        if (startup.first_generation_validation && std::chrono::steady_clock::now() - context_started > std::chrono::seconds(600))
+            throw std::runtime_error("Context creation exceeded its first-generation boundary deadline");
         engine = std::make_unique<qwen_app::LlamaEngine>(model, context);
         engine->set_stage_observer(qwen_native_stage);
         engine->set_gpu_boundaries(qwen_native_driver_begin,qwen_native_driver_complete,qwen_native_driver_retain,qwen_native_driver_checkpoint);
@@ -526,6 +581,61 @@ int main(int argc, char ** argv) {
             if (total) { hardware.gpu_total_bytes = total; hardware.gpu_free_bytes = free; }
         }
         qwen_native_driver_complete();
+        if (startup.first_generation_validation) {
+            require_unchanged_model();
+            const auto & gate = policy.at("native_first_generation_validation");
+            qwen_app::FirstGeneration trial(*engine);
+            engine->set_work_guard([&] {
+                trial.require_time();
+                // A fresh OS reserve is checked before and after each completed
+                // single-token graph. This is not a page-cache residency proof.
+                if (observed_os_free() < memory_budget.os_reserve)
+                    throw std::runtime_error("First-generation OS reserve is no longer available");
+            }, qwen_app::first_prompt_tokens);
+            qwen_app::Request request{gate.at("run_id").get<std::string>(),
+                qwen_app::render_first_generation_prompt(chat_template),
+                qwen_app::first_context_tokens, qwen_app::first_output_tokens};
+            const auto & result = trial.run(request, [&](const auto & bound) {
+                write_fresh_report(startup.admission_report + ".first.intent", {
+                    {"schema", "ps5-qwen-first-generation-intent-v1"}, {"run_id", bound.id}, {"pid", getpid()},
+                    {"rendered_prompt", bound.rendered_prompt}, {"enable_thinking", false},
+                    {"context_tokens", bound.context_tokens}, {"maximum_prompt_tokens", qwen_app::first_prompt_tokens},
+                    {"maximum_output_tokens", bound.max_output_tokens},
+                    {"maximum_generation_seconds", qwen_app::first_generation_seconds}});
+            }, [&](const auto & token, const auto & metrics) {
+                write_fresh_report(startup.admission_report + ".first.token-" + std::to_string(metrics.generated_tokens), {
+                    {"schema", "ps5-qwen-first-generation-token-v1"}, {"run_id", request.id},
+                    {"ordinal", metrics.generated_tokens}, {"token_id", token.id},
+                    {"piece_bytes", std::vector<unsigned char>(token.piece.begin(), token.piece.end())},
+                    {"elapsed_ms", metrics.total_ms}});
+            }, qwen_native_stage);
+            require_unchanged_model();
+            engine->set_work_guard({});
+            // Release only after the request's positive native completion.
+            qwen_native_driver_begin();
+            engine.reset(); llama_free(context); context = nullptr; llama_model_free(model); model = nullptr;
+            qwen_native_driver_complete();
+            Json metrics{{"prompt_tokens", result.metrics.prompt_tokens}, {"generated_tokens", result.metrics.generated_tokens},
+                {"prefill_ms", result.metrics.prefill_ms}, {"total_ms", result.metrics.total_ms},
+                {"TTFT_ms", nullptr}, {"decode_tokens_per_second", nullptr}};
+            if (result.metrics.ttft_ms) metrics["TTFT_ms"] = *result.metrics.ttft_ms;
+            if (result.metrics.decode_tokens_per_second) metrics["decode_tokens_per_second"] = *result.metrics.decode_tokens_per_second;
+            write_fresh_report(startup.admission_report, {
+                {"schema", "ps5-qwen-first-generation-result-v1"}, {"run_id", request.id},
+                {"pid", getpid()}, {"candidate_SELF_sha256", gate.at("candidate_SELF_sha256")},
+                {"model_receipt_sha256", gate.at("model_receipt_sha256")},
+                {"driver_revision", gate.at("driver_revision")}, {"profile", gate.at("profile")},
+                {"native_archive_sha256", gate.at("native_archive_sha256")},
+                {"state", "completed_waiting_for_ordinary_close"}, {"stop_reason", result.stop_reason},
+                {"token_ids", result.token_ids}, {"output_bytes", result.output_bytes}, {"metrics", metrics},
+                {"request_reset_completed", result.request_reset_completed}, {"GPU_completion_and_retirement_passed", true},
+                {"model_resources_released_after_completion", true}, {"model_loaded", false},
+                {"full_model_inference_executed", true}, {"answer_quality_qualified", false},
+                {"text_generation_observed", !result.output_bytes.empty()},
+                {"native_display_started", false}, {"external_requests_accepted", 0}});
+            qwen_native_stage("first_generation_completed_waiting_for_ordinary_close");
+            for (;;) std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
         qwen_native_stage("inference_before_HTTP_listener_after_model_and_context_admission");
         const int result = qwen_app::serve_http(*engine, startup.web_assets, chat_template, startup.port, false, hardware,
             display ? std::function<void(const qwen_app::MonitorSnapshot &)>([&](const auto & snapshot) { display->publish(snapshot); })

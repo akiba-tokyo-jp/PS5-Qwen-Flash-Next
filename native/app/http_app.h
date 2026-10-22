@@ -7,6 +7,8 @@
 #include <optional>
 
 namespace qwen_app {
+// Uses the same Jinja runtime/variables as the external API, with a fixed prompt.
+std::string render_first_generation_prompt(const std::string & original_template);
 struct HardwareInfo {
     std::string cpu_name;
     std::string gpu_name;

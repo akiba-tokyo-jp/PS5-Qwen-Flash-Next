@@ -297,3 +297,25 @@ reservation, preserving evidence and leaving model conversion untouched.
 Require fresh idle guards and complete exact original preservation, restoration,
 numerical readmission, ordinary close and final readback before binding a fresh
 data-only continuation. Host tests do not establish physical MoE success.
+
+## Active forward plan
+
+Use `docs/execution-plan-20261022.md` as the new forward work queue requested by
+the owner. Continue frozen model preparation/data transfer unchanged; add no
+standalone operator trial while it runs. Implement a distinct bounded
+first-generation admission with complete native integrity/mapping gates before
+backend initialization in the same ordered title session. Ordinary inference
+stays rejected until separately qualified. Preserve existing failure evidence,
+resource retention and exact original restoration. The bounded native path and
+focused host checks are now implemented; full link/SELF/import, independent host
+observation and complete model/resource admission remain pending. Host checks
+never permit bypassing those gates or establish physical first generation.
+
+The original indexed-MoE case subsequently passed at SELF
+`0b187cac25c3e322bd4244474a935d191ce85b7bcbb3d2559ead26f05198d057`,
+with all diagnostic experts, fixed numerical limits and positive retirement.
+The exact original was restored, numerically readmitted, normally closed and
+fully read back with fresh idle guards. The active data-only continuation is
+`model-data-continuation-002`, bound to that completed context; the earlier
+001 continuation was positively stopped before the MoE case. Keep 002's recorded
+inputs/context frozen. No new console execution is part of current host work.

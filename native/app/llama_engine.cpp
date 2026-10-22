@@ -93,6 +93,8 @@ std::uint32_t LlamaEngine::tokenize(const std::string & prompt) {
     const int length = static_cast<int>(prompt.size());
     const int result = llama_tokenize(vocabulary_, prompt.data(), length, nullptr, 0, true, true);
     if (result >= 0 || result == std::numeric_limits<int>::min()) throw std::runtime_error("Token sizing failed");
+    if (prompt_token_limit_ && std::uint32_t(-result) > prompt_token_limit_)
+        throw std::invalid_argument("Rendered prompt exceeds its admitted token bound");
     prompt_.resize(std::size_t(-result));
     const int count = llama_tokenize(vocabulary_, prompt.data(), length, prompt_.data(), int(prompt_.size()), true, true);
     if (count <= 0 || std::size_t(count) > prompt_.size()) throw std::runtime_error("Tokenization failed");
@@ -102,6 +104,7 @@ std::uint32_t LlamaEngine::tokenize(const std::string & prompt) {
 }
 
 void LlamaEngine::process(llama_token token, llama_pos position, bool output) {
+    guard();
     llama_batch_ext_clear(batch_);
     const auto index = llama_batch_ext_add_token(batch_, 0, token);
     if (index < 0 || !llama_batch_ext_set_pos(batch_, index, &position) ||
@@ -113,6 +116,7 @@ void LlamaEngine::process(llama_token token, llama_pos position, bool output) {
     llama_synchronize(context_);
     stage("inference_decode_synchronization_completed");
     if(gpu_checkpoint_)gpu_checkpoint_();
+    guard();
 }
 
 void LlamaEngine::prefill(std::uint32_t context_tokens) {
@@ -120,6 +124,7 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
     if (prompt_.empty() || prompt_.size() >= context_tokens || context_tokens > llama_n_ctx(context_))
         throw std::invalid_argument("Invalid context admission");
     try {
+        guard();
         GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);
         stage("inference_before_prefill");
         llama_memory_clear(llama_get_memory(context_), true);
@@ -138,6 +143,7 @@ Token LlamaEngine::next() {
     require_healthy();
     if (!ready_) throw std::logic_error("Prefill required before decoding");
     try {
+        guard();
         GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);
         if (pending_ != LLAMA_TOKEN_NULL) {
             if (std::uint32_t(position_) >= llama_n_ctx(context_)) throw std::runtime_error("Context exhausted");
@@ -170,6 +176,7 @@ Token LlamaEngine::next() {
 void LlamaEngine::finish() {
     require_healthy();
     try {
+    guard();
     GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);
     stage("inference_before_successful_request_reset");
     llama_memory_clear(llama_get_memory(context_), true);
