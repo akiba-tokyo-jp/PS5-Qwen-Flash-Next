@@ -10,11 +10,13 @@
 #include <stdexcept>
 
 namespace qwen_app {
-GpuAdmission admit_bf16_gpu() {
+GpuAdmission admit_bf16_gpu(void (*stage)(const char *)) {
     GpuAdmission report;
     const auto start = std::chrono::steady_clock::now();
+    if (stage) stage("BF16_before_backend_init");
     auto * backend = ggml_backend_vk_init(0);
     if (!backend) throw std::runtime_error("Vulkan admission backend is unavailable");
+    if (stage) stage("BF16_backend_init_completed");
     report.backend = ggml_backend_name(backend);
     ggml_init_params params{};
     params.mem_size = ggml_tensor_overhead() * 8 + ggml_graph_overhead_custom(32, false);
@@ -29,8 +31,10 @@ GpuAdmission admit_bf16_gpu() {
     ggml_build_forward_expand(graph, output);
     if (!ggml_backend_dev_supports_op(ggml_backend_get_device(backend), output))
         throw std::runtime_error("Original-BF16 admission operation is unsupported");
+    if (stage) stage("BF16_operation_supported_before_allocation");
     auto * buffer = ggml_backend_alloc_ctx_tensors(context, backend);
     if (!buffer) throw std::runtime_error("BF16 admission device allocation failed");
+    if (stage) stage("BF16_allocation_completed");
     std::array<ggml_bf16_t, 32 * 16> matrix{};
     std::array<float, 32> vector{};
     for (unsigned k = 0; k < 32; ++k) vector[k] = float(int(k % 7) - 3) * 0.5f;
@@ -41,10 +45,14 @@ GpuAdmission admit_bf16_gpu() {
     }
     ggml_backend_tensor_set(weights, matrix.data(), 0, sizeof(matrix));
     ggml_backend_tensor_set(input, vector.data(), 0, sizeof(vector));
+    if (stage) stage("BF16_upload_completed_before_graph_compute");
     if (ggml_backend_graph_compute(backend, graph) != GGML_STATUS_SUCCESS)
         throw std::runtime_error("BF16 admission compute failed; resources retained");
+    if (stage) stage("BF16_graph_compute_returned_success");
     ggml_backend_synchronize(backend);
+    if (stage) stage("BF16_synchronize_returned_before_readback");
     ggml_backend_tensor_get(output, report.actual.data(), 0, sizeof(report.actual));
+    if (stage) stage("BF16_readback_completed");
     report.passed = true;
     for (unsigned i = 0; i < report.actual.size(); ++i) {
         const double error = std::abs(double(report.actual[i]) - report.expected[i]);
@@ -52,7 +60,11 @@ GpuAdmission admit_bf16_gpu() {
         if (!std::isfinite(report.actual[i]) || error > 1e-5 + 1e-5 * std::abs(report.expected[i])) report.passed = false;
     }
     report.elapsed_ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
-    if (report.passed) { ggml_backend_buffer_free(buffer); ggml_free(context); ggml_backend_free(backend); }
+    if (report.passed) {
+        if (stage) stage("BF16_numerical_gate_passed_before_release");
+        ggml_backend_buffer_free(buffer); ggml_free(context); ggml_backend_free(backend);
+        if (stage) stage("BF16_successful_resource_release_completed");
+    } else if (stage) stage("BF16_numerical_gate_failed_backing_retained");
     // A completed but numerically failed case also keeps backing for inspection.
     return report;
 }

@@ -84,8 +84,11 @@ For a separately admitted inference mode, it requires a conversion receipt, reje
 reduced-precision GGUF tensor types, checks the Qwen architecture and required
 exact 64-bit PLE metadata, and uses the embedded original chat template. Failed
 native admission retains resources for ordinary process close. The entry point
-is now included in the native SELF. Only display validation is enabled; native
-execution must be recorded independently of the host checks.
+is now included in the native SELF. Bounded native display/status execution now
+passes. The separate BF16 initialization attempt failed and that mode is again
+disabled. Full-model inference remains rejected. See
+[the display record](native-display-20261022.json) and
+[the failed BF16 record](native-bf16-20261022.json).
 
 `tools/convert_model.py` requires every original shard and verifies its size and
 SHA256 before invoking the pinned BF16 converter. It records output file digests
@@ -100,24 +103,29 @@ The web interface is a read-only monitor. It contains no chat input, forms,
 generation, cancellation or other operation controls. It fetches only
 `GET /api/status` once per second and inserts text through `textContent`.
 It displays CPU/GPU identity, logical CPU threads, sampled application CPU use,
-startup GPU memory, current date/time, request state, generated tokens, TTFT,
+startup GPU memory, server date/time, request state, generated tokens, TTFT,
 elapsed time and generation tokens/s. CPU use is process CPU time divided by
-wall time and available logical threads. GPU utilization remains unavailable
+wall time and available logical threads in a qualified provider. Native CPU use
+is disabled because its provider clock units remain unqualified. GPU utilization remains unavailable
 until a qualified counter exists; demos never invent hardware values.
 
 The clock follows the server epoch and displays the browser's local timezone.
+It does not establish host/console wall-clock synchronization.
 During generation, tokens/s uses intervals in the last five seconds; after a
 request, it shows the session decode average. The denominator excludes the first
 token's prefill wait. All generated tokens, including reasoning, are counted.
 The chart retains up to 60 polling samples. Cache counters are process totals
 sampled at completed engine operations; page-advice bytes are not SSD traffic.
-An explicit demo banner identifies synthetic requests and unsampled hardware.
+An explicit demo banner identifies synthetic requests and unsampled hardware;
+the no-model banner says monitor only. Missing rates produce gaps in the chart.
 
 The TV interface uses the same typed status snapshot through a CPU observer
 once per second, without browser requests or backend calls on that observer.
 It rasterizes into two fixed tiled VideoOut buffers. Host tests check first-frame
 completion, every pixel address and retained no-retry faults. These are API-stub
-checks, not hardware evidence. The native clock is explicitly labelled UTC.
+checks, not hardware evidence. The native clock is explicitly labelled CONSOLE UTC.
+The separate display/status record confirms bounded first-frame and HTTP
+completion on the console; physical TV observation is not claimed.
 
 `http_app.cpp` applies the original chat template using the pinned upstream Jinja
 implementation. It supports text messages only; media and tool calls are rejected.
@@ -142,10 +150,10 @@ D:/PS5-AI/qwen-flash-next/build/application-preview/app-demo.exe --demo C:/Users
 
 ## Remaining work
 
-- Host SELF conversion/packaging passes. Correct and qualify native startup after
-  the first failed admission; verify loader, static constructors, IEEE state,
-  TLS/unwind and platform startup on the console. See the
-  [startup record](native-startup-20261022.json).
+- Host SELF conversion/packaging and bounded display/status admission pass.
+  Qualify the separate no-display BF16 fixture and required model operations;
+  preserve all failed startup attempts in the
+  [display record](native-display-20261022.json).
 - Finish original checkpoint acquisition, BF16 conversion and layout verification.
 - After runtime admission, measure native memory admission, required PLE and
   expert reads, complete generation, quality, cancellation and sustained residency.

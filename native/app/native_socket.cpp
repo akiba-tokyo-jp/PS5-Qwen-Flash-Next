@@ -6,6 +6,15 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+// The native HTTP translation unit explicitly selects this application-only
+// accept path. This static title never forks or execs, so close-on-exec flags
+// have no effect on its descriptor lifetime. Nonblocking requests are rejected.
+// The separate accept4 implementation below retains its full flag contract.
+extern "C" int qwen_native_accept_http(int listener, sockaddr * address, socklen_t * length, int flags) {
+    if (flags & ~SOCK_CLOEXEC) { errno = EINVAL; return -1; }
+    return accept(listener, address, length);
+}
+
 extern "C" int accept4(int listener, sockaddr * address, socklen_t * length, int flags) {
     if (flags & ~(SOCK_CLOEXEC | SOCK_NONBLOCK)) { errno = EINVAL; return -1; }
     const int socket = accept(listener, address, length);

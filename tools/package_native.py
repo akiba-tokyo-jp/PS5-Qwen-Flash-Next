@@ -58,6 +58,14 @@ def main():
         (tool_dir / "compile.private.log").write_bytes(result.stdout + result.stderr)
         if result.returncode: raise RuntimeError(result.stderr.decode("utf-8", "replace"))
     a.out.mkdir(parents=True)
+    # Keep an immutable ledger in every package. A later build may replace the
+    # working link receipt; retaining only its path/digest would lose provenance.
+    link_snapshot = a.out / "native-link.receipt.private.json"
+    shutil.copyfile(link_receipt, link_snapshot)
+    if sha(link_snapshot) != sha(link_receipt):
+        raise ValueError("Native link receipt changed while snapshotting")
+    if json.loads(link_snapshot.read_text(encoding="utf-8")) != linked:
+        raise ValueError("Native link receipt differs from the qualified build")
     original = a.out / "source.pie.elf"
     shutil.copyfile(image, original)
     if sha(original) != linked["artifact"]["sha256"]:
@@ -80,7 +88,8 @@ def main():
         ("inspect", [str(tool), "self", "--inspect", "--file", str(executable)]),
         ("extract", [str(tool), "self", "--extract", "--file", str(executable), "--out", str(extracted)]),
     ]
-    receipt = {"schema": "ps5-qwen-local-self-v1", "driver": selected, "native_link_receipt": record(link_receipt),
+    receipt = {"schema": "ps5-qwen-local-self-v1", "driver": selected, "native_link_receipt": record(link_snapshot),
+               "native_link_receipt_origin": record(link_receipt),
                "native_pie": record(image), "format_tool": record(tool), "format_tool_sources": [record(path) for path in sources + headers],
                "format_tool_compile": compile_command, "console_access": False, "installed": False,
                "model_loaded": False, "release_qualified": False, "steps": []}

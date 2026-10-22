@@ -28,7 +28,7 @@ cache policy before engine build or native link writes. `tools/build.py` rebuild
 the pinned engine with the actual Strata/Maya policy and loader patches.
 
 `tools/build_native.py` compiles the real session, model adapter, HTTP service,
-native entry point and pinned native CRT, then links them with the engine and
+native entry point and native CRT derived from the pinned source, then links them with the engine and
 selected driver. The initial intermediate native PIE was 136,255,816 bytes.
 Its required engine/driver symbols and 16 initializer slots are present; all
 recorded link inputs retain their digests. Six native runtime providers are
@@ -53,17 +53,24 @@ with asynchronous transfers disabled. See [native validation](native-validation.
 checked descriptor flags. This app never forks or execs; the fallback is not a
 general atomic close-on-exec replacement for a process that does. Flag failures
 close the newly accepted socket and preserve the original error.
+The HTTP translation unit alone selects plain `accept` for this no-subprocess
+native application; its stricter general `accept4` contract remains intact.
 
 The public SDK's actual `ps5_open_memstream` is bound with both required
 flush/close wrappers. Native bridges remain internal through a symbol visibility
-map. The pinned driver's CRT and PIE layout preserve IEEE startup, static
+map. The application CRT and pinned PIE layout preserve IEEE startup, static
 initializers and unwind boundaries at the source/link level. Their actual
-execution, imports, TLS/unwind and loader behavior still need console admission.
+execution is recorded separately from source checks. The completed bounded
+startup/display/status admission is in
+[the display record](native-display-20261022.json); it does not qualify general
+exception paths or model execution.
+The application CRT adds paired durable records around each initializer and
+records its exact pinned original source digest. It does not change their order.
 
 The CRT/layout and adapted glyph/tile primitives originate in BlackBearReloaded's native boilerplate, inherited
 through Mihawk-99's PS5_Vulkan and the selected derivative. The public SDK's
 platform runtime carries Mihawk's GPL-3.0-or-later notices. These external
-CRT/runtime sources are referenced in place and hashed. Adapted raster/tile code
+runtime sources are referenced in place and hashed. Adapted CRT/raster/tile code
 retains its original GPL notices and a bundled license/attribution notice.
 Their license obligations apply to any future bundled artifact;
 no runtime or native binary is distributed here.
@@ -91,10 +98,17 @@ argument forwarding, flags, failure cleanup and error preservation.
 
 ## Remaining gates
 
-Host SELF conversion/packaging now passes. Native startup, model-independent GPU admission,
-the read-only display's native presentation, original checkpoint acquisition,
+Host SELF conversion/packaging and bounded native startup/display/status now pass.
+Model-independent GPU admission, original checkpoint acquisition,
 lossless conversion, large mappings, PLE, sustained shared-memory residency,
 full-model output quality and measured tokens/s remain separate work.
 These remaining gates are separate from those host results. The first console
-mode is limited to CPU display validation with no model/Vulkan initialization.
+mode completed CPU display validation with no model/Vulkan initialization.
+The no-display BF16 32x16 fixture subsequently failed during initialization;
+[its record](native-bf16-20261022.json) preserves the exit without completed
+readback. That mode is disabled pending investigation.
 Full inference modes remain rejected by policy. Release and CI remain disabled.
+
+The shared driver's historical LLM CPU-reference NRMSE remains 1.159915%, failing
+the original 1% gate. Exact driver A/B equality does not change that outcome;
+see its pinned `docs/experiments/hardware-compiler-qualification.md` report.

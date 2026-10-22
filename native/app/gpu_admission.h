@@ -11,5 +11,5 @@ struct GpuAdmission {
 };
 // Model-independent original-BF16 matrix/vector readback. An exception retains
 // all resource backing for ordinary OS close; it never retries or frees it.
-GpuAdmission admit_bf16_gpu();
+GpuAdmission admit_bf16_gpu(void (*stage)(const char *) = nullptr);
 } // namespace qwen_app

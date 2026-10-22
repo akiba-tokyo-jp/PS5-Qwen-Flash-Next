@@ -84,7 +84,7 @@ void MonitorRaster::draw(const MonitorSnapshot & s) {
         const bool valid = gmtime_r(&stamp, &utc) != nullptr;
 #endif
         if (valid) {
-            char date[64]; std::strftime(date, sizeof(date), "%Y-%m-%d %H:%M:%S UTC", &utc);
+            char date[64]; std::strftime(date, sizeof(date), "%Y-%m-%d %H:%M:%S CONSOLE UTC", &utc);
             text(1250, 65, date, 3, ink);
         }
     }

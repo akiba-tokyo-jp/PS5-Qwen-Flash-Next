@@ -10,6 +10,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <deque>
+#include <fstream>
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -26,6 +27,17 @@ using Json = nlohmann::json;
 
 static double now_ms() {
     return std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now().time_since_epoch()).count();
+}
+
+static std::string read_asset(const std::string & path) {
+    std::ifstream file(path, std::ios::binary);
+    if (!file) throw std::runtime_error("Required monitor asset could not be opened");
+    file.seekg(0, std::ios::end); const auto bytes = file.tellg(); file.seekg(0);
+    if (bytes < 0 || bytes > (256u << 10)) throw std::runtime_error("Monitor asset exceeds its bound");
+    std::string data(static_cast<std::size_t>(bytes), '\0');
+    if (!file.read(data.data(), static_cast<std::streamsize>(data.size())) || file.peek() != std::char_traits<char>::eof())
+        throw std::runtime_error("Monitor asset changed or could not be read");
+    return data;
 }
 
 static const char * name(State state) {
@@ -256,10 +268,10 @@ int serve_http(Engine & engine, const std::string & assets,
     server.set_write_timeout(10);
     std::mutex cpu_mutex;
     double last_cpu_wall = now_ms();
-    std::clock_t last_cpu = std::clock();
+    std::clock_t last_cpu = hardware.sample_process_cpu ? std::clock() : std::clock_t(-1);
     auto capture_status = [&] {
         auto data = service.status();
-        data["backend"] = demo ? "demo" : monitor_only ? "monitor-validation" : "model";
+        data["backend"] = demo ? "demo" : monitor_only ? "monitor-only" : "model";
         data["model_loaded"] = !demo && !monitor_only;
 #ifdef _WIN32
         data["process_id"] = _getpid();
@@ -325,7 +337,18 @@ int serve_http(Engine & engine, const std::string & assets,
             response.set_content("{}", "application/json");
         } catch (...) { response.status = 400; }
     });
-    if (!server.set_mount_point("/", assets)) throw std::runtime_error("Application assets not found");
+    // Native path stat rejected the sandbox directory during qualification.
+    // Serve only the three fixed, bounded assets read through ordinary files;
+    // arbitrary URL paths never become filesystem paths.
+    const auto page = read_asset(assets + "/index.html");
+    auto html = [page](const auto &, auto & response) { response.set_content(page, "text/html; charset=utf-8"); };
+    server.Get("/", html); server.Get("/index\\.html", html);
+    server.Get("/app\\.js", [body = read_asset(assets + "/app.js")](const auto &, auto & response) {
+        response.set_content(body, "text/javascript; charset=utf-8");
+    });
+    server.Get("/style\\.css", [body = read_asset(assets + "/style.css")](const auto &, auto & response) {
+        response.set_content(body, "text/css; charset=utf-8");
+    });
     // Native presentation is independent of browser polls and model operations.
     std::mutex monitor_mutex;
     std::condition_variable monitor_changed;

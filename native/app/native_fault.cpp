@@ -6,19 +6,24 @@
 #include <cstring>
 #include <sys/stat.h>
 #include <unistd.h>
-namespace { std::atomic<bool> fatal{false}; char report_path[1100] = {}; }
+namespace { std::atomic<bool> fatal{false}; char report_path[1100] = {}; int journal = -1; }
 extern "C" bool qwen_native_faulted() { return fatal.load(); }
 extern "C" void qwen_native_mark_fault() { fatal = true; }
+extern "C" void qwen_native_set_fault_journal(int descriptor) { journal = descriptor; }
 // Set once on the startup thread, before display/backend workers exist.
 extern "C" void qwen_native_set_fault_report(const char * path) {
     if (path && std::strlen(path) < sizeof(report_path)) std::strcpy(report_path, path);
 }
 extern "C" [[noreturn]] void qwen_native_halt(const char * operation) {
     fatal = true;
-    static constexpr char message[] = "Native operation failed; resources retained for ordinary OS close\n";
-    (void) write(2, message, sizeof(message) - 1);
+    if (journal >= 0) {
+        static constexpr char prefix[] = "fatal_operation=";
+        (void) write(journal, prefix, sizeof(prefix) - 1);
+        (void) write(journal, operation, std::strlen(operation));
+        (void) write(journal, "\n", 1); (void) fsync(journal);
+    }
     if (report_path[0]) {
-        const int fd = open(report_path, O_WRONLY | O_CREAT | O_EXCL, 0644);
+        const int fd = open(report_path, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW, 0644);
         if (fd >= 0) {
             (void) fchmod(fd, 0644);
             static constexpr char prefix[] = "{\"schema\":\"ps5-qwen-native-fatal-v1\",\"backing_retained\":true,\"operation\":\"";

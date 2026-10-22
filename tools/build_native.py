@@ -69,11 +69,10 @@ def main():
     files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "http_app.cpp", "native_main.cpp",
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp",
-                                                   "native_addr.cpp", "native_bootstrap.cpp")]
+                                                   "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
-              source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp",
-              a.driver_root / "tooling/native/app_crt.cpp"]
+              source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
     # Fingerprint header changes as well as translation units and compiler flags.
     header_paths = [path for directory in (ROOT / "native/app", source / "common/jinja", source / "vendor/cpp-httplib")
                     for path in sorted(directory.glob("*.h"))]
@@ -86,6 +85,8 @@ def main():
 
     def compile_one(path):
         local_flags = flags + (["-I", str(workspace / "toolchain/Vulkan-Headers/include")] if path.name == "vulkan_bridge.cpp" else [])
+        if path.name == "httplib.cpp":
+            local_flags += ["-Daccept4=qwen_native_accept_http"]
         identity = hashlib.sha256((str(path) + json.dumps(local_flags) + compiler_hash).encode() + path.read_bytes() + headers).hexdigest()
         obj = objects / (path.stem + "-" + identity[:20] + ".o")
         command = [str(llvm / "clang++.exe"), *local_flags, "-c", str(path), "-o", str(obj)]
@@ -160,6 +161,7 @@ def main():
     receipt = {"schema": "ps5-qwen-native-link-v1", "driver": selected, "engine_receipt": record(receipt_path),
                "compiler": record(llvm / "clang++.exe"), "linker": record(llvm / "ld.lld.exe"),
                "application_sources": source_inputs, "application_headers": header_inputs,
+               "CRT_derived_from": record(a.driver_root / "tooling/native/app_crt.cpp"),
                "console_access": False, "model_loaded": False, "learned_host_inference": False,
                "SELF_packaged": False, "CI": False, "compile_commands": [cmd for _, cmd in compiled],
                "link_command": command, "inputs_before": before}
@@ -173,7 +175,7 @@ def main():
     if before != after:
         raise ValueError("A native link input changed during the build")
     symbols = subprocess.check_output([str(llvm / "llvm-nm.exe"), "--defined-only", str(elf)], text=True)
-    for name in ("_start", "main", "catchReturnFromMain", "qwen_native_halt", "_Znwm", "__gxx_personality_v0", "llama_app_mmap_prefetch_disabled", "llama_app_expert_policy_enabled", "llama_app_expert_counters", "vkGetInstanceProcAddr"):
+    for name in ("_start", "main", "catchReturnFromMain", "qwen_native_halt", "qwen_native_accept_http", "_Znwm", "__gxx_personality_v0", "llama_app_mmap_prefetch_disabled", "llama_app_expert_policy_enabled", "llama_app_expert_counters", "vkGetInstanceProcAddr"):
         if not re.search(r"\b" + re.escape(name) + r"$", symbols, re.M):
             raise ValueError("Required native integration symbol is absent: " + name)
     sections = subprocess.check_output([str(llvm / "llvm-readelf.exe"), "--wide", "--sections", str(elf)], text=True)
@@ -196,6 +198,13 @@ def main():
                    runtime_providers=providers,
                    required_engine_and_driver_symbols_present=True)
     (out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    ledger = json.dumps(receipt, indent=2) + "\n"
+    ledger_dir = out / "receipts"; ledger_dir.mkdir(exist_ok=True)
+    immutable = ledger_dir / (hashlib.sha256(ledger.encode()).hexdigest() + ".private.json")
+    if not immutable.exists():
+        with immutable.open("x", encoding="utf-8", newline="\n") as stream: stream.write(ledger)
+    elif immutable.read_text(encoding="utf-8") != ledger:
+        raise ValueError("Immutable native build ledger collision")
     print(json.dumps({"native_link": "passed", "driver_revision": selected["source_revision"],
                       "profile": selected["profile"], "artifact_sha256": sha(elf), "console_access": False}))
 

@@ -8,18 +8,23 @@ const bytes = value => !number(value) ? "—" : value >= 2 ** 30 ? (value / 2 **
 function tick() {
   const date = new Date(Date.now() + offset);
   show("clock", new Intl.DateTimeFormat(undefined, {dateStyle: "medium", timeStyle: "medium"}).format(date));
-  show("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
+  show("timezone", "Server clock · " + Intl.DateTimeFormat().resolvedOptions().timeZone);
 }
 function chart() {
   const canvas = byId("chart"), ratio = devicePixelRatio || 1;
   const width = canvas.clientWidth || 300, height = 90;
   canvas.width = width * ratio; canvas.height = height * ratio;
   const context = canvas.getContext("2d"); context.scale(ratio, ratio);
-  const maximum = Math.max(1, ...samples);
+  const maximum = Math.max(1, ...samples.filter(number));
   context.strokeStyle = "#334539"; context.lineWidth = 1;
   context.beginPath(); context.moveTo(0, height - 1); context.lineTo(width, height - 1); context.stroke();
   context.strokeStyle = "#c7db9d"; context.lineWidth = 2; context.beginPath();
-  samples.forEach((value, index) => { const x = index * width / 59, y = height - 5 - value / maximum * (height - 10); index ? context.lineTo(x, y) : context.moveTo(x, y); });
+  let connected = false;
+  samples.forEach((value, index) => {
+    if (!number(value)) { connected = false; return; }
+    const x = index * width / 59, y = height - 5 - value / maximum * (height - 10);
+    connected ? context.lineTo(x, y) : context.moveTo(x, y); connected = true;
+  });
   context.stroke();
 }
 async function poll() {
@@ -29,12 +34,14 @@ async function poll() {
     if (!response.ok) throw new Error("Telemetry unavailable");
     const data = await response.json(), request = data.request || {}, metrics = request.metrics || {};
     if (number(data.server_epoch_ms)) offset = data.server_epoch_ms - Date.now();
-    show("backend", data.backend === "demo" ? "DEMO TELEMETRY · No model or PS5 hardware is sampled. Generation counters come only from external demo requests." : "MODEL TELEMETRY · Missing hardware counters are shown as unavailable.");
+    show("backend", data.backend === "demo" ? "DEMO TELEMETRY · No model or PS5 hardware is sampled. Generation counters come only from external demo requests."
+      : data.model_loaded ? "MODEL TELEMETRY · Missing hardware counters are shown as unavailable."
+      : "MONITOR ONLY · No model loaded. Inference rates remain unavailable.");
     if (request.id !== lastRequest) { samples = []; lastRequest = request.id; }
     const rate = data.busy ? request.live_tokens_per_second : metrics.decode_tokens_per_second;
     show("rate", number(rate) ? rate.toFixed(2) : "—");
     show("rate-label", data.busy ? "Generation rate · last 5 seconds" : "Last session · decode average");
-    samples.push(number(rate) ? rate : 0); if (samples.length > 60) samples.shift(); chart();
+    samples.push(number(rate) ? rate : null); if (samples.length > 60) samples.shift(); chart();
     show("tokens", (metrics.generated_tokens || 0).toLocaleString());
     show("ttft", number(metrics.ttft_ms) ? (metrics.ttft_ms / 1000).toFixed(2) + " s" : "—");
     show("elapsed", number(request.elapsed_ms) ? (request.elapsed_ms / 1000).toFixed(1) + " s" : "—");

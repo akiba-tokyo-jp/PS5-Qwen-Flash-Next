@@ -50,7 +50,8 @@ the SDK resolver placeholder rejects even loopback. Native configuration/assets
 live beneath `/app0/qwen-runtime`, the existing title's application sandbox.
 
 An exclusive raw-fd preinit journal records fixed startup stages before C++
-constructors. General stdout/stderr use a separate owner-only file. Missing or
+constructors. Application diagnostics use a bounded owner-only raw-fd log;
+inherited stdout/stderr descriptors are left unchanged. Missing or
 unwritable journals retain the process before display/model work. An external
 observer must distinguish OS launch acceptance, a live process, first-frame
 completion and advancing HTTP timestamps. A deadline without the required
@@ -71,10 +72,39 @@ The first console attempt is recorded in
 ordinary launch, but a bounded observation found no native owner or admission
 report. No repeat launch followed. The original SELF was restored byte-for-byte;
 fresh CPU-only observations confirmed no native owner, no running big application
-and an unchanged boot. Console display and GPU/model admission have not passed.
+and an unchanged boot. That attempt did not pass display or GPU/model admission.
 The startup cause is unresolved. Host review found incorrect sandbox paths,
 mixed C++ runtime imports and the failing resolver placeholder; correcting those
 issues does not by itself establish which one caused the observed startup failure.
+
+The corrected SELF subsequently produced one exact native owner and the fixed
+`preinit_entered` journal, but no main-entry or first-frame completion evidence.
+Display admission remained failed. The title closed through the ordinary OS API;
+the original executable was restored. This attempt did not establish whether the
+remaining startup interval was bootstrap descriptor setup or a C++ initializer.
+The next host diagnostic adds durable operation-specific failures and paired
+enter/return records for each initializer, retaining the original CRT startup
+order. The subsequent attempts and completed display/status admission are
+preserved in [native-display-20261022.json](native-display-20261022.json).
+The stdout descriptor-duplication failure was removed without replacing inherited
+stdio. All 16 initializers and the first frame then completed; bounded explicit
+asset routes and HTTP-only plain acceptance resolved the subsequent HTTP failures.
+The accepted display artifact returned two HTTP 200 status samples from the same
+owner, with an advancing console timestamp. CPU percentage and clock calibration
+remain unqualified. The exact original SELF was restored, numerically admitted
+and normally closed; fresh metadata confirmed no native owner on the same boot.
+
+The next `monitor-validation` fixture was separately attempted. It disabled
+native display, retained the fixed finite-output tolerance, validated
+linked BF16 SPIR-V and requires at least 1 GiB Direct/64 MiB Flexible headroom.
+A 250 ms sleep/monotonic interval check preceded backend initialization.
+The [BF16 attempt record](native-bf16-20261022.json) preserves the observed
+250.085196 ms interval and memory headroom. The native process then exited before
+owner admission and without a terminal readback or fault report. Its termination
+cause remains unresolved; initialization completion and dispatch count are unknown.
+It was not retried. Policy again rejects `monitor-validation` and `inference`.
+The host follow-up adds finer durable phases; it has no console qualification.
+An absent process is recorded as an exit, without claiming an ordinary close call.
 
 The raster, date/time and status observer run independently of browser polling.
 The screen contains no chat or operation controls. Tokens/s stays unavailable

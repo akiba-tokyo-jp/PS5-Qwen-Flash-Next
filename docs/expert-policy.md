@@ -2,8 +2,8 @@
 
 This application code is connected to the pinned engine's real expert-cache
 planner and copy callback. Full-model PS5 execution remains unverified. The
-selected shared-driver source is updated for native integration; console work
-remains disabled.
+selected shared-driver source is integrated. Bounded native display/status
+admission passes; full-model inference remains rejected by policy.
 
 ## Pinned sources and adaptations
 

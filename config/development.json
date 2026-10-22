@@ -1,11 +1,11 @@
 {
-  "phase": "bounded-native-display-validation",
+  "phase": "native-bf16-initialization-investigation",
   "driver_qualification": "bounded-evidence-reviewed",
   "console_operations_enabled": true,
   "deployment_enabled": false,
   "console_validation_enabled": true,
   "validation_deployment_enabled": true,
   "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
-  "application_qualification": "pending",
+  "application_qualification": "display-and-status-admitted; BF16-initialization-failed; full-model-pending",
   "allowed_modes": ["display-validation"]
 }

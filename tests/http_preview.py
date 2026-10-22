@@ -82,6 +82,13 @@ def main():
         connection, response = request("GET", "/app.js")
         script = response.read().decode(); connection.close()
         assert "/api/status" in script and "/api/generate" not in script and "/api/cancel" not in script
+        for name, mime in (("index.html", "text/html"), ("app.js", "text/javascript"), ("style.css", "text/css")):
+            connection, response = request("GET", "/" + name)
+            assert response.status == 200 and response.getheader("Content-Type").startswith(mime)
+            assert response.read() == (ROOT / "web" / name).read_bytes(); connection.close()
+        for path in ("/AGENTS.md", "/appXjs", "/missing.css"):
+            connection, response = request("GET", path)
+            assert response.status == 404; response.read(); connection.close()
         connection, response = request("POST", "/api/generate", {"id": "bad"})
         assert response.status == 400; response.read(); connection.close()
         for field, value in (("tools", []), ("context_tokens", 8192)):

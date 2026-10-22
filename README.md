@@ -16,8 +16,9 @@ manual build commands and the remaining native runtime/model gates.
 
 The owner subsequently authorized console validation and required careful
 prevention of hangs and uncertain completion. [development.json](config/development.json)
-permits only bounded `display-validation` after host checks; model loading and
-GPU compute modes remain rejected. Release deployment is disabled. See
+currently permits only bounded `display-validation`. The separate BF16 fixture
+failed during initialization and is disabled pending investigation. Full-model
+inference remains rejected. Release deployment is disabled. See
 [native-validation.md](docs/native-validation.md) for the staged gates and exact
 preservation/restoration requirements. Driver tests do not establish Qwen quality
 or memory admission.
@@ -49,20 +50,24 @@ The engine was rebuilt with the latest selected driver source on 2026-10-22.
 The real application, original-BF16 adapter, HTTP service, Strata/Maya cache
 patches and selected RADV archive now link into one intermediate native PIE.
 The earlier host link is retained in [the integration record](docs/driver-integration-20261022.json).
-The subsequent native monitor build preserves 16 initializer slots and seven
-runtime providers, passes 344 real-module import checks and produces an
-integrity-checked SELF with six verified reconstructed segments. See
-[the monitor host record](docs/native-monitor-20261022.json). Its first ordinary
-console launch was accepted by the OS, but no native process or admission report
-was observed. Startup is **not admitted**; see
-[the startup record](docs/native-startup-20261022.json). The exact original SELF
-was restored and read back, with no native application running and the same boot
-still responding. Original numerical re-admission remains pending before final
-console release. A distinct corrected build passes host verification with a
-preinit journal, a static C++ ABI and 290 actual-module imports; see
-[its host record](docs/native-monitor-corrected-20261022.json). This does not
-establish corrected console startup. Original shard acquisition and full
-checksumming remain incomplete.
+Historical host builds and the first failed startup are preserved in
+[the monitor host record](docs/native-monitor-20261022.json),
+[the initial startup record](docs/native-startup-20261022.json) and
+[the corrected host record](docs/native-monitor-corrected-20261022.json).
+The subsequent [display/status admission](docs/native-display-20261022.json)
+completed all 16 initializers, the first native frame and two HTTP 200 status
+responses from the same verified owner. It initialized no model or Vulkan.
+This artifact has six runtime providers, 289 verified actual-module imports and
+six verified reconstructed SELF segments. Native CPU percentage and wall-clock
+calibration remain unqualified; tokens/s stays unavailable without inference.
+The exact original executable was restored, numerically admitted and normally
+closed. Fresh observations confirmed no native owner and an unchanged boot.
+Original shard acquisition and full checksumming remain incomplete.
+
+The separate no-display [BF16 fixture attempt](docs/native-bf16-20261022.json)
+persisted its headroom and clock checks, then exited before owner admission or a
+completed GPU readback. Its cause is unresolved. It was not retried; the exact
+original SELF was restored. This is a failed admission, not a compute result.
 
 The upstream llama.cpp model implementation is `qwen4exp`. Its PLE lookup,
 hybrid attention, hyper-connections, expert-cache and scheduler paths are the

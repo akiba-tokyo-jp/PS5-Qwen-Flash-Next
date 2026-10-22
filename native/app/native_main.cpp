@@ -18,8 +18,8 @@
 #include <algorithm>
 #include <cstring>
 #include <chrono>
+#include <cmath>
 #include <fstream>
-#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -32,6 +32,11 @@ using Json = nlohmann::json;
 extern "C" bool llama_app_mmap_prefetch_disabled();
 extern "C" void qwen_native_set_fault_report(const char *);
 extern "C" void qwen_native_stage(const char *);
+extern "C" void qwen_native_log_bytes(const char *, std::size_t);
+
+static void native_log(enum ggml_log_level, const char * text, void *) {
+    if (text) qwen_native_log_bytes(text, std::strlen(text));
+}
 
 static void write_fresh_report(const std::string & path, const Json & value) {
     const auto bytes = value.dump(2) + "\n";
@@ -98,6 +103,7 @@ int main(int argc, char ** argv) {
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
         qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");
+        llama_log_set(native_log, nullptr); ggml_log_set(native_log, nullptr);
         qwen_native_set_fault_report((startup.admission_report + ".fatal").c_str());
         if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) || setenv("LLAMA_APP_NO_MMAP_PREFETCH", "1", 1) ||
             setenv("LLAMA_APP_EXPERT_POLICY", "maya-aged-lfu", 1) ||
@@ -107,7 +113,7 @@ int main(int argc, char ** argv) {
         if (!llama_app_mmap_prefetch_disabled()) throw std::runtime_error("The streaming loader patch is required");
         if (!llama_app_expert_policy_enabled()) throw std::runtime_error("The adaptive expert cache patch is required");
 
-        screen.state = "verifying model";
+        screen.state = startup.display_validation ? "display validation" : startup.monitor_validation ? "BF16 GPU admission" : "verifying model";
         screen.cpu_threads = std::thread::hardware_concurrency();
         char cpu_name[256] = {};
         std::size_t cpu_name_size = sizeof(cpu_name);
@@ -139,23 +145,36 @@ int main(int argc, char ** argv) {
                 if (pool <= 0 || sceKernelAvailableDirectMemorySize(0, pool, 65536, &physical, &available) < 0 ||
                     sceKernelAvailableFlexibleMemorySize(&flexible) < 0 || available < (1ull << 30) || flexible < (64u << 20))
                     throw std::runtime_error("Observed memory headroom is insufficient for bounded GPU admission");
+                const auto clock_start = std::chrono::steady_clock::now();
+                if (usleep(250000)) throw std::runtime_error("Native clock interval observation failed");
+                const double clock_interval_ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - clock_start).count();
+                if (clock_interval_ms < 200 || clock_interval_ms > 2000)
+                    throw std::runtime_error("Native millisecond clock scale is not admitted");
                 write_fresh_report(startup.admission_report + ".started", {{"stage", "before_gpu_admission"},
                     {"model_loaded", false}, {"pid", getpid()}, {"direct_largest_available_bytes", available},
-                    {"flexible_available_bytes", flexible}});
+                    {"flexible_available_bytes", flexible}, {"sleep_request_us", 250000}, {"observed_clock_interval_ms", clock_interval_ms}});
+                qwen_native_stage("before_BF16_GPU_admission model_loaded=0");
+                qwen_native_stage("before_llama_backend_initialization model_loaded=0");
                 llama_backend_init();
-                const auto admission = qwen_app::admit_bf16_gpu();
-                const Json record = {{"schema", "ps5-qwen-bf16-admission-v1"}, {"model_loaded", false},
+                qwen_native_stage("llama_backend_initialization_completed model_loaded=0");
+                const auto admission = qwen_app::admit_bf16_gpu(qwen_native_stage);
+                const bool finite = std::all_of(admission.actual.begin(), admission.actual.end(), [](float value) { return std::isfinite(value); });
+                const Json record = {{"schema", "ps5-qwen-bf16-admission-v1"}, {"model_loaded", false}, {"pid", getpid()},
                     {"fixture", "BF16 32x16 weights times F32 32-vector; F32 output"},
                     {"absolute_tolerance", 1e-5}, {"relative_tolerance", 1e-5}, {"passed", admission.passed},
                     {"backend", admission.backend}, {"expected", admission.expected}, {"actual", admission.actual},
-                    {"max_absolute_error", admission.max_absolute_error}, {"elapsed_ms", admission.elapsed_ms}};
+                    {"finite_outputs", finite}, {"graph_compute_calls", 1},
+                    {"max_absolute_error", finite ? Json(admission.max_absolute_error) : Json(nullptr)}, {"elapsed_ms", admission.elapsed_ms}};
                 write_fresh_report(startup.admission_report, record);
                 if (!admission.passed) throw std::runtime_error("Original-BF16 GPU admission failed its fixed numerical gate");
+                qwen_native_stage("BF16_GPU_admission_passed model_loaded=0");
             }
             if (display && display->failed()) throw std::runtime_error("Native display completion failed; backing retained");
             qwen_app::HardwareInfo hardware;
             hardware.cpu_name = screen.cpu_name; hardware.logical_cpu_threads = screen.cpu_threads;
-            hardware.sample_process_cpu = true;
+            // The native SDK declares CLOCKS_PER_SEC=128; the provider's clock
+            // units have not passed qualification. Keep CPU percentage absent.
+            hardware.sample_process_cpu = false;
             // Display-only admission must not enumerate or initialize Vulkan.
             auto device = startup.display_validation ? nullptr : ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU);
             if (!startup.display_validation && !device) device = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_IGPU);
@@ -170,10 +189,12 @@ int main(int argc, char ** argv) {
                 qwen_app::Token next() override { throw std::logic_error("No model loaded"); }
                 void finish() override {}
             } no_inference;
-            qwen_app::serve_http(no_inference, startup.web_assets, "{{ '' }}", startup.port, false, hardware,
+            qwen_native_stage("before_monitor_HTTP_service");
+            const auto served = qwen_app::serve_http(no_inference, startup.web_assets, "{{ '' }}", startup.port, false, hardware,
                 display ? std::function<void(const qwen_app::MonitorSnapshot &)>([&](const auto & snapshot) { display->publish(snapshot); })
                         : std::function<void(const qwen_app::MonitorSnapshot &)>{}, true);
-            for (;;) std::this_thread::sleep_for(std::chrono::seconds(1));
+            qwen_native_stage("monitor_HTTP_service_returned");
+            throw std::runtime_error(served ? "Monitor HTTP listener failed" : "Monitor HTTP listener stopped unexpectedly");
         }
         std::ifstream receipt_file(startup.model_receipt);
         const auto receipt = Json::parse(receipt_file);
@@ -220,7 +241,7 @@ int main(int argc, char ** argv) {
         qwen_app::HardwareInfo hardware;
         hardware.cpu_name = screen.cpu_name;
         hardware.logical_cpu_threads = screen.cpu_threads;
-        hardware.sample_process_cpu = true;
+        hardware.sample_process_cpu = false;
         if (device) {
             const char * description = ggml_backend_dev_description(device);
             if (description) hardware.gpu_name = description;
@@ -231,6 +252,7 @@ int main(int argc, char ** argv) {
         const int result = qwen_app::serve_http(*engine, startup.web_assets, chat_template, startup.port, false, hardware,
             display ? std::function<void(const qwen_app::MonitorSnapshot &)>([&](const auto & snapshot) { display->publish(snapshot); })
                     : std::function<void(const qwen_app::MonitorSnapshot &)>{});
+        if (result) throw std::runtime_error("Inference HTTP listener failed");
         if (engine->failed()) throw std::runtime_error("Model resources retained after an uncertain backend result");
         engine.reset(); llama_free(context); context = nullptr; llama_model_free(model); model = nullptr;
         if (display) {
@@ -242,7 +264,8 @@ int main(int argc, char ** argv) {
     } catch (const std::exception & error) {
         // No manual release or automatic retry after a failed native admission.
         // The owning process must remain available for ordinary OS shutdown.
-        std::cerr << error.what() << '\n';
+        qwen_native_log_bytes(error.what(), std::strlen(error.what()));
+        qwen_native_log_bytes("\n", 1);
         if (!validation_report.empty()) {
             try { write_fresh_report(validation_report + ".failure", {{"stage", "native_exception"},
                 {"message", error.what()}, {"model_loaded", false}}); } catch (...) {}
