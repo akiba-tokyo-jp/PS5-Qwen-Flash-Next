@@ -385,3 +385,12 @@ unchanged while it runs. A failure or uncertain step forbids subsequent actions;
 it implements no retry, forced close, GPU reset or automatic recovery. See
 `docs/host-audit-continuation-20261023.md`. Detached launch is process isolation,
 not evidence of successful inference or completed physical validation.
+
+Continuation 019 later ended before case preparation or console access because
+of a local progress-file sharing conflict. Preserve its failure and absence of
+execution intents. Continuation 020 uses bounded local progress observations
+from `tools/local_progress.py` while retaining all prior execution gates and
+deadlines. The original audit and data waiter remain unchanged and active. Keep
+the sources recorded in continuation 020 unchanged while it runs. Only local
+metadata observations/publication may repeat for a sharing conflict; physical
+operations and exclusive execution intents must never be retried this way.

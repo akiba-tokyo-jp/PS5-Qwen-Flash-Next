@@ -42,3 +42,25 @@ implemented. Original restoration remains a required result, not an assumed one.
 All three deliverables in `execution-plan-20261022.md` remain required. At this
 checkpoint full-model inference, displayed performance and final restoration
 have not been performed. No intermediate host or data result is completion.
+
+## Bounded progress-file observations
+
+The first full-plan waiter subsequently ended before case preparation or any
+console action. Its recorded exception was `PermissionError` while reading the
+data waiter's atomically replaced progress file. The model audit and data waiter
+continued running; neither was restarted. The failed full-plan intent, status
+and traceback remain preserved, and no physical execution intent existed.
+
+`tools/local_progress.py` permits up to five seconds of repeated local progress
+reads or idempotent progress publication during a Windows sharing conflict.
+Malformed or oversized metadata is rejected immediately. Persistent sharing
+failure remains an error. Execution intents, console requests, transfers and
+model operations do not use this repetition mechanism.
+
+Four manual tests passed on Windows: a reader blocked by an exclusive writer,
+publication blocked by a reader denying deletion, a permanent conflict reaching
+its deadline, and rejection of malformed/oversized metadata. These tests use
+real Windows file handles, without console access. A distinct full-plan
+continuation binds the positively ended pre-console failure and the unchanged
+audit/data processes before waiting again. All original physical gates and
+the complete-plan criterion remain unchanged.
