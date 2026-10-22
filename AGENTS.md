@@ -248,3 +248,16 @@ publishing its admission. Compile fixtures must never be executed on the PS5.
 The transport never grants native model/GPU admission. Require independent
 native SHA verification afterward, retain uncertain partials and immutable failed
 records, and never automatically resend an uncertain file or receipt publication.
+
+A bounded ordinary host continuation is now active for successful preparation
+through CPU directory admission and data-only transfer. Its private
+`model-data-continuation-001/intent.private.json` freezes the relevant preparation,
+directory, transport, receipt and memory-header sources. Keep every recorded
+input unchanged while that continuation is active. It waits for matching complete
+conversion/audit/hash records, then requires new unchanged CPU observations and
+separate exact directory/data admissions. Failed upstream preparation, changed
+inputs/session/reservation or any uncertain step stops the sequence for review;
+it never retries, launches a title, initializes Vulkan or loads the model.
+Successful transfer still requires independent native SHA/mapping admission.
+Documentation and unrelated runtime development may continue without mutating
+those frozen inputs. Keep committed execution/deployment/CI controls disabled.

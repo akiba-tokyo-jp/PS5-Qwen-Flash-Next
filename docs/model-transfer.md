@@ -99,6 +99,16 @@ prove remote payload integrity. The later bounded native CPU model preflight
 must independently hash every console file before mapping or GPU/model load.
 There is no full-model transfer, mapping or inference result yet.
 
+A bounded ordinary host continuation is running while conversion finishes.
+Its source-frozen intent admits only the existing task's successful audited
+original model, followed by a real native receipt plan, the exact CPU directory
+build, new CPU observations, owned-directory finalization and data-only transfer.
+It performs no console request during the preparation wait. Five private
+host-only workflow fault-injection cases passed. A failed preparation or changed
+input/session/reservation ends the sequence without an execution retry. A final
+unchanged CPU observation follows successful transfer; independent native SHA,
+mapping, resident loading and inference remain subsequent qualification stages.
+
 Focused host fault injection covers success, concurrent writers, invalid names,
 existing files, changed source bytes, unreadable output, deadlines, missing
 completion responses and ambiguous transfer/rename outcomes. Preparation tests
