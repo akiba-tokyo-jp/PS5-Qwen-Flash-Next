@@ -175,9 +175,9 @@ static void inspect_container(const std::string & path, bool first, qwen_app::Mo
 static std::uint64_t observed_system_headroom() {
     return qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
 }
-static Json system_memory_report(const qwen_app::SystemMemoryObservation & memory) {
+static Json system_memory_report(const qwen_app::SystemMemoryObservation & memory, bool model_loaded=false) {
     struct ps5_heap_stats heap{};ps5_heap_stats(&heap);
-    return {{"pid",getpid()},{"GPU_calls",0},{"model_loaded",false},
+    return {{"pid",getpid()},{"GPU_calls",0},{"model_loaded",model_loaded},
         {"Flexible_available_bytes",memory.flexible_available},
         {"kernel_page_size",memory.page_size},{"kernel_total_pages",memory.kernel_pages},
         {"kernel_free_pages",memory.kernel_free},{"kernel_minimum_pages",memory.kernel_minimum},
@@ -195,8 +195,14 @@ struct LoadProgress {
 static void require_model_CPU_budget() {
     struct ps5_heap_stats heap{}; ps5_heap_stats(&heap);
     if (heap.libc_fallbacks || heap.mapped_bytes > qwen_app::maximum_model_CPU_heap_bytes ||
-        heap.peak_bytes > qwen_app::maximum_model_CPU_heap_bytes || observed_system_headroom() < qwen_app::model_read_system_reserve)
-        throw std::runtime_error("CPU Direct heap or fresh Flexible/kernel headroom is not admitted");
+        heap.peak_bytes > qwen_app::maximum_model_CPU_heap_bytes)
+        throw std::runtime_error("CPU Direct heap admission failed: mapped="+std::to_string(heap.mapped_bytes)+
+            " peak="+std::to_string(heap.peak_bytes)+" limit="+std::to_string(qwen_app::maximum_model_CPU_heap_bytes)+
+            " libc_fallbacks="+std::to_string(heap.libc_fallbacks));
+    const auto flexible=observed_system_headroom();
+    if (flexible < qwen_app::model_read_system_reserve)
+        throw std::runtime_error("Flexible memory admission failed: available="+std::to_string(flexible)+
+            " required="+std::to_string(qwen_app::model_read_system_reserve));
 }
 static void wait_for_initial_model_CPU_budget() {
     const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(20);
@@ -746,6 +752,8 @@ int main(int argc, char ** argv) {
         qwen_native_driver_checkpoint();
         require_unchanged_model();
         if (startup.first_generation_validation) qwen_app::enforce_native_model_compute_limits();
+        write_fresh_report(startup.admission_report+".system-memory.after-load",
+            system_memory_report(qwen_app::observe_native_system_memory(),true));
         if (startup.first_generation_validation) require_model_CPU_budget();
         ggml_backend_dev_memory(device, &vulkan_reported_free, &driver_total);
         const auto native_budget_after=qwen_native_allocator_budget(driver_total);
@@ -769,6 +777,8 @@ int main(int argc, char ** argv) {
         context = llama_init_from_model(model, qwen_app::streaming_context_params(
             startup.first_generation_validation ? qwen_app::first_context_tokens : 4096, cache_bytes));
         if (!context) throw std::runtime_error("Context admission failed; restart through the ordinary OS path");
+        write_fresh_report(startup.admission_report+".system-memory.after-context",
+            system_memory_report(qwen_app::observe_native_system_memory(),true));
         if (startup.first_generation_validation) require_model_CPU_budget();
         if (startup.first_generation_validation && std::chrono::steady_clock::now() - context_started > std::chrono::seconds(600))
             throw std::runtime_error("Context creation exceeded its first-generation boundary deadline");

@@ -761,3 +761,19 @@ use, subtract owned bytes twice, reduce the unchanged reserves or accept unknown
 queries. No shared-driver/archive/kernel change was made. The actual observation
 function passed 29 strict host cases. Save post-load native and raw Vulkan values.
 See `docs/native-allocator-admission-20261024.md`; all final full-plan gates remain.
+
+The next artifact positively loaded the model, admitted native Direct capacity,
+and returned from context creation before the CPU/Flexible guard refused it.
+The full stable driver log had no worker initialization. Normal close, exact
+original restoration, numerical readmission, normal close, final CPU and full
+readback passed. Its generic error did not preserve the exact rejecting value.
+Keep the new separate post-load/post-context reports and numeric rejection values.
+
+The nominal-capacity scheduler metadata allocation exceeds the unchanged CPU
+heap limit. Its replacement uses a fixed 192 MiB arena and checks the complete
+active graph with actual aligned tensor/graph overhead before constructing
+copies. Keep the original graph/hash capacities and every model node. Require
+one serialized copy; reject overflow/empty/oversized graphs without truncation.
+The actual GGML metadata allocator and three complete 7,184-node CPU fixture
+graphs passed; see `docs/native-scheduler-memory-20261024.md`. The diagnostic-only
+case was superseded before launch. Real generation and all final gates remain.

@@ -28,10 +28,13 @@ these no-access keys through intermediate trim requests; its actual-class host
 regression passed. Complete model loading and its positive device-idle checkpoint
 then passed. The [native allocator admission](docs/native-allocator-admission-20261024.md)
 keeps raw Vulkan estimates separate from the physical allocator that backs BOs.
+The subsequent context returned before a CPU/Flexible admission refusal. The
+[bounded scheduler metadata correction](docs/native-scheduler-memory-20261024.md)
+retains the complete graph while replacing its oversized metadata reservation.
 Context/cache admission and generation remain pending.
 The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
-Full reserved-source model loading has not run on the PS5. See the
+Complete reserved-source model loading has passed on the PS5. See the earlier
 [physical hold](docs/public-mapping-hold-20261024.md) and its subsequent recovery
 in the current memory-qualification report.
 

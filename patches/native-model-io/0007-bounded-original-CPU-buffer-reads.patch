@@ -5,7 +5,59 @@
  // Note: porting this file to C++ is a work in progress
  
  #ifdef _WIN32
-@@ -2485,6 +2486,7 @@
+@@ -20,6 +21,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <algorithm>
++#include <stdexcept>
+ #include <unordered_map>
+ #include <vector>
+ 
+@@ -1210,8 +1212,26 @@
+     }
+ }
+ 
++// One serialized native producer uses a fixed metadata arena. Retain the
++// original graph/hash capacities and validate the complete active graph before
++// creating any scheduler tensor copies; never truncate nodes to fit this arena.
++static constexpr size_t qwen_app_scheduler_context_budget = size_t(192) << 20;
++static size_t qwen_app_scheduler_context_required(size_t nodes) {
++    const size_t per_node = GGML_SCHED_MAX_SPLIT_INPUTS * 2 * ggml_tensor_overhead();
++    if (!nodes || !per_node || nodes > qwen_app_scheduler_context_budget / per_node)
++        throw std::runtime_error("Complete graph exceeds the bounded scheduler metadata arena");
++    const size_t tensors = nodes * per_node;
++    const size_t graph = ggml_graph_overhead_custom(nodes, false);
++    if (graph > qwen_app_scheduler_context_budget - tensors)
++        throw std::runtime_error("Complete graph metadata exceeds its native CPU budget");
++    return tensors + graph;
++}
++
+ // assigns backends to ops and splits the graph into subgraphs that can be computed on the same backend
+ void ggml_backend_sched_split_graph(ggml_backend_sched_t sched, struct ggml_cgraph * graph) {
++    if (sched->n_copies != 1 || graph->n_nodes <= 0 ||
++        qwen_app_scheduler_context_required(size_t(graph->n_nodes)) > sched->context_buffer_size)
++        throw std::runtime_error("Serialized native scheduler metadata admission failed");
+     // reset splits
+     sched->n_splits = 0;
+     sched->n_graph_inputs = 0;
+@@ -1970,6 +1990,7 @@
+     sched->debug_realloc = GGML_SCHED_DEBUG_REALLOC ? atoi(GGML_SCHED_DEBUG_REALLOC) : sched->debug_realloc;
+ 
+     sched->n_backends = n_backends;
++    if (parallel) throw std::runtime_error("The native metadata arena requires one serialized scheduler copy");
+     sched->n_copies = parallel ? GGML_SCHED_MAX_COPIES : 1;
+ 
+     // initialize hash table
+@@ -1988,7 +2009,7 @@
+     sched->graph_size      = 0;
+     sched->prev_graph_size = 0;
+ 
+-    sched->context_buffer_size = ggml_sched_max_splits*GGML_SCHED_MAX_SPLIT_INPUTS*2*sizeof(struct ggml_tensor) + ggml_graph_overhead_custom(graph_size, false);
++    sched->context_buffer_size = qwen_app_scheduler_context_budget;
+     sched->context_buffer = (char *) malloc(sched->context_buffer_size);
+ 
+     const int initial_splits_capacity = 16;
+@@ -2485,6 +2506,7 @@
  
  static void ggml_backend_cpu_buffer_memset_tensor(ggml_backend_buffer_t buffer, struct ggml_tensor * tensor, uint8_t value, size_t offset, size_t size) {
      GGML_ASSERT(tensor);
@@ -13,7 +65,7 @@
      memset((char *)tensor->data + offset, value, size);
  
      GGML_UNUSED(buffer);
-@@ -2492,14 +2494,20 @@
+@@ -2492,14 +2514,20 @@
  
  static void ggml_backend_cpu_buffer_set_tensor(ggml_backend_buffer_t buffer, struct ggml_tensor * tensor, const void * data, size_t offset, size_t size) {
      GGML_ASSERT(tensor);
@@ -36,7 +88,7 @@
  
      GGML_UNUSED(buffer);
  }
-@@ -2507,7 +2515,10 @@
+@@ -2507,7 +2535,10 @@
  static bool ggml_backend_cpu_buffer_cpy_tensor(ggml_backend_buffer_t buffer, const struct ggml_tensor * src, struct ggml_tensor * dst) {
      GGML_ASSERT(src);
      if (ggml_backend_buffer_is_host(src->buffer)) {
@@ -48,7 +100,7 @@
          return true;
      }
      return false;
-@@ -2517,6 +2528,7 @@
+@@ -2517,6 +2548,7 @@
  
  static void ggml_backend_cpu_buffer_clear(ggml_backend_buffer_t buffer, uint8_t value) {
      GGML_ASSERT(buffer);
@@ -56,7 +108,7 @@
      memset(buffer->context, value, buffer->size);
  }
  
-@@ -2629,3 +2641,5 @@
+@@ -2629,3 +2661,5 @@
      GGML_ASSERT((uintptr_t)ptr % TENSOR_ALIGNMENT == 0 && "buffer pointer must be aligned");
      return ggml_backend_buffer_init(ggml_backend_cpu_buffer_from_ptr_type(), ggml_backend_cpu_buffer_from_ptr_i, ptr, size);
  }
