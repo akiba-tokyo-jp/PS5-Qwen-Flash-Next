@@ -584,6 +584,13 @@ int main(int argc, char ** argv) {
         require_unchanged_model();
 
         if (startup.model_validation || startup.first_generation_validation) {
+            qwen_native_stage("source_virtual_CPU_memory_admission_before_probe GPU_not_started=1 model_loaded=0");
+            // A source-address admission can enter an opaque OS call. Check
+            // the existing CPU/OS reserve first, including unsupported counters.
+            // Keep that rejection; vm0 free/inactive are not a qualified
+            // substitute for process-available or immediately reclaimable RAM.
+            require_model_CPU_budget();
+            qwen_native_stage("source_virtual_CPU_memory_admission_passed_before_probe GPU_not_started=1 model_loaded=0");
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
                 [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
             write_fresh_report(startup.admission_report + (startup.first_generation_validation ? ".mapping" : ""), {{"schema", "ps5-qwen-model-virtual-source-admission-v1"},

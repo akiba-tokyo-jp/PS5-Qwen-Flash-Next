@@ -1,5 +1,12 @@
 # Strata and Maya application integration
 
+Current source-path status: the original file-backed model mmap attempt froze
+the console before this cache executed. The [replacement source reader](reserved-source-20261024.md)
+uses inaccessible virtual keys and an 8 MiB bounded direct-read window; model
+page-advice hints are disabled on that path. It is host-qualified only.
+See [the investigation](freeze-forensics-20261024.md). The historical mapped-file
+mechanism below is not a qualified native memory tier.
+
 This application code is connected to the pinned engine's real expert-cache
 planner and copy callback. Full-model PS5 execution remains unverified. The
 selected shared-driver source is integrated. Bounded native display/status

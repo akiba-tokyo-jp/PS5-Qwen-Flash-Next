@@ -1,8 +1,10 @@
 # Reserved virtual sources and bounded original-byte CPU reads
 
-The file-backed model mapping attempt remains unqualified. The console is held
-at the uncertain ordinary-close boundary described in
-[the physical record](public-mapping-hold-20261024.md). The following results are
+The file-backed model mapping attempt froze the console, as confirmed by the
+owner. Following the owner's power cycle, the exact original SELF was restored
+with complete readback and recovery-only CPU guards. Numerical readmission and
+new runtime admission are pending; the old close remains unknown. See
+[the investigation](freeze-forensics-20261024.md). The following results are
 host implementation and synthetic CPU checks, not completed PS5 inference.
 
 ## Runtime change
@@ -73,11 +75,12 @@ Committed execution/deployment/release and CI controls remain disabled.
 
 ## Remaining physical work
 
-Preserve the uncertain close and current native owner; do not retry the close or
-file-backed mapping. Only a new admitted read-only/CPU reassessment can resolve
-that boundary. Recover exact original restoration and numerical admission before
-qualifying another native implementation after the unstable mapping attempt.
-Then the distinct candidate must pass its tiny virtual-reservation probe, all
+Preserve the uncertain close and old-boot evidence; do not retry the close or
+file-backed mapping. Exact original file restoration has passed in the new boot;
+numerical readmission has not. Full runtime admission remains required before
+another native implementation can execute. Qualify the tiny virtual-reservation
+probe independently of full-model verification or loading. Then the distinct
+candidate must pass all
 original-file and fresh memory gates, full load and generation, two external
 requests, actual frame review, positive retirement, ordinary close and final
 exact original restoration/readmission/shutdown. No part of this host record

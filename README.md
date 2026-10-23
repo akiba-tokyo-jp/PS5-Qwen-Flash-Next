@@ -7,10 +7,13 @@ expert pruning, or PC/cloud model execution is part of this goal.
 
 The [active execution plan](docs/execution-plan-20261022.md) targets complete
 PS5 text generation and a passive monitor. Model conversion, transfer and the
-complete native SHA256 pass are finished. Native model admission has not reached
-generation. The console is currently held after an unreturned file-backed mmap
-and an unconfirmed ordinary close; the original backup is preserved, with final
-restoration still pending. The [replacement source reader](docs/reserved-source-20261024.md)
+complete native SHA256 pass in the preceding boot are finished. Native model
+admission has not reached generation. The owner confirmed a console freeze and
+power-cycled it. The exact original SELF is now restored with full readback and
+fresh recovery-only CPU guards; numerical readmission is pending. See the
+[freeze investigation](docs/freeze-forensics-20261024.md). Prior boot-bound
+admissions are invalid, and further native inference remains withheld.
+The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
 It has not been executed on the PS5. See the [physical hold](docs/public-mapping-hold-20261024.md).
 

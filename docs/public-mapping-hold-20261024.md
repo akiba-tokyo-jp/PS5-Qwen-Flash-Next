@@ -1,5 +1,11 @@
 # Public file mapping and uncertain ordinary close
 
+Subsequent status: the owner confirmed a console freeze and performed a power
+cycle. The exact original SELF was restored and fully read back, with fresh
+recovery-only CPU guards and no native owner. Numerical readmission is pending;
+the old close is still unknown. See [the investigation and recovery](freeze-forensics-20261024.md).
+The record below describes the preceding boot and remains historical evidence.
+
 Case 023 admitted the original sealed model identities with the explicit mounted
 device binding. Native directory and receipt differed from the management
 snapshot only in their device IDs. All 76 file identities passed in 346 ms.

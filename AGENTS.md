@@ -619,3 +619,60 @@ copy defect was caught before deployment and is superseded. These results do
 not lift the console hold. Two later read-only reassessments returned management
 responses but still found the same original owner at the unreturned public mmap.
 No additional close, native execution or original restoration was performed.
+
+## Owner-confirmed freeze and postboot restoration (2026-10-24)
+
+The owner then confirmed that the console had frozen and unplugged/restarted it.
+Fresh CPU discovery measured a different boot and no native owner. The optional
+native compatibility runtime is not loaded. The historical uncertain close
+remains unknown; power cycling does not turn it into a successful normal close.
+
+Recovery-only CPU guards in `native/qwen_flash_next/recovery_guard.c` passed before
+and after exact original SELF restoration. They check boot, firmware, seven
+current service/system identities and no native/foreground title twice. Their
+scope is inactive data-title file repair, without requiring/loading compatibility,
+title execution, GPU work, payload reads or mappings. This is distinct from the
+unchanged complete runtime/model admission; it does not enable inference.
+
+The exact original SELF is now back at the title target with full pre/post raw
+readback SHA256 verification. The failed case-023 SELF is preserved under a
+distinct name. Current native owner count is zero. Original numerical readmission
+and normal shutdown in this boot remain pending. Preserve the private restoration
+083 and after-restore CPU 082 records and the console reservation.
+
+Saved native and additional-loader wait descriptions were `pfault`; the latter's
+exact helper identity is not established. The first mapping requested
+3,508,767,456 bytes before full model/OS memory admission, without a completed
+tiny native mapping prerequisite. Free-page starvation is the leading mechanism,
+not a proved firmware-level root cause. The frozen instruction pointer, stack,
+fault address and memory counters are missing. Postboot error records predate
+the affected native start, and the current kernel ring cannot replace the lost
+old-boot log. See `docs/freeze-forensics-20261024.md`.
+
+Do not repeat the failed artifact, uncertain close or file-backed model mmap.
+Do not reuse old-boot SHA/session/service/owner bindings after the power cycle.
+The reserved-source SELF remains unexecuted. Before any future full model case,
+separately qualify its tiny model-independent native memory primitive, including
+pre-call memory observations and explicit return/completed-release records.
+Do not describe an outer deadline as cancellation of an opaque OS operation, or
+management HTTP responses as proof that the UI and recovery path remain live.
+Complete runtime admission, numerical/readback/retirement and final restoration
+requirements remain in force. The full plan is not complete.
+
+Bounded postboot scalar reads also confirmed that the application's
+`vm.stats.vm.v_free_count` / `vm.stats.vm.v_page_size` names are unavailable.
+The PS5 vm0 free/inactive counters and `hw.pagesize` are readable, but must not be
+substituted as process-available or immediately reclaimable RAM without separate
+native-context qualification. Preserve the strict rejection of unknown memory.
+The existing CPU/OS budget gate now runs before the tiny virtual-source probe
+and range admission. The earlier reserved-source SELF predates this safeguard
+and remains withheld. This gate placement fixes the demonstrated admission
+ordering defect; it does not establish the old kernel's exact root cause or
+qualify the replacement memory primitive.
+
+The added guard's host-only SELF is 58,628,631 bytes at SHA256
+`82b73be97f0e7123b59e44e01ce6e79d04a59e15d92e88e720c34ffed2d8fada`.
+Its six-segment roundtrip and 291 public-module imports passed, and both
+committed-policy checks passed. This new artifact is not deployed or physically
+qualified. It must continue rejecting unsupported OS memory telemetry before
+source reservation. Do not treat its build as a resolution of the old freeze.
