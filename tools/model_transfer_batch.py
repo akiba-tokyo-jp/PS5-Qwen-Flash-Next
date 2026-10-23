@@ -14,7 +14,7 @@ import re
 import stat
 import time
 from model_transport import (REMOTE_ROOT, atomic_progress, exclusive_json,
-                             source_identity, upload_file_once, validate_file, writer_lease)
+                             positive_FTP_completion, source_identity, upload_file_once, validate_file, writer_lease)
 from storage_capacity import require_storage
 
 
@@ -25,6 +25,29 @@ def small_json(path):
     with path.open("rb") as stream: raw = stream.read((1 << 20) + 1)
     if not 0 < len(raw) <= 1 << 20: raise ValueError("Recorded transfer metadata exceeded its bound")
     return json.loads(raw)
+
+
+def positive_rename_record(value, original, destination, out):
+    if value.get("FTP_250") is True:
+        return True
+    if value.get("FTP_2xx_rename") is not True or value.get("remote_partial_absent") is not True:
+        return False
+    if positive_FTP_completion(value.get("FTP_rename_reply")):
+        return True
+    row = value.get("reviewed_publication")
+    if not isinstance(row, dict): return False
+    path = Path(row["path"])
+    if path.is_symlink() or path.resolve().parent != Path(out).resolve(): return False
+    if path.stat().st_size != row["bytes"] or path.stat().st_size > 1 << 20: return False
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != row["sha256"]: return False
+    proof = json.loads(raw)
+    required = dict(schema="ps5-qwen-reviewed-model-file-publication-v1", original=original,
+        destination=destination, source_stream_SHA_verified=True, source_identity_stable=True,
+        FTP_226=True, FTP_2xx_rename=True, exact_rename_reply_not_recorded=True,
+        destination_size_verified=True, partial_absent=True, remote_regular_world_readable=True,
+        uncertain_rename_repeated=False, title_launches=0, GPU_calls=0)
+    return all(type(proof.get(k)) is type(v) and proof[k] == v for k, v in required.items())
 
 
 def validate_plan(plan, receipt_bytes):
@@ -89,7 +112,9 @@ def publish_receipt_once(connection, receipt_bytes, out, nonce, guard):
                 raise ValueError("The original receipt must be a native-readable regular file")
             guard(); connection.absent(target)
             response = ftp.rename(partial, target)
-            if not response.startswith("250 "): raise ValueError("Positive receipt rename completion is required")
+            exclusive_json(out / "receipt-rename-response.private.json", dict(response=response))
+            if not positive_FTP_completion(response): raise ValueError("Positive receipt rename completion is required")
+            connection.absent(partial)
             if connection.model_get(target, 1 << 20) != receipt_bytes:
                 raise ValueError("Published original receipt full readback differs")
             guard()
@@ -175,7 +200,8 @@ def run_batch(plan, receipt_bytes, connection, out, lease, *, guard, resume=Fals
                     if (not resume or value["original"] != row["original"] or
                             value["destination"] != REMOTE_ROOT + "/" + name or
                             any(value.get(field) is not True for field in ("source_stream_SHA_verified",
-                                "source_identity_stable", "FTP_226", "FTP_250", "remote_size_verified", "world_readable"))):
+                                "source_identity_stable", "FTP_226", "remote_size_verified", "world_readable")) or
+                            not positive_rename_record(value, row["original"], REMOTE_ROOT + "/" + name, out)):
                         raise ValueError("A positively recorded original file is required for resume")
                     with connection.ftp() as ftp:
                         ftp.voidcmd("TYPE I")

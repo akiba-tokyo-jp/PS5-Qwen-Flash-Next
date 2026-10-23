@@ -16,6 +16,7 @@ class FTP:
         self.files = {}; self.stores = 0; self.renames = 0
         self.mode = "-rw-r--r--"; self.response = "226 Transfer complete"
         self.after_store = lambda: None; self.after_rename = lambda: None
+        self.rename_response = "250 Rename complete"
 
     def storbinary(self, command, reader, blocksize):
         self.stores += 1; path = command.removeprefix("STOR "); data = bytearray()
@@ -43,7 +44,7 @@ class FTP:
         if destination in self.files: raise AssertionError("Existing file overwrite")
         self.files[destination] = self.files.pop(source)
         self.after_rename()
-        return "250 Rename complete"
+        return self.rename_response
 
 
 class ModelTransport(unittest.TestCase):
@@ -85,6 +86,28 @@ class ModelTransport(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "source bytes differ"): self.upload()
         self.assertEqual(self.ftp.renames, 0)
         self.assertEqual(self.failed_record()["remote_state"], "retained_for_review")
+
+    def test_other_positive_rename_code_needs_published_size_and_partial_absence(self):
+        self.ftp.rename_response = "200 Rename complete"
+        result = self.upload()
+        self.assertTrue(result["FTP_2xx_rename"])
+        self.assertFalse(result["FTP_250"])
+        self.assertTrue(result["remote_partial_absent"])
+        self.assertEqual(result["FTP_rename_reply"], "200 Rename complete")
+
+    def test_positive_reply_with_retained_partial_is_rejected(self):
+        partial = transfer.REMOTE_ROOT + "/model.gguf.partial-" + "a" * 32
+        self.ftp.after_rename = lambda: self.ftp.files.__setitem__(partial, bytearray(self.data))
+        with self.assertRaisesRegex(ValueError, "Already exists"): self.upload()
+        self.assertEqual(self.ftp.renames, 1)
+
+    def test_negative_rename_reply_is_recorded_and_never_retried(self):
+        self.ftp.rename_response = "450 Rename failed"
+        with self.assertRaisesRegex(ValueError, "Positive FTP rename"): self.upload()
+        response = json.loads((self.root / "records/model.gguf.rename-response.private.json").read_text())
+        self.assertEqual(response["response"], "450 Rename failed")
+        with self.assertRaises(ValueError): self.upload()
+        self.assertEqual(self.ftp.renames, 1)
 
     def test_ambiguous_transfer_is_never_repeated(self):
         def ambiguous(): raise TimeoutError("Reply lost after complete data")

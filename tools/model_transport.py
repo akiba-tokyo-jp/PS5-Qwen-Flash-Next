@@ -20,6 +20,11 @@ REMOTE_ROOT = "/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/model"
 CHUNK_BYTES = 1 << 20
 
 
+def positive_FTP_completion(response):
+    return (isinstance(response, str) and 4 <= len(response) <= 8192 and
+            response[:3].isdigit() and 200 <= int(response[:3]) < 300 and response[3] in " -")
+
+
 def exclusive_json(path, value):
     with Path(path).open("x", encoding="utf-8", newline="\n") as stream:
         json.dump(value, stream, indent=2, allow_nan=False)
@@ -174,16 +179,24 @@ def upload_file_once(ftp, source_directory, row, record_directory, nonce, *,
         mode = matches[0].split()[0]
         if len(mode) != 10 or mode[0] != "-" or mode[7] != "r":
             raise ValueError("The native title must be able to read the remote regular file")
+        exclusive_json(stem.with_name(stem.name + ".upload.complete.private.json"), dict(
+            original=row, partial=partial, FTP_226=True, source_stream_SHA_verified=True,
+            source_identity_stable=True, remote_size_verified=True, world_readable=True))
         guard(); absent(destination)
         renamed = ftp.rename(partial, destination)
-        if not isinstance(renamed, str) or not renamed.startswith("250 "):
+        exclusive_json(stem.with_name(stem.name + ".rename-response.private.json"), dict(
+            response=renamed if isinstance(renamed, str) else None, response_type=type(renamed).__name__))
+        if not positive_FTP_completion(renamed):
             raise ValueError("Positive FTP rename completion is required")
         if ftp.size(destination) != row["bytes"]: raise ValueError("Published remote split size differs")
+        absent(partial)
         if time.monotonic() >= started + timeout_seconds:
             raise TimeoutError("Model file publication deadline exceeded")
         result = dict(schema="ps5-qwen-model-file-transfer-v1", source=str(source), original=row,
             destination=destination, source_stream_SHA_verified=True, source_identity_stable=True,
-            FTP_226=True, FTP_250=True, remote_size_verified=True, world_readable=True,
+            FTP_226=True, FTP_250=renamed.startswith("250 "), FTP_2xx_rename=True,
+            FTP_rename_reply=renamed, remote_partial_absent=True,
+            remote_size_verified=True, world_readable=True,
             native_SHA_verified=False, state="awaiting_native_SHA_admission",
             elapsed_seconds=time.monotonic() - started, automatic_retries=0, GPU_calls=0)
         exclusive_json(complete, result)

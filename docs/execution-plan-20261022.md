@@ -208,9 +208,14 @@ finite continuation 023 / batch 005 subsequently completed CPU `prepare`, then
 rejected the FTP creation's canonical-path comparison. A read-only review proved
 the exact empty root-owned directory. The reviewed continuation did not repeat
 `prepare` or `MKD`; it completed the first marker upload/finalization and positively
-restored parent ownership. Data continuation 006 is transferring the original
-model using the unchanged existing plan. Full-plan continuation 024 may wait for
-its positive completion/exit, then use the still-unused physical case 019. No
+restored parent ownership. Data continuation 006 published the first 3.51 GB
+split, then rejected a nonliteral-250 normal FTP rename return. A read-only
+review verified the exact destination size/readability and positive partial
+absence; the first file is not resent. Data continuation 007 can use the original
+plan and whole-batch deadline for the remaining 75 files; see
+`model-rename-response-20261023.md`. The transfer-dependent startup of continuation
+024 ended before creating a case when its data process was absent. Continuation
+025 may wait for positive data completion/exit, then use the still-unused physical case 019. No
 additional audit/hash waiting controller is needed. Preserve all terminal records.
 These host/data outcomes do not establish physical model capacity,
 generated text or performance.

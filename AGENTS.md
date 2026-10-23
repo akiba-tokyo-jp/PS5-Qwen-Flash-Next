@@ -454,3 +454,16 @@ original plan. Full-plan continuation 024 may wait for the identified data
 process's positive completion and exit, then perform the existing physical case
 019 and every final restoration/readmission step. Ordinary execution/deployment/
 release and CI remain disabled; native destination SHA is still mandatory.
+
+Data continuation 006 published the first 3,508,767,456-byte split after its source
+stream SHA and FTP 226 passed, then rejected the rename's normal nonliteral-250
+return. Read-only review proved the exact published size/readability and positive
+partial absence. No upload or rename was repeated; the unknown exact response is
+retained honestly. File/receipt publication now records the raw reply and requires
+2xx plus independent publication checks; 29 focused tests passed. See
+`docs/model-rename-response-20261023.md`. Continuation 024 ended before case
+creation when the failed data process was absent. Data continuation 007 may bind
+the reviewed first-file completion and preserve the original whole-batch deadline
+while transferring the remaining files. Keep its frozen sources unchanged.
+Full-plan continuation 025 may wait for that exact process's positive completion
+and exit before the unchanged case 019 and all original final gates.

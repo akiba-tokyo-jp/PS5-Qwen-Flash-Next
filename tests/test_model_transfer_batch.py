@@ -20,6 +20,7 @@ class FakeConnection:
     def __init__(self):
         self.files = {}; self.stores = 0; self.renames = 0; self.fail_store = None
         self.free = 10**12; self.corrupt_receipt_readback = False
+        self.rename_response = "250 Rename complete"
 
     @contextmanager
     def ftp(self): yield self
@@ -39,7 +40,7 @@ class FakeConnection:
     def rename(self, source, destination):
         self.absent(destination); self.renames += 1
         self.files[destination] = self.files.pop(source)
-        return "250 Rename complete"
+        return self.rename_response
 
     def voidcmd(self, command): assert command == "TYPE I"
     def size(self, path): return len(self.files[path])
@@ -100,6 +101,31 @@ class BatchSequence(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "storage headroom"): self.run_sequence()
         self.assertEqual(self.connection.stores, 0)
         self.assertEqual(len(list((self.root / "run").glob("batch-failure-*.private.json"))), 1)
+
+    def test_positive_200_publishes_files_and_receipt_without_claiming_250(self):
+        self.connection.rename_response = "200 Rename complete"
+        result = self.run_sequence()
+        self.assertEqual(result["positively_completed_files"], 2)
+        first = json.loads((self.root / "run/files/0.gguf.complete.private.json").read_text())
+        self.assertFalse(first["FTP_250"])
+        self.assertTrue(first["remote_partial_absent"])
+        self.assertEqual(self.connection.renames, 3)
+
+    def test_reviewed_publication_binds_original_and_retained_proof(self):
+        out = self.root / "reviewed"; out.mkdir()
+        original = self.plan["files"][0]["original"]; destination = REMOTE_ROOT + "/" + original["path"]
+        proof = dict(schema="ps5-qwen-reviewed-model-file-publication-v1", original=original,
+            destination=destination, source_stream_SHA_verified=True, source_identity_stable=True,
+            FTP_226=True, FTP_2xx_rename=True, exact_rename_reply_not_recorded=True,
+            destination_size_verified=True, partial_absent=True, remote_regular_world_readable=True,
+            uncertain_rename_repeated=False, title_launches=0, GPU_calls=0)
+        path = out / "proof.json"; path.write_text(json.dumps(proof))
+        row = dict(path=str(path), bytes=path.stat().st_size, sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+        value = dict(FTP_250=False, FTP_2xx_rename=True, remote_partial_absent=True, reviewed_publication=row)
+        self.assertTrue(batch.positive_rename_record(value, original, destination, out))
+        self.assertFalse(batch.positive_rename_record(value, dict(original, bytes=1), destination, out))
+        path.write_text(json.dumps(dict(proof, uncertain_rename_repeated=True)))
+        self.assertFalse(batch.positive_rename_record(value, original, destination, out))
 
     def test_oversized_prior_metadata_rejects_before_network_write(self):
         self.connection.free = 1
