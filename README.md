@@ -31,7 +31,11 @@ keeps raw Vulkan estimates separate from the physical allocator that backs BOs.
 The subsequent context returned before a CPU/Flexible admission refusal. The
 [bounded scheduler metadata correction](docs/native-scheduler-memory-20261024.md)
 retains the complete graph while replacing its oversized metadata reservation.
-Context/cache admission and generation remain pending.
+Native context/cache construction and CPU/Flexible admission then passed.
+The first prefill returned a buffer-scope refusal before decode completion.
+[Protected source-row scheduling](docs/native-source-row-scheduling-20261024.md)
+keeps original embedding-row reads on the bounded CPU reader and matrices on GPU.
+Complete generation and the final full-plan gates remain pending.
 The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
 Complete reserved-source model loading has passed on the PS5. See the earlier

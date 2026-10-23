@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdint>
 #include <stdexcept>
+#include <string>
 #include <thread>
 
 namespace qwen_app {
@@ -23,8 +24,12 @@ public:
     }
     std::uint64_t reserve(std::uint64_t bytes) {
         healthy();
-        if (pending_ || !bytes || bytes > model_postload_single_buffer)
-            fail("The post-load device allocation exceeds its single-buffer scope");
+        if (pending_)
+            fail("Post-load device reservation is incomplete: requested="+std::to_string(bytes)+
+                " pending="+std::to_string(pending_)+" live="+std::to_string(stats_.live));
+        if (!bytes || bytes > model_postload_single_buffer)
+            fail("Post-load device buffer size is outside its scope: requested="+std::to_string(bytes)+
+                " limit="+std::to_string(model_postload_single_buffer)+" live="+std::to_string(stats_.live));
         const auto rounded = (bytes + (2u << 20) - 1) & ~std::uint64_t((2u << 20) - 1);
         if (rounded > model_postload_device_budget - stats_.live ||
             std::none_of(entries_.begin(), entries_.end(), [](const auto & entry) { return !entry.key; }))
@@ -78,7 +83,7 @@ private:
     std::thread::id owner_;
     std::uint64_t pending_ = 0;
     bool enabled_ = false, failed_ = false;
-    [[noreturn]] void fail(const char * reason) { failed_ = true; throw std::runtime_error(reason); }
+    [[noreturn]] void fail(const std::string & reason) { failed_ = true; throw std::runtime_error(reason); }
     void healthy() {
         if (!enabled_ || failed_ || owner_ != std::this_thread::get_id())
             fail("The post-load device ledger has no healthy admitted producer");

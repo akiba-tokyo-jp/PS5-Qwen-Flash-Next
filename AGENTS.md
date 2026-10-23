@@ -777,3 +777,18 @@ one serialized copy; reject overflow/empty/oversized graphs without truncation.
 The actual GGML metadata allocator and three complete 7,184-node CPU fixture
 graphs passed; see `docs/native-scheduler-memory-20261024.md`. The diagnostic-only
 case was superseded before launch. Real generation and all final gates remain.
+
+The fixed-arena artifact subsequently admitted the real context/cache and CPU
+memory, then returned its single-buffer-scope refusal during the first decode,
+before any worker initialization or completed token. Exact ordinary shutdown,
+original restoration, numerical readmission, normal close, final CPU/full readback
+passed. See `docs/native-source-row-scheduling-20261024.md`. Keep detailed numeric
+buffer failure messages and the unchanged 512 MiB/aggregate/workspace limits.
+
+Protected model-source GET_ROWS must select the admitted bounded CPU row kernel
+and compatible output buffer before ordinary GPU offload selection. The source
+key is not a resident host table. Never copy the full embedding tensor to GPU or
+dereference the protected source. Preserve ordinary resident-host offload and
+GPU matrix placement. The actual scheduler's simulated-device control and
+protected-source selection passed, without model payload reads/GPU execution;
+real full-model generation and all final complete-plan gates remain required.
