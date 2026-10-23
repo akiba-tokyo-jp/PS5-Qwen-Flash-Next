@@ -467,3 +467,20 @@ the reviewed first-file completion and preserve the original whole-batch deadlin
 while transferring the remaining files. Keep its frozen sources unchanged.
 Full-plan continuation 025 may wait for that exact process's positive completion
 and exit before the unchanged case 019 and all original final gates.
+
+At the next checkpoint, data 007 ended with Windows `0xc000013a` during file 35;
+34 positive files (216,633,567,072 bytes) remain reused. The incomplete
+3,341,876,428-byte partial was preserved outside the model directory with a
+recorded positive rename, exact size/readability and independent directory
+metadata, without repeating the successful move. See
+`docs/model-transfer-interruption-20261023.md`. Failed child launch and
+preservation checks remain retained; none launched a title or used the GPU.
+
+The active data continuation is now 011, with 117 frozen source/proof records,
+console-free child processes, the original batch deadline and one explicitly
+reviewed new upload of incomplete file 35. No successful file is resent. Keep
+all frozen inputs unchanged. Full-plan continuation 029 binds that exact process
+and 207 source/proof records, then waits for positive data completion and exit
+before the still-unused case 019 and every original final gate. No automatic
+retry, forced close, reset or uncertain GPU recovery is permitted. Inspect the
+actual saved display frames before declaring the entire plan complete.
