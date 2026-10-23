@@ -5,11 +5,14 @@ The goal is to execute the complete text model with its original BF16 weights,
 streaming weights from SSD into bounded shared memory. No quantized substitute,
 expert pruning, or PC/cloud model execution is part of this goal.
 
-The [active execution plan](docs/execution-plan-20261022.md) starts from complete
-PS5 text generation: finish model data while implementing bounded generation,
-run one ordered full-model session, then integrate the passive monitor and measure
-performance. Earlier milestone lists remain historical evidence. Full-model
-generation has not yet been attempted.
+The [active execution plan](docs/execution-plan-20261022.md) targets complete
+PS5 text generation and a passive monitor. Model conversion, transfer and the
+complete native SHA256 pass are finished. Native model admission has not reached
+generation. The console is currently held after an unreturned file-backed mmap
+and an unconfirmed ordinary close; the original backup is preserved, with final
+restoration still pending. The [replacement source reader](docs/reserved-source-20261024.md)
+passes native host-link/SELF/import checks and exact CPU reference fixtures.
+It has not been executed on the PS5. See the [physical hold](docs/public-mapping-hold-20261024.md).
 
 ## Native driver integration
 
@@ -57,14 +60,15 @@ of browser polling. Its display-only validation mode never initializes Vulkan.
 See [application.md](docs/application.md) for exact check coverage and remaining
 work. The demo is not evidence of Qwen inference or console performance.
 
-## Current state
+## Earlier implementation checkpoints
 
 Construction is in progress. Full-model PS5 inference has **not** been achieved.
 The pinned original checkpoint has 131 shards and 1,658 tensors. Every shard
 header was inspected through bounded HTTP ranges: 359,999,962,848 bytes of BF16
 weights and 280 bytes of exact I64 constants. All 131 original files have now
-also passed their complete SHA256 checks. Bounded BF16 conversion is running;
-independent output auditing and final GGUF hashing are still required.
+also passed their complete SHA256 checks. Conversion, independent output auditing,
+all 76 final hashes, transfer and native model hashing subsequently completed;
+the dated records below preserve earlier intermediate results.
 
 The engine was rebuilt with the latest selected driver source on 2026-10-22.
 The real application, original-BF16 adapter, HTTP service, Strata/Maya cache

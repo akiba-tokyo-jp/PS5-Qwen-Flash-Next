@@ -247,6 +247,9 @@ int main(int argc, char ** argv) {
         if (!llama_app_expert_policy_enabled()) throw std::runtime_error("The adaptive expert cache patch is required");
         if (!ggml_app_bounded_staging_enabled()) throw std::runtime_error("Bounded native transfer staging is required");
         if (!ggml_app_dispatch_contract_enabled()) throw std::runtime_error("The static Vulkan dispatch contract is required");
+        if (startup.first_generation_validation &&
+            (!ggml_app_bounded_cpu_rows_hooks() || !ggml_app_bounded_cpu_buffer_reads_hooks()))
+            throw std::runtime_error("Bounded original CPU row and buffer readers are required before model admission");
 
         screen.state = startup.display_validation ? "display validation" : startup.runtime_validation ? "CPU runtime admission" : startup.monitor_validation || startup.operator_validation || startup.moe_validation ? "BF16 GPU admission" : "verifying model";
         screen.cpu_threads = std::thread::hardware_concurrency();
@@ -583,13 +586,14 @@ int main(int argc, char ** argv) {
         if (startup.model_validation || startup.first_generation_validation) {
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
                 [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
-            write_fresh_report(startup.admission_report + (startup.first_generation_validation ? ".mapping" : ""), {{"schema", "ps5-qwen-model-mapping-admission-v1"},
+            write_fresh_report(startup.admission_report + (startup.first_generation_validation ? ".mapping" : ""), {{"schema", "ps5-qwen-model-virtual-source-admission-v1"},
                 {"pid", getpid()}, {"all_SHA256_matched", true}, {"original_footprint_matched", true},
                 {"mapped_files", mapping.files}, {"mapped_file_bytes", mapping.bytes},
                 {"completed_unmaps", mapping.unmapped}, {"model_loaded", false},
                 {"Vulkan_initialized", false}, {"GPU_compute_calls", 0}, {"mapped_payload_reads", 0},
+                {"file_backed_model_mmap_calls", 0}, {"source_virtual_protection", "none"},
                 {"resident_set_qualified", false}, {"state", startup.first_generation_validation ?
-                    "mapping_completed_before_backend" : "completed_waiting_for_ordinary_close"}});
+                    "virtual_sources_completed_before_backend" : "completed_waiting_for_ordinary_close"}});
             qwen_native_stage("model_validation_completed GPU_not_started=1 model_loaded=0");
             // Successful validation is explicit idle ownership. Returning from
             // main would intentionally enter the CRT's fault-retention hook.
@@ -610,6 +614,7 @@ int main(int argc, char ** argv) {
                 {"direct_read_preflight_passed", true}, {"maximum_window_bytes", qwen_app::model_read_window},
                 {"maximum_open_handles", 8}, {"mapped_source_upload_dereferences_enabled", false},
                 {"CPU_matrix_fallback_enabled", false}, {"maximum_CPU_workspace_bytes", 16u << 20},
+                {"bounded_CPU_rows_enabled", true}, {"CPU_source_pointer_dereferences_enabled", false},
                 {"model_loaded", false}, {"Vulkan_initialized", false}});
             qwen_native_stage("bounded_model_source_preflight_passed_before_backend");
         }

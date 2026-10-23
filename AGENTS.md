@@ -581,3 +581,41 @@ native identity and namespace reports; do not assume that translation passed.
 The complete prior native SHA, unchanged sealed data, pinned driver/cache,
 writer lease and all remaining physical generation/restoration requirements
 remain mandatory. No other identity mismatch is relaxed or retried automatically.
+
+## Current console hold after public file mmap (2026-10-24)
+
+Case 023 measured exactly the device-ID namespace difference and passed all 76
+unchanged sealed identities in 346 ms, reusing the prior 5,370,082-ms complete
+native SHA pass. The first real public file mmap did not return within its
+60-second stage bound. No mapping completion or backend initialization was
+observed. A management process-list GET then timed out before any close request.
+The unchanged qualified normal-close helper was subsequently invoked once with
+its internal double boot/service/exact-owner guards; its transport timed out
+without a returned result. Execution/acceptance and native absence are unknown.
+Do not repeat that helper, launch a title/ELF/GPU work, restore an active/unknown
+title target, reset/reboot, force-kill, or manually unmap/release resources.
+Preserve case 023, close intent 059, and the local console-hold record 060.
+The exact original SELF remains in the case-019 backup, with final restoration
+and numerical readmission outstanding. Do not claim a closed/restored console.
+
+Continue host implementation and focused verification of reserved virtual source
+ranges plus bounded direct CPU/GPU reads. File-backed mmap is not qualified and
+must not be repeated. Any eventual physical qualification first requires a fresh
+bounded read-only state reassessment and unchanged complete CPU admission; a
+host build or elapsed time never lifts this hold. Preserve original precision,
+all experts/PLE, native numerical/memory/retirement gates and every final original
+restoration requirement. The overall plan is not complete.
+
+The reserved-source host implementation now compiles seven isolated overlays,
+reserves no-access virtual keys and routes original CPU gathers/buffer copies
+through the bounded reader. It rejects unsupported CPU source operations. The
+actual original-versus-bounded CPU kernels passed 245,952 BF16/F32 scalar values,
+six three-thread graphs and twelve buffer checks at widths 8/2560/7680. The
+v3 policy, source/range/deadline/result checks and distinct SELF
+`5c2ac4c3b9045eda2ae74e67abb262b7e757a91311e3bae024388b0574d62d13`
+passed host link, six-segment roundtrip and 291 real imports. See
+`docs/reserved-source-20261024.md`. The earlier host-only candidate's CPU fast
+copy defect was caught before deployment and is superseded. These results do
+not lift the console hold. Two later read-only reassessments returned management
+responses but still found the same original owner at the unreturned public mmap.
+No additional close, native execution or original restoration was performed.

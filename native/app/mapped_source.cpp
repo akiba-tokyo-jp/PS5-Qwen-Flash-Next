@@ -95,6 +95,18 @@ extern "C" void qwen_app_model_mapping_after_unmap(void * at, std::size_t bytes)
 extern "C" bool qwen_app_model_source_range(const void * at, std::size_t bytes) {
     return qwen_app_model_reads_enabled() && required().contains(reinterpret_cast<std::uintptr_t>(at), bytes);
 }
+extern "C" bool qwen_app_model_source_range_metadata(const void * at, std::size_t bytes) {
+    return qwen_app_model_reads_enabled() && required().contains_metadata(reinterpret_cast<std::uintptr_t>(at), bytes);
+}
+extern "C" void qwen_app_model_source_read_CPU(void * target, const void * at, std::size_t bytes) {
+    if (!target || !bytes || qwen_app_model_source_range_metadata(target, bytes))
+        throw std::runtime_error("A CPU source copy requires owned writable destination memory");
+    for (std::size_t done=0;done<bytes;) {
+        std::size_t copied=0;const auto * source=required().prepare(reinterpret_cast<std::uintptr_t>(at)+done,bytes-done,copied);
+        if (!copied || copied>bytes-done) throw std::runtime_error("The bounded CPU source copy did not advance");
+        std::memcpy(static_cast<unsigned char *>(target)+done,source,copied);required().completed();done+=copied;
+    }
+}
 extern "C" const void * qwen_app_model_source_chunk(const void * at, std::size_t wanted, std::size_t * copied) {
     if (!copied) throw std::invalid_argument("A completed source byte count is required");
     return required().prepare(reinterpret_cast<std::uintptr_t>(at), wanted, *copied);

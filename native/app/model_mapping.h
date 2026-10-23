@@ -61,9 +61,9 @@ inline ModelMappingReport admit_model_mapping(const std::vector<ModelMappingFile
             (void) ops.close_file(fd);
             throw std::runtime_error("Original model mapping file identity or size is not admitted");
         }
-        observe("model_mapping_before_public_mmap");
+        observe("model_mapping_before_virtual_source_reserve");
         const auto at = ops.map_readonly(fd, bytes);
-        observe("model_mapping_public_mmap_returned");
+        observe("model_mapping_virtual_source_reserved");
         const auto span = (bytes + page - 1) & ~(page - 1);
         if (at == std::numeric_limits<std::uintptr_t>::max()) {
             (void) ops.close_file(fd);

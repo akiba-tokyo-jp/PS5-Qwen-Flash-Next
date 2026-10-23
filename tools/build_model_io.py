@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Compile five isolated model-I/O overrides without changing active sources.
+"""Compile seven isolated model-I/O overrides without changing active sources.
 
 Reuses the exact existing native engine compile recipes and archives. The final
-application link must prove that the five original archive members were omitted.
+application link must prove that the seven original archive members were omitted.
 This tool performs no console access, model reads, driver build or deployment.
 """
 import argparse
@@ -20,7 +20,15 @@ BASELINES = {
     "src/llama-moe-cache.cpp": "d0b19ef2e921ec16ed04e751d32cbc7682973e915f0df85b6cadc8800e0af6cd",
     "ggml/src/ggml-vulkan/ggml-vulkan-buffers.cpp": "83b8c27432046448597c3cdc034332fb0117354f2b705a0e61b601bf6556ba99",
     "ggml/src/ggml-vulkan/ggml-vulkan.cpp": "f9bb02f59483c252d71ba8c6af7528f17d893f1cf32261d9d5d3c618ca126502",
-    "ggml/src/ggml-cpu/ggml-cpu.cpp": "ccf382d3fbf126b5ddb5850a0a970656fb24e00587da4003419439277c91cd01"}
+    "ggml/src/ggml-cpu/ggml-cpu.cpp": "ccf382d3fbf126b5ddb5850a0a970656fb24e00587da4003419439277c91cd01",
+    "ggml/src/ggml-cpu/ops.cpp": "b565fea101889b8b73011ad26c5cafc242e3d10b0eb65d3aba4b53808d0f2e71",
+    "ggml/src/ggml-backend.cpp": "79ade6b83b3d042e43e035fa81d2c672211a552af9af38e410a047e4ba2723a0"}
+
+def source_archive(source):
+    if source.startswith("src/"): return "libllama.a"
+    if "/ggml-cpu/" in source: return "libggml-cpu.a"
+    if source == "ggml/src/ggml-backend.cpp": return "libggml-base.a"
+    return "libggml-vulkan.a"
 
 
 def sha(path):
@@ -42,15 +50,14 @@ def validate_overrides(path, base_receipt):
     if data["bridge"] != record(ROOT / "native/app/mapped_source_bridge.h"):
         raise ValueError("The source-reader bridge changed")
     patches = [record(p) for p in sorted((ROOT / "patches/native-model-io").glob("*.patch"))]
-    if data["patches"] != patches or len(patches) != 5 or set(data["sources"]) != set(BASELINES):
-        raise ValueError("The exact five model-I/O overrides are required")
+    if data["patches"] != patches or len(patches) != 7 or set(data["sources"]) != set(BASELINES):
+        raise ValueError("The exact seven model-I/O overrides are required")
     artifacts = {Path(row["path"]).name: row for row in json.loads(Path(base_receipt).read_text())["artifacts"]}
-    if len(data["objects"]) != 5 or {row["source"] for row in data["objects"]} != set(BASELINES):
-        raise ValueError("Five complete replacement objects are required")
+    if len(data["objects"]) != 7 or {row["source"] for row in data["objects"]} != set(BASELINES):
+        raise ValueError("Seven complete replacement objects are required")
     for row in data["objects"]:
         source = row["source"]
-        expected_archive = "libllama.a" if source.startswith("src/") else (
-            "libggml-cpu.a" if "/ggml-cpu/" in source else "libggml-vulkan.a")
+        expected_archive = source_archive(source)
         if row["archive"] != artifacts[expected_archive] or row["member"] != Path(source).name + ".o":
             raise ValueError("A source override does not match its original archive member")
         if row["object"] != record(row["object"]["path"]):
@@ -82,8 +89,8 @@ def main():
         original_compile_recipes=record(recipes_path), bridge=record(ROOT / "native/app/mapped_source_bridge.h"),
         patches=[record(p) for p in sorted((ROOT / "patches/native-model-io").glob("*.patch"))],
         sources={}, objects=[], steps=[], console_access=False, model_loaded=False, learned_host_inference=False)
-    if len(receipt["patches"]) != 5:
-        raise ValueError("The five reviewed source patches are required")
+    if len(receipt["patches"]) != 7:
+        raise ValueError("The seven reviewed source patches are required")
     for name, digest in BASELINES.items():
         current = source / name
         if sha(current) != digest:
@@ -129,8 +136,7 @@ def main():
             command += " -I" + subprocess.list2cmdline([str((source / name).parent)])
             receipt["sources"][name]["patched_sha256"] = sha(patched)
             run("compile_" + str(index), command, Path(row["directory"]))
-            archive = artifacts["libllama.a" if name.startswith("src/") else
-                ("libggml-cpu.a" if "/ggml-cpu/" in name else "libggml-vulkan.a")]
+            archive = artifacts[source_archive(name)]
             receipt["objects"].append(dict(source=name, object=record(obj), archive=archive,
                 member=Path(row["output"]).name, command=command))
         if any(sha(source / name) != digest for name, digest in BASELINES.items()):

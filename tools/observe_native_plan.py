@@ -19,6 +19,7 @@ import time
 from urllib.parse import quote
 
 from first_generation_result import read_record, validate, require, integer, number
+from native_source_deadline import NativeSourceDeadline
 
 MODEL_ROOT = "/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/"
 PROMPT = "Count from 1 to 8, separated by commas. Reply with only the sequence."
@@ -57,9 +58,11 @@ def main():
     result_path = out / "native-result.private.json"
     exclusive(out / "intent.private.json", dict(binding_sha256=hashlib.sha256(args.binding.read_bytes()).hexdigest(),
         run_id=expected["run_id"], pid=expected["pid"], maximum_generation_POSTs=2, maximum_finish_POSTs=1,
-        maximum_ready_wait_seconds=13260, maximum_total_seconds=25200, automatic_retries=0,
+        maximum_ready_wait_seconds=13260, maximum_total_seconds=25200,
+        maximum_virtual_source_observation_seconds=65, automatic_retries=0,
         console_launches=0, learned_host_inference=False))
     started = time.monotonic()
+    source_deadline = NativeSourceDeadline()
 
     def get(port, path, limit):
         connection = http.client.HTTPConnection(host, port, timeout=5)
@@ -170,11 +173,12 @@ def main():
         while download(".demo.ready", optional=True) is None:
             failure_check()
             require(time.monotonic() - started <= 13260, "The native ready deadline expired")
+            stages = get(8080, "/fs" + MODEL_ROOT + "entry-" + str(expected["pid"]) + ".stages", 8 << 20)
+            lines = stages.decode("utf-8", errors="replace").splitlines() if stages else []
+            source_deadline.observe(lines, time.monotonic() - started)
             if time.monotonic() >= next_update:
-                stages = get(8080, "/fs" + MODEL_ROOT + "entry-" + str(expected["pid"]) + ".stages", 8 << 20)
                 if stages is not None:
                     (out / "native-stages.latest.private.txt").write_bytes(stages)
-                lines = stages.decode("utf-8", errors="replace").splitlines() if stages else []
                 print(json.dumps(dict(phase="waiting_for_native_integrity_load_and_first_request", pid=expected["pid"],
                     elapsed_seconds=round(time.monotonic() - started),
                     last_native_stage=lines[-1] if lines else None)), flush=True); next_update = time.monotonic() + 60

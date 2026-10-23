@@ -65,7 +65,7 @@ def validate(path, expected):
     start = record(".first.start", "ps5-qwen-first-generation-start-v1", common)
     intent = record(".first.intent", "ps5-qwen-first-generation-intent-v1", ("run_id",))
     integrity = record(".integrity", "ps5-qwen-model-integrity-v1", ())
-    mapping = record(".mapping", "ps5-qwen-model-mapping-admission-v1", ())
+    mapping = record(".mapping", "ps5-qwen-model-virtual-source-admission-v1", ())
     memory = record(".memory", "ps5-qwen-memory-admission-v1", ())
     source = record(".source", "ps5-qwen-bounded-source-admission-v1", ())
     def exact(data, values):
@@ -95,11 +95,13 @@ def validate(path, expected):
     exact(mapping, dict(all_SHA256_matched=True, original_footprint_matched=True, mapped_files=expected["files"],
         mapped_file_bytes=expected["bytes"], completed_unmaps=expected["files"], model_loaded=False,
         Vulkan_initialized=False, GPU_compute_calls=0, mapped_payload_reads=0, resident_set_qualified=False,
-        state="mapping_completed_before_backend"))
+        file_backed_model_mmap_calls=0, source_virtual_protection="none",
+        state="virtual_sources_completed_before_backend"))
     exact(memory, dict(model_loaded=False, resident_set_qualified=False))
     exact(source, dict(direct_read_preflight_passed=True, maximum_window_bytes=8 << 20,
         maximum_open_handles=8, mapped_source_upload_dereferences_enabled=False,
         CPU_matrix_fallback_enabled=False, maximum_CPU_workspace_bytes=16 << 20,
+        bounded_CPU_rows_enabled=True, CPU_source_pointer_dereferences_enabled=False,
         model_loaded=False, Vulkan_initialized=False))
     exact(memory, dict(device_weights_bytes=8755105280, mapped_file_bytes=expected["bytes"],
         planned_resident_headroom_bytes=12110548480, CPU_budget_bytes=512 << 20,

@@ -40,7 +40,7 @@ static const auto stage = [](const char *) {};
 
 static Json valid_policy() {
     return {{"native_first_generation_validation", {
-        {"schema", "ps5-qwen-first-generation-v2"},
+        {"schema", "ps5-qwen-first-generation-v3"},
         {"preceding_moe_SELF_sha256", "0b187cac25c3e322bd4244474a935d191ce85b7bcbb3d2559ead26f05198d057"},
         {"driver_revision", "872cc1264ad8ba5d6b888b092968fa5858a38c58"}, {"profile", "cumulative-idle"},
         {"native_archive_sha256", "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925"},
@@ -49,6 +49,8 @@ static Json valid_policy() {
         {"fresh_idle_session_bound_by_launcher", true}, {"complete_transfer_and_data_lease_bound_by_launcher", true},
         {"complete_v2_model_receipt_required", true}, {"native_integrity_and_mapping_before_backend_required", true},
         {"bounded_mapped_source_reads_required", true}, {"source_window_bytes", 8u << 20},
+        {"reserved_virtual_sources_required", true}, {"file_backed_model_mmap_enabled", false},
+        {"bounded_original_CPU_rows_required", true}, {"maximum_CPU_source_row_bytes", 1u << 20},
         {"maximum_source_handles", 8}, {"CPU_matrix_fallback_enabled", false}, {"maximum_CPU_workspace_bytes", 16u << 20},
         {"persistent_caches_enabled", false}, {"unrestricted_external_requests_enabled", false}, {"maximum_requests", 1},
         {"bounded_demonstration_required", true}, {"demonstration_external_requests", 2},

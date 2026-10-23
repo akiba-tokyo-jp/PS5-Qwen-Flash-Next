@@ -6,7 +6,7 @@
 namespace qwen_app {
 inline nlohmann::json first_generation_scope() {
     return {
-        {"schema", "ps5-qwen-first-generation-v2"},
+        {"schema", "ps5-qwen-first-generation-v3"},
         {"preceding_moe_SELF_sha256", "0b187cac25c3e322bd4244474a935d191ce85b7bcbb3d2559ead26f05198d057"},
         {"driver_revision", "872cc1264ad8ba5d6b888b092968fa5858a38c58"},
         {"profile", "cumulative-idle"},
@@ -19,6 +19,8 @@ inline nlohmann::json first_generation_scope() {
         {"complete_v2_model_receipt_required", true},
         {"native_integrity_and_mapping_before_backend_required", true},
         {"bounded_mapped_source_reads_required", true}, {"source_window_bytes", 8u << 20},
+        {"reserved_virtual_sources_required", true}, {"file_backed_model_mmap_enabled", false},
+        {"bounded_original_CPU_rows_required", true}, {"maximum_CPU_source_row_bytes", 1u << 20},
         {"maximum_source_handles", 8}, {"CPU_matrix_fallback_enabled", false},
         {"maximum_CPU_workspace_bytes", 16u << 20},
         {"persistent_caches_enabled", false}, {"unrestricted_external_requests_enabled", false},

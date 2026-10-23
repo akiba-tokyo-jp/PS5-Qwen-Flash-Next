@@ -71,15 +71,21 @@ public:
 
     bool contains(std::uintptr_t at, std::uint64_t bytes) {
         healthy();
+        try { return contains_metadata(at, bytes); }
+        catch (...) { failed_ = true; throw; }
+    }
+    // Graph workers may inspect immutable ranges. Only the producer changes
+    // their metadata, between completed CPU/GPU graph epochs.
+    bool contains_metadata(std::uintptr_t at, std::uint64_t bytes) const {
         if (!bytes) return false;
-        if (at > std::numeric_limits<std::uintptr_t>::max() - bytes) fail("Source pointer arithmetic overflow");
+        if (at > std::numeric_limits<std::uintptr_t>::max() - bytes) throw std::runtime_error("Source pointer arithmetic overflow");
         for (const auto & range : ranges_) {
             if (at < range.at + range.bytes && range.at < at + bytes) {
                 if (at < range.at || bytes > range.at + range.bytes - at)
-                    fail("A model upload crosses an unowned or retired mapping range");
+                    throw std::runtime_error("A model upload crosses an unowned or retired mapping range");
                 const auto offset = range.offset + at - range.at;
                 if (offset > files_[range.file].bytes || bytes > files_[range.file].bytes - offset)
-                    fail("A model upload exceeds its original file payload");
+                    throw std::runtime_error("A model upload exceeds its original file payload");
                 return true;
             }
         }

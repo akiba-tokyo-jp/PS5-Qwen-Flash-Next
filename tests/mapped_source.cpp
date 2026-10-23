@@ -55,6 +55,10 @@ int main() {
         {
             Ops ops; ops.setup(); MappedSourceReader reader(ops.files, ops, scratch);
             reader.preflight(); reader.register_mapping(base, ops.files[0].bytes, 10);
+            bool metadata_owned = false;
+            std::thread metadata_worker([&] { metadata_owned = reader.contains_metadata(base + 123, 100); });
+            metadata_worker.join();
+            check(metadata_owned && ops.reads == 2, "Graph-worker range lookup read payload or lost immutable ownership");
             check(!reader.contains(base - model_read_alignment, 10), "An unowned pointer was treated as model data");
             std::size_t left = model_read_window + 100000, done = 0;
             while (left) {

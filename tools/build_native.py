@@ -40,7 +40,7 @@ def main():
     parser.add_argument("--runtime-imports", type=Path, required=True,
                         help="Local source-generated SceAgc import stubs; never copied to the repository")
     parser.add_argument("--model-io-manifest", type=Path, required=True,
-                        help="Five exact isolated source-reader overrides; original archives stay immutable")
+                        help="Seven exact isolated source-reader overrides; original archives stay immutable")
     parser.add_argument("--jobs", type=int, default=4)
     parser.add_argument("--link-threads", type=int, default=2,
                         help="Bound host linker workers independently from compilation")
@@ -88,7 +88,7 @@ def main():
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
-                                                   "model_integrity.cpp", "model_mapping.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
+                                                   "model_integrity.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
@@ -250,6 +250,8 @@ def main():
     for name in ("llama_app_mapped_source_hooks", "llama_app_bounded_expert_advice_hooks",
                  "ggml_app_mapped_upload_hooks", "ggml_app_mapped_async_hooks",
                  "ggml_app_bounded_cpu_fallback_hooks", "ggml_app_bounded_device_buffers_hooks", "ggml_app_bounded_workspace_hooks",
+                 "ggml_app_bounded_cpu_rows_hooks", "ggml_app_bounded_cpu_buffer_reads_hooks",
+                 "qwen_app_model_source_reserve_virtual", "qwen_app_model_source_release_virtual",
                  "qwen_app_model_source_chunk"):
         if not re.search(r'\b' + re.escape(name) + r'$', symbols, re.M):
             raise ValueError("A bounded model-source integration hook is absent: " + name)

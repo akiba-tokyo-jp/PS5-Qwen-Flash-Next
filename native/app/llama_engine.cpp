@@ -47,6 +47,9 @@ llama_model_params streaming_model_params(ggml_backend_buffer_type_t cpu_buffer)
     params.tensor_buft_overrides = overrides;
     params.load_mtp = false;
     params.use_extra_bufts = false;
+    // The complete native SHA/metadata gate precedes loading. Generic tensor
+    // scanning would dereference reserved source keys rather than bounded I/O.
+    params.check_tensors = false;
     return params;
 }
 

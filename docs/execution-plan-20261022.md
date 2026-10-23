@@ -5,6 +5,38 @@ and critically reassessed on 2026-10-23. See
 `execution-efficiency-review-20261023.md` for the evidence and scheduling decision.
 Earlier milestone lists are historical evidence, not an additional work queue.
 
+## Current critical path: 2026-10-24
+
+Data conversion, full content audit, all 76 hashes, transfer and the complete
+native model SHA pass are finished. The native sealed-identity reuse gate passed
+in 346 ms after the explicit app0 device-ID binding. No preparation or full hash
+restart is scheduled for unchanged admitted data.
+
+Public file mmap did not return within its 60-second bound. The ordinary-close
+transport then timed out without a result. Read-only reassessment still found
+the same native owner. Preserve the [console hold](public-mapping-hold-20261024.md):
+do not retry close, restore an unknown active title, or launch more native work.
+
+The [reserved-source implementation](reserved-source-20261024.md) replaces that
+file-mapping dependency with inaccessible virtual keys and bounded original-byte
+CPU/GPU reads. Its native host link/package/imports, CPU policy and real CPU
+reference comparisons passed. It is not a physical qualification or a complete
+deliverable. The active remaining queue is:
+
+1. Resolve the uncertain console boundary through an admitted read-only/CPU
+   reassessment, then exact original restoration/numerical readmission and
+   ordinary close. Never assume success from elapsed time or a host build.
+2. With a fresh admitted idle session, qualify the distinct candidate's 16 KiB
+   virtual-reservation probe, complete virtual-source admission, fresh memory,
+   full original-precision load and first arithmetic answer. Reuse the prior
+   native SHA only with its unchanged same-boot sealed-file evidence.
+3. Complete the two existing external requests, actual passive frame review,
+   positive GPU/resource retirement, ordinary close, exact original restoration,
+   numerical readmission, ordinary shutdown and final CPU/full readback.
+
+The preparation-era scheduling details below remain historical context. The
+original precision, all experts/PLE and final completion criteria are unchanged.
+
 ## Required result and starting point
 
 One physical PS5 generates text with the pinned original BF16 model, all original
