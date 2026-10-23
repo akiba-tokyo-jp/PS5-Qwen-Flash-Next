@@ -42,3 +42,8 @@ source spans, resident memory, model loading or generation. The next case must
 complete those native gates and every final restoration/readmission requirement.
 Its SHA reuse is limited to this same boot and the positively unchanged sealed
 model/receipt identities; old-boot sessions and integrity remain invalid.
+
+The subsequent case did complete all 76 simultaneous ranges and their releases,
+then reached a separate loader lifetime rejection. See the
+[complete reserved-source lifetime result](reserved-source-lifetime-20261024.md)
+for its observed cause, correction and original restoration.

@@ -21,8 +21,11 @@ backend initialization. The exact owner was normally closed and the original
 was fully restored, numerically readmitted, normally closed and verified again.
 A new sealed-identity snapshot preserves this boot's SHA proof. The
 [disjoint source-address implementation](docs/disjoint-source-addresses-20261024.md)
-passed its 16 KiB native reservation/protection/release and normal-close gates;
-complete model ranges and generation remain pending.
+passed its 16 KiB native reservation/protection/release and normal-close gates.
+All 76 complete source ranges subsequently passed. A
+[loader lifetime correction](docs/reserved-source-lifetime-20261024.md) retains
+these no-access keys through intermediate trim requests; its actual-class host
+regression passed. Complete model loading and generation remain pending.
 The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
 Full reserved-source model loading has not run on the PS5. See the

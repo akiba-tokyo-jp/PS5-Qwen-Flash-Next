@@ -728,3 +728,20 @@ replace occupied mappings, retry a failed primitive, release unowned ranges or
 continue after a poisoned address book. Full-model simultaneous reservation,
 resident memory and generation are still unqualified. See
 `docs/disjoint-source-addresses-20261024.md`. Keep all final restoration gates.
+
+The later case passed all 76 disjoint reservations/protection checks and completed
+releases, bounded source-reader preflight, Vulkan initialization and pre-load
+memory admission. The loader then returned a partial virtual-release ownership
+rejection. Stable complete logs proved the kick worker never initialized; the
+exact owner was normally closed and the original restored, numerically readmitted,
+normally closed and fully verified with final CPU guards. Keep that returned
+loader failure separate from model generation and from the historical freeze.
+
+Reserved source keys carry no resident file pages. Their mmap overlay must keep
+the whole protected lease through intermediate trim requests and release it once
+at owner destruction. Preserve ordinary mmap fragment behavior and the native
+strict complete-range ownership check. The actual patched class passed 304 trim
+requests over all 76 file sizes and 76 final releases; the previous implementation
+failed the same control. Six unchanged overlays are reused; only mmap is rebuilt.
+See `docs/reserved-source-lifetime-20261024.md`. The next full case must freeze
+its seven patches and exact overlay sources/objects as well as application inputs.
