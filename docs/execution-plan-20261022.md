@@ -33,11 +33,11 @@ deliverable. The active remaining queue is:
 1. Retain the completed new-boot runtime/CPU admission and original numerical
    readmission/ordinary-close evidence. Preserve the original before diagnostic
    publication and restore/readmit it again after native qualification.
-2. Complete independent native memory telemetry, normal close and fresh CPU
-   guards. Qualify the distinct 16 KiB virtual-reservation probe as a model-independent
-   native fixture, observing memory before the operation and explicit return and
-   completed release. Do not start with the full model or a large file mapping.
-   Then qualify bounded direct I/O and normal close. Admit complete virtual
+2. Independent native telemetry, the 16 KiB reservation/protection/release and
+   direct I/O through 8 MiB have now passed, each with durable results, normal
+   close and fresh CPU guards. Finish their original restoration/readmission
+   boundary. Correct model memory accounting using the separately measured
+   Direct, CPU heap, Flexible and raw kernel scopes. Admit complete virtual
    sources, fresh correctly scoped memory observations, valid new-boot integrity,
    full original-precision load and the first arithmetic answer. The previous
    boot's native SHA-reuse binding is not an execution permit for this boot.

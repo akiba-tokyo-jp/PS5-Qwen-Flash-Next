@@ -108,6 +108,85 @@ every actual emitted journal line remains bounded. The test does not load a
 driver, model or console. The committed development-policy rejection checks
 also passed.
 
+## Native phase results
+
+The corrected telemetry phase passed, followed by its exact-owner ordinary OS
+close and fresh complete CPU admission. The next phase positively returned from
+the 16 KiB reserve, verified zero protection over the whole range, returned from
+release, persisted its result, normally closed and passed fresh complete CPU
+guards. No file-backed mmap, model loading or GPU initialization was executed.
+
+The distinct direct-I/O SELF is 58,655,015 bytes with SHA256
+`ddae388ebd374bc79e2b1537701537a9bfe6ad61057f74338a6c5b5c4186498a`.
+It retained the exact qualified virtual API source/header, pinned driver and
+cache policy. Its host stub execution additionally rejected a bad small-window
+prefix hash and missing per-window proof. All 291 imports and six SELF segments
+passed. The fixed 8 MiB fixture is unrelated to model weights.
+
+On the PS5, the 16 KiB, 64 KiB, 1 MiB and 8 MiB direct reads each matched their
+independently frozen prefix SHA256. The full fixture SHA and unchanged file
+identity passed. The CPU buffer was freed and the file closed after returned
+reads. A positive terminal report, ordinary OS close and fresh complete CPU
+guards followed. Private evidence is retained in cases 118 and 121.
+
+During that I/O phase, the Direct largest span, CPU heap and Flexible availability
+were unchanged at 12,262,047,744, 16,777,216 and 404,750,336 bytes respectively;
+libc fallbacks stayed zero. Native vm0 free pages changed from 1,131 to 1,597.
+The native minimum, target and reserved counters were 898, 2,974 and 206 pages.
+These observations show why the separate pools and kernel thresholds must remain
+distinct. They do not establish a full-model OS or resident-memory admission.
+
+After all three phases, the exact original was restored with full raw readback
+and complete CPU guards. Its existing numerical readbacks then passed again,
+followed by ordinary shutdown, final complete CPU guards and another full raw
+SELF readback. No gateway or image generation was started. Private evidence is
+retained in restoration 122, readmission 123 and finalization 125. Individual
+diagnostic success is not the overall inference plan's completion.
+
+## Scoped model-memory admission
+
+The old full-model gate requested unavailable standard FreeBSD counter names.
+It also charged the Direct-backed CPU heap against OS availability, and limited
+the Direct expert cache by that same unrelated quota. Replacing the reader
+alone could not pass those checks correctly.
+
+The application now keeps the full conservative Direct requirement unchanged:
+CPU working storage and a distinct 256 MiB platform margin remain included.
+Flexible retains its own 256 MiB reserve; source reads require a further 8 MiB
+metadata margin. Flexible is neither added to Direct nor used as the capacity
+of the Direct expert cache. All expert values and the Maya policy are retained.
+
+Required PS5 kernel counters must return their exact scalar sizes and valid
+page/minimum/target/reserved relationships. Two free-count observations bracket
+the queries; the smaller is used. The minimum plus the larger of the kernel's
+reserved count or an extra 4 MiB must remain free. Inactive pages are never
+counted. This extra margin is an application admission policy, not a guarantee
+about undocumented firmware allocation behavior or cancellation of a syscall.
+The measured 1,131-page I/O pre-snapshot would fail this stricter model gate;
+the 1,597-page post-snapshot passes it. Neither snapshot alone admits a model.
+
+Initial low kernel headroom permits at most 20 seconds of read-only observation
+before a positive decision or explicit rejection. Unknown counters, invalid
+sizes, heap fallbacks and insufficient quotas are rejected. No allocation,
+mapping, cache purge or GPU operation is retried. Actual snapshots are persisted
+before model integrity work and again before virtual-source admission. The
+same pool and kernel checks protect subsequent source reads and load boundaries.
+
+Host checks exercised the actual native query provider, all missing counters,
+wrong sizes, decreasing free-page brackets, each pool's boundary, Direct cache
+capacity and unchanged full-model planned Direct bytes. All 1,256 tensor
+placements matched the existing metadata plan. The real original-versus-bounded
+CPU kernels again matched all 245,952 BF16/F32 values, six three-thread graphs
+and twelve buffer copies. No engine kernels, model conversion or transfer were
+repeated. Full-model physical admission remains outstanding.
+
+The host-only scoped-admission SELF is 58,664,439 bytes at SHA256
+`e51cb5646355f37f9010143585216c4d1877a8480c49ff4c0947318895e337b7`.
+Its six-segment roundtrip and all 291 public-module imports passed. The driver
+and compiled engine were reused unchanged; application-only accounting helpers
+do not alter the engine's pinned Maya overlay. No full-model native outcome is
+implied by this artifact.
+
 Committed console/deployment/release controls remain disabled. Native phases
 use distinct private, frozen policies. The overall implementation and physical
 inference plan remains incomplete until generation, external requests, frame

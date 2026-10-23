@@ -23,7 +23,7 @@ struct Reads final : SourceReadOps {
     SourceIdentity identity(int) override { return key; }
     int open_direct(const std::string &) override { return 8; }
     bool close_file(int) override { return true; }
-    std::uint64_t os_free() override { return 2ull<<30; }
+    std::uint64_t system_headroom() override { return 2ull<<30; }
     std::int64_t read_at(int,void * target,std::size_t size,std::uint64_t offset) override {
         if (size>model_read_window || size%16384 || offset%16384 || offset>=bytes.size())
             throw std::runtime_error("Unbounded synthetic CPU read");

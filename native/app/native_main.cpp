@@ -12,6 +12,7 @@
 #include "vulkan_admission.h"
 #include "memory_admission.h"
 #include "memory_probe.h"
+#include "system_memory.h"
 #include "model_integrity.h"
 #include "prior_model_integrity.h"
 #include "model_identity_namespace.h"
@@ -170,13 +171,20 @@ static void inspect_container(const std::string & path, bool first, qwen_app::Mo
     }
 }
 
-static std::uint64_t observed_os_free() {
-    std::uint32_t pages=0, page_size=0;std::size_t a=sizeof(pages),b=sizeof(page_size);
-    if(sysctlbyname("vm.stats.vm.v_free_count",&pages,&a,nullptr,0)||
-       sysctlbyname("vm.stats.vm.v_page_size",&page_size,&b,nullptr,0)||a!=sizeof(pages)||b!=sizeof(page_size)||
-       !pages||page_size<4096||page_size>(1u<<20))
-        throw std::runtime_error("A valid fresh OS free-memory observation is required");
-    return std::uint64_t(pages)*page_size;
+static std::uint64_t observed_system_headroom() {
+    return qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
+}
+static Json system_memory_report(const qwen_app::SystemMemoryObservation & memory) {
+    struct ps5_heap_stats heap{};ps5_heap_stats(&heap);
+    return {{"pid",getpid()},{"GPU_calls",0},{"model_loaded",false},
+        {"Flexible_available_bytes",memory.flexible_available},
+        {"kernel_page_size",memory.page_size},{"kernel_total_pages",memory.kernel_pages},
+        {"kernel_free_pages",memory.kernel_free},{"kernel_minimum_pages",memory.kernel_minimum},
+        {"kernel_target_pages",memory.kernel_target},{"kernel_reserved_pages",memory.kernel_reserved},
+        {"kernel_extra_margin_bytes",qwen_app::kernel_memory_margin},
+        {"CPU_heap_mapped_bytes",heap.mapped_bytes},{"CPU_heap_peak_bytes",heap.peak_bytes},
+        {"CPU_heap_libc_fallbacks",heap.libc_fallbacks},
+        {"CPU_heap_uses_Direct_pool",true},{"inactive_pages_counted_as_available",false}};
 }
 
 struct LoadProgress {
@@ -186,8 +194,22 @@ struct LoadProgress {
 static void require_model_CPU_budget() {
     struct ps5_heap_stats heap{}; ps5_heap_stats(&heap);
     if (heap.libc_fallbacks || heap.mapped_bytes > qwen_app::maximum_model_CPU_heap_bytes ||
-        heap.peak_bytes > qwen_app::maximum_model_CPU_heap_bytes || observed_os_free() < qwen_app::model_read_os_reserve)
-        throw std::runtime_error("The model CPU heap/page budget or fresh OS reserve is not admitted");
+        heap.peak_bytes > qwen_app::maximum_model_CPU_heap_bytes || observed_system_headroom() < qwen_app::model_read_system_reserve)
+        throw std::runtime_error("CPU Direct heap or fresh Flexible/kernel headroom is not admitted");
+}
+static void wait_for_initial_model_CPU_budget() {
+    const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(20);
+    bool reported=false;
+    for(;;) {
+        try {require_model_CPU_budget();return;}
+        catch(const qwen_app::KernelMemoryPressure &) {
+            if(!reported) {reported=true;qwen_native_stage("waiting_for_initial_kernel_page_headroom GPU_not_started=1 model_loaded=0");}
+            if(std::chrono::steady_clock::now()>=deadline)throw;
+            // Only observe independent kernel paging progress. No allocation,
+            // cache purge, mapping or GPU operation is retried in this loop.
+            (void)usleep(250000);
+        }
+    }
 }
 static bool observe_model_load(float progress,void * opaque) {
     auto & state=*static_cast<LoadProgress *>(opaque);
@@ -461,6 +483,12 @@ int main(int argc, char ** argv) {
             qwen_app::verify_model_file(startup.model_receipt, gate.at("model_receipt_bytes").get<std::uint64_t>(),
                 gate.at("model_receipt_sha256").get<std::string>(), {}, 30);
         }
+        if(startup.model_validation || startup.first_generation_validation) {
+            const auto memory=qwen_app::observe_native_system_memory();
+            write_fresh_report(startup.admission_report+".system-memory.before-integrity",system_memory_report(memory));
+            wait_for_initial_model_CPU_budget();
+            qwen_native_stage("scoped_CPU_Flexible_kernel_memory_admitted_before_model_integrity GPU_not_started=1 model_loaded=0");
+        }
         const auto receipt = qwen_app::read_model_receipt(startup.model_receipt);
         const auto expected_mapped_files=qwen_app::validate_model_receipt(receipt);
         const auto prior_integrity = startup.first_generation_validation ?
@@ -596,6 +624,9 @@ int main(int argc, char ** argv) {
 
         if (startup.model_validation || startup.first_generation_validation) {
             qwen_native_stage("source_virtual_CPU_memory_admission_before_probe GPU_not_started=1 model_loaded=0");
+            const auto memory=qwen_app::observe_native_system_memory();
+            write_fresh_report(startup.admission_report+".system-memory.before-virtual-sources",system_memory_report(memory));
+            (void)qwen_app::qualified_system_headroom(memory);
             // A source-address admission can enter an opaque OS call. Check
             // the existing CPU/OS reserve first, including unsupported counters.
             // Keep that rejection; vm0 free/inactive are not a qualified
@@ -665,7 +696,8 @@ int main(int argc, char ** argv) {
             memory_budget.workspace = 256ull << 20;
         }
         const auto buffer_type=ggml_backend_dev_buffer_type(device);
-        const qwen_app::MemoryObservation memory_observation{driver_free,direct,observed_os_free(),
+        const auto system_memory=qwen_app::observe_native_system_memory();
+        const qwen_app::MemoryObservation memory_observation{driver_free,direct,qwen_app::qualified_system_headroom(system_memory),
             ggml_backend_buft_get_max_size(buffer_type),ggml_backend_buft_get_alignment(buffer_type)};
         memory_budget.admit(footprint,memory_observation);
         write_fresh_report(startup.admission_report+".memory",{{"schema","ps5-qwen-memory-admission-v1"},
@@ -679,7 +711,13 @@ int main(int argc, char ** argv) {
             {"maximum_postload_device_buffer_bytes",qwen_app::model_postload_single_buffer},
             {"maximum_aggregate_postload_device_buffer_bytes",qwen_app::model_postload_device_budget},
             {"driver_free_bytes",memory_observation.driver_free},
-            {"Direct_largest_available_bytes",memory_observation.direct_largest}, {"OS_free_bytes",memory_observation.os_free},
+            {"Direct_largest_available_bytes",memory_observation.direct_largest},
+            {"Flexible_available_bytes",memory_observation.flexible_available},
+            {"Flexible_reserve_bytes",memory_budget.flexible_reserve},
+            {"additional_Direct_platform_margin_bytes",memory_budget.platform_margin},
+            {"kernel_vm0_free_pages",system_memory.kernel_free}, {"kernel_vm0_minimum_pages",system_memory.kernel_minimum},
+            {"kernel_vm0_reserved_pages",system_memory.kernel_reserved},
+            {"kernel_extra_margin_bytes",qwen_app::kernel_memory_margin},
             {"device_buffer_batch_limit_bytes",memory_observation.device_max_buffer},
             {"device_buffer_alignment_bytes",memory_observation.device_buffer_alignment},
             {"resident_set_qualified",false}});
@@ -702,8 +740,8 @@ int main(int argc, char ** argv) {
         const auto remaining=qwen_app::checked_memory_sum(memory_budget.context,
             qwen_app::checked_memory_sum(memory_budget.workspace,memory_budget.staging+memory_budget.direct_reserve));
         if(driver_free<remaining) throw std::runtime_error("Insufficient headroom after model load");
-        const auto cache_bytes = qwen_app::uma_cache_budget(memory_budget.expert_cache, driver_free-remaining,
-            observed_os_free(), memory_budget.os_reserve);
+        const auto cache_bytes = qwen_app::native_direct_cache_budget(memory_budget.expert_cache, driver_free-remaining,
+            observed_system_headroom(), memory_budget.flexible_reserve);
         if (cache_bytes < (128u << 20)) throw std::runtime_error("Insufficient observed UMA cache headroom");
         screen.state = "admitting inference context";
         if (display) display->publish(screen);
@@ -740,7 +778,7 @@ int main(int argc, char ** argv) {
                 require_model_CPU_budget();
                 // A fresh OS reserve is checked before and after each completed
                 // single-token graph. This is not a page-cache residency proof.
-                if (observed_os_free() < memory_budget.os_reserve)
+                if (observed_system_headroom() < memory_budget.flexible_reserve)
                     throw std::runtime_error("First-generation OS reserve is no longer available");
             }, qwen_app::first_prompt_tokens);
             qwen_app::Request request{gate.at("run_id").get<std::string>(),
@@ -814,7 +852,7 @@ int main(int argc, char ** argv) {
                     engine->set_work_guard([&] {
                         attempt.require_time();
                         require_model_CPU_budget();
-                        if (!alive() || display->failed() || observed_os_free() < memory_budget.os_reserve)
+                        if (!alive() || display->failed() || observed_system_headroom() < memory_budget.flexible_reserve)
                             throw std::runtime_error("The bounded inference observer, display or memory reserve failed");
                     }, qwen_app::first_prompt_tokens);
                     const auto prefix = startup.admission_report + ".demo" + std::to_string(ordinal);

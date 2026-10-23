@@ -2,6 +2,7 @@
 #include "mapped_source.h"
 #include "mapped_source_bridge.h"
 #include "device_buffer_budget.h"
+#include "system_memory.h"
 #include <ps5platform/kernel.h>
 #include <atomic>
 #include <cstdlib>
@@ -31,13 +32,8 @@ public:
             throw std::runtime_error("Native source read exceeds its fixed window");
         return pread(fd, target, bytes, static_cast<off_t>(offset));
     }
-    std::uint64_t os_free() override {
-        std::uint32_t pages = 0, size = 0; std::size_t a = sizeof(pages), b = sizeof(size);
-        if (sysctlbyname("vm.stats.vm.v_free_count", &pages, &a, nullptr, 0) ||
-            sysctlbyname("vm.stats.vm.v_page_size", &size, &b, nullptr, 0) ||
-            a != sizeof(pages) || b != sizeof(size) || !pages || size != qwen_app::model_read_alignment)
-            throw std::runtime_error("Fresh native source-read memory observation is unavailable");
-        return std::uint64_t(pages) * size;
+    std::uint64_t system_headroom() override {
+        return qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
     }
 };
 NativeReads ops;

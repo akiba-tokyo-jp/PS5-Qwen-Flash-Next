@@ -38,7 +38,7 @@ struct Ops final : SourceReadOps {
         for (std::size_t i = 0; i < count; ++i) output[i] = static_cast<unsigned char>((offset + i + index * 17) % 251);
         return static_cast<std::int64_t>(count) - (short_read ? 1 : 0);
     }
-    std::uint64_t os_free() override { return free; }
+    std::uint64_t system_headroom() override { return free; }
     void setup(unsigned count = 1, std::uint64_t bytes = model_read_window * 3 + 1000) {
         for (unsigned i = 0; i < count; ++i) {
             SourceIdentity key{1, i + 1, 0100644, 0, 0, bytes, 123, 0, 123, 0};
@@ -101,7 +101,7 @@ int main() {
             reader.register_mapping(base, ops.files[0].bytes, 10); std::size_t copied = 0;
             if (failure == 0) ops.short_read = true;
             if (failure == 1) ops.changed = true;
-            if (failure == 2) ops.free = model_read_os_reserve;
+            if (failure == 2) ops.free = model_read_system_reserve;
             if (failure == 3) ops.bad_open = true;
             rejected([&] {
                 if (failure < 4) reader.prepare(base, 100, copied);

@@ -694,3 +694,20 @@ each phase. Do not overlap phases or skip the native telemetry review. The
 private phase policy cannot admit full-model memory or old-boot integrity.
 Keep unsupported OS memory rejection, original precision and all final original
 restoration requirements. See `docs/native-memory-qualification-20261024.md`.
+
+Telemetry, the 16 KiB reserve/protection/release and the fixed-fixture direct
+reads through 8 MiB subsequently passed on the PS5, each followed by ordinary
+close and fresh complete CPU guards. All four I/O prefix hashes matched. The
+exact original was then restored, numerically readmitted, normally closed and
+fully read back after final CPU guards. Keep cases 118, 121, 122, 123 and 125.
+
+The application now separates Direct-backed CPU/cache storage from Flexible
+quota and raw kernel counters. Preserve the unchanged conservative Direct
+requirement, 256 MiB Flexible reserve, additional 8 MiB source metadata margin,
+and kernel minimum plus the larger of its reserved count or 4 MiB. Required
+PS5 counter names and exact sizes must be available; never sum inactive pages
+or treat vm0 as process-available RAM. Initial low kernel pages permit only
+20 seconds of read-only observation before admission/rejection. This does not
+cancel syscalls or qualify large model allocations. See the scoped admission
+section of the same report. Full-model execution still requires actual fresh
+admission, new-boot complete integrity and every final restoration gate.

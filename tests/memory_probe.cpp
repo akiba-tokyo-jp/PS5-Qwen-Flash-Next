@@ -34,7 +34,7 @@ int sysctlbyname(const char *name,void *p,std::size_t *bytes,void *,std::size_t)
     check(*bytes>=sizeof(value));std::memcpy(p,&value,sizeof(value));*bytes=sizeof(value);return 0;
 }
 int sceKernelReserveVirtualRange(void **p,std::size_t bytes,int flags,std::size_t align){check(bytes==16384&&flags==0&&align==16384);++reservations;*p=reinterpret_cast<void *>(0x10000000);return 0;}
-int sceKernelQueryMemoryProtection(void *p,void **first,void **last,std::uint32_t *bits){++queries;*first=p;*last=static_cast<char *>(p)+16384;*bits=bad_protection?1:0;return 0;}
+int sceKernelQueryMemoryProtection(void *p,void **first,void **last,std::uint32_t *bits){++queries;*first=p;*last=reinterpret_cast<void *>(reinterpret_cast<std::uintptr_t>(p)+16384);*bits=bad_protection?1:0;return 0;}
 int sceKernelMunmap(void *,std::size_t bytes){check(bytes==16384);++releases;return bad_release?-1:0;}
 int memory_probe_test_open(const char *path,int flags){check(std::strcmp(path,"/app0/qwen-runtime/memory-probe.bin")==0&&flags==(O_RDONLY|O_DIRECT|O_NOFOLLOW));++opens;return 7;}
 int memory_probe_test_fstat(int fd,struct stat *s){check(fd==7);*s={1,2,8u<<20,0100644,0,0,{1,2},{3,4}};return 0;}
@@ -67,9 +67,20 @@ int main() {
     unsigned char digest[32];sha256_final(&hash,digest);std::string hex;
     for(const auto value:digest){hex+="0123456789abcdef"[value>>4];hex+="0123456789abcdef"[value&15];}
     io["native_memory_validation"]["fixture_sha256"]=hex;
+    for(const unsigned count:{16384u,65536u,1u<<20,8u<<20}) {
+        sha256_init(&hash);sha256_update(&hash,reinterpret_cast<const unsigned char *>(fixture.data()),count);
+        sha256_final(&hash,digest);std::string prefix;
+        for(const auto value:digest){prefix+="0123456789abcdef"[value>>4];prefix+="0123456789abcdef"[value&15];}
+        io["native_memory_validation"]["fixture_prefix_sha256"][std::to_string(count)]=prefix;
+    }
     result=qwen_app::run_native_memory_probe(io);check(result["direct_io"]["fixture_SHA256_matched"]==true);
     check(reads==4&&frees==1&&closes==1);
     short_read=true;reject([&]{qwen_app::run_native_memory_probe(io);});check(reads==5&&frees==2&&closes==2);
+    short_read=false;
+    io["native_memory_validation"]["fixture_prefix_sha256"]["16384"]=std::string(64,'0');
+    reject([&]{qwen_app::run_native_memory_probe(io);});check(reads==6&&frees==3&&closes==3);
+    io["native_memory_validation"]["fixture_prefix_sha256"].erase("65536");
+    reject([&]{qwen_app::run_native_memory_probe(io);});check(opens==3);
     check(longest_stage<=1024);
     std::cout<<"Actual native memory diagnostic passed: bounded journal, raw telemetry, tiny reservation, no speculative release, direct I/O and short-read retirement; GPU_calls=0\n";
 }

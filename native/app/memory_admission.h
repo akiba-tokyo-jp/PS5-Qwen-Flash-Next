@@ -34,7 +34,7 @@ struct ModelFootprint {
     }
 };
 struct MemoryObservation {
-    std::uint64_t driver_free=0, direct_largest=0, os_free=0;
+    std::uint64_t driver_free=0, direct_largest=0, flexible_available=0;
     // Conservative client limit: the backend's requested batching target is
     // reduced by its queried hard allocation/buffer limit. Require all aligned
     // tensors to fit so the upstream planner never emits an oversized buffer.
@@ -42,27 +42,30 @@ struct MemoryObservation {
 };
 struct MemoryBudget {
     std::uint64_t expert_cache=512ull<<20, context=1024ull<<20, workspace=512ull<<20;
-    std::uint64_t staging=128ull<<20, cpu_working=128ull<<20, os_reserve=256ull<<20, direct_reserve=512ull<<20;
+    std::uint64_t staging=128ull<<20, cpu_working=128ull<<20;
+    std::uint64_t flexible_reserve=256ull<<20, platform_margin=256ull<<20, direct_reserve=512ull<<20;
     std::uint64_t device_requirement(const ModelFootprint & model) const {
         auto bytes=model.device_weights;
-        for(auto value:{expert_cache,context,workspace,staging,cpu_working,os_reserve,direct_reserve}) bytes=checked_memory_sum(bytes,value);
+        // Retain the former conservative Direct requirement in full. The title
+        // CPU heap is already counted here; do not charge it to Flexible again.
+        for(auto value:{expert_cache,context,workspace,staging,cpu_working,platform_margin,direct_reserve}) bytes=checked_memory_sum(bytes,value);
         return bytes;
     }
     void admit(const ModelFootprint & model,const MemoryObservation & observed) const {
         if(!model.device_weights||!model.mapped_experts||!model.lazy_ple||!model.mapped_embeddings||
            !model.mapped_files||model.mapped_files>(512ull<<30))
             throw std::runtime_error("Complete original model footprint is required before loading");
-        if(!observed.driver_free||!observed.direct_largest||!observed.os_free||!observed.device_max_buffer||
+        if(!observed.driver_free||!observed.direct_largest||!observed.flexible_available||!observed.device_max_buffer||
            !observed.device_buffer_alignment||observed.device_buffer_alignment>65536||
            (observed.device_buffer_alignment&(observed.device_buffer_alignment-1)))
-            throw std::runtime_error("Fresh driver, Direct and OS memory observations are required");
+            throw std::runtime_error("Fresh driver, Direct and qualified Flexible observations are required");
         const auto aligned_largest=checked_memory_sum(model.largest_device_tensor,
             observed.device_buffer_alignment-1)&~(observed.device_buffer_alignment-1);
         if(aligned_largest>observed.device_max_buffer)
             throw std::runtime_error("A resident model tensor exceeds the device buffer limit");
         const auto needed=device_requirement(model);
         if(needed>observed.driver_free||needed>observed.direct_largest||
-           checked_memory_sum(cpu_working,os_reserve)>observed.os_free)
+           flexible_reserve>observed.flexible_available)
             throw std::runtime_error("Observed shared-memory headroom cannot admit the original model");
     }
 };

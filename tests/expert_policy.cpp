@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // The tested slot planner is extracted from the patched pinned engine source.
 #include "expert_policy.h"
+#include "system_memory.h"
 #include <cstring>
 #include <iostream>
 #include <string>
@@ -59,6 +60,13 @@ int main() {
     try {
         using namespace qwen_app;
         check(uma_cache_budget(100, 80, 120, 50) == 70, "UMA free pools were added or reserve ignored");
+        check(native_direct_cache_budget(512u<<20,1ull<<30,404750336,256u<<20)==(512u<<20),
+              "Flexible quota was incorrectly used as Direct cache capacity");
+        check(native_direct_cache_budget(512u<<20,128u<<20,404750336,256u<<20)==(128u<<20),
+              "Native cache exceeded available Direct capacity");
+        check(native_direct_cache_budget(512u<<20,1ull<<30,(256u<<20)-1,256u<<20)==0 &&
+              native_direct_cache_budget(512u<<20,1ull<<30,0,256u<<20)==0,
+              "Unknown or insufficient Flexible quota was admitted");
         check(uma_cache_budget(100, 0, 120, 50) == 0 && uma_cache_budget(100, 100, 49, 50) == 0,
               "Unknown or exhausted memory was admitted");
         check(uma_cache_budget(UINT64_MAX, UINT64_MAX, UINT64_MAX, UINT64_MAX) == 0,

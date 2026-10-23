@@ -13,11 +13,11 @@ int main(){
         model.tensor("blk.48.nextn.eh_proj.weight",4ull<<30);
         check(model.device_weights==(1ull<<30)&&model.mapped_experts==(200ull<<30)&&model.lazy_ple==(100ull<<30));
         check(model.mapped_embeddings==(1ull<<30)&&model.skipped_mtp==(4ull<<30));
-        MemoryBudget budget;MemoryObservation observed{16ull<<30,16ull<<30,4ull<<30,2ull<<30};budget.admit(model,observed);
-        auto limited=observed;limited.os_free=0;reject([&]{budget.admit(model,limited);});
+        MemoryBudget budget;MemoryObservation observed{16ull<<30,16ull<<30,4ull<<30,2ull<<30,256};budget.admit(model,observed);
+        auto limited=observed;limited.flexible_available=0;reject([&]{budget.admit(model,limited);});
         limited=observed;limited.driver_free=budget.device_requirement(model)-1;reject([&]{budget.admit(model,limited);});
         limited=observed;limited.direct_largest=budget.device_requirement(model)-1;reject([&]{budget.admit(model,limited);});
-        limited=observed;limited.os_free=budget.cpu_working+budget.os_reserve-1;reject([&]{budget.admit(model,limited);});
+        limited=observed;limited.flexible_available=budget.flexible_reserve-1;reject([&]{budget.admit(model,limited);});
         limited=observed;limited.device_max_buffer=(1ull<<30)-1;reject([&]{budget.admit(model,limited);});
         auto incomplete=model;incomplete.lazy_ple=0;reject([&]{budget.admit(incomplete,observed);});
         incomplete=model;incomplete.mapped_files=513ull<<30;reject([&]{budget.admit(incomplete,observed);});

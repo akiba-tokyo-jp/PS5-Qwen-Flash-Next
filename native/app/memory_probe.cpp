@@ -26,6 +26,13 @@ Json counter(const char * name) {
             {"value",readable ? Json(value) : Json(nullptr)}};
 }
 void stage(const char * text) {qwen_native_stage(text);}
+std::string digest_bytes(const void * data,std::size_t bytes) {
+    sha256_t hash;sha256_init(&hash);
+    sha256_update(&hash,static_cast<const unsigned char *>(data),bytes);
+    unsigned char sum[32];sha256_final(&hash,sum);std::string result;
+    for(const auto byte:sum) {result+="0123456789abcdef"[byte>>4];result+="0123456789abcdef"[byte&15];}
+    return result;
+}
 void headroom(const Json & s) {
     if(s.at("Direct_query_rc")!=0 || s.at("Flexible_query_rc")!=0 ||
        s.at("Direct_largest_available_bytes").get<std::uint64_t>()<(256u<<20) ||
@@ -41,6 +48,19 @@ Json direct_io(const Json & p) {
     if(path!="/app0/qwen-runtime/memory-probe.bin" || digest.size()!=64 ||
        digest.find_first_not_of("0123456789abcdef")!=std::string::npos)
         throw std::runtime_error("A fixed native direct-I/O fixture is required");
+    const auto & prefixes=p.at("fixture_prefix_sha256");
+    const std::array<std::size_t,4> sizes{16384,65536,1u<<20,bytes};
+    if(!prefixes.is_object() || prefixes.size()!=sizes.size())
+        throw std::runtime_error("Every direct-I/O window requires its own prefix SHA256");
+    for(const auto count:sizes) {
+        const auto & value=prefixes.at(std::to_string(count));
+        if(!value.is_string())throw std::runtime_error("Direct-I/O prefix SHA256 must be a string");
+        const auto text=value.get<std::string>();
+        if(text.size()!=64 || text.find_first_not_of("0123456789abcdef")!=std::string::npos)
+            throw std::runtime_error("Invalid direct-I/O prefix SHA256");
+    }
+    if(prefixes.at(std::to_string(bytes))!=digest)
+        throw std::runtime_error("Full fixture and final prefix SHA256 must match");
     stage("memory_direct_io_before_open GPU_not_started=1 model_loaded=0");
     const int fd=open(path.c_str(),O_RDONLY|O_DIRECT|O_NOFOLLOW);
     stage("memory_direct_io_open_returned GPU_not_started=1 model_loaded=0");
@@ -54,9 +74,9 @@ Json direct_io(const Json & p) {
     void * buffer=ps5_heap_memalign(16384,bytes);
     stage("memory_direct_io_bounded_heap_allocation_returned");
     if(!buffer) {close(fd);throw std::runtime_error("Bounded Direct heap allocation refused");}
-    Json windows=Json::array();bool completed=true;
+    Json windows=Json::array();bool completed=true;std::string actual;
     const auto started=std::chrono::steady_clock::now();
-    for(const std::size_t count : {std::size_t(16384),std::size_t(65536),std::size_t(1u<<20),bytes}) {
+    for(const std::size_t count : sizes) {
         headroom(observe_native_memory());
         if(std::chrono::steady_clock::now()-started>std::chrono::seconds(30)) {completed=false;break;}
         const auto mark="memory_direct_io_before_pread bytes="+std::to_string(count);
@@ -64,14 +84,9 @@ Json direct_io(const Json & p) {
         const auto got=pread(fd,buffer,count,0);
         stage("memory_direct_io_pread_returned");
         if(got!=static_cast<ssize_t>(count)) {completed=false;break;}
+        actual=digest_bytes(buffer,count);
+        if(actual!=prefixes.at(std::to_string(count))) {completed=false;break;}
         windows.push_back(count);
-    }
-    std::string actual;
-    if(completed) {
-        sha256_t hash;sha256_init(&hash);
-        sha256_update(&hash,static_cast<const unsigned char *>(buffer),bytes);
-        unsigned char sum[32];sha256_final(&hash,sum);
-        for(const auto byte:sum) {actual+="0123456789abcdef"[byte>>4];actual+="0123456789abcdef"[byte&15];}
     }
     struct stat after{};const bool stable=fstat(fd,&after)==0 &&
         before.st_dev==after.st_dev && before.st_ino==after.st_ino && before.st_size==after.st_size &&
@@ -85,7 +100,7 @@ Json direct_io(const Json & p) {
     if(!completed || !stable || !closed || actual!=digest)
         throw std::runtime_error("Native direct-I/O completion, identity or SHA256 failed");
     return {{"windows_completed_bytes",windows},{"fixture_SHA256_matched",true},
-            {"file_closed",true},{"CPU_buffer_freed",true},{"maximum_window_bytes",bytes}};
+            {"all_prefix_SHA256_matched",true},{"file_closed",true},{"CPU_buffer_freed",true},{"maximum_window_bytes",bytes}};
 }
 }
 Json observe_native_memory() {
@@ -100,7 +115,8 @@ Json observe_native_memory() {
     Json counters=Json::object();
     for(const char * name : {"hw.pagesize","vm.stats.vm.v_free_count","vm.stats.vm.v_page_size",
         "vm.stats.vm0.v_page_count","vm.stats.vm0.v_free_count","vm.stats.vm0.v_inactive_count",
-        "vm.stats.vm0.v_active_count","vm.stats.vm0.v_wire_count"}) counters[name]=counter(name);
+        "vm.stats.vm0.v_active_count","vm.stats.vm0.v_wire_count","vm.stats.vm0.v_free_min",
+        "vm.stats.vm0.v_free_target","vm.stats.vm0.v_free_reserved"}) counters[name]=counter(name);
     return {{"Direct_pool_bytes",pool},{"Direct_query_rc",direct_rc},
         {"Direct_largest_available_bytes",direct_rc==0 ? available : 0},
         {"Flexible_query_rc",flexible_rc},{"Flexible_available_bytes",flexible_rc==0 ? flexible : 0},

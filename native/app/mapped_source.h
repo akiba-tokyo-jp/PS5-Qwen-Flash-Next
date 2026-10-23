@@ -13,7 +13,8 @@
 namespace qwen_app {
 inline constexpr std::size_t model_read_window = 8u << 20;
 inline constexpr std::size_t model_read_alignment = 16384;
-inline constexpr std::uint64_t model_read_os_reserve = 256ull << 20;
+inline constexpr std::uint64_t model_read_system_reserve = 256ull << 20;
+inline constexpr std::uint64_t model_read_flexible_metadata_margin = 8ull << 20;
 using SourceIdentity = std::array<std::uint64_t, 10>;
 struct SourceFile { std::string path; std::uint64_t bytes; SourceIdentity identity; };
 struct SourceReadStats { std::uint64_t bytes = 0, chunks = 0, maximum_chunk = 0, mappings = 0, retired_ranges = 0; };
@@ -23,7 +24,9 @@ struct SourceReadOps {
     virtual int open_direct(const std::string &) = 0;
     virtual bool close_file(int) = 0;
     virtual std::int64_t read_at(int, void *, std::size_t, std::uint64_t) = 0;
-    virtual std::uint64_t os_free() = 0;
+    // Native providers return Flexible availability only after the separate
+    // kernel free/minimum/reserved predicate passes. CPU buffers use Direct.
+    virtual std::uint64_t system_headroom() = 0;
 };
 
 // Owns metadata and at most eight descriptors. The caller owns the aligned
@@ -188,8 +191,8 @@ private:
     const void * read_window(std::size_t file, std::uint64_t offset, std::size_t wanted, std::size_t & copied) {
         if (busy_ || !wanted || offset >= files_[file].bytes || wanted > files_[file].bytes - offset)
             fail("Invalid bounded model source read");
-        if (ops_.os_free() < model_read_os_reserve + model_read_window)
-            fail("Fresh OS reserve cannot admit the next model source window");
+        if (ops_.system_headroom() < model_read_system_reserve + model_read_flexible_metadata_margin)
+            fail("Fresh Flexible/kernel reserve cannot admit the next model source window");
         busy_ = true;
         const auto skip = std::size_t(offset % model_read_alignment);
         copied = std::min(wanted, model_read_window - skip);
