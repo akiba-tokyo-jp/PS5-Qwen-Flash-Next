@@ -20,6 +20,11 @@ int main(int argc, char ** argv) {
                 throw std::runtime_error("Unknown prior native integrity evidence");
             scope["prior_native_integrity"] = prior;
         }
+        if (binding.contains("allow_app0_model_device_translation")) {
+            if (!binding.at("allow_app0_model_device_translation").is_boolean())
+                throw std::runtime_error("The app0 device namespace policy must be boolean");
+            scope["allow_app0_model_device_translation"] = binding.at("allow_app0_model_device_translation");
+        }
         nlohmann::json policy{{"native_first_generation_validation", scope}};
         qwen_app::require_first_generation_policy(policy, false);
         std::cout << scope.dump(2) << '\n';

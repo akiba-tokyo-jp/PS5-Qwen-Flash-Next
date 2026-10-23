@@ -76,3 +76,29 @@ imports and public mmap provenance. Model conversion, transfer and complete
 payload hashing are retained, not repeated. This follow-up changes the path
 and identity diagnostics only; generation and original restoration remain
 outstanding until their physical evidence is complete.
+
+## Explicit mounted-device binding
+
+Case 022's canonical-path configuration rejected a bound file-size/open check
+before mapping or backend initialization. The generic error did not name the
+individual checked file; direct native access to the management namespace was
+not qualified. Its matching owner was normally closed and fresh idle CPU guards
+passed. No model payload hash pass, model load or external request was repeated.
+
+The application returns to its exact `/app0/qwen-runtime/model/` view. An
+explicit private `allow_app0_model_device_translation` gate permits one bound
+canonical/application filesystem device-ID pair after native candidate SELF and
+receipt SHA verification. Directory and receipt must first match in all nine
+other fields. Every model file must use that same pair and retain its exact
+inode, mode, UID, GID, size and all four timestamp fields. Subsequent checks
+also require unchanged native identities. An unrelated namespace or any other
+metadata change is rejected. The initial actual/expected identities and the
+accepted pair are saved in separate immutable native reports.
+
+The real C++ namespace policy passed exact-view, explicit-translation and all
+ten identity-mismatch checks. Case 023 uses a distinct 58,616,087-byte SELF with
+SHA256 `d30e49933c358cd11f46a2aa499c3b517577b8c10b528b3455eb6a0203ae7733`.
+The native import, six-segment roundtrip, pinned-driver and public mmap gates
+passed again. The actual namespace comparison and every later physical
+inference/restoration stage remain to be measured; no mount-device difference
+is claimed as a console measurement before that diagnostic is read.

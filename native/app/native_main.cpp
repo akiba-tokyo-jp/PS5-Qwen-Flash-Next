@@ -13,6 +13,7 @@
 #include "memory_admission.h"
 #include "model_integrity.h"
 #include "prior_model_integrity.h"
+#include "model_identity_namespace.h"
 #include "model_receipt.h"
 #include "model_mapping.h"
 #include "validation_policy.h"
@@ -454,6 +455,7 @@ int main(int argc, char ** argv) {
         const auto receipt_separator = startup.model_receipt.find_last_of('/');
         const auto model_directory = startup.model_receipt.substr(0, receipt_separator);
         bool identity_report_written = false;
+        std::optional<qwen_app::ModelIdentityNamespace> identity_namespace;
         auto require_prior_metadata = [&] {
             if (!prior_integrity) return;
             if (receipt_separator == std::string::npos) throw std::runtime_error("The sealed model requires its canonical directory");
@@ -473,7 +475,23 @@ int main(int argc, char ** argv) {
                 write_fresh_report(startup.admission_report + ".identity", report);
                 identity_report_written = true;
             }
-            if (directory != prior_integrity->directory || receipt_identity != prior_integrity->receipt)
+            if (!identity_namespace) {
+                const auto & gate = policy.at("native_first_generation_validation");
+                const bool allow_translation = gate.value("allow_app0_model_device_translation", false);
+                if (allow_translation && startup.model_receipt != "/app0/qwen-runtime/model/model-receipt.json")
+                    throw std::runtime_error("Model device translation requires the exact original app0 model path");
+                identity_namespace.emplace(prior_integrity->directory, directory, prior_integrity->receipt,
+                    receipt_identity, allow_translation);
+                write_fresh_report(startup.admission_report + ".namespace", {
+                    {"schema","ps5-qwen-native-model-namespace-v1"},{"pid",getpid()},
+                    {"canonical_source_device",identity_namespace->source_device()},
+                    {"application_device",identity_namespace->application_device()},
+                    {"inode_mode_owner_size_and_all_timestamps_exact",true},
+                    {"candidate_SELF_and_receipt_SHA_verified",true},
+                    {"model_loaded",false},{"Vulkan_initialized",false}});
+            }
+            if (!identity_namespace->matches(directory, prior_integrity->directory) ||
+                !identity_namespace->matches(receipt_identity, prior_integrity->receipt))
                 throw std::runtime_error("Sealed original model directory or receipt changed after native SHA verification");
         };
         require_prior_metadata();
@@ -494,7 +512,7 @@ int main(int argc, char ** argv) {
             if (startup.first_generation_validation)
                 file_identities.push_back(model_file_identity(
                     model_file(startup.model_receipt,file.at("path").get<std::string>()), file_bytes));
-            if (prior_integrity && file_identities.back() != prior_integrity->files.at(file_index - 1))
+            if (prior_integrity && !identity_namespace->matches(file_identities.back(), prior_integrity->files.at(file_index - 1)))
                 throw std::runtime_error("Sealed original model file changed after native SHA verification");
             screen.state="verifying original model bytes";
             const auto remaining = std::chrono::duration_cast<std::chrono::seconds>(

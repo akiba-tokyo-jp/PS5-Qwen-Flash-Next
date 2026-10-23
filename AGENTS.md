@@ -569,3 +569,15 @@ model path used by the sealed management snapshot. Keep every identity field
 and the original precision/memory/completion/restoration gates. Do not describe
 the suspected app0 namespace difference as measured until its native identity
 report is read. See the follow-up in `docs/native-public-mmap-20261024.md`.
+
+Case 022's canonical-path configuration subsequently failed its bound file
+size/open check before mapping/backend initialization, then was normally closed
+with fresh idle CPU guards. Case 023 returns to the exact original app0 model
+path. Its explicit private device-translation policy binds one canonical/app0
+device-ID pair only after SELF/receipt SHA admission, retaining exact inode,
+permissions, owners, size and all timestamps for directory, receipt and every
+model file. All ten mismatch checks passed on the host. Save and read the actual
+native identity and namespace reports; do not assume that translation passed.
+The complete prior native SHA, unchanged sealed data, pinned driver/cache,
+writer lease and all remaining physical generation/restoration requirements
+remain mandatory. No other identity mismatch is relaxed or retried automatically.
