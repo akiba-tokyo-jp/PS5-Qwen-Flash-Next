@@ -57,6 +57,20 @@ int main() {
         check(ggml_backend_sched_backend_id_from_cur(selection,rows)==0);
         source_key=key;
         check(ggml_backend_sched_backend_id_from_cur(selection,rows)==1);
+        auto activation=ggml_new_tensor_2d(ctx,GGML_TYPE_F32,2560,1);
+        ggml_set_input(activation);
+        auto matrix=ggml_mul_mat(ctx,weights,activation);
+        auto graph_ctx=ggml_init({ggml_graph_overhead_custom(64,false),nullptr,true});check(graph_ctx);
+        auto copy_graph=ggml_new_graph_custom(graph_ctx,64,false);
+        ggml_build_forward_expand(copy_graph,matrix);
+        ggml_backend_sched_set_tensor_backend(selection,matrix,&simulated);
+        bool whole_source_rejected=false;
+        try { ggml_backend_sched_alloc_graph(selection,copy_graph); }
+        catch(const std::runtime_error & e) {
+            whole_source_rejected=std::string(e.what()).find("Uncached protected source copy rejected")!=std::string::npos;
+        }
+        check(whole_source_rejected);
+        ggml_free(graph_ctx);
         source_key=nullptr;
         ggml_backend_buffer_free(storage);ggml_free(ctx);ggml_backend_sched_free(selection);
         simulated_buffer=nullptr;
@@ -83,5 +97,5 @@ int main() {
     ggml_backend_sched_free(sched);ggml_backend_free(backend);
     std::cout<<"{\"actual_scheduler\":\"passed\",\"original_context_bytes\":"<<original
         <<",\"bounded_context_bytes\":"<<qwen_app_scheduler_context_budget<<",\"required_7184_bytes\":"<<measured
-        <<",\"metadata_allocator_used_bytes\":"<<used<<",\"complete_graph_nodes\":7184,\"CPU_graphs\":3,\"compared_values\":48,\"protected_row_selection\":\"passed\",\"ordinary_offload_control\":\"passed\",\"GPU_calls\":0}"<<std::endl;
+        <<",\"metadata_allocator_used_bytes\":"<<used<<",\"complete_graph_nodes\":7184,\"CPU_graphs\":3,\"compared_values\":48,\"protected_row_selection\":\"passed\",\"ordinary_offload_control\":\"passed\",\"uncached_source_copy_rejected\":true,\"GPU_calls\":0}"<<std::endl;
 }

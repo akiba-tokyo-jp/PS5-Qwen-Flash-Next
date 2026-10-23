@@ -34,7 +34,7 @@ static int read_tail(const char *label,const char *path) {
     if(fd<0){int saved=errno;int restored=!seteuid(0)&&geteuid()==0;return report("owned_log_open_failed label=%s errno=%d helper_UID_restored=%d",label,saved,restored)&&0;}
     struct stat before,after;int ok=!fstat(fd,&before)&&S_ISREG(before.st_mode)&&before.st_uid==1&&
         (before.st_mode&07777)==0600&&before.st_nlink==1&&before.st_size>0&&before.st_size<=(8u<<20);
-    off_t at=ok&&before.st_size>(256u<<10)?before.st_size-(256u<<10):0;
+    off_t at=ok&&before.st_size>(512u<<10)?before.st_size-(512u<<10):0;
     if(!ok||!report("BEGIN_OWNED_LOG label=%s total_bytes=%lld offset=%lld",label,(long long)before.st_size,(long long)at)){close(fd);(void)seteuid(0);return 0;}
     char buffer[4096];
     while(ok&&at<before.st_size) {

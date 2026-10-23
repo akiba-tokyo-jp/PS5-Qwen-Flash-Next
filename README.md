@@ -36,6 +36,9 @@ The first prefill returned a buffer-scope refusal before decode completion.
 [Protected source-row scheduling](docs/native-source-row-scheduling-20261024.md)
 keeps original embedding-row reads on the bounded CPU reader and matrices on GPU.
 Complete generation and the final full-plan gates remain pending.
+The [strict cache-copy admission](docs/native-cache-copy-admission-20261024.md)
+separately rejects uncached protected-source copies before GPU submission and
+records the exact source/consumer and cache eligibility.
 The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
 Complete reserved-source model loading has passed on the PS5. See the earlier

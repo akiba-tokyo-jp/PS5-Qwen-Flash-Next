@@ -5,15 +5,16 @@
  // Note: porting this file to C++ is a work in progress
  
  #ifdef _WIN32
-@@ -20,6 +21,7 @@
+@@ -20,6 +21,8 @@
  #include <stdlib.h>
  #include <string.h>
  #include <algorithm>
 +#include <stdexcept>
++#include <string>
  #include <unordered_map>
  #include <vector>
  
-@@ -1067,6 +1069,17 @@
+@@ -1067,6 +1070,17 @@
  
  // returns the backend that should be used for the node based on the current locations
  static int ggml_backend_sched_backend_id_from_cur(ggml_backend_sched_t sched, struct ggml_tensor * tensor) {
@@ -31,7 +32,7 @@
      // assign pre-allocated nodes to their backend
      int cur_backend_id = ggml_backend_sched_backend_from_buffer(sched, tensor, tensor);
      if (cur_backend_id != -1) {
-@@ -1210,8 +1223,26 @@
+@@ -1210,8 +1224,26 @@
      }
  }
  
@@ -58,7 +59,19 @@
      // reset splits
      sched->n_splits = 0;
      sched->n_graph_inputs = 0;
-@@ -1970,6 +2001,7 @@
+@@ -1523,6 +1555,11 @@
+                 if (src_backend_id != cur_backend_id && !ggml_backend_sched_buffer_supported(sched, src, cur_backend_id)) {
+                     // create a copy of the input in the split's backend
+                     if (tensor_id_copy(src_id, cur_backend_id, 0) == NULL) {
++                        if (qwen_app_model_reads_enabled() && src->data &&
++                            qwen_app_model_source_range_metadata(src->data, ggml_nbytes(src)))
++                            throw std::runtime_error(std::string("Uncached protected source copy rejected: source=")+src->name+
++                                " node="+node->name+" op="+ggml_op_name(node->op)+
++                                " bytes="+std::to_string(ggml_nbytes(src)));
+                         ggml_backend_t backend = sched->backends[cur_backend_id];
+                         for (int c = 0; c < sched->n_copies; c++) {
+                             struct ggml_tensor * tensor_copy = ggml_dup_tensor_layout(sched->ctx, src);
+@@ -1970,6 +2007,7 @@
      sched->debug_realloc = GGML_SCHED_DEBUG_REALLOC ? atoi(GGML_SCHED_DEBUG_REALLOC) : sched->debug_realloc;
  
      sched->n_backends = n_backends;
@@ -66,7 +79,7 @@
      sched->n_copies = parallel ? GGML_SCHED_MAX_COPIES : 1;
  
      // initialize hash table
-@@ -1988,7 +2020,7 @@
+@@ -1988,7 +2026,7 @@
      sched->graph_size      = 0;
      sched->prev_graph_size = 0;
  
@@ -75,7 +88,7 @@
      sched->context_buffer = (char *) malloc(sched->context_buffer_size);
  
      const int initial_splits_capacity = 16;
-@@ -2485,6 +2517,7 @@
+@@ -2485,6 +2523,7 @@
  
  static void ggml_backend_cpu_buffer_memset_tensor(ggml_backend_buffer_t buffer, struct ggml_tensor * tensor, uint8_t value, size_t offset, size_t size) {
      GGML_ASSERT(tensor);
@@ -83,7 +96,7 @@
      memset((char *)tensor->data + offset, value, size);
  
      GGML_UNUSED(buffer);
-@@ -2492,14 +2525,20 @@
+@@ -2492,14 +2531,20 @@
  
  static void ggml_backend_cpu_buffer_set_tensor(ggml_backend_buffer_t buffer, struct ggml_tensor * tensor, const void * data, size_t offset, size_t size) {
      GGML_ASSERT(tensor);
@@ -106,7 +119,7 @@
  
      GGML_UNUSED(buffer);
  }
-@@ -2507,7 +2546,10 @@
+@@ -2507,7 +2552,10 @@
  static bool ggml_backend_cpu_buffer_cpy_tensor(ggml_backend_buffer_t buffer, const struct ggml_tensor * src, struct ggml_tensor * dst) {
      GGML_ASSERT(src);
      if (ggml_backend_buffer_is_host(src->buffer)) {
@@ -118,7 +131,7 @@
          return true;
      }
      return false;
-@@ -2517,6 +2559,7 @@
+@@ -2517,6 +2565,7 @@
  
  static void ggml_backend_cpu_buffer_clear(ggml_backend_buffer_t buffer, uint8_t value) {
      GGML_ASSERT(buffer);
@@ -126,7 +139,7 @@
      memset(buffer->context, value, buffer->size);
  }
  
-@@ -2629,3 +2672,5 @@
+@@ -2629,3 +2678,5 @@
      GGML_ASSERT((uintptr_t)ptr % TENSOR_ALIGNMENT == 0 && "buffer pointer must be aligned");
      return ggml_backend_buffer_init(ggml_backend_cpu_buffer_from_ptr_type(), ggml_backend_cpu_buffer_from_ptr_i, ptr, size);
  }

@@ -792,3 +792,16 @@ dereference the protected source. Preserve ordinary resident-host offload and
 GPU matrix placement. The actual scheduler's simulated-device control and
 protected-source selection passed, without model payload reads/GPU execution;
 real full-model generation and all final complete-plan gates remain required.
+
+The row-selection artifact returned an exact 1,677,787,532-byte post-load request
+against the unchanged 512 MiB per-buffer limit before first decode completion.
+Complete stable logs show 48 cached layers/53 slots and no worker initialization.
+Normal close, original restoration/numerical readmission/normal close and final
+CPU/full readback passed. Keep cache construction separate from measured use.
+See `docs/native-cache-copy-admission-20261024.md`.
+
+The scheduler must reject complete copies of protected source tensors before
+creating the copy, naming the source/consumer/operator/size. Required expert-cache
+bindings must be present. Cache eligibility/backend-query records are once per
+layer, bounded independently of request/token count. Preserve bounded row/expert
+uploads, GPU matrix placement, every existing budget and all final full-plan gates.

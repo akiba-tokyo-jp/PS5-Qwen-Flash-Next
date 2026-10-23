@@ -16,10 +16,13 @@ values or Flexible available/required values without changing those limits.
 
 Source inspection found a separate concrete over-allocation: the scheduler sized
 its tensor-copy metadata for the nominal graph capacity, treating every capacity
-slot as a potential split with 30 inputs. For the pinned 1,256-tensor model,
-the existing graph capacity remains 40,192. The actual host ABI allocation formula
-requests 812,503,536 bytes, exceeding the unchanged 376,438,784-byte CPU heap limit
-before the remaining heap allocations are counted.
+slot as a potential split with 30 inputs. The host fixture conservatively uses
+the conversion plan's 1,256 tensors and 40,192 graph capacity slots; its allocation
+formula requests 812,503,536 bytes. The complete physical log subsequently
+reported 39,168 capacity slots after excluding MTP, while the actual graph had
+7,184 nodes. Both nominal capacities exceed the unchanged 376,438,784-byte CPU
+heap limit before the remaining heap allocations are counted. The native
+graph/hash capacity is preserved; 40,192 is the larger host control capacity.
 
 The application overlay now allocates one 192 MiB scheduler metadata arena.
 The graph/hash capacities, all model tensors, experts, nodes and operators remain

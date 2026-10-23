@@ -14,7 +14,53 @@
  #if defined(__unix__) || defined(__APPLE__)
      const long page = sysconf(_SC_PAGESIZE);
      if (page <= 0) return 0;
-@@ -734,3 +737,5 @@
+@@ -258,6 +261,8 @@
+         int32_t ig = -1;                    // -1 if the layer is not cached
+         ggml_tensor * slot_map = nullptr;   // I32 [1, n_expert] in host memory
+         std::vector<ggml_tensor *> experts; // host expert tensors, in the order of the banks
++        mutable bool eligibility_reported = false;
++        mutable bool backend_reported = false;
+     };
+ 
+     struct binding {
+@@ -531,7 +536,12 @@
+     }
+ 
+     ggml_backend_t backend(int32_t il) const {
+-        return devices[groups[layers[il].ig].id].backend;
++        const auto & l = layers[il];
++        if (!l.backend_reported) {
++            l.backend_reported = true;
++            LLAMA_LOG_INFO("native_cache_backend_query layer=%d slots=%d\n", il, groups[l.ig].n_slots);
++        }
++        return devices[groups[l.ig].id].backend;
+     }
+ 
+     ~impl() {
+@@ -543,6 +553,11 @@
+             return nullptr;
+         }
+         const layer & l = layers[il];
++        if (!l.eligibility_reported) {
++            l.eligibility_reported = true;
++            LLAMA_LOG_INFO("native_cache_slot_eligibility layer=%d tokens=%lld experts=%lld slots=%d max_batch=%lld\n",
++                il, (long long) n_tokens, (long long) n_expert_used, groups[l.ig].n_slots, (long long) max_batch);
++        }
+ 
+         // large batches use most experts of a layer, so they gain little from the cache and would evict the experts used in generation
+         if (n_tokens == 0 || n_tokens > max_batch || std::min(n_tokens*n_expert_used, l.slot_map->ne[1]) > groups[l.ig].n_slots) {
+@@ -553,7 +568,9 @@
+ 
+     ggml_tensor * get_experts(const ggml_tensor * w) const {
+         const auto it = bindings.find(w);
+-        return it != bindings.end() ? it->second.cached : nullptr;
++        if (it == bindings.end())
++            throw std::runtime_error(std::string("Native expert cache has no binding for required tensor: ")+w->name);
++        return it->second.cached;
+     }
+ 
+     int64_t copy_experts(ggml_backend_t backend, const ggml_tensor * w, ggml_tensor * dst, int64_t e, int64_t last) {
+@@ -734,3 +751,5 @@
      }
      return res;
  }
