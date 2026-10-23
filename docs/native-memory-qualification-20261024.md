@@ -180,12 +180,17 @@ CPU kernels again matched all 245,952 BF16/F32 values, six three-thread graphs
 and twelve buffer copies. No engine kernels, model conversion or transfer were
 repeated. Full-model physical admission remains outstanding.
 
-The host-only scoped-admission SELF is 58,664,439 bytes at SHA256
+The host-validated scoped-admission SELF is 58,664,439 bytes at SHA256
 `e51cb5646355f37f9010143585216c4d1877a8480c49ff4c0947318895e337b7`.
 Its six-segment roundtrip and all 291 public-module imports passed. The driver
 and compiled engine were reused unchanged; application-only accounting helpers
 do not alter the engine's pinned Maya overlay. No full-model native outcome is
 implied by this artifact.
+
+The subsequent [fresh-boot full-model case](native-full-model-progress-20261024.md)
+has passed the actual native pre-integrity predicate and begun complete payload
+SHA verification. Large virtual-source/resident admission and generation remain
+separate pending outcomes.
 
 Committed console/deployment/release controls remain disabled. Native phases
 use distinct private, frozen policies. The overall implementation and physical

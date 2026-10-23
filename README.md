@@ -15,6 +15,9 @@ The [independent native memory qualification](docs/native-memory-qualification-2
 is now in progress, preserving the original. See the
 [freeze investigation](docs/freeze-forensics-20261024.md). Prior boot-bound
 admissions are invalid, and further native inference remains withheld.
+The [fresh-boot full-model case](docs/native-full-model-progress-20261024.md)
+has now passed its scoped pre-integrity memory gate and is verifying all 76
+model files on the PS5 before backend initialization.
 The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
 Full reserved-source model loading has not run on the PS5. See the
