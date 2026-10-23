@@ -82,6 +82,16 @@ def validate(path, expected):
         all_SHA256_matched=True, model_loaded=False, Vulkan_initialized=False))
     require(number(integrity.get("verification_elapsed_ms")) and integrity["verification_elapsed_ms"] <= 7200000,
         "Whole-model verification deadline was not met")
+    if integrity.get("verification_mode") == "prior_native_SHA_and_unchanged_sealed_identity":
+        exact(integrity, dict(payload_SHA_computed_in_this_run=False, metadata_validation_deadline_seconds=60))
+        require(integrity["verification_elapsed_ms"] <= 60000 and
+            number(integrity.get("prior_native_verification_elapsed_ms")) and
+            0 < integrity["prior_native_verification_elapsed_ms"] <= 7200000,
+            "Prior native SHA or current sealed identity validation exceeded its deadline")
+        for key in ("prior_native_integrity_report_sha256", "sealed_identity_snapshot_sha256"):
+            value = integrity.get(key)
+            require(type(value) is str and len(value) == 64 and all(c in "0123456789abcdef" for c in value),
+                "Reused native integrity evidence is not identified")
     exact(mapping, dict(all_SHA256_matched=True, original_footprint_matched=True, mapped_files=expected["files"],
         mapped_file_bytes=expected["bytes"], completed_unmaps=expected["files"], model_loaded=False,
         Vulkan_initialized=False, GPU_compute_calls=0, mapped_payload_reads=0, resident_set_qualified=False,

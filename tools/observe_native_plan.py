@@ -85,6 +85,11 @@ def main():
         return raw
 
     def failure_check():
+        owners_raw = get(8084, "/processes_list", 1 << 20)
+        require(owners_raw is not None, "Native owner metadata is unavailable")
+        owners = [row for row in json.loads(owners_raw)["processes"] if row["name"] == "eboot.bin"]
+        require(len(owners) == 1 and owners[0]["pid"] == expected["pid"],
+            "The admitted native owner exited or changed; no further requests")
         for suffix in (".failure", ".fatal"):
             require(download(suffix, optional=True) is None, "Native failure/fatal evidence prevents further requests")
         require(time.monotonic() - started <= 25200, "The independent native observation deadline expired")

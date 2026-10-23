@@ -20,6 +20,7 @@ struct ModelMappingOps {
     virtual std::uintptr_t map_readonly(int, std::uint64_t) = 0;
     virtual bool close_file(int) = 0;
     virtual bool unmap(std::uintptr_t, std::uint64_t) = 0;
+    virtual int last_error() const { return 0; }
 };
 
 // Metadata-only mapping admission: no reads through mapped pointers, prefetch,
@@ -53,16 +54,21 @@ inline ModelMappingReport admit_model_mapping(const std::vector<ModelMappingFile
         observe("model_mapping_before_open");
         const auto fd = ops.open_readonly(file.path);
         if (fd < 0) throw std::runtime_error("Original model mapping file could not be opened");
+        observe("model_mapping_after_open");
         std::uint64_t bytes = 0;
+        observe("model_mapping_before_file_identity");
         if (!ops.regular_file_size(fd, bytes) || bytes != file.bytes) {
             (void) ops.close_file(fd);
             throw std::runtime_error("Original model mapping file identity or size is not admitted");
         }
+        observe("model_mapping_before_public_mmap");
         const auto at = ops.map_readonly(fd, bytes);
+        observe("model_mapping_public_mmap_returned");
         const auto span = (bytes + page - 1) & ~(page - 1);
         if (at == std::numeric_limits<std::uintptr_t>::max()) {
             (void) ops.close_file(fd);
-            throw std::runtime_error("Original model address space could not be mapped; earlier mappings retained");
+            throw std::runtime_error("Original model address space mapping was rejected, error=" +
+                std::to_string(ops.last_error()) + "; earlier mappings retained");
         }
         if (!at || (at & (page - 1)) || at >= (1ull << 47) || span > (1ull << 47) - at)
             throw std::runtime_error("CPU model mapping returned an unadmitted range; backing retained");
@@ -70,6 +76,7 @@ inline ModelMappingReport admit_model_mapping(const std::vector<ModelMappingFile
             if (at < previous.at + previous.span && previous.at < at + span)
                 throw std::runtime_error("CPU model mapping ranges overlap; backing retained");
         mapped.push_back({at, bytes, span}); ++report.files;
+        observe("model_mapping_before_file_close");
         if (!ops.close_file(fd))
             throw std::runtime_error("CPU model file close was uncertain; backing retained");
         observe("model_mapping_completed");
@@ -80,6 +87,7 @@ inline ModelMappingReport admit_model_mapping(const std::vector<ModelMappingFile
         if (!ops.unmap(it->at, it->bytes))
             throw std::runtime_error("CPU model unmap failed; remaining backing retained without retry");
         ++report.unmapped;
+        observe("model_mapping_completed_unmap");
     }
     observe("model_mapping_all_completed_ranges_unmapped");
     return report;

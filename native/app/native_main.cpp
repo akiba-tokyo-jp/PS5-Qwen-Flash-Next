@@ -12,6 +12,7 @@
 #include "vulkan_admission.h"
 #include "memory_admission.h"
 #include "model_integrity.h"
+#include "prior_model_integrity.h"
 #include "model_receipt.h"
 #include "model_mapping.h"
 #include "validation_policy.h"
@@ -86,6 +87,19 @@ static ModelFileIdentity model_file_identity(const std::string & path, std::uint
     if (!observed || !closed || !S_ISREG(info.st_mode) || !info.st_ino || info.st_size < 0 ||
         static_cast<std::uint64_t>(info.st_size) != bytes || (info.st_mode & 0022))
         throw std::runtime_error("Original model identity or owned file permissions are not admitted");
+    return {std::uint64_t(info.st_dev), std::uint64_t(info.st_ino), std::uint64_t(info.st_mode),
+        std::uint64_t(info.st_uid), std::uint64_t(info.st_gid), std::uint64_t(info.st_size),
+        std::uint64_t(info.st_mtim.tv_sec), std::uint64_t(info.st_mtim.tv_nsec),
+        std::uint64_t(info.st_ctim.tv_sec), std::uint64_t(info.st_ctim.tv_nsec)};
+}
+
+static ModelFileIdentity model_directory_identity(const std::string & path) {
+    const int fd = open(path.c_str(), O_RDONLY | O_DIRECTORY | O_NOFOLLOW);
+    if (fd < 0) throw std::runtime_error("Original model directory could not be observed");
+    struct stat info{}; const bool observed = fstat(fd, &info) == 0; const bool closed = close(fd) == 0;
+    if (!observed || !closed || !S_ISDIR(info.st_mode) || !info.st_ino || info.st_size <= 0 ||
+        info.st_uid != 0 || info.st_gid != 0 || (info.st_mode & 07777) != 0755)
+        throw std::runtime_error("Original model directory ownership is not admitted");
     return {std::uint64_t(info.st_dev), std::uint64_t(info.st_ino), std::uint64_t(info.st_mode),
         std::uint64_t(info.st_uid), std::uint64_t(info.st_gid), std::uint64_t(info.st_size),
         std::uint64_t(info.st_mtim.tv_sec), std::uint64_t(info.st_mtim.tv_nsec),
@@ -434,6 +448,18 @@ int main(int argc, char ** argv) {
         }
         const auto receipt = qwen_app::read_model_receipt(startup.model_receipt);
         const auto expected_mapped_files=qwen_app::validate_model_receipt(receipt);
+        const auto prior_integrity = startup.first_generation_validation ?
+            qwen_app::prior_model_integrity(policy.at("native_first_generation_validation"), receipt, expected_mapped_files) :
+            std::optional<qwen_app::PriorModelIntegrity>{};
+        const auto receipt_separator = startup.model_receipt.find_last_of('/');
+        const auto model_directory = startup.model_receipt.substr(0, receipt_separator);
+        auto require_prior_metadata = [&] {
+            if (prior_integrity && (receipt_separator == std::string::npos ||
+                model_directory_identity(model_directory) != prior_integrity->directory ||
+                model_file_identity(startup.model_receipt, policy.at("native_first_generation_validation").at("model_receipt_bytes").get<std::uint64_t>()) != prior_integrity->receipt))
+                throw std::runtime_error("Sealed original model directory or receipt changed after native SHA verification");
+        };
+        require_prior_metadata();
         // A receipt records host conversion provenance, not a fresh console hash
         // check. Deployment must independently verify every transferred file.
         qwen_app::ModelFootprint footprint; std::unordered_set<std::string> tensor_names;
@@ -441,7 +467,7 @@ int main(int argc, char ** argv) {
         std::vector<ModelFileIdentity> file_identities;
         const auto verification_started = std::chrono::steady_clock::now();
         const auto verification_deadline = verification_started +
-            std::chrono::seconds(qwen_app::native_model_verification_seconds);
+            std::chrono::seconds(prior_integrity ? 60 : qwen_app::native_model_verification_seconds);
         bool first = true;
         unsigned file_index=0;
         std::uint64_t fully_verified_bytes=0;
@@ -451,10 +477,13 @@ int main(int argc, char ** argv) {
             if (startup.first_generation_validation)
                 file_identities.push_back(model_file_identity(
                     model_file(startup.model_receipt,file.at("path").get<std::string>()), file_bytes));
+            if (prior_integrity && file_identities.back() != prior_integrity->files.at(file_index - 1))
+                throw std::runtime_error("Sealed original model file changed after native SHA verification");
             screen.state="verifying original model bytes";
             const auto remaining = std::chrono::duration_cast<std::chrono::seconds>(
                 verification_deadline - std::chrono::steady_clock::now()).count();
             if (remaining <= 0) throw std::runtime_error("Complete original-model verification deadline expired before backend initialization");
+            if (!prior_integrity) {
             qwen_native_stage("model_file_integrity_started_before_backend_initialization");
             qwen_app::verify_model_file(model_file(startup.model_receipt,file.at("path").get<std::string>()),
                 file_bytes,file.at("sha256").get<std::string>(),[&](std::uint64_t verified){
@@ -474,10 +503,11 @@ int main(int argc, char ** argv) {
                         std::to_string(qwen_app::native_model_verification_seconds);
                     qwen_native_stage(stage.c_str());
                 }, static_cast<unsigned>(remaining));
+            }
             fully_verified_bytes=qwen_app::checked_memory_sum(fully_verified_bytes,file_bytes);
-            const auto completed="model_file_integrity_completed file="+std::to_string(file_index)+
+            const auto completed=std::string(prior_integrity ? "model_file_prior_integrity_reused file=" : "model_file_integrity_completed file=")+std::to_string(file_index)+
                 " bytes="+std::to_string(file_bytes)+" total_verified_bytes="+std::to_string(fully_verified_bytes)+
-                " SHA256_matched=1";
+                (prior_integrity ? " prior_native_SHA256_matched=1 sealed_identity_unchanged=1" : " SHA256_matched=1");
             qwen_native_stage(completed.c_str());
             inspect_container(model_file(startup.model_receipt, file.at("path").get<std::string>()), first,
                 footprint,tensor_names,file.at("bytes").get<std::uint64_t>()); first = false;
@@ -487,11 +517,18 @@ int main(int argc, char ** argv) {
         if (std::chrono::steady_clock::now() > verification_deadline)
             throw std::runtime_error("Complete original-model verification deadline expired before backend initialization");
         qwen_app::validate_original_footprint(footprint,expected_mapped_files);
+        require_prior_metadata();
         const auto first_path = model_file(startup.model_receipt, receipt.at("files").at(0).at("path").get<std::string>());
         write_fresh_report(startup.admission_report+".integrity",{{"schema","ps5-qwen-model-integrity-v1"},
             {"pid",getpid()},{"files_verified",file_index},{"all_SHA256_matched",true},
             {"mapped_file_bytes",footprint.mapped_files},{"verified_file_bytes",fully_verified_bytes},
             {"maximum_verification_seconds",qwen_app::native_model_verification_seconds},
+            {"verification_mode",prior_integrity ? "prior_native_SHA_and_unchanged_sealed_identity" : "complete_native_SHA_this_run"},
+            {"payload_SHA_computed_in_this_run",!prior_integrity},
+            {"metadata_validation_deadline_seconds",prior_integrity ? 60 : qwen_app::native_model_verification_seconds},
+            {"prior_native_integrity_report_sha256",prior_integrity ? Json(prior_integrity->report_sha256) : Json(nullptr)},
+            {"sealed_identity_snapshot_sha256",prior_integrity ? Json(prior_integrity->snapshot_sha256) : Json(nullptr)},
+            {"prior_native_verification_elapsed_ms",prior_integrity ? Json(prior_integrity->original_elapsed_ms) : Json(nullptr)},
             {"verification_elapsed_ms",std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::steady_clock::now()-verification_started).count()},
             {"model_loaded",false},{"Vulkan_initialized",false}});
@@ -501,6 +538,7 @@ int main(int argc, char ** argv) {
             if (!startup.first_generation_validation) return;
             if (file_identities.size() != mapping_files.size())
                 throw std::runtime_error("Complete original-model identity binding is missing");
+            require_prior_metadata();
             for (std::size_t i = 0; i < mapping_files.size(); ++i)
                 if (model_file_identity(mapping_files[i].path, mapping_files[i].bytes) != file_identities[i])
                     throw std::runtime_error("Original model changed after its native verification");

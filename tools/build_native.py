@@ -19,6 +19,7 @@ from driver_inputs import sha, validate_driver
 from native_driver import validate_native_platform
 from native_dispatch import audit as audit_dispatch
 from build_model_io import validate_overrides
+from title_libc import title_libc
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -134,6 +135,8 @@ def main():
     driver_archive = Path((native_platform or selected)["archive_path"])
     engine_archives = [Path(row["path"]) for row in built["artifacts"]]
     static_runtime = [library / name for name in ("libc++.a", "libc++abi.a", "libunwind.a", "libps5platform.a", "libc.a")]
+    native_libc, native_libc_proof = title_libc(library / "libc.a", out, llvm / "llvm-ar.exe")
+    static_runtime[-1] = native_libc
     builtins = workspace / "toolchain/llvm-mingw-20261006-ucrt-x86_64/lib/clang/23/lib/linux/libclang_rt.builtins-x86_64.a"
     imports = [a.runtime_imports / "libSceAgc.so", a.runtime_imports / "libSceAgcDriver.so"]
     imports += [library / name for name in ("libc_stub_weak.so", "libSceLibcInternal.so", "libkernel.so",
@@ -192,6 +195,7 @@ def main():
     command.append("--threads=" + str(a.link_threads))
     before = [record(path) for path in inputs]
     receipt = {"schema": "ps5-qwen-native-link-v1", "driver": selected, "engine_receipt": record(receipt_path),
+               "native_libc": native_libc_proof,
                "GPU_modes_enabled": False, "native_allocator_frontend_integrated": native_platform is not None,
                "native_platform": native_platform,
                "linked_driver": native_platform or selected,
@@ -229,6 +233,12 @@ def main():
             raise ValueError("A model-I/O override was omitted or its original archive member was linked")
     receipt["bounded_model_source_link_map_passed"] = True
     symbols = subprocess.check_output([str(llvm / "llvm-nm.exe"), "--defined-only", str(elf)], text=True)
+    if re.search(r"\b[Tt]\s+mmap$", symbols, re.M):
+        raise ValueError("A native title must not define the SDK payload mmap routine")
+    public_imports_output = subprocess.check_output([str(llvm / "llvm-nm.exe"), "-D", "--undefined-only", "--format=posix", str(elf)], text=True)
+    if "mmap" not in {line.split()[0] for line in public_imports_output.splitlines() if line.split()}:
+        raise ValueError("The native title must retain its public mmap import")
+    receipt["mmap_public_provider_required"] = True
     for name in ("_start", "main", "catchReturnFromMain", "qwen_native_halt", "qwen_native_accept_http", "_Znwm", "__gxx_personality_v0", "llama_app_mmap_prefetch_disabled", "llama_app_expert_policy_enabled", "llama_app_expert_counters", "ggml_app_bounded_staging_enabled", "vkGetInstanceProcAddr"):
         if not re.search(r"\b" + re.escape(name) + r"$", symbols, re.M):
             raise ValueError("Required native integration symbol is absent: " + name)

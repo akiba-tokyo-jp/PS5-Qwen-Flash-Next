@@ -160,6 +160,26 @@ class FirstGenerationRecords(unittest.TestCase):
                 self.save()
                 with self.assertRaises(ValueError):
                     validate(self.result, self.binding)
+
+    def test_prior_native_integrity_requires_explicit_mode_deadline_and_evidence(self):
+        integrity = self.records[".integrity"]
+        integrity.update(verification_mode="prior_native_SHA_and_unchanged_sealed_identity",
+            payload_SHA_computed_in_this_run=False, metadata_validation_deadline_seconds=60,
+            verification_elapsed_ms=500, prior_native_verification_elapsed_ms=5370082,
+            prior_native_integrity_report_sha256="d"*64, sealed_identity_snapshot_sha256="e"*64)
+        self.save()
+        validate(self.result, self.binding)
+        original = copy.deepcopy(self.records)
+        for key, value in (("payload_SHA_computed_in_this_run", True),
+            ("metadata_validation_deadline_seconds", 7200), ("verification_elapsed_ms", 60001),
+            ("prior_native_verification_elapsed_ms", 7200001),
+            ("prior_native_integrity_report_sha256", "invalid"), ("sealed_identity_snapshot_sha256", None)):
+            with self.subTest(key=key):
+                self.records = copy.deepcopy(original)
+                self.records[".integrity"][key] = value
+                self.save()
+                with self.assertRaises(ValueError):
+                    validate(self.result, self.binding)
         for key, value in (("TTFT_ms", 99), ("decode_tokens_per_second", 51),
                            ("generated_tokens", True), ("total_ms", float("nan"))):
             with self.subTest(metric=key):

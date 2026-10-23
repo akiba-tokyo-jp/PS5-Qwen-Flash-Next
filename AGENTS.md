@@ -539,3 +539,24 @@ bound. Keep all frozen inputs unchanged, including the sealing controller and
 observer sources. See `docs/native-full-model-progress-20261023.md`. Full-model
 generation, displayed metrics, positive final retirement and restoration remain
 unqualified until their actual terminal evidence and visual review pass.
+
+## Reviewed native mapping exit and distinct public provider (2026-10-24)
+
+Case 020 subsequently completed all 76 native model SHA256 checks, then exited
+without a mapping completion. No backend/GPU initialization or model load was
+reached. Full-plan 047 positively ended, its failure retained. Fresh CPU guards
+passed with no native owner and unchanged boot/services. No ordinary OS close
+was sent for the already-absent process. The original SELF remains preserved in
+the original case-019 backup; final restoration/readmission remains outstanding.
+
+The distinct case 021 may use the corrected public-mmap SELF described in
+`docs/native-public-mmap-20261024.md`. Require its real libkernel mmap provider,
+six-segment SELF roundtrip, unchanged pinned driver/cache policy and fresh
+session/clock admission. The prior complete native SHA report may be reused only
+with the bound raw evidence and newly checked unchanged sealed identities of
+all model files, receipt and directory. Hold the model writer lease throughout
+the native sequence. Do not repeat conversion, transfer or the full payload hash
+when that explicit reuse gate passes. If any identity changes, reject reuse.
+Preserve every failure and reject automatic retries. All memory, precision,
+mapping, generation, display, retirement and exact original restoration gates
+remain required; committed execution/deployment/release/CI controls stay disabled.

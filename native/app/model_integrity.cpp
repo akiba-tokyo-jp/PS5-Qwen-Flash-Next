@@ -8,6 +8,13 @@ extern "C" {
 #include "hash/sha256/sha256.h"
 }
 namespace qwen_app {
+std::string sha256_metadata_bytes(const std::string & bytes) {
+    if (bytes.empty() || bytes.size() > (1u << 20)) throw std::invalid_argument("Bounded integrity metadata is required");
+    sha256_t hash; sha256_init(&hash); sha256_update(&hash, reinterpret_cast<const unsigned char *>(bytes.data()), bytes.size());
+    unsigned char digest[32]; sha256_final(&hash, digest); std::string result;
+    for (const auto value : digest) { result += "0123456789abcdef"[value >> 4]; result += "0123456789abcdef"[value & 15]; }
+    return result;
+}
 void verify_model_file(const std::string & path,std::uint64_t bytes,const std::string & expected,
                        const std::function<void(std::uint64_t)> & progress,unsigned timeout_seconds) {
     if(!bytes||bytes>(512ull<<30)||expected.size()!=64||expected.find_first_not_of("0123456789abcdef")!=std::string::npos||

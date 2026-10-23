@@ -14,6 +14,12 @@ int main(int argc, char ** argv) {
         auto scope = qwen_app::first_generation_scope();
         for (const auto * key : {"candidate_SELF_sha256", "candidate_SELF_bytes", "model_receipt_sha256", "model_receipt_bytes", "run_id"})
             scope[key] = binding.at(key);
+        if (binding.contains("prior_native_integrity")) {
+            const auto & prior = binding.at("prior_native_integrity");
+            if (!prior.is_object() || prior.at("schema") != "ps5-qwen-prior-native-integrity-v1")
+                throw std::runtime_error("Unknown prior native integrity evidence");
+            scope["prior_native_integrity"] = prior;
+        }
         nlohmann::json policy{{"native_first_generation_validation", scope}};
         qwen_app::require_first_generation_policy(policy, false);
         std::cout << scope.dump(2) << '\n';

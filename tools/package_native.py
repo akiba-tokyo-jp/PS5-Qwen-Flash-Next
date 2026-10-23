@@ -56,6 +56,8 @@ def main():
     imported = audit(a.workspace, a.cache)
     if imported["missing"]:
         raise ValueError("Real module import audit failed: " + ", ".join(imported["missing"]))
+    if linked.get("mmap_public_provider_required") is not True or imported["resolved"].get("mmap") != "libkernel.sprx":
+        raise ValueError("The native file mapper must import the actual public libkernel mmap provider")
     if a.out.exists():
         raise ValueError("Package output must be a fresh directory")
     host = a.workspace / "toolchain/msys-clang64/clang64/bin"

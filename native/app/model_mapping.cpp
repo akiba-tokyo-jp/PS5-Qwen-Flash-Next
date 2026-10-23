@@ -4,10 +4,12 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <cerrno>
 
 namespace qwen_app {
 namespace {
 class NativeMappingOps final : public ModelMappingOps {
+    int error_ = 0;
     std::uint64_t page_size() override {
         const auto bytes = sysconf(_SC_PAGESIZE);
         return bytes > 0 ? static_cast<std::uint64_t>(bytes) : 0;
@@ -21,12 +23,15 @@ class NativeMappingOps final : public ModelMappingOps {
     }
     std::uintptr_t map_readonly(int fd, std::uint64_t bytes) override {
         static_assert(sizeof(std::size_t) == 8, "Complete model mappings require 64-bit lengths");
-        return reinterpret_cast<std::uintptr_t>(mmap(nullptr, bytes, PROT_READ, MAP_SHARED, fd, 0));
+        const auto at = mmap(nullptr, bytes, PROT_READ, MAP_SHARED, fd, 0);
+        error_ = errno;
+        return reinterpret_cast<std::uintptr_t>(at);
     }
     bool close_file(int fd) override { return close(fd) == 0; }
     bool unmap(std::uintptr_t at, std::uint64_t bytes) override {
         return munmap(reinterpret_cast<void *>(at), bytes) == 0;
     }
+    int last_error() const override { return error_; }
 };
 }
 ModelMappingReport admit_native_model_mapping(const std::vector<ModelMappingFile> & files,
