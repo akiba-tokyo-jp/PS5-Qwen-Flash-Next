@@ -36,3 +36,9 @@ reviewed first file. The finite full-plan continuation waits for its positive
 completion and exit before preparing the unchanged physical case 019. Independent
 native destination SHA, memory/load/generation, passive display and every exact
 original restoration/readmission result remain pending.
+
+The next physical file completed with the recorded reply `226 Path renamed`.
+Its complete source SHA, published size and positive partial absence passed the
+corrected checks; the first file was not resent. The data and full-plan processes
+were both observed active. See `model-transfer-checkpoint-20261023.json` for this
+sanitized checkpoint. The first file's exact old reply remains unknown.
