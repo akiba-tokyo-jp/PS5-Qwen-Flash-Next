@@ -440,3 +440,17 @@ hashes; all local directory admissions passed in offline mode. Continuation 023
 may use fresh batch 005 and the unchanged unused physical case 019, reusing the
 completed model and candidate. Keep its frozen inputs unchanged. No failed or
 uncertain physical directory operation is being repeated.
+
+Batch 005 later completed CPU `prepare`, then rejected the FTP creation's
+canonical-path comparison before marker upload/finalization. A read-only review
+proved the exact empty root-owned directory. Reviewed continuation 006 did not
+repeat `prepare` or `MKD`: one fresh CPU observation, the first marker upload and
+the first `finalize` all passed, restoring parent ownership with exact readback.
+See `docs/model-directory-reviewed-resume-20261023.md`. The original plan and
+complete model are retained. Data continuation 006 is active with two CPU
+observation requests and a bounded one-writer transfer; keep its frozen inputs
+unchanged. Its distinct completion-v2 record binds the reviewed directory and
+original plan. Full-plan continuation 024 may wait for the identified data
+process's positive completion and exit, then perform the existing physical case
+019 and every final restoration/readmission step. Ordinary execution/deployment/
+release and CI remain disabled; native destination SHA is still mandatory.

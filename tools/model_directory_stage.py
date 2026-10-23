@@ -92,11 +92,14 @@ def prepare_directory_once(connection, manifest, out, *, guard, control):
         phase = "mkdir"; boundary(); connection.absent(REMOTE_ROOT)
         exclusive_json(out / "mkdir.intent.private.json", dict(remote_root=REMOTE_ROOT, automatic_retries=0))
         with connection.ftp() as ftp:
-            if ftp.mkd(REMOTE_ROOT) != REMOTE_ROOT:
+            returned = ftp.mkd(REMOTE_ROOT)
+            if returned not in ("", REMOTE_ROOT):
                 raise ValueError("The new directory result does not match its exact path")
+            entry = connection.model_directory_entry(ftp)
             if connection.directory_metadata(ftp):
                 raise ValueError("The newly created model directory is not empty")
-        exclusive_json(out / "mkdir.complete.private.json", dict(new_directory_created=True))
+        exclusive_json(out / "mkdir.complete.private.json", dict(new_directory_created=True,
+            returned_directory=returned, exact_directory_entry=entry, empty_directory_verified=True))
         phase = "marker_upload"; boundary(); connection.absent(REMOTE_ROOT + "/" + MARKER)
         exclusive_json(out / "marker.intent.private.json", dict(marker=marker, automatic_retries=0))
         with connection.ftp() as ftp:

@@ -14,9 +14,10 @@ Strata UMA admission and Maya aged-frequency caching remain in the real engine.
 
 All 131 original shards passed SHA256. All 76 converted splits have been written,
 and the complete independent tensor-content audit and all final container hashes
-passed. The v2 receipt is published; transfer has not started at this checkpoint.
-The data continuation's CPU controller import mismatch was corrected and checked
-on the host; see `model-directory-import-fix-20261023.md`. The converted tensor
+passed. The v2 receipt is published and the guarded model transfer has started.
+The CPU controller and its reviewed directory preparation are complete; see
+`model-directory-import-fix-20261023.md` and
+`model-directory-reviewed-resume-20261023.md`. The converted tensor
 payload is 359,235,922,432 bytes;
 the containers total 359,246,956,672 bytes. Component/display evidence does not
 establish model compatibility. Ordinary inference remains rejected, and
@@ -203,9 +204,14 @@ checks. Continuation 022 / batch 004 subsequently passed the actual controller
 link and fresh physical CPU admission, then ended on a local path-scope rejection
 of the qualified recipe's two archived CRT inputs before directory execution.
 The exact-path correction passed all offline directory admissions. A single
-finite continuation 023 can use the existing data operator with fresh batch 005,
-then the still-unused physical case 019. No additional audit/hash waiting
-controller is needed. Preserve all earlier terminal records.
+finite continuation 023 / batch 005 subsequently completed CPU `prepare`, then
+rejected the FTP creation's canonical-path comparison. A read-only review proved
+the exact empty root-owned directory. The reviewed continuation did not repeat
+`prepare` or `MKD`; it completed the first marker upload/finalization and positively
+restored parent ownership. Data continuation 006 is transferring the original
+model using the unchanged existing plan. Full-plan continuation 024 may wait for
+its positive completion/exit, then use the still-unused physical case 019. No
+additional audit/hash waiting controller is needed. Preserve all terminal records.
 These host/data outcomes do not establish physical model capacity,
 generated text or performance.
 

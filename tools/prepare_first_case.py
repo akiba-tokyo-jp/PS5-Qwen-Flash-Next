@@ -36,6 +36,45 @@ def write(path, value):
         output.write(json.dumps(value, indent=2) + "\n"); output.flush(); os.fsync(output.fileno())
 
 
+def data_plan_path(complete, completion_path, cache):
+    """Bind a reviewed continuation to its original plan and positive directory proof."""
+    if complete.get("schema") == "ps5-qwen-model-data-continuation-complete-v1":
+        return completion_path.parent / "plan/plan.private.json"
+    if complete.get("schema") != "ps5-qwen-model-data-continuation-complete-v2":
+        raise ValueError("Unknown complete data continuation schema")
+    def cached(row):
+        path = Path(row["path"])
+        if path.is_symlink() or not path.resolve().is_relative_to(cache.resolve()):
+            raise ValueError("Reviewed data evidence must remain in the task data cache")
+        return bound(row)
+    plan_path = cached(complete["original_plan"])
+    reviewed = read(cached(complete["reviewed_directory_resume"]))
+    required = dict(schema="ps5-qwen-reviewed-directory-resume-complete-v1",
+        existing_empty_directory_verified=True, prepare_and_MKD_repeated=False,
+        marker_uploaded_once=True, finalize_positive=True, parent_ownership_restored=True,
+        automatic_retries=0, title_launches=0, GPU_calls=0)
+    if any(type(reviewed.get(k)) is not type(v) or reviewed[k] != v for k, v in required.items()):
+        raise ValueError("Positive reviewed directory finalization is required")
+    if (reviewed.get("original_plan") != complete["original_plan"] or
+            reviewed.get("directory_preparation") != complete["directory_preparation"]):
+        raise ValueError("Reviewed directory evidence differs from the completed data plan")
+    failure = read(cached(reviewed["original_failure"]))
+    if failure.get("phase") != "mkdir" or failure.get("title_launches") != 0 or failure.get("GPU_calls") != 0:
+        raise ValueError("The retained reviewed directory failure differs")
+    directory = read(cached(complete["directory_preparation"]))
+    plan = read(plan_path)
+    if (directory.get("schema") != "ps5-qwen-model-directory-preparation-v1" or
+            directory.get("parent_ownership_restored") is not True or
+            directory.get("marker_full_readback_verified") is not True or
+            directory.get("plan_sha256") != sha(plan_path) or directory.get("owner_nonce") != plan["nonce"]):
+        raise ValueError("The exact original plan needs positive owned-directory evidence")
+    marker = read(cached(directory["marker"]))
+    if marker != dict(schema="ps5-qwen-model-directory-owner-v1", nonce=plan["nonce"],
+            original_receipt_sha256=plan["original_receipt"]["sha256"]):
+        raise ValueError("The reviewed directory marker differs from the original receipt")
+    return plan_path
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("workspace", "cache", "package", "data-completion", "out"):
@@ -48,12 +87,13 @@ def main():
         raise ValueError("A packaged candidate with successful native imports and SELF roundtrip is required")
     candidate = bound(package["SELF"])
     complete = read(args.data_completion)
-    if (complete.get("schema") != "ps5-qwen-model-data-continuation-complete-v1" or
+    if (complete.get("schema") not in {"ps5-qwen-model-data-continuation-complete-v1",
+                                      "ps5-qwen-model-data-continuation-complete-v2"} or
             complete.get("native_SHA_verified") is not False or complete.get("model_loaded") is not False or
             complete.get("full_inference_qualified") is not False or complete.get("GPU_calls") != 0):
         raise ValueError("Complete data-only transfer evidence is required")
     transfer = read(bound(complete["transfer"]))
-    plan_path = args.data_completion.parent / "plan/plan.private.json"; plan = read(plan_path)
+    plan_path = data_plan_path(complete, args.data_completion, cache); plan = read(plan_path)
     if (transfer.get("schema") != "ps5-qwen-model-transfer-complete-v1" or
             transfer.get("state") != "awaiting_native_SHA_admission" or
             transfer.get("positively_completed_files") != len(plan["files"]) or

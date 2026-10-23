@@ -63,6 +63,24 @@ class PS5ModelConnection:
             yield ftp
 
     @staticmethod
+    def model_directory_entry(ftp):
+        entries = []
+        parent, name = REMOTE_ROOT.rsplit("/", 1)
+        def receive(line):
+            if len(entries) >= 1024 or len(line) > 4096:
+                raise ValueError("Parent directory metadata exceeded its bound")
+            fields = line.split()
+            if len(fields) < 9:
+                raise ValueError("Complete parent directory metadata is required")
+            entries.append(fields)
+        response = ftp.retrlines("LIST " + parent, receive)
+        matches = [row for row in entries if row[-1] == name]
+        if (not response.startswith("226 ") or len(matches) != 1 or
+                not re.fullmatch(r"d[rwx-]{9}", matches[0][0]) or matches[0][2:4] != ["0", "0"]):
+            raise ValueError("The exact root-owned regular model directory must be observed")
+        return dict(name=name, mode=matches[0][0], uid=0, gid=0)
+
+    @staticmethod
     def directory_metadata(ftp):
         rows = []
         def receive(line):

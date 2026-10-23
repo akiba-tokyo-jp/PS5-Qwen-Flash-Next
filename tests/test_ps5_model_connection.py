@@ -58,6 +58,26 @@ class ModelConnection(unittest.TestCase):
         self.process_response([self.service])
         self.client.idle_guard([self.service])
 
+    def directory_entry(self, lines, response="226 Directory listed"):
+        class FTP:
+            def retrlines(_, command, receive):
+                self.assertEqual(command, "LIST " + connection.REMOTE_ROOT.rsplit("/", 1)[0])
+                for line in lines: receive(line)
+                return response
+        return self.client.model_directory_entry(FTP())
+
+    def test_exact_root_owned_directory_entry(self):
+        value = self.directory_entry(["drwxrwxrwx 2 0 0 65536 Oct 23 03:14 model"])
+        self.assertEqual(value, dict(name="model", mode="drwxrwxrwx", uid=0, gid=0))
+
+    def test_missing_foreign_symlink_or_ambiguous_directory_rejects(self):
+        valid = "drwxrwxrwx 2 0 0 65536 Oct 23 03:14 model"
+        for rows in ([], [valid, valid], [valid.replace(" 0 0 ", " 1 0 ")],
+                     [valid.replace("drwxrwxrwx", "lrwxrwxrwx")],
+                     [valid.replace("drwxrwxrwx", "drwsrwxrwx")]):
+            with self.subTest(rows=rows), self.assertRaises(ValueError): self.directory_entry(rows)
+        with self.assertRaises(ValueError): self.directory_entry([valid], "450 Listing failed")
+
     def test_active_native_owner_rejects(self):
         self.process_response([self.service, dict(name="eboot.bin", pid=124)])
         with self.assertRaisesRegex(ValueError, "native title is active"): self.client.idle_guard([self.service])

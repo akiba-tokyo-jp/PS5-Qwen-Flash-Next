@@ -19,6 +19,7 @@ class FakeConnection:
     def __init__(self):
         self.created = False; self.marker = None; self.calls = []
         self.fail = None; self.finalized = False
+        self.returned_directory = stage.REMOTE_ROOT
     def absent(self, path):
         if path == stage.REMOTE_ROOT and self.created: raise ValueError("Existing directory")
         if path.endswith(stage.MARKER) and self.marker is not None: raise ValueError("Existing marker")
@@ -27,7 +28,11 @@ class FakeConnection:
     def mkd(self, path):
         self.calls.append("mkdir")
         if self.fail == "mkdir": raise TimeoutError("Ambiguous mkdir")
-        self.created = True; return path
+        self.created = True; return self.returned_directory
+    def model_directory_entry(self, ftp):
+        if not self.created or self.fail == "directory_entry":
+            raise ValueError("The exact created directory is not observed")
+        return dict(name="model", mode="drwxrwxrwx", uid=0, gid=0)
     def directory_metadata(self, ftp):
         if self.marker is None: return []
         return [dict(name=stage.MARKER, mode="-rw-r--r--")]
@@ -85,6 +90,23 @@ class DirectoryStage(unittest.TestCase):
             stage.prepare_directory_once(self.connection, self.manifest, self.out,
                 guard=refuse, control=self.control)
         self.assertEqual(self.controls, []); self.assertEqual(self.connection.calls, [])
+
+    def test_missing_FTP_canonical_path_needs_positive_owned_empty_directory(self):
+        self.connection.returned_directory = ""
+        self.assertTrue(self.run_stage()["parent_ownership_restored"])
+        self.assertEqual(self.connection.calls, ["mkdir", "upload"])
+
+    def test_missing_or_different_created_directory_never_uploads_marker(self):
+        self.connection.returned_directory = ""
+        self.connection.fail = "directory_entry"
+        with self.assertRaises(ValueError): self.run_stage()
+        self.assertEqual(self.connection.calls, ["mkdir"])
+        self.assertEqual(self.controls, ["prepare"])
+
+    def test_different_canonical_path_never_uploads_marker(self):
+        self.connection.returned_directory = stage.REMOTE_ROOT + "-other"
+        with self.assertRaises(ValueError): self.run_stage()
+        self.assertEqual(self.connection.calls, ["mkdir"])
 
     def test_failed_prepare_is_not_followed_by_mkdir_or_retry(self):
         self.bad_control = "prepare"
