@@ -199,9 +199,13 @@ host finisher completed the full independent content audit and all container
 hashes. Data continuation 003 then failed its CPU controller import check before
 any CPU observer or console action; waiter 005 and full-plan continuation 021
 positively ended. The isolated controller correction passed focused host/native
-checks. A new single finite continuation 022 can use the existing data operator
-with fresh batch 004, then the still-unused physical case 019. No additional
-audit/hash waiting controller is needed. Preserve all earlier terminal records.
+checks. Continuation 022 / batch 004 subsequently passed the actual controller
+link and fresh physical CPU admission, then ended on a local path-scope rejection
+of the qualified recipe's two archived CRT inputs before directory execution.
+The exact-path correction passed all offline directory admissions. A single
+finite continuation 023 can use the existing data operator with fresh batch 005,
+then the still-unused physical case 019. No additional audit/hash waiting
+controller is needed. Preserve all earlier terminal records.
 These host/data outcomes do not establish physical model capacity,
 generated text or performance.
 

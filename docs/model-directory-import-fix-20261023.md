@@ -32,3 +32,16 @@ records and artifacts are retained; no uncertain physical operation is retried.
 The actual plan-bound controller link must still pass before its first CPU
 execution. Fresh session, storage, owner and independent native SHA gates remain
 mandatory. Committed deployment, execution, release and CI controls stay disabled.
+
+The next batch passed its actual plan-bound controller link and a fresh physical
+CPU observer: same boot/services, equal snapshots, no native owner and no title
+or GPU calls. Local directory admission then rejected two archived CRT objects
+used by the exact qualified build recipe. This occurred before the directory
+controller or any directory mutation; no remote operation was retried.
+
+The private operator now recognizes only those two exact archive paths after
+verifying the pinned reference source, executable and command-template digest.
+Both inputs must occur in that qualified recipe and retain their recorded sizes
+and SHA256. Other archive paths remain rejected. All directory local admissions
+then passed in offline mode against the captured positive CPU evidence. The
+next finite continuation uses fresh evidence before any physical mutation.

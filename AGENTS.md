@@ -431,3 +431,12 @@ physical case 019 and every original final restoration/readmission gate. No new
 model audit/hash waiter or application rebuild is required. Keep its frozen
 sources unchanged while it runs; retain every failed/uncertain attempt without
 automatic retry, GPU reset or forced close.
+
+Continuation 022 / batch 004 later passed the actual controller link and fresh
+physical CPU admission. A private local provenance check rejected the qualified
+recipe's two archived CRT objects before the directory controller or any data
+mutation. Its exact-path correction retains the pinned recipe and both recorded
+hashes; all local directory admissions passed in offline mode. Continuation 023
+may use fresh batch 005 and the unchanged unused physical case 019, reusing the
+completed model and candidate. Keep its frozen inputs unchanged. No failed or
+uncertain physical directory operation is being repeated.
