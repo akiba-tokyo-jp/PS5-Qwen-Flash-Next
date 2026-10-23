@@ -18,6 +18,7 @@ static int decodes = 0, synchronizes = 0, clears = 0, freed = 0, samples = 0;
 static bool decode_failure = false;
 static float logits[] = {1, 2, 3, 4};
 static std::vector<int> decoded;
+static std::vector<bool> output_requests;
 static std::vector<std::string> stages;
 static int gpu_begins=0,gpu_completes=0,gpu_retains=0;
 static bool gpu_completion_failure=false;
@@ -46,7 +47,7 @@ int32_t llama_tokenize(const llama_vocab *, const char *, int32_t, llama_token *
 void llama_batch_ext_clear(llama_batch_ext *) {}
 int32_t llama_batch_ext_add_token(llama_batch_ext *, llama_seq_id, llama_token token) { decoded.push_back(token); return 0; }
 bool llama_batch_ext_set_pos(llama_batch_ext *, int32_t, const llama_pos *) { return true; }
-bool llama_batch_ext_set_output_logits(llama_batch_ext *, int32_t, bool) { return true; }
+bool llama_batch_ext_set_output_logits(llama_batch_ext *, int32_t, bool output) { output_requests.push_back(output); return true; }
 int32_t llama_process(llama_context *, llama_process_type, llama_batch_ext *) { ++decodes; return decode_failure ? -1 : 0; }
 void llama_synchronize(llama_context *) { ++synchronizes; }
 uint32_t llama_n_ctx(const llama_context *) { return 64; }
@@ -84,6 +85,8 @@ int main() {
             engine.prefill(64);
             check(stages.back()=="inference_prefill_completed", "Completed prefill stage is missing");
             check(decodes == 3 && synchronizes == 3, "Prefill did not use synchronous single-token batches");
+            check(output_requests.size()==3 && output_requests[0] && output_requests[1] && output_requests[2],
+                  "Single-token prefill must retain final-layer output/cache eligibility");
             check(engine.next().piece.size() == 300 && decodes == 3, "First sample unnecessarily decoded or truncated a piece");
             engine.next(); check(decodes == 4 && decoded.back() == 1, "Previous sampled token was not decoded");
             check(engine.next().end_of_generation, "End-of-generation was not detected");

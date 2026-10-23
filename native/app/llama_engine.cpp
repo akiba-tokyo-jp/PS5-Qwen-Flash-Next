@@ -137,7 +137,10 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
         position_ = 0;
         pending_ = LLAMA_TOKEN_NULL;
         for (std::size_t i = 0; i < prompt_.size(); ++i) {
-            process(prompt_[i], position_++, i + 1 == prompt_.size());
+            // A zero-output single-token batch crops the final Qwen layer to
+            // zero rows, which disables its expert-slot cache path. Retain one
+            // output for each batch; sampling still uses only the final logits.
+            process(prompt_[i], position_++, true);
         }
         boundary.complete();ready_ = true;
         stage("inference_prefill_completed");

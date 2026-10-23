@@ -805,3 +805,12 @@ creating the copy, naming the source/consumer/operator/size. Required expert-cac
 bindings must be present. Cache eligibility/backend-query records are once per
 layer, bounded independently of request/token count. Preserve bounded row/expert
 uploads, GPU matrix placement, every existing budget and all final full-plan gates.
+
+The guard subsequently named final-layer `blk.47.ffn_gate_exps.weight` as the
+1,677,721,600-byte complete source copy during the first prefill token. The
+single-token adapter must request one output for each prompt batch. Zero output
+crops the final Qwen layer to zero rows and bypasses cache eligibility, as
+reproduced by actual GGML cropping and the actual cache method. Sample only the
+last prompt token's logits. Keep the source-copy rejection and all budgets.
+The corrected adapter regression passes; the previous adapter fails it. See
+`docs/native-prefill-output-20261024.md`; full physical inference remains required.
