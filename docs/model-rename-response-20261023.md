@@ -42,3 +42,11 @@ Its complete source SHA, published size and positive partial absence passed the
 corrected checks; the first file was not resent. The data and full-plan processes
 were both observed active. See `model-transfer-checkpoint-20261023.json` for this
 sanitized checkpoint. The first file's exact old reply remains unknown.
+
+The fourth file, the 102,400,491,712-byte PLE container, subsequently completed
+with the same recorded positive 226 rename reply, complete source-stream SHA,
+unchanged source identity, exact published size and positive partial absence.
+The first four files account for 112,858,638,848 positively completed transfer
+bytes. Transfer continued with file five. Independent native destination SHA,
+model load, inference and original-title restoration remain pending; these
+transfer results do not establish those later outcomes.
