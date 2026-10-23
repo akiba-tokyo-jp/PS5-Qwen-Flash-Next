@@ -51,3 +51,28 @@ fresh final CPU guards and full original SELF readback. The two actual saved TV
 frames must be viewed before the overall plan is declared complete. The original
 SELF remains preserved in its original backup until those restoration steps.
 Host checks do not establish successful full-model inference or a token rate.
+
+## Canonical identity namespace follow-up
+
+Case 021's ordinary launch and exact owner admission passed, then the native
+code rejected the directory/receipt identity comparison before mapping or
+backend initialization. The observer issued no generation POST. Its native
+failure and stage journal were retained; the matching title was normally closed
+and fresh idle CPU guards passed. This rejection does not qualify the corrected
+public mmap call, which was never reached in that case.
+
+The management snapshot used `/data/ai/native-moss-image-sft/PPSA99190/`, while
+the application used the mounted `/app0/` view. The next distinct SELF records
+both observed and expected identities and, when available, the app0 view. Its
+configuration uses the exact same canonical `/data/` model path as the sealed
+snapshot. Every identity field remains required. A mount-namespace difference
+is a hypothesis pending the recorded native values; no field is dropped to
+make an inconsistent comparison pass.
+
+Case 022 uses the 58,611,159-byte SELF at SHA256
+`c74a75922bce097a7d90cc0866251b2328dad3ecfef641590df13a9b9bd8b106`.
+Its distinct package again passes all six roundtrip segments, real-module
+imports and public mmap provenance. Model conversion, transfer and complete
+payload hashing are retained, not repeated. This follow-up changes the path
+and identity diagnostics only; generation and original restoration remain
+outstanding until their physical evidence is complete.

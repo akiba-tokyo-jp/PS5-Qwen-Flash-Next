@@ -453,10 +453,27 @@ int main(int argc, char ** argv) {
             std::optional<qwen_app::PriorModelIntegrity>{};
         const auto receipt_separator = startup.model_receipt.find_last_of('/');
         const auto model_directory = startup.model_receipt.substr(0, receipt_separator);
+        bool identity_report_written = false;
         auto require_prior_metadata = [&] {
-            if (prior_integrity && (receipt_separator == std::string::npos ||
-                model_directory_identity(model_directory) != prior_integrity->directory ||
-                model_file_identity(startup.model_receipt, policy.at("native_first_generation_validation").at("model_receipt_bytes").get<std::uint64_t>()) != prior_integrity->receipt))
+            if (!prior_integrity) return;
+            if (receipt_separator == std::string::npos) throw std::runtime_error("The sealed model requires its canonical directory");
+            const auto directory = model_directory_identity(model_directory);
+            const auto receipt_identity = model_file_identity(startup.model_receipt,
+                policy.at("native_first_generation_validation").at("model_receipt_bytes").get<std::uint64_t>());
+            if (!identity_report_written) {
+                Json report{{"schema","ps5-qwen-native-model-identity-v1"},{"pid",getpid()},
+                    {"model_receipt_path",startup.model_receipt},{"directory",directory},{"receipt",receipt_identity},
+                    {"expected_directory",prior_integrity->directory},{"expected_receipt",prior_integrity->receipt},
+                    {"model_loaded",false},{"Vulkan_initialized",false}};
+                try {
+                    report["app0_directory"] = model_directory_identity("/app0/qwen-runtime/model");
+                    report["app0_receipt"] = model_file_identity("/app0/qwen-runtime/model/model-receipt.json",
+                        policy.at("native_first_generation_validation").at("model_receipt_bytes").get<std::uint64_t>());
+                } catch (const std::exception & error) { report["app0_metadata_error"] = error.what(); }
+                write_fresh_report(startup.admission_report + ".identity", report);
+                identity_report_written = true;
+            }
+            if (directory != prior_integrity->directory || receipt_identity != prior_integrity->receipt)
                 throw std::runtime_error("Sealed original model directory or receipt changed after native SHA verification");
         };
         require_prior_metadata();

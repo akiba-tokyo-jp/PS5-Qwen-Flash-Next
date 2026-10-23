@@ -560,3 +560,12 @@ when that explicit reuse gate passes. If any identity changes, reject reuse.
 Preserve every failure and reject automatic retries. All memory, precision,
 mapping, generation, display, retirement and exact original restoration gates
 remain required; committed execution/deployment/release/CI controls stay disabled.
+
+Case 021 later rejected its directory/receipt identity comparison before mapping
+or backend initialization. Its exact owner was ordinarily closed and fresh idle
+CPU guards passed; zero external requests were sent. Case 022 uses a distinct
+SELF with actual/expected identity diagnostics and the same canonical `/data/`
+model path used by the sealed management snapshot. Keep every identity field
+and the original precision/memory/completion/restoration gates. Do not describe
+the suspected app0 namespace difference as measured until its native identity
+report is read. See the follow-up in `docs/native-public-mmap-20261024.md`.
