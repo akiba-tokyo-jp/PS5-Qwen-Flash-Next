@@ -503,3 +503,39 @@ and waits for positive completion/process exit before the still-unused case 019
 and every original final gate. Keep those recorded inputs unchanged. The original
 whole-batch deadline, driver, candidate, precision and disabled release/CI policy
 are unchanged. This checkpoint does not establish full-model inference.
+
+## Native full-model admission in progress (2026-10-23)
+
+All 76 files and the complete receipt subsequently transferred successfully.
+The original whole-batch deadline and every interruption record were retained.
+Case 019 initially encountered two local publication checks before its first
+SELF rename. The exclusive state writer was corrected in a distinct private
+controller. A guarded 128-byte CPU file-view diagnostic proved the raw SELF
+sizes and seek endpoints; FTP metadata returned different sizes. Full raw
+readbacks remained mandatory. The sealed native candidate was not rebuilt.
+
+The first native launch then rejected the model files' FTP-created mode 0777
+before backend initialization. Exact source/stage evidence and the owner-bound
+ordinary OS close passed; this is a failed candidate admission, not inference.
+The plan-bound CPU controller in `model_file_seal.c` subsequently sealed the
+76 files plus receipt to root-owned 0644. Seven host checks, 14 actual runtime
+imports, all 77 positive file records, independent directory metadata and fresh
+unchanged CPU observations before/after passed. Model contents were not changed.
+See `docs/model-file-sealing-20261023.md`.
+
+Case 020 uses a new run identity and the same exact candidate/model. It reuses
+the original preservation from case 019, with fresh complete candidate/backup
+readbacks. The original SELF remains preserved in its backup; final restoration
+and numerical readmission are pending. Native whole-model SHA verification is
+now progressing before backend initialization. Do not repeat it or launch another
+candidate while this run continues.
+
+Full-plan continuation 047 freezes 177 source/proof records and owns the remaining
+measurement, ordinary close, original restoration/readmission and final guards.
+Its GET-only observer handoff preserved the original observation deadlines and
+occurred before any external generation POST; the native title and integrity
+work continued. The stage reader now admits the native journal's existing 8 MiB
+bound. Keep all frozen inputs unchanged, including the sealing controller and
+observer sources. See `docs/native-full-model-progress-20261023.md`. Full-model
+generation, displayed metrics, positive final retirement and restoration remain
+unqualified until their actual terminal evidence and visual review pass.

@@ -166,7 +166,7 @@ def main():
             failure_check()
             require(time.monotonic() - started <= 13260, "The native ready deadline expired")
             if time.monotonic() >= next_update:
-                stages = get(8080, "/fs" + MODEL_ROOT + "entry-" + str(expected["pid"]) + ".stages", 1 << 20)
+                stages = get(8080, "/fs" + MODEL_ROOT + "entry-" + str(expected["pid"]) + ".stages", 8 << 20)
                 if stages is not None:
                     (out / "native-stages.latest.private.txt").write_bytes(stages)
                 lines = stages.decode("utf-8", errors="replace").splitlines() if stages else []
