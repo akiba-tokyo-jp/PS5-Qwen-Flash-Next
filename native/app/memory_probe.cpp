@@ -5,6 +5,7 @@
 #include <ps5platform/heap.h>
 #include <sys/sysctl.h>
 #include <sys/stat.h>
+#include <sys/resource.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <cerrno>
@@ -26,6 +27,13 @@ Json counter(const char * name) {
             {"value",readable ? Json(value) : Json(nullptr)}};
 }
 void stage(const char * text) {qwen_native_stage(text);}
+Json process_limit(int kind) {
+    struct rlimit value{};errno=0;
+    const int rc=getrlimit(kind,&value);const int error=errno;
+    return {{"readable",rc==0},{"rc",rc},{"errno",error},
+        {"soft_bytes",rc==0 ? Json(static_cast<std::uint64_t>(value.rlim_cur)) : Json(nullptr)},
+        {"hard_bytes",rc==0 ? Json(static_cast<std::uint64_t>(value.rlim_max)) : Json(nullptr)}};
+}
 std::string digest_bytes(const void * data,std::size_t bytes) {
     sha256_t hash;sha256_init(&hash);
     sha256_update(&hash,static_cast<const unsigned char *>(data),bytes);
@@ -122,6 +130,8 @@ Json observe_native_memory() {
         {"Flexible_query_rc",flexible_rc},{"Flexible_available_bytes",flexible_rc==0 ? flexible : 0},
         {"CPU_heap_mapped_bytes",heap.mapped_bytes},{"CPU_heap_peak_bytes",heap.peak_bytes},
         {"CPU_heap_libc_fallbacks",heap.libc_fallbacks},{"CPU_heap_segments",heap.segments},
+        {"CPU_heap_range_base",heap.range_base},{"CPU_heap_range_bytes",heap.range_bytes},
+        {"process_limits",{{"RLIMIT_AS",process_limit(RLIMIT_AS)},{"RLIMIT_DATA",process_limit(RLIMIT_DATA)}}},
         {"raw_kernel_counters",counters},{"CPU_heap_uses_Direct_pool",true},
         {"vm0_process_available_RAM_qualified",false},{"full_model_memory_admitted",false}};
 }

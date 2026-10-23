@@ -15,21 +15,48 @@ passed with 16 MiB CPU heap mapped, zero libc fallbacks, 404,750,336 Flexible by
 and 2,556 kernel free pages at 16,384 bytes per page. The kernel minimum/target/
 reserved counters were 898/2,974/206. Inactive pages were not counted.
 
-The PS5 is now verifying all 76 original-precision files, 359,246,956,672 bytes,
-against the complete converted receipt before virtual-source or backend/model
-initialization. The previous boot's integrity proof is not reused after the
-owner's power cycle. Model conversion and transfer are not repeated. Early
-progress positively advanced to file 4 and 12.40 GB in 186 seconds; that is a
-checkpoint, not a complete integrity or inference result.
+The PS5 completed SHA256 verification of all 76 original-precision files,
+359,246,956,672 bytes, in 5,408,068 ms. Every digest matched the complete
+converted receipt. This is a new-boot native result; the previous boot's proof
+was not reused. Model conversion and transfer were not repeated.
 
-The finite controller retains one source/artifact binding for the complete
-sequence. After positive integrity and admission, remaining requirements are
+The subsequent tiny 16 KiB reservation/protection/release passed. Three source
+ranges of 3,508,781,056, 3,512,991,744 and 3,436,396,544 bytes were reserved and
+their zero protection verified. The fourth reservation, 102,400,507,904 bytes
+for the large PLE file, returned `-2147352564`. All five reserve calls,
+including the tiny probe, returned. The app saved its exception and entered the
+bootstrap's `native_main_returned` terminal hold. File-backed mmap, backend
+initialization, GPU work, model loading and external generation were not reached.
+This returned reservation rejection is separate from the earlier unreturned
+file-backed mmap and owner-confirmed freeze.
+
+Immediately before virtual-source admission the native CPU heap was 32 MiB
+with zero libc fallbacks, Flexible availability remained 404,750,336 bytes, and
+kernel free pages were 1,926. The scoped pool/kernel predicate passed. These
+measurements do not establish the largest available virtual address interval or
+the title's process virtual-memory limit; those require separate observation.
+
+The exact failed owner was then normally closed once. Fresh complete CPU guards
+passed before and after restoring the original SELF with full raw readback.
+The original subsequently passed its existing numerical gates, ordinary shutdown,
+final complete CPU guards and a second full SELF readback. No native owner
+remained. No uncertain close was retried and no resource was manually released.
+
+A new read-only sealed-identity snapshot checked all 77 model/receipt entries
+twice, their unchanged directory, sealing evidence and this boot's complete
+native integrity report. Every timestamp and identity gate passed between fresh
+CPU guards, without model payload reads, mappings or permission changes. This
+preserves the expensive current-boot SHA proof for a later case; it does not
+reuse old-boot owner/session state or qualify a different reservation method.
+
+The finite controller retained one source/artifact binding and stopped at the
+returned rejection. After corrected native virtual-source admission, remaining requirements are
 original-precision model loading and generation, two external requests, saved
 native frame review, positive resource retirement, ordinary close, exact original
 restoration, numerical readmission, ordinary shutdown and final CPU/full SELF
 readback. Unknown or failed operations are retained for review without retry,
-force-kill, GPU reset or speculative cleanup. The model-data writer lease stays
-held through the candidate's native sequence and exact original restoration.
+force-kill, GPU reset or speculative cleanup. The failed case and subsequent
+guarded restoration remain separate records.
 
 No full-model tokens/s, answer quality, resident-memory qualification or overall
 completion is claimed by this checkpoint. The private repository, disabled

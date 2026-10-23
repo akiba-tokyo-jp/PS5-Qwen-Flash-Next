@@ -12,7 +12,8 @@ int main(int argc,char **argv) {
         std::uint64_t total=0;for(const auto &file:receipt.at("files"))total+=file.at("bytes").get<std::uint64_t>();
         unsigned checks=0;
         auto positive=qwen_app::prior_model_integrity(gate,receipt,total);
-        if(!positive||positive->files.size()!=76||positive->original_elapsed_ms!=5370082)throw std::runtime_error("Prior native positive fixture was rejected");
+        const auto report=Json::parse(gate.at("prior_native_integrity").at("integrity_report").at("raw").get<std::string>());
+        if(!positive||positive->files.size()!=76||positive->original_elapsed_ms!=report.at("verification_elapsed_ms"))throw std::runtime_error("Prior native positive fixture was rejected");
         ++checks;
         auto fresh=gate;fresh.erase("prior_native_integrity");if(qwen_app::prior_model_integrity(fresh,receipt,total))throw std::runtime_error("Fresh hashing was replaced");++checks;
         auto reject=[&](Json changed){bool refused=false;try{qwen_app::prior_model_integrity(changed,receipt,total);}catch(const std::exception &){refused=true;}
@@ -24,6 +25,7 @@ int main(int argc,char **argv) {
         reject(rewrite("integrity_report",[](Json &j){j["all_SHA256_matched"]=false;}));
         reject(rewrite("integrity_report",[](Json &j){j["verification_elapsed_ms"]=7200001;}));
         reject(rewrite("native_start",[](Json &j){j["model_receipt_sha256"]=std::string(64,'0');}));
+        reject(rewrite("native_start",[](Json &j){j["pid"]=j.at("pid").get<std::uint64_t>()+1;}));
         reject(rewrite("snapshot",[](Json &j){j["files"][0]["identity"][2]=0100666;}));
         reject(rewrite("snapshot",[](Json &j){j["files"][0]["identity"][3]=1;}));
         reject(rewrite("snapshot",[](Json &j){j["files"][0]["identity"][5]=1;}));

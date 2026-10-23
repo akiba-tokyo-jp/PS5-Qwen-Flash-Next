@@ -711,3 +711,20 @@ or treat vm0 as process-available RAM. Initial low kernel pages permit only
 cancel syscalls or qualify large model allocations. See the scoped admission
 section of the same report. Full-model execution still requires actual fresh
 admission, new-boot complete integrity and every final restoration gate.
+
+The new-boot complete native SHA subsequently passed all 76 files in 5,408,068 ms.
+Automatic reservation returned an error for the 102,400,507,904-byte PLE span;
+all attempted calls returned before backend/GPU initialization. Ordinary close,
+exact original restoration, numerical readmission, ordinary shutdown, final CPU
+and full readback passed. Preserve this returned rejection separately from the
+older unreturned file mmap. A new sealed-identity snapshot preserves this boot's
+SHA proof; require its matching boot and all unchanged sealed identities for reuse.
+
+Native telemetry measured unchanged `RLIMIT_AS` 2^63-1 and `RLIMIT_DATA` 32 GiB.
+The replacement reserves fixed/no-overwrite source keys in [512,896) GiB,
+disjoint from the pinned driver and Direct heap. Its 16 KiB native exact-address,
+zero-protection, completed-release and normal-close/CPU gates passed. Never
+replace occupied mappings, retry a failed primitive, release unowned ranges or
+continue after a poisoned address book. Full-model simultaneous reservation,
+resident memory and generation are still unqualified. See
+`docs/disjoint-source-addresses-20261024.md`. Keep all final restoration gates.

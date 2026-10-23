@@ -12,12 +12,17 @@ admission has not reached generation. The owner confirmed a console freeze and
 power-cycled it. The exact original SELF was restored, numerically readmitted,
 normally closed and fully read back after complete new-boot CPU/runtime guards.
 The [independent native memory qualification](docs/native-memory-qualification-20261024.md)
-is now in progress, preserving the original. See the
-[freeze investigation](docs/freeze-forensics-20261024.md). Prior boot-bound
-admissions are invalid, and further native inference remains withheld.
+passed, including ordinary close and complete original restoration/readmission.
+See the [freeze investigation](docs/freeze-forensics-20261024.md).
 The [fresh-boot full-model case](docs/native-full-model-progress-20261024.md)
-has now passed its scoped pre-integrity memory gate and is verifying all 76
-model files on the PS5 before backend initialization.
+then verified all 359,246,956,672 original bytes on the PS5 in 5,408,068 ms.
+A 102,400,507,904-byte automatic virtual reservation returned an error before
+backend initialization. The exact owner was normally closed and the original
+was fully restored, numerically readmitted, normally closed and verified again.
+A new sealed-identity snapshot preserves this boot's SHA proof. The
+[disjoint source-address implementation](docs/disjoint-source-addresses-20261024.md)
+passed its 16 KiB native reservation/protection/release and normal-close gates;
+complete model ranges and generation remain pending.
 The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
 Full reserved-source model loading has not run on the PS5. See the

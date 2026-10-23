@@ -13,6 +13,7 @@
 #include "memory_admission.h"
 #include "memory_probe.h"
 #include "system_memory.h"
+#include "source_virtual_addresses.h"
 #include "model_integrity.h"
 #include "prior_model_integrity.h"
 #include "model_identity_namespace.h"
@@ -635,12 +636,18 @@ int main(int argc, char ** argv) {
             qwen_native_stage("source_virtual_CPU_memory_admission_passed_before_probe GPU_not_started=1 model_loaded=0");
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
                 [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
+            const auto after_sources=qwen_app::observe_native_system_memory();
+            write_fresh_report(startup.admission_report+".system-memory.after-virtual-sources",system_memory_report(after_sources));
+            (void)qwen_app::qualified_system_headroom(after_sources);
+            require_model_CPU_budget();
             write_fresh_report(startup.admission_report + (startup.first_generation_validation ? ".mapping" : ""), {{"schema", "ps5-qwen-model-virtual-source-admission-v1"},
                 {"pid", getpid()}, {"all_SHA256_matched", true}, {"original_footprint_matched", true},
                 {"mapped_files", mapping.files}, {"mapped_file_bytes", mapping.bytes},
                 {"completed_unmaps", mapping.unmapped}, {"model_loaded", false},
                 {"Vulkan_initialized", false}, {"GPU_compute_calls", 0}, {"mapped_payload_reads", 0},
                 {"file_backed_model_mmap_calls", 0}, {"source_virtual_protection", "none"},
+                {"source_virtual_base",qwen_app::source_key_base},{"source_virtual_capacity",qwen_app::source_key_bytes},
+                {"source_virtual_fixed_no_overwrite",true},
                 {"resident_set_qualified", false}, {"state", startup.first_generation_validation ?
                     "virtual_sources_completed_before_backend" : "completed_waiting_for_ordinary_close"}});
             qwen_native_stage("model_validation_completed GPU_not_started=1 model_loaded=0");
