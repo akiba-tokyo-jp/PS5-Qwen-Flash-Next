@@ -404,3 +404,17 @@ continuation 021 were started with current source bindings. Local
 conflicts; exclusive intents and remote uploads remain one-attempt operations.
 Six actual Windows sharing tests and 14 existing transport tests passed. Keep
 every input recorded by the active waiters unchanged until they end.
+
+## Efficiency reassessment (2026-10-23)
+
+Use the updated `docs/execution-plan-20261022.md` and its linked critical review
+as the current forward queue. All 76 outputs and the independent content audit
+are complete; the existing final hash pass remains active. Preserve that pass,
+data waiter 005 and full-plan continuation 021 with their frozen inputs. The
+proposed immediate switch to upload-time receipt finalization is not implemented
+or admitted and is not current work: no evidence establishes a net schedule gain
+over finishing the remaining hashes. Reuse the sealed native candidate and its
+passed checks. Measure sustained throughput during the existing transfer rather
+than adding a probe. Physical full-model memory/load/generation, passive display
+measurements and exact final restoration remain pending. This updates scheduling
+and status, not physical permissions, precision, verification or safety gates.

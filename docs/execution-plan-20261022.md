@@ -1,6 +1,8 @@
 # Execution plan: first complete PS5 generation
 
-This is the active forward plan, created from the required result on 2026-10-22.
+This is the active forward plan, created from the required result on 2026-10-22
+and critically reassessed on 2026-10-23. See
+`execution-efficiency-review-20261023.md` for the evidence and scheduling decision.
 Earlier milestone lists are historical evidence, not an additional work queue.
 
 ## Required result and starting point
@@ -10,11 +12,12 @@ experts and required PLE. The passive TV/web monitor shows CPU/GPU identity,
 date/time and measured TTFT/tokens per second; requests use the external API.
 Strata UMA admission and Maya aged-frequency caching remain in the real engine.
 
-All 131 original shards passed SHA256. Conversion is active; complete auditing,
-final hashes and transfer are pending. The data-only continuation is waiting
-without console access. The converted tensor payload is 359,235,922,432 bytes
-before container overhead. Component/display evidence does not establish model
-compatibility. Full inference is still rejected by `validation_policy.h`, and
+All 131 original shards passed SHA256. All 76 converted splits have been written,
+and the complete independent tensor-content audit passed. Final container hashes
+are active; transfer has not started. The data-only continuation is waiting
+without console access. The converted tensor payload is 359,235,922,432 bytes;
+the containers total 359,246,956,672 bytes. Component/display evidence does not
+establish model compatibility. Ordinary inference remains rejected, and
 the old 11,976,330,752-byte memory estimate is not observed residency. The
 bounded application now plans 12,110,548,480 bytes, including a larger tracked
 CPU allowance and a capped aggregate pool for post-load device buffers.
@@ -23,16 +26,15 @@ CPU allowance and a capped aggregate pool for post-load device buffers.
 
 | Deliverable | Work | Exit evidence |
 | --- | --- | --- |
-| 1. Ready data and runtime | Continue conversion/audit/hash/transfer. In parallel, implement the missing bounded first-generation admission using existing integrity, mapping, memory and engine code. | Complete original-model receipt and positive transfer record; focused checks and exact candidate link/package proof. |
+| 1. Ready data and runtime | Finish the active container hashes, then perform the existing guarded transfer. Reuse the sealed native candidate and its passed host checks. | Complete original-model receipt and positive transfer record; focused checks and exact candidate link/package proof. |
 | 2. First real generation | One identified title launch executes ordered native integrity, mapping, memory, load and short-generation gates. | Actual token IDs/text, finite logits, expected arithmetic smoke answer, exact model/driver identity, measured timings and positive GPU completion. |
 | 3. Working demonstration | In that same title session, retain the model and recreate only the completed context. Run two identical fixed external requests with initially empty and then retained expert cache. | Passive TV/web output, calibrated time, displayed-frame evidence, independently reconstructed TTFT/token rates, listener shutdown, ordinary title close and exact original restoration/readmission. |
 
-Deliverable 1 has concurrent data and runtime work streams. Data preparation owns
-bulk disk work; avoid competing large reads or repeated full builds. Change the
-missing runtime controls, check affected paths, then link/package one coherent
-candidate using unchanged engine/driver artifacts and recorded provenance.
-Keep frozen preparation/transfer sources and the console context unchanged.
-No new title/diagnostic runs while that continuation owns the data lease.
+The runtime work stream of deliverable 1 has passed its host gates; model data
+is the remaining prerequisite. Data preparation owns bulk disk work; avoid
+competing large reads or repeated full builds. Keep the sealed candidate, frozen
+preparation/transfer sources and console context unchanged. No new title or
+diagnostic runs are scheduled while the data continuation owns the lease.
 
 ## First-generation implementation
 
@@ -102,6 +104,47 @@ extend a frozen job. Preserve partial/failure evidence on deadline expiry.
 No quantization, pruning, host inference substitute, cache optimization or extra
 benchmark is on the critical path.
 
+## Scheduling decision after the efficiency review
+
+The pre-transfer container hash pass is a preventable full source read in a
+fresh pipeline: the existing uploader also hashes the source stream. An eventual
+streaming-first pipeline would need explicit audited-data admission, honest
+receipt finalization after the stream hashes and unchanged independent native
+destination verification. It is not implemented or admitted in this run.
+
+At the review snapshot, 17 of 76 files had positive final hashes, representing
+157,875,714,144 of 359,246,956,672 bytes (43.95%). The recent eight completed
+files averaged 38.43 MiB/s, projecting about 83 minutes for the remaining bytes
+if that rate continues. This is a projection, not a completion promise. File
+count alone understates progress because the 102.4 GB PLE split is already hashed.
+
+Changing the upload order now would also change transfer planning, directory
+ownership binding, admission validation, final receipt production and case
+preparation. No measured implementation/validation estimate establishes a net
+gain within the remaining hash window. Keep the current bounded processes
+running; do not replace the working data path just to remove this one remaining
+scan. This supersedes the conversational proposal to switch it immediately.
+
+The remaining work queue is exactly:
+
+1. Finish the current hashes and publish the complete existing v2 receipt.
+2. Execute the existing fresh CPU/storage/owned-directory admissions and transfer
+   once. Report bytes, elapsed time, sustained transfer rate and the remaining
+   critical-path estimate from the real transfer; add no throughput probe.
+3. Use the sealed candidate for one physical session: independent native SHA,
+   mapping, fresh memory admission, model load and the arithmetic smoke request.
+   Do not repeat the whole-payload native hash pass within this session.
+4. After the smoke result, perform the two existing external requests and passive
+   display measurements without reloading the model. Visually inspect the saved
+   actual scanout-source frames as part of final review.
+5. Require positive retirement, ordinary close, exact original restoration,
+   numerical readmission, ordinary shutdown and final CPU/full readback evidence.
+
+Each transition requires its existing positive evidence. A new failure changes
+the work queue only to resolve its concrete cause; it does not create another
+general audit, build, fixture or benchmark campaign. Metadata observation failures
+must remain distinct from confirmed worker failure or uncertain physical work.
+
 ## Implementation checkpoint
 
 `first-generation-validation` now implements candidate/receipt binding, one
@@ -148,11 +191,14 @@ See `native-first-generation-build-20261023.json`. It has not been launched.
 
 Original conversion 001 reached its unchanged six-hour deadline. Its actual
 writer, redirector, preparation and data waiter all ended; 351,317,227,759 partial
-output bytes remain intact. The distinct resumed attempt reuses 72 complete
-splits and writes the remaining four. It still requires the complete independent
-payload audit and new final hashes. Data waiter 003 may then execute the reviewed
-CPU-only directory/transfer sequence once. These host/data outcomes do not
-establish physical model capacity, generated text or performance.
+output bytes remain intact. The distinct resumed writer reused 72 complete
+splits and completed the remaining four. After an interrupted audit, the distinct
+host finisher completed the full independent content audit and is now hashing
+the containers. Data waiter 005 and full-plan continuation 021 are active; the
+former has not prepared data continuation 003, and the latter has not prepared
+physical case 019 or started console actions. Preserve all earlier terminal
+records. These host/data outcomes do not establish physical model capacity,
+generated text or performance.
 
 Remaining deliverable-1 work is complete data readiness. After positive transfer,
 use fresh owner/ordinary-launch gates for deliverables 2 and 3 in one native
