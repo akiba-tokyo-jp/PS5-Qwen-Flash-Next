@@ -25,7 +25,10 @@ passed its 16 KiB native reservation/protection/release and normal-close gates.
 All 76 complete source ranges subsequently passed. A
 [loader lifetime correction](docs/reserved-source-lifetime-20261024.md) retains
 these no-access keys through intermediate trim requests; its actual-class host
-regression passed. Complete model loading and generation remain pending.
+regression passed. Complete model loading and its positive device-idle checkpoint
+then passed. The [native allocator admission](docs/native-allocator-admission-20261024.md)
+keeps raw Vulkan estimates separate from the physical allocator that backs BOs.
+Context/cache admission and generation remain pending.
 The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
 Full reserved-source model loading has not run on the PS5. See the

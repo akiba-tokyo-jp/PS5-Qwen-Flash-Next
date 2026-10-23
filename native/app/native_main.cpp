@@ -691,9 +691,11 @@ int main(int argc, char ** argv) {
         llama_backend_init();
         auto device = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU);
         if (!device) device = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_IGPU);
-        std::size_t driver_free = 0, driver_total = 0;
+        std::size_t driver_free = 0, driver_total = 0,vulkan_reported_free=0;
         if(!device) throw std::runtime_error("A qualified native Vulkan device is required");
-        ggml_backend_dev_memory(device, &driver_free, &driver_total);
+        ggml_backend_dev_memory(device, &vulkan_reported_free, &driver_total);
+        const auto native_budget_before=qwen_native_allocator_budget(driver_total);
+        driver_free=native_budget_before.available;
         std::int64_t physical=0;std::size_t direct=0;const auto pool=sceKernelGetDirectMemorySize();
         if(pool<=0||sceKernelAvailableDirectMemorySize(0,pool,65536,&physical,&direct)<0)
             throw std::runtime_error("A fresh Direct-memory observation is required before model loading");
@@ -718,6 +720,9 @@ int main(int argc, char ** argv) {
             {"maximum_postload_device_buffer_bytes",qwen_app::model_postload_single_buffer},
             {"maximum_aggregate_postload_device_buffer_bytes",qwen_app::model_postload_device_budget},
             {"driver_free_bytes",memory_observation.driver_free},
+            {"device_budget_source","canary-validated native Direct allocator"},
+            {"Vulkan_estimated_free_bytes",vulkan_reported_free},
+            {"native_Direct_owned_bytes",native_budget_before.owned},
             {"Direct_largest_available_bytes",memory_observation.direct_largest},
             {"Flexible_available_bytes",memory_observation.flexible_available},
             {"Flexible_reserve_bytes",memory_budget.flexible_reserve},
@@ -742,10 +747,18 @@ int main(int argc, char ** argv) {
         require_unchanged_model();
         if (startup.first_generation_validation) qwen_app::enforce_native_model_compute_limits();
         if (startup.first_generation_validation) require_model_CPU_budget();
-        ggml_backend_dev_memory(device, &driver_free, &driver_total);
+        ggml_backend_dev_memory(device, &vulkan_reported_free, &driver_total);
+        const auto native_budget_after=qwen_native_allocator_budget(driver_total);
+        driver_free=native_budget_after.available;
         // Initial, unqualified limits: do not infer extra RAM from the GPU pool.
         const auto remaining=qwen_app::checked_memory_sum(memory_budget.context,
             qwen_app::checked_memory_sum(memory_budget.workspace,memory_budget.staging+memory_budget.direct_reserve));
+        write_fresh_report(startup.admission_report+".memory.after-load",{{"model_loaded",true},
+            {"Vulkan_estimated_free_bytes",vulkan_reported_free},{"native_Direct_available_bytes",driver_free},
+            {"native_Direct_pool_bytes",native_budget_after.pool},{"native_Direct_owned_bytes",native_budget_after.owned},
+            {"remaining_context_workspace_staging_reserve_bytes",remaining},
+            {"expert_cache_requested_bytes",memory_budget.expert_cache},
+            {"device_budget_source","canary-validated native Direct allocator"}});
         if(driver_free<remaining) throw std::runtime_error("Insufficient headroom after model load");
         const auto cache_bytes = qwen_app::native_direct_cache_budget(memory_budget.expert_cache, driver_free-remaining,
             observed_system_headroom(), memory_budget.flexible_reserve);
@@ -773,7 +786,8 @@ int main(int argc, char ** argv) {
             if (description) hardware.gpu_name = description;
             std::size_t free = 0, total = 0;
             ggml_backend_dev_memory(device, &free, &total);
-            if (total) { hardware.gpu_total_bytes = total; hardware.gpu_free_bytes = free; }
+            if (total) { const auto native=qwen_native_allocator_budget(total);
+                hardware.gpu_total_bytes = native.pool; hardware.gpu_free_bytes = native.available; }
         }
         qwen_native_driver_complete();
         if (startup.first_generation_validation) {

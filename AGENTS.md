@@ -745,3 +745,19 @@ requests over all 76 file sizes and 76 final releases; the previous implementati
 failed the same control. Six unchanged overlays are reused; only mmap is rebuilt.
 See `docs/reserved-source-lifetime-20261024.md`. The next full case must freeze
 its seven patches and exact overlay sources/objects as well as application inputs.
+
+The corrected lifetime artifact subsequently loaded the complete model and passed
+positive device idle/completion checkpoint, then returned the post-load headroom
+refusal before generation. Its owner normally closed; exact original restoration,
+numerical readmission, normal close, final CPU and full readback passed. Preserve
+this positive load separately from context/cache admission and tokens/s.
+
+The pinned PS5 Mesa budget source duplicates driver bytes into two counters later
+summed on the APU. Keep raw Vulkan estimates diagnostic. Client allocation
+admission now requires the actual canary-validated native Direct allocator,
+matching device/pool totals, two lower free samples, stable healthy known owner
+snapshots and free<=pool-owned. Do not compute availability as nominal pool minus
+use, subtract owned bytes twice, reduce the unchanged reserves or accept unknown
+queries. No shared-driver/archive/kernel change was made. The actual observation
+function passed 29 strict host cases. Save post-load native and raw Vulkan values.
+See `docs/native-allocator-admission-20261024.md`; all final full-plan gates remain.
