@@ -484,3 +484,22 @@ and 207 source/proof records, then waits for positive data completion and exit
 before the still-unused case 019 and every original final gate. No automatic
 retry, forced close, reset or uncertain GPU recovery is permitted. Inspect the
 actual saved display frames before declaring the entire plan complete.
+
+Data 011 and full-plan 029 subsequently ended before case creation when the
+transfer's pre-publication guard observed a native title. Read-only reassessment
+found no remaining native owner and unchanged management services/reservation.
+The owner explicitly prioritized inference and authorized ordinary application
+close. No close request was needed because the observed title had already exited.
+Preserve the failed attempts and do not attribute that transient title to the
+unlaunched Qwen candidate.
+
+All 67 published files were retained. File 68 had a durable positive source-stream
+SHA/identity/FTP/size/readability journal and no attempted rename. After a fresh
+CPU admission, its first rename returned `226 Path renamed`; exact destination
+size/readability and partial absence passed without reupload. See
+`docs/model-transfer-owner-conflict-20261023.md`. Data continuation 012 now reuses
+68 files and freezes 200 sources/proofs; full-plan continuation 036 freezes 290
+and waits for positive completion/process exit before the still-unused case 019
+and every original final gate. Keep those recorded inputs unchanged. The original
+whole-batch deadline, driver, candidate, precision and disabled release/CI policy
+are unchanged. This checkpoint does not establish full-model inference.
