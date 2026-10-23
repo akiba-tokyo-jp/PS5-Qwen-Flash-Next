@@ -39,7 +39,7 @@
 +// One serialized native producer uses a fixed metadata arena. Retain the
 +// original graph/hash capacities and validate the complete active graph before
 +// creating any scheduler tensor copies; never truncate nodes to fit this arena.
-+static constexpr size_t qwen_app_scheduler_context_budget = size_t(192) << 20;
++static constexpr size_t qwen_app_scheduler_context_budget = size_t(160) << 20;
 +static size_t qwen_app_scheduler_context_required(size_t nodes) {
 +    const size_t per_node = GGML_SCHED_MAX_SPLIT_INPUTS * 2 * ggml_tensor_overhead();
 +    if (!nodes || !per_node || nodes > qwen_app_scheduler_context_budget / per_node)

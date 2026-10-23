@@ -814,3 +814,17 @@ reproduced by actual GGML cropping and the actual cache method. Sample only the
 last prompt token's logits. Keep the source-copy rejection and all budgets.
 The corrected adapter regression passes; the previous adapter fails it. See
 `docs/native-prefill-output-20261024.md`; full physical inference remains required.
+
+The one-output artifact completed one physical input-token decode, synchronization,
+positive device idle and completed-worker-epoch retirement at epoch 2058. Its following CPU
+guard rejected 385941504 mapped/peak bytes against the unchanged 376438784 limit,
+with zero libc fallbacks. Ordinary close, exact original restoration, numerical
+readmission, normal close, final CPU and full original readback all passed.
+This is not completed prefill, a sampled output token or a tokens/s qualification.
+
+The qualified scheduler scratch arena is now 160 MiB, superseding the earlier
+192 MiB initial size. Its actual GGML metadata bound remains 158936784 bytes inside
+167772160; all complete graph/copy checks and original CPU/Direct/Flexible/kernel
+reserves remain unchanged. Three complete 7184-node CPU graphs / 48 exact values and
+protected-source controls passed. See `docs/native-compact-scheduler-20261024.md`.
+Finish every full-plan physical gate before reporting completion.
