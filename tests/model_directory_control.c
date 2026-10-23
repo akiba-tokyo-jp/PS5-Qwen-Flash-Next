@@ -69,6 +69,11 @@ FILE *md_fdopen(int fd,const char *mode){(void)fd;(void)mode;return NULL;}
 int md_fileno(FILE *file){(void)file;return 0;}
 
 int main(void) {
+    unsigned char left[4096]={0},right[4096]={0};
+    check(bytes_equal(left,right,sizeof(left)));
+    right[4095]=0x80;check(!bytes_equal(left,right,sizeof(left)));
+    check(bytes_equal(left,right,sizeof(left)-1));
+    left[4095]=0x80;check(bytes_equal(left,right,sizeof(left)));
     reset();check(prepare());check(owner_calls==2&&nodes[0].value.st_uid==0&&nodes[1].value.st_uid==0);
     reset();nodes[0].value.st_uid=7;check(!prepare());check(owner_calls==0&&mode_calls==0);
     reset();nodes[0].value.st_mode=S_IFLNK|0755;check(!prepare());check(owner_calls==0);

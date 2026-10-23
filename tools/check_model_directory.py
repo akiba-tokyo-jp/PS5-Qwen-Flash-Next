@@ -26,8 +26,9 @@ def main():
     if not out.is_relative_to(cache): raise ValueError("A fresh data-disk check directory is required")
     out.mkdir(parents=True, exist_ok=False); (out / "tmp").mkdir()
     header = out / "model_directory_context.h"
+    synthetic_marker = "synthetic-model-directory-marker:" + "x" * (4095 - len("synthetic-model-directory-marker:")) + "\n"
     header.write_text('#define OWNER_NONCE "' + 'a' * 32 + '"\n'
-        '#define MODEL_MARKER "synthetic-model-directory-marker\\n"\n'
+        '#define MODEL_MARKER ' + json.dumps(synthetic_marker) + '\n'
         '#define LOG_PREFIX "/data/ai/moss-qwen-directory-host-check-only"\n', newline="\n")
     source = ROOT / "native/qwen_flash_next/model_directory_control.c"
     test = ROOT / "tests/model_directory_control.c"

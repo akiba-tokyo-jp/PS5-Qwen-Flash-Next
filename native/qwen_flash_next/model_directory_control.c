@@ -26,11 +26,19 @@ static void initialize(GuardedStat * value) {
 }
 static int intact(const GuardedStat * value) { return value->pre==CANARY&&value->post==CANARY; }
 static int persist(FILE *log) { return fflush(log)==0&&fsync(fileno(log))==0; }
+static int bytes_equal(const void *left,const void *right,size_t bytes) {
+    /* Keep exact marker comparison local for every generated marker length.
+     * Volatile reads prevent a synthesized libc import outside the qualified set.
+     */
+    const volatile unsigned char *a=left,*b=right;
+    for(size_t i=0;i<bytes;++i)if(a[i]!=b[i])return 0;
+    return 1;
+}
 static int marker_matches(void) {
     char text[80]={0}; int fd=open(APP "/validation-owner",O_RDONLY|O_NOFOLLOW);
     if(fd<0)return 0;
     ssize_t got=read(fd,text,sizeof(text)); int closed=close(fd);
-    return !closed&&got==(ssize_t)strlen(OWNER_NONCE)&&!memcmp(text,OWNER_NONCE,(size_t)got);
+    return !closed&&got==(ssize_t)strlen(OWNER_NONCE)&&bytes_equal(text,OWNER_NONCE,(size_t)got);
 }
 static int directory(const char *path,unsigned owner) {
     GuardedStat g; initialize(&g);
@@ -71,7 +79,7 @@ static int model_directory(int normalize,FILE *log) {
     if(ok)marker_fd=open(MODEL "/.qwen-transfer-owner.json",O_RDONLY|O_NOFOLLOW);
     if(marker_fd<0)ok=0;
     GuardedStat marker; initialize(&marker);
-    const char expected[]=MODEL_MARKER;
+    static const char expected[]=MODEL_MARKER;
     char text[4097];
     if(sizeof(expected)>sizeof(text))ok=0;
     if(ok)ok=!fstat(marker_fd,&marker.value)&&intact(&marker)&&S_ISREG(marker.value.st_mode)&&
@@ -84,7 +92,7 @@ static int model_directory(int normalize,FILE *log) {
             if(got<=0){ok=0;break;}
             used+=(size_t)got;
         }
-        if(ok)ok=read(marker_fd,text+used,1)==0&&!memcmp(text,expected,sizeof(expected)-1);
+        if(ok)ok=read(marker_fd,text+used,1)==0&&bytes_equal(text,expected,sizeof(expected)-1);
     }
     if(ok&&normalize)ok=!fchmod(marker_fd,0644)&&!fchmod(directory_fd,0755);
     if(ok){

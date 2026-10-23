@@ -1,6 +1,6 @@
 {
   "schema": "ps5-qwen-host-payload-audit-summary-v1",
-  "observed_at_UTC": "2026-10-23T00:22:33+00:00",
+  "observed_at_UTC": "2026-10-23T02:56:41.657952+00:00",
   "scope": "Pinned original text and MTP conversion; original vision shards retained on the host outside the text inference lane",
   "original_revision": "de4b8e4d43b917e7706784d8bb445c9af86a3540",
   "converter_revision": "0a1ef309cdbb9f2024f58a38fb4c42352c5db569",
@@ -24,11 +24,12 @@
   "payload_bytes": 359235922432,
   "mapped_file_bytes": 359246956672,
   "GGUF_splits": 76,
-  "final_GGUF_SHA256_status": "in_progress",
-  "model_receipt_published": false,
+  "final_GGUF_SHA256_status": "completed",
+  "model_receipt_published": true,
   "learned_host_inference_performed": false,
   "console_access": false,
   "physical_memory_admitted": false,
   "full_model_inference_qualified": false,
-  "full_plan_completed": false
+  "full_plan_completed": false,
+  "model_receipt_sha256": "d2a0705e0e8d8d5999cf2e6bd9519ccb0654837abcf1ab47d0295030a8bb5495"
 }

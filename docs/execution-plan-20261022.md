@@ -13,9 +13,11 @@ date/time and measured TTFT/tokens per second; requests use the external API.
 Strata UMA admission and Maya aged-frequency caching remain in the real engine.
 
 All 131 original shards passed SHA256. All 76 converted splits have been written,
-and the complete independent tensor-content audit passed. Final container hashes
-are active; transfer has not started. The data-only continuation is waiting
-without console access. The converted tensor payload is 359,235,922,432 bytes;
+and the complete independent tensor-content audit and all final container hashes
+passed. The v2 receipt is published; transfer has not started at this checkpoint.
+The data continuation's CPU controller import mismatch was corrected and checked
+on the host; see `model-directory-import-fix-20261023.md`. The converted tensor
+payload is 359,235,922,432 bytes;
 the containers total 359,246,956,672 bytes. Component/display evidence does not
 establish model compatibility. Ordinary inference remains rejected, and
 the old 11,976,330,752-byte memory estimate is not observed residency. The
@@ -26,7 +28,7 @@ CPU allowance and a capped aggregate pool for post-load device buffers.
 
 | Deliverable | Work | Exit evidence |
 | --- | --- | --- |
-| 1. Ready data and runtime | Finish the active container hashes, then perform the existing guarded transfer. Reuse the sealed native candidate and its passed host checks. | Complete original-model receipt and positive transfer record; focused checks and exact candidate link/package proof. |
+| 1. Ready data and runtime | Use the complete receipt for the guarded transfer with the corrected CPU controller. Reuse the sealed native candidate and its passed host checks. | Complete original-model receipt and positive transfer record; focused checks and exact candidate link/package proof. |
 | 2. First real generation | One identified title launch executes ordered native integrity, mapping, memory, load and short-generation gates. | Actual token IDs/text, finite logits, expected arithmetic smoke answer, exact model/driver identity, measured timings and positive GPU completion. |
 | 3. Working demonstration | In that same title session, retain the model and recreate only the completed context. Run two identical fixed external requests with initially empty and then retained expert cache. | Passive TV/web output, calibrated time, displayed-frame evidence, independently reconstructed TTFT/token rates, listener shutdown, ordinary title close and exact original restoration/readmission. |
 
@@ -127,7 +129,7 @@ scan. This supersedes the conversational proposal to switch it immediately.
 
 The remaining work queue is exactly:
 
-1. Finish the current hashes and publish the complete existing v2 receipt.
+1. Reuse the complete hashes and published existing v2 receipt; this prerequisite has passed.
 2. Execute the existing fresh CPU/storage/owned-directory admissions and transfer
    once. Report bytes, elapsed time, sustained transfer rate and the remaining
    critical-path estimate from the real transfer; add no throughput probe.
@@ -193,11 +195,14 @@ Original conversion 001 reached its unchanged six-hour deadline. Its actual
 writer, redirector, preparation and data waiter all ended; 351,317,227,759 partial
 output bytes remain intact. The distinct resumed writer reused 72 complete
 splits and completed the remaining four. After an interrupted audit, the distinct
-host finisher completed the full independent content audit and is now hashing
-the containers. Data waiter 005 and full-plan continuation 021 are active; the
-former has not prepared data continuation 003, and the latter has not prepared
-physical case 019 or started console actions. Preserve all earlier terminal
-records. These host/data outcomes do not establish physical model capacity,
+host finisher completed the full independent content audit and all container
+hashes. Data continuation 003 then failed its CPU controller import check before
+any CPU observer or console action; waiter 005 and full-plan continuation 021
+positively ended. The isolated controller correction passed focused host/native
+checks. A new single finite continuation 022 can use the existing data operator
+with fresh batch 004, then the still-unused physical case 019. No additional
+audit/hash waiting controller is needed. Preserve all earlier terminal records.
+These host/data outcomes do not establish physical model capacity,
 generated text or performance.
 
 Remaining deliverable-1 work is complete data readiness. After positive transfer,

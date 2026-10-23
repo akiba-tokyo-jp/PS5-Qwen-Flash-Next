@@ -418,3 +418,16 @@ passed checks. Measure sustained throughput during the existing transfer rather
 than adding a probe. Physical full-model memory/load/generation, passive display
 measurements and exact final restoration remain pending. This updates scheduling
 and status, not physical permissions, precision, verification or safety gates.
+
+The audit and all 76 final container hashes subsequently completed, publishing
+the full v2 receipt. Data batch 003 failed the CPU controller import subset gate
+before any CPU observer, console action or transfer. Waiter 005 and full-plan
+continuation 021 positively ended. Preserve their immutable failures and the
+completed model. The corrected directory controller passed 37 API checks with a
+4,096-byte marker, the actual PS5 object import subset gate and 11 focused Python
+tests. See `docs/model-directory-import-fix-20261023.md`. One finite continuation
+022 may now use the existing data operator with fresh batch 004, then the unused
+physical case 019 and every original final restoration/readmission gate. No new
+model audit/hash waiter or application rebuild is required. Keep its frozen
+sources unchanged while it runs; retain every failed/uncertain attempt without
+automatic retry, GPU reset or forced close.
