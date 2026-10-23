@@ -9,13 +9,17 @@ The [active execution plan](docs/execution-plan-20261022.md) targets complete
 PS5 text generation and a passive monitor. Model conversion, transfer and the
 complete native SHA256 pass in the preceding boot are finished. Native model
 admission has not reached generation. The owner confirmed a console freeze and
-power-cycled it. The exact original SELF is now restored with full readback and
-fresh recovery-only CPU guards; numerical readmission is pending. See the
+power-cycled it. The exact original SELF was restored, numerically readmitted,
+normally closed and fully read back after complete new-boot CPU/runtime guards.
+The [independent native memory qualification](docs/native-memory-qualification-20261024.md)
+is now in progress, preserving the original. See the
 [freeze investigation](docs/freeze-forensics-20261024.md). Prior boot-bound
 admissions are invalid, and further native inference remains withheld.
 The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
-It has not been executed on the PS5. See the [physical hold](docs/public-mapping-hold-20261024.md).
+Full reserved-source model loading has not run on the PS5. See the
+[physical hold](docs/public-mapping-hold-20261024.md) and its subsequent recovery
+in the current memory-qualification report.
 
 ## Native driver integration
 

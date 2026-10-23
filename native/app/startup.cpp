@@ -40,11 +40,14 @@ Startup read_startup(int argc, char ** argv) {
                 integer("utc_epoch_ms"), integer("uncertainty_ms")};
         }
         const auto mode = data.value("mode", std::string("inference"));
-        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation" && mode != "model-validation" && mode != "operator-validation" && mode != "moe-validation" && mode != "first-generation-validation")
+        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation" && mode != "native-memory-validation" && mode != "model-validation" && mode != "operator-validation" && mode != "moe-validation" && mode != "first-generation-validation")
             throw std::invalid_argument("Unknown application mode");
         result.monitor_validation = mode == "monitor-validation";
         result.display_validation = mode == "display-validation";
         result.runtime_validation = mode == "runtime-validation";
+        result.memory_validation = mode == "native-memory-validation";
+        if(result.memory_validation && result.native_display)
+            throw std::invalid_argument("Native memory validation requires display disabled");
         result.model_validation = mode == "model-validation";
         result.operator_validation = mode == "operator-validation";
         result.moe_validation = mode == "moe-validation";

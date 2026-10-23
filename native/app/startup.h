@@ -10,6 +10,7 @@ struct Startup {
     bool monitor_validation = false;
     bool display_validation = false;
     bool runtime_validation = false;
+    bool memory_validation = false;
     bool model_validation = false;
     bool operator_validation = false;
     bool moe_validation = false;

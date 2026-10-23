@@ -676,3 +676,21 @@ Its six-segment roundtrip and 291 public-module imports passed, and both
 committed-policy checks passed. This new artifact is not deployed or physically
 qualified. It must continue rejecting unsupported OS memory telemetry before
 source reservation. Do not treat its build as a resolution of the old freeze.
+
+## Recovery-first memory qualification (2026-10-24)
+
+The owner authorized the new recovery-first plan. The current boot's unchanged
+compatibility runtime and missing existing title nullfs mount were restored with
+positive terminal evidence. The exact original then passed numerical readmission,
+ordinary shutdown, fresh complete CPU guards and a full raw SELF readback. Keep
+the old uncertain close unknown. The missing mount's first launch refusal had
+zero launch calls; all failed preparation records remain preserved.
+
+The separate `native-memory-validation` mode starts before model receipt reads,
+display or any Vulkan initialization. Qualify telemetry, 16 KiB reserve/query/
+release and bounded direct I/O separately, with exact current-boot owner and
+artifact binding, durable results, normal OS close and fresh CPU guards after
+each phase. Do not overlap phases or skip the native telemetry review. The
+private phase policy cannot admit full-model memory or old-boot integrity.
+Keep unsupported OS memory rejection, original precision and all final original
+restoration requirements. See `docs/native-memory-qualification-20261024.md`.

@@ -93,6 +93,14 @@ int main(int argc, char ** argv) {
             bool refused = false; try { read_startup(2, args); } catch (const std::exception &) { refused = true; }
             check(refused, "An invalid MoE startup scope was admitted");
         }
+        { std::ofstream out(config); out << R"({"schema":"ps5-qwen-app-v1","development_policy":"p","model_receipt":"unused","web_assets":"unused","mode":"native-memory-validation","native_display":false})"; }
+        const auto memory_startup=read_startup(2,args);
+        check(memory_startup.memory_validation && !memory_startup.native_display &&
+              !memory_startup.first_generation_validation && !memory_startup.runtime_validation,
+              "Model-independent native memory startup was not isolated");
+        { std::ofstream out(config); out << R"({"schema":"ps5-qwen-app-v1","development_policy":"p","model_receipt":"unused","web_assets":"unused","mode":"native-memory-validation"})"; }
+        bool memory_display=false;try{read_startup(2,args);}catch(const std::exception &){memory_display=true;}
+        check(memory_display,"Native memory diagnostics admitted display initialization");
         { std::ofstream out(config); out << "{\"schema\":\"ps5-qwen-app-v1\",\"development_policy\":\"policy\",\"model_receipt\":\"model\",\"web_assets\":\"web\",\"port\":-1}"; }
         bool rejected = false; try { read_startup(2, args); } catch (const std::exception &) { rejected = true; }
         check(rejected, "Invalid native port was accepted");

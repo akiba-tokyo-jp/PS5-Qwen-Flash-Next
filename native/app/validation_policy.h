@@ -6,6 +6,7 @@
 #include "operator_admission.h"
 #include "moe_admission.h"
 #include "first_generation_policy.h"
+#include "memory_probe.h"
 
 namespace qwen_app {
 inline constexpr unsigned native_model_verification_seconds = 7200;
@@ -15,6 +16,9 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
                                              const std::string & mode,
                                              bool native_display) {
     if (mode == "display-validation" || mode == "runtime-validation") return;
+    if (mode == "native-memory-validation") {
+        require_memory_probe_policy(policy,native_display);return;
+    }
     if (mode == "first-generation-validation") {
         require_first_generation_policy(policy, native_display);
         return;

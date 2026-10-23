@@ -11,6 +11,7 @@
 #include "runtime_admission.h"
 #include "vulkan_admission.h"
 #include "memory_admission.h"
+#include "memory_probe.h"
 #include "model_integrity.h"
 #include "prior_model_integrity.h"
 #include "model_identity_namespace.h"
@@ -219,7 +220,7 @@ int main(int argc, char ** argv) {
         const auto policy = Json::parse(policy_file);
         if (!policy.at("console_operations_enabled").get<bool>())
             throw std::runtime_error("Console execution is disabled for this application integration phase");
-        const auto mode = startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : startup.moe_validation ? "moe-validation" : startup.first_generation_validation ? "first-generation-validation" : "inference";
+        const auto mode = startup.memory_validation ? "native-memory-validation" : startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : startup.moe_validation ? "moe-validation" : startup.first_generation_validation ? "first-generation-validation" : "inference";
         if (!policy.contains("allowed_modes") || !policy.at("allowed_modes").is_array() ||
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
@@ -237,6 +238,16 @@ int main(int argc, char ** argv) {
         qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");
         llama_log_set(native_log, nullptr); ggml_log_set(native_log, nullptr);
         qwen_native_set_fault_report((startup.admission_report + ".fatal").c_str());
+        if(startup.memory_validation) {
+            if(!policy.value("console_validation_enabled",false))
+                throw std::runtime_error("Native memory validation is not enabled");
+            write_fresh_report(startup.admission_report+".before",qwen_app::observe_native_memory());
+            auto result=qwen_app::run_native_memory_probe(policy);
+            result["schema"]="ps5-qwen-native-memory-result-v1";result["pid"]=getpid();
+            write_fresh_report(startup.admission_report,result);
+            qwen_native_stage("memory_validation_completed_waiting_for_ordinary_close GPU_not_started=1 model_loaded=0");
+            for(;;) (void)usleep(1000000);
+        }
         if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) || setenv("LLAMA_APP_NO_MMAP_PREFETCH", "1", 1) ||
             setenv("GGML_VK_BOUNDED_STAGING", "1", 1) ||
             setenv("LLAMA_APP_EXPERT_POLICY", "maya-aged-lfu", 1) ||

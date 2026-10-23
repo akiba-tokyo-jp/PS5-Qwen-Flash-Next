@@ -17,7 +17,10 @@ Public file mmap did not return within its 60-second bound. The ordinary-close
 transport then timed out without a result. Read-only reassessment still found
 the same native owner. The owner then confirmed the freeze and power-cycled the
 console. The exact original SELF has now been restored with complete readback
-and recovery-only CPU guards. Numerical readmission is pending. Preserve the
+and recovery-only CPU guards. The subsequent recovery-first sequence restored
+the unchanged runtime and missing volatile title mount, then passed original
+numerical readmission, normal shutdown and fresh final CPU/full SELF guards.
+See [native memory qualification](native-memory-qualification-20261024.md). Preserve the
 [forensic findings](freeze-forensics-20261024.md): do not retry the old close or
 file-backed model mapping, or reuse the old boot-bound admission.
 
@@ -27,14 +30,15 @@ CPU/GPU reads. Its native host link/package/imports, CPU policy and real CPU
 reference comparisons passed. It is not a physical qualification or a complete
 deliverable. The active remaining queue is:
 
-1. Retain the completed exact file restoration. Establish the new boot's complete
-   runtime/CPU admission before original numerical readmission and ordinary close.
-   The recovery-only CPU guard does not grant inference or load the missing
-   compatibility runtime. Never assume success from elapsed time or a host build.
-2. Qualify the distinct 16 KiB virtual-reservation probe as a model-independent
+1. Retain the completed new-boot runtime/CPU admission and original numerical
+   readmission/ordinary-close evidence. Preserve the original before diagnostic
+   publication and restore/readmit it again after native qualification.
+2. Complete independent native memory telemetry, normal close and fresh CPU
+   guards. Qualify the distinct 16 KiB virtual-reservation probe as a model-independent
    native fixture, observing memory before the operation and explicit return and
    completed release. Do not start with the full model or a large file mapping.
-   Then admit complete virtual sources, fresh memory, valid new-boot integrity,
+   Then qualify bounded direct I/O and normal close. Admit complete virtual
+   sources, fresh correctly scoped memory observations, valid new-boot integrity,
    full original-precision load and the first arithmetic answer. The previous
    boot's native SHA-reuse binding is not an execution permit for this boot.
 3. Complete the two existing external requests, actual passive frame review,

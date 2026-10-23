@@ -191,6 +191,44 @@ int main() {
     arbitrary["console_operations_enabled"] = true;
     arbitrary["deployment_enabled"] = true;
     reject(arbitrary, "inference");
+    Json memory={{"native_memory_validation",{
+        {"schema","ps5-qwen-native-memory-validation-v1"},{"phase","telemetry"},
+        {"fresh_idle_session_bound_by_launcher",true},
+        {"original_numerical_readmission_passed_this_boot",true},
+        {"model_loading_enabled",false},{"Vulkan_initialization_enabled",false},
+        {"maximum_virtual_probe_bytes",16384u},{"maximum_io_window_bytes",8u<<20}}}};
+    qwen_app::require_native_validation_policy(memory,"native-memory-validation",false);
+    reject(memory,"native-memory-validation",true);
+    for(auto field=memory["native_memory_validation"].begin();field!=memory["native_memory_validation"].end();++field) {
+        auto changed=memory;changed["native_memory_validation"].erase(field.key());
+        reject(changed,"native-memory-validation");
+        changed=memory;changed["native_memory_validation"][field.key()]=nullptr;
+        reject(changed,"native-memory-validation");
+        if(field.value().is_boolean()) {
+            changed=memory;changed["native_memory_validation"][field.key()]=!field.value().get<bool>();
+            reject(changed,"native-memory-validation");
+            changed["native_memory_validation"][field.key()]=field.value().get<bool>()?1:0;
+            reject(changed,"native-memory-validation");
+        }
+    }
+    for(const char * phase:{"virtual-16KiB","direct-io"}) {
+        auto changed=memory;auto & p=changed["native_memory_validation"];p["phase"]=phase;
+        reject(changed,"native-memory-validation");
+        p["preceding_telemetry_and_normal_close_passed_this_boot"]=true;
+        if(std::string(phase)=="direct-io") {
+            reject(changed,"native-memory-validation");
+            p["preceding_virtual_probe_and_normal_close_passed_this_boot"]=true;
+        }
+        qwen_app::require_native_validation_policy(changed,"native-memory-validation",false);
+    }
+    for(const char * key:{"maximum_virtual_probe_bytes","maximum_io_window_bytes"}) {
+        for(const auto & value:{Json(-1),Json(0u),Json(16384.0),Json(true),Json(1ull<<30)}) {
+            auto changed=memory;changed["native_memory_validation"][key]=value;
+            reject(changed,"native-memory-validation");
+        }
+    }
+    auto bad_memory=memory;bad_memory["native_memory_validation"]["phase"]="full-model";
+    reject(bad_memory,"native-memory-validation");
     std::cout << "native_validation_policy_passed rejected_cases=" << rejected
               << " full_inference_rejected=1 GPU_calls=0\n";
 }
