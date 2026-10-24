@@ -1080,3 +1080,22 @@ before metadata, every work-boundary predicate, all reserves and wait limits.
 Native Direct integrity memory observations must precede any decision about
 metadata/model/GPU execution. This supersedes only the experimental root3998
 requirement; it does not permit a replay of a consumed launch or GPU operation.
+
+The correction subsequently ran once and passed Direct full startup SHA256,
+all76 sealed metadata checks and selected-source CPU qualification. The original
+virtual rehearsal also completed all76 reservations/releases. Free pages were
+2982 before that interval and1195 afterwards; the isolated OS allocation cause
+is not proved. Model loading then cancelled on free1091 below the unchanged1154
+predicate after20s. Driver allocation calls had returned; stable owned logs showed
+the retained resource graph. No generation POST or inference completed. The parent
+ended with all206 inputs unchanged. Normal close, exact original restoration,
+fresh numerical admission, ordinary shutdown, final CPU and full SELF passed.
+See docs/source-schedule-load-refusal-20261024.json. Never replay this native SELF.
+
+Keep executing the actual whole virtual rehearsal in every next candidate.
+Do not substitute historical mapping evidence for current reservation admission.
+The next distinct candidate requires the existing native startup target again
+after all rehearsal reservations/releases positively complete and before driver
+initialization. Share the unchanged20s/60s passive wait budget, record the immediate
+post-probe memory before waiting, and retain every original work predicate/reserve.
+No eviction, reclamation, allocation retry or uncertain resource release is allowed.

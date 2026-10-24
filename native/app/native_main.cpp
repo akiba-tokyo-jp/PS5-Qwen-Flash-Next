@@ -724,7 +724,15 @@ int main(int argc, char ** argv) {
             qwen_native_stage("source_virtual_CPU_memory_admission_passed_before_probe GPU_not_started=1 model_loaded=0");
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
                 [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
-            const auto after_sources=startup.first_generation_validation ? qwen_app::admit_native_system_memory() : qwen_app::observe_native_system_memory();
+            qwen_native_stage("source_virtual_probe_all_reservations_and_releases_completed_before_backend GPU_not_started=1");
+            write_fresh_report(startup.admission_report+".system-memory.after-virtual-probe-before-admission",
+                system_memory_report(qwen_app::observe_native_system_memory()));
+            // The whole rehearsal has positively returned. Require recovery to
+            // the existing startup target before creating driver/device state.
+            // This shares the same passive wait budget and issues no reclaim.
+            const auto after_sources=startup.first_generation_validation ?
+                (policy.contains("native_source_schedule") ? qwen_app::admit_native_startup_memory() : qwen_app::admit_native_system_memory()) :
+                qwen_app::observe_native_system_memory();
             write_fresh_report(startup.admission_report+".system-memory.after-virtual-sources",system_memory_report(after_sources));
             (void)qwen_app::qualified_system_headroom(after_sources);
             require_model_CPU_budget();
