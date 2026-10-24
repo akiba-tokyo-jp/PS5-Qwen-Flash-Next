@@ -1455,3 +1455,43 @@ remain mandatory; no OS mapping/ownership/available-memory state is reused.
 Require actual legacy/external validator refusal controls and native link/import/
 SELF gates, then a distinct bounded CPU whole-rehearsal case with normal close/
 exact restoration/final CPU before separate full inference qualification.
+
+The external prior-byte CPU case completed all76 current reservations/releases
+with current file SHA256/current382 lookups and direct prior1527-byte evidence.
+Normal close/exact restoration/full readback/final idle CPU and404 unchanged
+inputs passed. Its settled diagnostic free count1574 is not full startup admission.
+The subsequent distinct full case refused before model metadata at1580 versus
+2974 required. No model/current virtual/GPU work began; all169 resource reads
+returned, and normal close/exact restoration/full readback/final CPU plus411
+unchanged inputs passed. Do not replay that consumed case or lower its target.
+
+A distinct CPU-only diagnostic may read the positively identified idle title's
+SDK `KERN_PROC_VMMAP` metadata. Require exact PID/start/application/title/boot
+before and after, no process memory reads or mapping changes, at most one size
+query/one data query,1MiB/4096-record bounds and canaries. Validate the actual
+packed parser/query and native imports first. Unknown metadata completion blocks
+ordinary close and retains backing; positive completion and unchanged ownership
+must precede normal close/exact restoration/final CPU. VM sizes and resident0
+are not reclaimable capacity or permission to alter any reserve. Keep raw maps,
+addresses and identities private. See docs/native-VM-map-diagnostic.md.
+
+
+The CPU-only VM diagnostic subsequently completed two returned kernel metadata
+queries and parsed 188 bounded records with exact owner checks before and after.
+Ordinary close, exact original restoration/full readback and fresh idle CPU
+passed. Require the qualified process ABI overlay and a 1,096-byte compile-time
+process-size assertion; a permission-only SDK recipe produces 1,088 bytes and is
+not usable for process identity. Keep the full compiler/CRT/header/provider
+input receipt and the allowed `moss-` transport namespace. Preserve every refused
+helper; zero-query terminal refusal is separate from unknown query completion.
+The same CPU title completed all 76 current reservations/releases; settled free
+pages 3,155 do not replace either full-startup 2,974-page admission. No new GPU or
+throughput result follows from these CPU measurements. A distinct full sequence
+may reuse the unchanged candidate and positive immutable-byte evidence, with
+fresh sessions, current reservations, both startup guards, all requests/frames,
+positive retirement and exact original restoration/fresh numerical admission.
+Allow the ordinary title transition to settle for one bounded 30-second quiet
+interval before the unchanged owner observer; never retry or relax a failed
+service/owner guard. Strengthen the prelaunch metadata gate to the native kernel
+target as well as the original minimum/reserve to avoid a cold launch under an
+already-insufficient observation.
