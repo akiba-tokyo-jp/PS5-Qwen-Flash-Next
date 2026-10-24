@@ -72,6 +72,10 @@ int main() {
             const auto bytes = ops.files[0].bytes;
             reader.before_unmap(base, bytes); reader.after_unmap(base, bytes); reader.close_completed();
             check(reader.stats().maximum_chunk == model_read_window && ops.live == 0, "Fixed window or descriptor retirement failed");
+            check(reader.stats().chunks == reader.stats().completed_windows,
+                "Profiling counted an uncompleted source window as completed");
+            check(reader.stats().read_ns > 0 && reader.stats().consumer_ns > 0,
+                "Completed source read and consumer intervals were not measured");
         }
         {
             Ops ops; ops.setup(16, model_read_alignment * 2); MappedSourceReader reader(ops.files, ops, scratch);

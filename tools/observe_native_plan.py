@@ -20,6 +20,7 @@ from urllib.parse import quote
 
 from first_generation_result import read_record, validate, require, integer, number
 from native_source_deadline import NativeSourceDeadline
+from performance_result import validate_performance
 
 MODEL_ROOT = "/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/"
 PROMPT = "Count from 1 to 8, separated by commas. Reply with only the sequence."
@@ -231,10 +232,13 @@ def main():
             "Native terminal counts exceed the fixed observation scope")
         for suffix in (".first.start", ".first.intent", ".integrity", ".mapping", ".memory", ".source", ".first.result", ".demo.cache", ".demo.result"):
             download(suffix)
+        performance_required = binding.get("require_completed_performance") is True
+        download(".first.performance", optional=not performance_required)
         for index in range(1, len(result.get("token_ids", [])) + 1): download(".first.token-" + str(index))
         for ordinal in (1, 2):
             prefix = ".demo" + str(ordinal)
             download(prefix + ".intent"); download(prefix + ".result"); download(prefix + ".display.json")
+            download(prefix + ".performance", optional=not performance_required)
             frame = download(prefix + ".display.bmp")
             require(len(frame) == 8294454 and frame[:2] == b"BM" and struct.unpack_from("<II", frame, 18) == (1920, 1080),
                 "The completed native scanout-source frame differs")
@@ -245,6 +249,13 @@ def main():
             require(native == observed_streams[ordinal-1][:-1], "External token events differ from native durable records")
         failure_check()
         review = validate(result_path, expected)
+        if performance_required:
+            summaries = [validate_performance(read_record(Path(str(result_path) + '.first.performance')), result)]
+            for ordinal, native_request in enumerate(result['demonstration']['requests'], 1):
+                summaries.append(validate_performance(
+                    read_record(Path(str(result_path) + '.demo' + str(ordinal) + '.performance')), native_request))
+            exclusive(out / 'performance-review.private.json', dict(completed_requests=summaries,
+                baseline_comparison_required=True, speedup_qualified=False))
         exclusive(out / "native-review.private.json", review)
         exclusive(out / "complete.private.json", dict(state="native_requests_verified_restoration_required",
             native_result_sha256=hashlib.sha256(result_path.read_bytes()).hexdigest(), pid=expected["pid"],

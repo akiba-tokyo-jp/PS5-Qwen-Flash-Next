@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #pragma once
+#include "profile_clock.h"
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -17,7 +18,10 @@ inline constexpr std::uint64_t model_read_system_reserve = 256ull << 20;
 inline constexpr std::uint64_t model_read_flexible_metadata_margin = 8ull << 20;
 using SourceIdentity = std::array<std::uint64_t, 10>;
 struct SourceFile { std::string path; std::uint64_t bytes; SourceIdentity identity; };
-struct SourceReadStats { std::uint64_t bytes = 0, chunks = 0, maximum_chunk = 0, mappings = 0, retired_ranges = 0; };
+struct SourceReadStats {
+    std::uint64_t bytes = 0, chunks = 0, maximum_chunk = 0, mappings = 0, retired_ranges = 0;
+    std::uint64_t headroom_ns = 0, handle_ns = 0, read_ns = 0, consumer_ns = 0, completed_windows = 0;
+};
 struct SourceReadOps {
     virtual ~SourceReadOps() = default;
     virtual SourceIdentity identity(int fd) = 0;
@@ -115,6 +119,8 @@ public:
     void completed() {
         healthy();
         if (!busy_) fail("A source window has no positive completed upload");
+        stats_.consumer_ns += profile_elapsed_ns(consumer_started_);
+        ++stats_.completed_windows;
         busy_ = false;
     }
 
@@ -162,6 +168,7 @@ private:
     std::array<Handle, 8> handles_{};
     std::uint64_t age_ = 0;
     bool busy_ = false, failed_ = false;
+    ProfileClock::time_point consumer_started_{};
     SourceReadStats stats_;
     [[noreturn]] void fail(const char * message) { failed_ = true; throw std::runtime_error(message); }
     void healthy() {
@@ -191,19 +198,25 @@ private:
     const void * read_window(std::size_t file, std::uint64_t offset, std::size_t wanted, std::size_t & copied) {
         if (busy_ || !wanted || offset >= files_[file].bytes || wanted > files_[file].bytes - offset)
             fail("Invalid bounded model source read");
-        if (ops_.system_headroom() < model_read_system_reserve + model_read_flexible_metadata_margin)
-            fail("Fresh Flexible/kernel reserve cannot admit the next model source window");
+        {
+            ProfileScope timing(stats_.headroom_ns);
+            if (ops_.system_headroom() < model_read_system_reserve + model_read_flexible_metadata_margin)
+                fail("Fresh Flexible/kernel reserve cannot admit the next model source window");
+        }
         busy_ = true;
         const auto skip = std::size_t(offset % model_read_alignment);
         copied = std::min(wanted, model_read_window - skip);
         const auto requested = std::size_t(rounded(skip + copied));
         const auto aligned = offset - skip;
-        const int fd = handle(file);
-        const auto got = ops_.read_at(fd, scratch_, requested, aligned);
+        int fd;
+        { ProfileScope timing(stats_.handle_ns); fd = handle(file); }
+        std::int64_t got;
+        { ProfileScope timing(stats_.read_ns); got = ops_.read_at(fd, scratch_, requested, aligned); }
         const auto available = std::min<std::uint64_t>(requested, files_[file].bytes - aligned);
         if (got < 0 || std::uint64_t(got) != available || std::uint64_t(got) < skip + copied)
             fail("Direct model read did not complete its exact admitted window");
         stats_.bytes += copied; ++stats_.chunks; stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, requested);
+        consumer_started_ = ProfileClock::now();
         return static_cast<const unsigned char *>(scratch_) + skip;
     }
 };

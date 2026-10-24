@@ -74,6 +74,36 @@ static void write_fresh_report(const std::string & path, const Json & value) {
     if (!saved || !closed) throw std::runtime_error("Native report could not be persisted");
 }
 
+static Json performance_snapshot(const qwen_app::LlamaEngine & engine) {
+    const auto source = qwen_app::native_model_source_stats();
+    const auto adapter = engine.timing_stats();
+    return {{"source_bytes", source.bytes}, {"source_chunks", source.chunks},
+        {"source_completed_windows", source.completed_windows},
+        {"source_headroom_ns", source.headroom_ns}, {"source_handle_ns", source.handle_ns},
+        {"source_read_ns", source.read_ns}, {"source_consumer_ns", source.consumer_ns},
+        {"process_calls", adapter.process_calls}, {"process_ns", adapter.process_ns},
+        {"synchronize_ns", adapter.synchronize_ns}, {"checkpoint_ns", adapter.checkpoint_ns},
+        {"work_guard_ns", adapter.work_guard_ns}, {"stage_observer_ns", adapter.stage_observer_ns}};
+}
+
+static Json performance_difference(const Json & before, const qwen_app::LlamaEngine & engine) {
+    const auto after = performance_snapshot(engine);
+    Json delta = Json::object();
+    for (auto it = before.begin(); it != before.end(); ++it) {
+        const auto first = it.value().get<std::uint64_t>();
+        const auto last = after.at(it.key()).get<std::uint64_t>();
+        if (last < first) throw std::runtime_error("Completed performance counters moved backwards");
+        delta[it.key()] = last - first;
+    }
+    if (delta.at("source_chunks") != delta.at("source_completed_windows"))
+        throw std::runtime_error("Performance reporting requires completed source windows");
+    // process_ns includes source I/O and backend work. These are nested wall
+    // intervals, not hardware GPU timestamps and must not be summed together.
+    return {{"schema", "ps5-qwen-completed-performance-v1"}, {"delta", delta},
+        {"process_includes_source_and_backend_work", true}, {"GPU_timestamp_queries", false},
+        {"hot_path_logs_added", false}, {"GPU_operations_added", false}};
+}
+
 static std::string model_file(const std::string & receipt, const std::string & name) {
     if (name.empty() || name.find_first_of("/\\:") != std::string::npos || name == "." || name == "..")
         throw std::runtime_error("Receipt model files must use relative basenames");
@@ -818,6 +848,7 @@ int main(int argc, char ** argv) {
             qwen_app::Request request{gate.at("run_id").get<std::string>(),
                 qwen_app::render_first_generation_prompt(chat_template),
                 qwen_app::first_context_tokens, qwen_app::first_output_tokens};
+            const auto first_performance = performance_snapshot(*engine);
             const auto & result = trial.run(request, [&](const auto & bound) {
                 write_fresh_report(startup.admission_report + ".first.intent", {
                     {"schema", "ps5-qwen-first-generation-intent-v1"}, {"run_id", bound.id}, {"pid", getpid()},
@@ -834,6 +865,8 @@ int main(int argc, char ** argv) {
             }, qwen_native_stage);
             require_unchanged_model();
             engine->set_work_guard({});
+            write_fresh_report(startup.admission_report + ".first.performance",
+                performance_difference(first_performance, *engine));
             Json metrics{{"prompt_tokens", result.metrics.prompt_tokens}, {"generated_tokens", result.metrics.generated_tokens},
                 {"prefill_ms", result.metrics.prefill_ms}, {"total_ms", result.metrics.total_ms},
                 {"TTFT_ms", nullptr}, {"decode_tokens_per_second", nullptr}};
@@ -899,6 +932,7 @@ int main(int argc, char ** argv) {
                             {"ttft_ms", value.ttft_ms ? Json(*value.ttft_ms) : Json(nullptr)},
                             {"decode_tokens_per_second", value.decode_tokens_per_second ? Json(*value.decode_tokens_per_second) : Json(nullptr)}};
                     };
+                    const auto external_performance = performance_snapshot(*engine);
                     const auto & generated = attempt.run(external, [&](const auto & bound) {
                         write_fresh_report(prefix + ".intent", {{"schema", "ps5-qwen-demo-request-intent-v1"},
                             {"pid", getpid()}, {"run_id", request.id}, {"ordinal", ordinal}, {"id", bound.id},
@@ -918,6 +952,8 @@ int main(int argc, char ** argv) {
                         publish(event);
                     }, qwen_native_stage);
                     engine->set_work_guard({});
+                    write_fresh_report(prefix + ".performance",
+                        performance_difference(external_performance, *engine));
                     qwen_app::require_demo_sequence(generated.output_bytes);
                     if (display->failed() || generated.token_ids.size() < 2 ||
                         !generated.metrics.decode_tokens_per_second || !generated.metrics.ttft_ms)

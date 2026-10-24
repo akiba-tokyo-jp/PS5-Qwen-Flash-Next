@@ -871,3 +871,17 @@ caches remain disabled, and the task's console reservation remains held.
 The three short thinking-disabled requests qualify finite original-precision
 generation, not broad answer quality, long context or sustained service. Keep
 unknown CPU/GPU utilization unavailable and raw GPU memory estimates diagnostic.
+
+## Performance continuation
+
+The owner subsequently authorized speed improvement. Preserve the completed
+original-precision result as the control and use distinct candidate identities;
+never replay its completed launch or POST intents. Follow
+docs/performance-20261024.md. Start with aggregate wall-time profiling of source
+reads, consumers and decode boundaries, without new GPU operations, changed
+precision, larger memory budgets or relaxed completion checks. The profile-only
+session is intermediate evidence, not completion of the requested speed work.
+Keep the qualified driver/archive and persistent-cache policy unchanged while
+isolating application costs. Require actual matched outputs/performance and the
+same positive retirement, normal-close and original-restoration boundary after
+each physical candidate. No delegation was authorized.
