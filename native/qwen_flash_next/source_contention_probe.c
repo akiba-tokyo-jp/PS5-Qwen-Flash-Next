@@ -22,6 +22,19 @@
 #ifndef PROBE_SPLIT
 #define PROBE_SPLIT 0
 #endif
+#ifndef PROBE_SOURCE_FILES
+#define PROBE_SOURCE_FILES 3u
+#endif
+#ifndef PROBE_ROUNDS
+#define PROBE_ROUNDS 3u
+#endif
+#ifndef PROBE_ROTATE_MODES
+#define PROBE_ROTATE_MODES 0
+#endif
+_Static_assert(PROBE_SOURCE_FILES >= 3u && PROBE_SOURCE_FILES <= 8u,
+               "Keep the original eight-descriptor source bound");
+_Static_assert(PROBE_ROUNDS >= 1u && PROBE_ROUNDS <= 6u,
+               "Keep the diagnostic finite");
 #if PROBE_SPLIT
 #include "hash/sha256/sha256.h"
 #endif
@@ -140,7 +153,8 @@ static void retain_uncertain(void) {
     for(;;)sleep(1);
 }
 int main(int argc,char **argv) {
-    (void)argv;int ok=0,work_ok=1,mapped=0,worker_started=0,worker_joined=0;pthread_t io_thread,monitor;int fd[3]={-1,-1,-1};struct stat original[3];
+    (void)argv;int ok=0,work_ok=1,mapped=0,worker_started=0,worker_joined=0;pthread_t io_thread,monitor;int fd[PROBE_SOURCE_FILES];struct stat original[PROBE_SOURCE_FILES];
+    for(unsigned i=0;i<PROBE_SOURCE_FILES;++i)fd[i]=-1;
     void *window=NULL;int64_t physical=-1;uint64_t started=0;
     output_fd=open(PROBE_LOG,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);output_selected=1;if(output_fd<0)return 2;
     if(!report("BEGIN nonce=%s uid=%u euid=%u constructors=%u CPU_only=1 window_bytes=%u model_loaded=0 GPU_calls=0 title_launches=0",CLOSE_NONCE,getuid(),geteuid(),constructors,WINDOW))return 2;
@@ -152,10 +166,12 @@ int main(int argc,char **argv) {
     if(!report("DIRECT mapping_returned=1 rc=%d aligned=%d",mapping_rc,window&&!((uintptr_t)window%16384))||mapping_rc||!window||((uintptr_t)window%16384))goto done;
     mapped=1;
     if(seteuid(1)||geteuid()!=1)goto done;
-    for(unsigned i=0;i<3;++i){unsigned file=PROBE_SPLIT?i:(i==2?1:0);fd[i]=open(probe_files[file].path,O_RDONLY|O_DIRECT|O_NOFOLLOW);int opened=fd[i]>=0,valid=opened&&identity(fd[i],file,&original[i]);if(!report("SOURCE index=%u opened=%d identity=%d errno=%d",i,opened,valid,errno)||!valid)goto done;}
+    for(unsigned i=0;i<PROBE_SOURCE_FILES;++i){unsigned file=PROBE_SPLIT?i:(i==2?1:0);fd[i]=open(probe_files[file].path,O_RDONLY|O_DIRECT|O_NOFOLLOW);int opened=fd[i]>=0,valid=opened&&identity(fd[i],file,&original[i]);if(!report("SOURCE index=%u opened=%d identity=%d errno=%d",i,opened,valid,errno)||!valid)goto done;}
     if(PROBE_SPLIT) {
-        if(original[0].st_dev!=original[1].st_dev||original[0].st_dev!=original[2].st_dev||
-           original[0].st_ino==original[1].st_ino||original[0].st_ino==original[2].st_ino||original[1].st_ino==original[2].st_ino)goto done;
+        for(unsigned i=1;i<PROBE_SOURCE_FILES;++i) {
+            if(original[0].st_dev!=original[i].st_dev)goto done;
+            for(unsigned j=0;j<i;++j)if(original[j].st_ino==original[i].st_ino)goto done;
+        }
     } else if(original[0].st_ino!=original[1].st_ino||original[0].st_ino==original[2].st_ino)goto done;
     thread_ids[0]=pthread_getthreadid_np();
     if(PROBE_CPP){if(!probe_cpp_start())retain_uncertain();worker_started=1;}
@@ -163,8 +179,9 @@ int main(int argc,char **argv) {
         pthread_mutex_lock(&lock);while(!ready)pthread_cond_wait(&changed,&lock);pthread_mutex_unlock(&lock);}
     sampling=PROBE_SPLIT?0:1;if(pthread_create(&monitor,NULL,sampler,NULL))retain_uncertain();
     started=now(CLOCK_MONOTONIC);if(!started)retain_uncertain();
-    for(unsigned round=0;round<3;++round)for(unsigned order=0;order<PROBE_MODES;++order){
-        unsigned mode=round%2?PROBE_MODES-1-order:order;current_mode=mode;
+    for(unsigned round=0;round<PROBE_ROUNDS;++round)for(unsigned order=0;order<PROBE_MODES;++order){
+        unsigned mode=PROBE_ROTATE_MODES?(round+order)%PROBE_MODES:
+            (round%2?PROBE_MODES-1-order:order);current_mode=mode;
         /* Default geometry controls; PROBE_BOUNDARY replaces these recipes.
          * 0: no-op handoff, 1/2: serial/parallel same descriptor,
          * 3/4: serial/parallel independent opens of the same vnode,
@@ -244,12 +261,12 @@ finish:
         if(pthread_join(io_thread,NULL))retain_uncertain();worker_joined=1;}
     for(unsigned i=0;i<wait_entries;++i)if(!report("WAIT mode=%u role=%u name=%s samples=%u state=%d object=%u",waits[i].mode,waits[i].role,waits[i].name,waits[i].count,waits[i].state,waits[i].object))goto done;
     if(!report("SAMPLER calls=%u errors=%u first_errno=%d unmatched=%u interval_us=1000 worker_joined=1",sample_calls,sample_errors,sample_first_error,sample_unmatched))goto done;
-    for(unsigned i=0;i<3;++i){struct stat after;if(fstat(fd[i],&after)||!same(&original[i],&after)||close(fd[i]))goto done;fd[i]=-1;}
+    for(unsigned i=0;i<PROBE_SOURCE_FILES;++i){struct stat after;if(fstat(fd[i],&after)||!same(&original[i],&after)||close(fd[i]))goto done;fd[i]=-1;}
     if(seteuid(0)||geteuid()!=0||!context(3)||!headroom()||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;
     ok=work_ok;
 done:
     if(worker_started&&!worker_joined)retain_uncertain();
-    for(unsigned i=0;i<3;++i)if(fd[i]>=0){int rc=close(fd[i]);fd[i]=-1;if(rc)ok=0;}
+    for(unsigned i=0;i<PROBE_SOURCE_FILES;++i)if(fd[i]>=0){int rc=close(fd[i]);fd[i]=-1;if(rc)ok=0;}
     /* Only a positively mapped, unused or fully joined window is releasable.
      * A failed map/unmap retains its allocation. No operation is retried. */
     if(mapped){int rc=sceKernelMunmap(window,WINDOW);mapped=0;

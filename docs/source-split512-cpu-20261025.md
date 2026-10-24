@@ -36,3 +36,8 @@ Full-model splitting is therefore not admitted on the current storage. This is
 a capacity constraint, not evidence that physical splitting has no effect.
 No original files were deleted or overwritten to manufacture capacity. A bounded
 selective mirror would need its own mapping/integrity/cost qualification.
+
+The later [matched 512 / 256 / 128 MiB comparison](source-layout-size-comparison-20261025.md)
+used six physical files, six rotated rounds and 576 exact-byte pairs. Parallel
+means were 6.807 / 6.869 / 6.896 ms. Smaller files did not improve this region;
+512 MiB remains a provisional candidate, with full-layout inference unmeasured.

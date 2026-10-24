@@ -1,0 +1,203 @@
+{
+  "schema": "ps5-qwen-physical-layout-size-comparison-v1",
+  "sizes_MiB": [
+    512,
+    256,
+    128
+  ],
+  "modes": [
+    {
+      "chunk_MiB": 512,
+      "parallel": false,
+      "pairs": 96,
+      "mean_ms": 8.9604116875,
+      "median_ms": 8.933498,
+      "p95_ms": 9.72420675,
+      "maximum_ms": 11.107445,
+      "round_mean_ms": [
+        8.9737156875,
+        9.1610840625,
+        9.09132275,
+        8.872216125,
+        8.761770625,
+        8.902360875
+      ],
+      "time_reduction_vs_512_parallel_percent": -31.632448645722413
+    },
+    {
+      "chunk_MiB": 512,
+      "parallel": true,
+      "pairs": 96,
+      "mean_ms": 6.80714503125,
+      "median_ms": 6.738863,
+      "p95_ms": 7.61099975,
+      "maximum_ms": 7.98278,
+      "round_mean_ms": [
+        6.8412345625,
+        6.813265125,
+        6.793213625,
+        6.7501039375,
+        6.77978775,
+        6.8652651875
+      ],
+      "time_reduction_vs_512_parallel_percent": 0.0
+    },
+    {
+      "chunk_MiB": 256,
+      "parallel": false,
+      "pairs": 96,
+      "mean_ms": 9.016523166666667,
+      "median_ms": 8.946728499999999,
+      "p95_ms": 9.8704245,
+      "maximum_ms": 15.415327,
+      "round_mean_ms": [
+        8.86060425,
+        9.18990575,
+        8.9058238125,
+        8.7585731875,
+        9.372763687499999,
+        9.0114683125
+      ],
+      "time_reduction_vs_512_parallel_percent": -32.45675132928609
+    },
+    {
+      "chunk_MiB": 256,
+      "parallel": true,
+      "pairs": 96,
+      "mean_ms": 6.869273677083333,
+      "median_ms": 6.833522,
+      "p95_ms": 7.62519225,
+      "maximum_ms": 8.24651,
+      "round_mean_ms": [
+        6.8909848125,
+        6.8788365625,
+        6.8609501875,
+        6.918413125,
+        6.88367275,
+        6.782784625
+      ],
+      "time_reduction_vs_512_parallel_percent": -0.9126975486509314,
+      "rounds_faster_than_512_parallel": 1
+    },
+    {
+      "chunk_MiB": 128,
+      "parallel": false,
+      "pairs": 96,
+      "mean_ms": 8.9667070625,
+      "median_ms": 8.919385,
+      "p95_ms": 9.647769,
+      "maximum_ms": 10.468848,
+      "round_mean_ms": [
+        8.864838875,
+        8.8542144375,
+        9.0158935,
+        9.0228945625,
+        8.9793186875,
+        9.0630823125
+      ],
+      "time_reduction_vs_512_parallel_percent": -31.724930515450424
+    },
+    {
+      "chunk_MiB": 128,
+      "parallel": true,
+      "pairs": 96,
+      "mean_ms": 6.895577895833333,
+      "median_ms": 6.834244,
+      "p95_ms": 7.599113,
+      "maximum_ms": 10.713013,
+      "round_mean_ms": [
+        6.7868990625,
+        6.7989871875,
+        6.9505875,
+        6.7683010625,
+        7.04552725,
+        7.0231653125
+      ],
+      "time_reduction_vs_512_parallel_percent": -1.2991182673111723,
+      "rounds_faster_than_512_parallel": 2
+    }
+  ],
+  "total_pairs": 576,
+  "all_returned_bytes_SHA256_passed": true,
+  "hashing_outside_timed_interval": true,
+  "actual_application_CPP_executor": true,
+  "source_window_bytes": 8388608,
+  "source_descriptors": 7,
+  "descriptor_bound": 8,
+  "maximum_outstanding_reads": 2,
+  "rounds": 6,
+  "orders": [
+    [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    [
+      1,
+      2,
+      3,
+      4,
+      5,
+      0
+    ],
+    [
+      2,
+      3,
+      4,
+      5,
+      0,
+      1
+    ],
+    [
+      3,
+      4,
+      5,
+      0,
+      1,
+      2
+    ],
+    [
+      4,
+      5,
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      5,
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  ],
+  "pairs_per_mode_per_round": 16,
+  "original_read_offsets_MiB": [
+    1016,
+    1032
+  ],
+  "read_bytes_each": 3293184,
+  "read_stride": 16384,
+  "additional_console_storage_bytes": 805306368,
+  "reused_512_samples_bytes": 1073741824,
+  "full_file_stream_SHA256_before_measurement": true,
+  "positive_worker_join_and_Direct_release": true,
+  "fresh_idle_CPU_before_and_after": true,
+  "same_boot_and_services": true,
+  "original_model_and_SELF_never_modified": true,
+  "title_launches": 0,
+  "GPU_calls": 0,
+  "automatic_retries": 0,
+  "native_inference_tokens_per_second_measured": false,
+  "file_open_close_cost_in_timing": false,
+  "full_route_or_full_layout_measured": false,
+  "source_sha256": "40e788040203bb592118e32072fe3d18ae6a7abe083e19a5691c7a8edf32c14b",
+  "CPU_helper_ELF_sha256": "7b56d344976399324f1f61bebc5f83f96641b37d6827491663facfbf3c1fd167",
+  "driver_relinked_or_used": false,
+  "interpretation": "Fixed original extents on one console and filesystem; repeated overlapping reads, descriptors pre-opened; no global optimum or inference gain established."
+}

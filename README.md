@@ -51,6 +51,12 @@ The compact observer also completed all physical/restoration gates with an
 unchanged CPU heap peak and zero memory-pressure events. Small decode changes
 do not establish significance; state reuse and speculative drafts remain unimplemented.
 
+The subsequent [matched 512 / 256 / 128 MiB physical-file comparison](docs/source-layout-size-comparison-20261025.md)
+completed 576 exact-byte pairs on the PS5. Parallel means were **6.807 / 6.869 /
+6.896 ms**; smaller files showed no material benefit in this representative
+region. Keep 512 MiB as the provisional candidate, without claiming a global
+optimum or a full-layout inference speedup. No title, model or GPU ran in this test.
+
 The model stayed loaded across the three requests. The actual native passive
 frames were visually reviewed. Positive GPU/resource retirement, ordinary title
 close, exact original SELF restoration, original numerical readmission, ordinary
