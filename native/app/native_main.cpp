@@ -522,6 +522,7 @@ int main(int argc, char ** argv) {
         }
         if ((startup.model_validation || startup.first_generation_validation) && !policy.value("console_validation_enabled", false))
             throw std::runtime_error("Original model CPU validation is not enabled");
+        bool model_CPU_runtime_admitted = false;
         if (startup.first_generation_validation) {
             const auto & gate = policy.at("native_first_generation_validation");
             // This exclusive marker consumes the attempt before verification,
@@ -535,9 +536,14 @@ int main(int argc, char ** argv) {
                 gate.at("candidate_SELF_sha256").get<std::string>(), {}, 60);
             qwen_app::verify_model_file(startup.model_receipt, gate.at("model_receipt_bytes").get<std::uint64_t>(),
                 gate.at("model_receipt_sha256").get<std::string>(), {}, 30);
+            // Admit the CPU clock/context once, before metadata I/O can consume
+            // kernel pages. All model metadata and GPU admission still follow.
+            qwen_app::admit_cpu_runtime(qwen_native_stage);
+            model_CPU_runtime_admitted = true;
+            qwen_app::enable_native_memory_backpressure();
         }
         if(startup.model_validation || startup.first_generation_validation) {
-            const auto memory=qwen_app::observe_native_system_memory();
+            const auto memory=startup.first_generation_validation ? qwen_app::admit_native_system_memory() : qwen_app::observe_native_system_memory();
             write_fresh_report(startup.admission_report+".system-memory.before-integrity",system_memory_report(memory));
             wait_for_initial_model_CPU_budget();
             qwen_native_stage("scoped_CPU_Flexible_kernel_memory_admitted_before_model_integrity GPU_not_started=1 model_loaded=0");
@@ -641,6 +647,7 @@ int main(int argc, char ** argv) {
             qwen_native_stage(completed.c_str());
             inspect_container(model_file(startup.model_receipt, file.at("path").get<std::string>()), first,
                 footprint,tensor_names,file.at("bytes").get<std::uint64_t>()); first = false;
+            if (startup.first_generation_validation) require_model_CPU_budget();
             mapping_files.push_back({model_file(startup.model_receipt, file.at("path").get<std::string>()),
                                      file.at("bytes").get<std::uint64_t>()});
         }
@@ -677,7 +684,7 @@ int main(int argc, char ** argv) {
 
         if (startup.model_validation || startup.first_generation_validation) {
             qwen_native_stage("source_virtual_CPU_memory_admission_before_probe GPU_not_started=1 model_loaded=0");
-            const auto memory=qwen_app::observe_native_system_memory();
+            const auto memory=startup.first_generation_validation ? qwen_app::admit_native_system_memory() : qwen_app::observe_native_system_memory();
             write_fresh_report(startup.admission_report+".system-memory.before-virtual-sources",system_memory_report(memory));
             (void)qwen_app::qualified_system_headroom(memory);
             // A source-address admission can enter an opaque OS call. Check
@@ -688,7 +695,7 @@ int main(int argc, char ** argv) {
             qwen_native_stage("source_virtual_CPU_memory_admission_passed_before_probe GPU_not_started=1 model_loaded=0");
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
                 [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
-            const auto after_sources=qwen_app::observe_native_system_memory();
+            const auto after_sources=startup.first_generation_validation ? qwen_app::admit_native_system_memory() : qwen_app::observe_native_system_memory();
             write_fresh_report(startup.admission_report+".system-memory.after-virtual-sources",system_memory_report(after_sources));
             (void)qwen_app::qualified_system_headroom(after_sources);
             require_model_CPU_budget();
@@ -729,9 +736,8 @@ int main(int argc, char ** argv) {
         }
         if (display) display->publish(screen);
         native_resources_started = true;
-        qwen_app::admit_cpu_runtime(qwen_native_stage);
+        if (!model_CPU_runtime_admitted) qwen_app::admit_cpu_runtime(qwen_native_stage);
         if (startup.first_generation_validation) {
-            qwen_app::enable_native_memory_backpressure();
             qwen_native_stage("source_pipeline_CPU_preflight_before_Vulkan GPU_not_started=1");
             qwen_app::start_native_source_parallel_reads();
             require_model_CPU_budget();

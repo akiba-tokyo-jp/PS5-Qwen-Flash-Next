@@ -109,3 +109,22 @@ deadline or failed clock quarantines admission and retains the graph. The
 per-boundary and cumulative bounds, exact threshold, failure quarantine and
 unhealthy metadata controls passed on the host. Native link and a distinct
 complete physical comparison remain required.
+
+The next refusal occurred before source reservation, worker creation and Vulkan:
+kernel free pages were 1,064 against an unchanged required 898 + 256 = 1,154.
+The metadata phase still contained a direct predicate before backpressure was
+enabled. It is separate evidence that parallel source reads are not necessary
+for this memory refusal. The CPU-only title was normally closed; exact original
+restoration, fresh CPU and full SELF checks passed. The same-boot preceding
+original numerical admission was preserved without another GPU fixture. See
+[the sanitized observation](pre-worker-memory-refusal-20261024.json).
+
+CPU runtime/clock admission now occurs once after candidate/receipt verification
+and before model metadata. The unchanged bounded wait is enabled there. Each
+completed container-metadata read checks the original CPU/system predicate, and
+the pre/post source-reservation checks use a fresh admitted observation. The
+original kernel predicate and native sysctl observer bodies are byte-identical
+to the pre-backpressure implementation. No additional GPU work, source read,
+quantization, reserve change or wait allowance is added. The affected native
+entry compile, link/import and SELF checks passed. Physical comparison remains
+pending.

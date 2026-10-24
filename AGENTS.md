@@ -907,3 +907,12 @@ boundaries, with 100 ms polls, a 2 s boundary limit and a 10 s whole-process wai
 limit. Every continuation must satisfy the unchanged original memory predicate.
 No I/O/GPU/inference retry, reclamation or reserve reduction is allowed. Failed
 admission remains quarantined; physical speed qualification is still pending.
+
+A subsequent CPU-only refusal observed 1,064 kernel free pages before any source
+reservation, I/O worker or Vulkan initialization; the required count was 1,154.
+Its ordinary close, original restoration, fresh CPU and full SELF checks passed,
+preserving the same-boot preceding numerical original admission. See
+docs/pre-worker-memory-refusal-20261024.json. Enable bounded admission after the
+once-only CPU runtime admission and before model metadata, and guard every
+completed metadata-file read. Keep the original predicate/observer bodies and
+the existing 2 s / 10 s limits unchanged. Do not replay the consumed attempt.
