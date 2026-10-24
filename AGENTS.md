@@ -1195,3 +1195,21 @@ window/EOF/failure/lease controls, actual PS5 compile/link/import/SELF checks an
 the normal-close/exact-restoration/final CPU sequence before GPU qualification.
 No model bytes, file layout, precision, driver/cache policy, heap budget, memory
 predicate/reserve or passive wait bound is changed by this intervention.
+
+The Direct metadata CPU intervention completed all76 sealed originals with86
+physical reads/90177536 bytes, all76 current reservations/releases and1227 valid
+samples. Normal close/exact original restoration/final CPU and positive parent
+termination with195 unchanged inputs passed. Free3922 ->2227; inactive70220
+->71937; wired36077 ->36106. The memory problem remains unresolved. Do not claim
+buffered GGUF metadata alone as its cause or enable this path as a measured
+performance improvement. See docs/native-direct-metadata-20261024.json.
+
+A distinct CPU-only phase control may observe five seconds without journal
+writes, then at most256 clearly labeled synthetic journal-only lines with2ms
+idle and no source operations. Before each line retain the original predicate
+plus512 extra kernel pages; stop only at a completed boundary. Save the finite
+phase report, then require the unchanged stronger startup target before the
+actual whole reservation rehearsal. A refusal there is pre-GPU evidence and
+must normally close/restore; it never admits skipping or replacing the rehearsal.
+The normal application keeps this optional control disabled. Keep every original
+reserve/budget/precision/driver/cache policy and the existing20s/60s wait limits.

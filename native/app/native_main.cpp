@@ -765,6 +765,8 @@ int main(int argc, char ** argv) {
             require_model_CPU_budget();
             qwen_native_stage("source_virtual_CPU_memory_admission_passed_before_probe GPU_not_started=1 model_loaded=0");
             const bool stage_memory_diagnostic=policy.contains("native_source_stage_memory_diagnostic");
+            if(policy.contains("native_CPU_phase_control")&&!stage_memory_diagnostic)
+                throw std::runtime_error("CPU phase controls require the explicit CPU-only diagnostic");
             Json VM_before;
             if(stage_memory_diagnostic) {
                 const auto & diagnostic=policy.at("native_source_stage_memory_diagnostic");
@@ -773,8 +775,49 @@ int main(int argc, char ** argv) {
                    diagnostic.at("CPU_only")!=true||diagnostic.at("maximum_records")!=qwen_app::stage_memory_probe_capacity||
                    diagnostic.at("matched_idle_ns")!=qwen_app::stage_memory_probe_idle_ns||diagnostic.at("split_write_and_sync")!=true||
                    diagnostic.at("VM_population_snapshots")!=true||diagnostic.at("settled_idle_seconds")!=2||
-                   diagnostic.at("ordinary_OS_close_required")!=true||!qwen_app::begin_native_stage_memory_probe())
+                   diagnostic.at("ordinary_OS_close_required")!=true)
                     throw std::runtime_error("Bounded CPU-only stage memory diagnostic is not admitted");
+                if(policy.contains("native_CPU_phase_control")) {
+                    const auto &control=policy.at("native_CPU_phase_control");
+                    if(control.at("schema")!="ps5-qwen-CPU-phase-control-v1"||control.at("enabled")!=true||
+                       control.at("quiet_seconds")!=5||control.at("maximum_journal_lines")!=256||
+                       control.at("idle_microseconds_per_line")!=2000||control.at("extra_kernel_pages_before_next_line")!=512)
+                        throw std::runtime_error("Finite quiet/journal CPU control is not admitted");
+                    const auto quiet_started=qwen_app::ProfileClock::now();
+                    const auto before_quiet=diagnostic_VM_population();
+                    std::this_thread::sleep_for(std::chrono::seconds(5));
+                    const auto after_quiet=diagnostic_VM_population();
+                    const auto quiet_ns=qwen_app::profile_elapsed_ns(quiet_started);
+                    const auto journal_started=qwen_app::ProfileClock::now();
+                    unsigned lines=0;bool stopped=false;
+                    for(;lines<256;++lines) {
+                        const auto fresh=qwen_app::observe_native_system_memory();
+                        (void)qwen_app::qualified_system_headroom(fresh);
+                        const auto floor=std::uint64_t(fresh.kernel_minimum)+std::max<std::uint64_t>(fresh.kernel_reserved,
+                            (qwen_app::kernel_memory_margin+fresh.page_size-1)/fresh.page_size)+512;
+                        if(fresh.kernel_free<floor){stopped=true;break;}
+                        char line[160];const int count=std::snprintf(line,sizeof(line),
+                            "CPU_journal_control_only line=%u source_operations=0 reservations=0 GPU_calls=0 model_loaded=0",lines);
+                        if(count<=0||std::size_t(count)>=sizeof(line))throw std::runtime_error("CPU journal control line bound failed");
+                        qwen_native_stage(line);
+                        if(usleep(2000))throw std::runtime_error("CPU journal control idle did not complete");
+                    }
+                    const auto after_journal=diagnostic_VM_population();
+                    write_fresh_report(startup.admission_report+".source.CPU-prelude",{
+                        {"schema","ps5-qwen-CPU-phase-control-result-v1"},{"pid",getpid()},
+                        {"run_id",policy.at("native_first_generation_validation").at("run_id")},
+                        {"VM_before_quiet",before_quiet},{"VM_after_quiet",after_quiet},{"VM_after_journal",after_journal},
+                        {"quiet_ns",quiet_ns},{"journal_ns",qwen_app::profile_elapsed_ns(journal_started)},
+                        {"completed_journal_lines",lines},{"maximum_journal_lines",256},
+                        {"stopped_at_completed_boundary_before_next_line",stopped},
+                        {"source_operations",0},{"GPU_calls",0},{"source_workers",0},{"model_loaded",false},
+                        {"inactive_pages_counted_as_available",false}});
+                    // The control must not enter the real opaque reservation
+                    // interval with less than the existing stronger target.
+                    (void)qwen_app::admit_native_startup_memory();
+                }
+                if(!qwen_app::begin_native_stage_memory_probe())
+                    throw std::runtime_error("Bounded CPU-only stage sampler cannot be reentered");
                 VM_before=diagnostic_VM_population();
             }
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
