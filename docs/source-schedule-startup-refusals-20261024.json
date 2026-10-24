@@ -18,7 +18,7 @@
     },
     {
       "source_revision": "ff46289",
-      "SELF_sha256": "e51cb5646355f37f9010143585216c4d1877a8480c49ff4c0947318895e337b7",
+      "SELF_sha256": "dce7ae5e6702f4f3b4d43d2d484925af104de8fc1a7d916506a9c237f6451a1c",
       "refusal": "New startup file permission restriction rejected the published executable",
       "preserved_candidate_FTP_LIST_mode": "0777",
       "regular_file_and_positive_size_observed": true,
