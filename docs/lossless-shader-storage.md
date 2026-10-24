@@ -207,3 +207,18 @@ passed, adding transient recovery before complete original-byte verification,
 persistent pressure without any codec allocation, and invalid counters without
 polling. This fixes an immediate-failure path; native recovery and throughput
 still require separate physical evidence.
+
+The corrected initialization case subsequently passed all1527 current original
+shader bytes and382 lookups on the physical PS5, using101204 output bytes,
+101208 ordering bytes and7160 zlib scratch bytes. The later2974-page startup
+target refused at1412 after20.000108242s, before model metadata or the current
+whole rehearsal. No transient recovery was observed in that case. Normal close,
+exact original restoration/full readback/final idle CPU and381 unchanged inputs
+passed. See [the native column result](native-shader-columns-CPU-20261024.json).
+The full performance plan remains incomplete.
+
+An offline link with LLVM safe identical-code folding saved503432 LOAD bytes
+with unchanged driver/engine objects. It was not adopted. A bounded read-only
+`vm.objects` size query on the PS5 returned ENOENT; no object data was fetched
+and no backing allocation was inferred. Neither control changes native memory
+admission or establishes the source of the remaining pressure.

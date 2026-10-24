@@ -101,3 +101,28 @@ short/negative/oversized reads and deadlines fail without retry. Failed/unknown
 work keeps its fd/buffer until OS shutdown. Only positive digest, identity and
 close permit release. Native pre/post-integrity memory records will test the
 cache-pressure hypothesis. No model payload or integrity check is omitted.
+
+## Descriptor read-ahead control
+
+A subsequent eight-mode CPU control compared fresh default descriptors against
+`fcntl(F_RDAHEAD,0)` on the original extents and the existing two16MiB fragments.
+Every mode changed descriptors only after the actual application worker's
+positive completed-idle check. All384 pairs/2529165312 returned bytes passed
+complete SHA256. The hint returned0 with the expected status change65536 ->66048;
+read-only/Direct flags, source identities and the8MiB window were preserved.
+No cache eviction, model/title launch or GPU work occurred.
+
+| Pattern | Default | Read-ahead hint disabled |
+| --- | ---: | ---: |
+| Original serial pair | 10.0874ms | 9.9632ms |
+| Original cross-region parallel pair | 49.8161ms | 50.2226ms |
+| Split serial pair | 8.9787ms | 8.9245ms |
+| Split parallel pair | 6.8122ms | 7.1279ms |
+
+The hint did not produce a measured benefit and is not enabled in production.
+Command acceptance alone does not establish the proprietary filesystem's
+implementation of the hint. The matched default distinct-file result still
+supports physical splitting as a CPU I/O candidate; it does not establish an
+optimal smaller chunk size or native tokens/s. Positive worker/Direct retirement,
+fresh before/after idle CPU and exact original preservation passed. See
+[the counterbalanced measurements](source-read-hint-cpu-20261024.json).

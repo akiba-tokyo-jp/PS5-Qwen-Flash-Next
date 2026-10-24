@@ -1366,3 +1366,17 @@ predicate,20s/60s bounds,100ms polls and failed-admission quarantine, and alloca
 no codec storage while waiting. Require actual codec recovery, persistent refusal,
 invalid-counter and native compile checks. This is no authorization to lower the
 stronger2974-page targets, skip current reservations or repeat a consumed case.
+
+The corrected initialization case passed all1527 current original shader bytes
+and382 lookups, then refused the unchanged stronger target at1412 before model
+metadata/current reservations. Exact original restoration/full readback/final CPU
+and381 unchanged inputs passed. See docs/native-shader-columns-CPU-20261024.json.
+Keep that positive data gate separate from full native memory/performance
+qualification; do not replay the consumed case.
+
+The bounded descriptor read-ahead control passed384 complete returned-byte hashes,
+exact status changes, worker/Direct retirement and fresh idle guards. The accepted
+hint did not improve the measured source path; do not enable it as an optimization.
+See docs/source-read-hint-cpu-20261024.json. The read-only vm.objects API was
+unavailable, so it supplies no backing-object diagnosis. Safe link folding saved
+only503432 bytes offline and was not adopted. Preserve all original guards.
