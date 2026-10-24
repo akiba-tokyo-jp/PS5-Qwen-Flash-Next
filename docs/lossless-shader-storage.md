@@ -114,3 +114,23 @@ terminal state does not qualify or bypass any model/GPU startup target or actual
 whole reservation rehearsal. There is no fallback, cache eviction, reclamation,
 I/O retry or uncertain resource release. The controller must distinguish complete
 SELF-only records from incomplete/unknown read markers before ordinary shutdown.
+
+The same standalone SELF subsequently completed37 Direct reads and its complete
+SHA256. Without model metadata or shader initialization, quiet free pages fell
+4728 ->2994 while wired pages rose34406 ->36147. The buffered control returned25
+reads before the original predicate refused the next read; no read remained
+pending. Both controllers normally closed/restored the original/full readback/
+final idle CPU, with382 unchanged inputs each. See
+[the two SELF-only controls](native-SELF-read-controls-20261024.json).
+The measured decline does not require model metadata, and the buffered control
+does not qualify a production switch or identify the proprietary allocation.
+
+The optional `tools/native_binary_transport.py` controller adapter streams large
+owned SELF readbacks through the already-used FTP service, while retaining the
+caller's exact full byte-count/SHA checks. Fresh uploads require observed absence,
+positive transfer completion and complete byte-for-byte readback before publication.
+Retained partials are never overwritten; overflow, corrupt data, network errors
+and finite deadlines fail without fallback or retry. Small management/helper
+requests are unchanged. This host-only transport experiment changes no native
+SELF, source I/O, memory predicate or model/GPU gate. Its nine fault controls
+are separate from an actual PS5 memory benefit, which remains unqualified.

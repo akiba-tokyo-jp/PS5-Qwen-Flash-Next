@@ -1285,3 +1285,19 @@ markers, a bounded five-second VM observation, an explicit SELF-only completion
 report, ordinary close/exact original restoration/final CPU and actual controller
 unknown-read/failure controls. This does not admit model execution or bypass its
 unchanged2974/1154-page gates, actual whole rehearsal, reserves or cache policy.
+
+The standalone SELF Direct control completed all37 reads/full SHA and a five-
+second quiet observation: free4728 ->2994, wired34406 ->36147. The buffered
+control returned25 reads before the original predicate refused the next read,
+with no pending read. Both normally closed/restored the exact original/full
+readback/final CPU and ended with382 unchanged inputs. Do not retry buffered
+reads or count its SELF hash complete. See docs/native-SELF-read-controls-20261024.json.
+
+A distinct Direct SELF control may compare the optional streamed binary readback
+transport using the exact positively completed native binary. Preserve complete
+raw byte-count/SHA verification, observed absence before fresh upload, positive
+FTP completion, exact full readback before publication, no overwrite of retained
+partials and no retry/fallback after uncertainty. The transport changes no native
+I/O mode, model/GPU guard or source reservation. Require its host fault controls,
+new finite case, frozen inputs and normal-close/exact-restoration/final CPU gates;
+do not claim memory or tokens/s benefit from host tests.
