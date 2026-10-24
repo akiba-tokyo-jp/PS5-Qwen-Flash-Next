@@ -109,33 +109,41 @@ def main():
         if status != 200 or json.loads(payload) != dict(state="accepted"):
             raise AssertionError("Positive finish acknowledgement was not delivered")
         if process.wait(timeout=15) != 0: raise RuntimeError("Synthetic transport failed during completed shutdown")
-        stdout.close(); stderr.close()
-        with socket.socket() as candidate:
-            candidate.bind(("127.0.0.1", 0)); port = candidate.getsockname()[1]
-        stdout = (a.out / "failure.stdout.private.log").open("xb")
-        stderr = (a.out / "failure.stderr.private.log").open("xb")
-        process = subprocess.Popen([str(executable), str(port), str(ROOT / "web"), "--fail-request"],
-            env=env, stdout=stdout, stderr=stderr)
-        began = time.monotonic()
-        while True:
-            try:
-                if request("GET", "/api/status")[0] == 200: break
-            except OSError:
-                pass
-            if process.poll() is not None or time.monotonic() - began > 15:
-                raise RuntimeError("Synthetic failure listener did not start")
-            time.sleep(.05)
-        try:
-            _, payload = request("POST", "/api/generate", valid)
-            if b'"finished"' in payload: raise AssertionError("Failed owner claimed a completed request")
-        except (OSError, http.client.IncompleteRead, http.client.RemoteDisconnected):
-            pass
-        if process.wait(timeout=15) != 1:
-            raise RuntimeError("Failure shutdown did not terminate its synthetic host worker/listener")
+        for failure_mode in ["--fail-request", "--fail-before-request"]:
+            stdout.close(); stderr.close()
+            with socket.socket() as candidate:
+                candidate.bind(("127.0.0.1", 0)); port = candidate.getsockname()[1]
+            stem = failure_mode[2:]
+            stdout = (a.out / (stem + ".stdout.private.log")).open("xb")
+            stderr = (a.out / (stem + ".stderr.private.log")).open("xb")
+            process = subprocess.Popen([str(executable), str(port), str(ROOT / "web"), failure_mode],
+                env=env, stdout=stdout, stderr=stderr)
+            began = time.monotonic()
+            while True:
+                try:
+                    if request("GET", "/api/status")[0] == 200: break
+                except OSError:
+                    pass
+                if process.poll() is not None or time.monotonic() - began > 15:
+                    raise RuntimeError("Synthetic failure listener did not start")
+                time.sleep(.05)
+            status, payload = request("POST", "/api/generate", valid)
+            events = [json.loads(line[6:]) for line in payload.splitlines() if line.startswith(b"data: ")]
+            if status != 200 or len(events) != (2 if failure_mode == "--fail-request" else 1):
+                raise AssertionError("Failed owner did not deliver its bounded terminal event")
+            terminal = events[-1]
+            if (terminal.get("id") != valid["id"] or terminal.get("type") != "finished" or
+                terminal.get("state") != "failed" or not terminal.get("error") or
+                terminal.get("quarantined") is not True or terminal.get("resource_graph_retained") is not True or
+                terminal.get("GPU_completion_qualified") is not False):
+                raise AssertionError("Failed owner claimed success or lost resource-retention evidence")
+            if process.wait(timeout=15) != 1:
+                raise RuntimeError("Failure shutdown did not terminate its synthetic host worker/listener")
         receipt = dict(schema="ps5-qwen-bounded-demo-host-check-v1", state="passed", malformed_requests_rejected=len(mutations),
             streamed_requests=2, extra_request_rejected=True, premature_finish_rejected=True,
             assets_and_status_passed=True, finish_delivered_and_listener_stopped=True,
             owner_failure_does_not_hang_listener_shutdown=True,
+            failed_terminal_events_received=2, failure_before_first_token_is_explicit=True,
             console_access=False, learned_host_inference=False,
             reused_host_fixture=reused,
             source_sha256=source_digests)

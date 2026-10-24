@@ -40,7 +40,7 @@ static const auto stage = [](const char *) {};
 
 static Json valid_policy() {
     return {{"native_first_generation_validation", {
-        {"schema", "ps5-qwen-first-generation-v3"},
+        {"schema", "ps5-qwen-first-generation-v4"},
         {"preceding_moe_SELF_sha256", "0b187cac25c3e322bd4244474a935d191ce85b7bcbb3d2559ead26f05198d057"},
         {"driver_revision", "872cc1264ad8ba5d6b888b092968fa5858a38c58"}, {"profile", "cumulative-idle"},
         {"native_archive_sha256", "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925"},
@@ -59,7 +59,9 @@ static Json valid_policy() {
         {"demonstration_idle_deadline_seconds", 900}, {"demonstration_total_deadline_seconds", 10800},
         {"recreate_completed_context_before_benchmark_required", true}, {"model_reload_before_benchmark_enabled", false},
         {"CPU_budget_bytes", 512ull << 20}, {"maximum_explicitly_addressed_CPU_model_page_bytes", 160432128},
-        {"maximum_CPU_heap_bytes", (512ull << 20) - 160432128},
+        {"maximum_CPU_heap_bytes", 512ull << 20},
+        {"maximum_resident_CPU_model_source_bytes", 0}, {"CPU_heap_budget_includes_source_read_window", true},
+        {"source_window_must_be_in_Direct_CPU_heap", true},
         {"graph_workspace_budget_bytes", 256ull << 20},
         {"maximum_postload_device_buffer_bytes", 512ull << 20},
         {"maximum_aggregate_postload_device_buffer_bytes", 1792ull << 20},

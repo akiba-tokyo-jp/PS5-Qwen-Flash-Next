@@ -4,6 +4,7 @@
 #include "device_buffer_budget.h"
 #include "system_memory.h"
 #include <ps5platform/kernel.h>
+#include <ps5platform/heap.h>
 #include <atomic>
 #include <cstdlib>
 #include <fcntl.h>
@@ -55,6 +56,8 @@ void start_native_model_sources(std::vector<SourceFile> files) {
         throw std::runtime_error("A new native source reader and qualified page size are required");
     if (posix_memalign(&window, model_read_alignment, model_read_window) || !window)
         throw std::runtime_error("The fixed native source window could not be allocated");
+    if (!ps5_heap_owns(window))
+        throw std::runtime_error("The source read window is outside the tracked Direct CPU heap");
     // Keep the window/descriptors on failed setup. Ordinary OS close owns the
     // complete retained process, including failures before GPU initialization.
     reader = std::make_unique<MappedSourceReader>(std::move(files), ops, window);

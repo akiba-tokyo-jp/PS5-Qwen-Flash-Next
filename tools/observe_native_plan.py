@@ -115,6 +115,8 @@ def main():
         return data
 
     posts = 0
+    class NativeRequestFailed(RuntimeError):
+        pass
     def post(path, body, stem, streamed=False):
         nonlocal posts
         exclusive(out / (stem + ".once.private.json"), dict(path=path, body=body, automatic_retries=0,
@@ -148,6 +150,13 @@ def main():
                     stream.write(line); stream.flush()
                     if line.startswith(b"data: "):
                         event = json.loads(line[6:]); events.append(event)
+                        if event.get("id") == body["id"] and event.get("type") == "finished" and event.get("state") == "failed":
+                            require(type(event.get("error")) is int and event["error"] != 0 and
+                                event.get("quarantined") is True and event.get("resource_graph_retained") is True,
+                                "The failed native terminal event is invalid")
+                            exclusive(out / (stem + ".failed.private.json"), dict(HTTP_status=200,
+                                terminal_event=event, automatic_retries=0, request_failed_explicitly=True))
+                            raise NativeRequestFailed("Native request failed explicitly; resource graph retained")
                         if event.get("type") == "token" and first_token_received is None:
                             first_token_received = time.monotonic()
                         require(len(events) <= 33 and event.get("id") == body["id"] and event.get("error") == 0,
@@ -163,7 +172,8 @@ def main():
                 host_timings_include_queue_and_network=True))
             return events
         except BaseException as error:
-            exclusive(out / (stem + ".uncertain.private.json"), dict(error_type=type(error).__name__, automatic_retries=0))
+            if not isinstance(error, NativeRequestFailed):
+                exclusive(out / (stem + ".uncertain.private.json"), dict(error_type=type(error).__name__, automatic_retries=0))
             raise
         finally:
             connection.close()

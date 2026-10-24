@@ -6,6 +6,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <deque>
+#include <exception>
 #include <fstream>
 #include <mutex>
 #include <thread>
@@ -33,6 +34,7 @@ struct Job {
     std::condition_variable changed;
     std::deque<std::string> events;
     bool done = false;
+    bool terminal_delivered = false;
 };
 }
 
@@ -160,13 +162,19 @@ Json serve_bounded_demo(const std::string & run_id, const std::string & assets,
                 job->changed.wait_for(lock, std::chrono::seconds(1), [&] { return job->done || job->disconnected || !job->events.empty(); });
                 if (job->disconnected) return false;
                 if (job->events.empty()) {
-                    if (job->done) { sink.done(); return true; }
+                    if (job->done) {
+                        job->terminal_delivered = true; job->changed.notify_all();
+                        sink.done(); return true;
+                    }
                     lock.unlock(); return sink.write(": heartbeat\n\n", 13);
                 }
                 const auto text = std::move(job->events.front()); job->events.pop_front();
                 const bool done = job->done && job->events.empty(); lock.unlock();
                 if (!sink.write(text.data(), text.size())) return false;
-                if (done) sink.done();
+                if (done) {
+                    { std::lock_guard<std::mutex> sent(job->mutex); job->terminal_delivered = true; }
+                    job->changed.notify_all(); sink.done();
+                }
                 return true;
             }, [job](bool) { job->disconnected = true; job->changed.notify_all(); });
         } catch (...) { response.status = 400; response.set_content("{}", "application/json"); }
@@ -234,7 +242,9 @@ Json serve_bounded_demo(const std::string & run_id, const std::string & assets,
                 throw std::runtime_error("The bounded native demonstration wait expired");
             show();
             if (!job) continue;
-            const auto report = execute(job->ordinal, [job] { return !job->disconnected.load(); }, [&](const Json & event) {
+            Json report;
+            try {
+            report = execute(job->ordinal, [job] { return !job->disconnected.load(); }, [&](const Json & event) {
                 const std::string text = "data: " + event.dump() + "\n\n";
                 {
                     std::lock_guard<std::mutex> lock(job->mutex);
@@ -253,6 +263,26 @@ Json serve_bounded_demo(const std::string & run_id, const std::string & assets,
                 }
                 job->changed.notify_all(); show();
             });
+            } catch (...) {
+                const auto failure = std::current_exception();
+                const Json terminal{{"id", run_id + "-" + std::to_string(job->ordinal)},
+                    {"type", "finished"}, {"state", "failed"}, {"error", int(Error::backend_failure)},
+                    {"quarantined", true}, {"resource_graph_retained", true}, {"GPU_completion_qualified", false}};
+                {
+                    std::lock_guard<std::mutex> lock(job->mutex);
+                    job->events.push_back("data: " + terminal.dump() + "\n\n"); job->done = true;
+                }
+                job->changed.notify_all();
+                // Give the existing observer one bounded opportunity to receive
+                // the failed terminal event. Never retry work or free resources.
+                {
+                    std::unique_lock<std::mutex> lock(job->mutex);
+                    job->changed.wait_for(lock, std::chrono::seconds(2), [&] {
+                        return job->terminal_delivered || job->disconnected.load();
+                    });
+                }
+                std::rethrow_exception(failure);
+            }
             {
                 std::lock_guard<std::mutex> lock(job->mutex); job->done = true;
             }

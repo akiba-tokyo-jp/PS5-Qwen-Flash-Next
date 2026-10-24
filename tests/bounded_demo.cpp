@@ -9,6 +9,7 @@ extern "C" bool qwen_native_faulted() { return false; }
 int main(int argc, char ** argv) {
     if (argc != 3 && argc != 4) return 2;
     const bool inject_failure = argc == 4 && std::string(argv[3]) == "--fail-request";
+    const bool fail_before_event = argc == 4 && std::string(argv[3]) == "--fail-before-request";
     using Json = nlohmann::json;
     const auto owner = std::this_thread::get_id();
     unsigned calls = 0, screens = 0;
@@ -27,6 +28,7 @@ int main(int argc, char ** argv) {
             [&](unsigned ordinal, const auto & alive, const auto & publish) {
                 if (std::this_thread::get_id() != owner || ++calls != ordinal || !alive())
                     throw std::runtime_error("The transport changed the admitted producer or request order");
+                if (fail_before_event) throw std::runtime_error("Synthetic owner failure before its first event");
                 for (unsigned i = 1; i <= 2; ++i) {
                     publish(Json{{"id", std::string(32, 'a') + "-" + std::to_string(ordinal)},
                         {"type", "token"}, {"state", "generating"}, {"ordinal", i}, {"token_id", i},

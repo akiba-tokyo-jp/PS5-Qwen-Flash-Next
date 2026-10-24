@@ -44,6 +44,11 @@ then completed one physical input-token GPU decode and positive epoch retirement
 The following CPU guard remained strict. The
 [compact scheduler arena](docs/native-compact-scheduler-20261024.md) reduces
 scratch to 160 MiB while retaining all heap limits and complete graph checks.
+The compact artifact then generated `4` from 26 prompt tokens on the PS5.
+Its first external request exposed a stale source-page subtraction and empty
+failure stream. [Physical CPU accounting and explicit API failures](docs/native-physical-CPU-accounting-20261024.md)
+keep the original 512 MiB total CPU budget, require native read-window ownership
+and distinguish failed requests from uncertain connections.
 The [replacement source reader](docs/reserved-source-20261024.md)
 passes native host-link/SELF/import checks and exact CPU reference fixtures.
 Complete reserved-source model loading has passed on the PS5. See the earlier

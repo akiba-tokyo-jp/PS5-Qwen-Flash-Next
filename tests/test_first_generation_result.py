@@ -58,13 +58,17 @@ class FirstGenerationRecords(unittest.TestCase):
                 model_loaded=False, resident_set_qualified=False, device_weights_bytes=8755105280,
                 mapped_file_bytes=self.binding["bytes"], planned_resident_headroom_bytes=12110548480,
                 CPU_budget_bytes=512 << 20, maximum_explicitly_addressed_CPU_model_page_bytes=160432128,
-                maximum_CPU_heap_bytes=(512 << 20) - 160432128,
+                maximum_CPU_heap_bytes=512 << 20, maximum_resident_CPU_model_source_bytes=0,
+                CPU_heap_budget_includes_source_read_window=True,
+                Flexible_reserve_bytes=256 << 20, kernel_extra_margin_bytes=4 << 20,
+                kernel_vm0_free_pages=2890, kernel_vm0_minimum_pages=898, kernel_vm0_reserved_pages=206,
                 maximum_postload_device_buffer_bytes=512 << 20, maximum_aggregate_postload_device_buffer_bytes=1792 << 20,
-                driver_free_bytes=12201230336, Direct_largest_available_bytes=12201230336, OS_free_bytes=1024 << 20,
+                driver_free_bytes=12201230336, Direct_largest_available_bytes=12201230336, Flexible_available_bytes=404750336,
                 device_buffer_alignment_bytes=65536, device_buffer_batch_limit_bytes=2**31),
             ".source": dict(schema="ps5-qwen-bounded-source-admission-v1", **owner,
                 direct_read_preflight_passed=True, maximum_window_bytes=8 << 20, maximum_open_handles=8,
                 bounded_CPU_rows_enabled=True, CPU_source_pointer_dereferences_enabled=False,
+                CPU_source_read_window_in_Direct_heap=True,
                 mapped_source_upload_dereferences_enabled=False, CPU_matrix_fallback_enabled=False,
                 maximum_CPU_workspace_bytes=16 << 20, model_loaded=False, Vulkan_initialized=False),
             ".first.token-1": dict(schema="ps5-qwen-first-generation-token-v1", run_id="a"*32,
@@ -154,8 +158,12 @@ class FirstGenerationRecords(unittest.TestCase):
             (".demo2.display.json", "positive_VideoOut_completion", False),
             (".demo2.display.json", "decode_tokens_per_second", 51)]
         changes += [("", "postload_device_live_bytes", 1), ("", "postload_device_peak_bytes", (1792 << 20) + 1),
-            ("", "CPU_heap_peak_bytes", 512 << 20), ("", "untracked_libc_heap_fallbacks", 1),
-            (".memory", "driver_free_bytes", 12110548479), (".memory", "OS_free_bytes", 500 << 20)]
+            ("", "CPU_heap_peak_bytes", (512 << 20)+1), ("", "untracked_libc_heap_fallbacks", 1),
+            (".memory", "driver_free_bytes", 12110548479), (".memory", "Flexible_available_bytes", (264 << 20)-1),
+            (".memory", "maximum_resident_CPU_model_source_bytes", 16384),
+            (".memory", "CPU_heap_budget_includes_source_read_window", False),
+            (".source", "CPU_source_read_window_in_Direct_heap", False),
+            (".memory", "kernel_vm0_free_pages", 1153)]
         original = copy.deepcopy(self.records)
         for suffix, key, value in changes:
             with self.subTest(suffix=suffix, key=key):
@@ -221,6 +229,17 @@ class FirstGenerationRecords(unittest.TestCase):
         self.result.write_text('{"schema":"a","schema":"b"}')
         with self.assertRaises(ValueError):
             validate(self.result, self.binding)
+
+    def test_measured_416MiB_heap_remains_inside_original_512MiB_CPU_budget(self):
+        self.records[""]["CPU_heap_peak_bytes"] = 436273152
+        self.records[".memory"]["Flexible_available_bytes"] = 404750336
+        self.save()
+        validate(self.result, self.binding)
+
+    def test_original_CPU_budget_boundary_is_inclusive(self):
+        self.records[""]["CPU_heap_peak_bytes"] = 512 << 20
+        self.save()
+        validate(self.result, self.binding)
 
     def test_self_consistent_but_incomplete_external_answer_is_rejected(self):
         terminal = self.records[".demo1.result"]

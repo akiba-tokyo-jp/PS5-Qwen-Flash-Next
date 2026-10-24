@@ -102,16 +102,24 @@ def validate(path, expected):
         maximum_open_handles=8, mapped_source_upload_dereferences_enabled=False,
         CPU_matrix_fallback_enabled=False, maximum_CPU_workspace_bytes=16 << 20,
         bounded_CPU_rows_enabled=True, CPU_source_pointer_dereferences_enabled=False,
+        CPU_source_read_window_in_Direct_heap=True,
         model_loaded=False, Vulkan_initialized=False))
     exact(memory, dict(device_weights_bytes=8755105280, mapped_file_bytes=expected["bytes"],
         planned_resident_headroom_bytes=12110548480, CPU_budget_bytes=512 << 20,
         maximum_explicitly_addressed_CPU_model_page_bytes=160432128,
-        maximum_CPU_heap_bytes=(512 << 20) - 160432128,
+        maximum_resident_CPU_model_source_bytes=0, CPU_heap_budget_includes_source_read_window=True,
+        maximum_CPU_heap_bytes=512 << 20, Flexible_reserve_bytes=256 << 20,
+        kernel_extra_margin_bytes=4 << 20,
         maximum_postload_device_buffer_bytes=512 << 20,
         maximum_aggregate_postload_device_buffer_bytes=1792 << 20))
     require(integer(memory.get("driver_free_bytes"), 12110548480, 2**63-1) and
         integer(memory.get("Direct_largest_available_bytes"), 12110548480, 2**63-1) and
-        integer(memory.get("OS_free_bytes"), 768 << 20, 2**63-1), "Fresh memory observations do not admit the bounded model")
+        integer(memory.get("Flexible_available_bytes"), 264 << 20, 2**63-1), "Fresh scoped memory observations do not admit the bounded model")
+    kernel_free, kernel_minimum, kernel_reserved = (memory.get(key) for key in
+        ("kernel_vm0_free_pages", "kernel_vm0_minimum_pages", "kernel_vm0_reserved_pages"))
+    require(integer(kernel_reserved, 1, 2**32-1) and integer(kernel_minimum, kernel_reserved, 2**32-1) and
+        integer(kernel_free, kernel_minimum + max(kernel_reserved, 256), 2**32-1),
+        "Native kernel minimum and extra reserve are not preserved")
     alignment = memory.get("device_buffer_alignment_bytes")
     limit = memory.get("device_buffer_batch_limit_bytes")
     require(integer(alignment, 1, 65536) and not alignment & (alignment-1) and
@@ -130,7 +138,7 @@ def validate(path, expected):
     exact(result, dict(postload_device_live_bytes=0, untracked_libc_heap_fallbacks=0))
     require(integer(result.get("postload_device_peak_bytes"), 1, 1792 << 20) and
         integer(result.get("postload_device_allocations"), 1, 2**31-1) and
-        integer(result.get("CPU_heap_peak_bytes"), 1, (512 << 20) - 160432128),
+        integer(result.get("CPU_heap_peak_bytes"), 1, 512 << 20),
         "The completed device/CPU allocation peaks exceed their admitted budgets")
     ids, output, metrics = result.get("token_ids"), result.get("output_bytes"), result.get("metrics")
     require(type(ids) is list and len(ids) <= 32 and all(integer(x, 0, 2**31-1) for x in ids), "Invalid token IDs")

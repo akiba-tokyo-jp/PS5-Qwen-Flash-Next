@@ -828,3 +828,26 @@ The qualified scheduler scratch arena is now 160 MiB, superseding the earlier
 reserves remain unchanged. Three complete 7184-node CPU graphs / 48 exact values and
 protected-source controls passed. See `docs/native-compact-scheduler-20261024.md`.
 Finish every full-plan physical gate before reporting completion.
+
+The compact artifact completed physical arithmetic generation: output `4`, 26 prompt
+tokens, TTFT 91023.55 ms, total 94619.27 ms and successful reset. This single output has
+no decode-rate interval. Native model-resident display completed. External request 1
+then failed CPU admission before its first GPU boundary; it was never retried.
+Normal close, exact original restoration, numerical readmission, normal close,
+final CPU and full original SELF readback passed.
+
+Scope v4 supersedes the earlier 359 MiB derived heap allowance. The total planned
+CPU budget remains 512 MiB and the full resident requirement remains 12110548480.
+Protected source keys have zero extra resident file pages; the logical 160432128-byte
+address allowance must not be subtracted again from the tracked physical heap.
+The 512 MiB heap cap includes the 8 MiB Direct source window, whose native heap
+ownership is now mandatory. Keep zero libc fallbacks, zero file-backed model mmap,
+protected keys, every Direct/Flexible/kernel/platform/device reserve and limit.
+The actual separate Flexible/kernel fields replace the retired OS_free_bytes
+aggregate in host verification. See docs/native-physical-CPU-accounting-20261024.md.
+
+Failed API execution must emit a bounded failed terminal event while retaining
+uncertain GPU resources, stop its listener and propagate the original error.
+The once-only client distinguishes that event from empty/disconnected uncertainty;
+neither permits an automatic inference retry. Successful two-request and failure
+transport/client controls passed without a model. Complete all physical gates.

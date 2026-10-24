@@ -674,6 +674,7 @@ int main(int argc, char ** argv) {
             write_fresh_report(startup.admission_report + ".source", {
                 {"schema", "ps5-qwen-bounded-source-admission-v1"}, {"pid", getpid()},
                 {"direct_read_preflight_passed", true}, {"maximum_window_bytes", qwen_app::model_read_window},
+                {"CPU_source_read_window_in_Direct_heap", true},
                 {"maximum_open_handles", 8}, {"mapped_source_upload_dereferences_enabled", false},
                 {"CPU_matrix_fallback_enabled", false}, {"maximum_CPU_workspace_bytes", 16u << 20},
                 {"bounded_CPU_rows_enabled", true}, {"CPU_source_pointer_dereferences_enabled", false},
@@ -722,6 +723,8 @@ int main(int argc, char ** argv) {
             {"planned_resident_headroom_bytes",memory_budget.device_requirement(footprint)},
             {"CPU_budget_bytes",memory_budget.cpu_working},
             {"maximum_explicitly_addressed_CPU_model_page_bytes",qwen_app::maximum_addressed_model_CPU_bytes},
+            {"maximum_resident_CPU_model_source_bytes",qwen_app::maximum_resident_model_CPU_source_bytes},
+            {"CPU_heap_budget_includes_source_read_window",true},
             {"maximum_CPU_heap_bytes",qwen_app::maximum_model_CPU_heap_bytes},
             {"maximum_postload_device_buffer_bytes",qwen_app::model_postload_single_buffer},
             {"maximum_aggregate_postload_device_buffer_bytes",qwen_app::model_postload_device_budget},
