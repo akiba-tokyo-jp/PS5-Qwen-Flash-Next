@@ -112,12 +112,19 @@ static Json performance_difference(const Json & before, const qwen_app::LlamaEng
     // process_ns includes source I/O and backend work. These are nested wall
     // intervals, not hardware GPU timestamps and must not be summed together.
     const bool selected = qwen_app::native_model_source_stats().schedule_enabled;
-    return {{"schema", selected ? "ps5-qwen-completed-performance-v4" : "ps5-qwen-completed-performance-v3"}, {"delta", delta},
+    Json report = {{"schema", selected ? "ps5-qwen-completed-performance-v4" : "ps5-qwen-completed-performance-v3"}, {"delta", delta},
         {"process_includes_source_and_backend_work", true}, {"GPU_timestamp_queries", false},
         {"hot_path_logs_added", false}, {"GPU_operations_added", false},
         {"source_read_ns_is_producer_wait_time", true}, {"maximum_parallel_source_reads", selected ? 2 : 1},
         {"file_range_schedule_enabled", selected}, {"physical_read_bytes_include_alignment", true},
         {"worker_times_overlap_consumers", true}};
+    if (engine.prefill_batch_tokens() > 1) {
+        if (!selected) throw std::runtime_error("Batched prefill requires selected-source accounting");
+        report.update({{"schema", "ps5-qwen-completed-performance-v5"},
+            {"prefill_batch_tokens", engine.prefill_batch_tokens()},
+            {"generated_token_batch_tokens", 1}, {"all_prompt_outputs_requested", true}});
+    }
+    return report;
 }
 
 static std::string model_file(const std::string & receipt, const std::string & name) {
@@ -369,6 +376,22 @@ int main(int argc, char ** argv) {
         // A frozen fixture policy does not replace the launcher's fresh console
         // guards. Full-model inference remains independently rejected here.
         qwen_app::require_native_validation_policy(policy, mode, startup.native_display);
+        std::uint32_t prefill_tokens = 1;
+        if (policy.contains("native_prefill")) {
+            const auto & p = policy.at("native_prefill");
+            if (!startup.first_generation_validation || !p.is_object() || p.size() != 4 ||
+                p.at("schema") != "ps5-qwen-bounded-prefill-v1" ||
+                !p.at("tokens").is_number_unsigned() ||
+                p.at("tokens").get<std::uint64_t>() > 4 ||
+                !p.at("all_prompt_outputs_requested").is_boolean() ||
+                p.at("all_prompt_outputs_requested") != true ||
+                !p.at("generated_token_batch_tokens").is_number_unsigned() ||
+                p.at("generated_token_batch_tokens") != 1)
+                throw std::runtime_error("The private bounded prefill policy differs");
+            prefill_tokens = p.at("tokens").get<std::uint32_t>();
+            if (prefill_tokens != 1 && prefill_tokens != 2 && prefill_tokens != 4)
+                throw std::runtime_error("The prefill width exceeds qualified cache geometry");
+        }
         if (startup.first_generation_validation && startup.port != 8086)
             throw std::runtime_error("The bounded external demonstration requires its exact admitted port");
         if (startup.first_generation_validation && (!llama_app_mapped_source_hooks() ||
@@ -1167,14 +1190,14 @@ int main(int argc, char ** argv) {
         if (display) display->publish(screen);
         const auto context_started = std::chrono::steady_clock::now();
         context = llama_init_from_model(model, qwen_app::streaming_context_params(
-            startup.first_generation_validation ? qwen_app::first_context_tokens : 4096, cache_bytes));
+            startup.first_generation_validation ? qwen_app::first_context_tokens : 4096, cache_bytes, prefill_tokens));
         if (!context) throw std::runtime_error("Context admission failed; restart through the ordinary OS path");
         write_fresh_report(startup.admission_report+".system-memory.after-context",
             system_memory_report(qwen_app::observe_native_system_memory(),true));
         if (startup.first_generation_validation) require_model_CPU_budget();
         if (startup.first_generation_validation && std::chrono::steady_clock::now() - context_started > std::chrono::seconds(600))
             throw std::runtime_error("Context creation exceeded its first-generation boundary deadline");
-        engine = std::make_unique<qwen_app::LlamaEngine>(model, context);
+        engine = std::make_unique<qwen_app::LlamaEngine>(model, context, prefill_tokens);
         engine->set_stage_observer(qwen_native_stage);
         engine->set_gpu_boundaries(qwen_native_driver_begin,qwen_native_driver_complete,qwen_native_driver_retain,qwen_native_driver_checkpoint);
         const auto * chat_template = llama_model_chat_template(model, nullptr);
@@ -1247,7 +1270,7 @@ int main(int argc, char ** argv) {
             write_fresh_report(startup.admission_report + ".first.result", {
                 {"schema", "ps5-qwen-first-request-result-v1"}, {"pid", getpid()}, {"run_id", request.id},
                 {"stop_reason", result.stop_reason}, {"token_ids", result.token_ids},
-                {"output_bytes", result.output_bytes}, {"metrics", metrics},
+                {"output_bytes", result.output_bytes}, {"metrics", metrics}, {"prefill_batch_tokens", prefill_tokens},
                 {"request_reset_completed", result.request_reset_completed}, {"model_loaded", true}});
             const std::string answer(result.output_bytes.begin(), result.output_bytes.end());
             const auto first = answer.find_first_not_of(" \t\r\n"), last = answer.find_last_not_of(" \t\r\n");
@@ -1276,10 +1299,10 @@ int main(int argc, char ** argv) {
             require_model_CPU_budget(); require_unchanged_model();
             const auto benchmark_context_started = std::chrono::steady_clock::now();
             qwen_native_driver_begin();
-            context = llama_init_from_model(model, qwen_app::streaming_context_params(qwen_app::first_context_tokens, cache_bytes));
+            context = llama_init_from_model(model, qwen_app::streaming_context_params(qwen_app::first_context_tokens, cache_bytes, prefill_tokens));
             if (!context || std::chrono::steady_clock::now() - benchmark_context_started > std::chrono::seconds(600))
                 throw std::runtime_error("The bounded cold-cache context recreation did not complete");
-            engine = std::make_unique<qwen_app::LlamaEngine>(model, context);
+            engine = std::make_unique<qwen_app::LlamaEngine>(model, context, prefill_tokens);
             engine->set_stage_observer(qwen_native_stage);
             engine->set_gpu_boundaries(qwen_native_driver_begin, qwen_native_driver_complete,
                 qwen_native_driver_retain, qwen_native_driver_checkpoint);
@@ -1347,6 +1370,7 @@ int main(int argc, char ** argv) {
                     const Json report{{"schema", "ps5-qwen-demo-request-result-v1"}, {"pid", getpid()},
                         {"run_id", request.id}, {"id", external.id}, {"ordinal", ordinal},
                         {"cache_condition", ordinal == 1 ? "empty expert cache" : "retained expert cache"},
+                        {"prefill_batch_tokens", prefill_tokens},
                         {"stop_reason", generated.stop_reason}, {"token_ids", generated.token_ids},
                         {"output_bytes", generated.output_bytes}, {"metrics", external_metrics(generated.metrics)},
                         {"request_reset_completed", generated.request_reset_completed},

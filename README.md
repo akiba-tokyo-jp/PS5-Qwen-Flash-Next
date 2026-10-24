@@ -39,6 +39,13 @@ includes startup and lossless shader-storage changes. See the
 [completed source-schedule report](docs/native-source-schedule-success-20261025.md)
 and [sanitized counters](docs/native-source-schedule-success-20261025.json).
 
+The [bounded two-token prefill candidate](docs/native-bounded-prefill-20261025.md)
+completed the same physical/restoration gates with exact matching outputs.
+TTFT was **70.90 / 69.45 seconds**, a mean reduction of **20.62%**. Decode was
+**0.33622 / 0.34224 tokens/s**; its small change does not establish significance.
+Generation remains single-token, with all validation and monitoring retained.
+The [next performance plan](docs/performance-plan-20261025.md) remains in progress.
+
 The model stayed loaded across the three requests. The actual native passive
 frames were visually reviewed. Positive GPU/resource retirement, ordinary title
 close, exact original SELF restoration, original numerical readmission, ordinary

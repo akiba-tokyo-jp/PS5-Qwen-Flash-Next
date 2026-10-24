@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from performance_result import FIELDS, validate_performance, validate_backpressure
+from performance_result import FIELDS, validate_performance, validate_backpressure, validate_first_performance
 
 
 class PerformanceResultTests(unittest.TestCase):
@@ -73,6 +73,39 @@ class PerformanceResultTests(unittest.TestCase):
             ('maximum_boundary_wait_ms',3000),('kernel_reserved_pages',0)]:
             bad=dict(record);bad[key]=value
             with self.assertRaises(ValueError):validate_backpressure(bad)
+
+    def test_batched_prefill_counts_partial_prompt_batch_and_single_token_decode(self):
+        self.record.update(schema='ps5-qwen-completed-performance-v5',
+            source_read_ns_is_producer_wait_time=True,maximum_parallel_source_reads=2,
+            file_range_schedule_enabled=True,physical_read_bytes_include_alignment=True,
+            worker_times_overlap_consumers=True,prefill_batch_tokens=4,
+            generated_token_batch_tokens=1,all_prompt_outputs_requested=True)
+        self.record['delta'].update(source_bytes=100,source_chunks=6,source_completed_windows=6,
+            source_parallel_batches=1,source_coalesced_batches=1,source_selected_serial_batches=1,
+            source_pipeline_batches=1,source_physical_read_bytes=128,source_physical_read_calls=5,
+            source_worker_read_ns=999,source_worker_dispatch_ns=999,process_calls=30)
+        self.result['prefill_batch_tokens']=4
+        validate_performance(self.record,self.result)
+        self.result.update(token_ids=list(range(22)),output_bytes=[49]*22)
+        aggregate=copy.deepcopy(self.result);aggregate.pop('prefill_batch_tokens')
+        validate_first_performance(self.record,aggregate,self.result)
+        for field in ('metrics','token_ids','output_bytes','stop_reason'):
+            bad=copy.deepcopy(self.result);bad.pop(field)
+            with self.assertRaises(ValueError):validate_first_performance(self.record,aggregate,bad)
+        bad=copy.deepcopy(aggregate);bad['prefill_batch_tokens']=2
+        with self.assertRaises(ValueError):validate_first_performance(self.record,bad,self.result)
+        for key,value in [('prefill_batch_tokens',8),('generated_token_batch_tokens',2),
+                          ('all_prompt_outputs_requested',False)]:
+            bad=copy.deepcopy(self.record);bad[key]=value
+            with self.assertRaises(ValueError):validate_performance(bad,self.result)
+        for count in (29,31,52):
+            bad=copy.deepcopy(self.record);bad['delta']['process_calls']=count
+            with self.assertRaises(ValueError):validate_performance(bad,self.result)
+        bad=copy.deepcopy(self.result);bad.pop('prefill_batch_tokens')
+        with self.assertRaises(ValueError):validate_performance(self.record,bad)
+        self.result['stop_reason']='output_token_limit'
+        self.record['delta']['process_calls']=29
+        validate_performance(self.record,self.result)
 
     def test_selected_schedule_v4_requires_physical_read_and_completion_accounting(self):
         self.record.update(schema='ps5-qwen-completed-performance-v4',

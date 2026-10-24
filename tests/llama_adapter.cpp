@@ -15,6 +15,9 @@ struct llama_batch_ext {};
 
 static llama_vocab vocabulary;
 static int decodes = 0, synchronizes = 0, clears = 0, freed = 0, samples = 0;
+static int batch_tokens = 0, fail_on_decode = -1, fail_setup_index = -1;
+static unsigned context_capacity = 4;
+static std::vector<int> batch_sizes, causal_positions;
 static bool decode_failure = false;
 static float logits[] = {1, 2, 3, 4};
 static std::vector<int> decoded;
@@ -44,13 +47,21 @@ int32_t llama_tokenize(const llama_vocab *, const char *, int32_t, llama_token *
     if (!tokens || size < 3) return -3;
     tokens[0] = 11; tokens[1] = 12; tokens[2] = 13; return 3;
 }
-void llama_batch_ext_clear(llama_batch_ext *) {}
-int32_t llama_batch_ext_add_token(llama_batch_ext *, llama_seq_id, llama_token token) { decoded.push_back(token); return 0; }
-bool llama_batch_ext_set_pos(llama_batch_ext *, int32_t, const llama_pos *) { return true; }
+void llama_batch_ext_clear(llama_batch_ext *) { batch_tokens = 0; }
+int32_t llama_batch_ext_add_token(llama_batch_ext *, llama_seq_id seq, llama_token token) {
+    check(seq == 0, "Prefill unexpectedly changed sequence"); decoded.push_back(token); return batch_tokens++;
+}
+bool llama_batch_ext_set_pos(llama_batch_ext *, int32_t index, const llama_pos * position) {
+    causal_positions.push_back(*position); return index != fail_setup_index;
+}
 bool llama_batch_ext_set_output_logits(llama_batch_ext *, int32_t, bool output) { output_requests.push_back(output); return true; }
-int32_t llama_process(llama_context *, llama_process_type, llama_batch_ext *) { ++decodes; return decode_failure ? -1 : 0; }
+int32_t llama_process(llama_context *, llama_process_type, llama_batch_ext *) {
+    ++decodes; batch_sizes.push_back(batch_tokens); return decode_failure || decodes == fail_on_decode ? -1 : 0;
+}
 void llama_synchronize(llama_context *) { ++synchronizes; }
 uint32_t llama_n_ctx(const llama_context *) { return 64; }
+uint32_t llama_n_batch(const llama_context *) { return context_capacity; }
+uint32_t llama_n_ubatch(const llama_context *) { return context_capacity; }
 llama_memory_t llama_get_memory(const llama_context *) { return nullptr; }
 void llama_memory_clear(llama_memory_t, bool) { ++clears; }
 int32_t llama_vocab_n_tokens(const llama_vocab *) { return 4; }
@@ -144,6 +155,47 @@ int main() {
             refused=false;try{engine.next();}catch(const std::runtime_error&){refused=true;}
             check(refused&&decodes==before+1,"Quarantined adapter submitted more work");
         }
-        std::cout << "Adapter API-stub scenarios and completed-boundary guards passed; no model was loaded\n";
+        for (unsigned width : {2u, 4u}) {
+            const auto params = qwen_app::streaming_context_params(64, 512u << 20, width);
+            check(params.n_batch == width && params.n_ubatch == width && params.n_seq_max == 1,
+                  "Prefill width changed the single-sequence scope");
+            const auto before = decodes, sync_before = synchronizes;
+            const auto positions_before = causal_positions.size(), outputs_before = output_requests.size();
+            qwen_app::LlamaEngine engine(&model, &context, width);
+            engine.set_gpu_boundaries(gpu_begin,gpu_complete,gpu_retain,gpu_checkpoint);
+            engine.tokenize("test"); engine.prefill(64);
+            const int calls = (3 + width - 1) / width;
+            check(decodes == before + calls && synchronizes == sync_before + calls,
+                  "Batched prefill omitted its final partial batch or synchronization");
+            for (unsigned i = 0; i < 3; ++i)
+                check(causal_positions[positions_before+i] == int(i) && output_requests[outputs_before+i],
+                      "Batched prefill lost original positions or final-layer cache eligibility");
+            check(engine.prefill_batch_tokens() == width && engine.next().piece.size() == 300,
+                  "Batched prefill changed first sampling");
+            engine.next(); check(batch_sizes.back() == 1 && decoded.back() == 1,
+                                 "Generated-token execution must remain single-token");
+            engine.finish();
+        }
+        for (unsigned width : {0u,3u,8u}) {
+            bool refused=false;try{qwen_app::streaming_context_params(64,512u<<20,width);}
+            catch(const std::invalid_argument&){refused=true;}check(refused,"Unsafe prefill width accepted");
+        }
+        bool refused=false;try{qwen_app::streaming_context_params(64,128u<<20,2);}
+        catch(const std::invalid_argument&){refused=true;}check(refused,"Batched prefill reduced its cache prerequisite");
+        context_capacity=1;refused=false;
+        try{qwen_app::LlamaEngine engine(&model,&context,2);}catch(const std::invalid_argument&){refused=true;}
+        check(refused,"Context smaller than prefill width accepted");context_capacity=4;
+        for (bool setup_failure : {true,false}) {
+            qwen_app::LlamaEngine engine(&model,&context,2);
+            engine.set_gpu_boundaries(gpu_begin,gpu_complete,gpu_retain,gpu_checkpoint);
+            engine.tokenize("test");const int before=decodes, freed_before=freed, retained=gpu_retains;
+            if(setup_failure)fail_setup_index=1;else fail_on_decode=before+2;
+            refused=false;try{engine.prefill(64);}catch(const std::runtime_error&){refused=true;}
+            check(refused&&engine.failed()&&freed==freed_before&&gpu_retains==retained+1,
+                  "Failed batch did not quarantine and retain its owner");
+            check(decodes==before+(setup_failure?0:2),"Failed batch continued learned work");
+            fail_setup_index=fail_on_decode=-1;
+        }
+        std::cout << "Adapter API-stub scenarios, bounded multi-token prefill and completed-boundary guards passed; no model was loaded\n";
     } catch (const std::exception & error) { std::cerr << error.what() << '\n'; return 1; }
 }
