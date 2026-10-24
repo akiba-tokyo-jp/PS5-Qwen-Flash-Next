@@ -126,3 +126,23 @@ supports physical splitting as a CPU I/O candidate; it does not establish an
 optimal smaller chunk size or native tokens/s. Positive worker/Direct retirement,
 fresh before/after idle CPU and exact original preservation passed. See
 [the counterbalanced measurements](source-read-hint-cpu-20261024.json).
+
+## Completed native comparison: 2026-10-25
+
+The complete physical sequence subsequently passed with the file/range schedule,
+lossless external shader resource and bounded Direct launch/preservation input.
+Both 22-token external answers and token IDs matched the completed single-read
+control. Decode rates were 0.332877 / 0.337782 tokens/s, versus
+0.285184 / 0.289577; the mean observed gain was 16.68%. Logical source bytes
+were identical. This is one matched short-request sequence and a candidate-bundle
+result, without isolated attribution or a nominal-bandwidth claim.
+
+Arithmetic, two actual native frame reviews, positive source/GPU/model retirement,
+ordinary close, exact original restoration, fresh original numerical readmission,
+ordinary original shutdown and final idle CPU/full readback all passed. The
+finite continuation ended with all 428 frozen inputs unchanged; no native owner,
+gateway or loaded model remains. No conversion, transfer or full model hash was
+repeated. Earlier pending native-performance status above is superseded only by
+this completed result; historical refusals remain preserved. Keep release/CI and
+persistent caches disabled. See [the final report](native-source-schedule-success-20261025.md)
+and [sanitized counters](native-source-schedule-success-20261025.json).

@@ -1518,3 +1518,31 @@ Unknown helper completion prevents publication/launch and retains backing.
 Application/driver/precision/budgets/both native startup targets and the complete
 inference/frames/retirement/original numerical readmission plan are unchanged.
 See docs/launch-integrity-20261024.md.
+
+## Completed source-schedule physical plan (2026-10-25)
+
+The unchanged candidate SELF
+`c354b82c75a4e60f783c80e16485c4132bcd40cb35fb34a62d92e528f57debf7`
+completed the full physical plan with the selected file/range schedule. Arithmetic
+returned `4`; both 22-token external outputs/token IDs matched the completed
+single-read control. Rates were 0.332877 / 0.337782 tokens/s, mean 0.335329 versus
+0.287381, an observed 16.68% gain. Logical source bytes matched. This is one
+complete short-request comparison of the candidate bundle, not isolated causality,
+nominal-bandwidth admission, broad quality or sustained-service qualification.
+See docs/native-source-schedule-success-20261025.md and its sanitized JSON.
+
+Both actual native frames were viewed. Positive source/GPU/model retirement,
+ordinary candidate close, exact original restoration, fresh original numerical
+readmission, ordinary original shutdown and final same-boot/service/idle-CPU/full
+raw readback all passed. The finite continuation positively ended with all 428
+frozen inputs unchanged. It retained the already-running model and original
+deadlines after a separately reviewed fresh owner admission; no app/model or
+generation request was retried. No native owner, gateway or loaded model remains.
+Preserve every historical refusal and consumed intent; do not rerun this sequence.
+
+The original BF16/F32 model, all experts/PLE, actual current 76-file rehearsal,
+both startup targets, all budgets/reserves/wait limits, pinned 872cc126
+cumulative-idle driver and disabled persistent caches remain unchanged. The
+reservation stays held. Committed general execution/deployment/release and CI
+remain disabled. Configuration status now records the passed finite qualification;
+it does not authorize automatically starting ordinary inference or another test.
