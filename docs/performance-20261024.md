@@ -1,5 +1,82 @@
 # Original-precision performance work
 
+## Completed result
+
+The three-step performance work plan completed on the physical PS5. Tested
+application revision: `86b645623f3de13fd49ad6e2b295565219729be7`; SELF:
+`24cd22bbba24223eab5be01412294c33a83a4d5a380cd028acd66dec1983e344`.
+See [the sanitized result](source-pipeline-success-20261024.json).
+
+| Fixed external request | Profile control tokens/s | Pipeline tokens/s | Control TTFT | Pipeline TTFT | Control total | Pipeline total |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| First, initially empty expert cache | 0.282978 | 0.285184 | 105.237 s | 104.248 s | 182.934 s | 181.342 s |
+| Second, retained expert cache | 0.287113 | 0.289577 | 102.766 s | 101.808 s | 179.392 s | 177.750 s |
+
+Both returned the exact same counting response and 22 tokens. Mean decode rate
+rose from 0.285046 to 0.287381 tokens/s: **0.82% in this two-request comparison**.
+Against the earlier non-profile functional control, the observed difference is
+only **0.24%**. These small fixed-request measurements do not establish a
+statistically significant or general throughput improvement. Source I/O remains
+the dominant cost. Arithmetic also completed with exact output `4`.
+
+The source-path read/wait interval fell from 158.595 to 156.500 s in request 1
+and from 155.781 to 153.633 s in request 2, with identical original payload bytes.
+Worker dispatch totaled 0.263 / 0.257 s; worker reads totaled 78.953 / 77.510 s.
+The worker diagnostics overlap producer consumption and must not be added to
+decode time. These are CPU wall intervals, not GPU hardware timestamps.
+
+The adopted bounded implementation uses the same 8 MiB Direct source window,
+split into two halves. The producer reads one known miss; the CPU worker reads
+the next while the producer completes the first synchronous backend upload.
+There is **at most one outstanding read**. Native simultaneous reads are rejected.
+Unknown reads retain their owner/backing; failed consumers retain the window;
+no operation is retried. All original BF16/F32 tensors, experts and PLE remain.
+
+Passive kernel-memory backpressure retains the original predicate and reserves:
+100 ms observations, a 20 s boundary limit and a 60 s whole-process wait limit.
+The successful run recovered one pressure event after 0.400 s, without retrying
+I/O/inference/GPU work, reclaiming pages or reducing any reserve. CPU heap peak
+stayed 436,273,152 bytes (416.0625 MiB), with zero libc fallbacks. Post-load device
+peak stayed 945,815,552 bytes. No memory allowance or read buffer was enlarged.
+
+Actual 1920x1080 passive native frames were viewed. All outputs, source-window
+completion, positive GPU/model retirement and worker shutdown passed. The title
+was normally closed; the exact original SELF was restored, numerically
+readmitted, normally closed and fully read back after fresh final CPU guards.
+No native owner or model remains. The finite parent ended normally, all frozen
+inputs matched, and no retry, force-kill or reset occurred. The task reservation
+is retained. General release, CI and persistent shader/pipeline caches remain off.
+
+The precise kernel/filesystem cause of the rejected two-read regression has not
+been isolated. Its completed arithmetic read interval rose 81.865 -> 237.555 s
+for the same source bytes. Separately, a memory refusal was observed before any
+I/O worker or Vulkan initialization. These observations do not prove a worker
+leak, a particular filesystem defect or isolated GPU compute latency. See the
+[two-read refusal](source-concurrency-refusal-20261024.md) and
+[pre-worker observation](pre-worker-memory-refusal-20261024.json).
+
+## Reproduce focused host checks
+
+The checked-in runner exercises the actual single-read worker/consumer overlap,
+exact bytes and EOF, fixed-window canaries, failed/unknown-read retention, memory
+recovery deadlines/total budget, and the actual compiled cache upload loop. Its
+timeout case runs only in a synthetic host subprocess. It also compiles the PS5
+source/memory providers and checks completed measurement records. It performs no
+console access or learned host inference.
+
+```powershell
+python tools/check_source_pipeline.py --workspace C:/Users/User/ps5-ai --out D:/PS5-AI/qwen-flash-next/source-pipeline-check-new --model-io-manifest D:/PS5-AI/qwen-flash-next/build/model-io-pipeline-source-345/manifest.private.json
+```
+
+The output directory must be fresh. The selected local engine/SDK artifacts are
+not redistributed. A host check does not admit a console launch.
+
+## Historical development record
+
+The following queue, intermediate pending statements and refusals are preserved
+as development history. The completed result above supersedes pending status;
+every failed artifact and consumed intent remains retained.
+
 The owner authorized speed improvement after the complete physical plan passed.
 The immutable control is application source
 `701f474cb8ca94dae5c854f080f3ec972d0d0c26`, SELF

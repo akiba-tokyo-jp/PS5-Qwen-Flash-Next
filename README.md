@@ -13,6 +13,13 @@ time to first token was **104.62 / 102.14 seconds**. See the
 [full-model result](docs/native-full-generation-success-20261024.md) and
 [sanitized measurements](docs/native-full-generation-success-20261024.json).
 
+The subsequent [source-I/O performance work](docs/performance-20261024.md) also
+completed all physical/restoration gates. Bounded read/upload overlap measured
+**0.28518 / 0.28958 tokens/s**, an observed mean **0.82%** above its profile
+control and **0.24%** above the earlier functional control. This is a small
+two-request result, not a general speedup claim. The implementation preserves
+the 8 MiB window, original precision, every memory reserve and the selected driver.
+
 The model stayed loaded across the three requests. The actual native passive
 frames were visually reviewed. Positive GPU/resource retirement, ordinary title
 close, exact original SELF restoration, original numerical readmission, ordinary

@@ -927,3 +927,25 @@ and 60 s cumulatively, keeping 100 ms observations and every original memory
 predicate/reserve. This changes waiting time only. Never retry I/O, inference or
 GPU work, release uncertain resources, or report speedup before all physical
 gates complete. Preserve the failed artifact and its consumed intents.
+
+## Completed bounded source-pipeline performance pass
+
+The artifact at source 86b645623f3de13fd49ad6e2b295565219729be7 and SELF
+24cd22bbba24223eab5be01412294c33a83a4d5a380cd028acd66dec1983e344 completed the
+entire physical plan: exact arithmetic output 4, two identical counting answers/22 tokens,
+actual native frame review, positive model/GPU/source/worker retirement, ordinary
+close, exact original restoration, numerical readmission, ordinary shutdown,
+fresh final CPU and whole original SELF readback. The finite parent ended
+normally with all frozen inputs unchanged, zero native owners/models/fallbacks.
+CPU/device peaks stayed 436273152 / 945815552 bytes. One pressure event recovered
+after 0.400 s under the unchanged predicate and v2 wait bounds.
+
+The two decode rates were 0.285184 / 0.289577 tokens/s. Mean observed gain is 0.82%
+against the profile control and 0.24% against the older functional control. This
+small fixed-request result does not establish statistical significance or a
+general throughput improvement. See docs/source-pipeline-success-20261024.json
+and docs/performance-20261024.md. This supersedes pending performance-plan status,
+without erasing failed candidates. Never replay completed launches/POST intents.
+Keep the reservation held, every memory/precision/driver/cache policy unchanged,
+and release/CI disabled. Use tools/check_source_pipeline.py for reproducible
+focused host checks; host checks alone never admit a console launch.

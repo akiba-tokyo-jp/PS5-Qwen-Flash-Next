@@ -53,9 +53,12 @@ retention controls. Host concurrency, byte-parity, failure and actual patched
 cache-loop checks passed. Its physical two-read candidate was slower and failed
 the kernel headroom predicate; exact original restoration completed. Preserve
 [the rejected result](source-concurrency-refusal-20261024.md). The next candidate
-adapts staged consumption with only one outstanding read. Physical comparison
-of that implementation remains pending.
-Compare the same original-precision requests. No public Strata timing
+adapts staged consumption with only one outstanding read. Its completed physical
+comparison measured 0.285184 / 0.289577 tokens/s, an observed mean 0.82% above
+the matching profile control. All three requests, actual native frames, positive
+retirement and exact original restoration/readmission/shutdown/final checks
+passed. See [the measured result](performance-20261024.md). The small two-request
+sample does not establish a general speedup. No public Strata timing
 is a forecast for PS5, and no inspected mechanism is recorded as integrated
 before its implementation and physical comparison complete. Upstream MIT notices
 and precise source pins must accompany any adopted code or algorithm.
