@@ -1,0 +1,20 @@
+{
+  "schema": "ps5-qwen-native-stage-memory-single-write-v1",
+  "SELF_sha256": "d12fed02f979538afbbafed5be60928191dbebe3e9a314ae77bc055fc9f15340",
+  "CPU_only": true,
+  "GPU_calls": 0,
+  "model_loaded": false,
+  "all_76_current_model_reservations_and_releases_completed": true,
+  "valid_samples": 1227,
+  "kernel_page_bytes": 16384,
+  "baseline": {"first_free_pages": 3723, "last_free_pages": 1610, "net_decrease": 2113, "stage_interval_seconds": 2.857802943},
+  "single_stack_write": {"first_free_pages": 3261, "last_free_pages": 1481, "net_decrease": 1780, "within_stage_decrease": 1783, "between_stage_decrease": -3, "stage_interval_seconds": 1.984434230},
+  "stronger_native_startup_target_pages": 2974,
+  "memory_problem_resolved": false,
+  "write_or_sync_proprietary_cause_identified": false,
+  "normal_OS_close_exact_original_restoration_full_readback_final_idle_CPU_passed": true,
+  "parent_positively_ended_frozen_inputs_unchanged": 191,
+  "preceding_same_boot_numerical_original_admission_preserved": true,
+  "full_native_performance_plan_completed": false,
+  "next_CPU_diagnostic": "Separate write and fsync observations and add a matched idle interval to test time-correlated background effects"
+}

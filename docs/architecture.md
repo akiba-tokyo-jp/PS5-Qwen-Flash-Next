@@ -31,11 +31,20 @@ CPU and GPU memory share physical backing on PS5. Moving a weight to a CPU
 buffer does not create capacity. Filesystem mappings, resident allocations,
 staging, device caches and KV/state must be accounted for together.
 
-The current upstream loader requests prefetch for ordinary mapped tensors;
-architecture-marked lazy tensors are excluded. Enabling mmap alone is therefore
-insufficient for this checkpoint. Before full-model console loading, the runtime
-must also exclude routed expert ranges from eager prefetch and measure resident
-pages under sustained cache misses. That integration is not implemented yet.
+The upstream loader requests prefetch for ordinary mapped tensors. The application
+patch adds an explicit opt-out, `LLAMA_APP_NO_MMAP_PREFETCH=1`, which the native
+entry point sets before backend initialization. A required link symbol prevents
+using an older unpatched loader silently. The patch applies and compiles to a
+target object on a separate source copy. This removes eager prefetch; it does
+not prove a resident-memory bound or console support for the model's very large
+virtual mapping. Physical residency under sustained cache misses is unqualified.
+
+The [application expert policy](expert-policy.md) extends that same cache callback.
+It keeps the selected IDs, coefficients, original tensor types and upload sources
+unchanged. Its UMA admission limit is the minimum of requested cache size, driver
+free memory and observed OS free memory after an explicit reserve. This admits
+only the expert bank budget; it does not bound all context, page-cache or PLE
+allocations. Native memory admission remains a separate qualification milestone.
 
 Only the converted model needs to reside on the console SSD. Retain original
 checkpoint shards on the host data disk; keeping both complete containers on the
@@ -44,9 +53,10 @@ not establish a working RAM budget or a successful model load.
 
 ## Driver
 
-Use the owner's PS5-Vulkan-Inference repository and explicit cumulative-idle
-profile recorded in the lock file. The archive contains the current H1/H3
-compiler and completion changes. It does not advertise native BF16 arithmetic
+Use the owner's PS5-Vulkan-Inference repository at the revision and explicit
+`cumulative-idle` profile recorded in the lock file. The 2026-10-22 integration
+is documented in [driver-integration.md](driver-integration.md). The archive
+contains the current H1/H3 compiler and completion changes. It does not advertise native BF16 arithmetic
 or matrix hardware. BF16 support in the application must use supported shader
 operations or explicit exact widening, rather than enabling an unsupported
 device feature. Keep accumulation and numerical validation explicit.
@@ -55,10 +65,11 @@ Persistent shader and pipeline caches remain disabled as required by the
 current driver integration contract. A successful build or API feature query
 does not prove numerical acceptance.
 
-The static engine libraries do not contain a final linked PS5 application.
-Selecting the RADV archive during configuration records the intended dependency;
-the native application's final link and console admission must verify that same
-archive before claiming driver integration.
+Static engine libraries alone do not establish application integration. The
+2026-10-22 native build links the actual application and the exact selected RADV
+archive into one intermediate PIE, with stable input digests and required
+integration symbols. SELF conversion, runtime admission and console validation
+remain separate from this host link.
 
 ## Milestones and evidence
 

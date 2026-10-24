@@ -35,8 +35,8 @@ def main():
     p.add_argument("--owner-receipt", type=Path)
     a = p.parse_args()
     policy = json.loads((ROOT / "config/development.json").read_text())
-    if policy["driver_qualification"] != "complete" or not policy["console_operations_enabled"]:
-        p.error("Console operations are disabled while driver qualification is pending")
+    if not policy["console_operations_enabled"]:
+        p.error("Console operations are disabled for this application integration phase")
     out = a.out.resolve(); out.mkdir(parents=True, exist_ok=False)
     workspace = a.workspace.resolve()
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))

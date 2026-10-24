@@ -1,7 +1,11 @@
 {
-  "phase": "application-development",
-  "driver_qualification": "pending",
+  "phase": "finite-original-precision-inference-and-source-schedule-validated",
+  "driver_qualification": "bounded-evidence-reviewed",
   "console_operations_enabled": false,
   "deployment_enabled": false,
-  "console_validation_enabled": false
+  "console_validation_enabled": false,
+  "validation_deployment_enabled": false,
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "application_qualification": "physical-three-request-BF16-F32-generation-and-native-display-passed; matched-source-schedule-performance-passed; exact-original-restored-numerically-readmitted-closed; final-idle-CPU-and-full-readback-passed",
+  "allowed_modes": []
 }

@@ -1,0 +1,9 @@
+{
+  "schema": "ps5-qwen-app-v1",
+  "development_policy": "/app0/qwen-runtime/development.json",
+  "model_receipt": "/app0/qwen-runtime/model/model-receipt.json",
+  "web_assets": "/app0/qwen-runtime/web",
+  "port": 8086,
+  "native_display": true,
+  "mode": "display-validation"
+}

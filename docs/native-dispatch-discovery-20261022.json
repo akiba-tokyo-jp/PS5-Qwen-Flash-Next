@@ -1,0 +1,62 @@
+{
+  "schema": "ps5-qwen-static-dispatch-discovery-v1",
+  "date": "2026-10-22",
+  "execution_environment": "physical_PS5",
+  "SELF_sha256": "0e527b0a8bfe975ba7421b7aa3b405f7f6549b2926b89f544203361743cd34ee",
+  "PIE_sha256": "809d3de1c1985df512eba4c2ba9f7e7234e32641abccb1fb881c4423f8a7003a",
+  "application_source_commit": "20791c0cd7a6f4b5e976c82bb103e7d401b261f7",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "profile": "cumulative-idle",
+  "native_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+  "persistent_caches_enabled": false,
+  "host_checks_before_launch": {
+    "actual_module_imports_resolved": 289,
+    "SELF_integrity": "passed",
+    "loadable_segment_roundtrips": 6,
+    "linked_BF16_shader_variants_validated": 3,
+    "native_fixture_policy_rejection_cases": 48
+  },
+  "console_observations": {
+    "ordinary_OS_launches": 1,
+    "CPU_runtime_prerequisites": "passed",
+    "explicit_AGC8": "returned_success",
+    "empty_native_owner_admission": "passed",
+    "instance_creation_and_dispatch": "completed",
+    "physical_device_enumeration_return": "not_observed",
+    "candidate_process_exited": true,
+    "initial_Direct_largest_available_bytes": 12262047744,
+    "initial_flexible_available_bytes": 405798912,
+    "observed_250ms_interval_ms": 250.025378,
+    "internal_ring_and_marker_allocations": 2,
+    "internal_allocated_bytes": 16793600,
+    "BF16_terminal_report": false,
+    "model_loaded": false,
+    "tokens_per_second_measured": false
+  },
+  "failure_evidence": {
+    "existing_kernel_log": "user_instruction_fetch_page_fault_at_zero",
+    "symbolized_initialization_path": "physical_device_enumeration_to_radv_init_wsi",
+    "missing_implementation": "vk_common_GetPhysicalDeviceProperties2",
+    "actual_common_entrypoint_field_offset": 240,
+    "actual_common_entrypoint_target": 0,
+    "other_required_callbacks_present": 5,
+    "exact_failed_ELF_rejected_offline": true,
+    "static_trampoline_presence_was_insufficient": true,
+    "actual_original_application_link_uses_whole_archive": true
+  },
+  "restoration": {
+    "fresh_post_exit_CPU_metadata": "passed",
+    "same_boot_and_management_services": true,
+    "native_owners": 0,
+    "original_SELF_restored_and_fully_read_back": true,
+    "original_numerical_readmission": "pending",
+    "failed_candidate_preserved": true,
+    "reservation_preserved": true,
+    "force_kill_or_GPU_reset": false,
+    "ambiguous_execution_retries": 0
+  },
+  "correction_scope": "application_static_link_and_prepackaging_callback_audit",
+  "correction_qualified_on_console": false,
+  "full_model_qualified": false,
+  "CI": false
+}

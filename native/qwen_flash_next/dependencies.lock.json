@@ -16,12 +16,85 @@
   },
   "ps5_vulkan_inference": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
-    "revision": "51bbc63d51c40614e7069912e0d6b48a56d3510a",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
     "profile": "cumulative-idle",
-    "archive_sha256": "0f9409a3af8027c81c6bad625c0aaa91265df8850b0f481ac497114c91cb2dba",
-    "capture_isa": true,
+    "archive_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+    "capture_isa": false,
     "persistent_caches_enabled": false,
-    "mesa_revision": "1ba9874f478657ccf6da72ce55f0260164cc0bd0"
+    "mesa_revision": "1ba9874f478657ccf6da72ce55f0260164cc0bd0",
+    "base_archive_sha256": "149ad31788c0c8bc78de971f0f95b931832f3db94eafda38b28bdf2aff1218fa",
+    "profile_manifest_sha256": "f3643fa639b12a0573067356cf8dd703fc17861e7f9761d85f50e0eab188bc6e",
+    "changed_members": [
+      [
+        "radv_shader.c.o",
+        0
+      ],
+      [
+        "winsys_ps5_radv_ps5_winsys.c.o",
+        0
+      ]
+    ],
+    "patches": [
+      {
+        "name": "0001-ps5-validate-completion-snapshot.patch",
+        "sha256": "a58bb6294c84427e8b26066658ebc82277b8717493d6d095083b01f17c4eae8e"
+      },
+      {
+        "name": "0001-ps5-skip-idle-marker-poll.patch",
+        "sha256": "f84ff92440cc7a5f07db5756db4721704a0677c861a9e86c998a86e4587efba4"
+      },
+      {
+        "name": "0001-ps5-combine-half-select-late-licm.patch",
+        "sha256": "2362db7feec372d5f79a7b71b1075150871dc4ec43e9b8a458da22cf63facabe"
+      }
+    ],
+    "source_files": [
+      {
+        "path": "driver/mesa/build_profile.py",
+        "sha256": "4b4f1bd9f94ab4d65d7eda1bf9d33312063a58c00b1fab81243bd83df48251b7"
+      },
+      {
+        "path": "driver/mesa/build_members.py",
+        "sha256": "cfb7f5e48004788e54ec4c69f2cc9826deb1555c933b79dd660ba3babc9f179c"
+      },
+      {
+        "path": "driver/mesa/build_idle_marker.py",
+        "sha256": "5419b2b9c5e68e05e37ef3a03c5ba3e6727d6fa0aa5766a31049dd0d3664c353"
+      },
+      {
+        "path": "docs/driver_integration_contract.md",
+        "sha256": "56f5bf70dea7af6897e65c289e8a8c56670b842d4319b70684376faabd52ce8b"
+      },
+      {
+        "path": "tooling/native/app_crt.cpp",
+        "sha256": "0c9d229f4053d87ff6b4f2fdbd7a86d6ae14fa3ec50f0535f63127b1408bb5db"
+      },
+      {
+        "path": "tooling/native/ps5-pie.ld",
+        "sha256": "fbc52518761b58b703a2225c847c5f44a81523cd0e751755adf890ae0f0dd74c"
+      },
+      {
+        "path": "driver/mesa/patches/0001-ps5-validate-completion-snapshot.patch",
+        "sha256": "a58bb6294c84427e8b26066658ebc82277b8717493d6d095083b01f17c4eae8e"
+      },
+      {
+        "path": "driver/mesa/patches/0001-ps5-skip-idle-marker-poll.patch",
+        "sha256": "f84ff92440cc7a5f07db5756db4721704a0677c861a9e86c998a86e4587efba4"
+      },
+      {
+        "path": "driver/mesa/patches/0001-ps5-combine-half-select-late-licm.patch",
+        "sha256": "2362db7feec372d5f79a7b71b1075150871dc4ec43e9b8a458da22cf63facabe"
+      }
+    ]
+  },
+  "native_platform_base": {
+    "purpose": "preserved native ABI base; frontend implementation is recorded by the application link receipt",
+    "provenance": "Preserved native Direct per-BO application archive; not a replacement for the selected shared-driver profile",
+    "base_archive_sha256": "6dbafa051c378d03190b45667825bda5faaaa2f6e0823a4e522c39560baafb0a",
+    "reference_archive_sha256": "149ad31788c0c8bc78de971f0f95b931832f3db94eafda38b28bdf2aff1218fa",
+    "selected_composition_sha256": "ad88e3688d8c3e0f17f8f51525baa70fd75088dded410cbe43a4d48de7ac092a",
+    "native_frontend_integrated": false,
+    "deployment_allowed": false
   },
   "design_references": [
     "https://github.com/Niko1221/Strata",

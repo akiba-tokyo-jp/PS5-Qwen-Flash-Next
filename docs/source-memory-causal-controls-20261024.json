@@ -1,0 +1,90 @@
+{
+  "schema": "ps5-qwen-source-memory-controls-v1",
+  "date": "2026-10-24",
+  "CPU_only": true,
+  "GPU_calls": 0,
+  "title_launches": 0,
+  "learned_model_inference": false,
+  "actual_virtual_provider_unchanged": true,
+  "sequential_reservations": [
+    {
+      "bytes": 16384,
+      "free_before": 6409,
+      "free_reserved": 6409,
+      "free_released": 6409
+    },
+    {
+      "bytes": 1073741824,
+      "free_before": 6413,
+      "free_reserved": 6413,
+      "free_released": 6413
+    },
+    {
+      "bytes": 4294967296,
+      "free_before": 6412,
+      "free_reserved": 6412,
+      "free_released": 6412
+    },
+    {
+      "bytes": 17179869184,
+      "free_before": 6411,
+      "free_reserved": 6411,
+      "free_released": 6411
+    },
+    {
+      "bytes": 68719476736,
+      "free_before": 6410,
+      "free_reserved": 6410,
+      "free_released": 6410
+    },
+    {
+      "bytes": 102400491712,
+      "free_before": 6409,
+      "free_reserved": 6409,
+      "free_released": 6409
+    }
+  ],
+  "concurrent_original_spans": {
+    "files": 76,
+    "bytes": 359246956672,
+    "free_before": 5816,
+    "free_all_held": 5816,
+    "free_after_settle": 5819,
+    "all_reservations_protections_and_releases_completed": true
+  },
+  "root_sealed_metadata": {
+    "files": 77,
+    "free_before": 5951,
+    "free_after": 5951
+  },
+  "root_journal": {
+    "lines": 1152,
+    "free_before": 5951,
+    "free_after": 5902,
+    "mode_mean_ms_per_96_lines": {
+      "one_write_no_sync": 84.1391635,
+      "two_writes_and_fsync": 245.4675795,
+      "one_write_and_fsync": 164.0249515
+    }
+  },
+  "native_postprobe_refusal": {
+    "SELF_sha256": "03ccc50f1b0df7fd2260d97d537f33f532a82d20feff9c171d3bc60b2cd8cbd0",
+    "free_before": 5496,
+    "free_after": 1849,
+    "last_free_after_20s": 1843,
+    "required_startup_target": 2974,
+    "small_probe_bytes": 16384,
+    "model_spans": 76,
+    "positive_reserve_and_release_calls": 77,
+    "GPU_calls": 0,
+    "model_loaded": false,
+    "parent_ended_with_206_unchanged_inputs": true,
+    "normal_close_exact_original_readback_and_fresh_idle_CPU_passed": true,
+    "preceding_same_boot_original_numerical_admission_preserved": true
+  },
+  "native_namespace_allocator_and_external_observer_effects_not_isolated": true,
+  "simple_virtual_size_count_metadata_or_root_journal_explanations_not_reproduced": true,
+  "original_model_and_title_unchanged": true,
+  "fresh_idle_CPU_before_and_after": true,
+  "automatic_retries": 0
+}

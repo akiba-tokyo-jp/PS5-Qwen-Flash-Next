@@ -1,0 +1,21 @@
+diff --git a/src/llama-model.cpp b/src/llama-model.cpp
+--- a/src/llama-model.cpp
++++ b/src/llama-model.cpp
+@@ -35,2 +35,3 @@
+ #include <cstring>
++#include <cstdlib>
+ #include <cmath>
+@@ -41,3 +42,9 @@
+ #include <vector>
+ 
++extern "C" bool llama_app_mmap_prefetch_disabled();
++extern "C" bool llama_app_mmap_prefetch_disabled() {
++    const char * disabled = std::getenv("LLAMA_APP_NO_MMAP_PREFETCH");
++    return disabled && std::strcmp(disabled, "1") == 0;
++}
++
+ static llama_model * llama_model_mapping(llm_arch arch, const llama_model_params & params) {
+@@ -1893,2 +1900,2 @@
+-    ml.init_mappings(true, use_mlock ? &pimpl->mlock_mmaps : nullptr);
++    ml.init_mappings(!llama_app_mmap_prefetch_disabled(), use_mlock ? &pimpl->mlock_mmaps : nullptr);
+     pimpl->mappings.reserve(ml.mappings.size());

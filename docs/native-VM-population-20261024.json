@@ -1,0 +1,21 @@
+{
+  "schema": "ps5-qwen-native-VM-population-v1",
+  "SELF_sha256": "b5d22ae6d474f62e8b3791062ab84cd3ed4996efcefb99f880914a08e403eba1",
+  "CPU_only": true,
+  "GPU_calls": 0,
+  "native_display": false,
+  "source_workers": 0,
+  "all_76_current_reservations_and_releases_completed": true,
+  "valid_stage_samples": 1227,
+  "sequential_VM_before": {"active": 28678, "free": 3292, "inactive": 70735, "total": 138739, "wired": 36034},
+  "sequential_VM_after": {"active": 28610, "free": 1580, "inactive": 72449, "total": 138739, "wired": 36100},
+  "sequential_VM_after_two_seconds_idle": {"active": 28610, "free": 1580, "inactive": 72461, "total": 138739, "wired": 36088},
+  "sequential_VM_deltas": {"active": -68, "free": -1712, "inactive": 1714, "total": 0, "wired": 66},
+  "file_read_ahead_or_cache_attribution": "Hypothesis; the category movement is measured, the backing object is not identified",
+  "inactive_pages_counted_as_available": false,
+  "memory_guards_or_reserves_relaxed": false,
+  "parent_positively_ended_frozen_inputs_unchanged": 192,
+  "normal_close_exact_original_restoration_full_readback_final_idle_CPU_passed": true,
+  "full_native_performance_plan_completed": false,
+  "next_intervention": "Original GGUF callback parser over a fixed Direct metadata window, CPU-only qualification first"
+}

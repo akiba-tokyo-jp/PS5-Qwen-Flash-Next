@@ -1,0 +1,32 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan-buffers.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan-buffers.cpp
+@@ -1,3 +1,4 @@
++#include "mapped_source_bridge.h"
+ #include "ggml-vulkan-common.h"
+ 
+ #include <cstdint>
+@@ -619,6 +620,18 @@
+ }
+ 
+ void ggml_vk_buffer_write(vk_buffer& dst, size_t offset, const void * src, size_t size) {
++    if (qwen_app_model_source_range(src, size)) {
++        GGML_ASSERT(ggml_app_bounded_staging_enabled());
++        for (size_t done = 0; done < size;) {
++            size_t part = 0;
++            const void * window = qwen_app_model_source_chunk((const uint8_t *) src + done, size - done, &part);
++            GGML_ASSERT(part && part <= size - done);
++            ggml_vk_buffer_write_2d(dst, offset + done, window, part, part, part, 1);
++            qwen_app_model_source_chunk_completed();
++            done += part;
++        }
++        return;
++    }
+     // Each completed chunk retains the existing visibility, submit, fence and
+     // cleanup sequence. Never allocate a full-weight temporary staging buffer.
+     if (ggml_app_bounded_staging_enabled()) {
+@@ -891,3 +904,5 @@
+     return buf;
+ }
+ 
++
++extern "C" bool ggml_app_mapped_upload_hooks() { return true; }

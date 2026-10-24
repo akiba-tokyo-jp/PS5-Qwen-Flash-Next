@@ -1,0 +1,53 @@
+--- a/ggml/src/ggml-cpu/ggml-cpu.cpp
++++ b/ggml/src/ggml-cpu/ggml-cpu.cpp
+@@ -1,3 +1,4 @@
++#include "mapped_source_bridge.h"
+ #include "ggml-backend.h"
+ #include "ggml-backend-impl.h"
+ #include "ggml-cpu.h"
+@@ -135,6 +136,10 @@
+     cpu_plan->cplan = ggml_graph_plan(cgraph, cpu_ctx->n_threads, cpu_ctx->threadpool);
+     cpu_plan->cgraph = *cgraph; // FIXME: deep copy
+ 
++    if (qwen_app_model_compute_limits_enabled() && cpu_plan->cplan.work_size > (16u << 20)) {
++        delete cpu_plan;
++        return NULL;
++    }
+     if (cpu_plan->cplan.work_size > 0) {
+         cpu_plan->cplan.work_data = new uint8_t[cpu_plan->cplan.work_size];
+         if (cpu_plan->cplan.work_data == NULL) {
+@@ -172,6 +177,8 @@
+ 
+     struct ggml_cplan cplan = ggml_graph_plan(cgraph, cpu_ctx->n_threads, cpu_ctx->threadpool);
+ 
++    if (qwen_app_model_compute_limits_enabled() && cplan.work_size > (16u << 20))
++        return GGML_STATUS_ALLOC_FAILED;
+     if (cpu_ctx->work_size < cplan.work_size) {
+         delete[] cpu_ctx->work_data;
+         cpu_ctx->work_data = new uint8_t[cplan.work_size];
+@@ -422,6 +429,19 @@
+ }
+ 
+ static bool ggml_backend_cpu_device_supports_op(ggml_backend_dev_t dev, const struct ggml_tensor * op) {
++    if (qwen_app_model_reads_enabled()) {
++        for (int i = 0; i < GGML_MAX_SRC; ++i) {
++            const auto * input = op->src[i];
++            if (!input || !input->data || !qwen_app_model_source_range_metadata(input->data, ggml_nbytes(input))) continue;
++            const bool metadata = op->op == GGML_OP_NONE || op->op == GGML_OP_VIEW || op->op == GGML_OP_RESHAPE ||
++                op->op == GGML_OP_PERMUTE || op->op == GGML_OP_TRANSPOSE;
++            if (!metadata && !(op->op == GGML_OP_GET_ROWS && i == 0)) return false;
++        }
++    }
++    // Storage selection still uses the ordinary CPU buffer contract while
++    // loading. After load, the bounded first model requires GPU matrix work.
++    if (qwen_app_model_compute_limits_enabled() &&
++        (op->op == GGML_OP_MUL_MAT || op->op == GGML_OP_MUL_MAT_ID)) return false;
+     const struct ggml_tensor * src0 = op->src[0];
+     const struct ggml_tensor * src1 = op->src[1];
+ 
+@@ -717,3 +737,5 @@
+ }
+ 
+ GGML_BACKEND_DL_IMPL(ggml_backend_cpu_reg)
++
++extern "C" bool ggml_app_bounded_cpu_fallback_hooks() { return true; }

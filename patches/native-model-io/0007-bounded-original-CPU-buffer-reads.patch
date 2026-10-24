@@ -1,0 +1,147 @@
+--- a/ggml/src/ggml-backend.cpp
++++ b/ggml/src/ggml-backend.cpp
+@@ -1,3 +1,4 @@
++#include "mapped_source_bridge.h"
+ // Note: porting this file to C++ is a work in progress
+ 
+ #ifdef _WIN32
+@@ -20,6 +21,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <algorithm>
++#include <stdexcept>
++#include <string>
+ #include <unordered_map>
+ #include <vector>
+ 
+@@ -1067,6 +1070,17 @@
+ 
+ // returns the backend that should be used for the node based on the current locations
+ static int ggml_backend_sched_backend_id_from_cur(ggml_backend_sched_t sched, struct ggml_tensor * tensor) {
++    // Source keys are protected file offsets, not resident host tensors.
++    // Row selection must read just the addressed original rows through the
++    // bounded CPU kernel; automatic GPU offload would copy the entire table.
++    if (qwen_app_model_reads_enabled() && tensor->op == GGML_OP_GET_ROWS && tensor->src[0] &&
++        tensor->src[0]->data && qwen_app_model_source_range_metadata(tensor->src[0]->data, ggml_nbytes(tensor->src[0]))) {
++        const int cpu = sched->n_backends - 1;
++        if (!ggml_backend_supports_op(sched->backends[cpu], tensor) ||
++            (tensor->buffer && !ggml_backend_supports_buft(sched->backends[cpu], tensor->buffer->buft)))
++            throw std::runtime_error("Protected source row selection has no admitted CPU buffer/kernel");
++        return cpu;
++    }
+     // assign pre-allocated nodes to their backend
+     int cur_backend_id = ggml_backend_sched_backend_from_buffer(sched, tensor, tensor);
+     if (cur_backend_id != -1) {
+@@ -1210,8 +1224,26 @@
+     }
+ }
+ 
++// One serialized native producer uses a fixed metadata arena. Retain the
++// original graph/hash capacities and validate the complete active graph before
++// creating any scheduler tensor copies; never truncate nodes to fit this arena.
++static constexpr size_t qwen_app_scheduler_context_budget = size_t(160) << 20;
++static size_t qwen_app_scheduler_context_required(size_t nodes) {
++    const size_t per_node = GGML_SCHED_MAX_SPLIT_INPUTS * 2 * ggml_tensor_overhead();
++    if (!nodes || !per_node || nodes > qwen_app_scheduler_context_budget / per_node)
++        throw std::runtime_error("Complete graph exceeds the bounded scheduler metadata arena");
++    const size_t tensors = nodes * per_node;
++    const size_t graph = ggml_graph_overhead_custom(nodes, false);
++    if (graph > qwen_app_scheduler_context_budget - tensors)
++        throw std::runtime_error("Complete graph metadata exceeds its native CPU budget");
++    return tensors + graph;
++}
++
+ // assigns backends to ops and splits the graph into subgraphs that can be computed on the same backend
+ void ggml_backend_sched_split_graph(ggml_backend_sched_t sched, struct ggml_cgraph * graph) {
++    if (sched->n_copies != 1 || graph->n_nodes <= 0 ||
++        qwen_app_scheduler_context_required(size_t(graph->n_nodes)) > sched->context_buffer_size)
++        throw std::runtime_error("Serialized native scheduler metadata admission failed");
+     // reset splits
+     sched->n_splits = 0;
+     sched->n_graph_inputs = 0;
+@@ -1523,6 +1555,11 @@
+                 if (src_backend_id != cur_backend_id && !ggml_backend_sched_buffer_supported(sched, src, cur_backend_id)) {
+                     // create a copy of the input in the split's backend
+                     if (tensor_id_copy(src_id, cur_backend_id, 0) == NULL) {
++                        if (qwen_app_model_reads_enabled() && src->data &&
++                            qwen_app_model_source_range_metadata(src->data, ggml_nbytes(src)))
++                            throw std::runtime_error(std::string("Uncached protected source copy rejected: source=")+src->name+
++                                " node="+node->name+" op="+ggml_op_name(node->op)+
++                                " bytes="+std::to_string(ggml_nbytes(src)));
+                         ggml_backend_t backend = sched->backends[cur_backend_id];
+                         for (int c = 0; c < sched->n_copies; c++) {
+                             struct ggml_tensor * tensor_copy = ggml_dup_tensor_layout(sched->ctx, src);
+@@ -1970,6 +2007,7 @@
+     sched->debug_realloc = GGML_SCHED_DEBUG_REALLOC ? atoi(GGML_SCHED_DEBUG_REALLOC) : sched->debug_realloc;
+ 
+     sched->n_backends = n_backends;
++    if (parallel) throw std::runtime_error("The native metadata arena requires one serialized scheduler copy");
+     sched->n_copies = parallel ? GGML_SCHED_MAX_COPIES : 1;
+ 
+     // initialize hash table
+@@ -1988,7 +2026,7 @@
+     sched->graph_size      = 0;
+     sched->prev_graph_size = 0;
+ 
+-    sched->context_buffer_size = ggml_sched_max_splits*GGML_SCHED_MAX_SPLIT_INPUTS*2*sizeof(struct ggml_tensor) + ggml_graph_overhead_custom(graph_size, false);
++    sched->context_buffer_size = qwen_app_scheduler_context_budget;
+     sched->context_buffer = (char *) malloc(sched->context_buffer_size);
+ 
+     const int initial_splits_capacity = 16;
+@@ -2485,6 +2523,7 @@
+ 
+ static void ggml_backend_cpu_buffer_memset_tensor(ggml_backend_buffer_t buffer, struct ggml_tensor * tensor, uint8_t value, size_t offset, size_t size) {
+     GGML_ASSERT(tensor);
++    GGML_ASSERT(!qwen_app_model_source_range_metadata((char *) tensor->data + offset, size));
+     memset((char *)tensor->data + offset, value, size);
+ 
+     GGML_UNUSED(buffer);
+@@ -2492,14 +2531,20 @@
+ 
+ static void ggml_backend_cpu_buffer_set_tensor(ggml_backend_buffer_t buffer, struct ggml_tensor * tensor, const void * data, size_t offset, size_t size) {
+     GGML_ASSERT(tensor);
+-    memcpy((char *)tensor->data + offset, data, size);
++    void * target = (char *) tensor->data + offset;
++    GGML_ASSERT(!qwen_app_model_source_range_metadata(target, size));
++    if (qwen_app_model_source_range_metadata(data, size)) qwen_app_model_source_read_CPU(target, data, size);
++    else memcpy(target, data, size);
+ 
+     GGML_UNUSED(buffer);
+ }
+ 
+ static void ggml_backend_cpu_buffer_get_tensor(ggml_backend_buffer_t buffer, const struct ggml_tensor * tensor, void * data, size_t offset, size_t size) {
+     GGML_ASSERT(tensor);
+-    memcpy(data, (const char *)tensor->data + offset, size);
++    GGML_ASSERT(!qwen_app_model_source_range_metadata(data, size));
++    const void * source = (const char *) tensor->data + offset;
++    if (qwen_app_model_source_range_metadata(source, size)) qwen_app_model_source_read_CPU(data, source, size);
++    else memcpy(data, source, size);
+ 
+     GGML_UNUSED(buffer);
+ }
+@@ -2507,7 +2552,10 @@
+ static bool ggml_backend_cpu_buffer_cpy_tensor(ggml_backend_buffer_t buffer, const struct ggml_tensor * src, struct ggml_tensor * dst) {
+     GGML_ASSERT(src);
+     if (ggml_backend_buffer_is_host(src->buffer)) {
+-        memcpy(dst->data, src->data, ggml_nbytes(src));
++        const size_t bytes = ggml_nbytes(src);
++        GGML_ASSERT(!qwen_app_model_source_range_metadata(dst->data, bytes));
++        if (qwen_app_model_source_range_metadata(src->data, bytes)) qwen_app_model_source_read_CPU(dst->data, src->data, bytes);
++        else memcpy(dst->data, src->data, bytes);
+         return true;
+     }
+     return false;
+@@ -2517,6 +2565,7 @@
+ 
+ static void ggml_backend_cpu_buffer_clear(ggml_backend_buffer_t buffer, uint8_t value) {
+     GGML_ASSERT(buffer);
++    GGML_ASSERT(!qwen_app_model_source_range_metadata(buffer->context, buffer->size));
+     memset(buffer->context, value, buffer->size);
+ }
+ 
+@@ -2629,3 +2678,5 @@
+     GGML_ASSERT((uintptr_t)ptr % TENSOR_ALIGNMENT == 0 && "buffer pointer must be aligned");
+     return ggml_backend_buffer_init(ggml_backend_cpu_buffer_from_ptr_type(), ggml_backend_cpu_buffer_from_ptr_i, ptr, size);
+ }
++
++extern "C" bool ggml_app_bounded_cpu_buffer_reads_hooks() { return true; }

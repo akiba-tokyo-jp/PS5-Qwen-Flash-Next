@@ -1,0 +1,26 @@
+{
+  "schema": "ps5-qwen-first-generation-host-build-v1",
+  "native_PIE_sha256": "051c3b6eea32efd3ff0196ec382d3d2e809aba473638b883b75b87d95f03cfb9",
+  "SELF_sha256": "b380e755daf7ecfa3b10a46ed3aefc867bca80d5917d831d1815262f18f4bfc0",
+  "SELF_bytes": 58586023,
+  "roundtrip_segments_verified": 6,
+  "real_native_imports_resolved": 289,
+  "missing_real_native_imports": [],
+  "linked_shader_suites": {
+    "BF16": 3,
+    "F32_operators": 2,
+    "indexed_MoE": 8
+  },
+  "driver_source_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "profile": "cumulative-idle",
+  "native_driver_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+  "persistent_shader_and_pipeline_caches_enabled": false,
+  "isolated_model_source_objects": 5,
+  "postload_device_pool_bytes": 1879048192,
+  "internal_workspace_reserved_within_same_pool_bytes": 268435456,
+  "console_access": false,
+  "model_loaded": false,
+  "full_model_inference_qualified": false,
+  "full_plan_completed": false,
+  "CI": false
+}

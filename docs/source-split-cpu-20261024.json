@@ -1,0 +1,115 @@
+{
+  "schema": "ps5-qwen-exact-byte-split-control-v1",
+  "date": "2026-10-24",
+  "CPU_only": true,
+  "GPU_calls": 0,
+  "title_launches": 0,
+  "model_loaded": false,
+  "source_window_bytes": 8388608,
+  "maximum_outstanding_reads": 2,
+  "source_descriptors": 3,
+  "additional_payload_buffers": 0,
+  "new_fragment_bytes": 33554432,
+  "new_fragments": 2,
+  "fragment_bytes_each": 16777216,
+  "original_base_offsets_MiB": [
+    1016,
+    1032
+  ],
+  "fragment_relative_base_offsets_MiB": [
+    8,
+    8
+  ],
+  "pair_offset_stride_bytes": 16384,
+  "bytes_each_read": 3293184,
+  "measured_pairs": 192,
+  "rounds": 3,
+  "all_returned_bytes_SHA256_matched_original": true,
+  "hashing_outside_read_timing": true,
+  "actual_application_CPP_executor": true,
+  "modes": [
+    {
+      "mode": "original_file_serial",
+      "pairs": 48,
+      "mean_pair_ms": 9.980650875,
+      "round_mean_pair_ms": [
+        10.0774630625,
+        9.8931168125,
+        9.97137275
+      ]
+    },
+    {
+      "mode": "original_file_parallel",
+      "pairs": 48,
+      "mean_pair_ms": 50.6866561875,
+      "round_mean_pair_ms": [
+        50.9822765,
+        48.3806754375,
+        52.697016625
+      ]
+    },
+    {
+      "mode": "split_fragments_serial",
+      "pairs": 48,
+      "mean_pair_ms": 8.897392645833333,
+      "round_mean_pair_ms": [
+        8.9167540625,
+        8.9638830625,
+        8.8115408125
+      ]
+    },
+    {
+      "mode": "split_fragments_parallel",
+      "pairs": 48,
+      "mean_pair_ms": 7.058022708333333,
+      "round_mean_pair_ms": [
+        6.9109359375,
+        7.0031441875,
+        7.259988
+      ]
+    }
+  ],
+  "pair_speed_ratio_against_original_parallel": 7.181424356662213,
+  "pair_speed_ratio_against_original_serial": 1.414085968187089,
+  "sampled_trace_partition_geometry": [
+    {
+      "chunk_MiB": 64,
+      "sampled_pairs": 32,
+      "eligible_without_cross_chunk_join": 27,
+      "pairs_with_a_crossing_read": 2,
+      "different_chunk_file_pairs": 24,
+      "projected_total_files": 5400
+    },
+    {
+      "chunk_MiB": 128,
+      "sampled_pairs": 32,
+      "eligible_without_cross_chunk_join": 29,
+      "pairs_with_a_crossing_read": 0,
+      "different_chunk_file_pairs": 23,
+      "projected_total_files": 2730
+    },
+    {
+      "chunk_MiB": 256,
+      "sampled_pairs": 32,
+      "eligible_without_cross_chunk_join": 31,
+      "pairs_with_a_crossing_read": 0,
+      "different_chunk_file_pairs": 16,
+      "projected_total_files": 1384
+    },
+    {
+      "chunk_MiB": 512,
+      "sampled_pairs": 32,
+      "eligible_without_cross_chunk_join": 32,
+      "pairs_with_a_crossing_read": 0,
+      "different_chunk_file_pairs": 10,
+      "projected_total_files": 711
+    }
+  ],
+  "whole_512MiB_chunk_throughput_measured": false,
+  "whole_model_reconversion_or_relayout": false,
+  "original_model_and_title_unchanged": true,
+  "positive_worker_join_and_Direct_release": true,
+  "fresh_idle_CPU_before_and_after": true,
+  "native_inference_tokens_per_second_qualified": false,
+  "full_application_performance_plan_completed": false
+}

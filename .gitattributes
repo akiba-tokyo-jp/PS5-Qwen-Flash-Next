@@ -1,0 +1,6 @@
+# Unified diff context lines are data, including blank context at the end.
+*.patch text eol=lf whitespace=-blank-at-eol,-blank-at-eof
+# Keep imported native source bytes stable for immutable build provenance.
+native/driver/* text eol=lf
+native/driver/driver_journal_impl.inc whitespace=-blank-at-eof
+native/driver/radv_ps5_platform_native.c whitespace=-blank-at-eof

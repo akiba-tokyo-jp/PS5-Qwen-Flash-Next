@@ -1,0 +1,62 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan-buffers.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan-buffers.cpp
+@@ -380,7 +380,16 @@
+     buf_offset = (const uint8_t *) ptr - (const uint8_t *) entry.base;
+ }
+ 
++extern "C" bool ggml_app_bounded_staging_enabled() {
++    const char * value = getenv("GGML_VK_BOUNDED_STAGING");
++    return value && strcmp(value, "1") == 0;
++}
++
++static constexpr size_t ggml_app_transfer_limit = 64u << 20;
++
+ void ggml_vk_ensure_sync_staging_buffer(vk_device& device, size_t size) {
++    if (ggml_app_bounded_staging_enabled() && size > ggml_app_transfer_limit)
++        throw std::length_error("Native synchronous staging request exceeds 64 MiB");
+     if (device->sync_staging == nullptr || device->sync_staging->size < size) {
+         VK_LOG_MEMORY("ggml_vk_ensure_sync_staging_buffer(" << size << ")");
+         ggml_vk_destroy_buffer(device->sync_staging);
+@@ -391,6 +400,8 @@
+ }
+ 
+ void ggml_vk_ensure_sync_staging_buffer(ggml_backend_vk_context * ctx, size_t size) {
++    if (ggml_app_bounded_staging_enabled() && size > ggml_app_transfer_limit)
++        throw std::length_error("Native context staging request exceeds 64 MiB");
+     if (ctx->sync_staging == nullptr || ctx->sync_staging->size < size) {
+         VK_LOG_MEMORY("ggml_vk_ensure_sync_staging_buffer(" << size << ")");
+         ggml_vk_destroy_buffer(ctx->sync_staging);
+@@ -608,6 +619,16 @@
+ }
+ 
+ void ggml_vk_buffer_write(vk_buffer& dst, size_t offset, const void * src, size_t size) {
++    // Each completed chunk retains the existing visibility, submit, fence and
++    // cleanup sequence. Never allocate a full-weight temporary staging buffer.
++    if (ggml_app_bounded_staging_enabled()) {
++        for (size_t done = 0; done < size;) {
++            const size_t part = std::min(ggml_app_transfer_limit, size - done);
++            ggml_vk_buffer_write_2d(dst, offset + done, static_cast<const uint8_t *>(src) + done, part, part, part, 1);
++            done += part;
++        }
++        return;
++    }
+     VK_LOG_DEBUG("ggml_vk_buffer_write(" << size << ")");
+     ggml_vk_buffer_write_2d(dst, offset, src, size, size, size, 1);
+ }
+@@ -748,6 +769,16 @@
+ }
+ 
+ void ggml_vk_buffer_read(vk_buffer& src, size_t offset, void * dst, size_t size) {
++    // Each completed chunk retains the existing visibility, submit, fence and
++    // cleanup sequence. Never allocate a full-weight temporary staging buffer.
++    if (ggml_app_bounded_staging_enabled()) {
++        for (size_t done = 0; done < size;) {
++            const size_t part = std::min(ggml_app_transfer_limit, size - done);
++            ggml_vk_buffer_read_2d(src, offset + done, static_cast<uint8_t *>(dst) + done, part, part, part, 1);
++            done += part;
++        }
++        return;
++    }
+     VK_LOG_DEBUG("ggml_vk_buffer_read(" << src->buffer << ", " << offset << ", " << size << ")");
+     ggml_vk_buffer_read_2d(src, offset, dst, size, size, size, 1);
+ }

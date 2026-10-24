@@ -1,0 +1,93 @@
+--- a/src/llama-moe-cache.cpp
++++ b/src/llama-moe-cache.cpp
+@@ -1,3 +1,4 @@
++#include "mapped_source_bridge.h"
+ #include "llama-moe-cache.h"
+ 
+ #include "llama-impl.h"
+@@ -27,6 +28,8 @@
+ }
+ 
+ static size_t app_advise_expert(const void * source, size_t bytes, size_t & budget) {
++    // Bounded direct reads replace mmap prefetch for the original model.
++    if (qwen_app_model_reads_enabled()) return 0;
+ #if defined(__unix__) || defined(__APPLE__)
+     const long page = sysconf(_SC_PAGESIZE);
+     if (page <= 0) return 0;
+@@ -258,6 +261,8 @@
+         int32_t ig = -1;                    // -1 if the layer is not cached
+         ggml_tensor * slot_map = nullptr;   // I32 [1, n_expert] in host memory
+         std::vector<ggml_tensor *> experts; // host expert tensors, in the order of the banks
++        mutable bool eligibility_reported = false;
++        mutable bool backend_reported = false;
+     };
+ 
+     struct binding {
+@@ -531,7 +536,12 @@
+     }
+ 
+     ggml_backend_t backend(int32_t il) const {
+-        return devices[groups[layers[il].ig].id].backend;
++        const auto & l = layers[il];
++        if (!l.backend_reported) {
++            l.backend_reported = true;
++            LLAMA_LOG_INFO("native_cache_backend_query layer=%d slots=%d\n", il, groups[l.ig].n_slots);
++        }
++        return devices[groups[l.ig].id].backend;
+     }
+ 
+     ~impl() {
+@@ -543,6 +553,11 @@
+             return nullptr;
+         }
+         const layer & l = layers[il];
++        if (!l.eligibility_reported) {
++            l.eligibility_reported = true;
++            LLAMA_LOG_INFO("native_cache_slot_eligibility layer=%d tokens=%lld experts=%lld slots=%d max_batch=%lld\n",
++                il, (long long) n_tokens, (long long) n_expert_used, groups[l.ig].n_slots, (long long) max_batch);
++        }
+ 
+         // large batches use most experts of a layer, so they gain little from the cache and would evict the experts used in generation
+         if (n_tokens == 0 || n_tokens > max_batch || std::min(n_tokens*n_expert_used, l.slot_map->ne[1]) > groups[l.ig].n_slots) {
+@@ -553,7 +568,9 @@
+ 
+     ggml_tensor * get_experts(const ggml_tensor * w) const {
+         const auto it = bindings.find(w);
+-        return it != bindings.end() ? it->second.cached : nullptr;
++        if (it == bindings.end())
++            throw std::runtime_error(std::string("Native expert cache has no binding for required tensor: ")+w->name);
++        return it->second.cached;
+     }
+ 
+     int64_t copy_experts(ggml_backend_t backend, const ggml_tensor * w, ggml_tensor * dst, int64_t e, int64_t last) {
+@@ -656,6 +673,24 @@
+                 while (i + n < fills.size() && fills[i + n].expert == fills[i].expert + (int32_t) n && fills[i + n].slot == fills[i].slot + (int32_t) n) {
+                     n++;
+                 }
++                // Queue only the next known miss while the producer consumes
++                // the current one. Total scratch stays 8 MiB; at most one read.
++                if (n == 1 && i + 1 < fills.size() && qwen_app_model_source_pair_enabled(expert_size)) {
++                    struct Upload { ggml_tensor * bank; size_t bytes; int32_t slots[2]; };
++                    Upload upload{bank, expert_size, {fills[i].slot, fills[i+1].slot}};
++                    ggml_backend_synchronize(backend);
++                    qwen_app_model_source_upload_pair((const uint8_t *) w->data + fills[i].expert*expert_size,
++                        (const uint8_t *) w->data + fills[i+1].expert*expert_size, expert_size, &upload,
++                        [](void * opaque, unsigned index, const void * window) {
++                            const auto & job = *static_cast<const Upload *>(opaque);
++                            // Synchronous completion keeps both half windows
++                            // owned until every read and consumer has returned.
++                            ggml_backend_tensor_set(job.bank, window, job.slots[index]*job.bytes, job.bytes);
++                        });
++                    bytes += 2*expert_size;
++                    i += 2;
++                    continue;
++                }
+                 ggml_backend_tensor_set_async(backend, bank, (const uint8_t *) w->data + fills[i].expert*expert_size, fills[i].slot*expert_size, n*expert_size);
+                 bytes += n*expert_size;
+                 i += n;
+@@ -734,3 +769,5 @@
+     }
+     return res;
+ }
++
++extern "C" bool llama_app_bounded_expert_advice_hooks() { return true; }

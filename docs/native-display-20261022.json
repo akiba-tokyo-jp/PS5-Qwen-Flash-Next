@@ -1,0 +1,78 @@
+{
+  "schema": "ps5-qwen-native-display-status-qualification-v1",
+  "date": "2026-10-22",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "driver_archive_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+  "SELF": {
+    "bytes": 57694551,
+    "sha256": "03e40dc85f18fea0755cf766ac94e1de4a4b008000412b857977a23ad5084e3a"
+  },
+  "native_pie": {
+    "bytes": 125103672,
+    "sha256": "d61ef60c2e5143e6ed715084fcafb651ec16f9eddf52e86c4cb4ad788809afd3"
+  },
+  "initializer_slots": 16,
+  "preinitializer_slots": 1,
+  "runtime_providers": [
+    "libSceAgc.prx",
+    "libSceAgcDriver.prx",
+    "libSceLibcInternal.sprx",
+    "libkernel.sprx",
+    "libSceVideoOut.sprx",
+    "libSceSystemService.sprx"
+  ],
+  "real_module_import_count": 289,
+  "SELF_integrity_verified": true,
+  "roundtrip_segments_verified": 6,
+  "actual_native_owner_identity_verified": true,
+  "paired_initializer_completions": 16,
+  "first_frame_completed": true,
+  "HTTP_200_samples": 2,
+  "same_native_owner": true,
+  "reported_clock_delta_ms": 22175,
+  "CPU_identity_observed": true,
+  "logical_CPU_threads": 16,
+  "CPU_percentage_qualified": false,
+  "clock_source": "console clock; wall-clock calibration not qualified",
+  "GPU_counters_sampled": false,
+  "model_loaded": false,
+  "Vulkan_initialized": false,
+  "compute_dispatches": 0,
+  "full_model_inference_completed": false,
+  "physical_TV_observation": false,
+  "ordinary_OS_close_accepted": true,
+  "original_SELF_restored_full_readback": true,
+  "original_numerical_re_admission": "passed after this validation",
+  "original_numerical_scope": "14 original checks, 3 Turbo checks, bounded upload, 16 fusion cases and 20 extra kernel readbacks; no image generation",
+  "native_and_gateway_normally_closed": true,
+  "fresh_idle_metadata_and_same_boot_verified": true,
+  "automatic_launch_retries": 0,
+  "force_termination": false,
+  "manual_GPU_release": false,
+  "GPU_reset": false,
+  "release_qualified": false,
+  "CI": false,
+  "prior_failed_admissions": [
+    {
+      "SELF_sha256": "5e384cb09b43f17aa397e17eeecdd3d204fc30bae2b0c4e0c730dccf77c4e731",
+      "result": "OS accepted; no native owner observed; root cause unresolved"
+    },
+    {
+      "SELF_sha256": "e8b314d57ebeae289178aa28293077193943359182d4d409dab0b805947fb7d0",
+      "result": "native owner and preinit journal observed; no main/frame evidence"
+    },
+    {
+      "SELF_sha256": "c77034b2c057cb1c4ca1de96abde8d7ec77bd9874e55aeb087e587b59c152def",
+      "result": "fixed bootstrap_stdout_duplication_failed record; no model/Vulkan initialization"
+    },
+    {
+      "SELF_sha256": "1d7376de1e1f2271668b4378b6805f922766ded64c0f4c9dc7674ba6d911f81b",
+      "result": "first frame completed; asset-directory metadata check failed"
+    },
+    {
+      "SELF_sha256": "e8cd7ebba235e34cadb623b1c066484c28bbc9b2d386ca729489be014d142750",
+      "result": "first frame and listener reached; first request ended empty and listener failed; strict accept4 path replaced for this no-subprocess HTTP client"
+    }
+  ]
+}

@@ -14,8 +14,12 @@
 *.a
 *.o
 *.spv
+*.exe
+*.dll
+*.so
 *.partial
 __pycache__/
 *.pyc
 .venv/
 /.test-tmp/
+/.local/

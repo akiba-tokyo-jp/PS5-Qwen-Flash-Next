@@ -1,0 +1,105 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -1,4 +1,11 @@
+ #include "ggml-vulkan-common.h"
++
++extern "C" void ggml_app_backend_phase(const char *) __attribute__((weak));
++extern "C" bool ggml_app_dispatch_contract_enabled() { return true; }
++static void ggml_app_phase(const char * value) {
++    if (ggml_app_backend_phase) ggml_app_backend_phase(value);
++}
++
+ 
+ static vk_device_architecture get_device_architecture(const vk::PhysicalDevice& device) {
+     vk::PhysicalDeviceProperties props = device.getProperties();
+@@ -4773,7 +4780,9 @@
+             .setQueueCreateInfos(device_queue_create_infos)
+             .setPEnabledExtensionNames(device_extensions);
+         device_create_info.setPNext(&device_features2);
++        ggml_app_phase("Vulkan_backend_before_device_creation");
+         device->device = device->physical_device.createDevice(device_create_info);
++        ggml_app_phase("Vulkan_backend_device_created");
+ 
+         if (device->device_fault) {
+             device->pfn_vkGetDeviceFaultInfoEXT = (PFN_vkGetDeviceFaultInfoEXT)
+@@ -5197,7 +5206,12 @@
+     VK_LOG_DEBUG("ggml_vk_instance_init()");
+ 
+     // See https://github.com/KhronosGroup/Vulkan-Hpp?tab=readme-ov-file#extensions--per-device-function-pointers-
++    ggml_app_phase("Vulkan_backend_before_global_dispatch_initialization");
+     ggml_vk_default_dispatcher_instance.init(vkGetInstanceProcAddr);
++    if (!ggml_vk_default_dispatcher_instance.vkEnumerateInstanceExtensionProperties ||
++        !ggml_vk_default_dispatcher_instance.vkCreateInstance)
++        throw std::runtime_error("Required static Vulkan global dispatch is absent");
++    ggml_app_phase("Vulkan_backend_global_dispatch_initialized");
+ 
+     // vkEnumerateInstanceVersion is Vulkan 1.1. A null value indicated Vulkan 1.0.
+     if (ggml_vk_default_dispatcher_instance.vkEnumerateInstanceVersion == nullptr) {
+@@ -5214,7 +5228,9 @@
+ 
+     vk::ApplicationInfo app_info{ "ggml-vulkan", 1, nullptr, 0, api_version };
+ 
++    ggml_app_phase("Vulkan_backend_before_instance_extensions");
+     const std::vector<vk::ExtensionProperties> instance_extensions = vk::enumerateInstanceExtensionProperties();
++    ggml_app_phase("Vulkan_backend_instance_extensions_completed");
+     const bool layer_settings = ggml_vk_instance_layer_settings_available();
+ #ifdef __APPLE__
+     const bool portability_enumeration_ext = ggml_vk_instance_portability_enumeration_ext_available(instance_extensions);
+@@ -5248,14 +5264,16 @@
+         },
+     };
+     vk::LayerSettingsCreateInfoEXT layer_setting_info(settings);
+-    vk::InstanceCreateInfo instance_create_info(vk::InstanceCreateFlags{}, &app_info, layers, extensions, &layer_setting_info);
++    vk::InstanceCreateInfo instance_create_info(vk::InstanceCreateFlags{}, &app_info, layers, extensions, layer_settings ? &layer_setting_info : nullptr);
+ #ifdef __APPLE__
+     if (portability_enumeration_ext) {
+         instance_create_info.flags |= vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;
+     }
+ #endif
+ 
++    ggml_app_phase("Vulkan_backend_before_instance_creation");
+     vk_instance.instance = vk::createInstance(instance_create_info);
++    ggml_app_phase("Vulkan_backend_instance_created");
+     vk_instance_initialized = true;
+ 
+     if (debug_utils_ext) {
+@@ -5283,7 +5301,39 @@
+     }
+ 
+     // See https://github.com/KhronosGroup/Vulkan-Hpp?tab=readme-ov-file#extensions--per-device-function-pointers-
++    ggml_app_phase("Vulkan_backend_before_instance_dispatch_initialization");
+     VULKAN_HPP_DEFAULT_DISPATCHER.init(vk_instance.instance);
++    if (!VULKAN_HPP_DEFAULT_DISPATCHER.vkEnumeratePhysicalDevices ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkGetPhysicalDeviceProperties ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkGetPhysicalDeviceProperties2 ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkGetPhysicalDeviceMemoryProperties ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkGetPhysicalDeviceFeatures2 ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkGetPhysicalDeviceQueueFamilyProperties ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkEnumerateDeviceExtensionProperties ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkCreateDevice ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkGetDeviceProcAddr ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkAllocateMemory ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkMapMemory ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkGetBufferMemoryRequirements ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkBindBufferMemory ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkCreateBuffer ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkCreateShaderModule ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkCreateComputePipelines ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkAllocateCommandBuffers ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkBeginCommandBuffer ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkEndCommandBuffer ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkQueueSubmit ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkWaitForFences ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkResetFences ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkGetDeviceQueue ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkCreateDescriptorPool ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkAllocateDescriptorSets ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkUpdateDescriptorSets ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkCmdDispatch ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkCmdPipelineBarrier ||
++        !VULKAN_HPP_DEFAULT_DISPATCHER.vkCmdCopyBuffer)
++        throw std::runtime_error("Required static Vulkan instance/device dispatch is absent");
++    ggml_app_phase("Vulkan_backend_instance_dispatch_initialized");
+ 
+     std::vector<vk::PhysicalDevice> devices = vk_instance.instance.enumeratePhysicalDevices();
+ 

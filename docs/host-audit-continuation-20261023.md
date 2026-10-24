@@ -1,0 +1,81 @@
+# Interrupted audit and independent continuation
+
+At 18:29 UTC on 2026-10-22, the recorded preparation PID and data-waiter PID
+were absent. Their interactive execution sessions were also unavailable. Their
+last progress records were at 16:50 UTC. No exit result was recovered; the reason
+for their termination is unqualified. The console had not been accessed by
+either job. The first status response mistakenly treated the stale progress as
+live progress; subsequent inspection corrected that statement.
+
+The writer had completed all 76 splits before the interruption. Its retained
+and newly written payloads total 359,235,922,432 bytes. No complete audit or model
+receipt existed. The old intent, progress, retention and copy-adapter records
+remain preserved. Partial audit progress does not qualify any payload.
+
+`tools/finish_conversion.py` reuses those completed writer outputs and repeats
+the complete independent payload audit and final file hashes. It validates the
+unchanged writer/copy provenance, original SHA checkpoint and frozen data-waiter
+inputs before starting. Original and converted files remain under read-only OS
+leases throughout verification. Output identities and all frozen sources must
+still match before a complete v2 model receipt is published. Conversion is not
+repeated. The audit and hash limits remain 24 hours and 12 hours, respectively;
+the job has no console client, learned inference or automatic retries.
+
+The audit and its finite data-only waiter now run with `DETACHED_PROCESS`,
+`CREATE_NEW_PROCESS_GROUP` and `CREATE_BREAKAWAY_FROM_JOB`. Successful creation
+and process identity were recorded. A later command verified both processes
+after their launch commands had exited. These jobs are independent of the
+interactive tool's process job; this does not guarantee survival of host failure
+or successful model qualification.
+
+The finite full-plan continuation waits for the exact identified data waiter to
+positively complete and exit. It then uses the existing reviewed case preparer
+and operator to perform fresh CPU/session/clock admission, temporary candidate
+publication, one ordinary launch, native integrity/mapping/load and arithmetic
+smoke, two fixed API requests with passive display, positive retirement, ordinary
+close and exact original restoration/numerical readmission/final readback. Every
+step has its own exclusive intent, deadline and terminal record. Changed sources,
+failed data preparation or any failed/uncertain physical step prevent subsequent
+actions. No automatic physical retry, forced close, GPU reset or release is
+implemented. Original restoration remains a required result, not an assumed one.
+
+All three deliverables in `execution-plan-20261022.md` remain required. At this
+checkpoint full-model inference, displayed performance and final restoration
+have not been performed. No intermediate host or data result is completion.
+
+## Bounded progress-file observations
+
+The first full-plan waiter subsequently ended before case preparation or any
+console action. Its recorded exception was `PermissionError` while reading the
+data waiter's atomically replaced progress file. The model audit and data waiter
+continued running; neither was restarted. The failed full-plan intent, status
+and traceback remain preserved, and no physical execution intent existed.
+
+`tools/local_progress.py` permits up to five seconds of repeated local progress
+reads or idempotent progress publication during a Windows sharing conflict.
+Malformed or oversized metadata is rejected immediately. Persistent sharing
+failure remains an error. Execution intents, console requests, transfers and
+model operations do not use this repetition mechanism.
+
+Four manual tests passed on Windows: a reader blocked by an exclusive writer,
+publication blocked by a reader denying deletion, a permanent conflict reaching
+its deadline, and rejection of malformed/oversized metadata. These tests use
+real Windows file handles, without console access. A distinct full-plan
+continuation binds the positively ended pre-console failure and the unchanged
+audit/data processes before waiting again. All original physical gates and
+the complete-plan criterion remain unchanged.
+
+The unchanged data waiter later encountered the complementary conflict while
+replacing its own local progress file. It ended during its pre-console wait;
+the dependent full-plan waiter then rejected that failure before any physical
+step. The audit process continued without restart. Both failed records and the
+absence of data/physical execution intents were checked before new waiters.
+
+`model_transport.atomic_progress` now applies the same five-second bound to
+replacement of its already-written local progress file. This changes neither
+exclusive execution intents nor upload/request behavior. Six Windows sharing
+tests and all 14 existing transport tests passed, including direct transport
+progress publication under a conflicting reader and its persistent-conflict
+deadline. New data/full-plan waiters bind these current sources and the exact
+still-running audit. No conversion, audit or physical action was repeated to
+recover the local metadata waiters.

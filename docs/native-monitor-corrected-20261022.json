@@ -1,0 +1,46 @@
+{
+  "schema": "ps5-qwen-corrected-native-host-check-v1",
+  "date": "2026-10-22",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "driver_archive_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+  "native_pie": {
+    "bytes": 125058872,
+    "sha256": "4b1e43c89e5b88d3ff9534b12bbda02ee41ad1eedd7279e389ffe9a83fbaa817"
+  },
+  "SELF": {
+    "bytes": 57685047,
+    "sha256": "e8b314d57ebeae289178aa28293077193943359182d4d409dab0b805947fb7d0"
+  },
+  "initializer_slots": 16,
+  "preinitializer_slots": 1,
+  "runtime_providers": [
+    "libSceAgc.prx",
+    "libSceAgcDriver.prx",
+    "libSceLibcInternal.sprx",
+    "libkernel.sprx",
+    "libSceVideoOut.sprx",
+    "libSceSystemService.sprx"
+  ],
+  "real_module_import_count": 290,
+  "missing_real_module_imports": [],
+  "weak_stubs_accepted_as_providers": false,
+  "CXX_runtime_ABI_imports": [],
+  "SELF_integrity_verified": true,
+  "roundtrip_segments_verified": 6,
+  "native_configuration_path": "/app0/qwen-runtime/app.json",
+  "native_resolution": "application-owned numeric IPv4 TCP; no DNS",
+  "startup_journal": "exclusive preinit metadata; owner-only stdout/stderr",
+  "host_checks": [
+    "native memory protection and rejected private payload hook",
+    "native socket error cleanup",
+    "numeric loopback wire layout and DNS rejection",
+    "all 2073600 tiled pixels bounded and unique",
+    "first display completion and no-retry failure against API stubs",
+    "15 Python tests"
+  ],
+  "console_startup_admitted": false,
+  "console_display_admitted": false,
+  "full_model_inference_completed": false,
+  "CI": false
+}
