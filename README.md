@@ -20,6 +20,15 @@ control and **0.24%** above the earlier functional control. This is a small
 two-request result, not a general speedup claim. The implementation preserves
 the 8 MiB window, original precision, every memory reserve and the selected driver.
 
+The [contention investigation](docs/source-contention-investigation-20261024.md)
+subsequently reproduced the rejected parallel-read slowdown in the loaded model
+and isolated it without GPU work: same-file reads across approximately 1 GiB
+offset regions cost about 49 ms per pair, versus 10 ms serial and 7 ms parallel
+across distinct files. Independent opens do not help. Production retains one
+read; [PS5-specific research](docs/ps5-source-io-workarounds-20261024.md) selects
+file/range-aware scheduling as the next candidate. Its internal lock/cache
+implementation and a whole-model speedup remain unproven.
+
 The model stayed loaded across the three requests. The actual native passive
 frames were visually reviewed. Positive GPU/resource retirement, ordinary title
 close, exact original SELF restoration, original numerical readmission, ordinary

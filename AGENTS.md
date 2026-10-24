@@ -972,3 +972,27 @@ Native link/import/SELF and focused lease/failure controls must pass first. The
 new case still requires the complete three-request/frame/positive-retirement and
 ordinary-close/original-restoration/readmission/shutdown/final verification plan.
 This is diagnosis, not permission to replay the rejected full-model candidate.
+
+The completed trace diagnostic at native source de84978 and SELF
+09d87b0ddb6c5bcff3072da5c72e857543fab5021275d5fde15298cb773e61bb passed the
+whole physical plan, including both 22-token external responses, actual frames,
+positive retirement, normal close, exact original restoration/readmission/close,
+fresh final CPU and complete original SELF readback. Its parent positively ended
+and all 194 frozen inputs were verified unchanged. Do not replay it.
+
+Subsequent finite CPU-only interventions isolate same-file cross-region BFS I/O
+waiting: about 49 ms parallel versus 10 ms serial across approximately 1 GiB
+offset regions. Independent opens do not fix it; different files cost about
+7 ms parallel. A second source file reproduces it. Completed loaded-native pairs
+show the same trigger, with 7 of 32 pairs slow. The GPU is not required. Internal
+mapping-state contention is an inference; proprietary lock/cache implementation
+and exact boundary safety remain unproven. The metadata API returned zero wait
+addresses, so it does not establish shared wait-object identity.
+
+See docs/source-contention-investigation-20261024.md and
+docs/ps5-source-io-workarounds-20261024.md. Original title remains restored/idle,
+with no loaded model or native owner. Keep one production read, unchanged
+precision/budgets/reserves/driver/cache policy and the held reservation. Selective
+file/range scheduling is the next candidate, not an admitted production change.
+Do not copy LVD image-only BFS batching or cache hints into ordinary pread by
+analogy. Keep CI and general release/console flags disabled.

@@ -13,6 +13,9 @@
 #include <ps5platform/kernel.h>
 #include "source_contention_context.h"
 #include "source_contention_probe_io.h"
+#ifndef PROBE_BOUNDARY
+#define PROBE_BOUNDARY 0
+#endif
 
 #define HALF (4u << 20)
 #define WINDOW (2u * HALF)
@@ -23,8 +26,11 @@ static struct job pending_job;
 static int pending,complete=1,stopping,ready;
 static _Atomic int sampling,io_active,thread_ids[2];
 static _Atomic unsigned current_mode;
-struct wait_count { unsigned mode,role; char name[WMESGLEN+1]; unsigned count; };
-static struct wait_count waits[96];
+struct wait_count { unsigned mode,role; char name[WMESGLEN+1]; unsigned count,object; int state; };
+static struct wait_count waits[256];
+/* Equality labels only; raw wait-object pointers are never logged or read. */
+static uintptr_t indirect_objects[256];
+static unsigned indirect_object_count;
 static unsigned wait_entries,sample_calls,sample_errors,sample_unmatched;
 static int sample_first_error;
 extern int pthread_getthreadid_np(void);
@@ -88,9 +94,16 @@ static void *sampler(void *unused) {
                 struct kinfo_proc *k=&g.rows[i];if(k->ki_structsize!=sizeof(*k)||k->ki_pid!=getpid()||!memchr(k->ki_wmesg,0,sizeof(k->ki_wmesg)))continue;
                 if(k->ki_tid!=thread_ids[0]&&k->ki_tid!=thread_ids[1])++sample_unmatched;
                 for(unsigned role=0;role<2;++role)if(k->ki_tid==thread_ids[role]){
-                    unsigned index;for(index=0;index<wait_entries;++index)if(waits[index].mode==current_mode&&waits[index].role==role&&!strcmp(waits[index].name,k->ki_wmesg))break;
-                    if(index==wait_entries&&index<96){waits[index].mode=current_mode;waits[index].role=role;strcpy(waits[index].name,k->ki_wmesg);++wait_entries;}
-                    if(index<96)++waits[index].count;
+                    unsigned object=0;
+                    if(!strcmp(k->ki_wmesg,"BfsIpInd")&&k->ki_wchan){
+                        uintptr_t value=(uintptr_t)k->ki_wchan;unsigned i=0;
+                        for(;i<indirect_object_count;++i)if(indirect_objects[i]==value)break;
+                        if(i==indirect_object_count&&i<256)indirect_objects[indirect_object_count++]=value;
+                        if(i<256)object=i+1;else ++sample_errors;
+                    }
+                    unsigned index;for(index=0;index<wait_entries;++index)if(waits[index].mode==current_mode&&waits[index].role==role&&waits[index].object==object&&waits[index].state==k->ki_stat&&!strcmp(waits[index].name,k->ki_wmesg))break;
+                    if(index==wait_entries&&index<256){waits[index].mode=current_mode;waits[index].role=role;waits[index].object=object;waits[index].state=k->ki_stat;strcpy(waits[index].name,k->ki_wmesg);++wait_entries;}
+                    if(index<256)++waits[index].count;else ++sample_errors;
                 }
             }
         }
@@ -135,7 +148,8 @@ int main(int argc,char **argv) {
     started=now(CLOCK_MONOTONIC);if(!started)retain_uncertain();
     for(unsigned round=0;round<3;++round)for(unsigned order=0;order<PROBE_MODES;++order){
         unsigned mode=round%2?PROBE_MODES-1-order:order;current_mode=mode;
-        /* 0: no-op handoff, 1/2: serial/parallel same descriptor,
+        /* Default geometry controls; PROBE_BOUNDARY replaces these recipes.
+         * 0: no-op handoff, 1/2: serial/parallel same descriptor,
          * 3/4: serial/parallel independent opens of the same vnode,
          * 5/6: serial/parallel different vnodes; 7/8 and 9/10: adjacent
          * experts with a shared alignment page, same/separate descriptors. */
@@ -143,13 +157,23 @@ int main(int argc,char **argv) {
             if(!headroom()||now(CLOCK_MONOTONIC)-started>UINT64_C(30000000000)){work_ok=0;goto finish;}
             int different=mode==5||mode==6;
             int second=different?fd[2]:(mode==3||mode==4||mode>=9)?fd[1]:fd[0];
+            int first_fd=fd[0];
             unsigned expert=11+pair*29,distance=mode>=7?1:8;
             off_t first=(off_t)probe_geometry[0].base+(off_t)expert*probe_geometry[0].expert_bytes;
             off_t second_offset=(off_t)probe_geometry[different].base+(off_t)(expert+distance)*probe_geometry[different].expert_bytes;
             size_t bytes=probe_geometry[0].read_bytes;
-            struct job jobs[2]={{.fd=(mode||PROBE_CPP)?fd[0]:-1,.target=window,.bytes=bytes,.offset=first},
+            int parallel=!mode||!(mode&1);
+#if PROBE_BOUNDARY
+            const struct boundary_case * control=&boundary_cases[mode];
+            first_fd=fd[control->main_descriptor];
+            second=fd[control->descriptor];
+            first=(off_t)control->offset0+(off_t)pair*16384;
+            second_offset=(off_t)control->offset1+(off_t)pair*16384;
+            parallel=control->parallel;
+#endif
+            struct job jobs[2]={{.fd=(mode||PROBE_CPP)?first_fd:-1,.target=window,.bytes=bytes,.offset=first},
                 {.fd=(mode||PROBE_CPP)?second:-1,.target=(unsigned char *)window+HALF,.bytes=bytes,.offset=second_offset}};
-            uint64_t begin=now(CLOCK_MONOTONIC),dispatch=0,wait=0,worker_end=0;int parallel=!mode||!(mode&1);
+            uint64_t begin=now(CLOCK_MONOTONIC),dispatch=0,wait=0,worker_end=0;
             /* The final round leaves the sampler asleep as a perturbation control. */
             io_active=round!=2;
             if(parallel&&PROBE_CPP){
@@ -181,7 +205,7 @@ finish:
     if(PROBE_CPP){if(!probe_cpp_stop())retain_uncertain();worker_joined=1;}
     else{pthread_mutex_lock(&lock);if(pending||!complete)retain_uncertain();stopping=1;pthread_cond_broadcast(&changed);pthread_mutex_unlock(&lock);
         if(pthread_join(io_thread,NULL))retain_uncertain();worker_joined=1;}
-    for(unsigned i=0;i<wait_entries;++i)if(!report("WAIT mode=%u role=%u name=%s samples=%u",waits[i].mode,waits[i].role,waits[i].name,waits[i].count))goto done;
+    for(unsigned i=0;i<wait_entries;++i)if(!report("WAIT mode=%u role=%u name=%s samples=%u state=%d object=%u",waits[i].mode,waits[i].role,waits[i].name,waits[i].count,waits[i].state,waits[i].object))goto done;
     if(!report("SAMPLER calls=%u errors=%u first_errno=%d unmatched=%u interval_us=1000 worker_joined=1",sample_calls,sample_errors,sample_first_error,sample_unmatched))goto done;
     for(unsigned i=0;i<3;++i){struct stat after;if(fstat(fd[i],&after)||!same(&original[i],&after)||close(fd[i]))goto done;fd[i]=-1;}
     if(seteuid(0)||geteuid()!=0||!context(3)||!headroom()||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;
