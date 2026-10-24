@@ -885,3 +885,14 @@ Keep the qualified driver/archive and persistent-cache policy unchanged while
 isolating application costs. Require actual matched outputs/performance and the
 same positive retirement, normal-close and original-restoration boundary after
 each physical candidate. No delegation was authorized.
+
+The subsequent two-read candidate at source f74eddd completed arithmetic but
+increased direct-read wall time from 81.865 to 237.555 seconds. Its first external
+request explicitly failed the unchanged kernel headroom predicate. No request
+was retried. Its ordinary OS close, exact original restoration, numerical
+readmission, ordinary shutdown, final CPU and whole SELF checks passed. See
+docs/source-concurrency-refusal-20261024.md. Never replay that candidate.
+The next source pipeline must permit at most one outstanding read, overlap only
+CPU I/O with synchronous producer consumption, and retain every uncertain
+read/consumer lease. Preserve the 8 MiB source window, every reserve, original
+precision and selected driver. Host overlap checks do not qualify speedup.

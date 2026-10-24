@@ -50,7 +50,11 @@ The profile-only candidate completed and measured approximately 87.5% of decode
 wall time in serial direct reads. The application now implements bounded paired
 known-miss reads within the unchanged 8 MiB window, with exact completion and
 retention controls. Host concurrency, byte-parity, failure and actual patched
-cache-loop checks passed; native packaging and physical comparison are pending.
+cache-loop checks passed. Its physical two-read candidate was slower and failed
+the kernel headroom predicate; exact original restoration completed. Preserve
+[the rejected result](source-concurrency-refusal-20261024.md). The next candidate
+adapts staged consumption with only one outstanding read. Physical comparison
+of that implementation remains pending.
 Compare the same original-precision requests. No public Strata timing
 is a forecast for PS5, and no inspected mechanism is recorded as integrated
 before its implementation and physical comparison complete. Upstream MIT notices

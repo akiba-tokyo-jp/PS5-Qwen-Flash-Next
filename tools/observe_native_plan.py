@@ -264,6 +264,16 @@ def main():
                 require(result.get('source_parallel_worker_stopped') is True and
                     all(row['delta'].get('source_parallel_batches', 0) > 0 for row in summaries),
                     'Parallel reads were unused or their worker was not positively stopped')
+            if binding.get('require_pipelined_sources') is True:
+                download('.source.pipeline')
+                admission = read_record(Path(str(result_path) + '.source.pipeline'))
+                require(admission == dict(schema='ps5-qwen-source-pipeline-admission-v1',
+                    source_window_bytes=8 << 20, CPU_IO_workers=1, maximum_outstanding_reads=1,
+                    preflight_equal_bytes=True, preflight_bytes_per_read=16384, Vulkan_initialized=False),
+                    'Pipelined source CPU preflight differs')
+                require(result.get('source_pipeline_worker_stopped') is True and
+                    all(row['delta'].get('source_pipeline_batches', 0) > 0 for row in summaries),
+                    'Pipelined reads were unused or their worker was not positively stopped')
             exclusive(out / 'performance-review.private.json', dict(completed_requests=summaries,
                 baseline_comparison_required=True, speedup_qualified=False))
         exclusive(out / "native-review.private.json", review)

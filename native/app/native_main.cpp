@@ -81,7 +81,8 @@ static Json performance_snapshot(const qwen_app::LlamaEngine & engine) {
         {"source_completed_windows", source.completed_windows},
         {"source_headroom_ns", source.headroom_ns}, {"source_handle_ns", source.handle_ns},
         {"source_read_ns", source.read_ns}, {"source_consumer_ns", source.consumer_ns},
-        {"source_parallel_batches", source.parallel_batches},
+        {"source_pipeline_batches", source.pipeline_batches},
+        {"source_worker_read_ns", source.worker_read_ns}, {"source_worker_dispatch_ns", source.worker_dispatch_ns},
         {"process_calls", adapter.process_calls}, {"process_ns", adapter.process_ns},
         {"synchronize_ns", adapter.synchronize_ns}, {"checkpoint_ns", adapter.checkpoint_ns},
         {"work_guard_ns", adapter.work_guard_ns}, {"stage_observer_ns", adapter.stage_observer_ns}};
@@ -100,10 +101,11 @@ static Json performance_difference(const Json & before, const qwen_app::LlamaEng
         throw std::runtime_error("Performance reporting requires completed source windows");
     // process_ns includes source I/O and backend work. These are nested wall
     // intervals, not hardware GPU timestamps and must not be summed together.
-    return {{"schema", "ps5-qwen-completed-performance-v2"}, {"delta", delta},
+    return {{"schema", "ps5-qwen-completed-performance-v3"}, {"delta", delta},
         {"process_includes_source_and_backend_work", true}, {"GPU_timestamp_queries", false},
         {"hot_path_logs_added", false}, {"GPU_operations_added", false},
-        {"source_read_ns_is_batch_wall_time", true}, {"maximum_parallel_source_reads", 2}};
+        {"source_read_ns_is_producer_wait_time", true}, {"maximum_parallel_source_reads", 1},
+        {"worker_times_overlap_consumers", true}};
 }
 
 static std::string model_file(const std::string & receipt, const std::string & name) {
@@ -717,16 +719,16 @@ int main(int argc, char ** argv) {
         native_resources_started = true;
         qwen_app::admit_cpu_runtime(qwen_native_stage);
         if (startup.first_generation_validation) {
-            qwen_native_stage("source_parallel_CPU_preflight_before_Vulkan GPU_not_started=1");
+            qwen_native_stage("source_pipeline_CPU_preflight_before_Vulkan GPU_not_started=1");
             qwen_app::start_native_source_parallel_reads();
             require_model_CPU_budget();
             (void)qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
-            write_fresh_report(startup.admission_report + ".source.parallel", {
-                {"schema", "ps5-qwen-source-parallel-admission-v1"},
+            write_fresh_report(startup.admission_report + ".source.pipeline", {
+                {"schema", "ps5-qwen-source-pipeline-admission-v1"},
                 {"source_window_bytes", qwen_app::model_read_window}, {"CPU_IO_workers", 1},
-                {"maximum_outstanding_reads", 2}, {"preflight_equal_bytes", true},
+                {"maximum_outstanding_reads", 1}, {"preflight_equal_bytes", true},
                 {"preflight_bytes_per_read", qwen_app::model_read_alignment}, {"Vulkan_initialized", false}});
-            qwen_native_stage("source_parallel_CPU_preflight_passed_before_Vulkan GPU_not_started=1");
+            qwen_native_stage("source_pipeline_CPU_preflight_passed_before_Vulkan GPU_not_started=1");
         }
         qwen_app::inspect_vulkan_globals();
         if(!qwen_native_gpu_frontend_linked())throw std::runtime_error("Native driver frontend is not linked");
@@ -1016,7 +1018,7 @@ int main(int argc, char ** argv) {
                 {"native_archive_sha256", gate.at("native_archive_sha256")},
                 {"source_IO_completed", true}, {"source_read_bytes", source_stats.bytes},
                 {"source_read_chunks", source_stats.chunks}, {"maximum_source_read_bytes", source_stats.maximum_chunk},
-                {"source_parallel_worker_stopped", true},
+                {"source_pipeline_worker_stopped", true},
                 {"postload_device_peak_bytes", device_stats.peak}, {"postload_device_live_bytes", device_stats.live},
                 {"postload_device_allocations", device_stats.allocations},
                 {"CPU_heap_peak_bytes", final_heap.peak_bytes}, {"untracked_libc_heap_fallbacks", final_heap.libc_fallbacks},

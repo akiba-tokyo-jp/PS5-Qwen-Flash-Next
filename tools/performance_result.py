@@ -9,19 +9,24 @@ FIELDS = {
 
 def validate_performance(record, result):
     schema = record.get('schema')
-    if (schema not in ('ps5-qwen-completed-performance-v1', 'ps5-qwen-completed-performance-v2') or
+    if (schema not in ('ps5-qwen-completed-performance-v1', 'ps5-qwen-completed-performance-v2', 'ps5-qwen-completed-performance-v3') or
         record.get('process_includes_source_and_backend_work') is not True or
         record.get('GPU_timestamp_queries') is not False or
         record.get('hot_path_logs_added') is not False or record.get('GPU_operations_added') is not False):
         raise ValueError('Performance measurement scope differs')
     delta = record.get('delta', {})
-    fields = FIELDS | ({'source_parallel_batches'} if schema.endswith('v2') else set())
+    fields = FIELDS | ({'source_parallel_batches'} if schema.endswith('v2') else
+        {'source_pipeline_batches', 'source_worker_read_ns', 'source_worker_dispatch_ns'} if schema.endswith('v3') else set())
     if set(delta) != fields or any(type(v) is not int or not 0 <= v < 2**63 for v in delta.values()):
         raise ValueError('Invalid completed performance counters')
     if schema.endswith('v2') and (record.get('source_read_ns_is_batch_wall_time') is not True or
         record.get('maximum_parallel_source_reads') != 2 or
         not 0 < delta['source_parallel_batches'] <= delta['source_chunks'] // 2):
         raise ValueError('Parallel reads lack bounded completed batch evidence')
+    if schema.endswith('v3') and (record.get('source_read_ns_is_producer_wait_time') is not True or
+        record.get('maximum_parallel_source_reads') != 1 or record.get('worker_times_overlap_consumers') is not True or
+        not 0 < delta['source_pipeline_batches'] <= delta['source_chunks'] // 2 or delta['source_worker_read_ns'] <= 0):
+        raise ValueError('Source pipelining lacks single-read completion evidence')
     metrics = result['metrics']
     reason = result['stop_reason']
     if reason not in ('end_of_generation', 'output_token_limit'):

@@ -49,5 +49,16 @@ class PerformanceResultTests(unittest.TestCase):
             self.record['delta']['source_parallel_batches'] = value
             with self.assertRaises(ValueError): validate_performance(self.record, self.result)
 
+    def test_pipeline_worker_intervals_overlap_and_only_one_read_is_admitted(self):
+        self.record.update(schema='ps5-qwen-completed-performance-v3',
+            source_read_ns_is_producer_wait_time=True, maximum_parallel_source_reads=1,
+            worker_times_overlap_consumers=True)
+        self.record['delta'].update(source_chunks=2, source_completed_windows=2,
+            source_pipeline_batches=1, source_worker_read_ns=999, source_worker_dispatch_ns=999)
+        self.assertEqual(validate_performance(self.record,self.result)['measured_source_wall_fraction'],.004)
+        for key,value in [('maximum_parallel_source_reads',2),('worker_times_overlap_consumers',False)]:
+            record=copy.deepcopy(self.record);record[key]=value
+            with self.assertRaises(ValueError):validate_performance(record,self.result)
+
 
 if __name__ == '__main__': unittest.main()

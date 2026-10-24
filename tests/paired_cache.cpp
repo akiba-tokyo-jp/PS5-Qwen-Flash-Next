@@ -26,6 +26,12 @@ extern "C" void qwen_app_model_source_chunk_completed() {
     check(leased&&lease_writes==2,"Pair published before both consumers completed");
     leased=false;++completions;
 }
+extern "C" void qwen_app_model_source_upload_pair(const void * first,const void * second,std::size_t bytes,
+        void * context,void (*consume)(void *,unsigned,const void *)) {
+    const void * windows[2]={};qwen_app_model_source_pair(first,second,bytes,windows);
+    consume(context,0,windows[0]);consume(context,1,windows[1]);
+    qwen_app_model_source_chunk_completed();
+}
 static void ggml_backend_synchronize(int) { check(!leased,"Synchronization attempted after source reuse");++syncs; }
 static void ggml_backend_tensor_set(ggml_tensor * bank,const void * source,std::size_t offset,std::size_t bytes) {
     check(leased&&offset<=bank->bytes&&bytes<=bank->bytes-offset,"An invalid synchronous cache write occurred");

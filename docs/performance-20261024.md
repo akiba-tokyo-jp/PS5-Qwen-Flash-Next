@@ -72,3 +72,20 @@ patched cache loop passed paired/serial/contiguous/odd byte comparisons and
 consumer-failure controls. Native compilation passed; link/import/SELF and a
 distinct matched physical comparison remain required. These host results do not
 qualify a speedup. See [the upstream review](strata-update-review-20261024.md).
+
+The two-read physical candidate was subsequently rejected: its completed
+arithmetic read interval increased to 237.555 seconds, and its first external
+request explicitly failed the unchanged kernel headroom predicate. Exact
+original restoration/readmission/shutdown and all final guards passed. Preserve
+[this failure](source-concurrency-refusal-20261024.md); never replay its intents.
+
+The next implementation uses two half windows with only one outstanding read.
+The producer reads the first window, then the CPU worker reads the second while
+the producer synchronously consumes the first. Both read results and consumers
+must complete before reuse. A first-consumer exception still waits for the
+issued read's known completion; an uncertain read retains both windows. Native
+concurrent-read entry is now rejected. Original contiguous/odd/large paths and
+all budgets remain unchanged. v3 separates worker read/dispatch diagnostics from
+producer read/wait time; overlapping worker intervals are not added to decode
+time. Focused actual-worker and extracted-cache-loop controls passed. Link and
+physical comparison are pending, so this implementation has no speedup claim.

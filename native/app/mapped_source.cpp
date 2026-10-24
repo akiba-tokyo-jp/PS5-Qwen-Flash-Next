@@ -28,8 +28,14 @@ public:
         parallel_->stop_completed(); parallel_.reset();
     }
     std::array<std::int64_t, 2> read_pair(const std::array<qwen_app::SourceReadRequest, 2> & requests) override {
-        if (!parallel_) throw std::runtime_error("Paired source I/O has not passed CPU startup");
-        return parallel_->read(requests);
+        (void)requests;
+        throw std::runtime_error("Concurrent native source reads are not qualified");
+    }
+    qwen_app::SourcePipelineTimes pipeline_pair(const std::array<qwen_app::SourceReadRequest, 2> & requests,
+            const std::array<std::uint64_t, 2> & expected, const std::function<void(unsigned)> & before_read,
+            const std::function<void(unsigned, const void *)> & consume) override {
+        if (!parallel_) throw std::runtime_error("The source pipeline has not passed CPU startup");
+        return parallel_->pipeline(requests, expected, before_read, consume);
     }
     qwen_app::SourceIdentity identity(int fd) override {
         struct stat info{};
@@ -85,7 +91,7 @@ void start_native_source_parallel_reads() {
     required().require_completed_window();
     if (parallel_ready.load()) throw std::runtime_error("Parallel source preflight cannot repeat");
     ops.start_parallel();
-    required().preflight_parallel();
+    required().preflight_pipeline();
     parallel_ready.store(true, std::memory_order_release);
 }
 void enforce_native_model_compute_limits() {
@@ -146,6 +152,13 @@ extern "C" void qwen_app_model_source_pair(const void * first, const void * seco
     const auto result = required().prepare_pair({reinterpret_cast<std::uintptr_t>(first),
         reinterpret_cast<std::uintptr_t>(second)}, bytes);
     windows[0] = result[0]; windows[1] = result[1];
+}
+extern "C" void qwen_app_model_source_upload_pair(const void * first, const void * second, std::size_t bytes,
+        void * context, void (*consume)(void *, unsigned, const void *)) {
+    if (!context || !consume || !qwen_app_model_source_pair_enabled(bytes))
+        throw std::runtime_error("A qualified pipelined upload and synchronous consumer are required");
+    required().upload_pair({reinterpret_cast<std::uintptr_t>(first), reinterpret_cast<std::uintptr_t>(second)}, bytes,
+        [&](unsigned index, const void * window) { consume(context, index, window); });
 }
 extern "C" void qwen_app_model_device_buffer_reserve(std::size_t bytes) {
     if (!qwen_app_model_compute_limits_enabled()) return;

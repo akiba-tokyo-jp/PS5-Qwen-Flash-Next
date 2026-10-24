@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <cstring>
+#include <functional>
 #include <limits>
 #include <stdexcept>
 #include <string>
@@ -22,8 +23,10 @@ struct SourceReadStats {
     std::uint64_t bytes = 0, chunks = 0, maximum_chunk = 0, mappings = 0, retired_ranges = 0;
     std::uint64_t headroom_ns = 0, handle_ns = 0, read_ns = 0, consumer_ns = 0, completed_windows = 0;
     std::uint64_t parallel_batches = 0;
+    std::uint64_t pipeline_batches = 0, worker_read_ns = 0, worker_dispatch_ns = 0;
 };
 struct SourceReadRequest { int fd = -1; void * target = nullptr; std::size_t bytes = 0; std::uint64_t offset = 0; };
+struct SourcePipelineTimes { std::uint64_t producer_wait_ns = 0, worker_read_ns = 0, worker_dispatch_ns = 0; };
 struct SourceReadOps {
     virtual ~SourceReadOps() = default;
     virtual SourceIdentity identity(int fd) = 0;
@@ -35,6 +38,11 @@ struct SourceReadOps {
         for (unsigned i = 0; i < 2; ++i)
             results[i] = read_at(requests[i].fd, requests[i].target, requests[i].bytes, requests[i].offset);
         return results;
+    }
+    virtual SourcePipelineTimes pipeline_pair(const std::array<SourceReadRequest, 2> &,
+            const std::array<std::uint64_t, 2> &, const std::function<void(unsigned)> &,
+            const std::function<void(unsigned, const void *)> &) {
+        throw std::runtime_error("Source read/consumer pipelining is not admitted by this provider");
     }
     // Native providers return Flexible availability only after the separate
     // kernel free/minimum/reserved predicate passes. CPU buffers use Direct.
@@ -140,6 +148,32 @@ public:
         completed();
     }
 
+    void upload_pair(const std::array<std::uintptr_t, 2> & addresses, std::size_t bytes,
+            const std::function<void(unsigned, const void *)> & consume) {
+        healthy();
+        if (busy_ || !bytes || bytes > model_read_window / 2 - model_read_alignment || !consume)
+            fail("A pipelined source pair exceeds its owned half windows");
+        std::array<std::size_t, 2> files{};
+        std::array<std::uint64_t, 2> offsets{};
+        for (unsigned i = 0; i < 2; ++i) {
+            if (!contains(addresses[i], bytes)) fail("A pipelined source range is unowned");
+            const auto range = std::find_if(ranges_.begin(), ranges_.end(), [&](const auto & candidate) {
+                return addresses[i] >= candidate.at && addresses[i] < candidate.at + candidate.bytes;
+            });
+            files[i] = range->file; offsets[i] = range->offset + addresses[i] - range->at;
+        }
+        pipeline_windows(files, offsets, bytes, consume);
+    }
+    void preflight_pipeline() {
+        healthy();
+        const auto bytes = std::size_t(std::min<std::uint64_t>(files_.front().bytes, model_read_alignment));
+        const void * first = nullptr;
+        pipeline_windows({0, 0}, {0, 0}, bytes, [&](unsigned i, const void * at) {
+            if (i == 0) first = at;
+            else if (!first || std::memcmp(first, at, bytes)) fail("Pipelined source preflight bytes differ");
+        });
+    }
+
     // CPU-only capability/read check, before any backend initialization.
     void preflight() {
         healthy(); std::size_t copied = 0;
@@ -228,6 +262,44 @@ private:
         *target = {fd, file, ++age_};
         if (ops_.identity(fd) != files_[file].identity) fail("Direct model source identity changed");
         return fd;
+    }
+    void pipeline_windows(const std::array<std::size_t, 2> & files,
+            const std::array<std::uint64_t, 2> & offsets, std::size_t bytes,
+            const std::function<void(unsigned, const void *)> & consume) {
+        if (busy_ || !bytes || bytes > model_read_window / 2 - model_read_alignment)
+            fail("Invalid pipelined source windows");
+        std::array<SourceReadRequest, 2> requests{};
+        std::array<std::uint64_t, 2> expected{};
+        std::array<std::size_t, 2> skips{};
+        for (unsigned i = 0; i < 2; ++i) {
+            if (files[i] >= files_.size() || offsets[i] >= files_[files[i]].bytes ||
+                bytes > files_[files[i]].bytes - offsets[i]) fail("A pipelined read exceeds its sealed file");
+            skips[i] = std::size_t(offsets[i] % model_read_alignment);
+            const auto requested = std::size_t(rounded(skips[i] + bytes));
+            if (requested > model_read_window / 2) fail("An aligned pipeline window exceeds its half buffer");
+            int fd;
+            { ProfileScope timing(stats_.handle_ns); fd = handle(files[i]); }
+            auto * target = static_cast<unsigned char *>(scratch_) + i * (model_read_window / 2);
+            requests[i] = {fd, target, requested, offsets[i] - skips[i]};
+            expected[i] = std::min<std::uint64_t>(requested, files_[files[i]].bytes - requests[i].offset);
+        }
+        busy_ = true; pending_windows_ = 2;
+        try {
+            const auto timing = ops_.pipeline_pair(requests, expected, [&](unsigned) {
+                ProfileScope timing(stats_.headroom_ns);
+                if (ops_.system_headroom() < model_read_system_reserve + model_read_flexible_metadata_margin)
+                    fail("Fresh Flexible/kernel reserve cannot admit a pipelined read");
+            }, [&](unsigned i, const void * target) {
+                ProfileScope timing(stats_.consumer_ns);
+                consume(i, static_cast<const unsigned char *>(target) + skips[i]);
+            });
+            stats_.read_ns += timing.producer_wait_ns;
+            stats_.worker_read_ns += timing.worker_read_ns;
+            stats_.worker_dispatch_ns += timing.worker_dispatch_ns;
+        } catch (...) { failed_ = true; throw; }
+        for (const auto & request : requests) stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, request.bytes);
+        stats_.bytes += 2 * bytes; stats_.chunks += 2; ++stats_.pipeline_batches;
+        stats_.completed_windows += 2; pending_windows_ = 0; busy_ = false;
     }
     std::array<const void *, 2> read_pair_windows(const std::array<std::size_t, 2> & files,
             const std::array<std::uint64_t, 2> & offsets, std::size_t bytes) {
