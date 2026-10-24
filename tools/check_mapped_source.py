@@ -29,6 +29,10 @@ def main():
             "-fno-stack-protector", "-fno-plt", "-femulated-tls", "-fPIC", "-std=c++17", "-O1", "-fexceptions",
             "-fcxx-exceptions", "-frtti", "-nostdinc++", "-isystem", sdk / "target/include/c++/v1",
             "-isystem", sdk / "target/include", "-I", app, "-c", app / "mapped_source.cpp", "-o", obj])]
+    memory_command=list(checks[-1][1])
+    memory_command[memory_command.index(app / "mapped_source.cpp")]=app / "system_memory.cpp"
+    memory_command[-1]=a.out / "system-memory-ps5.o"
+    checks.append(("PS5_memory_admission",memory_command))
     receipt = dict(schema="ps5-qwen-mapped-source-check-v1", console_access=False, learned_host_inference=False, steps=[])
     for label, command in checks:
         result = subprocess.run(list(map(str, command)), env=env, capture_output=True, timeout=180)
@@ -41,6 +45,7 @@ def main():
     receipt["provider_object_sha256"] = hashlib.sha256(obj.read_bytes()).hexdigest()
     receipt["inputs"] = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
         for path in (app / "mapped_source.h", app / "mapped_source.cpp", app / "mapped_source_bridge.h", app / "profile_clock.h", app / "paired_source_io.h",
+                     app / "system_memory.h",app / "system_memory.cpp",app / "memory_backpressure.h",
                      app / "device_buffer_budget.h", ROOT / "tests/mapped_source.cpp")}
     (a.out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
 

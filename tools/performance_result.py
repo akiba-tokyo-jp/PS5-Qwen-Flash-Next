@@ -7,6 +7,27 @@ FIELDS = {
     'process_ns', 'synchronize_ns', 'checkpoint_ns', 'work_guard_ns', 'stage_observer_ns'}
 
 
+def validate_backpressure(record):
+    required=dict(schema='ps5-qwen-memory-backpressure-v1',enabled=True,
+        maximum_boundary_wait_ms=2000,maximum_total_wait_ms=10000,poll_interval_ms=100,
+        memory_reserves_unchanged=True,IO_or_GPU_operations_retried=False,last_qualified=True,
+        kernel_page_size=16384,kernel_extra_margin_bytes=4 << 20)
+    if any(type(record.get(k)) is not type(v) or record[k]!=v for k,v in required.items()):
+        raise ValueError('Memory backpressure scope differs')
+    counters=['observations','pressure_events','recovered_admissions','cumulative_wait_ns',
+        'pause_calls','kernel_free_pages','kernel_minimum_pages','kernel_reserved_pages']
+    if any(type(record.get(k)) is not int or not 0<=record[k]<2**63 for k in counters):
+        raise ValueError('Memory backpressure counters differ')
+    if (not record['observations'] or record['pressure_events']!=record['recovered_admissions'] or
+        not 0<record['kernel_reserved_pages']<=record['kernel_minimum_pages'] or
+        record['pressure_events']>record['pause_calls'] or
+        record['cumulative_wait_ns']>10_000_000_000 or record['pause_calls']>100 or
+        (record['pause_calls']==0)!=(record['cumulative_wait_ns']==0) or
+        record['kernel_free_pages']<record['kernel_minimum_pages']+max(record['kernel_reserved_pages'],256)):
+        raise ValueError('A pressure admission lacks bounded recovery')
+    return record
+
+
 def validate_performance(record, result):
     schema = record.get('schema')
     if (schema not in ('ps5-qwen-completed-performance-v1', 'ps5-qwen-completed-performance-v2', 'ps5-qwen-completed-performance-v3') or

@@ -89,3 +89,23 @@ all budgets remain unchanged. v3 separates worker read/dispatch diagnostics from
 producer read/wait time; overlapping worker intervals are not added to decode
 time. Focused actual-worker and extracted-cache-loop controls passed. Link and
 physical comparison are pending, so this implementation has no speedup claim.
+
+The first single-read physical candidate completed 26 prefill decodes and its
+first sample, including positive GPU idle/worker completion. The next work guard
+refused kernel headroom before another GPU boundary. No full request or external
+POST completed. Ordinary close, exact original restoration/readmission/shutdown,
+final CPU and whole SELF readback passed. See the
+[sanitized result](source-pipeline-refusal-20261024.json). Single-read concurrency
+alone therefore does not explain or solve the transient admission failures.
+
+The next application adds passive backpressure at already completed producer
+boundaries and before unissued source reads. It retains the original kernel
+minimum plus max(reserved, 4 MiB) predicate and all other memory allowances.
+It only observes independent OS paging, at 100 ms intervals, for at most 2 s at
+one boundary and 10 s cumulatively in the whole process. No I/O, allocation,
+inference or GPU operation is retried or purged. Every continuation requires a
+fresh observation satisfying the unchanged predicate. Invalid metadata, a wait
+deadline or failed clock quarantines admission and retains the graph. The
+per-boundary and cumulative bounds, exact threshold, failure quarantine and
+unhealthy metadata controls passed on the host. Native link and a distinct
+complete physical comparison remain required.

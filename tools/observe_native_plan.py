@@ -20,7 +20,7 @@ from urllib.parse import quote
 
 from first_generation_result import read_record, validate, require, integer, number
 from native_source_deadline import NativeSourceDeadline
-from performance_result import validate_performance
+from performance_result import validate_performance, validate_backpressure
 
 MODEL_ROOT = "/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/"
 PROMPT = "Count from 1 to 8, separated by commas. Reply with only the sequence."
@@ -274,6 +274,9 @@ def main():
                 require(result.get('source_pipeline_worker_stopped') is True and
                     all(row['delta'].get('source_pipeline_batches', 0) > 0 for row in summaries),
                     'Pipelined reads were unused or their worker was not positively stopped')
+            if binding.get('require_memory_backpressure') is True:
+                download('.memory.backpressure')
+                validate_backpressure(read_record(Path(str(result_path)+'.memory.backpressure')))
             exclusive(out / 'performance-review.private.json', dict(completed_requests=summaries,
                 baseline_comparison_required=True, speedup_qualified=False))
         exclusive(out / "native-review.private.json", review)

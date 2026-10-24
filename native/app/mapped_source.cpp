@@ -55,7 +55,7 @@ public:
         return pread(fd, target, bytes, static_cast<off_t>(offset));
     }
     std::uint64_t system_headroom() override {
-        return qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
+        return qwen_app::qualified_system_headroom(qwen_app::admit_native_system_memory());
     }
 };
 NativeReads ops;

@@ -207,7 +207,19 @@ static void inspect_container(const std::string & path, bool first, qwen_app::Mo
 }
 
 static std::uint64_t observed_system_headroom() {
-    return qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
+    return qwen_app::qualified_system_headroom(qwen_app::admit_native_system_memory());
+}
+static Json memory_backpressure_report() {
+    const auto s=qwen_app::native_memory_backpressure_stats();
+    return {{"schema","ps5-qwen-memory-backpressure-v1"},{"enabled",s.enabled},
+        {"maximum_boundary_wait_ms",2000},{"maximum_total_wait_ms",10000},{"poll_interval_ms",100},
+        {"observations",s.observations},{"pressure_events",s.pressure_events},
+        {"recovered_admissions",s.recovered_admissions},{"cumulative_wait_ns",s.wait_ns},
+        {"pause_calls",s.pause_calls},{"last_qualified",s.last_qualified},
+        {"kernel_free_pages",s.last.kernel_free},{"kernel_minimum_pages",s.last.kernel_minimum},
+        {"kernel_reserved_pages",s.last.kernel_reserved},{"kernel_page_size",s.last.page_size},
+        {"kernel_extra_margin_bytes",qwen_app::kernel_memory_margin},
+        {"memory_reserves_unchanged",true},{"IO_or_GPU_operations_retried",false}};
 }
 static Json system_memory_report(const qwen_app::SystemMemoryObservation & memory, bool model_loaded=false) {
     struct ps5_heap_stats heap{};ps5_heap_stats(&heap);
@@ -719,10 +731,11 @@ int main(int argc, char ** argv) {
         native_resources_started = true;
         qwen_app::admit_cpu_runtime(qwen_native_stage);
         if (startup.first_generation_validation) {
+            qwen_app::enable_native_memory_backpressure();
             qwen_native_stage("source_pipeline_CPU_preflight_before_Vulkan GPU_not_started=1");
             qwen_app::start_native_source_parallel_reads();
             require_model_CPU_budget();
-            (void)qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
+            (void)observed_system_headroom();
             write_fresh_report(startup.admission_report + ".source.pipeline", {
                 {"schema", "ps5-qwen-source-pipeline-admission-v1"},
                 {"source_window_bytes", qwen_app::model_read_window}, {"CPU_IO_workers", 1},
@@ -758,7 +771,7 @@ int main(int argc, char ** argv) {
             memory_budget.workspace = 256ull << 20;
         }
         const auto buffer_type=ggml_backend_dev_buffer_type(device);
-        const auto system_memory=qwen_app::observe_native_system_memory();
+        const auto system_memory=qwen_app::admit_native_system_memory();
         const qwen_app::MemoryObservation memory_observation{driver_free,direct,qwen_app::qualified_system_headroom(system_memory),
             ggml_backend_buft_get_max_size(buffer_type),ggml_backend_buft_get_alignment(buffer_type)};
         memory_budget.admit(footprint,memory_observation);
@@ -1010,6 +1023,7 @@ int main(int argc, char ** argv) {
             const auto device_stats = qwen_app::native_model_device_stats();
             struct ps5_heap_stats final_heap{}; ps5_heap_stats(&final_heap);
             qwen_app::stop_native_model_sources();
+            write_fresh_report(startup.admission_report + ".memory.backpressure", memory_backpressure_report());
             write_fresh_report(startup.admission_report, {
                 {"schema", "ps5-qwen-plan-validation-result-v1"}, {"run_id", request.id},
                 {"pid", getpid()}, {"candidate_SELF_sha256", gate.at("candidate_SELF_sha256")},
@@ -1059,7 +1073,8 @@ int main(int argc, char ** argv) {
         qwen_native_log_bytes("\n", 1);
         if (!validation_report.empty()) {
             try { write_fresh_report(validation_report + ".failure", {{"stage", "native_exception"},
-                {"message", error.what()}, {"model_loaded", model!=nullptr}}); } catch (...) {}
+                {"message", error.what()}, {"model_loaded", model!=nullptr},
+                {"memory_backpressure",memory_backpressure_report()}}); } catch (...) {}
         }
         if (native_resources_started) {
             engine.release();

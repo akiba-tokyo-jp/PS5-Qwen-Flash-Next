@@ -896,3 +896,14 @@ The next source pipeline must permit at most one outstanding read, overlap only
 CPU I/O with synchronous producer consumption, and retain every uncertain
 read/consumer lease. Preserve the 8 MiB source window, every reserve, original
 precision and selected driver. Host overlap checks do not qualify speedup.
+
+The first single-read candidate completed 26 prefill decodes and its first sample,
+including positive device idle/worker completion, then refused kernel headroom
+before the next work boundary. It did not finish a request or issue an external
+POST. Exact original restoration/readmission/shutdown and all final checks passed.
+See docs/source-pipeline-refusal-20261024.json. The next memory admission policy
+may passively observe OS recovery only at completed producer/unissued-read
+boundaries, with 100 ms polls, a 2 s boundary limit and a 10 s whole-process wait
+limit. Every continuation must satisfy the unchanged original memory predicate.
+No I/O/GPU/inference retry, reclamation or reserve reduction is allowed. Failed
+admission remains quarantined; physical speed qualification is still pending.

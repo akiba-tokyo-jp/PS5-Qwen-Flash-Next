@@ -1,0 +1,32 @@
+{
+  "schema": "ps5-qwen-source-pipeline-admission-refusal-v1",
+  "date": "2026-10-24",
+  "application_revision": "ec37f6aa018e78f7a0a4a2f22b0fda7cfde54c11",
+  "candidate_SELF_sha256": "b961c2af7840a922cc21f85bdafebf4234ac15f13e9b802d4586865aa172dbc7",
+  "original_precision": "BF16/F32",
+  "quantized": false,
+  "source_window_bytes": 8388608,
+  "maximum_outstanding_reads": 1,
+  "completed_prefill_decode_calls": 26,
+  "first_sample_persisted": true,
+  "sample_GPU_idle_and_worker_completion": true,
+  "request_completed": false,
+  "external_requests_attempted": 0,
+  "failed_after_sample_before_next_GPU_boundary": true,
+  "failure": {
+    "message": "Native kernel free pages do not retain their minimum and extra reserve",
+    "model_loaded": true,
+    "stage": "native_exception"
+  },
+  "automatic_retries": 0,
+  "manual_GPU_release": false,
+  "ordinary_candidate_shutdown": true,
+  "exact_original_restored": true,
+  "original_numerical_readmission": true,
+  "original_ordinary_shutdown": true,
+  "final_CPU_guards_passed": true,
+  "whole_original_SELF_readback": true,
+  "final_native_owners": 0,
+  "speedup_qualified": false,
+  "full_plan_completed": false
+}

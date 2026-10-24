@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from performance_result import FIELDS, validate_performance
+from performance_result import FIELDS, validate_performance, validate_backpressure
 
 
 class PerformanceResultTests(unittest.TestCase):
@@ -59,6 +59,20 @@ class PerformanceResultTests(unittest.TestCase):
         for key,value in [('maximum_parallel_source_reads',2),('worker_times_overlap_consumers',False)]:
             record=copy.deepcopy(self.record);record[key]=value
             with self.assertRaises(ValueError):validate_performance(record,self.result)
+
+    def test_bounded_memory_recovery_preserves_the_original_reserve(self):
+        record=dict(schema='ps5-qwen-memory-backpressure-v1',enabled=True,
+            maximum_boundary_wait_ms=2000,maximum_total_wait_ms=10000,poll_interval_ms=100,
+            memory_reserves_unchanged=True,IO_or_GPU_operations_retried=False,last_qualified=True,
+            kernel_page_size=16384,kernel_extra_margin_bytes=4<<20,
+            observations=5,pressure_events=1,recovered_admissions=1,cumulative_wait_ns=100000000,
+            pause_calls=1,kernel_free_pages=1156,kernel_minimum_pages=900,kernel_reserved_pages=206)
+        validate_backpressure(record)
+        for key,value in [('kernel_free_pages',1155),('cumulative_wait_ns',10000000001),
+            ('recovered_admissions',0),('IO_or_GPU_operations_retried',True),('last_qualified',False),
+            ('maximum_boundary_wait_ms',3000),('kernel_reserved_pages',0)]:
+            bad=dict(record);bad[key]=value
+            with self.assertRaises(ValueError):validate_backpressure(bad)
 
 
 if __name__ == '__main__': unittest.main()
