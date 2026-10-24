@@ -727,8 +727,9 @@ int main(int argc, char ** argv) {
             if(stage_memory_diagnostic) {
                 const auto & diagnostic=policy.at("native_source_stage_memory_diagnostic");
                 if(!startup.first_generation_validation||!policy.contains("native_source_schedule")||
-                   diagnostic.at("schema")!="ps5-qwen-native-stage-memory-policy-v1"||diagnostic.at("enabled")!=true||
+                   diagnostic.at("schema")!="ps5-qwen-native-stage-memory-policy-v2"||diagnostic.at("enabled")!=true||
                    diagnostic.at("CPU_only")!=true||diagnostic.at("maximum_records")!=qwen_app::stage_memory_probe_capacity||
+                   diagnostic.at("matched_idle_ns")!=qwen_app::stage_memory_probe_idle_ns||diagnostic.at("split_write_and_sync")!=true||
                    diagnostic.at("ordinary_OS_close_required")!=true||!qwen_app::begin_native_stage_memory_probe())
                     throw std::runtime_error("Bounded CPU-only stage memory diagnostic is not admitted");
             }
@@ -740,11 +741,14 @@ int main(int argc, char ** argv) {
                 for(std::size_t i=0;i<qwen_app::native_stage_memory_probe_count();++i) {
                     const auto * sample=qwen_app::native_stage_memory_probe_sample(i);
                     if(!sample)throw std::runtime_error("Native stage memory sample ownership is not idle");
-                    samples.push_back({{"phase",sample->phase},{"before_ns",sample->before_ns},{"after_ns",sample->after_ns},
-                        {"free_before",sample->free_before},{"free_after",sample->free_after},{"valid",sample->valid}});
+                    samples.push_back({{"phase",sample->phase},{"idle_before_ns",sample->idle_before_ns},
+                        {"before_ns",sample->before_ns},{"write_after_ns",sample->write_after_ns},{"after_ns",sample->after_ns},
+                        {"free_idle_before",sample->free_idle_before},{"free_before",sample->free_before},
+                        {"free_after_write",sample->free_after_write},{"free_after",sample->free_after},{"valid",sample->valid}});
                 }
                 write_fresh_report(startup.admission_report+".source.stage-memory",{
-                    {"schema","ps5-qwen-native-stage-memory-result-v1"},{"pid",getpid()},
+                    {"schema","ps5-qwen-native-stage-memory-result-v2"},{"pid",getpid()},
+                    {"matched_idle_ns",qwen_app::stage_memory_probe_idle_ns},{"split_write_and_sync",true},
                     {"run_id",policy.at("native_first_generation_validation").at("run_id")},
                     {"samples_valid_and_complete",complete},{"samples",samples},
                     {"mapped_files",mapping.files},{"completed_unmaps",mapping.unmapped},{"mapped_file_bytes",mapping.bytes},

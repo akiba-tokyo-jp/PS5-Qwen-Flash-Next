@@ -1139,3 +1139,21 @@ line and newline to one fixed1025-byte stack buffer and issuing one write.
 Actual-bootstrap controls must check exact output bytes, maximum line length,
 short-write retention, counter failure and sample capacity. Repeat the CPU-only
 native diagnostic before considering full-model performance qualification.
+
+The single-stack-write intervention completed all76 current reservations/releases
+and1227 valid observations, normal close, exact original restoration/readback and
+fresh final idle CPU. Its parent ended with191 frozen inputs unchanged. Stage
+interval time fell2.857803 ->1.984434s; net free-page decrease was1780 versus2113
+in the preceding case. Final1481 pages remain below the stronger2974 target.
+Do not treat this as a solved memory cause or native performance qualification.
+See docs/native-stage-memory-single-write-20261024.json. A preceding host-only
+context-binding refusal issued no console helper, publication or title launch;
+preserve it separately from the completed native comparison.
+
+The next distinct CPU-only diagnostic may separate the exact write and fsync
+observations and add a fixed2ms idle observation before each unchanged durable
+stage. This distinguishes time-correlated background effects from I/O intervals.
+Keep the full current reservation rehearsal, every complete stage and fsync,
+bounded2048 samples, no retries, ordinary close and exact restoration. Normal
+modes keep the sampler and idle delay disabled. Require actual-bootstrap controls
+for middle-counter, idle and fsync failures as well as existing bounds/retention.

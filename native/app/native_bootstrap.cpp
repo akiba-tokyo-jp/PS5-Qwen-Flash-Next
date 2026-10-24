@@ -107,7 +107,7 @@ extern "C" void qwen_native_stage(const char * stage) {
     // direct-heap/constant input pointers on the native filesystem write path.
     char line[1025];std::memcpy(line,stage,bytes);line[bytes]='\n';
     qwen_app::StageMemorySample * sample=nullptr;
-    bool before_valid=false,recording=false;
+    bool before_valid=false,write_valid=false,recording=false;
     if(probe_enabled.load(std::memory_order_acquire)) {
         recording=true;
         probe_active.fetch_add(1);
@@ -116,12 +116,23 @@ extern "C" void qwen_native_stage(const char * stage) {
             sample=&probe_samples[index];
             const auto kept=std::min(bytes,sizeof(sample->phase)-1);
             std::memcpy(sample->phase,stage,kept);sample->phase[kept]=0;
-            before_valid=probe_observation(sample->free_before,sample->before_ns);
+            // Compare a fixed CPU-only idle interval with the following write
+            // and fsync separately. A time-correlated background allocation
+            // must not be mistaken for an allocation caused by the journal.
+            const bool idle_valid=probe_observation(sample->free_idle_before,sample->idle_before_ns);
+            const struct timespec pause{0,static_cast<long>(qwen_app::stage_memory_probe_idle_ns)};
+            const bool idle_completed=nanosleep(&pause,nullptr)==0;
+            before_valid=probe_observation(sample->free_before,sample->before_ns)&&idle_valid&&idle_completed&&
+                sample->before_ns>=sample->idle_before_ns&&
+                sample->before_ns-sample->idle_before_ns>=qwen_app::stage_memory_probe_idle_ns;
         } else probe_fault.store(true);
     }
-    if (write(journal,line,bytes+1)!=static_cast<ssize_t>(bytes+1)||fsync(journal))stop_bootstrap("bootstrap_stage_persist_failed");
+    if (write(journal,line,bytes+1)!=static_cast<ssize_t>(bytes+1))stop_bootstrap("bootstrap_stage_persist_failed");
+    if(sample)write_valid=probe_observation(sample->free_after_write,sample->write_after_ns);
+    if(fsync(journal))stop_bootstrap("bootstrap_stage_persist_failed");
     if(sample) {
-        sample->valid=probe_observation(sample->free_after,sample->after_ns)&&before_valid&&sample->after_ns>=sample->before_ns;
+        sample->valid=probe_observation(sample->free_after,sample->after_ns)&&before_valid&&write_valid&&
+            sample->after_ns>=sample->write_after_ns&&sample->write_after_ns>=sample->before_ns;
         if(!sample->valid)probe_fault.store(true);
     }
     if(recording)probe_active.fetch_sub(1);

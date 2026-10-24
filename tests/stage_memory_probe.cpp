@@ -15,8 +15,8 @@
 #ifndef F_DUPFD
 #define F_DUPFD 3
 #endif
-static unsigned writes=0,syncs=0,queries=0;
-static bool bad_query=false,short_write=false;
+static unsigned writes=0,syncs=0,queries=0,sleeps=0,fail_query_at=0;
+static bool bad_query=false,short_write=false,bad_sync=false,bad_sleep=false;
 static std::uint32_t free_pages=5000;
 static std::uint64_t ticks=0;
 static std::string journal_bytes;
@@ -27,13 +27,15 @@ static int probe_fcntl(int,int,...){return 5;}
 static int probe_close(int){return 0;}
 static int probe_getpid(){return 42;}
 static ssize_t probe_write(int fd,const void *data,std::size_t bytes){++writes;
-    const auto got=bytes-(short_write?1:0);if(fd==3)journal_bytes.append(static_cast<const char*>(data),got);return ssize_t(got);}
-static int probe_fsync(int){++syncs;--free_pages;return 0;}
+    const auto got=bytes-(short_write?1:0);if(fd==3){free_pages-=3;journal_bytes.append(static_cast<const char*>(data),got);}return ssize_t(got);}
+static int probe_fsync(int){++syncs;--free_pages;return bad_sync?-1:0;}
 static int probe_sysctlbyname(const char *name,void *target,std::size_t *bytes,const void *,std::size_t){
     ++queries;if(std::strcmp(name,"vm.stats.vm0.v_free_count")||*bytes!=4)return -1;
-    std::memcpy(target,&free_pages,4);if(bad_query)*bytes=8;return 0;
+    std::memcpy(target,&free_pages,4);if(bad_query||queries==fail_query_at)*bytes=8;return 0;
 }
-static int probe_clock_gettime(int,struct timespec *value){ticks+=1000;value->tv_sec=1;value->tv_nsec=long(ticks);return 0;}
+static int probe_clock_gettime(int,struct timespec *value){ticks+=1000;value->tv_sec=1+ticks/1000000000;value->tv_nsec=long(ticks%1000000000);return 0;}
+static int probe_nanosleep(const struct timespec *value,struct timespec *){
+    ++sleeps;ticks+=std::uint64_t(value->tv_sec)*1000000000+value->tv_nsec;free_pages-=2;return bad_sleep?-1:0;}
 extern "C" void qwen_native_set_fault_report(const char *){}
 extern "C" void qwen_native_set_fault_journal(int){}
 extern "C" [[noreturn]] void qwen_native_halt(const char *){throw Halt{};}
@@ -46,6 +48,7 @@ extern "C" [[noreturn]] void qwen_native_halt(const char *){throw Halt{};}
 #define fsync probe_fsync
 #define sysctlbyname probe_sysctlbyname
 #define clock_gettime probe_clock_gettime
+#define nanosleep probe_nanosleep
 #include "../native/app/native_bootstrap.cpp"
 #undef open
 #undef fchmod
@@ -56,13 +59,14 @@ extern "C" [[noreturn]] void qwen_native_halt(const char *){throw Halt{};}
 #undef fsync
 #undef sysctlbyname
 #undef clock_gettime
+#undef nanosleep
 static void check(bool ok,const char *message){if(!ok)throw std::runtime_error(message);}
 int main(int argc,char **argv){try{
     check(argc==2,"Select a bootstrap diagnostic control");
     qwen_native_bootstrap();
-    const auto before_queries=queries,before_writes=writes,before_syncs=syncs;
+    const auto before_queries=queries,before_writes=writes,before_syncs=syncs,before_sleeps=sleeps;
     qwen_native_stage("normal_stage");
-    check(queries==before_queries&&writes==before_writes+1&&syncs==before_syncs+1&&
+    check(queries==before_queries&&sleeps==before_sleeps&&writes==before_writes+1&&syncs==before_syncs+1&&
         journal_bytes.size()>=13&&journal_bytes.substr(journal_bytes.size()-13)=="normal_stage\n",
         "Disabled probe changed actual durable journal behavior");
     using namespace qwen_app;
@@ -72,7 +76,10 @@ int main(int argc,char **argv){try{
         qwen_native_stage("model_mapping_before_open");
         check(end_native_stage_memory_probe()&&native_stage_memory_probe_count()==1,"Positive probe did not retire");
         const auto *sample=native_stage_memory_probe_sample(0);
-        check(sample&&sample->valid&&sample->free_before==sample->free_after+1&&sample->after_ns>=sample->before_ns&&
+        check(sample&&sample->valid&&sample->free_idle_before==sample->free_before+2&&
+            sample->free_before==sample->free_after_write+3&&sample->free_after_write==sample->free_after+1&&
+            sample->after_ns>=sample->write_after_ns&&sample->write_after_ns>=sample->before_ns&&
+            sample->before_ns-sample->idle_before_ns>=stage_memory_probe_idle_ns&&
             !std::strcmp(sample->phase,"model_mapping_before_open"),"Actual journal interval was not observed");
         check(!native_stage_memory_probe_sample(1)&&!begin_native_stage_memory_probe(),"One-shot ownership changed");
         const std::string longest(1024,'x');const auto write_count=writes,sync_count=syncs;
@@ -90,10 +97,19 @@ int main(int argc,char **argv){try{
         bad_query=true;qwen_native_stage("counter_failure");
         check(!end_native_stage_memory_probe(),"Malformed counter size reported complete");
         const auto *sample=native_stage_memory_probe_sample(0);check(sample&&!sample->valid,"Counter failure was hidden");
+    } else if(mode=="middle_counter_failure"||mode=="idle_failure") {
+        if(mode=="middle_counter_failure")fail_query_at=queries+3;else bad_sleep=true;
+        const auto sync_count=syncs;qwen_native_stage("diagnostic_observation_failure");
+        check(syncs==sync_count+1&&!end_native_stage_memory_probe(),"Observation failure skipped fsync or reported complete");
+        const auto *sample=native_stage_memory_probe_sample(0);check(sample&&!sample->valid,"Observation failure was hidden");
     } else if(mode=="short_write") {
         short_write=true;bool halted=false;try{qwen_native_stage("failed_journal");}catch(const Halt&){halted=true;}
         check(halted&&!end_native_stage_memory_probe()&&!native_stage_memory_probe_sample(0),
             "Failed durable journal or active sample was falsely retired");
+    } else if(mode=="sync_failure") {
+        bad_sync=true;bool halted=false;try{qwen_native_stage("failed_sync");}catch(const Halt&){halted=true;}
+        check(halted&&!end_native_stage_memory_probe()&&!native_stage_memory_probe_sample(0),
+            "Failed fsync or active sample was falsely retired");
     } else throw std::runtime_error("Unknown probe control");
     std::cout<<mode<<" actual bootstrap journal/probe control passed\n";
 }catch(const std::exception &e){std::cerr<<e.what()<<'\n';return 1;}}

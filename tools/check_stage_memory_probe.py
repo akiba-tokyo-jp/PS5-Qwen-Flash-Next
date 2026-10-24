@@ -25,7 +25,7 @@ def main():
         exe=a.out/'actual-bootstrap-probe.exe'
         run('actual_bootstrap_host_compile',[host/'clang++.exe','-std=c++17','-O2','-Wall','-Wextra','-Werror',
             '-I',ROOT/'tests/stage_probe_stubs',ROOT/'tests/stage_memory_probe.cpp','-o',exe])
-        for mode in ('normal','capacity','counter_failure','short_write'):run(mode,[exe,mode])
+        for mode in ('normal','capacity','counter_failure','middle_counter_failure','idle_failure','short_write','sync_failure'):run(mode,[exe,mode])
         run('actual_PS5_bootstrap_compile',[target/'clang++.exe','--no-default-config','--target=x86_64-sie-ps5',
             '-fno-stack-protector','-fno-plt','-femulated-tls','-fPIC','-std=c++17','-O1','-fexceptions','-fcxx-exceptions','-frtti','-nostdinc++',
             '-isystem',sdk/'target/include/c++/v1','-isystem',sdk/'target/include',
