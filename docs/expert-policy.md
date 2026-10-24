@@ -56,13 +56,22 @@ file digests are in `native/qwen_flash_next/expert-policy-sources.json`.
 6. The upstream callback uploads original tensor bytes to existing device banks,
    preserving copy ordering and slot-map synchronization. Tensor types, top-k
    choices, routing weights and required PLE remain unchanged. The app uses
-   one-token microbatches.
+   single-token generation. Prompt batches default to one token; explicitly
+   admitted bounded profiles now support two or four tokens. See the
+   [physical prefill comparisons](native-bounded-prefill-20261025.md).
 
 The qualified storage path is original SSD bytes, protected no-access source
 keys, bounded direct reads and device expert banks. CPU/GPU share physical RAM.
 Source keys add zero resident file pages. The completed session proves this
 finite path; it does not establish efficient read/compute overlap or a speedup
 over another eviction policy.
+
+The [subsequent completed-demand replay](performance-results-20261025.md)
+matched all three real native hit/miss/upload totals. Eleven C++ settings and
+ten independently implemented Python settings found no reduction versus the
+current aged-LFU policy on those fixed requests. LRU/SLRU increased expert
+payload by 3.32%; the selected 4096-route policy remains. This short trace does
+not qualify a policy for general workloads.
 
 ## Counters and monitor
 

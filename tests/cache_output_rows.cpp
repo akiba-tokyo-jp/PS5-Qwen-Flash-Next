@@ -22,6 +22,8 @@ int main() {
         auto admitted=cache.get_slot_map(0,selected->ne[1],selected->ne[0]);
         check(outputs ? admitted==slot_map : admitted==nullptr);
     }
+    for(int tokens: {1,2,4,5,8,32})
+        check((cache.get_slot_map(0,tokens,10)!=nullptr)==(tokens<=5));
     ggml_free(ctx);
-    std::cout<<"{\"actual_zero_output_crop_bypasses_cache\":true,\"one_output_preserves_cache\":true,\"GPU_calls\":0,\"model_payload_reads\":0}"<<std::endl;
+    std::cout<<"{\"actual_zero_output_crop_bypasses_cache\":true,\"one_output_preserves_cache\":true,\"eligible_token_widths\":[1,2,4,5],\"rejected_token_widths\":[8,32],\"slots\":53,\"experts_per_token\":10,\"GPU_calls\":0,\"model_payload_reads\":0}"<<std::endl;
 }

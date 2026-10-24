@@ -20,7 +20,7 @@ from urllib.parse import quote
 
 from first_generation_result import read_record, validate, require, integer, number
 from native_source_deadline import NativeSourceDeadline
-from performance_result import validate_performance, validate_backpressure
+from performance_result import validate_performance, validate_backpressure, validate_first_performance
 
 MODEL_ROOT = "/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/"
 PROMPT = "Count from 1 to 8, separated by commas. Reply with only the sequence."
@@ -250,7 +250,8 @@ def main():
         failure_check()
         review = validate(result_path, expected)
         if performance_required:
-            summaries = [validate_performance(read_record(Path(str(result_path) + '.first.performance')), result)]
+            summaries = [validate_first_performance(read_record(Path(str(result_path) + '.first.performance')), result,
+                read_record(Path(str(result_path) + '.first.result')))]
             for ordinal, native_request in enumerate(result['demonstration']['requests'], 1):
                 summaries.append(validate_performance(
                     read_record(Path(str(result_path) + '.demo' + str(ordinal) + '.performance')), native_request))

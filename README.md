@@ -39,6 +39,18 @@ includes startup and lossless shader-storage changes. See the
 [completed source-schedule report](docs/native-source-schedule-success-20261025.md)
 and [sanitized counters](docs/native-source-schedule-success-20261025.json).
 
+The [bounded prefill comparisons](docs/native-bounded-prefill-20261025.md)
+qualified widths 2 and 4. Width 4 measured **57.64 / 56.77 seconds** TTFT,
+a mean **35.30% reduction**, and **0.33927 / 0.34591 tokens/s** decode.
+Generation remains single-token, with all validation and monitoring retained.
+The [completed eight-proposal screen and selected implementation results](docs/performance-results-20261025.md)
+retain current Maya LFU after exact actual-demand replay found no better tested
+policy. Representative 512 MiB reads improve 1.439x over safe serial; a complete
+second layout fails current storage capacity, and no full-layout native gain is claimed.
+The compact observer also completed all physical/restoration gates with an
+unchanged CPU heap peak and zero memory-pressure events. Small decode changes
+do not establish significance; state reuse and speculative drafts remain unimplemented.
+
 The model stayed loaded across the three requests. The actual native passive
 frames were visually reviewed. Positive GPU/resource retirement, ordinary title
 close, exact original SELF restoration, original numerical readmission, ordinary

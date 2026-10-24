@@ -3,6 +3,7 @@
 #include "http_app.h"
 #include "llama_engine.h"
 #include "expert_policy.h"
+#include "completed_expert_routes.h"
 #include "native_display.h"
 #include "startup.h"
 #include "gpu_admission.h"
@@ -112,12 +113,73 @@ static Json performance_difference(const Json & before, const qwen_app::LlamaEng
     // process_ns includes source I/O and backend work. These are nested wall
     // intervals, not hardware GPU timestamps and must not be summed together.
     const bool selected = qwen_app::native_model_source_stats().schedule_enabled;
-    return {{"schema", selected ? "ps5-qwen-completed-performance-v4" : "ps5-qwen-completed-performance-v3"}, {"delta", delta},
+    Json report = {{"schema", selected ? "ps5-qwen-completed-performance-v4" : "ps5-qwen-completed-performance-v3"}, {"delta", delta},
         {"process_includes_source_and_backend_work", true}, {"GPU_timestamp_queries", false},
         {"hot_path_logs_added", false}, {"GPU_operations_added", false},
         {"source_read_ns_is_producer_wait_time", true}, {"maximum_parallel_source_reads", selected ? 2 : 1},
         {"file_range_schedule_enabled", selected}, {"physical_read_bytes_include_alignment", true},
         {"worker_times_overlap_consumers", true}};
+    if (engine.prefill_batch_tokens() > 1) {
+        if (!selected) throw std::runtime_error("Batched prefill requires selected-source accounting");
+        report.update({{"schema", "ps5-qwen-completed-performance-v5"},
+            {"prefill_batch_tokens", engine.prefill_batch_tokens()},
+            {"generated_token_batch_tokens", 1}, {"all_prompt_outputs_requested", true}});
+    }
+    return report;
+}
+
+struct CompletedRouteEvidence {
+    std::vector<qwen_app::CompletedExpertRoute> rows;
+    std::uint64_t calls=0,unique=0,selected=0,hits=0,misses=0,uploaded=0,advice=0;
+    bool complete=false;
+    std::string error;
+};
+
+static CompletedRouteEvidence completed_route_evidence(const qwen_app::LlamaEngine & engine,
+        std::uint64_t before_calls,const qwen_app::ExpertCacheMetrics & before) {
+    CompletedRouteEvidence result;
+    try {
+    const auto calls=engine.timing_stats().process_calls;
+    if(calls<before_calls)throw qwen_app::ExpertRouteCaptureError("Expert-route process counter moved backwards");
+    const auto after=engine.expert_cache_metrics();
+    if(!after||after->hits<before.hits||after->misses<before.misses||after->uploaded_bytes<before.uploaded_bytes||
+       after->prefetch_advice_bytes<before.prefetch_advice_bytes)
+        throw qwen_app::ExpertRouteCaptureError("Expert-route cache counters moved backwards");
+    result.rows=qwen_app::finish_completed_expert_routes(calls-before_calls);
+    for(const auto & row:result.rows){
+        auto ids=row.ids;const auto end=ids.begin()+10*row.tokens;
+        result.selected+=10*row.tokens;std::sort(ids.begin(),end);
+        result.unique+=std::unique(ids.begin(),end)-ids.begin();
+    }
+    const auto hits=after->hits-before.hits,misses=after->misses-before.misses;
+    const auto uploaded=after->uploaded_bytes-before.uploaded_bytes;
+    if(hits+misses!=result.unique||uploaded!=misses*9830400ull)
+        throw qwen_app::ExpertRouteCaptureError("Complete expert routes disagree with actual cache transfers");
+    result.calls=calls-before_calls;result.hits=hits;result.misses=misses;result.uploaded=uploaded;
+    result.advice=after->prefetch_advice_bytes-before.prefetch_advice_bytes;result.complete=true;
+    }catch(const qwen_app::ExpertRouteCaptureError & error){
+        qwen_app::quarantine_completed_expert_routes();result.error=error.what();
+    }
+    return result;
+}
+
+static Json completed_route_report(const CompletedRouteEvidence & result) {
+    if(!result.complete)return {{"schema","ps5-qwen-completed-expert-routes-v1"},{"complete",false},{"capture_failed",true},
+        {"error",result.error},{"additional_GPU_downloads",0},{"routing_and_cache_policy_unchanged",true},
+        {"original_model_validation_and_retirement_still_required",true}};
+    Json events=Json::array();
+    for(const auto & row:result.rows){
+        std::vector<std::uint16_t> ids(row.ids.begin(),row.ids.begin()+10*row.tokens);
+        events.push_back({{"layer",row.layer},{"tokens",row.tokens},{"ids",ids}});
+    }
+    return {{"schema","ps5-qwen-completed-expert-routes-v1"},{"process_calls",result.calls},
+        {"complete",true},{"capture_failed",false},
+        {"layers_per_process",48},{"experts",512},{"experts_per_token",10},{"cache_slots",53},
+        {"maximum_records",qwen_app::expert_route_capacity},{"selected_indices",result.selected},{"unique_selected_experts",result.unique},
+        {"cache_hits",result.hits},{"cache_misses",result.misses},{"uploaded_bytes",result.uploaded},
+        {"prefetch_advice_bytes",result.advice},
+        {"all_existing_downloads_and_synchronizations_returned",true},{"additional_GPU_downloads",0},
+        {"routing_and_cache_policy_unchanged",true},{"records",std::move(events)}};
 }
 
 static std::string model_file(const std::string & receipt, const std::string & name) {
@@ -369,6 +431,32 @@ int main(int argc, char ** argv) {
         // A frozen fixture policy does not replace the launcher's fresh console
         // guards. Full-model inference remains independently rejected here.
         qwen_app::require_native_validation_policy(policy, mode, startup.native_display);
+        std::uint32_t prefill_tokens = 1;
+        const bool expert_routes=policy.contains("native_expert_routes");
+        if(expert_routes){
+            const auto & p=policy.at("native_expert_routes");
+            if(!startup.first_generation_validation||!p.is_object()||p.size()!=5||
+               p.at("schema")!="ps5-qwen-completed-expert-routes-policy-v1"||!p.at("enabled").is_boolean()||p.at("enabled")!=true||
+               !p.at("maximum_records").is_number_unsigned()||p.at("maximum_records")!=qwen_app::expert_route_capacity||
+               !p.at("require_complete_48_layer_processes").is_boolean()||p.at("require_complete_48_layer_processes")!=true||
+               !p.at("additional_GPU_downloads").is_number_unsigned()||p.at("additional_GPU_downloads")!=0)
+                throw std::runtime_error("The completed expert-route observer requires its exact bounded policy");
+        }
+        if (policy.contains("native_prefill")) {
+            const auto & p = policy.at("native_prefill");
+            if (!startup.first_generation_validation || !p.is_object() || p.size() != 4 ||
+                p.at("schema") != "ps5-qwen-bounded-prefill-v1" ||
+                !p.at("tokens").is_number_unsigned() ||
+                p.at("tokens").get<std::uint64_t>() > 4 ||
+                !p.at("all_prompt_outputs_requested").is_boolean() ||
+                p.at("all_prompt_outputs_requested") != true ||
+                !p.at("generated_token_batch_tokens").is_number_unsigned() ||
+                p.at("generated_token_batch_tokens") != 1)
+                throw std::runtime_error("The private bounded prefill policy differs");
+            prefill_tokens = p.at("tokens").get<std::uint32_t>();
+            if (prefill_tokens != 1 && prefill_tokens != 2 && prefill_tokens != 4)
+                throw std::runtime_error("The prefill width exceeds qualified cache geometry");
+        }
         if (startup.first_generation_validation && startup.port != 8086)
             throw std::runtime_error("The bounded external demonstration requires its exact admitted port");
         if (startup.first_generation_validation && (!llama_app_mapped_source_hooks() ||
@@ -1167,14 +1255,14 @@ int main(int argc, char ** argv) {
         if (display) display->publish(screen);
         const auto context_started = std::chrono::steady_clock::now();
         context = llama_init_from_model(model, qwen_app::streaming_context_params(
-            startup.first_generation_validation ? qwen_app::first_context_tokens : 4096, cache_bytes));
+            startup.first_generation_validation ? qwen_app::first_context_tokens : 4096, cache_bytes, prefill_tokens));
         if (!context) throw std::runtime_error("Context admission failed; restart through the ordinary OS path");
         write_fresh_report(startup.admission_report+".system-memory.after-context",
             system_memory_report(qwen_app::observe_native_system_memory(),true));
         if (startup.first_generation_validation) require_model_CPU_budget();
         if (startup.first_generation_validation && std::chrono::steady_clock::now() - context_started > std::chrono::seconds(600))
             throw std::runtime_error("Context creation exceeded its first-generation boundary deadline");
-        engine = std::make_unique<qwen_app::LlamaEngine>(model, context);
+        engine = std::make_unique<qwen_app::LlamaEngine>(model, context, prefill_tokens);
         engine->set_stage_observer(qwen_native_stage);
         engine->set_gpu_boundaries(qwen_native_driver_begin,qwen_native_driver_complete,qwen_native_driver_retain,qwen_native_driver_checkpoint);
         const auto * chat_template = llama_model_chat_template(model, nullptr);
@@ -1196,6 +1284,11 @@ int main(int argc, char ** argv) {
             require_unchanged_model();
             const auto & gate = policy.at("native_first_generation_validation");
             qwen_app::FirstGeneration trial(*engine);
+            // Keep bounded route evidence in the tracked CPU heap while the
+            // model is resident. Publish its sidecars only after positive model
+            // and source retirement, avoiding extra file-cache pressure between
+            // requests. Existing token/performance/monitoring records remain.
+            std::array<CompletedRouteEvidence,3> completed_expert_reports;
             engine->set_work_guard([&] {
                 trial.require_time();
                 require_model_CPU_budget();
@@ -1221,6 +1314,11 @@ int main(int argc, char ** argv) {
                 qwen_app::enable_native_completed_source_trace();
             }
             const auto first_performance = performance_snapshot(*engine);
+            const auto first_cache=engine->expert_cache_metrics();
+            if(expert_routes){
+                if(!first_cache)throw std::runtime_error("Actual expert cache counters are required before route capture");
+                if(!qwen_app::completed_expert_routes_pending())qwen_app::begin_completed_expert_routes();
+            }
             const auto & result = trial.run(request, [&](const auto & bound) {
                 write_fresh_report(startup.admission_report + ".first.intent", {
                     {"schema", "ps5-qwen-first-generation-intent-v1"}, {"run_id", bound.id}, {"pid", getpid()},
@@ -1239,6 +1337,10 @@ int main(int argc, char ** argv) {
             engine->set_work_guard({});
             write_fresh_report(startup.admission_report + ".first.performance",
                 performance_difference(first_performance, *engine));
+            if(expert_routes){
+                completed_expert_reports[0]=completed_route_evidence(*engine,
+                    first_performance.at("process_calls").get<std::uint64_t>(),*first_cache);
+            }
             Json metrics{{"prompt_tokens", result.metrics.prompt_tokens}, {"generated_tokens", result.metrics.generated_tokens},
                 {"prefill_ms", result.metrics.prefill_ms}, {"total_ms", result.metrics.total_ms},
                 {"TTFT_ms", nullptr}, {"decode_tokens_per_second", nullptr}};
@@ -1247,7 +1349,7 @@ int main(int argc, char ** argv) {
             write_fresh_report(startup.admission_report + ".first.result", {
                 {"schema", "ps5-qwen-first-request-result-v1"}, {"pid", getpid()}, {"run_id", request.id},
                 {"stop_reason", result.stop_reason}, {"token_ids", result.token_ids},
-                {"output_bytes", result.output_bytes}, {"metrics", metrics},
+                {"output_bytes", result.output_bytes}, {"metrics", metrics}, {"prefill_batch_tokens", prefill_tokens},
                 {"request_reset_completed", result.request_reset_completed}, {"model_loaded", true}});
             const std::string answer(result.output_bytes.begin(), result.output_bytes.end());
             const auto first = answer.find_first_not_of(" \t\r\n"), last = answer.find_last_not_of(" \t\r\n");
@@ -1276,10 +1378,10 @@ int main(int argc, char ** argv) {
             require_model_CPU_budget(); require_unchanged_model();
             const auto benchmark_context_started = std::chrono::steady_clock::now();
             qwen_native_driver_begin();
-            context = llama_init_from_model(model, qwen_app::streaming_context_params(qwen_app::first_context_tokens, cache_bytes));
+            context = llama_init_from_model(model, qwen_app::streaming_context_params(qwen_app::first_context_tokens, cache_bytes, prefill_tokens));
             if (!context || std::chrono::steady_clock::now() - benchmark_context_started > std::chrono::seconds(600))
                 throw std::runtime_error("The bounded cold-cache context recreation did not complete");
-            engine = std::make_unique<qwen_app::LlamaEngine>(model, context);
+            engine = std::make_unique<qwen_app::LlamaEngine>(model, context, prefill_tokens);
             engine->set_stage_observer(qwen_native_stage);
             engine->set_gpu_boundaries(qwen_native_driver_begin, qwen_native_driver_complete,
                 qwen_native_driver_retain, qwen_native_driver_checkpoint);
@@ -1319,6 +1421,11 @@ int main(int argc, char ** argv) {
                             {"decode_tokens_per_second", value.decode_tokens_per_second ? Json(*value.decode_tokens_per_second) : Json(nullptr)}};
                     };
                     const auto external_performance = performance_snapshot(*engine);
+                    const auto external_cache=engine->expert_cache_metrics();
+                    if(expert_routes){
+                        if(!external_cache)throw std::runtime_error("Actual expert cache counters are required before route capture");
+                        if(!qwen_app::completed_expert_routes_pending())qwen_app::begin_completed_expert_routes();
+                    }
                     const auto & generated = attempt.run(external, [&](const auto & bound) {
                         write_fresh_report(prefix + ".intent", {{"schema", "ps5-qwen-demo-request-intent-v1"},
                             {"pid", getpid()}, {"run_id", request.id}, {"ordinal", ordinal}, {"id", bound.id},
@@ -1338,6 +1445,10 @@ int main(int argc, char ** argv) {
                         publish(event);
                     }, qwen_native_stage);
                     engine->set_work_guard({});
+                    if(expert_routes){
+                        completed_expert_reports.at(ordinal)=completed_route_evidence(*engine,
+                            external_performance.at("process_calls").get<std::uint64_t>(),*external_cache);
+                    }
                     write_fresh_report(prefix + ".performance",
                         performance_difference(external_performance, *engine));
                     qwen_app::require_demo_sequence(generated.output_bytes);
@@ -1347,6 +1458,7 @@ int main(int argc, char ** argv) {
                     const Json report{{"schema", "ps5-qwen-demo-request-result-v1"}, {"pid", getpid()},
                         {"run_id", request.id}, {"id", external.id}, {"ordinal", ordinal},
                         {"cache_condition", ordinal == 1 ? "empty expert cache" : "retained expert cache"},
+                        {"prefill_batch_tokens", prefill_tokens},
                         {"stop_reason", generated.stop_reason}, {"token_ids", generated.token_ids},
                         {"output_bytes", generated.output_bytes}, {"metrics", external_metrics(generated.metrics)},
                         {"request_reset_completed", generated.request_reset_completed},
@@ -1380,6 +1492,18 @@ int main(int argc, char ** argv) {
             const auto device_stats = qwen_app::native_model_device_stats();
             struct ps5_heap_stats final_heap{}; ps5_heap_stats(&final_heap);
             qwen_app::stop_native_model_sources();
+            if(expert_routes){
+                const std::array<const char *,3> suffixes{{".first",".demo1",".demo2"}};
+                for(std::size_t i=0;i<completed_expert_reports.size();++i){
+                    auto routes=completed_route_report(completed_expert_reports[i]);
+                    routes.update({{"pid",getpid()},{"run_id",request.id},{"cache_reset_before_request",i<2},
+                        {"sidecar_written_after_model_and_source_retirement",true},
+                        {"JSON_created_after_model_and_source_retirement",true}});
+                    if(i)routes["ordinal"]=i;
+                    write_fresh_report(startup.admission_report+suffixes[i]+".expert-routes",routes);
+                    completed_expert_reports[i]=CompletedRouteEvidence{};
+                }
+            }
             if(policy.contains("native_shader_storage")) {
                 const auto shaders=qwen_app::native_shader_asset_stats();
                 if(shaders.failed||shaders.active_lease||shaders.external_file.read_pending||

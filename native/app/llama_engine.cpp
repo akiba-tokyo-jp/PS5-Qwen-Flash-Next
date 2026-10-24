@@ -2,12 +2,17 @@
 #include "llama_engine.h"
 #include "expert_policy.h"
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <stdexcept>
 
 namespace qwen_app {
 namespace {
+void require_prefill_width(std::uint32_t tokens) {
+    if (tokens != 1 && tokens != 2 && tokens != 4)
+        throw std::invalid_argument("Bounded prefill requires 1, 2 or 4 tokens");
+}
 class GpuBoundary {
     void (*complete_)();
     void (*retain_)();
@@ -54,11 +59,17 @@ llama_model_params streaming_model_params(ggml_backend_buffer_type_t cpu_buffer)
 }
 
 llama_context_params streaming_context_params(std::uint32_t context_tokens,
-                                              std::size_t expert_cache_bytes) {
+                                              std::size_t expert_cache_bytes,
+                                              std::uint32_t prefill_tokens) {
+    require_prefill_width(prefill_tokens);
     if (context_tokens < 2 || !expert_cache_bytes) throw std::invalid_argument("Invalid streaming budget");
+    if (prefill_tokens > context_tokens ||
+        (prefill_tokens > 1 && expert_cache_bytes != (512u << 20)))
+        throw std::invalid_argument("Batched prefill requires the complete admitted 512 MiB expert cache");
     auto params = llama_context_default_params();
     params.n_ctx = context_tokens;
-    params.n_batch = params.n_ubatch = params.n_seq_max = 1;
+    params.n_batch = params.n_ubatch = prefill_tokens;
+    params.n_seq_max = 1;
     params.n_threads = params.n_threads_batch = 6;
     params.offload_kqv = true;
     params.op_offload = true;
@@ -68,9 +79,13 @@ llama_context_params streaming_context_params(std::uint32_t context_tokens,
     return params;
 }
 
-LlamaEngine::LlamaEngine(llama_model * model, llama_context * context)
-    : model_(model), context_(context), vocabulary_(model ? llama_model_get_vocab(model) : nullptr) {
+LlamaEngine::LlamaEngine(llama_model * model, llama_context * context, std::uint32_t prefill_tokens)
+    : model_(model), context_(context), vocabulary_(model ? llama_model_get_vocab(model) : nullptr),
+      prefill_tokens_(prefill_tokens) {
+    require_prefill_width(prefill_tokens_);
     if (!model_ || !context_ || !vocabulary_) throw std::invalid_argument("Admitted model and context required");
+    if (llama_n_batch(context_) < prefill_tokens_ || llama_n_ubatch(context_) < prefill_tokens_)
+        throw std::invalid_argument("Context capacity is smaller than the explicit prefill width");
     batch_ = llama_batch_ext_init(context_);
     if (!batch_) throw std::runtime_error("Batch allocation failed");
     sampler_ = llama_sampler_init_greedy();
@@ -109,11 +124,23 @@ std::uint32_t LlamaEngine::tokenize(const std::string & prompt) {
 }
 
 void LlamaEngine::process(llama_token token, llama_pos position, bool output) {
+    if (!output) throw std::invalid_argument("Bounded source execution requires output/cache eligibility");
+    process_batch(&token, 1, position);
+}
+
+void LlamaEngine::process_batch(const llama_token * tokens, std::uint32_t count, llama_pos position) {
+    if (!tokens || !count || count > prefill_tokens_ || position < 0 ||
+        std::uint64_t(position) + count > llama_n_ctx(context_))
+        throw std::invalid_argument("Invalid bounded causal batch");
     guard();
     llama_batch_ext_clear(batch_);
-    const auto index = llama_batch_ext_add_token(batch_, 0, token);
-    if (index < 0 || !llama_batch_ext_set_pos(batch_, index, &position) ||
-        !llama_batch_ext_set_output_logits(batch_, index, output)) throw std::runtime_error("Batch setup failed");
+    for (std::uint32_t i = 0; i < count; ++i) {
+        const auto index = llama_batch_ext_add_token(batch_, 0, tokens[i]);
+        const llama_pos causal_position = position + i;
+        if (index < 0 || !llama_batch_ext_set_pos(batch_, index, &causal_position) ||
+            !llama_batch_ext_set_output_logits(batch_, index, true))
+            throw std::runtime_error("Batch setup failed");
+    }
     stage("inference_before_decode_call");
     {
         ProfileScope timing(timing_.process_ns);
@@ -140,11 +167,14 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
         llama_sampler_reset(sampler_);
         position_ = 0;
         pending_ = LLAMA_TOKEN_NULL;
-        for (std::size_t i = 0; i < prompt_.size(); ++i) {
+        for (std::size_t i = 0; i < prompt_.size();) {
             // A zero-output single-token batch crops the final Qwen layer to
-            // zero rows, which disables its expert-slot cache path. Retain one
-            // output for each batch; sampling still uses only the final logits.
-            process(prompt_[i], position_++, true);
+            // zero rows, which disables its expert-slot cache path. Request
+            // every prompt output; sampling still uses only the final logits.
+            const auto count = std::uint32_t(std::min<std::size_t>(prefill_tokens_, prompt_.size() - i));
+            process_batch(prompt_.data() + i, count, position_);
+            position_ += count;
+            i += count;
         }
         boundary.complete();ready_ = true;
         stage("inference_prefill_completed");

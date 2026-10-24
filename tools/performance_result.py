@@ -7,6 +7,18 @@ FIELDS = {
     'process_ns', 'synchronize_ns', 'checkpoint_ns', 'work_guard_ns', 'stage_observer_ns'}
 
 
+def validate_first_performance(record, aggregate, first):
+    # The first terminal owns request-specific batching metadata. Its numerical
+    # result must still agree exactly with the complete lifecycle aggregate.
+    for key in ('metrics','token_ids','output_bytes','stop_reason'):
+        if key not in first or first[key] != aggregate.get(key):
+            raise ValueError('First performance terminal differs from the aggregate')
+    if ('prefill_batch_tokens' in aggregate and
+            aggregate['prefill_batch_tokens'] != first.get('prefill_batch_tokens')):
+        raise ValueError('Aggregate and first-terminal prefill widths differ')
+    return validate_performance(record, first)
+
+
 def validate_backpressure(record):
     schema=record.get('schema')
     limits={'ps5-qwen-memory-backpressure-v1':(2000,10000),'ps5-qwen-memory-backpressure-v2':(20000,60000)}
@@ -34,15 +46,15 @@ def validate_backpressure(record):
 
 def validate_performance(record, result):
     schema = record.get('schema')
-    if (schema not in ('ps5-qwen-completed-performance-v1', 'ps5-qwen-completed-performance-v2', 'ps5-qwen-completed-performance-v3', 'ps5-qwen-completed-performance-v4') or
+    if (schema not in tuple('ps5-qwen-completed-performance-v'+str(v) for v in range(1,6)) or
         record.get('process_includes_source_and_backend_work') is not True or
         record.get('GPU_timestamp_queries') is not False or
         record.get('hot_path_logs_added') is not False or record.get('GPU_operations_added') is not False):
         raise ValueError('Performance measurement scope differs')
     delta = record.get('delta', {})
     fields = FIELDS | ({'source_parallel_batches'} if schema.endswith('v2') else
-        {'source_pipeline_batches', 'source_worker_read_ns', 'source_worker_dispatch_ns'} if schema.endswith(('v3','v4')) else set())
-    if schema.endswith('v4'):
+        {'source_pipeline_batches', 'source_worker_read_ns', 'source_worker_dispatch_ns'} if schema.endswith(('v3','v4','v5')) else set())
+    if schema.endswith(('v4','v5')):
         fields |= {'source_parallel_batches','source_coalesced_batches','source_selected_serial_batches',
                    'source_physical_read_bytes','source_physical_read_calls'}
     if set(delta) != fields or any(type(v) is not int or not 0 <= v < 2**63 for v in delta.values()):
@@ -55,7 +67,7 @@ def validate_performance(record, result):
         record.get('maximum_parallel_source_reads') != 1 or record.get('worker_times_overlap_consumers') is not True or
         not 0 < delta['source_pipeline_batches'] <= delta['source_chunks'] // 2 or delta['source_worker_read_ns'] <= 0):
         raise ValueError('Source pipelining lacks single-read completion evidence')
-    if schema.endswith('v4') and (record.get('source_read_ns_is_producer_wait_time') is not True or
+    if schema.endswith(('v4','v5')) and (record.get('source_read_ns_is_producer_wait_time') is not True or
         record.get('maximum_parallel_source_reads') != 2 or record.get('file_range_schedule_enabled') is not True or
         record.get('physical_read_bytes_include_alignment') is not True or
         delta['source_physical_read_bytes'] < delta['source_bytes'] or
@@ -67,7 +79,15 @@ def validate_performance(record, result):
     reason = result['stop_reason']
     if reason not in ('end_of_generation', 'output_token_limit'):
         raise ValueError('Performance requires completed generation')
-    expected = metrics['prompt_tokens'] + metrics['generated_tokens'] - (reason == 'output_token_limit')
+    width = 1
+    if schema.endswith('v5'):
+        width = record.get('prefill_batch_tokens')
+        if (type(width) is not int or width not in (2,4) or
+            type(result.get('prefill_batch_tokens')) is not int or result['prefill_batch_tokens'] != width or
+            type(record.get('generated_token_batch_tokens')) is not int or record['generated_token_batch_tokens'] != 1 or
+            record.get('all_prompt_outputs_requested') is not True):
+            raise ValueError('Batched prefill scope differs')
+    expected = (metrics['prompt_tokens'] + width - 1)//width + metrics['generated_tokens'] - (reason == 'output_token_limit')
     if delta['process_calls'] != expected or delta['process_ns'] <= 0:
         raise ValueError('Completed decode call count differs')
     if not delta['source_chunks'] or delta['source_chunks'] != delta['source_completed_windows']:

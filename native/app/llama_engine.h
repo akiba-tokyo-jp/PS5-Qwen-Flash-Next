@@ -16,7 +16,7 @@ struct LlamaTimingStats {
 // admitted objects and never initializes a driver, loads a file or deploys code.
 class LlamaEngine final : public Engine {
 public:
-    LlamaEngine(llama_model * model, llama_context * context);
+    LlamaEngine(llama_model * model, llama_context * context, std::uint32_t prefill_tokens = 1);
     ~LlamaEngine() override;
     LlamaEngine(const LlamaEngine &) = delete;
     LlamaEngine & operator=(const LlamaEngine &) = delete;
@@ -27,6 +27,7 @@ public:
     std::optional<ExpertCacheMetrics> expert_cache_metrics() const override;
     bool failed() const { return failed_; }
     LlamaTimingStats timing_stats() const { return timing_; }
+    std::uint32_t prefill_batch_tokens() const { return prefill_tokens_; }
     void set_stage_observer(void (*observer)(const char *)) { stage_ = observer; }
     void set_gpu_boundaries(void (*begin)(),void (*complete)(),void (*retain)(),void (*checkpoint)()=nullptr);
     // Called before work and after synchronized decode/checkpoint boundaries.
@@ -36,6 +37,7 @@ public:
 
 private:
     void process(llama_token token, llama_pos position, bool output);
+    void process_batch(const llama_token * tokens, std::uint32_t count, llama_pos position);
     void require_healthy() const;
     llama_model * model_;
     llama_context * context_;
@@ -45,6 +47,7 @@ private:
     std::vector<llama_token> prompt_;
     llama_pos position_ = 0;
     llama_token pending_ = LLAMA_TOKEN_NULL;
+    std::uint32_t prefill_tokens_ = 1;
     bool ready_ = false;
     bool failed_ = false;
     void (*stage_)(const char *) = nullptr;
@@ -68,6 +71,7 @@ private:
 // bounded device expert cache. Physical residency still requires qualification.
 llama_model_params streaming_model_params(ggml_backend_buffer_type_t cpu_buffer);
 llama_context_params streaming_context_params(std::uint32_t context_tokens,
-                                              std::size_t expert_cache_bytes);
+                                              std::size_t expert_cache_bytes,
+                                              std::uint32_t prefill_tokens = 1);
 
 } // namespace qwen_app

@@ -1,0 +1,239 @@
+{
+  "schema": "ps5-qwen-bounded-performance-dispositions-v1",
+  "date_JST": "2026-10-25",
+  "all_eight_proposals_screened": true,
+  "all_eight_proposals_implemented": false,
+  "selected_implementations_and_physical_comparisons_complete": true,
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "profile": "cumulative-idle",
+  "native_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+  "original_precision": "BF16/F32",
+  "all_selected_experts_and_required_PLE_retained": true,
+  "persistent_caches_enabled": false,
+  "validation_and_monitoring_preserved": true,
+  "all_original_budgets_reserves_and_wait_limits_preserved": true,
+  "compact_observer": {
+    "candidate_SELF_sha256": "363d8156845ed7930944aeecab6024537fdba80fb7ca1bce5fd56a3ebf335243",
+    "external_metrics": [
+      {
+        "decode_tokens_per_second": 0.33969051146117785,
+        "generated_tokens": 22,
+        "prefill_ms": 57731.33722399175,
+        "prompt_tokens": 30,
+        "total_ms": 122527.97697401047,
+        "ttft_ms": 57758.57917800546
+      },
+      {
+        "decode_tokens_per_second": 0.3459808302292944,
+        "generated_tokens": 22,
+        "prefill_ms": 56754.050946995616,
+        "prompt_tokens": 30,
+        "total_ms": 120411.84378799796,
+        "ttft_ms": 56781.29859499633
+      }
+    ],
+    "exact_baseline_arithmetic_and_external_outputs_and_token_IDs": true,
+    "additional_GPU_downloads": 0,
+    "route_records": [
+      {
+        "process_calls": 8,
+        "layer_records": 384,
+        "selected_indices": 12960,
+        "unique_selected_experts": 8734,
+        "cache_hits": 9,
+        "cache_misses": 8725,
+        "uploaded_bytes": 85770240000
+      },
+      {
+        "process_calls": 30,
+        "layer_records": 1440,
+        "selected_indices": 24960,
+        "unique_selected_experts": 20029,
+        "cache_hits": 500,
+        "cache_misses": 19529,
+        "uploaded_bytes": 191977881600
+      },
+      {
+        "process_calls": 30,
+        "layer_records": 1440,
+        "selected_indices": 24960,
+        "unique_selected_experts": 20029,
+        "cache_hits": 787,
+        "cache_misses": 19242,
+        "uploaded_bytes": 189156556800
+      }
+    ],
+    "retained_raw_row_bytes": 267648,
+    "JSON_creation_and_sidecar_writes_after_model_and_source_retirement": true,
+    "CPU_heap_peak_bytes": 436273152,
+    "postload_device_peak_bytes": 945815552,
+    "postload_device_live_bytes": 0,
+    "memory_pressure_events": 0,
+    "passive_memory_wait_ns": 0,
+    "native_frames_viewed": 2,
+    "three_request_lifecycle_complete": true,
+    "exact_original_restoration_and_fresh_numeric_readmission": true,
+    "ordinary_original_shutdown_and_final_idle_CPU_full_raw_readback": true,
+    "finite_parent_ended": true,
+    "frozen_inputs_unchanged": 439
+  },
+  "cache_replay": {
+    "slots": 53,
+    "extracted_Cpp_policies": 11,
+    "independent_Python_policies": 10,
+    "all_three_actual_baseline_counters_match": true,
+    "all_10_independent_policy_results_match": true,
+    "actual_portable_CLI_passed": true,
+    "changed_native_counters_rejected": true,
+    "selected_policy": "maya-aged-lfu",
+    "selected_decay_layer_routes": 4096,
+    "alternatives": [
+      {
+        "policy": "lfu",
+        "decay_layer_routes": 4096,
+        "external_byte_reduction_percent": 0.0
+      },
+      {
+        "policy": "lru",
+        "decay_layer_routes": 4096,
+        "external_byte_reduction_percent": -3.319491372417538
+      },
+      {
+        "policy": "slru",
+        "decay_layer_routes": 4096,
+        "external_byte_reduction_percent": -3.319491372417538
+      },
+      {
+        "policy": "lfu",
+        "decay_layer_routes": 48,
+        "external_byte_reduction_percent": -3.319491372417538
+      },
+      {
+        "policy": "lfu",
+        "decay_layer_routes": 96,
+        "external_byte_reduction_percent": -3.319491372417538
+      },
+      {
+        "policy": "lfu",
+        "decay_layer_routes": 192,
+        "external_byte_reduction_percent": -1.7667844522968101
+      },
+      {
+        "policy": "lfu",
+        "decay_layer_routes": 384,
+        "external_byte_reduction_percent": -0.6267571122746451
+      },
+      {
+        "policy": "lfu",
+        "decay_layer_routes": 768,
+        "external_byte_reduction_percent": -0.23213226380542906
+      },
+      {
+        "policy": "lfu",
+        "decay_layer_routes": 1536,
+        "external_byte_reduction_percent": -0.13670011090762824
+      },
+      {
+        "policy": "lfu",
+        "decay_layer_routes": 3072,
+        "external_byte_reduction_percent": 0.0
+      },
+      {
+        "policy": "lfu",
+        "decay_layer_routes": 8192,
+        "external_byte_reduction_percent": 0.0
+      }
+    ],
+    "optimistic_future_informed_upper_bound_byte_reduction_percent": 2.3935415645714553,
+    "future_informed_oracle_is_not_deployable": true,
+    "scope": "The fixed arithmetic/cold counting/retained counting trace only; no broad workload qualification."
+  },
+  "route_prediction": {
+    "candidates": [
+      {
+        "limit": 1,
+        "nonresident": 2589,
+        "useful": 1113,
+        "wasted": 1476,
+        "next_target_waste_percent": 57.01042873696408
+      },
+      {
+        "limit": 10,
+        "nonresident": 26934,
+        "useful": 8374,
+        "wasted": 18560,
+        "next_target_waste_percent": 68.90918541620258
+      }
+    ],
+    "predictor": "Previous completed same-layer final-token top-k.",
+    "predictions_do_not_mutate_replay_cache": true,
+    "new_native_predictions_enabled": false,
+    "next_target_misses_are_not_a_measurement_of_actual_prefetch_traffic": true,
+    "scratch_bytes": 8388608,
+    "two_current_aligned_read_bytes": 6586368,
+    "remaining_bytes": 1802240,
+    "one_original_matrix_bytes": 3276800,
+    "third_simultaneous_matrix_read_fits": false
+  },
+  "shared_state": {
+    "minimum_host_recurrent_and_PLE_payload_bytes": 118038528,
+    "CPU_spare_at_baseline_peak_bytes": 100597760,
+    "attention_and_logits_not_included": true,
+    "host_checkpoint_fits": false,
+    "device_checkpoint_implemented": false,
+    "device_checkpoint_physically_qualified": false,
+    "device_variant_not_ruled_out_by_host_heap_screen": true,
+    "configured_sequences": 1,
+    "configured_recurrent_rollback_snapshots": 0,
+    "architecture_has_rollback_support": true,
+    "complete_hybrid_copy_restore_qualified": false
+  },
+  "expert_pack": {
+    "original_matrix_bytes": 3276800,
+    "whole_expert_bytes": 9830400,
+    "total_scratch_bytes": 8388608,
+    "whole_expert_fits_one_window": false,
+    "minimum_reads_for_whole_expert": 2,
+    "second_complete_text_expert_payload_bytes": 241591910400,
+    "storage_reserve_bytes": 34359738368,
+    "available_filesystem_bytes_lower_bound": 126400000000,
+    "complete_second_pack_fits": false,
+    "expert_major_gather_reorder_implemented": false
+  },
+  "lossless_transport": {
+    "original_BF16_matrices": 9,
+    "codecs": [
+      {
+        "order": "original",
+        "mean_ratio": 1.2504467006750657,
+        "mean_host_restore_ms": 28.890796296296294,
+        "all_original_bytes_restored": true,
+        "native_decoder_speed_qualified": false
+      },
+      {
+        "order": "BF16_byte_planes",
+        "mean_ratio": 1.3921929382618916,
+        "mean_host_restore_ms": 19.338355555555555,
+        "all_original_bytes_restored": true,
+        "native_decoder_speed_qualified": false
+      }
+    ],
+    "selected_for_native_implementation": false,
+    "scope": "This zlib/byte-plane candidate misses the initial host delivery-cost screen; other codecs/native decoder speed remain unqualified."
+  },
+  "model_free_drafts": {
+    "multi_token_prompt_prefill_qualified": true,
+    "generated_token_batch_tokens": 1,
+    "complete_hybrid_state_rollback_qualified": false,
+    "implemented": false,
+    "acceptance_and_speed_qualified": false
+  },
+  "limits": {
+    "broad_reasoning_quality_qualified": false,
+    "sustained_service_qualified": false,
+    "small_decode_change_significance_qualified": false,
+    "full_split_layout_native_speed_qualified": false,
+    "uploaded_expert_bytes_are_not_physical_SSD_bandwidth": true,
+    "CI_and_general_release_enabled": false
+  }
+}
