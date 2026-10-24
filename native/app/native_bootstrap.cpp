@@ -102,6 +102,10 @@ extern "C" void qwen_native_stage(const char * stage) {
     // Never start an unrecordable backend operation or delete prior evidence.
     if (bytes > 1024 || stage_bytes.fetch_add(bytes + 1) > (8u << 20) - 1025)
         stop_bootstrap("bootstrap_stage_capacity_exhausted");
+    // Keep the complete line in one bounded stack buffer. This preserves the
+    // durable-before-operation boundary while avoiding two tiny writes and
+    // direct-heap/constant input pointers on the native filesystem write path.
+    char line[1025];std::memcpy(line,stage,bytes);line[bytes]='\n';
     qwen_app::StageMemorySample * sample=nullptr;
     bool before_valid=false,recording=false;
     if(probe_enabled.load(std::memory_order_acquire)) {
@@ -115,7 +119,7 @@ extern "C" void qwen_native_stage(const char * stage) {
             before_valid=probe_observation(sample->free_before,sample->before_ns);
         } else probe_fault.store(true);
     }
-    if (write(journal, stage, bytes) != static_cast<ssize_t>(bytes) || write(journal, "\n", 1) != 1 || fsync(journal)) stop_bootstrap("bootstrap_stage_persist_failed");
+    if (write(journal,line,bytes+1)!=static_cast<ssize_t>(bytes+1)||fsync(journal))stop_bootstrap("bootstrap_stage_persist_failed");
     if(sample) {
         sample->valid=probe_observation(sample->free_after,sample->after_ns)&&before_valid&&sample->after_ns>=sample->before_ns;
         if(!sample->valid)probe_fault.store(true);

@@ -1125,3 +1125,17 @@ controls, fresh ownership guards, exact original restoration and final idle CPU.
 Preserve the same-boot preceding original numerical admission after this CPU-only
 case. Normal modes keep sampling disabled and retain every durable stage write.
 This diagnostic is intermediate work, not completion of the performance plan.
+
+The native CPU diagnostic subsequently completed all current model reservations
+and releases,1227 valid stage samples, normal close, exact original readback and
+fresh final idle CPU. Its parent ended with all191 frozen inputs unchanged.
+Net free-page decrease was2113:2109 inside durable-stage intervals and4 between
+them. The measured interval includes observation overhead; proprietary allocation
+behavior is not identified. See docs/native-stage-memory-20261024.json.
+
+The next distinct intervention preserves complete line content, the1024-byte
+bound and fsync before returning from every durable stage, while copying the
+line and newline to one fixed1025-byte stack buffer and issuing one write.
+Actual-bootstrap controls must check exact output bytes, maximum line length,
+short-write retention, counter failure and sample capacity. Repeat the CPU-only
+native diagnostic before considering full-model performance qualification.
