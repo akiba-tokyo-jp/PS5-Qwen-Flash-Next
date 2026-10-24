@@ -851,3 +851,23 @@ uncertain GPU resources, stop its listener and propagate the original error.
 The once-only client distinguishes that event from empty/disconnected uncertainty;
 neither permits an automatic inference retry. Successful two-request and failure
 transport/client controls passed without a model. Complete all physical gates.
+
+## Complete physical plan: 2026-10-24
+
+The scope-v4 artifact at source 701f474cb8ca94dae5c854f080f3ec972d0d0c26 and SELF
+cb775555fd7423738cc6ef53efa760362c8b1c384ef2574b5b5797295bccbb3b passed the complete
+plan. One physical PS5 generated arithmetic `4`, then two external counting
+responses with 22 tokens each at 0.2845483641 / 0.2888186108 tokens/s. Actual native
+frames were viewed. Positive GPU/resource retirement, ordinary close, exact
+original restoration, numerical readmission, ordinary shutdown, final CPU guards
+and full original SELF readback all passed; the finite parent ended normally.
+No native owner or loaded model remains. See
+docs/native-full-generation-success-20261024.md and its sanitized JSON.
+
+This supersedes earlier pending full-plan status, without changing failed or
+uncertain historical evidence. Do not rerun the completed sequence. General
+inference/release deployment and CI remain disabled, persistent shader/pipeline
+caches remain disabled, and the task's console reservation remains held.
+The three short thinking-disabled requests qualify finite original-precision
+generation, not broad answer quality, long context or sustained service. Keep
+unknown CPU/GPU utilization unavailable and raw GPU memory estimates diagnostic.

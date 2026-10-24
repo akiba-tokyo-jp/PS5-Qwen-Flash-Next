@@ -54,5 +54,7 @@ explicit failure, empty uncertainty and normal completion, with one POST each.
 
 These changes preserve the model, seven engine overlays, 160 MiB scheduler arena,
 driver revision/profile and cache policy. Native link, module import audit and six
-SELF segments passed. Full external generation, actual frame review and every
-final restoration/readmission gate still require the distinct physical artifact.
+SELF segments passed. The distinct scope-v4 artifact subsequently completed full
+external generation, actual frame review and every final restoration/readmission
+gate. See [the complete physical result](native-full-generation-success-20261024.md)
+for its exact executable identity, measurements and limits.

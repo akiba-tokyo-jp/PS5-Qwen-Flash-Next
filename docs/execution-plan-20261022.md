@@ -1,11 +1,14 @@
 # Execution plan: first complete PS5 generation
 
-This is the active forward plan, created from the required result on 2026-10-22
-and critically reassessed on 2026-10-23. See
+This plan completed on 2026-10-24, including every implementation, physical
+generation, actual-frame review and final original-restoration gate. See
+[the completed result](native-full-generation-success-20261024.md).
+The plan was created from the required result on 2026-10-22 and critically
+reassessed on 2026-10-23. See
 `execution-efficiency-review-20261023.md` for the evidence and scheduling decision.
 Earlier milestone lists are historical evidence, not an additional work queue.
 
-## Current critical path: 2026-10-24
+## Historical critical path: 2026-10-24
 
 Data conversion, full content audit, all 76 hashes, transfer and the complete
 native model SHA pass in the preceding boot are finished. The native sealed-identity reuse gate passed

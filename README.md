@@ -5,55 +5,37 @@ The goal is to execute the complete text model with its original BF16 weights,
 streaming weights from SSD into bounded shared memory. No quantized substitute,
 expert pruning, or PC/cloud model execution is part of this goal.
 
-The [active execution plan](docs/execution-plan-20261022.md) targets complete
-PS5 text generation and a passive monitor. Model conversion, transfer and the
-complete native SHA256 pass in the preceding boot are finished. Native model
-admission has not reached generation. The owner confirmed a console freeze and
-power-cycled it. The exact original SELF was restored, numerically readmitted,
-normally closed and fully read back after complete new-boot CPU/runtime guards.
-The [independent native memory qualification](docs/native-memory-qualification-20261024.md)
-passed, including ordinary close and complete original restoration/readmission.
-See the [freeze investigation](docs/freeze-forensics-20261024.md).
-The [fresh-boot full-model case](docs/native-full-model-progress-20261024.md)
-then verified all 359,246,956,672 original bytes on the PS5 in 5,408,068 ms.
-A 102,400,507,904-byte automatic virtual reservation returned an error before
-backend initialization. The exact owner was normally closed and the original
-was fully restored, numerically readmitted, normally closed and verified again.
-A new sealed-identity snapshot preserves this boot's SHA proof. The
-[disjoint source-address implementation](docs/disjoint-source-addresses-20261024.md)
-passed its 16 KiB native reservation/protection/release and normal-close gates.
-All 76 complete source ranges subsequently passed. A
-[loader lifetime correction](docs/reserved-source-lifetime-20261024.md) retains
-these no-access keys through intermediate trim requests; its actual-class host
-regression passed. Complete model loading and its positive device-idle checkpoint
-then passed. The [native allocator admission](docs/native-allocator-admission-20261024.md)
-keeps raw Vulkan estimates separate from the physical allocator that backs BOs.
-The subsequent context returned before a CPU/Flexible admission refusal. The
-[bounded scheduler metadata correction](docs/native-scheduler-memory-20261024.md)
-retains the complete graph while replacing its oversized metadata reservation.
-Native context/cache construction and CPU/Flexible admission then passed.
-The first prefill returned a buffer-scope refusal before decode completion.
-[Protected source-row scheduling](docs/native-source-row-scheduling-20261024.md)
-keeps original embedding-row reads on the bounded CPU reader and matrices on GPU.
-Complete generation and the final full-plan gates remain pending.
-The [strict cache-copy admission](docs/native-cache-copy-admission-20261024.md)
-separately rejects uncached protected-source copies before GPU submission and
-records the exact source/consumer and cache eligibility.
-The [one-output prefill correction](docs/native-prefill-output-20261024.md)
-then completed one physical input-token GPU decode and positive epoch retirement.
-The following CPU guard remained strict. The
-[compact scheduler arena](docs/native-compact-scheduler-20261024.md) reduces
-scratch to 160 MiB while retaining all heap limits and complete graph checks.
-The compact artifact then generated `4` from 26 prompt tokens on the PS5.
-Its first external request exposed a stale source-page subtraction and empty
-failure stream. [Physical CPU accounting and explicit API failures](docs/native-physical-CPU-accounting-20261024.md)
-keep the original 512 MiB total CPU budget, require native read-window ownership
-and distinguish failed requests from uncertain connections.
-The [replacement source reader](docs/reserved-source-20261024.md)
-passes native host-link/SELF/import checks and exact CPU reference fixtures.
-Complete reserved-source model loading has passed on the PS5. See the earlier
-[physical hold](docs/public-mapping-hold-20261024.md) and its subsequent recovery
-in the current memory-qualification report.
+The [complete implementation and physical validation plan](docs/execution-plan-20261022.md)
+passed on 2026-10-24. One PS5 generated `4` for the arithmetic smoke request and
+completed two external API requests, each returning `1, 2, 3, 4, 5, 6, 7, 8`.
+Each external response generated 22 tokens at **0.28455 / 0.28882 tokens/s**;
+time to first token was **104.62 / 102.14 seconds**. See the
+[full-model result](docs/native-full-generation-success-20261024.md) and
+[sanitized measurements](docs/native-full-generation-success-20261024.json).
+
+The model stayed loaded across the three requests. The actual native passive
+frames were visually reviewed. Positive GPU/resource retirement, ordinary title
+close, exact original SELF restoration, original numerical readmission, ordinary
+shutdown, final CPU guards and complete original SELF readback all passed.
+No native application remains running. Committed execution/deployment controls
+and CI remain disabled; this result covers the finite validation session.
+
+The complete original BF16/F32 text model retains all experts and required PLE.
+Strata-style UMA admission and Maya aged-frequency eviction execute in the real
+cache. Source reads use protected virtual keys and one bounded 8 MiB window;
+model weights are not file-mapped. CPU heap peak was about 416 MiB inside its unchanged
+512 MiB budget. CPU/GPU utilization remains unavailable, and displayed raw GPU
+memory estimates are diagnostic. These short, thinking-disabled requests do not
+qualify broad answer quality, reasoning performance or sustained service.
+
+The earlier freeze and intermediate refusals remain documented in the
+[forensic record](docs/freeze-forensics-20261024.md),
+[native memory qualification](docs/native-memory-qualification-20261024.md),
+[full-model progress](docs/native-full-model-progress-20261024.md),
+[compact scheduler](docs/native-compact-scheduler-20261024.md) and
+[physical CPU accounting](docs/native-physical-CPU-accounting-20261024.md).
+The successful session supersedes their pending-generation status while
+preserving every failed result.
 
 ## Native driver integration
 
@@ -76,10 +58,12 @@ The original app was again restored, numerically readmitted and normally closed.
 The later [original-weight operation admission](docs/native-original-operations-20261022.md)
 passed a 2560x16 BF16 matvec plus F32 RMS/SiLU: all 5,136 outputs met the fixed
 numeric limits, followed by positive completion/retirement and complete original
-restoration/readmission. Full-model inference and tokens/s remain unqualified.
+restoration/readmission. These were component admissions; the later complete
+model result and measured tokens/s are recorded above.
 Committed console/deployment flags remain disabled in
 [development.json](config/development.json). A private frozen fixture policy
-and guarded ordinary launch are required; full-model inference remains rejected.
+and guarded ordinary launch are required. General `inference` mode remains
+rejected; the completed session used a separate, frozen validation policy.
 The native allocator/lifecycle integration is implemented and host-verified. See
 [native-validation.md](docs/native-validation.md) for the staged gates and exact
 preservation/restoration requirements. Driver tests do not establish Qwen quality
@@ -103,7 +87,8 @@ work. The demo is not evidence of Qwen inference or console performance.
 
 ## Earlier implementation checkpoints
 
-Construction is in progress. Full-model PS5 inference has **not** been achieved.
+At these earlier checkpoints, full-model PS5 inference had not been achieved.
+The completed physical result above supersedes that historical status.
 The pinned original checkpoint has 131 shards and 1,658 tensors. Every shard
 header was inspected through bounded HTTP ranges: 359,999,962,848 bytes of BF16
 weights and 280 bytes of exact I64 constants. All 131 original files have now
@@ -227,8 +212,8 @@ precision, compares all original PLE/expert/embedding copies and replays every
 dense weight-format transform, then publishes final
 file digests. The derived memory footprint also matches the native admission
 policy. All 131 original files have now been acquired and independently SHA256
-verified. Conversion is running; output auditing, final hashes and physical PS5
-memory admission remain pending.
+verified. Conversion, output auditing, final hashes, transfer and physical PS5
+memory admission subsequently completed before the generation result above.
 The native client requires the complete v2 conversion audit and exact original
 footprint before backend initialization; legacy receipts are rejected.
 [The native contract build](docs/native-model-contract-host-20261022.json)
@@ -237,7 +222,8 @@ That artifact has not been installed on the console.
 
 [Offline transfer planning and per-file transport](docs/model-transfer.md) now
 require the complete original receipt and preserve ambiguous transfer outcomes
-without retry or deletion. Full-model console transfer has not started.
+without retry or deletion. Full-model console transfer subsequently completed;
+the successful session reused its sealed files and same-boot native integrity.
 
 ## Manual PS5 build
 

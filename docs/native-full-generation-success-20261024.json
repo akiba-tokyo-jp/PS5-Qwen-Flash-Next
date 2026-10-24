@@ -1,0 +1,126 @@
+{
+  "schema": "ps5-qwen-complete-generation-summary-v1",
+  "date": "2026-10-24",
+  "full_plan_completed": true,
+  "physical_PS5_inference": true,
+  "original_precision": "BF16/F32",
+  "quantized": false,
+  "experts_pruned": false,
+  "tested_application_revision": "701f474cb8ca94dae5c854f080f3ec972d0d0c26",
+  "candidate_SELF_sha256": "cb775555fd7423738cc6ef53efa760362c8b1c384ef2574b5b5797295bccbb3b",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "profile": "cumulative-idle",
+  "native_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+  "persistent_shader_pipeline_caches_enabled": false,
+  "model_receipt_sha256": "d2a0705e0e8d8d5999cf2e6bd9519ccb0654837abcf1ab47d0295030a8bb5495",
+  "model_container_bytes": 359246956672,
+  "model_reloaded_between_requests": false,
+  "first_external_expert_cache_initially_empty": true,
+  "file_pages_and_pipelines_cold": false,
+  "arithmetic": {
+    "text": "4",
+    "metrics": {
+      "TTFT_ms": 90915.24296699837,
+      "decode_tokens_per_second": null,
+      "generated_tokens": 1,
+      "prefill_ms": 90879.53263099864,
+      "prompt_tokens": 26,
+      "total_ms": 94476.37508900091
+    }
+  },
+  "external_requests": [
+    {
+      "ordinal": 1,
+      "text": "1, 2, 3, 4, 5, 6, 7, 8",
+      "metrics": {
+        "decode_tokens_per_second": 0.2845483641307758,
+        "generated_tokens": 22,
+        "prefill_ms": 104582.39400800318,
+        "prompt_tokens": 30,
+        "total_ms": 181883.6492700018,
+        "ttft_ms": 104618.86345900223
+      }
+    },
+    {
+      "ordinal": 2,
+      "text": "1, 2, 3, 4, 5, 6, 7, 8",
+      "metrics": {
+        "decode_tokens_per_second": 0.2888186108054727,
+        "generated_tokens": 22,
+        "prefill_ms": 102108.63352400064,
+        "prompt_tokens": 30,
+        "total_ms": 178295.93231299892,
+        "ttft_ms": 102144.59099199995
+      }
+    }
+  ],
+  "expert_cache_cumulative": [
+    {
+      "after_request": 1,
+      "hits": 1091,
+      "misses": 36349,
+      "prefetch_advice_bytes": 0,
+      "uploaded_bytes": 357325209600
+    },
+    {
+      "after_request": 2,
+      "hits": 2261,
+      "misses": 60139,
+      "prefetch_advice_bytes": 0,
+      "uploaded_bytes": 591190425600
+    }
+  ],
+  "resource_measurements": {
+    "CPU_heap_peak_bytes": 436273152,
+    "maximum_source_read_bytes": 8388608,
+    "source_read_bytes": 604409906688,
+    "source_read_chunks": 185553,
+    "postload_device_allocations": 12,
+    "postload_device_peak_bytes": 945815552,
+    "postload_device_live_bytes": 0,
+    "untracked_libc_heap_fallbacks": 0
+  },
+  "completed_gates": {
+    "arithmetic_smoke": true,
+    "two_external_responses": true,
+    "external_events_match_native_records": true,
+    "native_frames_visually_reviewed": 2,
+    "passive_information_only": true,
+    "source_IO_completed": true,
+    "listener_stopped": true,
+    "finish_acknowledgement_delivered": true,
+    "GPU_completion_and_retirement": true,
+    "model_resources_released": true,
+    "ordinary_candidate_close": true,
+    "exact_original_restoration": true,
+    "original_numerical_readmission": true,
+    "ordinary_original_close": true,
+    "final_CPU_guards": true,
+    "whole_original_SELF_readback": true,
+    "same_boot_and_stable_services": true,
+    "native_owners": 0,
+    "parent_completed_and_ended": true,
+    "automatic_retries": 0
+  },
+  "final_state": {
+    "native_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "console_reservation_held": true,
+    "release_enabled": false,
+    "CI_enabled": false
+  },
+  "original_SELF": {
+    "bytes": 107911351,
+    "sha256": "2da5c0851cdebe83225edc054f3daf7e4aecd408d3893a9171eb4ad43a22d92d"
+  },
+  "limits": {
+    "answer_quality_qualified": false,
+    "thinking_enabled": false,
+    "sustained_service_qualified": false,
+    "long_context_qualified": false,
+    "CPU_GPU_utilization_qualified": false,
+    "displayed_GPU_memory": "raw diagnostic driver estimates",
+    "comparative_cache_speedup_qualified": false
+  }
+}

@@ -1,16 +1,18 @@
 # Strata and Maya application integration
 
-Current source-path status: the original file-backed model mmap attempt froze
-the console before this cache executed. The [replacement source reader](reserved-source-20261024.md)
+Current source-path status: the [complete physical session](native-full-generation-success-20261024.md)
+passed arithmetic generation, two external counting requests and every final
+restoration gate. The [replacement source reader](reserved-source-20261024.md)
 uses inaccessible virtual keys and an 8 MiB bounded direct-read window; model
-page-advice hints are disabled on that path. It is host-qualified only.
+page-advice hints are disabled on that path. The original file-backed model mmap
+attempt froze the console before this cache executed.
 See [the investigation](freeze-forensics-20261024.md). The historical mapped-file
 mechanism below is not a qualified native memory tier.
 
 This application code is connected to the pinned engine's real expert-cache
-planner and copy callback. Full-model PS5 execution remains unverified. The
-selected shared-driver source is integrated. Bounded native display/status
-admission passes; full-model inference remains rejected by policy.
+planner and copy callback. The selected shared-driver source and real native
+cache executed in the completed full-model session. General inference remains
+rejected by committed policy outside the finite validation scope.
 
 ## Pinned sources and adaptations
 
@@ -33,11 +35,11 @@ file digests are in `native/qwen_flash_next/expert-policy-sources.json`.
 1. `native_main.cpp` requires patched engine symbols and selects
    `LLAMA_APP_EXPERT_POLICY=maya-aged-lfu` before backend initialization. A separate
    loader patch disables eager model mmap prefetch.
-2. After model admission, it observes driver free memory and OS free page
-   counters. Expert-cache size is `min(512 MiB, driver_free, os_free - 256 MiB
-   reserve)`, saturating subtraction at zero. Missing counters or less than
-   128 MiB reject context admission. These initial limits await qualification;
-   other context allocations, mapped pages and PLE are not bounded by this formula.
+2. The qualified native path observes the canary-validated Direct allocator and
+   separate CPU/Flexible/kernel scopes. Raw Vulkan estimates remain diagnostic.
+   The original generic UMA clamp remains an additional cache limit; it cannot
+   replace the native whole-model and post-load allocation guards. The actual
+   48-layer cache has 53 BF16 expert slots (506.25 MiB), inside its 512 MiB cap.
 3. The existing `llama-moe-cache.cpp` callback synchronizes before reading actual
    selected IDs. The policy observes unique IDs, ages frequency counts and evicts
    the coldest eligible resident, with oldest access breaking ties. All currently
@@ -46,19 +48,21 @@ file digests are in `native/qwen_flash_next/expert-policy-sources.json`.
    `floor((slots - active_unique_experts) / cached_layers)` residents. The current
    layer may replace its unselected residents. Small caches may have a zero floor;
    the policy never sacrifices a selected expert to promise a layer quota.
-5. A PS5-specific adaptation issues page-aligned `MADV_WILLNEED` hints before
+5. The historical file-mapped adaptation issued page-aligned `MADV_WILLNEED` hints before
    uploading actual misses, with a 64 MiB rounded budget per callback. Unsupported
    or rejected advice leaves exact on-demand reads intact. These are hints for
-   known misses, not predictions of a future layer.
+   known misses, not predictions of a future layer. The qualified protected-key
+   reader disables these hints and reads misses through its bounded window.
 6. The upstream callback uploads original tensor bytes to existing device banks,
    preserving copy ordering and slot-map synchronization. Tensor types, top-k
    choices, routing weights and required PLE remain unchanged. The app uses
    one-token microbatches.
 
-The storage path is SSD-backed mapped weights, the OS page cache and bounded
-device expert banks. CPU/GPU share physical RAM. OS caching is not a separately
-bounded application RAM tier. This does not prove a sustained RSS limit or
-efficient read/compute overlap.
+The qualified storage path is original SSD bytes, protected no-access source
+keys, bounded direct reads and device expert banks. CPU/GPU share physical RAM.
+Source keys add zero resident file pages. The completed session proves this
+finite path; it does not establish efficient read/compute overlap or a speedup
+over another eviction policy.
 
 ## Counters and monitor
 
@@ -71,7 +75,10 @@ SSD traffic, GPU throughput or saved time. Demos report no real cache counters.
 
 The read-only monitor shows these counters alongside CPU/GPU identity, current
 date/time, TTFT and generation tokens/s. Use measured cold/warm console runs
-after application runtime admission to assess benefit.
+after application runtime admission to assess benefit. The completed requests
+measured 0.28455 / 0.28882 tokens/s. Request 1 began with an empty expert cache
+after a completed context recreation; request 2 reused it. Neither represents
+cold storage or cold pipelines, and no comparative policy speedup was measured.
 
 ## Manual evidence
 
