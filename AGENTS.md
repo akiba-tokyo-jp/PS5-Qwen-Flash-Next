@@ -1213,3 +1213,26 @@ actual whole reservation rehearsal. A refusal there is pre-GPU evidence and
 must normally close/restore; it never admits skipping or replacing the rehearsal.
 The normal application keeps this optional control disabled. Keep every original
 reserve/budget/precision/driver/cache policy and the existing20s/60s wait limits.
+
+The CPU phase control subsequently lost3628 free pages during five seconds
+without journal writes or reservations. Its next256 journal-only lines changed
+none of the sampled populations. The unchanged2974-page target refused before
+the actual rehearsal. The controller's failure-record collision bypassed cleanup;
+separately reviewed ordinary close, exact original restoration/full readback and
+fresh idle CPU subsequently passed, preserving same-boot numerical admission.
+Never replay this case. Every next controller must bind all six actual cleanup
+and four actual exception-path controls to its final source before execution.
+See docs/native-CPU-phase-20261024.json.
+
+A distinct application-footprint experiment may losslessly store all original
+embedded SPIR-V resources. Require full source/compiled-archive byte parity,
+complete lookup-table provenance, all-resource CPU SHA256/length and relocation
+verification before Vulkan, bounded tracked Direct decoder storage, native ABI
+qualification, actual linked CreateShaderModule input-copy lifetime evidence,
+positive lease completion and quarantine without retry on uncertainty. Keep the
+driver, model precision, all original memory predicates/reserves, real whole
+rehearsal, wait limits and persistent caches unchanged. Host checks precede one
+distinct CPU-only native case with ordinary close/exact restoration/final CPU;
+full native inference remains a separate complete qualification. See
+docs/lossless-shader-storage.md. This does not establish the memory cause or
+authorize relaxing a failed guard.

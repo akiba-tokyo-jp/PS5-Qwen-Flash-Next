@@ -19,6 +19,7 @@
 #include "direct_integrity.h"
 #include "direct_metadata.h"
 #include "stage_memory_probe.h"
+#include "shader_assets.h"
 #include "prior_model_integrity.h"
 #include "model_identity_namespace.h"
 #include "model_receipt.h"
@@ -583,6 +584,38 @@ int main(int argc, char ** argv) {
             qwen_app::admit_cpu_runtime(qwen_native_stage);
             model_CPU_runtime_admitted = true;
             qwen_app::enable_native_memory_backpressure();
+        }
+        if(qwen_app::native_shader_assets_registered()!=policy.contains("native_shader_storage"))
+            throw std::runtime_error("Packed shader resources require explicit prior CPU validation");
+        if(policy.contains("native_shader_storage")) {
+            const auto &storage=policy.at("native_shader_storage");
+            if(!startup.first_generation_validation||storage.at("schema")!="ps5-qwen-shader-storage-policy-v1"||
+               storage.at("enabled")!=true||storage.at("verify_all_original_assets_before_Vulkan")!=true||
+               storage.at("model_and_shader_precision_unchanged")!=true||storage.at("persistent_caches_enabled")!=false)
+                throw std::runtime_error("Lossless shader storage CPU admission is not authorized");
+            qwen_app::initialize_native_shader_assets();
+            const auto declared=qwen_app::native_shader_asset_stats();
+            if(declared.assets!=storage.at("shader_count")||declared.original_bytes!=storage.at("original_bytes")||
+               declared.stored_bytes!=storage.at("stored_bytes")||declared.lookup_entries!=storage.at("lookup_entries")||
+               declared.registry_sha256!=storage.at("registry_sha256"))
+                throw std::runtime_error("Shader CPU verification exceeds the exact private resource plan");
+            const auto shaders=qwen_app::verify_native_shader_assets_CPU();
+            if(shaders.failed||shaders.active_lease||shaders.CPU_verified_assets!=shaders.assets||
+               shaders.CPU_verified_lookups!=shaders.lookup_entries||shaders.assets!=storage.at("shader_count")||
+               shaders.original_bytes!=storage.at("original_bytes")||shaders.stored_bytes!=storage.at("stored_bytes")||
+               shaders.registry_sha256!=storage.at("registry_sha256"))
+                throw std::runtime_error("Lossless shader CPU bytes or lookup identity did not match the private plan");
+            require_model_CPU_budget();
+            write_fresh_report(startup.admission_report+".shader-assets.CPU",{
+                {"schema","ps5-qwen-shader-storage-CPU-result-v1"},{"pid",getpid()},
+                {"run_id",policy.at("native_first_generation_validation").at("run_id")},
+                {"shader_count",shaders.assets},{"original_bytes",shaders.original_bytes},{"stored_bytes",shaders.stored_bytes},
+                {"CPU_verified_assets",shaders.CPU_verified_assets},{"lookup_entries",shaders.lookup_entries},
+                {"CPU_verified_lookups",shaders.CPU_verified_lookups},{"registry_sha256",shaders.registry_sha256},
+                {"codec_output_bytes",shaders.codec_output_bytes},{"codec_scratch_bytes",shaders.codec_scratch_bytes},
+                {"active_lease",false},{"failed",false},{"all_original_SPIRV_bytes_preserved",true},
+                {"GPU_calls",0},{"Vulkan_initialized",false},{"model_loaded",false},{"persistent_caches_enabled",false}});
+            qwen_native_stage("all_original_shader_CPU_bytes_and_lookups_verified_before_Vulkan");
         }
         if(startup.model_validation || startup.first_generation_validation) {
             const bool selected_startup = startup.first_generation_validation && policy.contains("native_source_schedule");

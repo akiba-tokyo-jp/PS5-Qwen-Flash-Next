@@ -41,6 +41,8 @@ def main():
                         help="Local source-generated SceAgc import stubs; never copied to the repository")
     parser.add_argument("--model-io-manifest", type=Path, required=True,
                         help="Seven exact isolated source-reader overrides; original archives stay immutable")
+    parser.add_argument("--shader-storage-manifest",type=Path,
+                        help="Explicit lossless shader resources and checked Vulkan-input extension")
     parser.add_argument("--jobs", type=int, default=4)
     parser.add_argument("--link-threads", type=int, default=2,
                         help="Bound host linker workers independently from compilation")
@@ -69,6 +71,13 @@ def main():
             raise ValueError("Engine archive changed after its build receipt")
     model_io = validate_overrides(a.model_io_manifest, receipt_path)
     model_io_objects = [Path(row["object"]["path"]) for row in model_io["objects"]]
+    shader_storage=None
+    if bool(model_io.get('shader_storage_extension'))!=bool(a.shader_storage_manifest):
+        raise ValueError("The shader extension requires its separate exact resource manifest")
+    if a.shader_storage_manifest:
+        from shader_storage import validate_storage
+        shader_storage=validate_storage(a.shader_storage_manifest,a.model_io_manifest,receipt_path)
+        model_io_objects += [Path(row['path'])for row in shader_storage['asset_objects']]
     out = cache / "build/application-native"
     objects = out / "objects"
     objects.mkdir(parents=True, exist_ok=True)
@@ -88,7 +97,7 @@ def main():
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
-                                                   "model_integrity.cpp", "direct_integrity.cpp", "direct_metadata.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
+                                                   "model_integrity.cpp", "direct_integrity.cpp", "direct_metadata.cpp", "shader_assets.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
@@ -99,6 +108,7 @@ def main():
                      ("sha256/sha256.c","sha256/sha256.h","sha256/LICENSE","rotate-bits/rotate-bits.h")]
     header_paths += sorted((ROOT/'native/driver').glob('*.h'))
     header_paths += sorted((ROOT/'native/diagnostics').rglob('*.h'))
+    header_paths += sorted((ROOT/'native/thirdparty/zlib').glob('*.h'))
     header_inputs = [record(path) for path in header_paths]
     headers = b"".join(path.read_bytes() for path in header_paths)
     compiler_hash = sha(llvm / "clang++.exe")
@@ -194,6 +204,7 @@ def main():
     inputs = [*(obj for obj, _ in compiled), *model_io_objects, a.model_io_manifest, *engine_archives, driver_archive, *static_runtime, builtins, *imports,
               ROOT / "cmake/native-unwind.ld", ROOT / "cmake/native-symbols.map",
               a.driver_root / "tooling/native/ps5-pie.ld", receipt_path]
+    if a.shader_storage_manifest:inputs.append(a.shader_storage_manifest)
     command.append("--threads=" + str(a.link_threads))
     before = [record(path) for path in inputs]
     receipt = {"schema": "ps5-qwen-native-link-v1", "driver": selected, "engine_receipt": record(receipt_path),
@@ -204,6 +215,7 @@ def main():
                "platform_contract": "own native journal, sole AGC8, per-BO owner and completed-producer retirement" if native_platform else "generic archive; GPU entry rejected before backend initialization",
                "engine_build_provenance": built,
                "bounded_model_source_overrides": model_io,
+               "lossless_shader_storage":shader_storage,
                "bounded_model_source_manifest": record(a.model_io_manifest),
                "compiler": record(llvm / "clang++.exe"), "linker": record(llvm / "ld.lld.exe"),
                "application_sources": source_inputs, "application_headers": header_inputs,
@@ -228,12 +240,20 @@ def main():
     if before != after:
         raise ValueError("A native link input changed during the build")
     validate_overrides(a.model_io_manifest, receipt_path)
+    if a.shader_storage_manifest:validate_storage(a.shader_storage_manifest,a.model_io_manifest,receipt_path)
     link_map = (out / "native-link.private.map").read_text().replace("\\", "/")
     for row in model_io["objects"]:
         original_member = Path(row["archive"]["path"]).name + "(" + row["member"] + ")"
         if original_member in link_map or Path(row["object"]["path"]).as_posix() not in link_map:
             raise ValueError("A model-I/O override was omitted or its original archive member was linked")
     receipt["bounded_model_source_link_map_passed"] = True
+    if shader_storage:
+        for member in shader_storage['original_shader_members']:
+            if 'libggml-vulkan.a('+member['name']+')'in link_map:
+                raise ValueError("An original uncompressed shader member remains linked")
+        for row in shader_storage['asset_objects']:
+            if Path(row['path']).as_posix()not in link_map:raise ValueError("A lossless shader resource object was omitted")
+        receipt['lossless_shader_storage_link_map_passed']=True
     symbols = subprocess.check_output([str(llvm / "llvm-nm.exe"), "--defined-only", str(elf)], text=True)
     if re.search(r"\b[Tt]\s+mmap$", symbols, re.M):
         raise ValueError("A native title must not define the SDK payload mmap routine")
