@@ -949,3 +949,26 @@ without erasing failed candidates. Never replay completed launches/POST intents.
 Keep the reservation held, every memory/precision/driver/cache policy unchanged,
 and release/CI disabled. Use tools/check_source_pipeline.py for reproducible
 focused host checks; host checks alone never admit a console launch.
+
+## Source-contention cause investigation
+
+The owner subsequently requested identifying the internal cause of the rejected
+two-read regression. Isolated physical CPU controls, including the application's
+exact C++ executor, did not reproduce it. Supported PID sampling observed native
+filesystem wait-channel names; those names alone do not prove the target cause.
+The original title remains unchanged, restored and idle after these CPU controls.
+See docs/source-contention-investigation-20261024.md. Preserve failed queries and
+pre-read refusals separately from completed comparisons.
+
+A distinct explicit private diagnostic may record 32 completed source pairs at
+interval 512 across the real arithmetic request and replay that exact finite
+trace after output 4 and fresh positive GPU completion. Reuse the existing 8 MiB
+source lease, one persistent worker and at most eight reader descriptors. Only
+this diagnostic permits two outstanding reads; production read_pair stays rejected
+and the normal pipeline stays limited to one. Keep every original budget, memory
+predicate/reserve, v2 passive-wait bound, precision, driver and cache policy.
+Unknown reads retain their owner/backing; no retries or speculative release.
+Native link/import/SELF and focused lease/failure controls must pass first. The
+new case still requires the complete three-request/frame/positive-retirement and
+ordinary-close/original-restoration/readmission/shutdown/final verification plan.
+This is diagnosis, not permission to replay the rejected full-model candidate.

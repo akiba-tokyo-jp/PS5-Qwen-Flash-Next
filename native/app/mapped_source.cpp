@@ -4,6 +4,7 @@
 #include "paired_source_io.h"
 #include "device_buffer_budget.h"
 #include "system_memory.h"
+#include "source_contention.h"
 #include <ps5platform/kernel.h>
 #include <ps5platform/heap.h>
 #include <atomic>
@@ -17,7 +18,23 @@
 namespace {
 class NativeReads final : public qwen_app::SourceReadOps {
     std::unique_ptr<qwen_app::PairedSourceIO> parallel_;
+    std::unique_ptr<qwen_app::SourceContentionMonitor> probe_;
 public:
+    void start_completed_trace_probe() {
+        if (!parallel_ || probe_) throw std::runtime_error("A fresh, completed source diagnostic owner is required");
+        probe_ = std::make_unique<qwen_app::SourceContentionMonitor>();probe_->start();
+    }
+    void probe_completed_pair(unsigned round, unsigned mode, unsigned index,
+            const std::array<qwen_app::SourceReadRequest, 2> & requests,
+            const std::array<std::uint64_t, 2> & expected, const qwen_app::CompletedSourcePair & key) {
+        probe_->begin_pair(round, mode, index, requests, expected, key);
+        std::array<std::int64_t, 2> got{};
+        if (mode == 0 || mode == 2) got = parallel_->read(requests);
+        else for (unsigned i = 0; i < 2; ++i)
+            got[i] = read_at(requests[i].fd, requests[i].target, requests[i].bytes, requests[i].offset);
+        probe_->complete_pair(got);
+    }
+    std::string finish_completed_trace_probe() { return probe_->finish_completed(); }
     void start_parallel() {
         if (parallel_) throw std::runtime_error("The source I/O worker may only start once");
         parallel_ = std::make_unique<qwen_app::PairedSourceIO>(*this);
@@ -52,6 +69,7 @@ public:
         static_assert(sizeof(off_t) == 8, "Original model source offsets require 64-bit native I/O");
         if (bytes > qwen_app::model_read_window || offset > std::uint64_t(std::numeric_limits<off_t>::max()))
             throw std::runtime_error("Native source read exceeds its fixed window");
+        if (probe_ && probe_->active()) return probe_->read_at(fd, target, bytes, offset);
         return pread(fd, target, bytes, static_cast<off_t>(offset));
     }
     std::uint64_t system_headroom() override {
@@ -87,6 +105,15 @@ void start_native_model_sources(std::vector<SourceFile> files) {
     active.store(true, std::memory_order_release);
 }
 SourceReadStats native_model_source_stats() { return required().stats(); }
+void enable_native_completed_source_trace() { required().enable_completed_pair_trace(); }
+std::string run_native_completed_source_trace() {
+    required().require_completed_window();ops.start_completed_trace_probe();
+    required().replay_completed_pair_trace([&](unsigned round, unsigned mode, unsigned index,
+            const auto & requests, const auto & expected, const auto & key) {
+        ops.probe_completed_pair(round, mode, index, requests, expected, key);
+    });
+    required().require_completed_window();return ops.finish_completed_trace_probe();
+}
 void start_native_source_parallel_reads() {
     required().require_completed_window();
     if (parallel_ready.load()) throw std::runtime_error("Parallel source preflight cannot repeat");

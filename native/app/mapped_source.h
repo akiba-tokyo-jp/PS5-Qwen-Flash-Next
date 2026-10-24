@@ -27,6 +27,12 @@ struct SourceReadStats {
 };
 struct SourceReadRequest { int fd = -1; void * target = nullptr; std::size_t bytes = 0; std::uint64_t offset = 0; };
 struct SourcePipelineTimes { std::uint64_t producer_wait_ns = 0, worker_read_ns = 0, worker_dispatch_ns = 0; };
+struct CompletedSourcePair {
+    std::array<std::size_t, 2> files{};
+    std::array<std::uint64_t, 2> offsets{};
+    std::size_t bytes = 0;
+    std::uint64_t completed_ordinal = 0;
+};
 struct SourceReadOps {
     virtual ~SourceReadOps() = default;
     virtual SourceIdentity identity(int fd) = 0;
@@ -75,6 +81,42 @@ public:
     MappedSourceReader & operator=(const MappedSourceReader &) = delete;
     const SourceReadStats & stats() const { return stats_; }
     void require_completed_window() { healthy(); if (busy_) fail("The model source window has not completed"); }
+    void enable_completed_pair_trace() {
+        require_completed_window();
+        if (trace_enabled_ || trace_count_ || trace_replayed_) fail("The completed source trace may only start once");
+        trace_enabled_ = true;
+    }
+    void replay_completed_pair_trace(const std::function<void(unsigned, unsigned, unsigned,
+            const std::array<SourceReadRequest, 2> &, const std::array<std::uint64_t, 2> &,
+            const CompletedSourcePair &)> & replay) {
+        require_completed_window();
+        if (!trace_enabled_ || trace_count_ != trace_.size() || trace_replayed_ || !replay)
+            fail("An exact bounded completed source trace is required");
+        trace_enabled_ = false; trace_replayed_ = true;
+        const auto started = ProfileClock::now();
+        for (unsigned round = 0; round < 3; ++round) for (unsigned order = 0; order < 4; ++order) {
+            const unsigned mode = round % 2 ? 3 - order : order;
+            for (unsigned index = 0; index < trace_.size(); ++index) {
+                if (profile_elapsed_ns(started) > 30000000000ull) fail("The source trace diagnostic reached its completed boundary deadline");
+                const auto & key = trace_[index];
+                std::array<SourceReadRequest, 2> requests{};
+                std::array<std::uint64_t, 2> expected{};
+                for (unsigned i = 0; i < 2; ++i) {
+                    if (ops_.system_headroom() < model_read_system_reserve + model_read_flexible_metadata_margin)
+                        fail("The source trace diagnostic cannot retain the original OS reserve");
+                    const auto skip = key.offsets[i] % model_read_alignment;
+                    const auto bytes = std::size_t(rounded(skip + key.bytes));
+                    requests[i] = {handle(key.files[i]), static_cast<unsigned char *>(scratch_) + i * (model_read_window / 2),
+                        bytes, key.offsets[i] - skip};
+                    expected[i] = std::min<std::uint64_t>(bytes, files_[key.files[i]].bytes - requests[i].offset);
+                }
+                busy_ = true; pending_windows_ = 2;
+                try { replay(round, mode, index, requests, expected, key); }
+                catch (...) { failed_ = true; throw; }
+                pending_windows_ = 0; busy_ = false;
+            }
+        }
+    }
 
     void register_mapping(std::uintptr_t at, std::uint64_t bytes, int fd) {
         healthy();
@@ -238,6 +280,10 @@ private:
     ProfileClock::time_point consumer_started_{};
     unsigned pending_windows_ = 0;
     SourceReadStats stats_;
+    std::array<CompletedSourcePair, 32> trace_{};
+    unsigned trace_count_ = 0;
+    std::uint64_t trace_seen_ = 0;
+    bool trace_enabled_ = false, trace_replayed_ = false;
     [[noreturn]] void fail(const char * message) { failed_ = true; throw std::runtime_error(message); }
     void healthy() {
         if (failed_ || owner_ != std::this_thread::get_id()) fail("The bounded source reader is quarantined or has another producer");
@@ -300,6 +346,13 @@ private:
         for (const auto & request : requests) stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, request.bytes);
         stats_.bytes += 2 * bytes; stats_.chunks += 2; ++stats_.pipeline_batches;
         stats_.completed_windows += 2; pending_windows_ = 0; busy_ = false;
+        if (trace_enabled_) {
+            const auto ordinal = trace_seen_++;
+            // Spread fixed metadata across the actual request's file/layer
+            // stream, rather than retaining only its first few cached layers.
+            if (trace_count_ < trace_.size() && ordinal % 512 == 0)
+                trace_[trace_count_++] = {files, offsets, bytes, ordinal};
+        }
     }
     std::array<const void *, 2> read_pair_windows(const std::array<std::size_t, 2> & files,
             const std::array<std::uint64_t, 2> & offsets, std::size_t bytes) {
@@ -372,4 +425,5 @@ void start_native_source_parallel_reads();
 void enforce_native_model_compute_limits();
 SourceReadStats native_model_source_stats();
 void stop_native_model_sources();
+void enable_native_completed_source_trace();
 }

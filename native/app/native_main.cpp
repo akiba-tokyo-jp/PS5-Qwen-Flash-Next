@@ -13,6 +13,7 @@
 #include "memory_admission.h"
 #include "memory_probe.h"
 #include "system_memory.h"
+#include "source_contention.h"
 #include "source_virtual_addresses.h"
 #include "model_integrity.h"
 #include "prior_model_integrity.h"
@@ -883,6 +884,19 @@ int main(int argc, char ** argv) {
             qwen_app::Request request{gate.at("run_id").get<std::string>(),
                 qwen_app::render_first_generation_prompt(chat_template),
                 qwen_app::first_context_tokens, qwen_app::first_output_tokens};
+            const bool source_probe = policy.contains("native_source_contention_probe");
+            if (source_probe) {
+                const auto & diagnostic = policy.at("native_source_contention_probe");
+                if (diagnostic.at("schema") != "ps5-qwen-completed-source-contention-policy-v1" ||
+                    diagnostic.at("enabled") != true || diagnostic.at("completed_trace_pairs") != 32 ||
+                    diagnostic.at("trace_sampling_interval") != 512 ||
+                    diagnostic.at("maximum_diagnostic_outstanding_reads") != 2 ||
+                    diagnostic.at("production_outstanding_reads") != 1 ||
+                    diagnostic.at("additional_source_payload_buffers") != 0 ||
+                    diagnostic.at("unchanged_memory_precision_driver_and_cache_policy") != true)
+                    throw std::runtime_error("An explicit bounded source diagnostic policy is required");
+                qwen_app::enable_native_completed_source_trace();
+            }
             const auto first_performance = performance_snapshot(*engine);
             const auto & result = trial.run(request, [&](const auto & bound) {
                 write_fresh_report(startup.admission_report + ".first.intent", {
@@ -916,6 +930,20 @@ int main(int argc, char ** argv) {
             const auto first = answer.find_first_not_of(" \t\r\n"), last = answer.find_last_not_of(" \t\r\n");
             if (first == std::string::npos || answer.substr(first, last - first + 1) != "4")
                 throw std::runtime_error("The first original-model arithmetic smoke response was not the expected answer");
+            if (source_probe) {
+                // Observe only after a fresh positive GPU completion. This
+                // diagnostic submits no GPU work and owns the existing source
+                // window until every repeated read positively completes.
+                qwen_native_driver_begin();qwen_native_driver_complete();
+                require_model_CPU_budget();require_unchanged_model();
+                qwen_native_stage("source_contention_trace_started_after_positive_GPU_completion");
+                auto diagnostic = Json::parse(qwen_app::run_native_completed_source_trace());
+                diagnostic["positive_GPU_completion_preceded_diagnostic"] = true;
+                diagnostic["original_arithmetic_output"] = "4";
+                write_fresh_report(startup.admission_report + ".contention", diagnostic);
+                require_model_CPU_budget();require_unchanged_model();
+                qwen_native_stage("source_contention_trace_completed_source_window_released");
+            }
             // Recreate only the completed context. Resident model weights and
             // verified mappings stay alive; the first benchmark starts with an
             // empty expert cache while file pages/pipelines may already be warm.

@@ -28,9 +28,11 @@ def main():
     env = dict(os.environ, PATH=str(host) + os.pathsep + os.environ.get('PATH', ''))
     sources = [ROOT / 'native/app' / name for name in (
         'mapped_source.h', 'mapped_source.cpp', 'mapped_source_bridge.h', 'paired_source_io.h',
-        'profile_clock.h', 'memory_backpressure.h', 'system_memory.h', 'system_memory.cpp')]
+        'profile_clock.h', 'memory_backpressure.h', 'system_memory.h', 'system_memory.cpp',
+        'source_contention.h', 'source_contention.cpp')]
+    sources += [ROOT / 'native/diagnostics/sys/priority.h']
     sources += [ROOT / 'tests' / name for name in (
-        'pipeline_source.cpp', 'memory_backpressure.cpp', 'paired_cache.cpp', 'mapped_source.cpp')]
+        'pipeline_source.cpp', 'source_trace.cpp', 'memory_backpressure.cpp', 'paired_cache.cpp', 'mapped_source.cpp')]
     sources += [Path(__file__), ROOT / 'tools/check_mapped_source.py', ROOT / 'tools/performance_result.py']
     before = {str(p.relative_to(ROOT)): sha(p) for p in sources}
     receipt = dict(state='running', console_requests=0, GPU_operations=0,
@@ -51,7 +53,7 @@ def main():
 
     flags = ['-std=c++17', '-O2', '-Wall', '-Wextra', '-Werror', '-I', ROOT / 'native/app']
     try:
-        for name in ('pipeline_source', 'memory_backpressure'):
+        for name in ('pipeline_source', 'source_trace', 'memory_backpressure'):
             exe = args.out / (name + '.exe')
             run(name + '_compile', [host / 'clang++.exe', *flags, ROOT / 'tests' / (name + '.cpp'), '-o', exe])
             run(name + '_controls', [exe])
