@@ -17,6 +17,7 @@
 #include "source_virtual_addresses.h"
 #include "model_integrity.h"
 #include "direct_integrity.h"
+#include "direct_metadata.h"
 #include "stage_memory_probe.h"
 #include "prior_model_integrity.h"
 #include "model_identity_namespace.h"
@@ -643,6 +644,17 @@ int main(int argc, char ** argv) {
                 throw std::runtime_error("Sealed original model directory or receipt changed after native SHA verification");
         };
         require_prior_metadata();
+        const bool direct_metadata=policy.contains("native_direct_metadata");
+        if(direct_metadata) {
+            const auto &candidate=policy.at("native_direct_metadata");
+            if(!startup.first_generation_validation||!prior_integrity||!policy.contains("native_source_schedule")||
+               candidate.at("schema")!="ps5-qwen-direct-metadata-policy-v1"||candidate.at("enabled")!=true||
+               candidate.at("window_bytes")!=qwen_app::metadata_direct_window||
+               candidate.at("maximum_metadata_prefix_bytes")!=qwen_app::metadata_direct_limit||
+               candidate.at("reuse_active_source_window")!=true||candidate.at("unchanged_memory_and_integrity_guards")!=true)
+                throw std::runtime_error("Bounded original GGUF Direct metadata policy is not admitted");
+            qwen_app::enable_native_direct_metadata();
+        }
         // A receipt records host conversion provenance, not a fresh console hash
         // check. Deployment must independently verify every transferred file.
         qwen_app::ModelFootprint footprint; std::unordered_set<std::string> tensor_names;
@@ -662,6 +674,8 @@ int main(int argc, char ** argv) {
                     model_file(startup.model_receipt,file.at("path").get<std::string>()), file_bytes));
             if (prior_integrity && !identity_namespace->matches(file_identities.back(), prior_integrity->files.at(file_index - 1)))
                 throw std::runtime_error("Sealed original model file changed after native SHA verification");
+            if(direct_metadata)qwen_app::register_native_direct_metadata(
+                model_file(startup.model_receipt,file.at("path").get<std::string>()),file_identities.back());
             screen.state="verifying original model bytes";
             const auto remaining = std::chrono::duration_cast<std::chrono::seconds>(
                 verification_deadline - std::chrono::steady_clock::now()).count();
@@ -701,6 +715,16 @@ int main(int argc, char ** argv) {
         if (std::chrono::steady_clock::now() > verification_deadline)
             throw std::runtime_error("Complete original-model verification deadline expired before backend initialization");
         qwen_app::validate_original_footprint(footprint,expected_mapped_files);
+        if(direct_metadata) {
+            const auto s=qwen_app::native_direct_metadata_stats();
+            if(s.completed_files!=file_index||s.borrowed_files)
+                throw std::runtime_error("Direct metadata startup did not complete every original file before source startup");
+            write_fresh_report(startup.admission_report+".source.metadata",{{"schema","ps5-qwen-direct-metadata-admission-v1"},
+                {"completed_files",s.completed_files},{"physical_bytes",s.physical_bytes},{"physical_reads",s.physical_reads},
+                {"maximum_metadata_prefix_bytes",s.maximum_prefix},{"window_bytes",qwen_app::metadata_direct_window},
+                {"buffer_retired_before_source_startup",true},{"original_identities_and_parser_preserved",true},
+                {"model_loaded",false},{"Vulkan_initialized",false},{"inactive_pages_counted_as_available",false}});
+        }
         require_prior_metadata();
         const auto first_path = model_file(startup.model_receipt, receipt.at("files").at(0).at("path").get<std::string>());
         write_fresh_report(startup.admission_report+".integrity",{{"schema","ps5-qwen-model-integrity-v1"},

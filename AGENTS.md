@@ -1174,3 +1174,24 @@ seconds of completed idle. These sequential counters classify page movement;
 they never authorize reclaim, additional I/O/GPU work, or a reserve substitution.
 Preserve all existing bounded samples, actual reservations, durable stages,
 normal-close/restoration gates and the original numerical same-boot proof.
+
+The native population diagnostic completed all76 current reservations/releases,
+1227 valid stage samples and normal close/exact original restoration/final idle
+CPU. Its parent ended with192 unchanged frozen inputs. During the rehearsal:
+free3292 ->1580, inactive70735 ->72449, active28678 ->28610, wired36034 ->36100.
+Two more idle seconds left free1580. These sequential categories support page
+movement toward inactive memory, but do not identify the backing object or prove
+GGUF read-ahead as its cause. See docs/native-VM-population-20261024.json.
+
+A distinct CPU-only intervention may use the pinned original GGUF callback
+parser over a fixed aligned1MiB Direct metadata cache, retaining exact original
+file sizes and ten-field sealed identities. Keep every BF16/F32/PLE/tensor-span
+check and full current reservation rehearsal. When the existing8MiB source
+window is active, borrow that exclusively with its idle worker and descriptor
+cache; do not add a second payload buffer or exceed eight source descriptors.
+Failures retain descriptor/window/lease with no retry or buffered fallback.
+Require all76 original GGUF serialized-metadata and GGML-context host parity,
+window/EOF/failure/lease controls, actual PS5 compile/link/import/SELF checks and
+the normal-close/exact-restoration/final CPU sequence before GPU qualification.
+No model bytes, file layout, precision, driver/cache policy, heap budget, memory
+predicate/reserve or passive wait bound is changed by this intervention.

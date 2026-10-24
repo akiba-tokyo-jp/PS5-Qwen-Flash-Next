@@ -21,6 +21,7 @@ class NativeReads final : public qwen_app::SourceReadOps {
     std::unique_ptr<qwen_app::SourceContentionMonitor> probe_;
     bool selected_schedule_ = false;
 public:
+    void require_metadata_idle() {if(parallel_)parallel_->require_completed();}
     void enable_selected_schedule() {
         if (!parallel_ || selected_schedule_ || probe_)
             throw std::runtime_error("The selected source schedule requires a fresh admitted worker");
@@ -114,6 +115,11 @@ void start_native_model_sources(std::vector<SourceFile> files) {
     active.store(true, std::memory_order_release);
 }
 SourceReadStats native_model_source_stats() { return required().stats(); }
+SourceReadRequest begin_native_metadata_window(const std::string & path) {
+    required().require_completed_window();ops.require_metadata_idle();
+    return required().begin_metadata_window(path);
+}
+void end_native_metadata_window(){required().end_metadata_window();}
 void enable_native_source_schedule() {
     required().require_completed_window(); ops.enable_selected_schedule(); required().qualify_source_schedule();
 }

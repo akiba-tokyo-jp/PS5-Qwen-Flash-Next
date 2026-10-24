@@ -85,6 +85,19 @@ public:
     MappedSourceReader & operator=(const MappedSourceReader &) = delete;
     const SourceReadStats & stats() const { return stats_; }
     void require_completed_window() { healthy(); if (busy_) fail("The model source window has not completed"); }
+    SourceReadRequest begin_metadata_window(const std::string & path) {
+        require_completed_window();
+        const auto file=std::find_if(files_.begin(),files_.end(),[&](const auto & item){return item.path==path;});
+        if(file==files_.end())fail("Metadata requires an admitted original source path");
+        const int fd=handle(std::size_t(file-files_.begin()));
+        busy_=metadata_lease_=true;
+        return {fd,scratch_,model_read_window,0};
+    }
+    void end_metadata_window() {
+        healthy();
+        if(!busy_||!metadata_lease_||pending_windows_)fail("Metadata window completion has no matching exclusive lease");
+        metadata_lease_=busy_=false;
+    }
     void enable_source_schedule() {
         require_completed_window();
         if (schedule_enabled_ || trace_enabled_) fail("The source schedule requires a fresh exclusive admission");
@@ -267,6 +280,7 @@ public:
 
     void completed() {
         healthy();
+        if(metadata_lease_)fail("A consumer cannot retire an active metadata lease");
         if (!busy_) fail("A source window has no positive completed upload");
         stats_.consumer_ns += profile_elapsed_ns(consumer_started_);
         stats_.completed_windows += pending_windows_;
@@ -317,7 +331,7 @@ private:
     std::vector<Range> ranges_;
     std::array<Handle, 8> handles_{};
     std::uint64_t age_ = 0;
-    bool busy_ = false, failed_ = false;
+    bool busy_ = false, failed_ = false, metadata_lease_ = false;
     ProfileClock::time_point consumer_started_{};
     unsigned pending_windows_ = 0;
     SourceReadStats stats_;
@@ -508,6 +522,8 @@ private:
 // The native provider allocates exactly one aligned window. It is explicitly
 // shut down only after model destruction and positive native completion.
 void start_native_model_sources(std::vector<SourceFile> files);
+SourceReadRequest begin_native_metadata_window(const std::string & path);
+void end_native_metadata_window();
 void start_native_source_parallel_reads();
 void enable_native_source_schedule();
 void enforce_native_model_compute_limits();
