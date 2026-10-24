@@ -143,6 +143,35 @@ static ModelFileIdentity model_file_identity(const std::string & path, std::uint
         std::uint64_t(info.st_ctim.tv_sec), std::uint64_t(info.st_ctim.tv_nsec)};
 }
 
+static void validate_prior_shader_CPU(const Json & r,const Json & prior,const qwen_app::ShaderAssetStats & assets) {
+    if(prior.at("all_original_assets_completed_on_this_boot")!=true||
+       prior.at("same_encoded_resources_and_per_use_decoder_in_current_SELF")!=true||
+       prior.at("current_module_input_full_SHA256_required")!=true||
+       r.at("schema")!="ps5-qwen-shader-storage-CPU-result-v1"||r.at("pid")!=prior.at("pid")||r.at("run_id")!=prior.at("run_id")||
+       r.at("GPU_calls")!=0||r.at("Vulkan_initialized")!=false||r.at("model_loaded")!=false||
+       r.at("active_lease")!=false||r.at("failed")!=false||r.at("persistent_caches_enabled")!=false||
+       r.at("all_original_SPIRV_bytes_preserved")!=true||r.at("shader_count")!=assets.assets||
+       r.at("CPU_verified_assets")!=assets.assets||r.at("lookup_entries")!=assets.lookup_entries||
+       r.at("CPU_verified_lookups")!=assets.lookup_entries||r.at("original_bytes")!=assets.original_bytes||
+       r.at("stored_bytes")!=assets.stored_bytes||r.at("registry_sha256")!=assets.registry_sha256)
+        throw std::runtime_error("Prior complete native shader bytes do not bind the unchanged current resources and per-use SHA256");
+}
+
+static Json read_prior_shader_CPU(const Json & prior,const qwen_app::ShaderAssetStats & assets) {
+    const auto path=prior.at("report_path").get<std::string>();const auto bytes=prior.at("report_bytes").get<std::uint64_t>();
+    const auto run=prior.at("run_id").get<std::string>();
+    if(run.size()!=32||run.find_first_not_of("0123456789abcdef")!=std::string::npos||
+       path!="/app0/qwen-runtime/plan-"+run+".json.shader-assets.CPU"||!bytes||bytes>4096)
+        throw std::runtime_error("Prior shader evidence must be the bounded completed native report");
+    const auto before=model_file_identity(path,bytes);
+    std::ifstream file(path,std::ios::binary);std::string raw(static_cast<std::size_t>(bytes),'\0');
+    file.read(raw.data(),static_cast<std::streamsize>(bytes));
+    if(file.gcount()!=static_cast<std::streamsize>(bytes)||file.peek()!=std::char_traits<char>::eof()||
+       file.bad()||qwen_app::sha256_metadata_bytes(raw)!=prior.at("report_sha256")||model_file_identity(path,bytes)!=before)
+        throw std::runtime_error("Prior shader evidence changed or failed its complete SHA256");
+    const auto report=Json::parse(raw);validate_prior_shader_CPU(report,prior,assets);return report;
+}
+
 static ModelFileIdentity model_directory_identity(const std::string & path) {
     const int fd = open(path.c_str(), O_RDONLY | O_DIRECTORY | O_NOFOLLOW);
     if (fd < 0) throw std::runtime_error("Original model directory could not be observed");
@@ -590,7 +619,7 @@ int main(int argc, char ** argv) {
         if(policy.contains("native_shader_storage")) {
             const auto &storage=policy.at("native_shader_storage");
             if(!startup.first_generation_validation||storage.at("schema")!="ps5-qwen-shader-storage-policy-v1"||
-               storage.at("enabled")!=true||storage.at("verify_all_original_assets_before_Vulkan")!=true||
+               storage.at("enabled")!=true||
                storage.at("model_and_shader_precision_unchanged")!=true||storage.at("persistent_caches_enabled")!=false)
                 throw std::runtime_error("Lossless shader storage CPU admission is not authorized");
             qwen_app::initialize_native_shader_assets();
@@ -599,15 +628,22 @@ int main(int argc, char ** argv) {
                declared.stored_bytes!=storage.at("stored_bytes")||declared.lookup_entries!=storage.at("lookup_entries")||
                declared.registry_sha256!=storage.at("registry_sha256"))
                 throw std::runtime_error("Shader CPU verification exceeds the exact private resource plan");
-            const auto shaders=qwen_app::verify_native_shader_assets_CPU();
-            if(shaders.failed||shaders.active_lease||shaders.CPU_verified_assets!=shaders.assets||
-               shaders.CPU_verified_lookups!=shaders.lookup_entries||shaders.assets!=storage.at("shader_count")||
+            const bool verify_all=storage.at("verify_all_original_assets_before_Vulkan").get<bool>();
+            Json prior_shader;
+            if(!verify_all)prior_shader=read_prior_shader_CPU(storage.at("prior_native_CPU"),declared);
+            const auto shaders=verify_all?qwen_app::verify_native_shader_assets_CPU():declared;
+            if(shaders.failed||shaders.active_lease||(verify_all&&shaders.CPU_verified_assets!=shaders.assets)||
+               (verify_all&&shaders.CPU_verified_lookups!=shaders.lookup_entries)||shaders.assets!=storage.at("shader_count")||
                shaders.original_bytes!=storage.at("original_bytes")||shaders.stored_bytes!=storage.at("stored_bytes")||
                shaders.registry_sha256!=storage.at("registry_sha256"))
                 throw std::runtime_error("Lossless shader CPU bytes or lookup identity did not match the private plan");
             require_model_CPU_budget();
             write_fresh_report(startup.admission_report+".shader-assets.CPU",{
-                {"schema","ps5-qwen-shader-storage-CPU-result-v1"},{"pid",getpid()},
+                {"schema","ps5-qwen-shader-storage-CPU-result-v2"},{"pid",getpid()},
+                {"verification_mode",verify_all?"all_assets_in_current_run":"prior_all_assets_and_current_use_SHA256"},
+                {"all_assets_verified_in_this_run",verify_all},
+                {"prior_CPU_verified_assets",verify_all?Json(0):prior_shader.at("CPU_verified_assets")},
+                {"prior_report_sha256",verify_all?Json(nullptr):storage.at("prior_native_CPU").at("report_sha256")},
                 {"run_id",policy.at("native_first_generation_validation").at("run_id")},
                 {"shader_count",shaders.assets},{"original_bytes",shaders.original_bytes},{"stored_bytes",shaders.stored_bytes},
                 {"CPU_verified_assets",shaders.CPU_verified_assets},{"lookup_entries",shaders.lookup_entries},
@@ -616,7 +652,8 @@ int main(int argc, char ** argv) {
                 {"codec_scratch_bytes",shaders.codec_scratch_bytes},
                 {"active_lease",false},{"failed",false},{"all_original_SPIRV_bytes_preserved",true},
                 {"GPU_calls",0},{"Vulkan_initialized",false},{"model_loaded",false},{"persistent_caches_enabled",false}});
-            qwen_native_stage("all_original_shader_CPU_bytes_and_lookups_verified_before_Vulkan");
+            qwen_native_stage(verify_all?"all_original_shader_CPU_bytes_and_lookups_verified_before_Vulkan":
+                "prior_all_original_shader_CPU_bytes_bound_current_module_SHA256_required_before_Vulkan");
         }
         if(startup.model_validation || startup.first_generation_validation) {
             const bool selected_startup = startup.first_generation_validation && policy.contains("native_source_schedule");
@@ -1274,6 +1311,17 @@ int main(int argc, char ** argv) {
             const auto device_stats = qwen_app::native_model_device_stats();
             struct ps5_heap_stats final_heap{}; ps5_heap_stats(&final_heap);
             qwen_app::stop_native_model_sources();
+            if(policy.contains("native_shader_storage")) {
+                const auto shaders=qwen_app::native_shader_asset_stats();
+                if(shaders.failed||shaders.active_lease||shaders.decoded_calls+shaders.raw_calls<=shaders.CPU_verified_assets)
+                    throw std::runtime_error("The completed Vulkan plan lacks positively retired original shader inputs");
+                write_fresh_report(startup.admission_report+".shader-assets.Vulkan",{
+                    {"schema","ps5-qwen-shader-storage-Vulkan-result-v1"},{"pid",getpid()},{"run_id",request.id},
+                    {"registry_sha256",shaders.registry_sha256},{"CPU_verified_assets_in_this_run",shaders.CPU_verified_assets},
+                    {"module_input_restorations_after_CPU_verification",shaders.decoded_calls+shaders.raw_calls-shaders.CPU_verified_assets},
+                    {"active_lease",false},{"failed",false},{"all_used_original_SPIRV_SHA256_checked",true},
+                    {"positive_plan_GPU_completion_and_retirement",true},{"persistent_caches_enabled",false}});
+            }
             write_fresh_report(startup.admission_report + ".memory.backpressure", memory_backpressure_report());
             write_fresh_report(startup.admission_report, {
                 {"schema", "ps5-qwen-plan-validation-result-v1"}, {"run_id", request.id},

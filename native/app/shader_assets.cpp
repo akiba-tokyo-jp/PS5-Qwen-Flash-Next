@@ -115,6 +115,12 @@ void initialize_native_shader_assets() {
     if(!ordered||!ps5_heap_owns(ordered))fail("Reversible shader ordering must retain its bounded tracked Direct buffer");
     stream.zalloc=allocate_codec;stream.zfree=release_codec;stream.opaque=nullptr;
     if(inflateInit(&stream)!=Z_OK||allocator_fault)fail("Native shader inflate ABI or scratch admission failed");
+    for(std::size_t i=0;i<lookup_count;++i) {
+        const auto &v=lookups[i];
+        if(!v.observed_data||!v.observed_size||*v.observed_data!=v.expected_data||*v.observed_size!=v.expected_size)
+            fail("Shader lookup relocation or stored length changed");
+        ++verified_lookups;
+    }
     heap_admission();initialized.store(true);
 }
 ShaderAssetStats native_shader_asset_stats() {
@@ -136,12 +142,6 @@ ShaderAssetStats native_shader_asset_stats() {
 }
 ShaderAssetStats verify_native_shader_assets_CPU() {
     if(!initialized.load()||verified_assets.load())fail("Shader CPU verification may only run once after initialization");
-    for(std::size_t i=0;i<lookup_count;++i) {
-        const auto &v=lookups[i];
-        if(!v.observed_data||!v.observed_size||*v.observed_data!=v.expected_data||*v.observed_size!=v.expected_size)
-            fail("Shader lookup relocation or stored length changed");
-        ++verified_lookups;
-    }
     for(std::size_t i=0;i<asset_count;++i) {
         std::size_t bytes=0;void *lease=nullptr;
         const void *data=qwen_app_prepare_shader_code(assets[i].storage,assets[i].storage_bytes,&bytes,&lease);

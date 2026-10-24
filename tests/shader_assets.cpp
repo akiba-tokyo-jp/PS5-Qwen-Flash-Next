@@ -40,6 +40,18 @@ int main(int argc,char **argv){try{
         std::cout<<mode<<" passed\n"<<std::flush;std::_Exit(0);
     }
     check(!rejected,"Actual shader codec initialization failed");
+    if(mode=="on_demand") {
+        const auto before=qwen_app::native_shader_asset_stats();
+        check(before.CPU_verified_assets==0&&before.CPU_verified_lookups==QWEN_EXPECTED_LOOKUP_COUNT&&
+            before.decoded_calls==0&&before.raw_calls==0,"Metadata admission decoded unused shader storage");
+        std::size_t bytes=0;void *lease=nullptr;
+        const auto *p=static_cast<const unsigned char*>(qwen_app_prepare_shader_code(QWEN_CODEC_SAMPLE_DATA,QWEN_CODEC_SAMPLE_SIZE,&bytes,&lease));
+        check(bytes>=20&&p[0]==3&&p[1]==2&&p[2]==35&&p[3]==7,"On-demand restoration changed original SPIR-V");
+        qwen_app_complete_shader_code(lease);const auto after=qwen_app::native_shader_asset_stats();
+        check(after.decoded_calls==1&&after.raw_calls==0&&after.CPU_verified_assets==0&&
+            !after.active_lease&&!after.failed,"On-demand original bytes did not complete with their exclusive lease");
+        std::cout<<mode<<" current lookups and per-use exact SHA256 passed\n";return 0;
+    }
     if(mode=="normal"||mode=="concurrent") {
         const auto s=qwen_app::verify_native_shader_assets_CPU();
         check(s.assets==QWEN_EXPECTED_SHADER_COUNT&&s.CPU_verified_assets==s.assets&&

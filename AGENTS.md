@@ -1248,3 +1248,23 @@ reversible word-byte ordering and exact stored-byte aliases, preserving every
 original SHA256/name/lookup and all prior guards. Charge its one extra maximum-
 shader buffer to the existing tracked heap and repeat the actual-codec and
 distinct native CPU gates before full inference qualification.
+
+The reordered shader representation passed all1527 original byte checks and382
+lookups on the PS5 at SELF1f027d73a095194f1de48ca55b7e96b863e77ed67f96cdfb81f776a8e1bde17b.
+The unchanged target refused at2021 before the actual rehearsal. Its normal
+close/exact restoration/full readback/final idle CPU and378 unchanged parent
+inputs passed. This full shader-byte result is valid data evidence, separate
+from the failed later memory admission. Never replay the consumed case. See
+docs/native-shader-ordering-CPU-20261024.json.
+
+A distinct optional CPU startup profile may reuse only those immutable shader
+bytes after exact prior owner/run/report SHA, same-boot, same encoded resources
+and unchanged per-use decoder/completion provenance. Keep complete current SELF
+SHA256, every current lookup relocation check, and full original SHA256 of every
+used compressed shader frame before CreateShaderModule. The CPU report must say
+which assets were verified in this run and which came from prior data evidence.
+This never permits reusing OS mappings or skipping the actual current whole
+rehearsal, reducing2974/1154-page predicates/reserves, or enabling persistent
+caches. Require actual-codec and prior-evidence refusal controls, native import/
+SELF gates and a distinct bounded CPU case with ordinary close/exact restoration/
+final CPU before considering a separate finite full inference case.

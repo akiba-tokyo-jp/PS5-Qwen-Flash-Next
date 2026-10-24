@@ -43,7 +43,7 @@ def main():
             '-I',ROOT/'native/app','-I',a.out,'-I',a.cache/'build/llama-ps5/ggml/src/ggml-vulkan','-I',engine/'vendor','-I',engine/'vendor/hash',
             ROOT/'tests/shader_assets.cpp',ROOT/'native/app/shader_assets.cpp',ROOT/'native/app/sha256_backend.cpp',host_asm,host_registry,
             '-L',host.parent/'lib','-lz','-o',exe])
-        for mode in ('normal','concurrent','checksum','length','format','wrong_owner','heap_refusal','unknown_owner'):run(mode,[exe,mode])
+        for mode in ('normal','on_demand','concurrent','checksum','length','format','wrong_owner','heap_refusal','unknown_owner'):run(mode,[exe,mode])
         run('actual_PS5_codec_compile',[target/'clang++.exe','--no-default-config','--target=x86_64-sie-ps5','-DQWEN_NATIVE_PLATFORM=1',
             '-fno-stack-protector','-fno-plt','-femulated-tls','-fPIC','-std=c++17','-O1','-fexceptions','-fcxx-exceptions','-frtti','-nostdinc++',
             '-isystem',sdk/'target/include/c++/v1','-isystem',sdk/'target/include','-I',ROOT/'native/app','-I',engine/'vendor','-I',engine/'vendor/hash',

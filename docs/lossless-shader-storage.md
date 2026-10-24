@@ -63,3 +63,35 @@ selection-table entry and original SHA256. It introduces no shader transform or
 model precision change. Host comparison measured10322484 unique stored bytes,
 versus12838336 in the first native image; this representation needs its own
 actual-codec, native import/SELF and distinct CPU execution gates.
+
+The reordered representation subsequently passed all1527 original shader and382
+lookup checks on the PS5, with a38072631-byte SELF. It again refused before the
+actual rehearsal at2021 free pages; ordinary close, original restoration/full
+readback/final idle CPU and378 unchanged inputs passed. See
+[the reordered native CPU result](native-shader-ordering-CPU-20261024.json).
+Shrinking the image alone does not predict global free-page headroom.
+
+The next optional startup profile reuses only that immutable shader-byte result.
+The host must bind the prior native owner/run/report, original SELF, exact same
+encoded resource manifest and objects, and mechanically unchanged per-use decoder
+and completion code. Every selected resource must use a compressed frame with
+its original full SHA256. The current SELF still passes its complete native SHA256.
+Native startup reads the bounded prior report through its canonical app0 path,
+checks complete report SHA256 and stable file identity, and validates every prior
+shader/lookup/count/registry field. It verifies every current lookup relocation
+again without decoding unused shader storage. Every used shader is still restored
+and compared against its full original SHA256 before CreateShaderModule.
+
+The v2 CPU report explicitly distinguishes prior all-resource verification from
+bytes verified in the current run. This data-only reuse never substitutes prior
+OS mappings, memory admission, the actual current whole reservation rehearsal,
+positive device completion, or the2974-page startup and1154-page work predicates.
+The complete plan also requires an idle codec and a separate shader report after
+positive GPU/model retirement. Host checks and a CPU-only case remain separate
+from full inference and performance qualification.
+
+FreeBSD documents O_DIRECT as filesystem dependent and potentially ignored;
+[its open(2) manual](https://man.freebsd.org/cgi/man.cgi?query=open&sektion=2&format=html)
+does not establish PS5 filesystem behavior. Do not attribute the observed
+post-integrity free-page increase and later decrease to a particular proprietary
+cache object without a direct control.
