@@ -40,5 +40,14 @@ class PerformanceResultTests(unittest.TestCase):
         self.record['delta']['process_calls'] = 51
         validate_performance(self.record, self.result)
 
+    def test_parallel_v2_measures_wall_interval_and_requires_used_pairs(self):
+        self.record.update(schema='ps5-qwen-completed-performance-v2',
+            source_read_ns_is_batch_wall_time=True, maximum_parallel_source_reads=2)
+        self.record['delta'].update(source_chunks=2, source_completed_windows=2, source_parallel_batches=1)
+        validate_performance(self.record, self.result)
+        for value in (0, 2):
+            self.record['delta']['source_parallel_batches'] = value
+            with self.assertRaises(ValueError): validate_performance(self.record, self.result)
+
 
 if __name__ == '__main__': unittest.main()

@@ -60,7 +60,30 @@
      }
  
      int64_t copy_experts(ggml_backend_t backend, const ggml_tensor * w, ggml_tensor * dst, int64_t e, int64_t last) {
-@@ -734,3 +751,5 @@
+@@ -656,6 +673,22 @@
+                 while (i + n < fills.size() && fills[i + n].expert == fills[i].expert + (int32_t) n && fills[i + n].slot == fills[i].slot + (int32_t) n) {
+                     n++;
+                 }
++                // Strata's known-miss batching principle, adapted to two fixed
++                // 4 MiB source windows. No speculative reads or CUDA APIs.
++                if (n == 1 && i + 1 < fills.size() && qwen_app_model_source_pair_enabled(expert_size)) {
++                    const void * windows[2] = {};
++                    ggml_backend_synchronize(backend);
++                    qwen_app_model_source_pair((const uint8_t *) w->data + fills[i].expert*expert_size,
++                        (const uint8_t *) w->data + fills[i+1].expert*expert_size, expert_size, windows);
++                    // These writes must complete before either window is reused.
++                    // The ordinary async API may retain an unpinned host pointer.
++                    ggml_backend_tensor_set(bank, windows[0], fills[i].slot*expert_size, expert_size);
++                    ggml_backend_tensor_set(bank, windows[1], fills[i+1].slot*expert_size, expert_size);
++                    qwen_app_model_source_chunk_completed();
++                    bytes += 2*expert_size;
++                    i += 2;
++                    continue;
++                }
+                 ggml_backend_tensor_set_async(backend, bank, (const uint8_t *) w->data + fills[i].expert*expert_size, fills[i].slot*expert_size, n*expert_size);
+                 bytes += n*expert_size;
+                 i += n;
+@@ -734,3 +767,5 @@
      }
      return res;
  }

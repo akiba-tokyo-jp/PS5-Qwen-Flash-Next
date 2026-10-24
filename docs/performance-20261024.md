@@ -40,3 +40,35 @@ summed as independent totals or described as isolated GPU compute time.
 General inference/release deployment, CI and persistent shader/pipeline caches
 remain disabled. No retries, force-kill, GPU reset or uncertain resource release
 are permitted. Profile completion is an intermediate step of speed improvement.
+
+## Completed profile and selected candidate
+
+The distinct profile session completed all three requests, actual native frame
+review, positive resource retirement and exact original restoration/readmission/
+shutdown. See [the sanitized counters](performance-profile-20261024.json).
+Its two external requests measured 0.282978 / 0.287113 tokens/s. Direct source
+read wall time was 158.595 / 155.781 seconds inside 181.311 / 177.761 seconds of
+decode processing: approximately 87.5%. These are nested CPU wall intervals,
+not isolated GPU time. Source headroom and identity checks remain required.
+
+The selected next candidate adapts known-miss batching from
+[Strata's pinned source](https://github.com/Niko1221/Strata/blob/7ddc17a38fe7f31637e895ecfba58c2cd43d65ec/src/core/expert_source.cpp).
+It splits the existing 8 MiB Direct source window into two aligned 4 MiB halves.
+One persistent CPU I/O worker and the existing producer read two known cache
+misses concurrently. No speculative expert is read. Existing contiguous-range
+merging and the serial odd/large-range path remain available.
+
+Each pair retains both halves until two exact reads and both synchronous backend
+consumers complete. Failed or uncertain work quarantines the pair and retains
+its backing; it never retries or publishes completion. The worker passes an
+equal-byte CPU preflight before Vulkan initialization and stops only after
+positive model/source retirement. No additional read buffer, GPU command,
+quantization, matrix fallback, memory allowance or driver/cache change is added.
+The v2 read counter measures batch wall time, not the sum of overlapping calls.
+
+Focused host checks passed actual concurrent entry, original-byte and EOF parity,
+buffer canaries, exact failure retention and a real worker timeout. The actual
+patched cache loop passed paired/serial/contiguous/odd byte comparisons and
+consumer-failure controls. Native compilation passed; link/import/SELF and a
+distinct matched physical comparison remain required. These host results do not
+qualify a speedup. See [the upstream review](strata-update-review-20261024.md).

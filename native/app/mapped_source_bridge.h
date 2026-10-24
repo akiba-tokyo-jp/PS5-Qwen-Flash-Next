@@ -30,4 +30,6 @@ bool ggml_app_bounded_cpu_rows_hooks();
 bool ggml_app_bounded_cpu_buffer_reads_hooks();
 const void * qwen_app_model_source_chunk(const void *, std::size_t, std::size_t *);
 void qwen_app_model_source_chunk_completed();
+bool qwen_app_model_source_pair_enabled(std::size_t);
+void qwen_app_model_source_pair(const void *, const void *, std::size_t, const void **);
 }

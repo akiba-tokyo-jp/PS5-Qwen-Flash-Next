@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "mapped_source.h"
 #include "mapped_source_bridge.h"
+#include "paired_source_io.h"
 #include "device_buffer_budget.h"
 #include "system_memory.h"
 #include <ps5platform/kernel.h>
@@ -15,7 +16,21 @@
 
 namespace {
 class NativeReads final : public qwen_app::SourceReadOps {
+    std::unique_ptr<qwen_app::PairedSourceIO> parallel_;
 public:
+    void start_parallel() {
+        if (parallel_) throw std::runtime_error("The source I/O worker may only start once");
+        parallel_ = std::make_unique<qwen_app::PairedSourceIO>(*this);
+        parallel_->start();
+    }
+    void stop_parallel_completed() {
+        if (!parallel_) throw std::runtime_error("The paired source worker is missing");
+        parallel_->stop_completed(); parallel_.reset();
+    }
+    std::array<std::int64_t, 2> read_pair(const std::array<qwen_app::SourceReadRequest, 2> & requests) override {
+        if (!parallel_) throw std::runtime_error("Paired source I/O has not passed CPU startup");
+        return parallel_->read(requests);
+    }
     qwen_app::SourceIdentity identity(int fd) override {
         struct stat info{};
         if (fstat(fd, &info) || !S_ISREG(info.st_mode) || !info.st_ino || info.st_size <= 0 || (info.st_mode & 0022))
@@ -42,6 +57,7 @@ std::unique_ptr<qwen_app::MappedSourceReader> reader;
 void * window = nullptr;
 std::atomic<bool> active{false};
 std::atomic<bool> compute_limits{false};
+std::atomic<bool> parallel_ready{false};
 qwen_app::DeviceBufferBudget device_budget;
 qwen_app::MappedSourceReader & required() {
     if (!active.load(std::memory_order_acquire) || !reader)
@@ -65,6 +81,13 @@ void start_native_model_sources(std::vector<SourceFile> files) {
     active.store(true, std::memory_order_release);
 }
 SourceReadStats native_model_source_stats() { return required().stats(); }
+void start_native_source_parallel_reads() {
+    required().require_completed_window();
+    if (parallel_ready.load()) throw std::runtime_error("Parallel source preflight cannot repeat");
+    ops.start_parallel();
+    required().preflight_parallel();
+    parallel_ready.store(true, std::memory_order_release);
+}
 void enforce_native_model_compute_limits() {
     required().require_completed_window();
     device_budget.enable();
@@ -73,6 +96,8 @@ void enforce_native_model_compute_limits() {
 void stop_native_model_sources() {
     device_budget.close_completed();
     required().close_completed();
+    if (parallel_ready.load(std::memory_order_acquire)) ops.stop_parallel_completed();
+    parallel_ready.store(false, std::memory_order_release);
     active.store(false, std::memory_order_release);
     compute_limits.store(false, std::memory_order_release);
     reader.reset(); free(window); window = nullptr;
@@ -111,6 +136,17 @@ extern "C" const void * qwen_app_model_source_chunk(const void * at, std::size_t
     return required().prepare(reinterpret_cast<std::uintptr_t>(at), wanted, *copied);
 }
 extern "C" void qwen_app_model_source_chunk_completed() { required().completed(); }
+extern "C" bool qwen_app_model_source_pair_enabled(std::size_t bytes) {
+    return qwen_app_model_reads_enabled() && parallel_ready.load(std::memory_order_acquire) &&
+        bytes && bytes <= qwen_app::model_read_window / 2 - qwen_app::model_read_alignment;
+}
+extern "C" void qwen_app_model_source_pair(const void * first, const void * second, std::size_t bytes, const void ** windows) {
+    if (!windows || !qwen_app_model_source_pair_enabled(bytes))
+        throw std::runtime_error("A qualified bounded source pair is required");
+    const auto result = required().prepare_pair({reinterpret_cast<std::uintptr_t>(first),
+        reinterpret_cast<std::uintptr_t>(second)}, bytes);
+    windows[0] = result[0]; windows[1] = result[1];
+}
 extern "C" void qwen_app_model_device_buffer_reserve(std::size_t bytes) {
     if (!qwen_app_model_compute_limits_enabled()) return;
     required().require_completed_window();

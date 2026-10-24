@@ -40,7 +40,7 @@ def main():
         print(label + " passed", flush=True)
     receipt["provider_object_sha256"] = hashlib.sha256(obj.read_bytes()).hexdigest()
     receipt["inputs"] = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in (app / "mapped_source.h", app / "mapped_source.cpp", app / "mapped_source_bridge.h", app / "profile_clock.h",
+        for path in (app / "mapped_source.h", app / "mapped_source.cpp", app / "mapped_source_bridge.h", app / "profile_clock.h", app / "paired_source_io.h",
                      app / "device_buffer_budget.h", ROOT / "tests/mapped_source.cpp")}
     (a.out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
 

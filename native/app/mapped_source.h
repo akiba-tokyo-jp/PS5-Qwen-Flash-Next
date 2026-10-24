@@ -21,13 +21,21 @@ struct SourceFile { std::string path; std::uint64_t bytes; SourceIdentity identi
 struct SourceReadStats {
     std::uint64_t bytes = 0, chunks = 0, maximum_chunk = 0, mappings = 0, retired_ranges = 0;
     std::uint64_t headroom_ns = 0, handle_ns = 0, read_ns = 0, consumer_ns = 0, completed_windows = 0;
+    std::uint64_t parallel_batches = 0;
 };
+struct SourceReadRequest { int fd = -1; void * target = nullptr; std::size_t bytes = 0; std::uint64_t offset = 0; };
 struct SourceReadOps {
     virtual ~SourceReadOps() = default;
     virtual SourceIdentity identity(int fd) = 0;
     virtual int open_direct(const std::string &) = 0;
     virtual bool close_file(int) = 0;
     virtual std::int64_t read_at(int, void *, std::size_t, std::uint64_t) = 0;
+    virtual std::array<std::int64_t, 2> read_pair(const std::array<SourceReadRequest, 2> & requests) {
+        std::array<std::int64_t, 2> results{};
+        for (unsigned i = 0; i < 2; ++i)
+            results[i] = read_at(requests[i].fd, requests[i].target, requests[i].bytes, requests[i].offset);
+        return results;
+    }
     // Native providers return Flexible availability only after the separate
     // kernel free/minimum/reserved predicate passes. CPU buffers use Direct.
     virtual std::uint64_t system_headroom() = 0;
@@ -108,6 +116,30 @@ public:
         return read_window(range->file, range->offset + at - range->at, wanted, copied);
     }
 
+    std::array<const void *, 2> prepare_pair(const std::array<std::uintptr_t, 2> & addresses, std::size_t bytes) {
+        healthy();
+        if (busy_ || !bytes || bytes > model_read_window / 2 - model_read_alignment)
+            fail("A source pair exceeds its two fixed half windows");
+        std::array<std::size_t, 2> files{};
+        std::array<std::uint64_t, 2> offsets{};
+        for (unsigned i = 0; i < 2; ++i) {
+            if (!contains(addresses[i], bytes)) fail("A paired source range is unowned");
+            const auto range = std::find_if(ranges_.begin(), ranges_.end(), [&](const auto & candidate) {
+                return addresses[i] >= candidate.at && addresses[i] < candidate.at + candidate.bytes;
+            });
+            files[i] = range->file; offsets[i] = range->offset + addresses[i] - range->at;
+        }
+        return read_pair_windows(files, offsets, bytes);
+    }
+
+    void preflight_parallel() {
+        healthy();
+        const auto bytes = std::size_t(std::min<std::uint64_t>(files_.front().bytes, model_read_alignment));
+        const auto windows = read_pair_windows({0, 0}, {0, 0}, bytes);
+        if (std::memcmp(windows[0], windows[1], bytes)) fail("Concurrent source preflight bytes differ");
+        completed();
+    }
+
     // CPU-only capability/read check, before any backend initialization.
     void preflight() {
         healthy(); std::size_t copied = 0;
@@ -120,7 +152,8 @@ public:
         healthy();
         if (!busy_) fail("A source window has no positive completed upload");
         stats_.consumer_ns += profile_elapsed_ns(consumer_started_);
-        ++stats_.completed_windows;
+        stats_.completed_windows += pending_windows_;
+        pending_windows_ = 0;
         busy_ = false;
     }
 
@@ -169,6 +202,7 @@ private:
     std::uint64_t age_ = 0;
     bool busy_ = false, failed_ = false;
     ProfileClock::time_point consumer_started_{};
+    unsigned pending_windows_ = 0;
     SourceReadStats stats_;
     [[noreturn]] void fail(const char * message) { failed_ = true; throw std::runtime_error(message); }
     void healthy() {
@@ -195,6 +229,44 @@ private:
         if (ops_.identity(fd) != files_[file].identity) fail("Direct model source identity changed");
         return fd;
     }
+    std::array<const void *, 2> read_pair_windows(const std::array<std::size_t, 2> & files,
+            const std::array<std::uint64_t, 2> & offsets, std::size_t bytes) {
+        if (busy_ || !bytes || bytes > model_read_window / 2 - model_read_alignment)
+            fail("Invalid paired source windows");
+        std::array<SourceReadRequest, 2> requests{};
+        std::array<const void *, 2> windows{};
+        std::array<std::uint64_t, 2> available{};
+        for (unsigned i = 0; i < 2; ++i) {
+            if (files[i] >= files_.size() || offsets[i] >= files_[files[i]].bytes ||
+                bytes > files_[files[i]].bytes - offsets[i]) fail("A paired read exceeds its sealed file");
+            {
+                ProfileScope timing(stats_.headroom_ns);
+                if (ops_.system_headroom() < model_read_system_reserve + model_read_flexible_metadata_margin)
+                    fail("Fresh Flexible/kernel reserve cannot admit a paired read");
+            }
+            const auto skip = std::size_t(offsets[i] % model_read_alignment);
+            const auto requested = std::size_t(rounded(skip + bytes));
+            if (requested > model_read_window / 2) fail("An aligned paired window exceeds its half buffer");
+            int fd;
+            { ProfileScope timing(stats_.handle_ns); fd = handle(files[i]); }
+            auto * target = static_cast<unsigned char *>(scratch_) + i * (model_read_window / 2);
+            requests[i] = {fd, target, requested, offsets[i] - skip};
+            windows[i] = target + skip;
+            available[i] = std::min<std::uint64_t>(requested, files_[files[i]].bytes - requests[i].offset);
+        }
+        busy_ = true; pending_windows_ = 2;
+        std::array<std::int64_t, 2> got{};
+        { ProfileScope timing(stats_.read_ns); got = ops_.read_pair(requests); }
+        for (unsigned i = 0; i < 2; ++i) {
+            if (got[i] < 0 || std::uint64_t(got[i]) != available[i] ||
+                std::uint64_t(got[i]) < offsets[i] % model_read_alignment + bytes)
+                fail("A paired direct read did not complete its exact window");
+            stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, requests[i].bytes);
+        }
+        stats_.bytes += 2 * bytes; stats_.chunks += 2; ++stats_.parallel_batches;
+        consumer_started_ = ProfileClock::now();
+        return windows;
+    }
     const void * read_window(std::size_t file, std::uint64_t offset, std::size_t wanted, std::size_t & copied) {
         if (busy_ || !wanted || offset >= files_[file].bytes || wanted > files_[file].bytes - offset)
             fail("Invalid bounded model source read");
@@ -204,6 +276,7 @@ private:
                 fail("Fresh Flexible/kernel reserve cannot admit the next model source window");
         }
         busy_ = true;
+        pending_windows_ = 1;
         const auto skip = std::size_t(offset % model_read_alignment);
         copied = std::min(wanted, model_read_window - skip);
         const auto requested = std::size_t(rounded(skip + copied));
@@ -223,6 +296,7 @@ private:
 // The native provider allocates exactly one aligned window. It is explicitly
 // shut down only after model destruction and positive native completion.
 void start_native_model_sources(std::vector<SourceFile> files);
+void start_native_source_parallel_reads();
 void enforce_native_model_compute_limits();
 SourceReadStats native_model_source_stats();
 void stop_native_model_sources();

@@ -8,14 +8,20 @@ FIELDS = {
 
 
 def validate_performance(record, result):
-    if (record.get('schema') != 'ps5-qwen-completed-performance-v1' or
+    schema = record.get('schema')
+    if (schema not in ('ps5-qwen-completed-performance-v1', 'ps5-qwen-completed-performance-v2') or
         record.get('process_includes_source_and_backend_work') is not True or
         record.get('GPU_timestamp_queries') is not False or
         record.get('hot_path_logs_added') is not False or record.get('GPU_operations_added') is not False):
         raise ValueError('Performance measurement scope differs')
     delta = record.get('delta', {})
-    if set(delta) != FIELDS or any(type(v) is not int or not 0 <= v < 2**63 for v in delta.values()):
+    fields = FIELDS | ({'source_parallel_batches'} if schema.endswith('v2') else set())
+    if set(delta) != fields or any(type(v) is not int or not 0 <= v < 2**63 for v in delta.values()):
         raise ValueError('Invalid completed performance counters')
+    if schema.endswith('v2') and (record.get('source_read_ns_is_batch_wall_time') is not True or
+        record.get('maximum_parallel_source_reads') != 2 or
+        not 0 < delta['source_parallel_batches'] <= delta['source_chunks'] // 2):
+        raise ValueError('Parallel reads lack bounded completed batch evidence')
     metrics = result['metrics']
     reason = result['stop_reason']
     if reason not in ('end_of_generation', 'output_token_limit'):

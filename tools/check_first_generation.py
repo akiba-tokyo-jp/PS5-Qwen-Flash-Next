@@ -42,7 +42,7 @@ def main():
     sources = [app / name for name in ("first_generation.h", "first_generation_policy.h", "validation_policy.h",
         "startup.h", "startup.cpp", "llama_engine.h", "llama_engine.cpp", "native_main.cpp", "http_app.h", "http_app.cpp",
         "chat_prompt.h", "chat_prompt.cpp", "bounded_demo.h", "bounded_demo.cpp", "model_cpu_budget.h",
-        "mapped_source.h", "mapped_source_bridge.h", "profile_clock.h", "device_buffer_budget.h", "native_display.h", "native_display.cpp", "demo_support.cpp")]
+        "mapped_source.h", "mapped_source_bridge.h", "profile_clock.h", "paired_source_io.h", "device_buffer_budget.h", "native_display.h", "native_display.cpp", "demo_support.cpp")]
     sources += [ROOT / "tests" / name for name in ("first_generation.cpp", "first_generation_render.cpp", "llama_adapter.cpp", "validation_policy.cpp")]
     inputs = {str(path.relative_to(ROOT)): digest(path) for path in sources}
     flags = ["-std=c++17", "-O1", "-Wall", "-Wextra", "-Werror", "-I", app,

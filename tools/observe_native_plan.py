@@ -254,6 +254,16 @@ def main():
             for ordinal, native_request in enumerate(result['demonstration']['requests'], 1):
                 summaries.append(validate_performance(
                     read_record(Path(str(result_path) + '.demo' + str(ordinal) + '.performance')), native_request))
+            if binding.get('require_parallel_sources') is True:
+                download('.source.parallel')
+                admission = read_record(Path(str(result_path) + '.source.parallel'))
+                require(admission == dict(schema='ps5-qwen-source-parallel-admission-v1',
+                    source_window_bytes=8 << 20, CPU_IO_workers=1, maximum_outstanding_reads=2,
+                    preflight_equal_bytes=True, preflight_bytes_per_read=16384, Vulkan_initialized=False),
+                    'Parallel source CPU preflight differs')
+                require(result.get('source_parallel_worker_stopped') is True and
+                    all(row['delta'].get('source_parallel_batches', 0) > 0 for row in summaries),
+                    'Parallel reads were unused or their worker was not positively stopped')
             exclusive(out / 'performance-review.private.json', dict(completed_requests=summaries,
                 baseline_comparison_required=True, speedup_qualified=False))
         exclusive(out / "native-review.private.json", review)
