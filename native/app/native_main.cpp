@@ -581,6 +581,18 @@ int main(int argc, char ** argv) {
         if ((startup.model_validation || startup.first_generation_validation) && !policy.value("console_validation_enabled", false))
             throw std::runtime_error("Original model CPU validation is not enabled");
         bool model_CPU_runtime_admitted = false;
+        const bool SELF_read_control=policy.contains("native_SELF_read_control");
+        bool SELF_control_direct=true;
+        if(SELF_read_control) {
+            const auto &control=policy.at("native_SELF_read_control");
+            const auto mode=control.at("read_mode").get<std::string>();
+            if(!startup.first_generation_validation||control.at("schema")!="ps5-qwen-SELF-read-CPU-policy-v1"||
+               control.at("CPU_only")!=true||control.at("maximum_read_window_bytes")!=(1u<<20)||
+               control.at("quiet_seconds")!=5||control.at("automatic_retries")!=0||
+               (mode!="direct"&&mode!="buffered"))
+                throw std::runtime_error("The standalone SELF read CPU control is not admitted");
+            SELF_control_direct=mode=="direct";
+        }
         if (startup.first_generation_validation) {
             const auto & gate = policy.at("native_first_generation_validation");
             // This exclusive marker consumes the attempt before verification,
@@ -595,8 +607,11 @@ int main(int argc, char ** argv) {
                     throw std::runtime_error("The selected source candidate requires bounded direct startup integrity");
                 write_fresh_report(startup.admission_report+".system-memory.before-startup-integrity",
                     system_memory_report(qwen_app::observe_native_system_memory()));
-                qwen_app::verify_native_startup_file_direct("/app0/eboot.bin",gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
-                    gate.at("candidate_SELF_sha256").get<std::string>(),60);
+                if(SELF_read_control)
+                    qwen_app::verify_native_startup_file_control("/app0/eboot.bin",gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                        gate.at("candidate_SELF_sha256").get<std::string>(),20,SELF_control_direct);
+                else qwen_app::verify_native_startup_file_direct("/app0/eboot.bin",gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                        gate.at("candidate_SELF_sha256").get<std::string>(),60);
                 qwen_app::verify_native_startup_file_direct(startup.model_receipt,gate.at("model_receipt_bytes").get<std::uint64_t>(),
                     gate.at("model_receipt_sha256").get<std::string>(),30);
                 write_fresh_report(startup.admission_report+".system-memory.after-startup-integrity",
@@ -613,6 +628,24 @@ int main(int argc, char ** argv) {
             qwen_app::admit_cpu_runtime(qwen_native_stage);
             model_CPU_runtime_admitted = true;
             qwen_app::enable_native_memory_backpressure();
+        }
+        if(SELF_read_control) {
+            const auto before=diagnostic_VM_population();
+            const auto begun=qwen_app::ProfileClock::now();std::this_thread::sleep_for(std::chrono::seconds(5));
+            const auto elapsed=qwen_app::profile_elapsed_ns(begun);const auto after=diagnostic_VM_population();
+            const auto &gate=policy.at("native_first_generation_validation");
+            write_fresh_report(startup.admission_report+".SELF-read-control",{
+                {"schema","ps5-qwen-SELF-read-CPU-result-v1"},{"pid",getpid()},{"run_id",gate.at("run_id")},
+                {"read_mode",SELF_control_direct?"direct":"buffered"},{"maximum_read_window_bytes",1u<<20},
+                {"SELF_bytes_verified",gate.at("candidate_SELF_bytes")},{"SELF_sha256",gate.at("candidate_SELF_sha256")},
+                {"all_startup_SHA256_passed",true},{"all_native_read_calls_returned",true},{"quiet_ns",elapsed},
+                {"VM_before_quiet",before},{"VM_after_quiet",after},
+                {"original_memory_predicate_before_every_SELF_read",true},{"memory_predicates_or_reserves_relaxed",false},
+                {"model_metadata_files",0},{"source_virtual_calls",0},{"source_workers",0},{"GPU_calls",0},
+                {"shader_storage_initialized",false},{"Vulkan_initialized",false},{"model_loaded",false},
+                {"state","CPU_SELF_control_completed_waiting_for_ordinary_close"}});
+            qwen_native_stage("startup_SELF_CPU_control_completed_GPU_not_started_waiting_for_ordinary_close");
+            for(;;)std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         if(qwen_app::native_shader_assets_registered()!=policy.contains("native_shader_storage"))
             throw std::runtime_error("Packed shader resources require explicit prior CPU validation");

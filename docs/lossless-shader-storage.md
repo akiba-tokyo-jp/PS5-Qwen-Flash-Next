@@ -95,3 +95,22 @@ FreeBSD documents O_DIRECT as filesystem dependent and potentially ignored;
 does not establish PS5 filesystem behavior. Do not attribute the observed
 post-integrity free-page increase and later decrease to a particular proprietary
 cache object without a direct control.
+
+The prior-byte/on-demand CPU case passed its current SELF, prior report and382
+current lookup checks, with zero shader decodes in the current run. It still lost
+1968 free pages during the five-second quiet interval and refused before the
+actual rehearsal at1401. Normal close/restoration/full readback/final CPU and382
+unchanged inputs passed. Avoiding unused shader restoration did not solve the
+pressure. See [the on-demand CPU result](native-shader-JIT-CPU-20261024.json).
+
+The next standalone CPU control isolates startup SELF reading from all model
+metadata, shader initialization, virtual reservations and GPU work. Its explicit
+Direct and buffered modes use the same complete SHA256, fixed aligned1MiB
+tracked buffer, exact EOF-tail counts, stable descriptor identity and deadline.
+Every control read checks the original memory predicate first and persists paired
+before/returned markers. It records five seconds of VM populations after the
+complete startup hash and then waits for ordinary close. This early CPU-only
+terminal state does not qualify or bypass any model/GPU startup target or actual
+whole reservation rehearsal. There is no fallback, cache eviction, reclamation,
+I/O retry or uncertain resource release. The controller must distinguish complete
+SELF-only records from incomplete/unknown read markers before ordinary shutdown.

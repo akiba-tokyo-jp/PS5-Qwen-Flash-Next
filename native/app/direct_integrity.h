@@ -36,4 +36,6 @@ inline void stream_direct_integrity(DirectIntegrityOps & ops,void * buffer,std::
     }
 }
 void verify_native_startup_file_direct(const std::string &,std::uint64_t,const std::string &,unsigned);
+// Explicit CPU-only A/B control; no fallback from one read mode to another.
+void verify_native_startup_file_control(const std::string &,std::uint64_t,const std::string &,unsigned,bool);
 }

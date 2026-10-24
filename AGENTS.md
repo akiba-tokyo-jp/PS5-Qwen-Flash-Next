@@ -1268,3 +1268,20 @@ rehearsal, reducing2974/1154-page predicates/reserves, or enabling persistent
 caches. Require actual-codec and prior-evidence refusal controls, native import/
 SELF gates and a distinct bounded CPU case with ordinary close/exact restoration/
 final CPU before considering a separate finite full inference case.
+
+The prior-byte/on-demand CPU case passed current SELF/prior-report SHA and382
+current lookups, without decoding unused shaders. It still lost1968 free pages
+during five quiet seconds and refused at1401 before current virtual reservations.
+Normal close/exact restoration/full readback/final CPU and382 unchanged inputs
+passed. Do not replay the case or attribute the decrease to unused shader decode.
+See docs/native-shader-JIT-CPU-20261024.json.
+
+A distinct standalone CPU SELF-read control may stop before all shader/model
+metadata, virtual reservations and Vulkan. Its explicit Direct/buffered modes
+must preserve complete current SELF SHA256, stable descriptor identity, the
+aligned1MiB tracked buffer, exact returned EOF bytes and fixed deadline. Require
+the original memory predicate before every new read, paired durable native-read
+markers, a bounded five-second VM observation, an explicit SELF-only completion
+report, ordinary close/exact original restoration/final CPU and actual controller
+unknown-read/failure controls. This does not admit model execution or bypass its
+unchanged2974/1154-page gates, actual whole rehearsal, reserves or cache policy.
