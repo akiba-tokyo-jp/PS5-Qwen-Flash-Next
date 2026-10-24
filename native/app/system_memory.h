@@ -35,6 +35,8 @@ struct MemoryBackpressureStats {
 };
 void enable_native_memory_backpressure();
 SystemMemoryObservation admit_native_system_memory();
+// Stronger cold-start admission only; shares the unchanged 20 s / 60 s wait budget.
+SystemMemoryObservation admit_native_startup_memory();
 MemoryBackpressureStats native_memory_backpressure_stats();
 // The expert buffers share Direct with the CPU heap. Flexible is a separate
 // quota to preserve, not the capacity of that cache or extra allocatable RAM.

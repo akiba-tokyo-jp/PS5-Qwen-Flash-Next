@@ -29,11 +29,14 @@ def main():
     sources = [ROOT / 'native/app' / name for name in (
         'mapped_source.h', 'mapped_source.cpp', 'mapped_source_bridge.h', 'paired_source_io.h',
         'profile_clock.h', 'memory_backpressure.h', 'system_memory.h', 'system_memory.cpp',
-        'source_contention.h', 'source_contention.cpp')]
+        'source_contention.h', 'source_contention.cpp', 'source_read_schedule.h')]
     sources += [ROOT / 'native/diagnostics/sys/priority.h']
     sources += [ROOT / 'tests' / name for name in (
-        'pipeline_source.cpp', 'source_trace.cpp', 'memory_backpressure.cpp', 'paired_cache.cpp', 'mapped_source.cpp')]
+        'pipeline_source.cpp', 'source_trace.cpp', 'selected_source.cpp', 'memory_backpressure.cpp', 'paired_cache.cpp', 'mapped_source.cpp')]
     sources += [Path(__file__), ROOT / 'tools/check_mapped_source.py', ROOT / 'tools/performance_result.py']
+    sources += [ROOT/'tests/test_performance_result.py',ROOT/'tools/observe_native_plan.py']
+    sources += [ROOT/'native/app/native_main.cpp',ROOT/'native/app/native_bootstrap.cpp',ROOT/'native/app/stage_memory_probe.h',
+                ROOT/'native/app/direct_metadata.h',ROOT/'native/app/direct_metadata.cpp',ROOT/'tools/build_native.py']
     before = {str(p.relative_to(ROOT)): sha(p) for p in sources}
     receipt = dict(state='running', console_requests=0, GPU_operations=0,
                    learned_model_inference=False, inputs=before, steps=[])
@@ -53,7 +56,7 @@ def main():
 
     flags = ['-std=c++17', '-O2', '-Wall', '-Wextra', '-Werror', '-I', ROOT / 'native/app']
     try:
-        for name in ('pipeline_source', 'source_trace', 'memory_backpressure'):
+        for name in ('pipeline_source', 'source_trace', 'selected_source', 'memory_backpressure'):
             exe = args.out / (name + '.exe')
             run(name + '_compile', [host / 'clang++.exe', *flags, ROOT / 'tests' / (name + '.cpp'), '-o', exe])
             run(name + '_controls', [exe])
@@ -94,6 +97,7 @@ def main():
             raise RuntimeError('Check inputs changed during execution')
         receipt.update(state='focused_host_checks_passed_not_console_admitted',
                        source_window_bytes=8 << 20, maximum_outstanding_reads=1,
+                       candidate_maximum_outstanding_reads=2,candidate_full_aligned_ranges_required=True,
                        maximum_memory_boundary_wait_ms=20000, maximum_memory_total_wait_ms=60000)
     except BaseException:
         receipt['state'] = 'failed'

@@ -38,3 +38,9 @@ extern "C" int probe_cpp_read(job * jobs,int noop) {
 extern "C" int probe_cpp_stop() {
     try {executor->stop_completed();delete executor;executor=nullptr;return 1;}catch(...){return 0;}
 }
+extern "C" int probe_cpp_parallel_allowed(const job * jobs,const uint64_t * first,const uint64_t * second) {
+    qwen_app::SourceIdentity identities[2];
+    for(unsigned i=0;i<10;++i){identities[0][i]=first[i];identities[1][i]=second[i];}
+    return qwen_app::source_schedule_parallel(identities[0],std::uint64_t(jobs[0].offset),jobs[0].bytes,
+        identities[1],std::uint64_t(jobs[1].offset),jobs[1].bytes)?1:0;
+}

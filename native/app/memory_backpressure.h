@@ -33,12 +33,14 @@ public:
     }
     const MemoryBackpressureStats & stats() const {return stats_;}
 private:
-    SystemMemoryObservation admit_impl(MemoryAdmissionOps & ops) {
+    SystemMemoryObservation admit_impl(MemoryAdmissionOps & ops, bool require_kernel_target) {
         bool waiting=false;std::uint64_t boundary_wait=0;
         for(;;) {
             stats_.last_qualified=false;stats_.last=ops.observe();++stats_.observations;
             try {
                 (void)qualified_system_headroom(stats_.last);
+                if (require_kernel_target && stats_.last.kernel_free < stats_.last.kernel_target)
+                    throw KernelMemoryPressure();
                 stats_.last_qualified=true;
                 if(waiting)++stats_.recovered_admissions;
                 return stats_.last;
@@ -60,9 +62,9 @@ private:
         }
     }
 public:
-    SystemMemoryObservation admit(MemoryAdmissionOps & ops) {
+    SystemMemoryObservation admit(MemoryAdmissionOps & ops, bool require_kernel_target = false) {
         if(failed_)throw std::runtime_error("A failed memory admission is quarantined; no retry");
-        try {return admit_impl(ops);}
+        try {return admit_impl(ops, require_kernel_target);}
         catch(...) {if(stats_.enabled)failed_=true;throw;}
     }
 };

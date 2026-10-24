@@ -19,7 +19,14 @@ namespace {
 class NativeReads final : public qwen_app::SourceReadOps {
     std::unique_ptr<qwen_app::PairedSourceIO> parallel_;
     std::unique_ptr<qwen_app::SourceContentionMonitor> probe_;
+    bool selected_schedule_ = false;
 public:
+    void require_metadata_idle() {if(parallel_)parallel_->require_completed();}
+    void enable_selected_schedule() {
+        if (!parallel_ || selected_schedule_ || probe_)
+            throw std::runtime_error("The selected source schedule requires a fresh admitted worker");
+        selected_schedule_ = true;
+    }
     void start_completed_trace_probe() {
         if (!parallel_ || probe_) throw std::runtime_error("A fresh, completed source diagnostic owner is required");
         probe_ = std::make_unique<qwen_app::SourceContentionMonitor>();probe_->start();
@@ -45,8 +52,11 @@ public:
         parallel_->stop_completed(); parallel_.reset();
     }
     std::array<std::int64_t, 2> read_pair(const std::array<qwen_app::SourceReadRequest, 2> & requests) override {
-        (void)requests;
-        throw std::runtime_error("Concurrent native source reads are not qualified");
+        if (!selected_schedule_ || !parallel_ || !qwen_app::source_schedule_parallel(
+                identity(requests[0].fd), requests[0].offset, requests[0].bytes,
+                identity(requests[1].fd), requests[1].offset, requests[1].bytes))
+            throw std::runtime_error("Concurrent native source reads are not qualified for these complete file ranges");
+        return parallel_->read(requests);
     }
     qwen_app::SourcePipelineTimes pipeline_pair(const std::array<qwen_app::SourceReadRequest, 2> & requests,
             const std::array<std::uint64_t, 2> & expected, const std::function<void(unsigned)> & before_read,
@@ -105,6 +115,14 @@ void start_native_model_sources(std::vector<SourceFile> files) {
     active.store(true, std::memory_order_release);
 }
 SourceReadStats native_model_source_stats() { return required().stats(); }
+SourceReadRequest begin_native_metadata_window(const std::string & path) {
+    required().require_completed_window();ops.require_metadata_idle();
+    return required().begin_metadata_window(path);
+}
+void end_native_metadata_window(){required().end_metadata_window();}
+void enable_native_source_schedule() {
+    required().require_completed_window(); ops.enable_selected_schedule(); required().qualify_source_schedule();
+}
 void enable_native_completed_source_trace() { required().enable_completed_pair_trace(); }
 std::string run_native_completed_source_trace() {
     required().require_completed_window();ops.start_completed_trace_probe();

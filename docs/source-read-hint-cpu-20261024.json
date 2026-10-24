@@ -1,0 +1,130 @@
+{
+  "schema": "ps5-qwen-source-read-hint-CPU-evidence-v1",
+  "state": "hint_accepted_no_measured_gain_not_adopted",
+  "actual_application_executor": true,
+  "descriptor_hints_at_positively_completed_boundaries_only": true,
+  "default_modes_use_fresh_open": true,
+  "disabled_hint": {
+    "command": "F_RDAHEAD",
+    "value": 0,
+    "command_return": 0,
+    "flags_before": 65536,
+    "flags_after": 66048
+  },
+  "original_source_and_existing_two_16MiB_fragments": true,
+  "new_model_copies": 0,
+  "pairs": 384,
+  "returned_bytes": 2529165312,
+  "all_returned_bytes_SHA256_passed": true,
+  "timings": [
+    {
+      "mode": 0,
+      "name": "original_serial_default",
+      "pairs": 48,
+      "mean_ms": 10.0874345,
+      "median_ms": 9.8912725,
+      "round_mean_ms": [
+        9.9380055,
+        10.472697125,
+        9.851600875
+      ]
+    },
+    {
+      "mode": 1,
+      "name": "original_cross_region_parallel_default",
+      "pairs": 48,
+      "mean_ms": 49.816064625,
+      "median_ms": 49.448625,
+      "round_mean_ms": [
+        49.429545875,
+        51.2217600625,
+        48.7968879375
+      ]
+    },
+    {
+      "mode": 2,
+      "name": "split_serial_default",
+      "pairs": 48,
+      "mean_ms": 8.978693979166666,
+      "median_ms": 8.864939,
+      "round_mean_ms": [
+        9.0349723125,
+        9.070589875,
+        8.83051975
+      ]
+    },
+    {
+      "mode": 3,
+      "name": "split_parallel_default",
+      "pairs": 48,
+      "mean_ms": 6.8122275625,
+      "median_ms": 6.829312,
+      "round_mean_ms": [
+        7.003555125,
+        6.6704045625,
+        6.762723
+      ]
+    },
+    {
+      "mode": 4,
+      "name": "original_serial_no_read_ahead",
+      "pairs": 48,
+      "mean_ms": 9.9632273125,
+      "median_ms": 9.904583,
+      "round_mean_ms": [
+        9.8980131875,
+        9.934677875,
+        10.056990875
+      ]
+    },
+    {
+      "mode": 5,
+      "name": "original_cross_region_parallel_no_read_ahead",
+      "pairs": 48,
+      "mean_ms": 50.22256797916666,
+      "median_ms": 51.5197345,
+      "round_mean_ms": [
+        51.390836,
+        49.4898805,
+        49.7869874375
+      ]
+    },
+    {
+      "mode": 6,
+      "name": "split_serial_no_read_ahead",
+      "pairs": 48,
+      "mean_ms": 8.9244785625,
+      "median_ms": 8.8675055,
+      "round_mean_ms": [
+        8.95840525,
+        8.8959709375,
+        8.9190595
+      ]
+    },
+    {
+      "mode": 7,
+      "name": "split_parallel_no_read_ahead",
+      "pairs": 48,
+      "mean_ms": 7.1278823125,
+      "median_ms": 6.956566,
+      "round_mean_ms": [
+        7.5511460625,
+        6.83707975,
+        6.995421125
+      ]
+    }
+  ],
+  "source_window_bytes": 8388608,
+  "maximum_read_workers": 2,
+  "additional_payload_buffers": 0,
+  "positive_worker_join_and_Direct_retirement": true,
+  "fresh_before_after_idle_CPU_passed": true,
+  "original_SELF_never_modified": true,
+  "model_or_title_launches": 0,
+  "GPU_calls": 0,
+  "automatic_retries": 0,
+  "model_precision_unchanged": true,
+  "native_tokens_per_second": null,
+  "full_plan_completed": false,
+  "production_hint_adopted": false
+}

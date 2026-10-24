@@ -155,6 +155,11 @@ public:
         catch (...) { std::lock_guard<std::mutex> lock(mutex_); failed_ = true; throw; }
         return timing;
     }
+    void require_completed() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if(!ready_||stop_||failed_||uncertain_||pending_||!completed_||!worker_.joinable())
+            throw std::runtime_error("An exclusive metadata lease requires a healthy idle source worker");
+    }
     void stop_completed() {
         {
             std::lock_guard<std::mutex> lock(mutex_);

@@ -996,3 +996,553 @@ precision/budgets/reserves/driver/cache policy and the held reservation. Selecti
 file/range scheduling is the next candidate, not an admitted production change.
 Do not copy LVD image-only BFS batching or cache hints into ordinary pread by
 analogy. Keep CI and general release/console flags disabled.
+
+## File/range source candidate authorization
+
+The owner subsequently instructed implementing and physically comparing the
+proposed source-bandwidth improvements. A distinct private first-generation
+candidate may enable the file/range schedule after the completed CPU-only
+qualification and fresh pre-backend exact-byte controls. It may use two reads
+only for complete aligned extents inset by 4 MiB from a 1 GiB region boundary;
+same-inode pairs must remain in the same region and both files must share the
+qualified device. All other pairs keep the one-read consumer pipeline. Adjacent
+original bytes may share a single read inside the existing 8 MiB window, with
+their original separate cache destinations and positive consumer completion.
+
+The completed CPU qualification exercised sequential 4/8 MiB reads, the actual
+C++ range selector, both inset edges, crossing extents and the second file.
+Normal 8 MiB reads measured about 0.82 GB/s in the CPU helper; selected parallel
+pairs about 0.94..0.96 GB/s. This is not a native-inference speed qualification.
+Expert sorting already exists; do not claim reimplementing it as an improvement.
+No file layout, model payload, driver, persistent-cache policy, memory budget or
+reserve change is part of this candidate. Require the complete matched native
+three-request/frame/retirement/ordinary-close/original-restoration/readmission/
+shutdown/final verification sequence. Keep every consumed intent and failed
+artifact; no automatic retry or release of uncertain work is permitted.
+
+The first selected-source artifact at 2c7b39d / SELF
+92f83670e9f8e110d6ad97aa452f095c3fc4ae1e13acc05ee7f53076263a34d0 refused
+kernel headroom during sealed-file metadata checks, before source reservation,
+worker creation, Vulkan or model load. It issued no generation POST. Initial
+kernel free pages were 2140 and the final refusal reported 1089 versus the
+unchanged 1154 requirement. Its known pre-GPU fatal state was normally closed;
+exact original restoration, full readback and fresh idle CPU checks passed.
+The same-boot preceding numerical original admission was preserved without a
+new GPU launch. Keep this failed case and do not replay its artifact or intents.
+
+A distinct candidate adds stronger startup admission at the observed kernel
+free target before model metadata. It shares the existing 100 ms / 20 s boundary /
+60 s process wait budget and leaves the original work-boundary predicate intact.
+A finite metadata-only root gate must first observe target + 1024 free pages
+for ten consecutive 100 ms observations before publication/launch. No allocation,
+source read, reclamation, reserve reduction or GPU operation is part of that gate.
+
+The stronger-startup artifact at 7eec254 / SELF
+9c095fafa9fa2f0e836b0373153039279dadab8055d2e9da583154ecd2e2a939 also refused
+before metadata/source/Vulkan: native free pages remained 1418 below target2974
+despite root prelaunch observations5607..5608. Its parent ended with all202
+inputs unchanged; normal close, exact original restoration/readback and fresh
+idle CPU passed. Preserve the preceding original numerical421 proof and this
+CPU-only refusal. Do not replay the consumed artifact or intents.
+
+The next distinct candidate replaces only its startup SELF/receipt verification
+with exact full-file SHA256 over a fixed aligned1MiB O_DIRECT tracked-heap buffer.
+This tests whether the previous buffered107MB SELF scan consumes kernel cache;
+that attribution is not yet measured. Preserve all bytes/digests, stable fd
+identity before/after, exact EOF-tail counts, deadlines and no retry. Failed or
+unknown reads retain fd/buffer; only positive SHA/identity/close releases them.
+Record native memory before/after startup integrity. The original predicate,
+stronger startup target, wait limits, model integrity reuse and driver remain.
+
+The Direct-startup artifact at ff46289 refused its newly added startup file
+permission test before any complete integrity scan, model or GPU work. Read-only
+FTP metadata of the preserved candidate confirms a regular file with mode0777,
+the existing publication mode. Its parent ended with all206 inputs unchanged;
+normal close, exact original restoration/readback and fresh idle CPU passed.
+See docs/source-schedule-startup-refusals-20261024.json. Do not replay it.
+A distinct correction accepts the existing startup publication permissions while
+preserving nonempty regular-file admission, the complete SHA256, stable descriptor
+identity and exclusive writer lease. Model-source permission guards stay intact.
+This fixes an introduced startup restriction; it does not qualify cache pressure
+as the cause of the earlier headroom failures or establish an inference speedup.
+
+The subsequent publication-mode correction was built and packaged, but its
+prelaunch root high-water observation refused before publication or title launch:
+free pages stayed1624..1626 below the additional3998 requirement. All206 parent
+inputs remained unchanged; the original title was never modified and fresh idle
+CPU guards passed. The unused native SELF has not consumed a title-launch intent.
+Root target+1024 is an added experimental gate, separate from the original
+minimum+reserve requirement and from the stronger in-title startup target.
+Because root high-water observations did not predict native headroom in either
+direction, the next distinct case uses the original qualified minimum+reserve
+predicate for ten prelaunch observations. Keep the stronger actual native target
+before metadata, every work-boundary predicate, all reserves and wait limits.
+Native Direct integrity memory observations must precede any decision about
+metadata/model/GPU execution. This supersedes only the experimental root3998
+requirement; it does not permit a replay of a consumed launch or GPU operation.
+
+The correction subsequently ran once and passed Direct full startup SHA256,
+all76 sealed metadata checks and selected-source CPU qualification. The original
+virtual rehearsal also completed all76 reservations/releases. Free pages were
+2982 before that interval and1195 afterwards; the isolated OS allocation cause
+is not proved. Model loading then cancelled on free1091 below the unchanged1154
+predicate after20s. Driver allocation calls had returned; stable owned logs showed
+the retained resource graph. No generation POST or inference completed. The parent
+ended with all206 inputs unchanged. Normal close, exact original restoration,
+fresh numerical admission, ordinary shutdown, final CPU and full SELF passed.
+See docs/source-schedule-load-refusal-20261024.json. Never replay this native SELF.
+
+Keep executing the actual whole virtual rehearsal in every next candidate.
+Do not substitute historical mapping evidence for current reservation admission.
+The next distinct candidate requires the existing native startup target again
+after all rehearsal reservations/releases positively complete and before driver
+initialization. Share the unchanged20s/60s passive wait budget, record the immediate
+post-probe memory before waiting, and retain every original work predicate/reserve.
+No eviction, reclamation, allocation retry or uncertain resource release is allowed.
+
+The post-probe target candidate subsequently refused before Vulkan after the
+completed16KiB qualification and all76 model reservations/releases. Immediate
+free pages were1849 and the final20s observation1843 below target2974. Its parent
+ended with all206 frozen inputs unchanged; normal close, exact original readback
+and fresh idle CPU passed. Do not replay it. Root CPU controls did not reproduce
+the large native decrease, including holding all original spans concurrently.
+Keep the actual whole rehearsal; no historical substitution is admitted.
+
+The owner's subsequent physical-file-splitting question prompted a bounded
+exact-byte control. Two16MiB original fragments were copied outside the sealed
+model directory and fully read back. All192 serial/parallel pairs passed complete
+returned-byte SHA256 using the actual executor and unchanged8MiB window. Mean
+original parallel/serial times were50.6867/9.9807ms; split parallel7.0580ms.
+See docs/source-split-cpu-20261024.md and JSON. This is CPU I/O evidence, separate
+from full512MiB layout qualification and native inference performance.
+
+A distinct explicit native CPU diagnostic may record at most2048 memory/time
+samples immediately before/after actual durable stage writes during the unchanged
+whole reservation rehearsal. It must stop before source-worker or Vulkan setup,
+publish an independently checked CPU report, then await ordinary OS close.
+Require native link/import/SELF and actual-bootstrap overflow/counter/short-write
+controls, fresh ownership guards, exact original restoration and final idle CPU.
+Preserve the same-boot preceding original numerical admission after this CPU-only
+case. Normal modes keep sampling disabled and retain every durable stage write.
+This diagnostic is intermediate work, not completion of the performance plan.
+
+The native CPU diagnostic subsequently completed all current model reservations
+and releases,1227 valid stage samples, normal close, exact original readback and
+fresh final idle CPU. Its parent ended with all191 frozen inputs unchanged.
+Net free-page decrease was2113:2109 inside durable-stage intervals and4 between
+them. The measured interval includes observation overhead; proprietary allocation
+behavior is not identified. See docs/native-stage-memory-20261024.json.
+
+The next distinct intervention preserves complete line content, the1024-byte
+bound and fsync before returning from every durable stage, while copying the
+line and newline to one fixed1025-byte stack buffer and issuing one write.
+Actual-bootstrap controls must check exact output bytes, maximum line length,
+short-write retention, counter failure and sample capacity. Repeat the CPU-only
+native diagnostic before considering full-model performance qualification.
+
+The single-stack-write intervention completed all76 current reservations/releases
+and1227 valid observations, normal close, exact original restoration/readback and
+fresh final idle CPU. Its parent ended with191 frozen inputs unchanged. Stage
+interval time fell2.857803 ->1.984434s; net free-page decrease was1780 versus2113
+in the preceding case. Final1481 pages remain below the stronger2974 target.
+Do not treat this as a solved memory cause or native performance qualification.
+See docs/native-stage-memory-single-write-20261024.json. A preceding host-only
+context-binding refusal issued no console helper, publication or title launch;
+preserve it separately from the completed native comparison.
+
+The next distinct CPU-only diagnostic may separate the exact write and fsync
+observations and add a fixed2ms idle observation before each unchanged durable
+stage. This distinguishes time-correlated background effects from I/O intervals.
+Keep the full current reservation rehearsal, every complete stage and fsync,
+bounded2048 samples, no retries, ordinary close and exact restoration. Normal
+modes keep the sampler and idle delay disabled. Require actual-bootstrap controls
+for middle-counter, idle and fsync failures as well as existing bounds/retention.
+
+The split-interval diagnostic completed all76 model reservations/releases and1227
+valid observations, normal close, exact original restoration/readback and final
+idle CPU. Its parent ended with191 unchanged inputs. Free pages4703 ->1633:
+matched idle2783 decrease/2.581102s, write1020/0.948515s, fsync734 increase/0.921029s,
+between intervals1 decrease. Journal I/O alone is not supported as the cause.
+Read-only root VM metadata passed with free6031, target2974, minimum898,
+reserved206, active29150, inactive72528, wired31030, total138739 and page16384.
+See docs/native-stage-memory-split-20261024.json. Never count inactive pages as
+available or lower any memory predicate/reserve based on these observations.
+
+A distinct CPU-only diagnostic may add canary-checked free/active/inactive/wired
+population snapshots before/after the unchanged whole rehearsal and after two
+seconds of completed idle. These sequential counters classify page movement;
+they never authorize reclaim, additional I/O/GPU work, or a reserve substitution.
+Preserve all existing bounded samples, actual reservations, durable stages,
+normal-close/restoration gates and the original numerical same-boot proof.
+
+The native population diagnostic completed all76 current reservations/releases,
+1227 valid stage samples and normal close/exact original restoration/final idle
+CPU. Its parent ended with192 unchanged frozen inputs. During the rehearsal:
+free3292 ->1580, inactive70735 ->72449, active28678 ->28610, wired36034 ->36100.
+Two more idle seconds left free1580. These sequential categories support page
+movement toward inactive memory, but do not identify the backing object or prove
+GGUF read-ahead as its cause. See docs/native-VM-population-20261024.json.
+
+A distinct CPU-only intervention may use the pinned original GGUF callback
+parser over a fixed aligned1MiB Direct metadata cache, retaining exact original
+file sizes and ten-field sealed identities. Keep every BF16/F32/PLE/tensor-span
+check and full current reservation rehearsal. When the existing8MiB source
+window is active, borrow that exclusively with its idle worker and descriptor
+cache; do not add a second payload buffer or exceed eight source descriptors.
+Failures retain descriptor/window/lease with no retry or buffered fallback.
+Require all76 original GGUF serialized-metadata and GGML-context host parity,
+window/EOF/failure/lease controls, actual PS5 compile/link/import/SELF checks and
+the normal-close/exact-restoration/final CPU sequence before GPU qualification.
+No model bytes, file layout, precision, driver/cache policy, heap budget, memory
+predicate/reserve or passive wait bound is changed by this intervention.
+
+The Direct metadata CPU intervention completed all76 sealed originals with86
+physical reads/90177536 bytes, all76 current reservations/releases and1227 valid
+samples. Normal close/exact original restoration/final CPU and positive parent
+termination with195 unchanged inputs passed. Free3922 ->2227; inactive70220
+->71937; wired36077 ->36106. The memory problem remains unresolved. Do not claim
+buffered GGUF metadata alone as its cause or enable this path as a measured
+performance improvement. See docs/native-direct-metadata-20261024.json.
+
+A distinct CPU-only phase control may observe five seconds without journal
+writes, then at most256 clearly labeled synthetic journal-only lines with2ms
+idle and no source operations. Before each line retain the original predicate
+plus512 extra kernel pages; stop only at a completed boundary. Save the finite
+phase report, then require the unchanged stronger startup target before the
+actual whole reservation rehearsal. A refusal there is pre-GPU evidence and
+must normally close/restore; it never admits skipping or replacing the rehearsal.
+The normal application keeps this optional control disabled. Keep every original
+reserve/budget/precision/driver/cache policy and the existing20s/60s wait limits.
+
+The CPU phase control subsequently lost3628 free pages during five seconds
+without journal writes or reservations. Its next256 journal-only lines changed
+none of the sampled populations. The unchanged2974-page target refused before
+the actual rehearsal. The controller's failure-record collision bypassed cleanup;
+separately reviewed ordinary close, exact original restoration/full readback and
+fresh idle CPU subsequently passed, preserving same-boot numerical admission.
+Never replay this case. Every next controller must bind all six actual cleanup
+and four actual exception-path controls to its final source before execution.
+See docs/native-CPU-phase-20261024.json.
+
+A distinct application-footprint experiment may losslessly store all original
+embedded SPIR-V resources. Require full source/compiled-archive byte parity,
+complete lookup-table provenance, all-resource CPU SHA256/length and relocation
+verification before Vulkan, bounded tracked Direct decoder storage, native ABI
+qualification, actual linked CreateShaderModule input-copy lifetime evidence,
+positive lease completion and quarantine without retry on uncertainty. Keep the
+driver, model precision, all original memory predicates/reserves, real whole
+rehearsal, wait limits and persistent caches unchanged. Host checks precede one
+distinct CPU-only native case with ordinary close/exact restoration/final CPU;
+full native inference remains a separate complete qualification. See
+docs/lossless-shader-storage.md. This does not establish the memory cause or
+authorize relaxing a failed guard.
+
+The first lossless shader CPU case passed all1527 original byte checks and382
+lookups on the physical PS5. Quiet free pages2954 ->2950 over five seconds;
+next256 journal-only lines changed none of the VM populations. The unchanged
+2974-page target refused at2930 before the actual rehearsal/Vulkan. Its hardened
+controller normally closed/restored the exact original/full readback/final CPU;
+parent exit and378 unchanged inputs passed. Never replay this SELF. See
+docs/native-shader-storage-CPU-20261024.json. A distinct representation may add
+reversible word-byte ordering and exact stored-byte aliases, preserving every
+original SHA256/name/lookup and all prior guards. Charge its one extra maximum-
+shader buffer to the existing tracked heap and repeat the actual-codec and
+distinct native CPU gates before full inference qualification.
+
+The reordered shader representation passed all1527 original byte checks and382
+lookups on the PS5 at SELF1f027d73a095194f1de48ca55b7e96b863e77ed67f96cdfb81f776a8e1bde17b.
+The unchanged target refused at2021 before the actual rehearsal. Its normal
+close/exact restoration/full readback/final idle CPU and378 unchanged parent
+inputs passed. This full shader-byte result is valid data evidence, separate
+from the failed later memory admission. Never replay the consumed case. See
+docs/native-shader-ordering-CPU-20261024.json.
+
+A distinct optional CPU startup profile may reuse only those immutable shader
+bytes after exact prior owner/run/report SHA, same-boot, same encoded resources
+and unchanged per-use decoder/completion provenance. Keep complete current SELF
+SHA256, every current lookup relocation check, and full original SHA256 of every
+used compressed shader frame before CreateShaderModule. The CPU report must say
+which assets were verified in this run and which came from prior data evidence.
+This never permits reusing OS mappings or skipping the actual current whole
+rehearsal, reducing2974/1154-page predicates/reserves, or enabling persistent
+caches. Require actual-codec and prior-evidence refusal controls, native import/
+SELF gates and a distinct bounded CPU case with ordinary close/exact restoration/
+final CPU before considering a separate finite full inference case.
+
+The prior-byte/on-demand CPU case passed current SELF/prior-report SHA and382
+current lookups, without decoding unused shaders. It still lost1968 free pages
+during five quiet seconds and refused at1401 before current virtual reservations.
+Normal close/exact restoration/full readback/final CPU and382 unchanged inputs
+passed. Do not replay the case or attribute the decrease to unused shader decode.
+See docs/native-shader-JIT-CPU-20261024.json.
+
+A distinct standalone CPU SELF-read control may stop before all shader/model
+metadata, virtual reservations and Vulkan. Its explicit Direct/buffered modes
+must preserve complete current SELF SHA256, stable descriptor identity, the
+aligned1MiB tracked buffer, exact returned EOF bytes and fixed deadline. Require
+the original memory predicate before every new read, paired durable native-read
+markers, a bounded five-second VM observation, an explicit SELF-only completion
+report, ordinary close/exact original restoration/final CPU and actual controller
+unknown-read/failure controls. This does not admit model execution or bypass its
+unchanged2974/1154-page gates, actual whole rehearsal, reserves or cache policy.
+
+The standalone SELF Direct control completed all37 reads/full SHA and a five-
+second quiet observation: free4728 ->2994, wired34406 ->36147. The buffered
+control returned25 reads before the original predicate refused the next read,
+with no pending read. Both normally closed/restored the exact original/full
+readback/final CPU and ended with382 unchanged inputs. Do not retry buffered
+reads or count its SELF hash complete. See docs/native-SELF-read-controls-20261024.json.
+
+A distinct Direct SELF control may compare the optional streamed binary readback
+transport using the exact positively completed native binary. Preserve complete
+raw byte-count/SHA verification, observed absence before fresh upload, positive
+FTP completion, exact full readback before publication, no overwrite of retained
+partials and no retry/fallback after uncertainty. The transport changes no native
+I/O mode, model/GPU guard or source reservation. Require its host fault controls,
+new finite case, frozen inputs and normal-close/exact-restoration/final CPU gates;
+do not claim memory or tokens/s benefit from host tests.
+
+The first optional FTP readback was refused before publication/title launch
+because the returned length exceeded the raw SELF bound. ftpsrv enables per-
+connection SELF-to-ELF extraction by default. Preserve that failed pending file;
+do not retry its operation or accept extracted ELF bytes. Every new raw RETR
+connection must send SELF once and require the exact disabled acknowledgement
+before any RETR. Refuse unknown mode responses, preserve transfer exceptions,
+retain partials and require unchanged complete raw byte-count/SHA checks. The
+untouched original/full readback/fresh final CPU passed after parent termination.
+This is transport correctness evidence, not native memory or throughput evidence.
+
+The corrected raw FTP control subsequently completed full binary publication and
+ordinary title launch, but the original memory predicate refused before the first
+SELF read (the preceding sample had1064 free pages versus1154 required). No model
+metadata, source reservations, worker or Vulkan call began. Ordinary close, full
+raw original restoration/final idle CPU and385 unchanged parent inputs passed.
+Do not adopt FTP binary readbacks as a memory or performance improvement.
+
+A distinct full inference qualification may use the same standalone-Direct-
+qualified native binary with the previously qualified HTTP binary transport.
+Retain current SELF/receipt SHA, same-boot all1527 shader-byte evidence, current
+382 lookups and per-used-module full original SHA256. The original2974-page
+startup predicates before metadata and after the actual whole current reservation
+rehearsal remain mandatory, as does1154 before work. CPU-only controls must be
+disabled explicitly in this full policy. Require all three fixed requests, two
+actual native frames, positive module/GPU/model retirement, ordinary close,
+exact original restoration/fresh numerical readmission/close/final idle CPU and
+full readback before claiming completion or throughput improvement. A pre-GPU
+refusal requires the final-source known-idle/exception controls and ordinary
+restoration; unknown calls or any unretired GPU work must remain retained.
+
+Production Direct startup integrity now promotes the existing physically
+qualified CPU-control predicate to every read. Exact source comparison confirms
+this is the sole provider change: SHA256, stable identity, aligned1MiB window,
+EOF, deadlines and retained failures are unchanged. Full inference must relink
+this stricter provider and pass its focused stream/native compile plus normal
+link/import/SELF checks. The shader decoder, model I/O and pinned driver objects
+remain unchanged; their existing positive evidence remains data evidence.
+
+That complete candidate subsequently refused before Vulkan at2898 free pages
+against2974 after all76 current reservations/releases. Normal close, exact
+original restoration/full readback/final idle CPU and392 unchanged inputs passed.
+Do not replay the consumed case or lower its memory target.
+
+A distinct bounded lossless resource representation may group instruction headers
+and the first16 operand columns, retain long literal tails verbatim, and encode
+column differences reversibly. Require all original bytes/SHA256/lookups and the
+actual-codec malformed-span, length, heap-canary, ownership and native ABI gates.
+Charge its additional four ordering-buffer bytes to the existing tracked heap.
+Repeat a distinct CPU-only all-resource native qualification with ordinary close,
+exact restoration and final idle CPU before separate complete inference work.
+Keep every current rehearsal, memory predicate/reserve, wait, precision, pinned
+driver and disabled persistent-cache policy. Host storage savings do not prove
+native free-page headroom, proprietary cache behavior or inference throughput.
+
+The first column case refused the original minimum/reserve predicate after
+complete current SELF/receipt integrity and before shader initialization. Normal
+close/exact original restoration/full readback/final idle CPU and381 unchanged
+inputs passed. No current shader-byte or whole-rehearsal qualification resulted.
+The next distinct binary may connect only shader initialization's completed
+startup boundary to the existing passive admission controller. Keep its exact
+predicate,20s/60s bounds,100ms polls and failed-admission quarantine, and allocate
+no codec storage while waiting. Require actual codec recovery, persistent refusal,
+invalid-counter and native compile checks. This is no authorization to lower the
+stronger2974-page targets, skip current reservations or repeat a consumed case.
+
+The corrected initialization case passed all1527 current original shader bytes
+and382 lookups, then refused the unchanged stronger target at1412 before model
+metadata/current reservations. Exact original restoration/full readback/final CPU
+and381 unchanged inputs passed. See docs/native-shader-columns-CPU-20261024.json.
+Keep that positive data gate separate from full native memory/performance
+qualification; do not replay the consumed case.
+
+The bounded descriptor read-ahead control passed384 complete returned-byte hashes,
+exact status changes, worker/Direct retirement and fresh idle guards. The accepted
+hint did not improve the measured source path; do not enable it as an optimization.
+See docs/source-read-hint-cpu-20261024.json. The read-only vm.objects API was
+unavailable, so it supplies no backing-object diagnosis. Safe link folding saved
+only503432 bytes offline and was not adopted. Preserve all original guards.
+
+A distinct application may move the unchanged compressed original SPIR-V pool
+to one immutable, SHA256-named application resource. Its24-byte descriptors must
+retain every original shader name, length, digest and lookup relocation. Charge
+the single49152-byte aligned input window to the existing tracked Direct CPU
+heap and use one read-only resource descriptor, separate from the unchanged
+8MiB model-source window and eight model-source descriptors. Require current
+full resource SHA256, stable identity, exact EOF/read bounds, paired durable read
+markers and quarantine without retries on unknown or failed reads. This resource
+contains original SPIR-V bytes; persistent compiled caches remain disabled.
+
+Publication must preserve the original executable and configuration until exact
+resource readback succeeds. Use a fresh transaction, observed absence before a
+new pending upload, positive rename acknowledgement and complete raw byte-count/
+SHA256 readback; reuse existing data only after the same complete verification.
+Retain mismatches, partials and unknown acknowledgements without overwrite,
+deletion or retry. Require actual publication fault controls and final-source
+cleanup controls that distinguish pending shader reads from completed CPU idle.
+After host/native link/import/SELF gates, a distinct CPU-only case must verify
+all1527 current shaders,382 lookups and all76 current reservations/releases with
+normal close/exact restoration/final idle CPU. A separate complete native run
+must still pass both2974-page startup gates and every numerical, frame, retirement
+and original-app restoration gate before reporting a throughput improvement.
+
+The first external-resource CPU launch refused the original minimum/reserve
+predicate before its first startup integrity read. Its preceding sample had1066
+free pages versus1154 required. No current shader-byte or whole-rehearsal result
+was produced. Normal close/exact restoration/full readback/final idle CPU and397
+unchanged parent inputs passed. Preserve this consumed case and its failures.
+
+A distinct binary may enable the existing bounded admission controller once
+before selected-source startup integrity, retain its20s boundary/60s process
+budget across all later boundaries, and use it before each new integrity read.
+This changes neither the predicate nor any reserve, allocation, SHA256, stable
+identity, EOF, read-call lifetime or stronger2974-page gate. Require actual native
+provider-class fault controls for transient recovery, persistent refusal without
+a read, invalid counters, failed-admission quarantine and a shared process budget,
+plus real PS5 provider compile/link/import/SELF gates. Repeat the distinct current
+all-resource CPU/whole-rehearsal gate before separate complete native inference.
+
+The distinct bounded-startup launch passed current SELF/receipt and complete
+external resource SHA256. All235 native shader-file reads returned before an
+original read-only memory guard refused during the CPU shader phase. No complete
+all-resource or current whole-rehearsal report resulted. Normal close/exact
+restoration/full readback/final idle CPU and401 unchanged parent inputs passed.
+Preserve this consumed case. Its last qualified shared-gate sample is not a
+measurement of the later independent guard's failure count.
+
+The serial CPU all-resource verifier may check the same shared admission
+controller before each next shader lease. Keep compiler-thread per-use guards
+read-only, all decoder/file/ownership code and budgets unchanged, the existing
+20s/60s shared bounds, and quarantine on failure before starting another read or
+decode. Require actual-codec controls for initial and middle recovery, persistent
+refusal and invalid counters, plus current native link/import/SELF gates and a
+distinct current all-resource/whole-rehearsal CPU case before full inference.
+
+The serial-boundary case passed all1527 current original shaders,382 lookups and
+complete current external resource SHA256. The later2974-page pre-metadata target
+refused at1503 after its unchanged20s boundary wait. No model metadata/current
+reservations/GPU began. Normal close/exact restoration/full readback/final idle
+CPU and401 unchanged parent inputs passed. Preserve the positive immutable-byte
+evidence separately from the failed model-memory gate.
+
+A distinct external profile may reuse only that complete same-boot v3 shader
+report after exact report SHA256/owner/run, unchanged encoded resource manifest,
+current full external resource SHA256, current382 lookup checks and unchanged
+per-use decoder/completion provenance. Require direct prior evidence with1527
+current checks and zero inherited checks; reject evidence chains, pending/failed
+files and mismatched resource bounds. Its report must say current0/prior1527.
+Every actually used shader still requires current full original SHA256 before
+module creation. The actual current whole rehearsal and both2974-page targets
+remain mandatory; no OS mapping/ownership/available-memory state is reused.
+Require actual legacy/external validator refusal controls and native link/import/
+SELF gates, then a distinct bounded CPU whole-rehearsal case with normal close/
+exact restoration/final CPU before separate full inference qualification.
+
+The external prior-byte CPU case completed all76 current reservations/releases
+with current file SHA256/current382 lookups and direct prior1527-byte evidence.
+Normal close/exact restoration/full readback/final idle CPU and404 unchanged
+inputs passed. Its settled diagnostic free count1574 is not full startup admission.
+The subsequent distinct full case refused before model metadata at1580 versus
+2974 required. No model/current virtual/GPU work began; all169 resource reads
+returned, and normal close/exact restoration/full readback/final CPU plus411
+unchanged inputs passed. Do not replay that consumed case or lower its target.
+
+A distinct CPU-only diagnostic may read the positively identified idle title's
+SDK `KERN_PROC_VMMAP` metadata. Require exact PID/start/application/title/boot
+before and after, no process memory reads or mapping changes, at most one size
+query/one data query,1MiB/4096-record bounds and canaries. Validate the actual
+packed parser/query and native imports first. Unknown metadata completion blocks
+ordinary close and retains backing; positive completion and unchanged ownership
+must precede normal close/exact restoration/final CPU. VM sizes and resident0
+are not reclaimable capacity or permission to alter any reserve. Keep raw maps,
+addresses and identities private. See docs/native-VM-map-diagnostic.md.
+
+
+The CPU-only VM diagnostic subsequently completed two returned kernel metadata
+queries and parsed 188 bounded records with exact owner checks before and after.
+Ordinary close, exact original restoration/full readback and fresh idle CPU
+passed. Require the qualified process ABI overlay and a 1,096-byte compile-time
+process-size assertion; a permission-only SDK recipe produces 1,088 bytes and is
+not usable for process identity. Keep the full compiler/CRT/header/provider
+input receipt and the allowed `moss-` transport namespace. Preserve every refused
+helper; zero-query terminal refusal is separate from unknown query completion.
+The same CPU title completed all 76 current reservations/releases; settled free
+pages 3,155 do not replace either full-startup 2,974-page admission. No new GPU or
+throughput result follows from these CPU measurements. A distinct full sequence
+may reuse the unchanged candidate and positive immutable-byte evidence, with
+fresh sessions, current reservations, both startup guards, all requests/frames,
+positive retirement and exact original restoration/fresh numerical admission.
+Allow the ordinary title transition to settle for one bounded 30-second quiet
+interval before the unchanged owner observer; never retry or relax a failed
+service/owner guard. Strengthen the prelaunch metadata gate to the native kernel
+target as well as the original minimum/reserve to avoid a cold launch under an
+already-insufficient observation.
+
+
+The next full case refused before model metadata/Vulkan at 2,338 versus 2,974
+pages and completed ordinary close/exact original restoration/full readback/
+final idle CPU with all 412 frozen inputs unchanged. Preserve that consumed case.
+A separate Direct-integrity CPU helper then verified the complete 107,911,351-byte
+original SELF in 1,040,491,313 ns, with the Direct flag set, all 108 reads returned
+and fresh same-boot idle guards before/after. No title or GPU ran. Its immediate
+free-page observations 7,151 -> 13,738 do not prove stable memory admission or
+specific proprietary cache behavior.
+
+A distinct full sequence may replace only launch/preservation digest input with
+this qualified serial Direct stream. Keep one aligned 1 MiB window, exact full
+SHA256/stable path+descriptor identity/EOF/deadlines, per-read original kernel
+minimum/reserve, durable call markers and quarantine without retry. Preserve all
+other service/title/owner/registration/mounted-inode/claim/done guards. The fresh
+session may be staged once before original preservation and reused only with
+its unchanged current full SHA256 checks. Native complete original integrity
+must finish before rename; candidate full raw readback remains mandatory.
+Unknown helper completion prevents publication/launch and retains backing.
+Application/driver/precision/budgets/both native startup targets and the complete
+inference/frames/retirement/original numerical readmission plan are unchanged.
+See docs/launch-integrity-20261024.md.
+
+## Completed source-schedule physical plan (2026-10-25)
+
+The unchanged candidate SELF
+`c354b82c75a4e60f783c80e16485c4132bcd40cb35fb34a62d92e528f57debf7`
+completed the full physical plan with the selected file/range schedule. Arithmetic
+returned `4`; both 22-token external outputs/token IDs matched the completed
+single-read control. Rates were 0.332877 / 0.337782 tokens/s, mean 0.335329 versus
+0.287381, an observed 16.68% gain. Logical source bytes matched. This is one
+complete short-request comparison of the candidate bundle, not isolated causality,
+nominal-bandwidth admission, broad quality or sustained-service qualification.
+See docs/native-source-schedule-success-20261025.md and its sanitized JSON.
+
+Both actual native frames were viewed. Positive source/GPU/model retirement,
+ordinary candidate close, exact original restoration, fresh original numerical
+readmission, ordinary original shutdown and final same-boot/service/idle-CPU/full
+raw readback all passed. The finite continuation positively ended with all 428
+frozen inputs unchanged. It retained the already-running model and original
+deadlines after a separately reviewed fresh owner admission; no app/model or
+generation request was retried. No native owner, gateway or loaded model remains.
+Preserve every historical refusal and consumed intent; do not rerun this sequence.
+
+The original BF16/F32 model, all experts/PLE, actual current 76-file rehearsal,
+both startup targets, all budgets/reserves/wait limits, pinned 872cc126
+cumulative-idle driver and disabled persistent caches remain unchanged. The
+reservation stays held. Committed general execution/deployment/release and CI
+remain disabled. Configuration status now records the passed finite qualification;
+it does not authorize automatically starting ordinary inference or another test.

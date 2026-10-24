@@ -42,6 +42,16 @@ def main():
     if record(Path(io_manifest["path"])) != io_manifest or validate_overrides(
         Path(io_manifest["path"]), Path(linked["engine_receipt"]["path"])) != linked["bounded_model_source_overrides"]:
         raise ValueError("The source-reader integration changed after the native link")
+    shader_resources=linked.get('lossless_shader_storage')
+    if shader_resources:
+        from external_shader_storage import validate_shader_resources
+        resource_manifest=linked.get('shader_resource_manifest')
+        if not resource_manifest or record(Path(resource_manifest['path']))!=resource_manifest:
+            raise ValueError('The exact linked shader resource manifest is required before packaging')
+        if validate_shader_resources(resource_manifest['path'],io_manifest['path'],linked['engine_receipt']['path'])!=shader_resources:
+            raise ValueError('The shader resource integration changed after the native link')
+        if linked.get('lossless_shader_storage_link_map_passed')is not True:
+            raise ValueError('Actual shader resource link-map admission is required')
     if linked.get('native_platform'):
         platform=validate_native_platform(linked['native_platform']['manifest_path'],selected,lock['native_platform_base'])
         if platform!=linked['native_platform']:raise ValueError('Linked native platform provenance changed')
@@ -76,6 +86,17 @@ def main():
         (tool_dir / "compile.private.log").write_bytes(result.stdout + result.stderr)
         if result.returncode: raise RuntimeError(result.stderr.decode("utf-8", "replace"))
     a.out.mkdir(parents=True)
+    external_shader_file=None
+    if shader_resources and shader_resources.get('storage_kind')=='external_file':
+        pool=shader_resources['pool'];directory=a.out/'resources';directory.mkdir()
+        name='shader-storage-'+pool['sha256']+'.bin';snapshot=directory/name
+        shutil.copyfile(pool['path'],snapshot)
+        saved=record(snapshot)
+        if saved['bytes']!=pool['bytes']or saved['sha256']!=pool['sha256']:
+            raise ValueError('External shader resource snapshot changed its complete original bytes')
+        external_shader_file=dict(local=saved,filename=name,native_path='/app0/qwen-runtime/'+name,
+            input_window_bytes=shader_resources['external_file_input_window_bytes'],
+            original_SPIRV_resource=True,persistent_compiled_cache=False)
     native_platform_snapshot=None
     if linked.get('native_platform'):
         origin=Path(linked['native_platform']['manifest_path'])
@@ -128,6 +149,7 @@ def main():
                "format_tool_compile": compile_command, "console_access": False, "installed": False,
                "model_loaded": False, "release_qualified": False, "steps": []}
     if native_platform_snapshot:receipt['native_platform_build_receipt']=record(native_platform_snapshot)
+    if external_shader_file:receipt['external_shader_file']=external_shader_file
     for name, command in commands:
         result = subprocess.run(command, env=env, capture_output=True)
         (a.out / (name + ".private.log")).write_bytes(result.stdout + result.stderr)

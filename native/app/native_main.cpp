@@ -16,6 +16,10 @@
 #include "source_contention.h"
 #include "source_virtual_addresses.h"
 #include "model_integrity.h"
+#include "direct_integrity.h"
+#include "direct_metadata.h"
+#include "stage_memory_probe.h"
+#include "shader_assets.h"
 #include "prior_model_integrity.h"
 #include "model_identity_namespace.h"
 #include "model_receipt.h"
@@ -78,7 +82,7 @@ static void write_fresh_report(const std::string & path, const Json & value) {
 static Json performance_snapshot(const qwen_app::LlamaEngine & engine) {
     const auto source = qwen_app::native_model_source_stats();
     const auto adapter = engine.timing_stats();
-    return {{"source_bytes", source.bytes}, {"source_chunks", source.chunks},
+    Json result = {{"source_bytes", source.bytes}, {"source_chunks", source.chunks},
         {"source_completed_windows", source.completed_windows},
         {"source_headroom_ns", source.headroom_ns}, {"source_handle_ns", source.handle_ns},
         {"source_read_ns", source.read_ns}, {"source_consumer_ns", source.consumer_ns},
@@ -87,6 +91,11 @@ static Json performance_snapshot(const qwen_app::LlamaEngine & engine) {
         {"process_calls", adapter.process_calls}, {"process_ns", adapter.process_ns},
         {"synchronize_ns", adapter.synchronize_ns}, {"checkpoint_ns", adapter.checkpoint_ns},
         {"work_guard_ns", adapter.work_guard_ns}, {"stage_observer_ns", adapter.stage_observer_ns}};
+    if (source.schedule_enabled) result.update({
+        {"source_parallel_batches", source.parallel_batches}, {"source_coalesced_batches", source.coalesced_batches},
+        {"source_selected_serial_batches", source.selected_serial_batches},
+        {"source_physical_read_bytes", source.physical_read_bytes}, {"source_physical_read_calls", source.physical_read_calls}});
+    return result;
 }
 
 static Json performance_difference(const Json & before, const qwen_app::LlamaEngine & engine) {
@@ -102,10 +111,12 @@ static Json performance_difference(const Json & before, const qwen_app::LlamaEng
         throw std::runtime_error("Performance reporting requires completed source windows");
     // process_ns includes source I/O and backend work. These are nested wall
     // intervals, not hardware GPU timestamps and must not be summed together.
-    return {{"schema", "ps5-qwen-completed-performance-v3"}, {"delta", delta},
+    const bool selected = qwen_app::native_model_source_stats().schedule_enabled;
+    return {{"schema", selected ? "ps5-qwen-completed-performance-v4" : "ps5-qwen-completed-performance-v3"}, {"delta", delta},
         {"process_includes_source_and_backend_work", true}, {"GPU_timestamp_queries", false},
         {"hot_path_logs_added", false}, {"GPU_operations_added", false},
-        {"source_read_ns_is_producer_wait_time", true}, {"maximum_parallel_source_reads", 1},
+        {"source_read_ns_is_producer_wait_time", true}, {"maximum_parallel_source_reads", selected ? 2 : 1},
+        {"file_range_schedule_enabled", selected}, {"physical_read_bytes_include_alignment", true},
         {"worker_times_overlap_consumers", true}};
 }
 
@@ -130,6 +141,44 @@ static ModelFileIdentity model_file_identity(const std::string & path, std::uint
         std::uint64_t(info.st_uid), std::uint64_t(info.st_gid), std::uint64_t(info.st_size),
         std::uint64_t(info.st_mtim.tv_sec), std::uint64_t(info.st_mtim.tv_nsec),
         std::uint64_t(info.st_ctim.tv_sec), std::uint64_t(info.st_ctim.tv_nsec)};
+}
+
+static void validate_prior_shader_CPU(const Json & r,const Json & prior,const qwen_app::ShaderAssetStats & assets) {
+    if(prior.at("all_original_assets_completed_on_this_boot")!=true||
+       prior.at("same_encoded_resources_and_per_use_decoder_in_current_SELF")!=true||
+       prior.at("current_module_input_full_SHA256_required")!=true||
+       r.at("schema")!=(assets.external_file.registered?"ps5-qwen-shader-storage-CPU-result-v3":"ps5-qwen-shader-storage-CPU-result-v1")||
+       r.at("pid")!=prior.at("pid")||r.at("run_id")!=prior.at("run_id")||
+       r.at("GPU_calls")!=0||r.at("Vulkan_initialized")!=false||r.at("model_loaded")!=false||
+       r.at("active_lease")!=false||r.at("failed")!=false||r.at("persistent_caches_enabled")!=false||
+       r.at("all_original_SPIRV_bytes_preserved")!=true||r.at("shader_count")!=assets.assets||
+       r.at("CPU_verified_assets")!=assets.assets||r.at("lookup_entries")!=assets.lookup_entries||
+       r.at("CPU_verified_lookups")!=assets.lookup_entries||r.at("original_bytes")!=assets.original_bytes||
+       r.at("stored_bytes")!=assets.stored_bytes||r.at("registry_sha256")!=assets.registry_sha256)
+        throw std::runtime_error("Prior complete native shader bytes do not bind the unchanged current resources and per-use SHA256");
+    if(assets.external_file.registered&&(!assets.initialized||!assets.external_file.verified||assets.external_file.failed||
+       assets.external_file.read_pending||assets.external_file.frame_requests||
+       r.at("all_assets_verified_in_this_run")!=true||r.at("prior_CPU_verified_assets")!=0||
+       r.at("verification_mode")!="all_assets_in_current_run"||r.at("external_file")!=true||
+       r.at("external_file_SHA256_verified")!=true||r.at("external_read_pending")!=false||r.at("external_source_failed")!=false||
+       r.at("external_file_bytes")!=assets.external_file.file_bytes||
+       r.at("codec_input_window_bytes")!=assets.external_file.input_window_bytes||r.at("external_frame_requests")!=assets.assets))
+        throw std::runtime_error("Prior external shader bytes require complete current file integrity and direct original-byte evidence");
+}
+
+static Json read_prior_shader_CPU(const Json & prior,const qwen_app::ShaderAssetStats & assets) {
+    const auto path=prior.at("report_path").get<std::string>();const auto bytes=prior.at("report_bytes").get<std::uint64_t>();
+    const auto run=prior.at("run_id").get<std::string>();
+    if(run.size()!=32||run.find_first_not_of("0123456789abcdef")!=std::string::npos||
+       path!="/app0/qwen-runtime/plan-"+run+".json.shader-assets.CPU"||!bytes||bytes>4096)
+        throw std::runtime_error("Prior shader evidence must be the bounded completed native report");
+    const auto before=model_file_identity(path,bytes);
+    std::ifstream file(path,std::ios::binary);std::string raw(static_cast<std::size_t>(bytes),'\0');
+    file.read(raw.data(),static_cast<std::streamsize>(bytes));
+    if(file.gcount()!=static_cast<std::streamsize>(bytes)||file.peek()!=std::char_traits<char>::eof()||
+       file.bad()||qwen_app::sha256_metadata_bytes(raw)!=prior.at("report_sha256")||model_file_identity(path,bytes)!=before)
+        throw std::runtime_error("Prior shader evidence changed or failed its complete SHA256");
+    const auto report=Json::parse(raw);validate_prior_shader_CPU(report,prior,assets);return report;
 }
 
 static ModelFileIdentity model_directory_identity(const std::string & path) {
@@ -233,6 +282,23 @@ static Json system_memory_report(const qwen_app::SystemMemoryObservation & memor
         {"CPU_heap_mapped_bytes",heap.mapped_bytes},{"CPU_heap_peak_bytes",heap.peak_bytes},
         {"CPU_heap_libc_fallbacks",heap.libc_fallbacks},
         {"CPU_heap_uses_Direct_pool",true},{"inactive_pages_counted_as_available",false}};
+}
+
+static Json diagnostic_VM_population() {
+    Json result=Json::object();
+    for(const auto & field : {std::pair<const char *,const char *>{"free","vm.stats.vm0.v_free_count"},
+        {"active","vm.stats.vm0.v_active_count"},{"inactive","vm.stats.vm0.v_inactive_count"},
+        {"wired","vm.stats.vm0.v_wire_count"},{"total","vm.stats.vm0.v_page_count"}}) {
+        struct {std::uint64_t first;std::uint32_t value;std::uint64_t last;} g{0x725b725b725b725bull,0,0x725b725b725b725bull};
+        std::size_t bytes=sizeof(g.value);
+        if(sysctlbyname(field.second,&g.value,&bytes,nullptr,0)||bytes!=sizeof(g.value)||
+           g.first!=0x725b725b725b725bull||g.last!=0x725b725b725b725bull)
+            throw std::runtime_error("CPU-only VM population observation is unavailable");
+        result[field.first]=g.value;
+    }
+    // Sequential observations classify page movement; they are not an atomic
+    // snapshot, a reclaim operation, or a replacement for the original reserve.
+    return result;
 }
 
 struct LoadProgress {
@@ -524,6 +590,18 @@ int main(int argc, char ** argv) {
         if ((startup.model_validation || startup.first_generation_validation) && !policy.value("console_validation_enabled", false))
             throw std::runtime_error("Original model CPU validation is not enabled");
         bool model_CPU_runtime_admitted = false;
+        const bool SELF_read_control=policy.contains("native_SELF_read_control");
+        bool SELF_control_direct=true;
+        if(SELF_read_control) {
+            const auto &control=policy.at("native_SELF_read_control");
+            const auto mode=control.at("read_mode").get<std::string>();
+            if(!startup.first_generation_validation||control.at("schema")!="ps5-qwen-SELF-read-CPU-policy-v1"||
+               control.at("CPU_only")!=true||control.at("maximum_read_window_bytes")!=(1u<<20)||
+               control.at("quiet_seconds")!=5||control.at("automatic_retries")!=0||
+               (mode!="direct"&&mode!="buffered"))
+                throw std::runtime_error("The standalone SELF read CPU control is not admitted");
+            SELF_control_direct=mode=="direct";
+        }
         if (startup.first_generation_validation) {
             const auto & gate = policy.at("native_first_generation_validation");
             // This exclusive marker consumes the attempt before verification,
@@ -533,19 +611,128 @@ int main(int argc, char ** argv) {
                 {"candidate_SELF_sha256", gate.at("candidate_SELF_sha256")},
                 {"model_receipt_sha256", gate.at("model_receipt_sha256")},
                 {"model_loaded", false}, {"Vulkan_initialized", false}});
-            qwen_app::verify_model_file("/app0/eboot.bin", gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
-                gate.at("candidate_SELF_sha256").get<std::string>(), {}, 60);
-            qwen_app::verify_model_file(startup.model_receipt, gate.at("model_receipt_bytes").get<std::uint64_t>(),
-                gate.at("model_receipt_sha256").get<std::string>(), {}, 30);
+            if (policy.contains("native_source_schedule")) {
+                if (policy.at("native_source_schedule").at("startup_integrity_direct") != true)
+                    throw std::runtime_error("The selected source candidate requires bounded direct startup integrity");
+                qwen_app::enable_native_memory_backpressure();
+                qwen_native_stage("startup_integrity_memory_admission_before_IO GPU_not_started=1");
+                (void)qwen_app::admit_native_system_memory();
+                qwen_native_stage("startup_integrity_memory_admission_completed GPU_not_started=1");
+                write_fresh_report(startup.admission_report+".system-memory.before-startup-integrity",
+                    system_memory_report(qwen_app::observe_native_system_memory()));
+                if(SELF_read_control)
+                    qwen_app::verify_native_startup_file_control("/app0/eboot.bin",gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                        gate.at("candidate_SELF_sha256").get<std::string>(),20,SELF_control_direct);
+                else qwen_app::verify_native_startup_file_direct("/app0/eboot.bin",gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                        gate.at("candidate_SELF_sha256").get<std::string>(),60);
+                qwen_app::verify_native_startup_file_direct(startup.model_receipt,gate.at("model_receipt_bytes").get<std::uint64_t>(),
+                    gate.at("model_receipt_sha256").get<std::string>(),30);
+                write_fresh_report(startup.admission_report+".system-memory.after-startup-integrity",
+                    system_memory_report(qwen_app::observe_native_system_memory()));
+                qwen_native_stage("complete_SELF_and_receipt_direct_SHA256_passed GPU_not_started=1");
+            } else {
+                qwen_app::verify_model_file("/app0/eboot.bin", gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                    gate.at("candidate_SELF_sha256").get<std::string>(), {}, 60);
+                qwen_app::verify_model_file(startup.model_receipt, gate.at("model_receipt_bytes").get<std::uint64_t>(),
+                    gate.at("model_receipt_sha256").get<std::string>(), {}, 30);
+            }
             // Admit the CPU clock/context once, before metadata I/O can consume
             // kernel pages. All model metadata and GPU admission still follow.
             qwen_app::admit_cpu_runtime(qwen_native_stage);
             model_CPU_runtime_admitted = true;
-            qwen_app::enable_native_memory_backpressure();
+            if (!policy.contains("native_source_schedule")) qwen_app::enable_native_memory_backpressure();
+        }
+        if(SELF_read_control) {
+            const auto before=diagnostic_VM_population();
+            const auto begun=qwen_app::ProfileClock::now();std::this_thread::sleep_for(std::chrono::seconds(5));
+            const auto elapsed=qwen_app::profile_elapsed_ns(begun);const auto after=diagnostic_VM_population();
+            const auto &gate=policy.at("native_first_generation_validation");
+            write_fresh_report(startup.admission_report+".SELF-read-control",{
+                {"schema","ps5-qwen-SELF-read-CPU-result-v1"},{"pid",getpid()},{"run_id",gate.at("run_id")},
+                {"read_mode",SELF_control_direct?"direct":"buffered"},{"maximum_read_window_bytes",1u<<20},
+                {"SELF_bytes_verified",gate.at("candidate_SELF_bytes")},{"SELF_sha256",gate.at("candidate_SELF_sha256")},
+                {"all_startup_SHA256_passed",true},{"all_native_read_calls_returned",true},{"quiet_ns",elapsed},
+                {"VM_before_quiet",before},{"VM_after_quiet",after},
+                {"original_memory_predicate_before_every_SELF_read",true},{"memory_predicates_or_reserves_relaxed",false},
+                {"model_metadata_files",0},{"source_virtual_calls",0},{"source_workers",0},{"GPU_calls",0},
+                {"shader_storage_initialized",false},{"Vulkan_initialized",false},{"model_loaded",false},
+                {"state","CPU_SELF_control_completed_waiting_for_ordinary_close"}});
+            qwen_native_stage("startup_SELF_CPU_control_completed_GPU_not_started_waiting_for_ordinary_close");
+            for(;;)std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+        if(qwen_app::native_shader_assets_registered()!=policy.contains("native_shader_storage"))
+            throw std::runtime_error("Packed shader resources require explicit prior CPU validation");
+        if(policy.contains("native_shader_storage")) {
+            const auto &storage=policy.at("native_shader_storage");
+            if(!startup.first_generation_validation||storage.at("schema")!="ps5-qwen-shader-storage-policy-v1"||
+               storage.at("enabled")!=true||
+               storage.at("model_and_shader_precision_unchanged")!=true||storage.at("persistent_caches_enabled")!=false)
+                throw std::runtime_error("Lossless shader storage CPU admission is not authorized");
+            const bool external=qwen_app::native_shader_file_registered();
+            const bool verify_all=storage.at("verify_all_original_assets_before_Vulkan").get<bool>();
+            if(external!=storage.contains("external_file"))
+                throw std::runtime_error("External shader resources require their exact explicit private file policy");
+            if(external) {
+                const auto &file=storage.at("external_file");
+                if(file.at("schema")!="ps5-qwen-external-shader-file-policy-v1"||
+                   file.at("single_read_only_descriptor")!=true||file.at("new_model_source_window")!=false||
+                   verify_all==storage.contains("prior_native_CPU"))
+                    throw std::runtime_error("External shader resources require complete current file and original-byte verification");
+                qwen_app::initialize_native_shader_file(file.at("path").get<std::string>(),file.at("bytes").get<std::uint64_t>(),
+                    file.at("sha256").get<std::string>());
+                const auto admitted=qwen_app::native_shader_file_stats();
+                if(!admitted.verified||admitted.failed||admitted.read_pending||admitted.input_window_bytes!=file.at("input_window_bytes"))
+                    throw std::runtime_error("External shader file admission did not complete inside its exact tracked window");
+                qwen_native_stage("complete_external_shader_file_SHA256_passed GPU_not_started=1");
+            }
+            qwen_app::initialize_native_shader_assets();
+            const auto declared=qwen_app::native_shader_asset_stats();
+            if(declared.assets!=storage.at("shader_count")||declared.original_bytes!=storage.at("original_bytes")||
+               declared.stored_bytes!=storage.at("stored_bytes")||declared.lookup_entries!=storage.at("lookup_entries")||
+               declared.registry_sha256!=storage.at("registry_sha256"))
+                throw std::runtime_error("Shader CPU verification exceeds the exact private resource plan");
+            Json prior_shader;
+            if(!verify_all)prior_shader=read_prior_shader_CPU(storage.at("prior_native_CPU"),declared);
+            const auto shaders=verify_all?qwen_app::verify_native_shader_assets_CPU():declared;
+            if(shaders.failed||shaders.active_lease||(verify_all&&shaders.CPU_verified_assets!=shaders.assets)||
+               (verify_all&&shaders.CPU_verified_lookups!=shaders.lookup_entries)||shaders.assets!=storage.at("shader_count")||
+               shaders.original_bytes!=storage.at("original_bytes")||shaders.stored_bytes!=storage.at("stored_bytes")||
+               shaders.registry_sha256!=storage.at("registry_sha256"))
+                throw std::runtime_error("Lossless shader CPU bytes or lookup identity did not match the private plan");
+            if(external&&shaders.external_file.frame_requests!=shaders.CPU_verified_assets)
+                throw std::runtime_error("External shader CPU verification did not restore every current original input");
+            require_model_CPU_budget();
+            write_fresh_report(startup.admission_report+".shader-assets.CPU",{
+                {"schema",external?"ps5-qwen-shader-storage-CPU-result-v3":"ps5-qwen-shader-storage-CPU-result-v2"},{"pid",getpid()},
+                {"verification_mode",verify_all?"all_assets_in_current_run":"prior_all_assets_and_current_use_SHA256"},
+                {"all_assets_verified_in_this_run",verify_all},
+                {"prior_CPU_verified_assets",verify_all?Json(0):prior_shader.at("CPU_verified_assets")},
+                {"prior_report_sha256",verify_all?Json(nullptr):storage.at("prior_native_CPU").at("report_sha256")},
+                {"run_id",policy.at("native_first_generation_validation").at("run_id")},
+                {"shader_count",shaders.assets},{"original_bytes",shaders.original_bytes},{"stored_bytes",shaders.stored_bytes},
+                {"CPU_verified_assets",shaders.CPU_verified_assets},{"lookup_entries",shaders.lookup_entries},
+                {"CPU_verified_lookups",shaders.CPU_verified_lookups},{"registry_sha256",shaders.registry_sha256},
+                {"codec_output_bytes",shaders.codec_output_bytes},{"codec_ordering_bytes",shaders.codec_ordering_bytes},
+                {"codec_scratch_bytes",shaders.codec_scratch_bytes},
+                {"external_file",shaders.external_file.registered},{"external_file_SHA256_verified",shaders.external_file.verified},
+                {"external_file_bytes",shaders.external_file.file_bytes},{"codec_input_window_bytes",shaders.external_file.input_window_bytes},
+                {"external_read_calls",shaders.external_file.read_calls},{"external_returned_bytes",shaders.external_file.returned_bytes},
+                {"external_frame_requests",shaders.external_file.frame_requests},
+                {"external_read_pending",shaders.external_file.read_pending},{"external_source_failed",shaders.external_file.failed},
+                {"active_lease",false},{"failed",false},{"all_original_SPIRV_bytes_preserved",true},
+                {"GPU_calls",0},{"Vulkan_initialized",false},{"model_loaded",false},{"persistent_caches_enabled",false}});
+            qwen_native_stage(verify_all?"all_original_shader_CPU_bytes_and_lookups_verified_before_Vulkan":
+                "prior_all_original_shader_CPU_bytes_bound_current_module_SHA256_required_before_Vulkan");
         }
         if(startup.model_validation || startup.first_generation_validation) {
-            const auto memory=startup.first_generation_validation ? qwen_app::admit_native_system_memory() : qwen_app::observe_native_system_memory();
-            write_fresh_report(startup.admission_report+".system-memory.before-integrity",system_memory_report(memory));
+            const bool selected_startup = startup.first_generation_validation && policy.contains("native_source_schedule");
+            if (selected_startup && policy.at("native_source_schedule").at("require_kernel_target_before_metadata") != true)
+                throw std::runtime_error("The selected source candidate requires stronger startup memory admission");
+            const auto memory=selected_startup ? qwen_app::admit_native_startup_memory() :
+                startup.first_generation_validation ? qwen_app::admit_native_system_memory() : qwen_app::observe_native_system_memory();
+            auto initial_memory_report=system_memory_report(memory);
+            if (selected_startup) initial_memory_report["startup_kernel_target_required"]=true;
+            write_fresh_report(startup.admission_report+".system-memory.before-integrity",initial_memory_report);
             wait_for_initial_model_CPU_budget();
             qwen_native_stage("scoped_CPU_Flexible_kernel_memory_admitted_before_model_integrity GPU_not_started=1 model_loaded=0");
         }
@@ -597,6 +784,17 @@ int main(int argc, char ** argv) {
                 throw std::runtime_error("Sealed original model directory or receipt changed after native SHA verification");
         };
         require_prior_metadata();
+        const bool direct_metadata=policy.contains("native_direct_metadata");
+        if(direct_metadata) {
+            const auto &candidate=policy.at("native_direct_metadata");
+            if(!startup.first_generation_validation||!prior_integrity||!policy.contains("native_source_schedule")||
+               candidate.at("schema")!="ps5-qwen-direct-metadata-policy-v1"||candidate.at("enabled")!=true||
+               candidate.at("window_bytes")!=qwen_app::metadata_direct_window||
+               candidate.at("maximum_metadata_prefix_bytes")!=qwen_app::metadata_direct_limit||
+               candidate.at("reuse_active_source_window")!=true||candidate.at("unchanged_memory_and_integrity_guards")!=true)
+                throw std::runtime_error("Bounded original GGUF Direct metadata policy is not admitted");
+            qwen_app::enable_native_direct_metadata();
+        }
         // A receipt records host conversion provenance, not a fresh console hash
         // check. Deployment must independently verify every transferred file.
         qwen_app::ModelFootprint footprint; std::unordered_set<std::string> tensor_names;
@@ -616,6 +814,8 @@ int main(int argc, char ** argv) {
                     model_file(startup.model_receipt,file.at("path").get<std::string>()), file_bytes));
             if (prior_integrity && !identity_namespace->matches(file_identities.back(), prior_integrity->files.at(file_index - 1)))
                 throw std::runtime_error("Sealed original model file changed after native SHA verification");
+            if(direct_metadata)qwen_app::register_native_direct_metadata(
+                model_file(startup.model_receipt,file.at("path").get<std::string>()),file_identities.back());
             screen.state="verifying original model bytes";
             const auto remaining = std::chrono::duration_cast<std::chrono::seconds>(
                 verification_deadline - std::chrono::steady_clock::now()).count();
@@ -655,6 +855,16 @@ int main(int argc, char ** argv) {
         if (std::chrono::steady_clock::now() > verification_deadline)
             throw std::runtime_error("Complete original-model verification deadline expired before backend initialization");
         qwen_app::validate_original_footprint(footprint,expected_mapped_files);
+        if(direct_metadata) {
+            const auto s=qwen_app::native_direct_metadata_stats();
+            if(s.completed_files!=file_index||s.borrowed_files)
+                throw std::runtime_error("Direct metadata startup did not complete every original file before source startup");
+            write_fresh_report(startup.admission_report+".source.metadata",{{"schema","ps5-qwen-direct-metadata-admission-v1"},
+                {"completed_files",s.completed_files},{"physical_bytes",s.physical_bytes},{"physical_reads",s.physical_reads},
+                {"maximum_metadata_prefix_bytes",s.maximum_prefix},{"window_bytes",qwen_app::metadata_direct_window},
+                {"buffer_retired_before_source_startup",true},{"original_identities_and_parser_preserved",true},
+                {"model_loaded",false},{"Vulkan_initialized",false},{"inactive_pages_counted_as_available",false}});
+        }
         require_prior_metadata();
         const auto first_path = model_file(startup.model_receipt, receipt.at("files").at(0).at("path").get<std::string>());
         write_fresh_report(startup.admission_report+".integrity",{{"schema","ps5-qwen-model-integrity-v1"},
@@ -694,9 +904,101 @@ int main(int argc, char ** argv) {
             // substitute for process-available or immediately reclaimable RAM.
             require_model_CPU_budget();
             qwen_native_stage("source_virtual_CPU_memory_admission_passed_before_probe GPU_not_started=1 model_loaded=0");
+            const bool stage_memory_diagnostic=policy.contains("native_source_stage_memory_diagnostic");
+            if(policy.contains("native_CPU_phase_control")&&!stage_memory_diagnostic)
+                throw std::runtime_error("CPU phase controls require the explicit CPU-only diagnostic");
+            Json VM_before;
+            if(stage_memory_diagnostic) {
+                const auto & diagnostic=policy.at("native_source_stage_memory_diagnostic");
+                if(!startup.first_generation_validation||!policy.contains("native_source_schedule")||
+                   diagnostic.at("schema")!="ps5-qwen-native-stage-memory-policy-v3"||diagnostic.at("enabled")!=true||
+                   diagnostic.at("CPU_only")!=true||diagnostic.at("maximum_records")!=qwen_app::stage_memory_probe_capacity||
+                   diagnostic.at("matched_idle_ns")!=qwen_app::stage_memory_probe_idle_ns||diagnostic.at("split_write_and_sync")!=true||
+                   diagnostic.at("VM_population_snapshots")!=true||diagnostic.at("settled_idle_seconds")!=2||
+                   diagnostic.at("ordinary_OS_close_required")!=true)
+                    throw std::runtime_error("Bounded CPU-only stage memory diagnostic is not admitted");
+                if(policy.contains("native_CPU_phase_control")) {
+                    const auto &control=policy.at("native_CPU_phase_control");
+                    if(control.at("schema")!="ps5-qwen-CPU-phase-control-v1"||control.at("enabled")!=true||
+                       control.at("quiet_seconds")!=5||control.at("maximum_journal_lines")!=256||
+                       control.at("idle_microseconds_per_line")!=2000||control.at("extra_kernel_pages_before_next_line")!=512)
+                        throw std::runtime_error("Finite quiet/journal CPU control is not admitted");
+                    const auto quiet_started=qwen_app::ProfileClock::now();
+                    const auto before_quiet=diagnostic_VM_population();
+                    std::this_thread::sleep_for(std::chrono::seconds(5));
+                    const auto after_quiet=diagnostic_VM_population();
+                    const auto quiet_ns=qwen_app::profile_elapsed_ns(quiet_started);
+                    const auto journal_started=qwen_app::ProfileClock::now();
+                    unsigned lines=0;bool stopped=false;
+                    for(;lines<256;++lines) {
+                        const auto fresh=qwen_app::observe_native_system_memory();
+                        (void)qwen_app::qualified_system_headroom(fresh);
+                        const auto floor=std::uint64_t(fresh.kernel_minimum)+std::max<std::uint64_t>(fresh.kernel_reserved,
+                            (qwen_app::kernel_memory_margin+fresh.page_size-1)/fresh.page_size)+512;
+                        if(fresh.kernel_free<floor){stopped=true;break;}
+                        char line[160];const int count=std::snprintf(line,sizeof(line),
+                            "CPU_journal_control_only line=%u source_operations=0 reservations=0 GPU_calls=0 model_loaded=0",lines);
+                        if(count<=0||std::size_t(count)>=sizeof(line))throw std::runtime_error("CPU journal control line bound failed");
+                        qwen_native_stage(line);
+                        if(usleep(2000))throw std::runtime_error("CPU journal control idle did not complete");
+                    }
+                    const auto after_journal=diagnostic_VM_population();
+                    write_fresh_report(startup.admission_report+".source.CPU-prelude",{
+                        {"schema","ps5-qwen-CPU-phase-control-result-v1"},{"pid",getpid()},
+                        {"run_id",policy.at("native_first_generation_validation").at("run_id")},
+                        {"VM_before_quiet",before_quiet},{"VM_after_quiet",after_quiet},{"VM_after_journal",after_journal},
+                        {"quiet_ns",quiet_ns},{"journal_ns",qwen_app::profile_elapsed_ns(journal_started)},
+                        {"completed_journal_lines",lines},{"maximum_journal_lines",256},
+                        {"stopped_at_completed_boundary_before_next_line",stopped},
+                        {"source_operations",0},{"GPU_calls",0},{"source_workers",0},{"model_loaded",false},
+                        {"inactive_pages_counted_as_available",false}});
+                    // The control must not enter the real opaque reservation
+                    // interval with less than the existing stronger target.
+                    (void)qwen_app::admit_native_startup_memory();
+                }
+                if(!qwen_app::begin_native_stage_memory_probe())
+                    throw std::runtime_error("Bounded CPU-only stage sampler cannot be reentered");
+                VM_before=diagnostic_VM_population();
+            }
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
                 [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
-            const auto after_sources=startup.first_generation_validation ? qwen_app::admit_native_system_memory() : qwen_app::observe_native_system_memory();
+            if(stage_memory_diagnostic) {
+                const bool complete=qwen_app::end_native_stage_memory_probe();
+                const auto VM_after=diagnostic_VM_population();
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                const auto VM_settled=diagnostic_VM_population();
+                Json samples=Json::array();
+                for(std::size_t i=0;i<qwen_app::native_stage_memory_probe_count();++i) {
+                    const auto * sample=qwen_app::native_stage_memory_probe_sample(i);
+                    if(!sample)throw std::runtime_error("Native stage memory sample ownership is not idle");
+                    samples.push_back({{"phase",sample->phase},{"idle_before_ns",sample->idle_before_ns},
+                        {"before_ns",sample->before_ns},{"write_after_ns",sample->write_after_ns},{"after_ns",sample->after_ns},
+                        {"free_idle_before",sample->free_idle_before},{"free_before",sample->free_before},
+                        {"free_after_write",sample->free_after_write},{"free_after",sample->free_after},{"valid",sample->valid}});
+                }
+                write_fresh_report(startup.admission_report+".source.stage-memory",{
+                    {"schema","ps5-qwen-native-stage-memory-result-v3"},{"pid",getpid()},
+                    {"VM_before",VM_before},{"VM_after",VM_after},{"VM_settled_after_two_seconds",VM_settled},
+                    {"inactive_pages_counted_as_available",false},
+                    {"matched_idle_ns",qwen_app::stage_memory_probe_idle_ns},{"split_write_and_sync",true},
+                    {"run_id",policy.at("native_first_generation_validation").at("run_id")},
+                    {"samples_valid_and_complete",complete},{"samples",samples},
+                    {"mapped_files",mapping.files},{"completed_unmaps",mapping.unmapped},{"mapped_file_bytes",mapping.bytes},
+                    {"model_loaded",false},{"Vulkan_initialized",false},{"GPU_calls",0},{"source_workers",0},
+                    {"state","CPU_diagnostic_completed_waiting_for_ordinary_close"}});
+                if(!complete)throw std::runtime_error("Native stage memory diagnostic did not complete all bounded observations");
+                qwen_native_stage("source_stage_memory_CPU_diagnostic_completed_GPU_not_started_waiting_for_ordinary_close");
+                for(;;)std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+            qwen_native_stage("source_virtual_probe_all_reservations_and_releases_completed_before_backend GPU_not_started=1");
+            write_fresh_report(startup.admission_report+".system-memory.after-virtual-probe-before-admission",
+                system_memory_report(qwen_app::observe_native_system_memory()));
+            // The whole rehearsal has positively returned. Require recovery to
+            // the existing startup target before creating driver/device state.
+            // This shares the same passive wait budget and issues no reclaim.
+            const auto after_sources=startup.first_generation_validation ?
+                (policy.contains("native_source_schedule") ? qwen_app::admit_native_startup_memory() : qwen_app::admit_native_system_memory()) :
+                qwen_app::observe_native_system_memory();
             write_fresh_report(startup.admission_report+".system-memory.after-virtual-sources",system_memory_report(after_sources));
             (void)qwen_app::qualified_system_headroom(after_sources);
             require_model_CPU_budget();
@@ -741,13 +1043,34 @@ int main(int argc, char ** argv) {
         if (startup.first_generation_validation) {
             qwen_native_stage("source_pipeline_CPU_preflight_before_Vulkan GPU_not_started=1");
             qwen_app::start_native_source_parallel_reads();
+            const bool selected = policy.contains("native_source_schedule");
+            if (selected) {
+                const auto & candidate = policy.at("native_source_schedule");
+                if (candidate.at("schema") != "ps5-qwen-file-range-source-policy-v1" ||
+                    candidate.at("enabled") != true || candidate.at("maximum_outstanding_reads") != 2 ||
+                    candidate.at("source_window_bytes") != qwen_app::model_read_window ||
+                    candidate.at("region_bytes") != qwen_app::source_schedule_region_bytes ||
+                    candidate.at("boundary_margin_bytes") != qwen_app::source_schedule_boundary_margin ||
+                    candidate.at("coalesce_adjacent_original_bytes") != true ||
+                    candidate.at("require_kernel_target_before_metadata") != true ||
+                    candidate.at("startup_integrity_direct") != true ||
+                    candidate.at("unchanged_memory_precision_driver_and_cache_policy") != true ||
+                    policy.contains("native_source_contention_probe"))
+                    throw std::runtime_error("The private file/range source candidate policy is not admitted");
+                qwen_app::enable_native_source_schedule();
+            }
             require_model_CPU_budget();
             (void)observed_system_headroom();
-            write_fresh_report(startup.admission_report + ".source.pipeline", {
-                {"schema", "ps5-qwen-source-pipeline-admission-v1"},
+            Json source_admission = {
+                {"schema", selected ? "ps5-qwen-source-schedule-admission-v1" : "ps5-qwen-source-pipeline-admission-v1"},
                 {"source_window_bytes", qwen_app::model_read_window}, {"CPU_IO_workers", 1},
-                {"maximum_outstanding_reads", 1}, {"preflight_equal_bytes", true},
-                {"preflight_bytes_per_read", qwen_app::model_read_alignment}, {"Vulkan_initialized", false}});
+                {"maximum_outstanding_reads", selected ? 2 : 1}, {"preflight_equal_bytes", true},
+                {"preflight_bytes_per_read", qwen_app::model_read_alignment}, {"Vulkan_initialized", false}};
+            if (selected) source_admission.update({
+                {"file_range_schedule_enabled", true}, {"coalesced_and_parallel_CPU_paths_passed", true},
+                {"region_bytes", qwen_app::source_schedule_region_bytes},
+                {"boundary_margin_bytes", qwen_app::source_schedule_boundary_margin}});
+            write_fresh_report(startup.admission_report + ".source.pipeline", source_admission);
             qwen_native_stage("source_pipeline_CPU_preflight_passed_before_Vulkan GPU_not_started=1");
         }
         qwen_app::inspect_vulkan_globals();
@@ -1057,6 +1380,25 @@ int main(int argc, char ** argv) {
             const auto device_stats = qwen_app::native_model_device_stats();
             struct ps5_heap_stats final_heap{}; ps5_heap_stats(&final_heap);
             qwen_app::stop_native_model_sources();
+            if(policy.contains("native_shader_storage")) {
+                const auto shaders=qwen_app::native_shader_asset_stats();
+                if(shaders.failed||shaders.active_lease||shaders.external_file.read_pending||
+                   (shaders.external_file.registered&&!shaders.external_file.verified)||
+                   (shaders.external_file.registered&&shaders.external_file.frame_requests!=shaders.decoded_calls+shaders.raw_calls)||
+                   shaders.decoded_calls+shaders.raw_calls<=shaders.CPU_verified_assets)
+                    throw std::runtime_error("The completed Vulkan plan lacks positively retired original shader inputs");
+                write_fresh_report(startup.admission_report+".shader-assets.Vulkan",{
+                    {"schema",shaders.external_file.registered?"ps5-qwen-shader-storage-Vulkan-result-v2":"ps5-qwen-shader-storage-Vulkan-result-v1"},
+                    {"pid",getpid()},{"run_id",request.id},
+                    {"registry_sha256",shaders.registry_sha256},{"CPU_verified_assets_in_this_run",shaders.CPU_verified_assets},
+                    {"module_input_restorations_after_CPU_verification",shaders.decoded_calls+shaders.raw_calls-shaders.CPU_verified_assets},
+                    {"active_lease",false},{"failed",false},{"all_used_original_SPIRV_SHA256_checked",true},
+                    {"external_file",shaders.external_file.registered},{"external_file_SHA256_verified",shaders.external_file.verified},
+                    {"codec_input_window_bytes",shaders.external_file.input_window_bytes},{"external_read_pending",shaders.external_file.read_pending},
+                    {"external_read_calls",shaders.external_file.read_calls},{"external_returned_bytes",shaders.external_file.returned_bytes},
+                    {"external_frame_requests",shaders.external_file.frame_requests},
+                    {"positive_plan_GPU_completion_and_retirement",true},{"persistent_caches_enabled",false}});
+            }
             write_fresh_report(startup.admission_report + ".memory.backpressure", memory_backpressure_report());
             write_fresh_report(startup.admission_report, {
                 {"schema", "ps5-qwen-plan-validation-result-v1"}, {"run_id", request.id},

@@ -227,3 +227,15 @@ It does not retry I/O/inference/GPU work, release resources, reclaim pages or
 reduce reserves. A deadline, invalid observation or invalid clock still
 quarantines the graph. Host recovery/deadline/total-budget/no-retry checks and
 affected native compilation passed; complete physical qualification is pending.
+
+## Subsequent completed performance results
+
+The [single-read pipeline sequence](source-pipeline-success-20261024.json)
+completed all physical and restoration gates. The later
+[file/range schedule sequence](native-source-schedule-success-20261025.md)
+also completed the entire plan, including original numerical readmission and
+final idle/full-readback checks. Its two rates were 0.332877 / 0.337782 tokens/s,
+with a 16.68% mean observed gain over the matched single-read control. This
+supersedes earlier pending physical status; the reports retain each candidate's
+scope, cache conditions and measurement limits. Neither completed sequence is
+to be replayed, and general execution/release/CI remain disabled.

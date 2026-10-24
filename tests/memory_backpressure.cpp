@@ -22,6 +22,11 @@ int main(){try{
      ops.value.kernel_free=1155;rejected([&]{ops.issue_after(g);});check(ops.operations==1&&!ops.pauses,"Disabled gate changed the old guard");}
     {Ops ops;MemoryBackpressure g;g.enable();ops.free={1100,1155,1156};ops.issue_after(g);
      check(ops.operations==1&&ops.pauses==2&&g.stats().recovered_admissions==1&&g.stats().last_qualified,"Recovery bypassed a fresh exact guard");}
+    {Ops ops;MemoryBackpressure g;g.enable();ops.free={1156,1800,1999,2000};
+     const auto admitted=g.admit(ops,true);check(admitted.kernel_free==2000&&ops.pauses==3&&!ops.operations,"Startup did not wait for the stronger OS target");
+     ops.value.kernel_free=1156;ops.issue_after(g);check(ops.operations==1&&ops.pauses==3,"Startup target changed the ordinary predicate");}
+    {Ops ops;MemoryBackpressure g(300,500,100);g.enable();ops.free={1156,1156,2000,1000,1000,1000,1000};
+     (void)g.admit(ops,true);rejected([&]{ops.issue_after(g);});check(g.stats().wait_ns==500&&!ops.operations,"Startup reset the whole-process wait budget");}
     {Ops ops;MemoryBackpressure g;g.enable();ops.value.kernel_free=1000;rejected([&]{ops.issue_after(g);});
      check(!ops.operations&&ops.pauses==200&&g.stats().wait_ns==MemoryBackpressure::boundary_limit_ns,"Persistent pressure escaped its deadline");
      const auto n=ops.observations;ops.value.kernel_free=2000;rejected([&]{ops.issue_after(g);});check(ops.observations==n,"A failed admission retried");}
