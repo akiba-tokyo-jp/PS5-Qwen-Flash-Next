@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "model_mapping.h"
 #include "virtual_source.h"
+#include "direct_metadata.h"
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -19,7 +20,7 @@ class NativeMappingOps final : public ModelMappingOps {
         static_assert(sizeof(off_t) == 8, "Original model files require 64-bit offsets");
         struct stat metadata{};
         if (fstat(fd, &metadata) || !S_ISREG(metadata.st_mode) || metadata.st_size <= 0) return false;
-        bytes = static_cast<std::uint64_t>(metadata.st_size); return true;
+        bytes = native_metadata_logical_bytes(fd,static_cast<std::uint64_t>(metadata.st_size)); return true;
     }
     std::uintptr_t map_readonly(int fd, std::uint64_t bytes) override {
         static_assert(sizeof(std::size_t) == 8, "Complete model mappings require 64-bit lengths");

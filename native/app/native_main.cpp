@@ -22,6 +22,7 @@
 #include "stage_memory_probe.h"
 #include "shader_assets.h"
 #include "prior_model_integrity.h"
+#include "split_model_integrity.h"
 #include "model_identity_namespace.h"
 #include "model_receipt.h"
 #include "model_mapping.h"
@@ -826,7 +827,11 @@ int main(int argc, char ** argv) {
         }
         const auto receipt = qwen_app::read_model_receipt(startup.model_receipt);
         const auto expected_mapped_files=qwen_app::validate_model_receipt(receipt);
-        const auto prior_integrity = startup.first_generation_validation ?
+        const auto split_integrity = startup.first_generation_validation ?
+            qwen_app::split_model_integrity(policy.at("native_first_generation_validation"),receipt,expected_mapped_files) :
+            std::optional<qwen_app::SplitModelIntegrity>{};
+        const auto prior_integrity = split_integrity ? std::optional<qwen_app::PriorModelIntegrity>(split_integrity->prior) :
+            startup.first_generation_validation ?
             qwen_app::prior_model_integrity(policy.at("native_first_generation_validation"), receipt, expected_mapped_files) :
             std::optional<qwen_app::PriorModelIntegrity>{};
         const auto receipt_separator = startup.model_receipt.find_last_of('/');
@@ -870,6 +875,9 @@ int main(int argc, char ** argv) {
             if (!identity_namespace->matches(directory, prior_integrity->directory) ||
                 !identity_namespace->matches(receipt_identity, prior_integrity->receipt))
                 throw std::runtime_error("Sealed original model directory or receipt changed after native SHA verification");
+            if(split_integrity&&!identity_namespace->matches(model_directory_identity(
+                    model_directory+"/"+split_integrity->part_directory),split_integrity->part_directory_identity))
+                throw std::runtime_error("Sealed split-part directory changed after complete logical SHA verification");
         };
         require_prior_metadata();
         const bool direct_metadata=policy.contains("native_direct_metadata");
@@ -899,11 +907,12 @@ int main(int argc, char ** argv) {
             const auto file_bytes=file.at("bytes").get<std::uint64_t>();
             if (startup.first_generation_validation)
                 file_identities.push_back(model_file_identity(
-                    model_file(startup.model_receipt,file.at("path").get<std::string>()), file_bytes));
+                    model_file(startup.model_receipt,file.at("path").get<std::string>()),
+                    split_integrity?split_integrity->prior.files.at(file_index-1)[5]:file_bytes));
             if (prior_integrity && !identity_namespace->matches(file_identities.back(), prior_integrity->files.at(file_index - 1)))
                 throw std::runtime_error("Sealed original model file changed after native SHA verification");
             if(direct_metadata)qwen_app::register_native_direct_metadata(
-                model_file(startup.model_receipt,file.at("path").get<std::string>()),file_identities.back());
+                model_file(startup.model_receipt,file.at("path").get<std::string>()),file_identities.back(),file_bytes);
             screen.state="verifying original model bytes";
             const auto remaining = std::chrono::duration_cast<std::chrono::seconds>(
                 verification_deadline - std::chrono::steady_clock::now()).count();
@@ -959,7 +968,8 @@ int main(int argc, char ** argv) {
             {"pid",getpid()},{"files_verified",file_index},{"all_SHA256_matched",true},
             {"mapped_file_bytes",footprint.mapped_files},{"verified_file_bytes",fully_verified_bytes},
             {"maximum_verification_seconds",qwen_app::native_model_verification_seconds},
-            {"verification_mode",prior_integrity ? "prior_native_SHA_and_unchanged_sealed_identity" : "complete_native_SHA_this_run"},
+            {"verification_mode",split_integrity ? "prior_complete_split_logical_SHA_and_unchanged_physical_identities" :
+                prior_integrity ? "prior_native_SHA_and_unchanged_sealed_identity" : "complete_native_SHA_this_run"},
             {"payload_SHA_computed_in_this_run",!prior_integrity},
             {"metadata_validation_deadline_seconds",prior_integrity ? 60 : qwen_app::native_model_verification_seconds},
             {"prior_native_integrity_report_sha256",prior_integrity ? Json(prior_integrity->report_sha256) : Json(nullptr)},
@@ -976,8 +986,12 @@ int main(int argc, char ** argv) {
                 throw std::runtime_error("Complete original-model identity binding is missing");
             require_prior_metadata();
             for (std::size_t i = 0; i < mapping_files.size(); ++i)
-                if (model_file_identity(mapping_files[i].path, mapping_files[i].bytes) != file_identities[i])
+                if (model_file_identity(mapping_files[i].path,
+                        split_integrity?file_identities[i][5]:mapping_files[i].bytes) != file_identities[i])
                     throw std::runtime_error("Original model changed after its native verification");
+            if(split_integrity)for(const auto &part:split_integrity->physical)
+                if(!identity_namespace->matches(model_file_identity(model_directory+"/"+part.path,part.bytes),part.identity))
+                    throw std::runtime_error("A split physical source changed after complete native verification");
         };
         require_unchanged_model();
 
@@ -1112,14 +1126,28 @@ int main(int argc, char ** argv) {
         screen.state = "admitting original BF16 memory";
         if (startup.first_generation_validation) {
             std::vector<qwen_app::SourceFile> sources;
-            for (std::size_t i = 0; i < mapping_files.size(); ++i)
+            std::vector<qwen_app::LogicalSourceFile> logical;
+            if(split_integrity) {
+                for(const auto &part:split_integrity->physical) {
+                    const auto path=model_directory+"/"+part.path;
+                    const auto actual=model_file_identity(path,part.bytes);
+                    if(!identity_namespace->matches(actual,part.identity))
+                        throw std::runtime_error("Split source admission requires every exact current physical identity");
+                    sources.push_back({path,part.bytes,actual});
+                }
+                logical=split_integrity->logical;
+                for(auto &file:logical)file.path=model_directory+"/"+file.path;
+            } else for (std::size_t i = 0; i < mapping_files.size(); ++i)
                 sources.push_back({mapping_files[i].path, mapping_files[i].bytes, file_identities[i]});
-            qwen_app::start_native_model_sources(std::move(sources));
+            const auto physical_count=sources.size();
+            qwen_app::start_native_model_sources(std::move(sources),std::move(logical));
             write_fresh_report(startup.admission_report + ".source", {
                 {"schema", "ps5-qwen-bounded-source-admission-v1"}, {"pid", getpid()},
                 {"direct_read_preflight_passed", true}, {"maximum_window_bytes", qwen_app::model_read_window},
                 {"CPU_source_read_window_in_Direct_heap", true},
                 {"maximum_open_handles", 8}, {"mapped_source_upload_dereferences_enabled", false},
+                {"logical_files",mapping_files.size()},{"physical_files",physical_count},
+                {"split512_layout",bool(split_integrity)},
                 {"CPU_matrix_fallback_enabled", false}, {"maximum_CPU_workspace_bytes", 16u << 20},
                 {"bounded_CPU_rows_enabled", true}, {"CPU_source_pointer_dereferences_enabled", false},
                 {"model_loaded", false}, {"Vulkan_initialized", false}});

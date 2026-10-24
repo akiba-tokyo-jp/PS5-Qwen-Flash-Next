@@ -173,6 +173,39 @@ class FirstGenerationRecords(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     validate(self.result, self.binding)
 
+    def test_split_layout_requires_independent_integrity_and_complete_physical_count(self):
+        self.binding.update(split512_integrity_sha256="d"*64, physical_files=711)
+        self.records[".integrity"].update(
+            verification_mode="prior_complete_split_logical_SHA_and_unchanged_physical_identities",
+            payload_SHA_computed_in_this_run=False, metadata_validation_deadline_seconds=60,
+            verification_elapsed_ms=500, prior_native_verification_elapsed_ms=2000,
+            prior_native_integrity_report_sha256="d"*64, sealed_identity_snapshot_sha256="d"*64)
+        self.records[".source"].update(split512_layout=True, logical_files=76, physical_files=711)
+        self.save()
+        validate(self.result, self.binding)
+        original = copy.deepcopy(self.records)
+        faults = ((".integrity", "verification_mode", "unknown"),
+            (".integrity", "verification_mode", "prior_native_SHA_and_unchanged_sealed_identity"),
+            (".integrity", "verification_elapsed_ms", 60001),
+            (".integrity", "prior_native_integrity_report_sha256", "e"*64),
+            (".integrity", "sealed_identity_snapshot_sha256", "e"*64),
+            (".source", "physical_files", 710), (".source", "logical_files", 75),
+            (".source", "split512_layout", False))
+        for suffix, key, value in faults:
+            with self.subTest(suffix=suffix, key=key):
+                self.records = copy.deepcopy(original)
+                self.records[suffix][key] = value
+                self.save()
+                with self.assertRaises(ValueError):
+                    validate(self.result, self.binding)
+        self.records = original
+        self.save()
+        for key in ("split512_integrity_sha256", "physical_files"):
+            binding = dict(self.binding)
+            binding.pop(key)
+            with self.subTest(missing_independent_binding=key), self.assertRaises(ValueError):
+                validate(self.result, binding)
+
     def test_prior_native_integrity_requires_explicit_mode_deadline_and_evidence(self):
         integrity = self.records[".integrity"]
         integrity.update(verification_mode="prior_native_SHA_and_unchanged_sealed_identity",

@@ -61,6 +61,8 @@ struct DirectMetadataStats {
     std::uint64_t completed_files=0,borrowed_files=0,physical_bytes=0,physical_reads=0,maximum_prefix=0;
 };
 void enable_native_direct_metadata();
-void register_native_direct_metadata(const std::string &,const std::array<std::uint64_t,10> &);
+void register_native_direct_metadata(const std::string &,const std::array<std::uint64_t,10> &,
+                                    std::uint64_t logical_bytes=0);
+std::uint64_t native_metadata_logical_bytes(int fd,std::uint64_t physical_bytes);
 DirectMetadataStats native_direct_metadata_stats();
 }
