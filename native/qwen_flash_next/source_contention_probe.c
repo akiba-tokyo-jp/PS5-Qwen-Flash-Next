@@ -16,6 +16,9 @@
 #ifndef PROBE_BOUNDARY
 #define PROBE_BOUNDARY 0
 #endif
+#ifndef PROBE_SCHEDULE
+#define PROBE_SCHEDULE 0
+#endif
 
 #define HALF (4u << 20)
 #define WINDOW (2u * HALF)
@@ -170,9 +173,19 @@ int main(int argc,char **argv) {
             first=(off_t)control->offset0+(off_t)pair*16384;
             second_offset=(off_t)control->offset1+(off_t)pair*16384;
             parallel=control->parallel;
+#if PROBE_SCHEDULE
+            bytes=control->bytes;
+            first=(off_t)control->offset0+(off_t)pair*control->stride;
+            second_offset=(off_t)control->offset1+(off_t)pair*control->stride;
+#endif
 #endif
             struct job jobs[2]={{.fd=(mode||PROBE_CPP)?first_fd:-1,.target=window,.bytes=bytes,.offset=first},
                 {.fd=(mode||PROBE_CPP)?second:-1,.target=(unsigned char *)window+HALF,.bytes=bytes,.offset=second_offset}};
+#if PROBE_SCHEDULE
+            if(control->parallel==3){parallel=0;jobs[1].bytes=0;}
+            else if(control->parallel==2)parallel=probe_cpp_parallel_allowed(jobs,
+                probe_files[control->main_descriptor==2?1:0].id,probe_files[control->descriptor==2?1:0].id);
+#endif
             uint64_t begin=now(CLOCK_MONOTONIC),dispatch=0,wait=0,worker_end=0;
             /* The final round leaves the sampler asleep as a perturbation control. */
             io_active=round!=2;
@@ -187,17 +200,17 @@ int main(int argc,char **argv) {
                 while(!complete){int rc=pthread_cond_timedwait(&changed,&lock,&deadline);if(rc&&!complete)retain_uncertain();}
                 jobs[1]=pending_job;pthread_mutex_unlock(&lock);wait=now(CLOCK_MONOTONIC)-wait_at;
                 dispatch=jobs[1].sample.begin-begin;worker_end=jobs[1].sample.end;
-            }else{execute_read(&jobs[0],0);execute_read(&jobs[1],0);}
+            }else{execute_read(&jobs[0],0);if(jobs[1].bytes)execute_read(&jobs[1],0);}
             uint64_t end=now(CLOCK_MONOTONIC);io_active=0;
             uint64_t overlap_start=jobs[0].sample.begin>jobs[1].sample.begin?jobs[0].sample.begin:jobs[1].sample.begin;
             uint64_t overlap_end=jobs[0].sample.end<jobs[1].sample.end?jobs[0].sample.end:jobs[1].sample.end;
             uint64_t overlap=overlap_end>overlap_start?overlap_end-overlap_start:0;
-            if(jobs[0].sample.got!=(ssize_t)bytes||jobs[1].sample.got!=(ssize_t)bytes){work_ok=0;goto finish;}
-            if(!report("PAIR round=%u mode=%u pair=%u bytes=%u wall_ns=%llu p0_ns=%llu p1_ns=%llu cpu0_ns=%llu cpu1_ns=%llu overlap_ns=%llu dispatch_ns=%llu wait_ns=%llu after_worker_ns=%llu nv0=%ld nv1=%ld ni0=%ld ni1=%ld e0=%d e1=%d",
-                round,mode,pair,(unsigned)(2*bytes),(unsigned long long)(end-begin),(unsigned long long)(jobs[0].sample.end-jobs[0].sample.begin),
+            if(jobs[0].sample.got!=(ssize_t)jobs[0].bytes||jobs[1].sample.got!=(ssize_t)jobs[1].bytes){work_ok=0;goto finish;}
+            if(!report("PAIR round=%u mode=%u pair=%u bytes=%u wall_ns=%llu p0_ns=%llu p1_ns=%llu cpu0_ns=%llu cpu1_ns=%llu overlap_ns=%llu dispatch_ns=%llu wait_ns=%llu after_worker_ns=%llu nv0=%ld nv1=%ld ni0=%ld ni1=%ld e0=%d e1=%d parallel=%d calls=%u",
+                round,mode,pair,(unsigned)(jobs[0].bytes+jobs[1].bytes),(unsigned long long)(end-begin),(unsigned long long)(jobs[0].sample.end-jobs[0].sample.begin),
                 (unsigned long long)(jobs[1].sample.end-jobs[1].sample.begin),(unsigned long long)jobs[0].sample.cpu_ns,(unsigned long long)jobs[1].sample.cpu_ns,
                 (unsigned long long)overlap,(unsigned long long)dispatch,(unsigned long long)wait,(unsigned long long)(worker_end&&end>=worker_end?end-worker_end:0),
-                jobs[0].sample.voluntary,jobs[1].sample.voluntary,jobs[0].sample.involuntary,jobs[1].sample.involuntary,jobs[0].sample.error,jobs[1].sample.error))retain_uncertain();
+                jobs[0].sample.voluntary,jobs[1].sample.voluntary,jobs[0].sample.involuntary,jobs[1].sample.involuntary,jobs[0].sample.error,jobs[1].sample.error,parallel,jobs[1].bytes?2U:1U))retain_uncertain();
         }
     }
 finish:

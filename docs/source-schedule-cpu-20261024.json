@@ -1,0 +1,262 @@
+{
+  "schema": "ps5-qwen-source-schedule-CPU-qualification-v1",
+  "date": "2026-10-24",
+  "source_window_bytes": 8388608,
+  "maximum_outstanding_reads": 2,
+  "region_bytes": 1073741824,
+  "boundary_margin_bytes": 4194304,
+  "title_launches": 0,
+  "GPU_calls": 0,
+  "model_loaded": false,
+  "automatic_retries": 0,
+  "source_identities_revalidated": true,
+  "executor_and_sampler_positively_joined": true,
+  "Direct_window_positively_released": true,
+  "fresh_CPU_before_and_after": true,
+  "original_unchanged": true,
+  "native_owners": 0,
+  "reservation_held": true,
+  "final_round_sampler_disabled": true,
+  "modes": [
+    {
+      "mode": 0,
+      "name": "no_read",
+      "pairs": 48,
+      "mean_ms": 0.035365145833333334,
+      "round_mean_ms": [
+        0.03725625,
+        0.0371309375,
+        0.03170825
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": true,
+      "sampled_effective_GB_s": null
+    },
+    {
+      "mode": 1,
+      "name": "sequential_4_MiB",
+      "pairs": 48,
+      "mean_ms": 5.575051791666667,
+      "round_mean_ms": [
+        5.5102016875,
+        5.692273,
+        5.5226806875
+      ],
+      "bytes_per_pair": 4194304,
+      "physical_read_calls": 1,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.7523345354870881
+    },
+    {
+      "mode": 2,
+      "name": "sequential_8_MiB",
+      "pairs": 48,
+      "mean_ms": 10.203111958333334,
+      "round_mean_ms": [
+        10.2095135,
+        10.130826375,
+        10.268996
+      ],
+      "bytes_per_pair": 8388608,
+      "physical_read_calls": 1,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.8221617124517243
+    },
+    {
+      "mode": 3,
+      "name": "single_8_MiB_crossing_1_GiB",
+      "pairs": 48,
+      "mean_ms": 11.434962229166667,
+      "round_mean_ms": [
+        11.40276775,
+        11.4026575625,
+        11.499461375
+      ],
+      "bytes_per_pair": 8388608,
+      "physical_read_calls": 1,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.7335929784362154
+    },
+    {
+      "mode": 4,
+      "name": "serial_two_3_MiB",
+      "pairs": 48,
+      "mean_ms": 8.763043645833333,
+      "round_mean_ms": [
+        8.7049794375,
+        8.7028344375,
+        8.8813170625
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.7516073485645249
+    },
+    {
+      "mode": 5,
+      "name": "single_coalesced_span",
+      "pairs": 48,
+      "mean_ms": 8.173273229166666,
+      "round_mean_ms": [
+        8.209498625,
+        8.2346016875,
+        8.075719375
+      ],
+      "bytes_per_pair": 6569984,
+      "physical_read_calls": 1,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.8038375588074969
+    },
+    {
+      "mode": 6,
+      "name": "serial_same_region",
+      "pairs": 48,
+      "mean_ms": 8.867425041666666,
+      "round_mean_ms": [
+        8.887907375,
+        8.9530630625,
+        8.7613046875
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.7427599296359055
+    },
+    {
+      "mode": 7,
+      "name": "selected_same_region",
+      "pairs": 48,
+      "mean_ms": 6.9894356875,
+      "round_mean_ms": [
+        6.9985534375,
+        6.9358134375,
+        7.0339401875
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": true,
+      "sampled_effective_GB_s": 0.9423318697644144
+    },
+    {
+      "mode": 8,
+      "name": "selected_cross_region_serialized",
+      "pairs": 48,
+      "mean_ms": 10.009101708333334,
+      "round_mean_ms": [
+        10.0635458125,
+        10.087175625,
+        9.8765836875
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.6580378731206569
+    },
+    {
+      "mode": 9,
+      "name": "selected_distinct_files",
+      "pairs": 48,
+      "mean_ms": 6.949987895833333,
+      "round_mean_ms": [
+        6.987412625,
+        6.9113870625,
+        6.951164
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": true,
+      "sampled_effective_GB_s": 0.9476804994075845
+    },
+    {
+      "mode": 10,
+      "name": "selected_upper_guard_edge",
+      "pairs": 48,
+      "mean_ms": 6.876036854166667,
+      "round_mean_ms": [
+        6.8504710625,
+        6.743288125,
+        7.034351375
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": true,
+      "sampled_effective_GB_s": 0.9578727019196913
+    },
+    {
+      "mode": 11,
+      "name": "selected_lower_guard_edge",
+      "pairs": 48,
+      "mean_ms": 6.903445104166667,
+      "round_mean_ms": [
+        6.9266971875,
+        6.8602885625,
+        6.9233495625
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": true,
+      "sampled_effective_GB_s": 0.9540697290436494
+    },
+    {
+      "mode": 12,
+      "name": "excluded_below_lower_guard",
+      "pairs": 48,
+      "mean_ms": 8.852854666666666,
+      "round_mean_ms": [
+        8.72825825,
+        8.883051125,
+        8.947254625
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.7439823930239602
+    },
+    {
+      "mode": 13,
+      "name": "excluded_above_upper_guard",
+      "pairs": 48,
+      "mean_ms": 8.801627875,
+      "round_mean_ms": [
+        8.92013675,
+        8.754423875,
+        8.730323
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.7483124819111941
+    },
+    {
+      "mode": 14,
+      "name": "excluded_extent_crossing_region",
+      "pairs": 48,
+      "mean_ms": 9.9599714375,
+      "round_mean_ms": [
+        10.005546875,
+        10.0715041875,
+        9.80286325
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": false,
+      "sampled_effective_GB_s": 0.6612838240882757
+    },
+    {
+      "mode": 15,
+      "name": "selected_second_file_same_region",
+      "pairs": 48,
+      "mean_ms": 6.859625541666667,
+      "round_mean_ms": [
+        6.8640575,
+        6.8777240625,
+        6.8370950625
+      ],
+      "bytes_per_pair": 6586368,
+      "physical_read_calls": 2,
+      "parallel": true,
+      "sampled_effective_GB_s": 0.9601643646571013
+    }
+  ]
+}

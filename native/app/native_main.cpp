@@ -78,7 +78,7 @@ static void write_fresh_report(const std::string & path, const Json & value) {
 static Json performance_snapshot(const qwen_app::LlamaEngine & engine) {
     const auto source = qwen_app::native_model_source_stats();
     const auto adapter = engine.timing_stats();
-    return {{"source_bytes", source.bytes}, {"source_chunks", source.chunks},
+    Json result = {{"source_bytes", source.bytes}, {"source_chunks", source.chunks},
         {"source_completed_windows", source.completed_windows},
         {"source_headroom_ns", source.headroom_ns}, {"source_handle_ns", source.handle_ns},
         {"source_read_ns", source.read_ns}, {"source_consumer_ns", source.consumer_ns},
@@ -87,6 +87,11 @@ static Json performance_snapshot(const qwen_app::LlamaEngine & engine) {
         {"process_calls", adapter.process_calls}, {"process_ns", adapter.process_ns},
         {"synchronize_ns", adapter.synchronize_ns}, {"checkpoint_ns", adapter.checkpoint_ns},
         {"work_guard_ns", adapter.work_guard_ns}, {"stage_observer_ns", adapter.stage_observer_ns}};
+    if (source.schedule_enabled) result.update({
+        {"source_parallel_batches", source.parallel_batches}, {"source_coalesced_batches", source.coalesced_batches},
+        {"source_selected_serial_batches", source.selected_serial_batches},
+        {"source_physical_read_bytes", source.physical_read_bytes}, {"source_physical_read_calls", source.physical_read_calls}});
+    return result;
 }
 
 static Json performance_difference(const Json & before, const qwen_app::LlamaEngine & engine) {
@@ -102,10 +107,12 @@ static Json performance_difference(const Json & before, const qwen_app::LlamaEng
         throw std::runtime_error("Performance reporting requires completed source windows");
     // process_ns includes source I/O and backend work. These are nested wall
     // intervals, not hardware GPU timestamps and must not be summed together.
-    return {{"schema", "ps5-qwen-completed-performance-v3"}, {"delta", delta},
+    const bool selected = qwen_app::native_model_source_stats().schedule_enabled;
+    return {{"schema", selected ? "ps5-qwen-completed-performance-v4" : "ps5-qwen-completed-performance-v3"}, {"delta", delta},
         {"process_includes_source_and_backend_work", true}, {"GPU_timestamp_queries", false},
         {"hot_path_logs_added", false}, {"GPU_operations_added", false},
-        {"source_read_ns_is_producer_wait_time", true}, {"maximum_parallel_source_reads", 1},
+        {"source_read_ns_is_producer_wait_time", true}, {"maximum_parallel_source_reads", selected ? 2 : 1},
+        {"file_range_schedule_enabled", selected}, {"physical_read_bytes_include_alignment", true},
         {"worker_times_overlap_consumers", true}};
 }
 
@@ -741,13 +748,32 @@ int main(int argc, char ** argv) {
         if (startup.first_generation_validation) {
             qwen_native_stage("source_pipeline_CPU_preflight_before_Vulkan GPU_not_started=1");
             qwen_app::start_native_source_parallel_reads();
+            const bool selected = policy.contains("native_source_schedule");
+            if (selected) {
+                const auto & candidate = policy.at("native_source_schedule");
+                if (candidate.at("schema") != "ps5-qwen-file-range-source-policy-v1" ||
+                    candidate.at("enabled") != true || candidate.at("maximum_outstanding_reads") != 2 ||
+                    candidate.at("source_window_bytes") != qwen_app::model_read_window ||
+                    candidate.at("region_bytes") != qwen_app::source_schedule_region_bytes ||
+                    candidate.at("boundary_margin_bytes") != qwen_app::source_schedule_boundary_margin ||
+                    candidate.at("coalesce_adjacent_original_bytes") != true ||
+                    candidate.at("unchanged_memory_precision_driver_and_cache_policy") != true ||
+                    policy.contains("native_source_contention_probe"))
+                    throw std::runtime_error("The private file/range source candidate policy is not admitted");
+                qwen_app::enable_native_source_schedule();
+            }
             require_model_CPU_budget();
             (void)observed_system_headroom();
-            write_fresh_report(startup.admission_report + ".source.pipeline", {
-                {"schema", "ps5-qwen-source-pipeline-admission-v1"},
+            Json source_admission = {
+                {"schema", selected ? "ps5-qwen-source-schedule-admission-v1" : "ps5-qwen-source-pipeline-admission-v1"},
                 {"source_window_bytes", qwen_app::model_read_window}, {"CPU_IO_workers", 1},
-                {"maximum_outstanding_reads", 1}, {"preflight_equal_bytes", true},
-                {"preflight_bytes_per_read", qwen_app::model_read_alignment}, {"Vulkan_initialized", false}});
+                {"maximum_outstanding_reads", selected ? 2 : 1}, {"preflight_equal_bytes", true},
+                {"preflight_bytes_per_read", qwen_app::model_read_alignment}, {"Vulkan_initialized", false}};
+            if (selected) source_admission.update({
+                {"file_range_schedule_enabled", true}, {"coalesced_and_parallel_CPU_paths_passed", true},
+                {"region_bytes", qwen_app::source_schedule_region_bytes},
+                {"boundary_margin_bytes", qwen_app::source_schedule_boundary_margin}});
+            write_fresh_report(startup.admission_report + ".source.pipeline", source_admission);
             qwen_native_stage("source_pipeline_CPU_preflight_passed_before_Vulkan GPU_not_started=1");
         }
         qwen_app::inspect_vulkan_globals();

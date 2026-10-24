@@ -996,3 +996,26 @@ precision/budgets/reserves/driver/cache policy and the held reservation. Selecti
 file/range scheduling is the next candidate, not an admitted production change.
 Do not copy LVD image-only BFS batching or cache hints into ordinary pread by
 analogy. Keep CI and general release/console flags disabled.
+
+## File/range source candidate authorization
+
+The owner subsequently instructed implementing and physically comparing the
+proposed source-bandwidth improvements. A distinct private first-generation
+candidate may enable the file/range schedule after the completed CPU-only
+qualification and fresh pre-backend exact-byte controls. It may use two reads
+only for complete aligned extents inset by 4 MiB from a 1 GiB region boundary;
+same-inode pairs must remain in the same region and both files must share the
+qualified device. All other pairs keep the one-read consumer pipeline. Adjacent
+original bytes may share a single read inside the existing 8 MiB window, with
+their original separate cache destinations and positive consumer completion.
+
+The completed CPU qualification exercised sequential 4/8 MiB reads, the actual
+C++ range selector, both inset edges, crossing extents and the second file.
+Normal 8 MiB reads measured about 0.82 GB/s in the CPU helper; selected parallel
+pairs about 0.94..0.96 GB/s. This is not a native-inference speed qualification.
+Expert sorting already exists; do not claim reimplementing it as an improvement.
+No file layout, model payload, driver, persistent-cache policy, memory budget or
+reserve change is part of this candidate. Require the complete matched native
+three-request/frame/retirement/ordinary-close/original-restoration/readmission/
+shutdown/final verification sequence. Keep every consumed intent and failed
+artifact; no automatic retry or release of uncertain work is permitted.

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 #include "profile_clock.h"
+#include "source_read_schedule.h"
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -24,6 +25,9 @@ struct SourceReadStats {
     std::uint64_t headroom_ns = 0, handle_ns = 0, read_ns = 0, consumer_ns = 0, completed_windows = 0;
     std::uint64_t parallel_batches = 0;
     std::uint64_t pipeline_batches = 0, worker_read_ns = 0, worker_dispatch_ns = 0;
+    std::uint64_t physical_read_bytes = 0, physical_read_calls = 0;
+    std::uint64_t coalesced_batches = 0, selected_serial_batches = 0;
+    bool schedule_enabled = false;
 };
 struct SourceReadRequest { int fd = -1; void * target = nullptr; std::size_t bytes = 0; std::uint64_t offset = 0; };
 struct SourcePipelineTimes { std::uint64_t producer_wait_ns = 0, worker_read_ns = 0, worker_dispatch_ns = 0; };
@@ -81,9 +85,46 @@ public:
     MappedSourceReader & operator=(const MappedSourceReader &) = delete;
     const SourceReadStats & stats() const { return stats_; }
     void require_completed_window() { healthy(); if (busy_) fail("The model source window has not completed"); }
+    void enable_source_schedule() {
+        require_completed_window();
+        if (schedule_enabled_ || trace_enabled_) fail("The source schedule requires a fresh exclusive admission");
+        schedule_enabled_ = true; stats_.schedule_enabled = true;
+    }
+    void qualify_source_schedule() {
+        require_completed_window();
+        if (schedule_enabled_ || files_.front().bytes < (16ull << 20))
+            fail("The selected schedule requires a fresh sufficiently large sealed source");
+        const auto digest = [](const void * at, std::size_t count) {
+            auto * bytes = static_cast<const unsigned char *>(at);
+            std::uint64_t hash = 1469598103934665603ull;
+            for (std::size_t i = 0; i < count; ++i) hash = (hash ^ bytes[i]) * 1099511628211ull;
+            return hash;
+        };
+        std::size_t copied = 0;
+        const auto * parallel_source = read_window(0, 4ull << 20, model_read_alignment, copied);
+        if (copied != model_read_alignment) fail("The selected parallel reference is incomplete");
+        const auto parallel_digest = digest(parallel_source, copied); completed();
+        const auto * merged_source = static_cast<const unsigned char *>(read_window(0, 8ull << 20, 2 * model_read_alignment, copied));
+        if (copied != 2 * model_read_alignment) fail("The coalesced source reference is incomplete");
+        const std::array<std::uint64_t, 2> merged_digests{
+            digest(merged_source, model_read_alignment), digest(merged_source + model_read_alignment, model_read_alignment)};
+        completed();
+        const auto before_parallel = stats_.parallel_batches, before_merged = stats_.coalesced_batches;
+        enable_source_schedule();
+        pipeline_windows({0, 0}, {4ull << 20, 4ull << 20}, model_read_alignment,
+            [&](unsigned, const void * at) {
+                if (digest(at, model_read_alignment) != parallel_digest) fail("The selected parallel original bytes differ");
+            });
+        pipeline_windows({0, 0}, {8ull << 20, (8ull << 20) + model_read_alignment}, model_read_alignment,
+            [&](unsigned i, const void * at) {
+                if (digest(at, model_read_alignment) != merged_digests[i]) fail("The coalesced original bytes differ");
+            });
+        if (stats_.parallel_batches != before_parallel + 1 || stats_.coalesced_batches != before_merged + 1)
+            fail("The selected source CPU preflight did not exercise both candidate paths");
+    }
     void enable_completed_pair_trace() {
         require_completed_window();
-        if (trace_enabled_ || trace_count_ || trace_replayed_) fail("The completed source trace may only start once");
+        if (schedule_enabled_ || trace_enabled_ || trace_count_ || trace_replayed_) fail("The completed source trace may only start once");
         trace_enabled_ = true;
     }
     void replay_completed_pair_trace(const std::function<void(unsigned, unsigned, unsigned,
@@ -284,6 +325,7 @@ private:
     unsigned trace_count_ = 0;
     std::uint64_t trace_seen_ = 0;
     bool trace_enabled_ = false, trace_replayed_ = false;
+    bool schedule_enabled_ = false;
     [[noreturn]] void fail(const char * message) { failed_ = true; throw std::runtime_error(message); }
     void healthy() {
         if (failed_ || owner_ != std::this_thread::get_id()) fail("The bounded source reader is quarantined or has another producer");
@@ -330,21 +372,64 @@ private:
             expected[i] = std::min<std::uint64_t>(requested, files_[files[i]].bytes - requests[i].offset);
         }
         busy_ = true; pending_windows_ = 2;
+        std::size_t merged_bytes = 0;
+        if (schedule_enabled_ && files[0] == files[1] && offsets[1] >= offsets[0] &&
+            offsets[1] - offsets[0] == bytes) {
+            const auto span = skips[0] + std::uint64_t(bytes) * 2;
+            if (span <= model_read_window) {
+                const auto aligned_span = rounded(span);
+                if (aligned_span <= model_read_window && source_schedule_extent(requests[0].offset,
+                        aligned_span, files_[files[0]].identity)) merged_bytes = std::size_t(aligned_span);
+            }
+        }
         try {
-            const auto timing = ops_.pipeline_pair(requests, expected, [&](unsigned) {
+            const auto before_read = [&](unsigned) {
                 ProfileScope timing(stats_.headroom_ns);
                 if (ops_.system_headroom() < model_read_system_reserve + model_read_flexible_metadata_margin)
                     fail("Fresh Flexible/kernel reserve cannot admit a pipelined read");
-            }, [&](unsigned i, const void * target) {
+            };
+            const auto consume_window = [&](unsigned i, const void * target) {
                 ProfileScope timing(stats_.consumer_ns);
                 consume(i, static_cast<const unsigned char *>(target) + skips[i]);
-            });
-            stats_.read_ns += timing.producer_wait_ns;
-            stats_.worker_read_ns += timing.worker_read_ns;
-            stats_.worker_dispatch_ns += timing.worker_dispatch_ns;
+            };
+            if (merged_bytes) {
+                before_read(0);
+                std::int64_t got;
+                { ProfileScope timing(stats_.read_ns);
+                  got = ops_.read_at(requests[0].fd, scratch_, merged_bytes, requests[0].offset); }
+                if (got != std::int64_t(merged_bytes)) fail("A coalesced source read did not complete exactly");
+                consume_window(0, scratch_);
+                // Each logical expert keeps its original cache destination.
+                // Source adjacency does not require adjacent destination slots.
+                consume_window(1, static_cast<const unsigned char *>(scratch_) +
+                    offsets[1] - requests[0].offset - skips[1]);
+            } else if (schedule_enabled_ && source_schedule_parallel(files_[files[0]].identity,
+                    requests[0].offset, requests[0].bytes, files_[files[1]].identity,
+                    requests[1].offset, requests[1].bytes)) {
+                before_read(0); before_read(1);
+                std::array<std::int64_t, 2> got;
+                { ProfileScope timing(stats_.read_ns); got = ops_.read_pair(requests); }
+                for (unsigned i = 0; i < 2; ++i)
+                    if (got[i] != std::int64_t(expected[i])) fail("A selected parallel source read did not complete exactly");
+                consume_window(0, requests[0].target); consume_window(1, requests[1].target);
+                ++stats_.parallel_batches;
+            } else {
+                const auto timing = ops_.pipeline_pair(requests, expected, before_read, consume_window);
+                stats_.read_ns += timing.producer_wait_ns;
+                stats_.worker_read_ns += timing.worker_read_ns;
+                stats_.worker_dispatch_ns += timing.worker_dispatch_ns;
+                ++stats_.pipeline_batches;
+                if (schedule_enabled_) ++stats_.selected_serial_batches;
+            }
         } catch (...) { failed_ = true; throw; }
-        for (const auto & request : requests) stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, request.bytes);
-        stats_.bytes += 2 * bytes; stats_.chunks += 2; ++stats_.pipeline_batches;
+        if (merged_bytes) {
+            ++stats_.coalesced_batches; ++stats_.physical_read_calls; stats_.physical_read_bytes += merged_bytes;
+            stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, merged_bytes);
+        } else for (unsigned i = 0; i < 2; ++i) {
+            stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, requests[i].bytes);
+            ++stats_.physical_read_calls; stats_.physical_read_bytes += expected[i];
+        }
+        stats_.bytes += 2 * bytes; stats_.chunks += 2;
         stats_.completed_windows += 2; pending_windows_ = 0; busy_ = false;
         if (trace_enabled_) {
             const auto ordinal = trace_seen_++;
@@ -389,6 +474,7 @@ private:
             stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, requests[i].bytes);
         }
         stats_.bytes += 2 * bytes; stats_.chunks += 2; ++stats_.parallel_batches;
+        stats_.physical_read_calls += 2; stats_.physical_read_bytes += got[0] + got[1];
         consumer_started_ = ProfileClock::now();
         return windows;
     }
@@ -414,6 +500,7 @@ private:
         if (got < 0 || std::uint64_t(got) != available || std::uint64_t(got) < skip + copied)
             fail("Direct model read did not complete its exact admitted window");
         stats_.bytes += copied; ++stats_.chunks; stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, requested);
+        ++stats_.physical_read_calls; stats_.physical_read_bytes += std::uint64_t(got);
         consumer_started_ = ProfileClock::now();
         return static_cast<const unsigned char *>(scratch_) + skip;
     }
@@ -422,6 +509,7 @@ private:
 // shut down only after model destruction and positive native completion.
 void start_native_model_sources(std::vector<SourceFile> files);
 void start_native_source_parallel_reads();
+void enable_native_source_schedule();
 void enforce_native_model_compute_limits();
 SourceReadStats native_model_source_stats();
 void stop_native_model_sources();
