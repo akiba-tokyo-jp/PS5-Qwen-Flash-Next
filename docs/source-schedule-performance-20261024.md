@@ -60,3 +60,26 @@ bandwidth or tokens/s. A single distinct matched native comparison is required,
 including all three requests, actual frames, positive retirement, ordinary close,
 exact original restoration/numerical readmission/shutdown and final verification.
 Native execution and performance adoption are pending.
+
+## First native admission refusal
+
+The distinct artifact at source `2c7b39d`, SELF
+`92f83670e9f8e110d6ad97aa452f095c3fc4ae1e13acc05ee7f53076263a34d0`,
+refused the unchanged kernel threshold during metadata checks, before source
+reservation, worker startup, Vulkan, model loading or any generation request.
+Free pages fell from 2,140 initially to 1,089, below the required 1,154. Its
+20-second boundary wait expired; no operation was retried.
+
+The finite parent ended with all 197 frozen inputs unchanged. Known pre-GPU
+failure/fatal records preceded ordinary OS close, exact original restoration,
+full original SELF readback and fresh idle CPU checks. The preceding same-boot
+original numerical admission remains preserved; no additional GPU launch was
+needed after this CPU-only refusal. No native owner/model remains.
+
+The next distinct artifact requires the observed kernel free target before
+metadata, sharing the unchanged 20/60-second passive wait budget. A separate
+finite metadata-only launch gate requires target + 1,024 pages for ten consecutive
+100 ms samples before publication/launch. An initial no-allocation observation
+found 5,668..5,672 free pages against 3,998 required, with unchanged boot/services
+and original title. Neither gate relaxes the original work-boundary predicate or
+reserves. The refused artifact/intents will not be replayed.

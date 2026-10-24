@@ -551,8 +551,14 @@ int main(int argc, char ** argv) {
             qwen_app::enable_native_memory_backpressure();
         }
         if(startup.model_validation || startup.first_generation_validation) {
-            const auto memory=startup.first_generation_validation ? qwen_app::admit_native_system_memory() : qwen_app::observe_native_system_memory();
-            write_fresh_report(startup.admission_report+".system-memory.before-integrity",system_memory_report(memory));
+            const bool selected_startup = startup.first_generation_validation && policy.contains("native_source_schedule");
+            if (selected_startup && policy.at("native_source_schedule").at("require_kernel_target_before_metadata") != true)
+                throw std::runtime_error("The selected source candidate requires stronger startup memory admission");
+            const auto memory=selected_startup ? qwen_app::admit_native_startup_memory() :
+                startup.first_generation_validation ? qwen_app::admit_native_system_memory() : qwen_app::observe_native_system_memory();
+            auto initial_memory_report=system_memory_report(memory);
+            if (selected_startup) initial_memory_report["startup_kernel_target_required"]=true;
+            write_fresh_report(startup.admission_report+".system-memory.before-integrity",initial_memory_report);
             wait_for_initial_model_CPU_budget();
             qwen_native_stage("scoped_CPU_Flexible_kernel_memory_admitted_before_model_integrity GPU_not_started=1 model_loaded=0");
         }
@@ -757,6 +763,7 @@ int main(int argc, char ** argv) {
                     candidate.at("region_bytes") != qwen_app::source_schedule_region_bytes ||
                     candidate.at("boundary_margin_bytes") != qwen_app::source_schedule_boundary_margin ||
                     candidate.at("coalesce_adjacent_original_bytes") != true ||
+                    candidate.at("require_kernel_target_before_metadata") != true ||
                     candidate.at("unchanged_memory_precision_driver_and_cache_policy") != true ||
                     policy.contains("native_source_contention_probe"))
                     throw std::runtime_error("The private file/range source candidate policy is not admitted");

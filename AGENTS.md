@@ -1019,3 +1019,20 @@ reserve change is part of this candidate. Require the complete matched native
 three-request/frame/retirement/ordinary-close/original-restoration/readmission/
 shutdown/final verification sequence. Keep every consumed intent and failed
 artifact; no automatic retry or release of uncertain work is permitted.
+
+The first selected-source artifact at 2c7b39d / SELF
+92f83670e9f8e110d6ad97aa452f095c3fc4ae1e13acc05ee7f53076263a34d0 refused
+kernel headroom during sealed-file metadata checks, before source reservation,
+worker creation, Vulkan or model load. It issued no generation POST. Initial
+kernel free pages were 2140 and the final refusal reported 1089 versus the
+unchanged 1154 requirement. Its known pre-GPU fatal state was normally closed;
+exact original restoration, full readback and fresh idle CPU checks passed.
+The same-boot preceding numerical original admission was preserved without a
+new GPU launch. Keep this failed case and do not replay its artifact or intents.
+
+A distinct candidate adds stronger startup admission at the observed kernel
+free target before model metadata. It shares the existing 100 ms / 20 s boundary /
+60 s process wait budget and leaves the original work-boundary predicate intact.
+A finite metadata-only root gate must first observe target + 1024 free pages
+for ten consecutive 100 ms observations before publication/launch. No allocation,
+source read, reclamation, reserve reduction or GPU operation is part of that gate.
