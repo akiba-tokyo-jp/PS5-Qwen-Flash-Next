@@ -49,7 +49,10 @@ def publish_static_shader_resource(transport,local,target,nonce,journal):
             phase='rename_new';rename_attempts=1
             _save(journal/'rename.once.private.json',dict(pending=pending,target=target,expected_target_absent=True,automatic_retries=0))
             reply=transport.rename_new(pending,target)
-            if not isinstance(reply,str)or not reply.startswith('250 '):
+            _save(journal/'rename-response.private.json',dict(reply=reply if isinstance(reply,str)else None))
+            # ftpsrv's RNTO implementation returns this exact completion reply.
+            # Standard FTP250 completion remains accepted; other226 replies do not.
+            if not isinstance(reply,str)or not(reply.startswith('250 ')or reply=='226 Path renamed'):
                 raise RuntimeError('Static resource rename lacks a positive FTP completion acknowledgement')
             phase='final_target_read';verify(transport.read_optional(target,size+1))
         if resource_record(local['path'])!=local:raise ValueError('Static source changed during publication')

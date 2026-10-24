@@ -36,19 +36,22 @@ class Transport:
         self.files[target]=self.files.pop(pending)
         if self.mode=='rename_timeout':raise TimeoutError('Synthetic rename acknowledgement timeout')
         if self.mode=='bad_readback':self.files[target]=b'x'*len(self.data)
-        return '200 unexpected'if self.mode=='bad_ack'else'250 Rename completed'
+        if self.mode=='bad_ack':return '200 unexpected'
+        if self.mode=='ftpsrv_ack':return '226 Path renamed'
+        if self.mode=='unrelated_226':return '226 Data transfer complete'
+        return '250 Rename completed'
 
 class StaticShaderResourceTests(unittest.TestCase):
     def test_actual_transaction_controls(self):
         parent=ROOT/'.test-tmp';parent.mkdir(exist_ok=True)
         for mode in ('new','existing','wrong_existing','retained_partial','initial_timeout','upload_timeout','late_target',
-                     'rename_timeout','bad_ack','bad_readback','readback_timeout'):
+                     'rename_timeout','bad_ack','bad_readback','readback_timeout','ftpsrv_ack','unrelated_226'):
             with self.subTest(mode=mode),tempfile.TemporaryDirectory(dir=parent)as directory:
                 base=Path(directory);self.assertTrue(base.resolve().is_relative_to(parent.resolve()))
                 source=base/'original-resource.bin';data=bytes(range(256))*4;source.write_bytes(data)
                 local=resource_record(source);target=RESOURCE_DIRECTORY+'/shader-storage-'+local['sha256']+'.bin'
                 nonce='a'*32;pending=target+'.pending-'+nonce;transport=Transport(mode,target,pending,data);journal=base/'journal'
-                if mode in ('new','existing'):
+                if mode in ('new','existing','ftpsrv_ack'):
                     result=publish_static_shader_resource(transport,local,target,nonce,journal)
                     self.assertTrue(result['full_raw_readback_verified']);self.assertEqual(result['existing_exact_bytes_reused'],mode=='existing')
                     self.assertEqual(result['upload_attempts'],0 if mode=='existing'else 1)

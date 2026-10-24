@@ -257,3 +257,19 @@ readback. Failures preserve partials and never replace an existing target. The
 actual publisher passed15 fault/success scenarios plus consumed-journal refusal.
 A distinct physical CPU qualification is in progress; full native inference,
 post-rehearsal headroom and tokens/s remain separate uncompleted gates.
+
+The first resource transfer was refused before application/configuration
+publication because the application directory had already returned to its native
+owner. A distinct copy of the existing qualified directory helper now brackets
+the transfer and restores ownership even when publication fails. Seven actual
+wrapper controls cover prepare, upload, rename, readback, finalize and combined
+publication/finalize failures. The original exception remains preserved.
+
+The next transfer restored ownership but refused the rename acknowledgement.
+[ftpsrv's RNTO implementation](https://github.com/ps5-payload-dev/ftpsrv/blob/master/cmd.c)
+returns the exact `226 Path renamed` reply. The publisher now records and accepts
+that reply alongside standard250 completion, while rejecting unrelated226 replies
+and still requiring complete raw readback. The failed rename was not repeated:
+an independent bounded read verified every existing resource byte and its SHA256.
+Both pre-launch failures left original SELF/configuration untouched, with ended
+parents, unchanged frozen inputs, full original readback and fresh idle CPU.
