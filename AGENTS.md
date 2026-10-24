@@ -1065,3 +1065,18 @@ preserving nonempty regular-file admission, the complete SHA256, stable descript
 identity and exclusive writer lease. Model-source permission guards stay intact.
 This fixes an introduced startup restriction; it does not qualify cache pressure
 as the cause of the earlier headroom failures or establish an inference speedup.
+
+The subsequent publication-mode correction was built and packaged, but its
+prelaunch root high-water observation refused before publication or title launch:
+free pages stayed1624..1626 below the additional3998 requirement. All206 parent
+inputs remained unchanged; the original title was never modified and fresh idle
+CPU guards passed. The unused native SELF has not consumed a title-launch intent.
+Root target+1024 is an added experimental gate, separate from the original
+minimum+reserve requirement and from the stronger in-title startup target.
+Because root high-water observations did not predict native headroom in either
+direction, the next distinct case uses the original qualified minimum+reserve
+predicate for ten prelaunch observations. Keep the stronger actual native target
+before metadata, every work-boundary predicate, all reserves and wait limits.
+Native Direct integrity memory observations must precede any decision about
+metadata/model/GPU execution. This supersedes only the experimental root3998
+requirement; it does not permit a replay of a consumed launch or GPU operation.
