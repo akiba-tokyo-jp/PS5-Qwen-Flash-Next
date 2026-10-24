@@ -1403,3 +1403,19 @@ all1527 current shaders,382 lookups and all76 current reservations/releases with
 normal close/exact restoration/final idle CPU. A separate complete native run
 must still pass both2974-page startup gates and every numerical, frame, retirement
 and original-app restoration gate before reporting a throughput improvement.
+
+The first external-resource CPU launch refused the original minimum/reserve
+predicate before its first startup integrity read. Its preceding sample had1066
+free pages versus1154 required. No current shader-byte or whole-rehearsal result
+was produced. Normal close/exact restoration/full readback/final idle CPU and397
+unchanged parent inputs passed. Preserve this consumed case and its failures.
+
+A distinct binary may enable the existing bounded admission controller once
+before selected-source startup integrity, retain its20s boundary/60s process
+budget across all later boundaries, and use it before each new integrity read.
+This changes neither the predicate nor any reserve, allocation, SHA256, stable
+identity, EOF, read-call lifetime or stronger2974-page gate. Require actual native
+provider-class fault controls for transient recovery, persistent refusal without
+a read, invalid counters, failed-admission quarantine and a shared process budget,
+plus real PS5 provider compile/link/import/SELF gates. Repeat the distinct current
+all-resource CPU/whole-rehearsal gate before separate complete native inference.

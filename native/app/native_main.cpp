@@ -605,6 +605,10 @@ int main(int argc, char ** argv) {
             if (policy.contains("native_source_schedule")) {
                 if (policy.at("native_source_schedule").at("startup_integrity_direct") != true)
                     throw std::runtime_error("The selected source candidate requires bounded direct startup integrity");
+                qwen_app::enable_native_memory_backpressure();
+                qwen_native_stage("startup_integrity_memory_admission_before_IO GPU_not_started=1");
+                (void)qwen_app::admit_native_system_memory();
+                qwen_native_stage("startup_integrity_memory_admission_completed GPU_not_started=1");
                 write_fresh_report(startup.admission_report+".system-memory.before-startup-integrity",
                     system_memory_report(qwen_app::observe_native_system_memory()));
                 if(SELF_read_control)
@@ -627,7 +631,7 @@ int main(int argc, char ** argv) {
             // kernel pages. All model metadata and GPU admission still follow.
             qwen_app::admit_cpu_runtime(qwen_native_stage);
             model_CPU_runtime_admitted = true;
-            qwen_app::enable_native_memory_backpressure();
+            if (!policy.contains("native_source_schedule")) qwen_app::enable_native_memory_backpressure();
         }
         if(SELF_read_control) {
             const auto before=diagnostic_VM_population();

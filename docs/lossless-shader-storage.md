@@ -273,3 +273,22 @@ and still requiring complete raw readback. The failed rename was not repeated:
 an independent bounded read verified every existing resource byte and its SHA256.
 Both pre-launch failures left original SELF/configuration untouched, with ended
 parents, unchanged frozen inputs, full original readback and fresh idle CPU.
+
+The existing-resource-only launch subsequently passed publication and ordinary
+owner admission, but its first integrity read was refused by the original
+minimum/reserve predicate. The preceding native sample recorded1066 free pages;
+1154 were required. No integrity read, shader reconstruction, model metadata,
+virtual reservation, worker or GPU call began. Normal close, exact original
+restoration/full readback, fresh idle CPU and397 unchanged parent inputs passed.
+The external resource's data-only host readback is not a native shader-byte gate.
+
+The next distinct binary enables the existing memory admission controller once
+before selected-source startup integrity and uses it before every new integrity
+read. Initial and later boundaries share the unchanged20s boundary/60s process
+budget; a failed admission remains quarantined. The predicate, reserves, read
+syscall, SHA256, descriptor identity, aligned window, EOF and retained failure
+lifetime are unchanged. Focused host checks execute the actual provider class
+with transient1066-page pressure, persistent refusal without a read, invalid
+counters and process-wide budget exhaustion, then compile the actual PS5 provider.
+Native free-page recovery and complete inference remain unqualified until a new
+physical case passes all current gates.

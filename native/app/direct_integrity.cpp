@@ -35,7 +35,7 @@ struct NativeDirect final:DirectIntegrityOps {
     NativeDirect(int value,bool sampled):fd(value),control(sampled){}
     std::int64_t read_at(void * at,std::size_t bytes,std::uint64_t offset)override{
         static_assert(sizeof(off_t)==8,"Direct startup integrity requires native 64-bit offsets");
-        (void)qualified_system_headroom(observe_native_system_memory());
+        (void)qualified_system_headroom(admit_native_system_memory());
         if(control)qwen_native_stage("startup_SELF_read_before_native_call");
         const auto result=pread(fd,at,bytes,static_cast<off_t>(offset));
         if(control)qwen_native_stage("startup_SELF_read_native_call_returned");
