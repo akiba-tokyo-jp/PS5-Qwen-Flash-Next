@@ -1053,3 +1053,15 @@ identity before/after, exact EOF-tail counts, deadlines and no retry. Failed or
 unknown reads retain fd/buffer; only positive SHA/identity/close releases them.
 Record native memory before/after startup integrity. The original predicate,
 stronger startup target, wait limits, model integrity reuse and driver remain.
+
+The Direct-startup artifact at ff46289 refused its newly added startup file
+permission test before any complete integrity scan, model or GPU work. Read-only
+FTP metadata of the preserved candidate confirms a regular file with mode0777,
+the existing publication mode. Its parent ended with all206 inputs unchanged;
+normal close, exact original restoration/readback and fresh idle CPU passed.
+See docs/source-schedule-startup-refusals-20261024.json. Do not replay it.
+A distinct correction accepts the existing startup publication permissions while
+preserving nonempty regular-file admission, the complete SHA256, stable descriptor
+identity and exclusive writer lease. Model-source permission guards stay intact.
+This fixes an introduced startup restriction; it does not qualify cache pressure
+as the cause of the earlier headroom failures or establish an inference speedup.

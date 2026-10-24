@@ -2,6 +2,7 @@
 #include "direct_integrity.h"
 #include "profile_clock.h"
 #include <array>
+#include <cerrno>
 #include <cstdlib>
 #include <fcntl.h>
 #include <ps5platform/heap.h>
@@ -14,8 +15,14 @@ namespace qwen_app {
 namespace {
 std::array<std::uint64_t,10> identity(int fd) {
     struct stat s{};
-    if(fstat(fd,&s)||!S_ISREG(s.st_mode)||s.st_size<=0||(s.st_mode&0022))
-        throw std::runtime_error("Direct startup integrity requires an immutable regular file");
+    if(fstat(fd,&s))
+        throw std::runtime_error("Direct startup integrity fstat failed: errno="+std::to_string(errno));
+    // The reviewed FTP publication preserves executable mode 0777. Startup
+    // integrity uses the exclusive writer lease, exact full SHA256 and stable
+    // descriptor identity; model-source permission admission stays separate.
+    if(!S_ISREG(s.st_mode)||s.st_size<=0)
+        throw std::runtime_error("Direct startup integrity requires a nonempty regular file: mode="+
+            std::to_string(s.st_mode)+" bytes="+std::to_string(s.st_size));
     return {std::uint64_t(s.st_dev),std::uint64_t(s.st_ino),std::uint64_t(s.st_mode),
         std::uint64_t(s.st_uid),std::uint64_t(s.st_gid),std::uint64_t(s.st_size),
         std::uint64_t(s.st_mtim.tv_sec),std::uint64_t(s.st_mtim.tv_nsec),

@@ -1,0 +1,38 @@
+{
+  "schema": "ps5-qwen-source-schedule-startup-refusals-v1",
+  "physical_inference_speedup_qualified": false,
+  "cases": [
+    {
+      "source_revision": "7eec254",
+      "SELF_sha256": "9c095fafa9fa2f0e836b0373153039279dadab8055d2e9da583154ecd2e2a939",
+      "refusal": "Native kernel free pages below the stronger startup target",
+      "last_kernel_free_pages": 1418,
+      "kernel_free_target_pages": 2974,
+      "prelaunch_root_free_pages": [5607, 5608],
+      "parent_positively_ended": true,
+      "frozen_inputs_verified": 202,
+      "model_loaded": false,
+      "GPU_calls": 0,
+      "normal_OS_close_and_exact_original_restoration": true,
+      "fresh_idle_CPU_and_full_original_SELF_readback": true
+    },
+    {
+      "source_revision": "ff46289",
+      "SELF_sha256": "e51cb5646355f37f9010143585216c4d1877a8480c49ff4c0947318895e337b7",
+      "refusal": "New startup file permission restriction rejected the published executable",
+      "preserved_candidate_FTP_LIST_mode": "0777",
+      "regular_file_and_positive_size_observed": true,
+      "complete_integrity_scan_completed": false,
+      "parent_positively_ended": true,
+      "frozen_inputs_verified": 206,
+      "model_loaded": false,
+      "GPU_calls": 0,
+      "normal_OS_close_and_exact_original_restoration": true,
+      "fresh_idle_CPU_and_full_original_SELF_readback": true
+    }
+  ],
+  "same_boot_preceding_original_numerical_admission_preserved": true,
+  "numerical_GPU_admission_repeated_after_pre_GPU_refusals": false,
+  "buffered_SELF_kernel_cache_pressure_is_unproven": true,
+  "operation_retries": 0
+}
