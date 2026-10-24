@@ -91,6 +91,8 @@ int main() {
             engine.next(); check(decodes == 4 && decoded.back() == 1, "Previous sampled token was not decoded");
             check(engine.next().end_of_generation, "End-of-generation was not detected");
             engine.finish();
+            check(engine.timing_stats().process_calls == 5,
+                  "Profiling changed or miscounted the completed decode calls");
         }
         check(freed == 2 && clears == 2, "Healthy adapter did not clear and release its owned objects");
         check(gpu_begins==5&&gpu_completes==5&&!gpu_retains,"Successful prefill/token/EOG/reset boundaries were not paired");

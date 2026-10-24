@@ -1,0 +1,156 @@
+{
+  "schema": "ps5-qwen-completed-source-contention-result-v1",
+  "date": "2026-10-24",
+  "native_source_revision": "de84978fdde599e4018b955c0eaae019009c9c3a",
+  "candidate_SELF_sha256": "09d87b0ddb6c5bcff3072da5c72e857543fab5021275d5fde15298cb773e61bb",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "native_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+  "persistent_shader_pipeline_caches": false,
+  "production_outstanding_reads": 1,
+  "diagnostic_outstanding_reads": 2,
+  "additional_source_payload_buffers": 0,
+  "completed_actual_trace_pairs": 32,
+  "trace_sampling_interval": 512,
+  "distinct_files": 27,
+  "measured_pairs": 384,
+  "rounds": 3,
+  "same_file_different_one_GiB_start_region_pairs": [
+    1,
+    3,
+    5,
+    6,
+    14,
+    21,
+    30
+  ],
+  "all_read_counts_exact": true,
+  "page_samples_match": true,
+  "full_payload_hashes_compared": false,
+  "positive_GPU_completion_preceded_diagnostic": true,
+  "new_GPU_commands_in_diagnostic": 0,
+  "sampler_queries": 1551,
+  "sampler_errors": 0,
+  "sampler_unmatched_PID_thread": 0,
+  "last_round_sampling_disabled": true,
+  "modes": [
+    {
+      "mode": 0,
+      "name": "no_read",
+      "pairs": 96,
+      "mean_pair_ms": 0.02356195833333333,
+      "round_mean_pair_ms": [
+        0.0233915,
+        0.0242761875,
+        0.0230181875
+      ],
+      "mean_pread_ms": [
+        0.0009221458333333334,
+        0.0009104375
+      ],
+      "mean_thread_cpu_ms": [
+        0.00275,
+        0.0026145833333333333
+      ],
+      "mean_worker_dispatch_ms": 0.010840885416666666,
+      "mean_after_worker_ms": 0.011810635416666666
+    },
+    {
+      "mode": 1,
+      "name": "serial_before",
+      "pairs": 96,
+      "mean_pair_ms": 4.669149447916667,
+      "round_mean_pair_ms": [
+        4.905002375,
+        4.53092471875,
+        4.57152125
+      ],
+      "mean_pread_ms": [
+        2.3911033125,
+        2.2667782916666663
+      ],
+      "mean_thread_cpu_ms": [
+        0.5937916666666666,
+        0.5908020833333334
+      ],
+      "mean_worker_dispatch_ms": 0.0,
+      "mean_after_worker_ms": 0.0032333333333333333,
+      "same_region_mean_ms": 4.540936733333333,
+      "different_region_mean_ms": 5.127052
+    },
+    {
+      "mode": 2,
+      "name": "parallel",
+      "pairs": 96,
+      "mean_pair_ms": 17.688766833333332,
+      "round_mean_pair_ms": [
+        17.66663484375,
+        17.65716534375,
+        17.7425003125
+      ],
+      "mean_pread_ms": [
+        17.551414270833334,
+        17.63425829166667
+      ],
+      "mean_thread_cpu_ms": [
+        0.6948645833333333,
+        0.68371875
+      ],
+      "mean_worker_dispatch_ms": 0.01148490625,
+      "mean_after_worker_ms": 0.043023635416666664,
+      "same_region_mean_ms": 3.0621326266666666,
+      "different_region_mean_ms": 69.92674614285716
+    },
+    {
+      "mode": 3,
+      "name": "serial_after",
+      "pairs": 96,
+      "mean_pair_ms": 4.555383052083333,
+      "round_mean_pair_ms": [
+        4.52305409375,
+        4.635055625,
+        4.5080394375
+      ],
+      "mean_pread_ms": [
+        2.2586052916666666,
+        2.2855843958333333
+      ],
+      "mean_thread_cpu_ms": [
+        0.59625,
+        0.5881979166666667
+      ],
+      "mean_worker_dispatch_ms": 0.0,
+      "mean_after_worker_ms": 0.0032507916666666666,
+      "same_region_mean_ms": 4.450487573333334,
+      "different_region_mean_ms": 4.9300097619047625
+    }
+  ],
+  "kernel_memory": {
+    "original_predicate_unchanged": true,
+    "required_free_pages": 1154,
+    "parallel_minimum_free_pages": 1854,
+    "parallel_maximum_free_pages": 1884
+  },
+  "lifecycle": {
+    "full_three_request_plan_completed": true,
+    "arithmetic_output": "4",
+    "external_request_output_tokens": [
+      22,
+      22
+    ],
+    "native_frames_reviewed": true,
+    "positive_GPU_model_source_worker_retirement": true,
+    "ordinary_OS_close": true,
+    "exact_original_restoration": true,
+    "original_numerical_readmission": true,
+    "original_normally_closed": true,
+    "fresh_final_CPU_and_whole_original_SELF_verification": true,
+    "finite_parent_positively_ended": true,
+    "frozen_input_count": 194,
+    "all_frozen_inputs_unchanged": true,
+    "native_owners": 0,
+    "model_loaded": false,
+    "reservation_held": true,
+    "automatic_retries": 0
+  }
+}

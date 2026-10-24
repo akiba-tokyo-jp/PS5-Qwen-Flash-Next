@@ -20,6 +20,7 @@ from urllib.parse import quote
 
 from first_generation_result import read_record, validate, require, integer, number
 from native_source_deadline import NativeSourceDeadline
+from performance_result import validate_performance, validate_backpressure
 
 MODEL_ROOT = "/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/"
 PROMPT = "Count from 1 to 8, separated by commas. Reply with only the sequence."
@@ -231,10 +232,13 @@ def main():
             "Native terminal counts exceed the fixed observation scope")
         for suffix in (".first.start", ".first.intent", ".integrity", ".mapping", ".memory", ".source", ".first.result", ".demo.cache", ".demo.result"):
             download(suffix)
+        performance_required = binding.get("require_completed_performance") is True
+        download(".first.performance", optional=not performance_required)
         for index in range(1, len(result.get("token_ids", [])) + 1): download(".first.token-" + str(index))
         for ordinal in (1, 2):
             prefix = ".demo" + str(ordinal)
             download(prefix + ".intent"); download(prefix + ".result"); download(prefix + ".display.json")
+            download(prefix + ".performance", optional=not performance_required)
             frame = download(prefix + ".display.bmp")
             require(len(frame) == 8294454 and frame[:2] == b"BM" and struct.unpack_from("<II", frame, 18) == (1920, 1080),
                 "The completed native scanout-source frame differs")
@@ -245,6 +249,49 @@ def main():
             require(native == observed_streams[ordinal-1][:-1], "External token events differ from native durable records")
         failure_check()
         review = validate(result_path, expected)
+        if performance_required:
+            summaries = [validate_performance(read_record(Path(str(result_path) + '.first.performance')), result)]
+            for ordinal, native_request in enumerate(result['demonstration']['requests'], 1):
+                summaries.append(validate_performance(
+                    read_record(Path(str(result_path) + '.demo' + str(ordinal) + '.performance')), native_request))
+            if binding.get('require_parallel_sources') is True:
+                download('.source.parallel')
+                admission = read_record(Path(str(result_path) + '.source.parallel'))
+                require(admission == dict(schema='ps5-qwen-source-parallel-admission-v1',
+                    source_window_bytes=8 << 20, CPU_IO_workers=1, maximum_outstanding_reads=2,
+                    preflight_equal_bytes=True, preflight_bytes_per_read=16384, Vulkan_initialized=False),
+                    'Parallel source CPU preflight differs')
+                require(result.get('source_parallel_worker_stopped') is True and
+                    all(row['delta'].get('source_parallel_batches', 0) > 0 for row in summaries),
+                    'Parallel reads were unused or their worker was not positively stopped')
+            if binding.get('require_selected_sources') is True:
+                download('.source.pipeline')
+                admission = read_record(Path(str(result_path) + '.source.pipeline'))
+                require(admission == dict(schema='ps5-qwen-source-schedule-admission-v1',
+                    source_window_bytes=8 << 20, CPU_IO_workers=1, maximum_outstanding_reads=2,
+                    preflight_equal_bytes=True, preflight_bytes_per_read=16384, Vulkan_initialized=False,
+                    file_range_schedule_enabled=True,coalesced_and_parallel_CPU_paths_passed=True,
+                    region_bytes=1<<30,boundary_margin_bytes=4<<20),
+                    'Selected source CPU preflight differs')
+                require(result.get('source_pipeline_worker_stopped') is True and
+                    all(row['delta'].get('source_parallel_batches',0)>0 for row in summaries) and
+                    sum(row['delta'].get('source_coalesced_batches',0)for row in summaries)>0,
+                    'Selected source paths were unused or their worker was not positively stopped')
+            elif binding.get('require_pipelined_sources') is True:
+                download('.source.pipeline')
+                admission = read_record(Path(str(result_path) + '.source.pipeline'))
+                require(admission == dict(schema='ps5-qwen-source-pipeline-admission-v1',
+                    source_window_bytes=8 << 20, CPU_IO_workers=1, maximum_outstanding_reads=1,
+                    preflight_equal_bytes=True, preflight_bytes_per_read=16384, Vulkan_initialized=False),
+                    'Pipelined source CPU preflight differs')
+                require(result.get('source_pipeline_worker_stopped') is True and
+                    all(row['delta'].get('source_pipeline_batches', 0) > 0 for row in summaries),
+                    'Pipelined reads were unused or their worker was not positively stopped')
+            if binding.get('require_memory_backpressure') is True:
+                download('.memory.backpressure')
+                validate_backpressure(read_record(Path(str(result_path)+'.memory.backpressure')))
+            exclusive(out / 'performance-review.private.json', dict(completed_requests=summaries,
+                baseline_comparison_required=True, speedup_qualified=False))
         exclusive(out / "native-review.private.json", review)
         exclusive(out / "complete.private.json", dict(state="native_requests_verified_restoration_required",
             native_result_sha256=hashlib.sha256(result_path.read_bytes()).hexdigest(), pid=expected["pid"],

@@ -28,6 +28,16 @@ inline std::uint64_t qualified_system_headroom(const SystemMemoryObservation & s
     return s.flexible_available;
 }
 SystemMemoryObservation observe_native_system_memory();
+struct MemoryBackpressureStats {
+    std::uint64_t observations=0,pressure_events=0,recovered_admissions=0,wait_ns=0,pause_calls=0;
+    bool enabled=false,last_qualified=false;
+    SystemMemoryObservation last{};
+};
+void enable_native_memory_backpressure();
+SystemMemoryObservation admit_native_system_memory();
+// Stronger cold-start admission only; shares the unchanged 20 s / 60 s wait budget.
+SystemMemoryObservation admit_native_startup_memory();
+MemoryBackpressureStats native_memory_backpressure_stats();
 // The expert buffers share Direct with the CPU heap. Flexible is a separate
 // quota to preserve, not the capacity of that cache or extra allocatable RAM.
 inline std::uint64_t native_direct_cache_budget(std::uint64_t requested,std::uint64_t driver_free,

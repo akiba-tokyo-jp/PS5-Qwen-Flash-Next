@@ -1,0 +1,36 @@
+{
+  "schema": "ps5-qwen-native-SELF-read-controls-v1",
+  "same_SELF_sha256": "7336b52d00174a1765d6e1d2f6809cc9aa054be0d7927456c18f231fae2063ee",
+  "SELF_bytes": 38095127,
+  "read_window_bytes": 1048576,
+  "CPU_only": true,
+  "GPU_calls": 0,
+  "model_metadata_files": 0,
+  "source_virtual_calls": 0,
+  "shader_initialization": false,
+  "Direct": {
+    "complete_SELF_SHA256_passed": true,
+    "native_reads_returned": 37,
+    "free_before_startup_integrity": 2531,
+    "free_after_startup_integrity": 4728,
+    "VM_before_quiet": {"free": 4728, "active": 28621, "inactive": 70984, "wired": 34406},
+    "VM_after_quiet": {"free": 2994, "active": 28566, "inactive": 71032, "wired": 36147},
+    "quiet_ns": 5000118273,
+    "parent_ended_frozen_inputs_unchanged": 382,
+    "normal_close_exact_original_restoration_full_readback_final_idle_CPU_passed": true
+  },
+  "buffered": {
+    "complete_SELF_SHA256_passed": false,
+    "native_reads_returned_before_refusal": 25,
+    "pending_native_reads": 0,
+    "original_kernel_predicate_refused_before_next_read": true,
+    "free_pages_at_refusal_recorded": false,
+    "parent_ended_frozen_inputs_unchanged": 382,
+    "normal_close_exact_original_restoration_full_readback_final_idle_CPU_passed": true
+  },
+  "model_metadata_not_required_to_observe_decrease": true,
+  "proprietary_backing_object_or_allocation_cause_identified": false,
+  "memory_predicates_or_reserves_relaxed": false,
+  "production_switched_to_buffered_reads": false,
+  "full_native_performance_plan_completed": false
+}

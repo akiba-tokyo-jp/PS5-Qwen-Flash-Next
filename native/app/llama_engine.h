@@ -2,10 +2,15 @@
 #pragma once
 #include "session.h"
 #include "llama.h"
+#include "profile_clock.h"
 
 #include <vector>
 
 namespace qwen_app {
+struct LlamaTimingStats {
+    std::uint64_t process_calls = 0, process_ns = 0, synchronize_ns = 0;
+    std::uint64_t checkpoint_ns = 0, work_guard_ns = 0, stage_observer_ns = 0;
+};
 
 // Model/context admission belongs to the native launcher. This adapter borrows
 // admitted objects and never initializes a driver, loads a file or deploys code.
@@ -21,6 +26,7 @@ public:
     void finish() override;
     std::optional<ExpertCacheMetrics> expert_cache_metrics() const override;
     bool failed() const { return failed_; }
+    LlamaTimingStats timing_stats() const { return timing_; }
     void set_stage_observer(void (*observer)(const char *)) { stage_ = observer; }
     void set_gpu_boundaries(void (*begin)(),void (*complete)(),void (*retain)(),void (*checkpoint)()=nullptr);
     // Called before work and after synchronized decode/checkpoint boundaries.
@@ -48,8 +54,13 @@ private:
     void (*gpu_checkpoint_)() = nullptr;
     std::function<void()> work_guard_;
     std::uint32_t prompt_token_limit_ = 0;
-    void guard() const { if (work_guard_) work_guard_(); }
-    void stage(const char * value) const { if (stage_) stage_(value); }
+    mutable LlamaTimingStats timing_;
+    void guard() const {
+        if (work_guard_) { ProfileScope timing(timing_.work_guard_ns); work_guard_(); }
+    }
+    void stage(const char * value) const {
+        if (stage_) { ProfileScope timing(timing_.stage_observer_ns); stage_(value); }
+    }
 };
 
 // Original BF16 remains in its container. Required PLE uses the upstream lazy

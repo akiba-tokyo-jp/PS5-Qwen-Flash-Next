@@ -13,6 +13,32 @@ time to first token was **104.62 / 102.14 seconds**. See the
 [full-model result](docs/native-full-generation-success-20261024.md) and
 [sanitized measurements](docs/native-full-generation-success-20261024.json).
 
+The subsequent [source-I/O performance work](docs/performance-20261024.md) also
+completed all physical/restoration gates. Bounded read/upload overlap measured
+**0.28518 / 0.28958 tokens/s**, an observed mean **0.82%** above its profile
+control and **0.24%** above the earlier functional control. This is a small
+two-request result, not a general speedup claim. The implementation preserves
+the 8 MiB window, original precision, every memory reserve and the selected driver.
+
+The [contention investigation](docs/source-contention-investigation-20261024.md)
+subsequently reproduced the rejected parallel-read slowdown in the loaded model
+and isolated it without GPU work: same-file reads across approximately 1 GiB
+offset regions cost about 49 ms per pair, versus 10 ms serial and 7 ms parallel
+across distinct files. Independent opens do not help. Production retains one
+read by default; [PS5-specific research](docs/ps5-source-io-workarounds-20261024.md)
+selected file/range-aware scheduling for separate qualification. The proprietary
+internal lock/cache implementation remains unproven.
+
+The selected schedule subsequently completed the entire physical plan on
+2026-10-25. Both fixed external answers/token IDs matched the single-read control
+at **0.33288 / 0.33778 tokens/s**, a mean observed gain of **16.68%**. TTFT was
+**89.44 / 87.38 seconds**. Qualified file/range pairs use at most two reads;
+excluded pairs keep the single-read pipeline. Logical source bytes were unchanged.
+This is one matched short-request result for the candidate bundle, which also
+includes startup and lossless shader-storage changes. See the
+[completed source-schedule report](docs/native-source-schedule-success-20261025.md)
+and [sanitized counters](docs/native-source-schedule-success-20261025.json).
+
 The model stayed loaded across the three requests. The actual native passive
 frames were visually reviewed. Positive GPU/resource retirement, ordinary title
 close, exact original SELF restoration, original numerical readmission, ordinary

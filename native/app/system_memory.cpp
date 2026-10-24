@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: MIT
 #include "system_memory.h"
+#include "memory_backpressure.h"
+#include "profile_clock.h"
 #include <ps5platform/kernel.h>
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#include <unistd.h>
 namespace qwen_app {
 namespace {
 std::uint32_t scalar(const char * name) {
@@ -27,4 +30,22 @@ SystemMemoryObservation observe_native_system_memory() {
     result.kernel_free=std::min(first,scalar("vm.stats.vm0.v_free_count"));
     return result;
 }
+namespace {
+MemoryBackpressure admission_gate;
+class NativeAdmissionOps final : public MemoryAdmissionOps {
+public:
+    SystemMemoryObservation observe() override {return observe_native_system_memory();}
+    std::uint64_t now_ns() override {
+        return std::chrono::duration_cast<std::chrono::nanoseconds>(ProfileClock::now().time_since_epoch()).count();
+    }
+    void pause_ns(std::uint64_t ns) override {
+        if(!ns||ns>MemoryBackpressure::poll_interval_ns||usleep(useconds_t((ns+999)/1000))!=0)
+            throw std::runtime_error("Bounded passive memory admission wait failed");
+    }
+};
+}
+void enable_native_memory_backpressure(){admission_gate.enable();}
+SystemMemoryObservation admit_native_system_memory(){NativeAdmissionOps ops;return admission_gate.admit(ops);}
+SystemMemoryObservation admit_native_startup_memory(){NativeAdmissionOps ops;return admission_gate.admit(ops,true);}
+MemoryBackpressureStats native_memory_backpressure_stats(){return admission_gate.stats();}
 }

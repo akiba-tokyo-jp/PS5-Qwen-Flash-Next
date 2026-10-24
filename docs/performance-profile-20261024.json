@@ -1,0 +1,137 @@
+{
+  "schema": "ps5-qwen-physical-performance-profile-summary-v1",
+  "date": "2026-10-24",
+  "profile_session_completed": true,
+  "speed_work_completed": false,
+  "speedup_qualified": false,
+  "tested_application_revision": "4e2d72e257858403c23e3fa3240507f02b27d2ba",
+  "candidate_SELF_sha256": "6b86e4ec1953b9b2f81f77a6c04214d7acfb23b47a6b07d4a8b5ddb0559029d2",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "profile": "cumulative-idle",
+  "native_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+  "original_precision": "BF16/F32",
+  "quantized": false,
+  "source_window_bytes": 8388608,
+  "source_read_path": "serial direct reads",
+  "samples": [
+    {
+      "request": "first",
+      "text": "4",
+      "metrics": {
+        "TTFT_ms": 91383.44932799786,
+        "decode_tokens_per_second": null,
+        "generated_tokens": 1,
+        "prefill_ms": 91347.72022800148,
+        "prompt_tokens": 26,
+        "total_ms": 94973.6252500005
+      },
+      "completed_profile": {
+        "GPU_operations_added": false,
+        "GPU_timestamp_queries": false,
+        "delta": {
+          "checkpoint_ns": 281619057,
+          "process_calls": 27,
+          "process_ns": 94351919215,
+          "source_bytes": 123411118080,
+          "source_chunks": 38034,
+          "source_completed_windows": 38034,
+          "source_consumer_ns": 5806470086,
+          "source_handle_ns": 197683154,
+          "source_headroom_ns": 1070949099,
+          "source_read_ns": 81864570937,
+          "stage_observer_ns": 218353964,
+          "synchronize_ns": 172154,
+          "work_guard_ns": 3091311
+        },
+        "hot_path_logs_added": false,
+        "process_includes_source_and_backend_work": true,
+        "schema": "ps5-qwen-completed-performance-v1"
+      },
+      "direct_read_wall_fraction": 0.8676497759528957,
+      "effective_original_source_payload_GB_per_second": 1.5075033884312752
+    },
+    {
+      "request": "demo1",
+      "text": "1, 2, 3, 4, 5, 6, 7, 8",
+      "metrics": {
+        "decode_tokens_per_second": 0.28297828606954134,
+        "generated_tokens": 22,
+        "prefill_ms": 105200.96880000085,
+        "prompt_tokens": 30,
+        "total_ms": 182934.07122599706,
+        "ttft_ms": 105237.2893479988
+      },
+      "completed_profile": {
+        "GPU_operations_added": false,
+        "GPU_timestamp_queries": false,
+        "delta": {
+          "checkpoint_ns": 531539210,
+          "process_calls": 52,
+          "process_ns": 181311404730,
+          "source_bytes": 238417223680,
+          "source_chunks": 73529,
+          "source_completed_windows": 73529,
+          "source_consumer_ns": 11237893921,
+          "source_handle_ns": 386466369,
+          "source_headroom_ns": 2142367865,
+          "source_read_ns": 158595273937,
+          "stage_observer_ns": 488639366,
+          "synchronize_ns": 343436,
+          "work_guard_ns": 7277475
+        },
+        "hot_path_logs_added": false,
+        "process_includes_source_and_backend_work": true,
+        "schema": "ps5-qwen-completed-performance-v1"
+      },
+      "direct_read_wall_fraction": 0.8747104119905019,
+      "effective_original_source_payload_GB_per_second": 1.503305979815693
+    },
+    {
+      "request": "demo2",
+      "text": "1, 2, 3, 4, 5, 6, 7, 8",
+      "metrics": {
+        "decode_tokens_per_second": 0.2871128442579622,
+        "generated_tokens": 22,
+        "prefill_ms": 102730.3910360001,
+        "prompt_tokens": 30,
+        "total_ms": 179392.1514510028,
+        "ttft_ms": 102766.1954300031
+      },
+      "completed_profile": {
+        "GPU_operations_added": false,
+        "GPU_timestamp_queries": false,
+        "delta": {
+          "checkpoint_ns": 522951113,
+          "process_calls": 52,
+          "process_ns": 177761254645,
+          "source_bytes": 233826426880,
+          "source_chunks": 72200,
+          "source_completed_windows": 72200,
+          "source_consumer_ns": 11006249365,
+          "source_handle_ns": 381498220,
+          "source_headroom_ns": 2088585918,
+          "source_read_ns": 155781287821,
+          "stage_observer_ns": 487284001,
+          "synchronize_ns": 337183,
+          "work_guard_ns": 7239140
+        },
+        "hot_path_logs_added": false,
+        "process_includes_source_and_backend_work": true,
+        "schema": "ps5-qwen-completed-performance-v1"
+      },
+      "direct_read_wall_fraction": 0.8763495320841418,
+      "effective_original_source_payload_GB_per_second": 1.5009917439421705
+    }
+  ],
+  "actual_native_frames_visually_reviewed": 2,
+  "GPU_completion_and_retirement_passed": true,
+  "original_restored_and_numerically_readmitted": true,
+  "ordinary_original_shutdown_passed": true,
+  "final_CPU_and_whole_SELF_readback_passed": true,
+  "final_native_owners": 0,
+  "CPU_heap_peak_bytes": 436273152,
+  "untracked_libc_heap_fallbacks": 0,
+  "source_of_GPU_compute_time": "unqualified: aggregate wall intervals only",
+  "CI_enabled": false,
+  "persistent_shader_pipeline_caches_enabled": false
+}

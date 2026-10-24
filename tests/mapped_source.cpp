@@ -53,6 +53,26 @@ int main() {
         const auto raw = reinterpret_cast<std::uintptr_t>(storage.data());
         void * scratch = reinterpret_cast<void *>((raw + model_read_alignment - 1) & ~(std::uintptr_t(model_read_alignment) - 1));
         {
+            Ops ops;ops.setup(16);MappedSourceReader reader(ops.files,ops,scratch);
+            for(const auto &file:ops.files) {
+                const auto lease=reader.begin_metadata_window(file.path);
+                check(lease.target==scratch&&lease.bytes==model_read_window&&ops.identity(lease.fd)==file.identity,
+                    "Metadata did not reuse the existing original window and descriptor");
+                reader.end_metadata_window();reader.require_completed_window();
+            }
+            check(ops.peak==8&&ops.reads==0,"Metadata lease added buffers, payload reads or descriptors");
+            reader.close_completed();check(ops.live==0,"Positive metadata descriptors did not retire");
+        }
+        for(unsigned failure=0;failure<4;++failure) {
+            Ops ops;ops.setup();MappedSourceReader reader(ops.files,ops,scratch);
+            if(failure==3)rejected([&]{reader.begin_metadata_window("unowned");});
+            else {
+                reader.begin_metadata_window(ops.files[0].path);
+                rejected([&]{if(failure==0)reader.completed();else if(failure==1)reader.close_completed();else reader.begin_metadata_window(ops.files[0].path);});
+            }
+            rejected([&]{reader.end_metadata_window();});check(ops.closes==0,"Failed metadata lease was speculatively released");
+        }
+        {
             Ops ops; ops.setup(); MappedSourceReader reader(ops.files, ops, scratch);
             reader.preflight(); reader.register_mapping(base, ops.files[0].bytes, 10);
             bool metadata_owned = false;
@@ -72,6 +92,10 @@ int main() {
             const auto bytes = ops.files[0].bytes;
             reader.before_unmap(base, bytes); reader.after_unmap(base, bytes); reader.close_completed();
             check(reader.stats().maximum_chunk == model_read_window && ops.live == 0, "Fixed window or descriptor retirement failed");
+            check(reader.stats().chunks == reader.stats().completed_windows,
+                "Profiling counted an uncompleted source window as completed");
+            check(reader.stats().read_ns > 0 && reader.stats().consumer_ns > 0,
+                "Completed source read and consumer intervals were not measured");
         }
         {
             Ops ops; ops.setup(16, model_read_alignment * 2); MappedSourceReader reader(ops.files, ops, scratch);

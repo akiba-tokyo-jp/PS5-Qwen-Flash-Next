@@ -115,12 +115,16 @@ void LlamaEngine::process(llama_token token, llama_pos position, bool output) {
     if (index < 0 || !llama_batch_ext_set_pos(batch_, index, &position) ||
         !llama_batch_ext_set_output_logits(batch_, index, output)) throw std::runtime_error("Batch setup failed");
     stage("inference_before_decode_call");
-    if (llama_process(context_, LLAMA_PROCESS_TYPE_DECODE, batch_) != 0)
-        throw std::runtime_error("Model decode failed");
+    {
+        ProfileScope timing(timing_.process_ns);
+        if (llama_process(context_, LLAMA_PROCESS_TYPE_DECODE, batch_) != 0)
+            throw std::runtime_error("Model decode failed");
+        ++timing_.process_calls;
+    }
     stage("inference_decode_call_returned_before_synchronize");
-    llama_synchronize(context_);
+    { ProfileScope timing(timing_.synchronize_ns); llama_synchronize(context_); }
     stage("inference_decode_synchronization_completed");
-    if(gpu_checkpoint_)gpu_checkpoint_();
+    if(gpu_checkpoint_) { ProfileScope timing(timing_.checkpoint_ns); gpu_checkpoint_(); }
     guard();
 }
 

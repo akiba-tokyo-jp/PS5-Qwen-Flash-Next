@@ -1,0 +1,2492 @@
+{
+  "schema": "ps5-qwen-source-contention-causal-controls-v1",
+  "date": "2026-10-24",
+  "boundary_control": {
+    "pairs": 720,
+    "rounds": 3,
+    "pairs_per_mode_per_round": 16,
+    "final_round_sampler_disabled": true,
+    "source_window_bytes": 8388608,
+    "aligned_read_bytes": 3293184,
+    "sampler": {
+      "calls": 7679,
+      "errors": 0,
+      "first_errno": 0,
+      "unmatched": 0,
+      "interval_us": 1000,
+      "worker_joined": 1
+    },
+    "modes": [
+      {
+        "mode": 0,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1000,
+          1016
+        ],
+        "parallel": true,
+        "no_read_control": true,
+        "mean_pair_ms": 0.03526825,
+        "round_mean_pair_ms": [
+          0.033768125,
+          0.0380580625,
+          0.0339785625
+        ],
+        "mean_pread_ms": [
+          0.00105575,
+          0.0010424375
+        ],
+        "mean_thread_cpu_ms": [
+          0.0029583333333333336,
+          0.003375
+        ],
+        "mean_dispatch_ms": 0.01743204166666667,
+        "mean_after_worker_ms": 0.016793770833333332,
+        "producer_wait_samples": [
+          {
+            "mode": 0,
+            "role": 0,
+            "name": "ucond",
+            "samples": 1
+          }
+        ]
+      },
+      {
+        "mode": 1,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1000,
+          1016
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.098559479166665,
+        "round_mean_pair_ms": [
+          9.6061483125,
+          9.0298104375,
+          8.6597196875
+        ],
+        "mean_pread_ms": [
+          4.631434708333333,
+          4.442840395833333
+        ],
+        "mean_thread_cpu_ms": [
+          1.4657708333333332,
+          1.4224166666666667
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "",
+            "samples": 124
+          },
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 7
+          },
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 34
+          },
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 60
+          },
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 3
+          }
+        ]
+      },
+      {
+        "mode": 2,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1000,
+          1016
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 6.971119979166667,
+        "round_mean_pair_ms": [
+          6.9229536875,
+          6.854244625,
+          7.136161625
+        ],
+        "mean_pread_ms": [
+          6.89227775,
+          6.8583041875
+        ],
+        "mean_thread_cpu_ms": [
+          1.3892708333333332,
+          1.3656875
+        ],
+        "mean_dispatch_ms": 0.02244520833333333,
+        "mean_after_worker_ms": 0.09037058333333332,
+        "producer_wait_samples": [
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "",
+            "samples": 82
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 33
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 25
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 10
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 1
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "ucond",
+            "samples": 2
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 1
+          }
+        ]
+      },
+      {
+        "mode": 3,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.9941270625,
+        "round_mean_pair_ms": [
+          10.0110845625,
+          10.0015325625,
+          9.9697640625
+        ],
+        "mean_pread_ms": [
+          4.950571083333333,
+          5.01939525
+        ],
+        "mean_thread_cpu_ms": [
+          1.6053958333333334,
+          1.5517916666666667
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "",
+            "samples": 128
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 31
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 47
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 27
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 10
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 4
+          }
+        ]
+      },
+      {
+        "mode": 4,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 49.24248991666666,
+        "round_mean_pair_ms": [
+          49.0748405,
+          47.287121625,
+          51.365507625
+        ],
+        "mean_pread_ms": [
+          48.552840145833336,
+          48.9276836875
+        ],
+        "mean_thread_cpu_ms": [
+          3.7437916666666666,
+          3.7709375
+        ],
+        "mean_dispatch_ms": 0.021775270833333332,
+        "mean_after_worker_ms": 0.2930309583333333,
+        "producer_wait_samples": [
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 649
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "",
+            "samples": 145
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 531
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "ucond",
+            "samples": 17
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 14
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 2
+          }
+        ]
+      },
+      {
+        "mode": 5,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "independently_opened",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.961488354166667,
+        "round_mean_pair_ms": [
+          9.9032705,
+          10.0667634375,
+          9.914431125
+        ],
+        "mean_pread_ms": [
+          4.955891791666667,
+          4.982119020833333
+        ],
+        "mean_thread_cpu_ms": [
+          1.4904375,
+          1.5220833333333332
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "",
+            "samples": 124
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 32
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 26
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 64
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 12
+          }
+        ]
+      },
+      {
+        "mode": 6,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "independently_opened",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 49.4295190625,
+        "round_mean_pair_ms": [
+          48.677231125,
+          49.794169,
+          49.8171570625
+        ],
+        "mean_pread_ms": [
+          48.98528189583334,
+          48.85076241666666
+        ],
+        "mean_thread_cpu_ms": [
+          3.8001875,
+          3.8123958333333334
+        ],
+        "mean_dispatch_ms": 0.021322666666666667,
+        "mean_after_worker_ms": 0.5574339791666666,
+        "producer_wait_samples": [
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 642
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "",
+            "samples": 174
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 543
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 16
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 1
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "ucond",
+            "samples": 11
+          }
+        ]
+      },
+      {
+        "mode": 7,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 1,
+        "descriptors": "independently_opened",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 8.829484,
+        "round_mean_pair_ms": [
+          8.9213949375,
+          8.801517625,
+          8.7655394375
+        ],
+        "mean_pread_ms": [
+          4.398821833333333,
+          4.407403270833333
+        ],
+        "mean_thread_cpu_ms": [
+          1.4364791666666668,
+          1.4662708333333332
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 2
+          },
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 37
+          },
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 65
+          },
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "",
+            "samples": 110
+          },
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 6
+          },
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 1
+          }
+        ]
+      },
+      {
+        "mode": 8,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 1,
+        "descriptors": "independently_opened",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 6.919413729166667,
+        "round_mean_pair_ms": [
+          6.9041800625,
+          6.952677375,
+          6.90138375
+        ],
+        "mean_pread_ms": [
+          6.866939083333333,
+          6.862635770833333
+        ],
+        "mean_thread_cpu_ms": [
+          1.3106666666666666,
+          1.3099583333333333
+        ],
+        "mean_dispatch_ms": 0.02157491666666667,
+        "mean_after_worker_ms": 0.035203041666666664,
+        "producer_wait_samples": [
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "",
+            "samples": 79
+          },
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 20
+          },
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 44
+          },
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 27
+          },
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "ucond",
+            "samples": 1
+          }
+        ]
+      },
+      {
+        "mode": 9,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          640,
+          1000
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 8.9391325,
+        "round_mean_pair_ms": [
+          8.87205075,
+          8.992634625,
+          8.952712125
+        ],
+        "mean_pread_ms": [
+          4.436373708333333,
+          4.480037979166667
+        ],
+        "mean_thread_cpu_ms": [
+          1.4387083333333333,
+          1.4310208333333332
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "",
+            "samples": 103
+          },
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 17
+          },
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 66
+          },
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 38
+          },
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 3
+          }
+        ]
+      },
+      {
+        "mode": 10,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          640,
+          1000
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 6.962065791666667,
+        "round_mean_pair_ms": [
+          6.9867913125,
+          6.9838094375,
+          6.915596625
+        ],
+        "mean_pread_ms": [
+          6.9019869375,
+          6.89989875
+        ],
+        "mean_thread_cpu_ms": [
+          1.3703125,
+          1.3952916666666668
+        ],
+        "mean_dispatch_ms": 0.0244815625,
+        "mean_after_worker_ms": 0.03768547916666667,
+        "producer_wait_samples": [
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "",
+            "samples": 94
+          },
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 28
+          },
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 38
+          },
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 9
+          }
+        ]
+      },
+      {
+        "mode": 11,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          2040,
+          2056
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.942896979166665,
+        "round_mean_pair_ms": [
+          10.10110775,
+          9.839908875,
+          9.8876743125
+        ],
+        "mean_pread_ms": [
+          4.920077208333333,
+          4.998566958333333
+        ],
+        "mean_thread_cpu_ms": [
+          1.4634583333333333,
+          1.5243541666666667
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "",
+            "samples": 134
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 35
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 27
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 45
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 14
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 1
+          }
+        ]
+      },
+      {
+        "mode": 12,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          2040,
+          2056
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 49.10935033333334,
+        "round_mean_pair_ms": [
+          50.5342401875,
+          47.7156275625,
+          49.07818325
+        ],
+        "mean_pread_ms": [
+          48.53804425,
+          48.62367733333333
+        ],
+        "mean_thread_cpu_ms": [
+          3.7855416666666666,
+          3.8046666666666664
+        ],
+        "mean_dispatch_ms": 0.02635260416666667,
+        "mean_after_worker_ms": 0.45932039583333334,
+        "producer_wait_samples": [
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 535
+          },
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 676
+          },
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "",
+            "samples": 147
+          },
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 11
+          },
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "ucond",
+            "samples": 16
+          }
+        ]
+      },
+      {
+        "mode": 13,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          3064,
+          3080
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.8804809375,
+        "round_mean_pair_ms": [
+          10.1307511875,
+          9.7605354375,
+          9.7501561875
+        ],
+        "mean_pread_ms": [
+          4.9357400625,
+          4.921279958333333
+        ],
+        "mean_thread_cpu_ms": [
+          1.5662291666666668,
+          1.5054166666666668
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 34
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "",
+            "samples": 116
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 60
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 28
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 13
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 1
+          }
+        ]
+      },
+      {
+        "mode": 14,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          3064,
+          3080
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 49.2411084375,
+        "round_mean_pair_ms": [
+          48.18495275,
+          48.8010074375,
+          50.737365125
+        ],
+        "mean_pread_ms": [
+          48.726326416666666,
+          48.77436752083334
+        ],
+        "mean_thread_cpu_ms": [
+          3.8198541666666666,
+          3.8158333333333334
+        ],
+        "mean_dispatch_ms": 0.02317527083333333,
+        "mean_after_worker_ms": 0.4435656458333333,
+        "producer_wait_samples": [
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 612
+          },
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "",
+            "samples": 147
+          },
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 575
+          },
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "ucond",
+            "samples": 16
+          },
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 15
+          }
+        ]
+      }
+    ],
+    "terminal_success": true,
+    "native_owners": 0,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "automatic_retries": 0,
+    "original_unchanged": true,
+    "same_boot_services": true,
+    "reservation_held": true
+  },
+  "second_file_control": {
+    "pairs": 912,
+    "rounds": 3,
+    "pairs_per_mode_per_round": 16,
+    "final_round_sampler_disabled": true,
+    "source_window_bytes": 8388608,
+    "aligned_read_bytes": 3293184,
+    "sampler": {
+      "calls": 10912,
+      "errors": 0,
+      "first_errno": 0,
+      "unmatched": 0,
+      "interval_us": 1000,
+      "worker_joined": 1
+    },
+    "modes": [
+      {
+        "mode": 0,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1000,
+          1016
+        ],
+        "parallel": true,
+        "no_read_control": true,
+        "mean_pair_ms": 0.0352013125,
+        "round_mean_pair_ms": [
+          0.0349005625,
+          0.0400475625,
+          0.0306558125
+        ],
+        "mean_pread_ms": [
+          0.0010257291666666668,
+          0.0011928125
+        ],
+        "mean_thread_cpu_ms": [
+          0.0030625,
+          0.0033125
+        ],
+        "mean_dispatch_ms": 0.018081729166666668,
+        "mean_after_worker_ms": 0.015926770833333333,
+        "producer_wait_samples": [
+          {
+            "mode": 0,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 1,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 1,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1000,
+          1016
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 8.849593791666667,
+        "round_mean_pair_ms": [
+          8.8192234375,
+          8.890498375,
+          8.8390595625
+        ],
+        "mean_pread_ms": [
+          4.4346998125,
+          4.391892395833333
+        ],
+        "mean_thread_cpu_ms": [
+          1.4482083333333333,
+          1.4002708333333334
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "",
+            "samples": 115,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 35,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 64,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 14,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 3,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 1,
+            "role": 0,
+            "name": "bfs_vm",
+            "samples": 1,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 2,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1000,
+          1016
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 6.936109166666667,
+        "round_mean_pair_ms": [
+          6.9065158125,
+          7.1293960625,
+          6.772415625
+        ],
+        "mean_pread_ms": [
+          6.835409541666667,
+          6.8607564375
+        ],
+        "mean_thread_cpu_ms": [
+          1.3953125,
+          1.38325
+        ],
+        "mean_dispatch_ms": 0.025358729166666667,
+        "mean_after_worker_ms": 0.049994,
+        "producer_wait_samples": [
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "",
+            "samples": 77,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 35,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 31,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "ucond",
+            "samples": 3,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 10,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 1,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 2,
+            "role": 0,
+            "name": "",
+            "samples": 1,
+            "state": 7,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 3,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.958511291666666,
+        "round_mean_pair_ms": [
+          10.0500595,
+          9.988712875,
+          9.8367615
+        ],
+        "mean_pread_ms": [
+          4.954543520833333,
+          4.980837729166667
+        ],
+        "mean_thread_cpu_ms": [
+          1.5727916666666668,
+          1.5888958333333332
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "",
+            "samples": 130,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 58,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 21,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 30,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 7,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 1,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 3,
+            "role": 0,
+            "name": "",
+            "samples": 1,
+            "state": 7,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 4,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 49.895144208333335,
+        "round_mean_pair_ms": [
+          50.4780955,
+          49.5809911875,
+          49.6263459375
+        ],
+        "mean_pread_ms": [
+          49.398993583333336,
+          49.374593833333336
+        ],
+        "mean_thread_cpu_ms": [
+          3.8174791666666663,
+          3.824125
+        ],
+        "mean_dispatch_ms": 0.020360354166666667,
+        "mean_after_worker_ms": 0.5001900208333333,
+        "producer_wait_samples": [
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 610,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 612,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "",
+            "samples": 153,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "ucond",
+            "samples": 11,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 16,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 4,
+            "role": 0,
+            "name": "",
+            "samples": 8,
+            "state": 7,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 5,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "independently_opened",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.960019770833334,
+        "round_mean_pair_ms": [
+          10.0434093125,
+          10.05050075,
+          9.78614925
+        ],
+        "mean_pread_ms": [
+          4.9315336875,
+          5.005432854166667
+        ],
+        "mean_thread_cpu_ms": [
+          1.5187708333333332,
+          1.5138333333333334
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 25,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 31,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 58,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "",
+            "samples": 125,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 1,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 7,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 5,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 1,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 6,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "independently_opened",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 48.525769333333336,
+        "round_mean_pair_ms": [
+          48.2631535625,
+          48.5510194375,
+          48.763135
+        ],
+        "mean_pread_ms": [
+          47.793435833333334,
+          48.150020375
+        ],
+        "mean_thread_cpu_ms": [
+          3.7754166666666666,
+          3.7758125
+        ],
+        "mean_dispatch_ms": 0.027881125,
+        "mean_after_worker_ms": 0.3478678333333333,
+        "producer_wait_samples": [
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 518,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 644,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "",
+            "samples": 155,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 18,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "ucond",
+            "samples": 25,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 6,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 2,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 7,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 1,
+        "descriptors": "independently_opened",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 8.971093104166666,
+        "round_mean_pair_ms": [
+          8.7848641875,
+          8.9527925,
+          9.175622625
+        ],
+        "mean_pread_ms": [
+          4.460653229166667,
+          4.485827875
+        ],
+        "mean_thread_cpu_ms": [
+          1.4368333333333332,
+          1.4562083333333333
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "",
+            "samples": 140,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 47,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 30,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 4,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 7,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 3,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 8,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 1,
+        "descriptors": "independently_opened",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 6.914572520833333,
+        "round_mean_pair_ms": [
+          6.930997125,
+          6.8384933125,
+          6.974227125
+        ],
+        "mean_pread_ms": [
+          6.8608116875,
+          6.849943145833333
+        ],
+        "mean_thread_cpu_ms": [
+          1.3109166666666667,
+          1.3067916666666668
+        ],
+        "mean_dispatch_ms": 0.02410404166666667,
+        "mean_after_worker_ms": 0.04052533333333334,
+        "producer_wait_samples": [
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "",
+            "samples": 78,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 34,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 2,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 33,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 8,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 10,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 9,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          640,
+          1000
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 8.8886925625,
+        "round_mean_pair_ms": [
+          8.8387988125,
+          8.8780898125,
+          8.9491890625
+        ],
+        "mean_pread_ms": [
+          4.399219375,
+          4.466895979166667
+        ],
+        "mean_thread_cpu_ms": [
+          1.467625,
+          1.4662291666666667
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "",
+            "samples": 111,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 39,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 56,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 2,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 11,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 9,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 1,
+            "state": 2,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 10,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          640,
+          1000
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 7.0560113125,
+        "round_mean_pair_ms": [
+          6.8229675625,
+          7.2488371875,
+          7.0962291875
+        ],
+        "mean_pread_ms": [
+          6.963310229166667,
+          6.943419270833333
+        ],
+        "mean_thread_cpu_ms": [
+          1.4254791666666669,
+          1.4204791666666667
+        ],
+        "mean_dispatch_ms": 0.02235833333333333,
+        "mean_after_worker_ms": 0.09023370833333333,
+        "producer_wait_samples": [
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "",
+            "samples": 89,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 34,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 30,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 6,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "ucond",
+            "samples": 3,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 1,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 10,
+            "role": 0,
+            "name": "",
+            "samples": 2,
+            "state": 7,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 11,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          2040,
+          2056
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.939198354166667,
+        "round_mean_pair_ms": [
+          10.0115205,
+          9.8896789375,
+          9.916395625
+        ],
+        "mean_pread_ms": [
+          4.965652583333333,
+          4.948618145833333
+        ],
+        "mean_thread_cpu_ms": [
+          1.5797083333333333,
+          1.6060833333333333
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "",
+            "samples": 129,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 50,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 33,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 31,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 4,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 11,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 7,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 12,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          2040,
+          2056
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 48.31301064583334,
+        "round_mean_pair_ms": [
+          49.32760025,
+          47.5023743125,
+          48.109057375
+        ],
+        "mean_pread_ms": [
+          47.6603496875,
+          47.872391791666665
+        ],
+        "mean_thread_cpu_ms": [
+          3.7523958333333334,
+          3.743875
+        ],
+        "mean_dispatch_ms": 0.025757854166666667,
+        "mean_after_worker_ms": 0.414861,
+        "producer_wait_samples": [
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 611,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 572,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "",
+            "samples": 147,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 12,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "ucond",
+            "samples": 25,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 12,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 2,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 13,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          3064,
+          3080
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.88136625,
+        "round_mean_pair_ms": [
+          9.9065078125,
+          9.802206625,
+          9.9353843125
+        ],
+        "mean_pread_ms": [
+          4.9108375,
+          4.946697104166667
+        ],
+        "mean_thread_cpu_ms": [
+          1.4222083333333333,
+          1.47875
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "",
+            "samples": 108,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 58,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 7,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 34,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 38,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "",
+            "samples": 1,
+            "state": 7,
+            "object": 0
+          },
+          {
+            "mode": 13,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 1,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 14,
+        "pairs": 48,
+        "first_file": 0,
+        "second_file": 0,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          3064,
+          3080
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 48.62164941666666,
+        "round_mean_pair_ms": [
+          48.6858161875,
+          47.4377751875,
+          49.741356875
+        ],
+        "mean_pread_ms": [
+          48.212727145833334,
+          48.0295919375
+        ],
+        "mean_thread_cpu_ms": [
+          3.7621041666666666,
+          3.7534583333333336
+        ],
+        "mean_dispatch_ms": 0.025654354166666667,
+        "mean_after_worker_ms": 0.566403125,
+        "producer_wait_samples": [
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 582,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "",
+            "samples": 160,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 583,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 18,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "ucond",
+            "samples": 8,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 14,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 2,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 15,
+        "pairs": 48,
+        "first_file": 1,
+        "second_file": 1,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 9.933988083333334,
+        "round_mean_pair_ms": [
+          9.908287,
+          9.971548375,
+          9.922128875
+        ],
+        "mean_pread_ms": [
+          4.984071833333333,
+          4.926079395833333
+        ],
+        "mean_thread_cpu_ms": [
+          1.5100625,
+          1.5361875
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 15,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 31,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 15,
+            "role": 0,
+            "name": "",
+            "samples": 130,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 15,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 55,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 15,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 3,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 15,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 31,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 15,
+            "role": 0,
+            "name": "",
+            "samples": 1,
+            "state": 7,
+            "object": 0
+          },
+          {
+            "mode": 15,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 1,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 16,
+        "pairs": 48,
+        "first_file": 1,
+        "second_file": 1,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          1016,
+          1032
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 48.800548166666665,
+        "round_mean_pair_ms": [
+          46.620164625,
+          50.413015,
+          49.368464875
+        ],
+        "mean_pread_ms": [
+          48.10888529166667,
+          48.408032041666665
+        ],
+        "mean_thread_cpu_ms": [
+          3.8032291666666667,
+          3.8151875
+        ],
+        "mean_dispatch_ms": 0.024740583333333333,
+        "mean_after_worker_ms": 0.3677755416666667,
+        "producer_wait_samples": [
+          {
+            "mode": 16,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 600,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 16,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 593,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 16,
+            "role": 0,
+            "name": "",
+            "samples": 139,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 16,
+            "role": 0,
+            "name": "ucond",
+            "samples": 20,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 16,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 15,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 16,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 1,
+            "state": 2,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 17,
+        "pairs": 48,
+        "first_file": 1,
+        "second_file": 1,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          2040,
+          2056
+        ],
+        "parallel": false,
+        "no_read_control": false,
+        "mean_pair_ms": 10.067949479166666,
+        "round_mean_pair_ms": [
+          10.4217141875,
+          9.9184053125,
+          9.8637289375
+        ],
+        "mean_pread_ms": [
+          4.908933125,
+          5.1358511875
+        ],
+        "mean_thread_cpu_ms": [
+          1.5526041666666668,
+          1.6330208333333334
+        ],
+        "mean_dispatch_ms": 0.0,
+        "mean_after_worker_ms": 0.0,
+        "producer_wait_samples": [
+          {
+            "mode": 17,
+            "role": 0,
+            "name": "BfsPWtFr",
+            "samples": 31,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 17,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 56,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 17,
+            "role": 0,
+            "name": "",
+            "samples": 133,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 17,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 24,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 17,
+            "role": 0,
+            "name": "",
+            "samples": 2,
+            "state": 7,
+            "object": 0
+          },
+          {
+            "mode": 17,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 8,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 17,
+            "role": 0,
+            "name": "BfsPWtFo",
+            "samples": 2,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      },
+      {
+        "mode": 18,
+        "pairs": 48,
+        "first_file": 1,
+        "second_file": 1,
+        "descriptors": "same",
+        "base_offsets_MiB": [
+          2040,
+          2056
+        ],
+        "parallel": true,
+        "no_read_control": false,
+        "mean_pair_ms": 48.8902938125,
+        "round_mean_pair_ms": [
+          49.245034125,
+          49.410291375,
+          48.0155559375
+        ],
+        "mean_pread_ms": [
+          48.24792016666667,
+          48.422710979166666
+        ],
+        "mean_thread_cpu_ms": [
+          3.7725,
+          3.8037708333333335
+        ],
+        "mean_dispatch_ms": 0.0190740625,
+        "mean_after_worker_ms": 0.4485087708333333,
+        "producer_wait_samples": [
+          {
+            "mode": 18,
+            "role": 0,
+            "name": "",
+            "samples": 155,
+            "state": 2,
+            "object": 0
+          },
+          {
+            "mode": 18,
+            "role": 0,
+            "name": "nsid1_wa",
+            "samples": 548,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 18,
+            "role": 0,
+            "name": "BfsIpInd",
+            "samples": 656,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 18,
+            "role": 0,
+            "name": "BfsClSs2",
+            "samples": 12,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 18,
+            "role": 0,
+            "name": "ucond",
+            "samples": 15,
+            "state": 3,
+            "object": 0
+          },
+          {
+            "mode": 18,
+            "role": 0,
+            "name": "BfsClSs1",
+            "samples": 2,
+            "state": 3,
+            "object": 0
+          }
+        ]
+      }
+    ],
+    "terminal_success": true,
+    "native_owners": 0,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "automatic_retries": 0,
+    "original_unchanged": true,
+    "same_boot_services": true,
+    "reservation_held": true
+  }
+}

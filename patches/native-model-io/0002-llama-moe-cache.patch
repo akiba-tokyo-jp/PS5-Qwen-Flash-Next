@@ -60,7 +60,32 @@
      }
  
      int64_t copy_experts(ggml_backend_t backend, const ggml_tensor * w, ggml_tensor * dst, int64_t e, int64_t last) {
-@@ -734,3 +751,5 @@
+@@ -656,6 +673,24 @@
+                 while (i + n < fills.size() && fills[i + n].expert == fills[i].expert + (int32_t) n && fills[i + n].slot == fills[i].slot + (int32_t) n) {
+                     n++;
+                 }
++                // Queue only the next known miss while the producer consumes
++                // the current one. Total scratch stays 8 MiB; at most one read.
++                if (n == 1 && i + 1 < fills.size() && qwen_app_model_source_pair_enabled(expert_size)) {
++                    struct Upload { ggml_tensor * bank; size_t bytes; int32_t slots[2]; };
++                    Upload upload{bank, expert_size, {fills[i].slot, fills[i+1].slot}};
++                    ggml_backend_synchronize(backend);
++                    qwen_app_model_source_upload_pair((const uint8_t *) w->data + fills[i].expert*expert_size,
++                        (const uint8_t *) w->data + fills[i+1].expert*expert_size, expert_size, &upload,
++                        [](void * opaque, unsigned index, const void * window) {
++                            const auto & job = *static_cast<const Upload *>(opaque);
++                            // Synchronous completion keeps both half windows
++                            // owned until every read and consumer has returned.
++                            ggml_backend_tensor_set(job.bank, window, job.slots[index]*job.bytes, job.bytes);
++                        });
++                    bytes += 2*expert_size;
++                    i += 2;
++                    continue;
++                }
+                 ggml_backend_tensor_set_async(backend, bank, (const uint8_t *) w->data + fills[i].expert*expert_size, fills[i].slot*expert_size, n*expert_size);
+                 bytes += n*expert_size;
+                 i += n;
+@@ -734,3 +769,5 @@
      }
      return res;
  }

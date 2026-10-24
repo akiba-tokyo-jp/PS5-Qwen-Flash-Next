@@ -89,6 +89,33 @@
       "bytes": 301646,
       "sha256": "94ff7d38f93ae3e02699e595f7c3eaeeaa39182fea786aa49968531f9a3e6f2c",
       "url": "https://raw.githubusercontent.com/mw00/project-maya/451f9cb6a21ea65673bdde2e57b4a670ae2b8859/src/kernels/cuda/glm_fast.cu"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "7ddc17a38fe7f31637e895ecfba58c2cd43d65ec",
+      "path": "LICENSE",
+      "bytes": 1094,
+      "sha256": "329a33c678cdaa56bd43d81b8647130a9ed0c5efe14328204d764d6ba9deee3d",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/7ddc17a38fe7f31637e895ecfba58c2cd43d65ec/LICENSE",
+      "application": "bounded known-miss paired source I/O; host APIs independently implemented"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "7ddc17a38fe7f31637e895ecfba58c2cd43d65ec",
+      "path": "src/core/expert_source.cpp",
+      "bytes": 332207,
+      "sha256": "28a996e74c0adfc7d559375166772542944512a48c15524ea931ce8c1f3377cc",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/7ddc17a38fe7f31637e895ecfba58c2cd43d65ec/src/core/expert_source.cpp",
+      "application": "bounded known-miss paired source I/O; host APIs independently implemented"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "7ddc17a38fe7f31637e895ecfba58c2cd43d65ec",
+      "path": "include/strata/core/dma_batch.hpp",
+      "bytes": 5862,
+      "sha256": "4bfb3ce7b63490f7ea41c439c1d5d0e1823ce944f09e0556eb37e8bd73f98a49",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/7ddc17a38fe7f31637e895ecfba58c2cd43d65ec/include/strata/core/dma_batch.hpp",
+      "application": "bounded known-miss paired source I/O; host APIs independently implemented"
     }
   ]
 }

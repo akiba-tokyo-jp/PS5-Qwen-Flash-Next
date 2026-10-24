@@ -1,0 +1,42 @@
+{
+  "schema": "ps5-qwen-external-shader-startup-evidence-v1",
+  "state": "first_startup_integrity_read_refused_before_IO",
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "source_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "native_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925"
+  },
+  "candidate_SELF": {
+    "bytes": 27797031,
+    "sha256": "003815e1b43c8a69f4178aac735d4036e049d44f81ab12ab0be2c539c44fb088"
+  },
+  "preceding_kernel_sample": {
+    "kernel_free_pages": 1066,
+    "kernel_minimum_pages": 898,
+    "kernel_target_pages": 2974,
+    "kernel_reserved_pages": 206,
+    "kernel_page_size": 16384,
+    "CPU_heap_mapped_bytes": 16777216
+  },
+  "required_kernel_free_pages": 1154,
+  "shared_backpressure_enabled_at_failure": false,
+  "static_resource_bytes": 8258588,
+  "static_resource_independent_full_readback_passed": true,
+  "resource_upload_or_rename_repeated": false,
+  "startup_integrity_reads": 0,
+  "current_native_shader_bytes_qualified": false,
+  "current_whole_reservations_started": false,
+  "model_metadata_started": false,
+  "GPU_calls": 0,
+  "source_workers": 0,
+  "normal_OS_close": true,
+  "exact_original_restoration_and_full_readback": true,
+  "fresh_final_idle_CPU_passed": true,
+  "parent_positively_ended": true,
+  "frozen_inputs_unchanged": 397,
+  "model_precision_and_driver_unchanged": true,
+  "persistent_caches_enabled": false,
+  "full_plan_completed": false,
+  "native_tokens_per_second": null
+}
