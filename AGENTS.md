@@ -1036,3 +1036,20 @@ free target before model metadata. It shares the existing 100 ms / 20 s boundary
 A finite metadata-only root gate must first observe target + 1024 free pages
 for ten consecutive 100 ms observations before publication/launch. No allocation,
 source read, reclamation, reserve reduction or GPU operation is part of that gate.
+
+The stronger-startup artifact at 7eec254 / SELF
+9c095fafa9fa2f0e836b0373153039279dadab8055d2e9da583154ecd2e2a939 also refused
+before metadata/source/Vulkan: native free pages remained 1418 below target2974
+despite root prelaunch observations5607..5608. Its parent ended with all202
+inputs unchanged; normal close, exact original restoration/readback and fresh
+idle CPU passed. Preserve the preceding original numerical421 proof and this
+CPU-only refusal. Do not replay the consumed artifact or intents.
+
+The next distinct candidate replaces only its startup SELF/receipt verification
+with exact full-file SHA256 over a fixed aligned1MiB O_DIRECT tracked-heap buffer.
+This tests whether the previous buffered107MB SELF scan consumes kernel cache;
+that attribution is not yet measured. Preserve all bytes/digests, stable fd
+identity before/after, exact EOF-tail counts, deadlines and no retry. Failed or
+unknown reads retain fd/buffer; only positive SHA/identity/close releases them.
+Record native memory before/after startup integrity. The original predicate,
+stronger startup target, wait limits, model integrity reuse and driver remain.

@@ -88,7 +88,7 @@ def main():
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
-                                                   "model_integrity.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
+                                                   "model_integrity.cpp", "direct_integrity.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]

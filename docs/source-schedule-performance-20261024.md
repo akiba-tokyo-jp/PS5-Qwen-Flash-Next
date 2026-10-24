@@ -83,3 +83,21 @@ finite metadata-only launch gate requires target + 1,024 pages for ten consecuti
 found 5,668..5,672 free pages against 3,998 required, with unchanged boot/services
 and original title. Neither gate relaxes the original work-boundary predicate or
 reserves. The refused artifact/intents will not be replayed.
+
+The stronger-startup artifact `7eec254`, SELF
+`9c095fafa9fa2f0e836b0373153039279dadab8055d2e9da583154ecd2e2a939`,
+also refused before model metadata or GPU work. Root prelaunch samples were
+5,607..5,608, while the native startup remained at 1,418 pages below target2,974
+for20 seconds. All202 frozen inputs matched after its parent ended. Normal close,
+exact original restoration/readback and fresh idle CPU passed again; numerical
+original421 remained preserved without a GPU launch.
+
+Inspection found that startup rehashed the approximately107MB SELF through
+buffered ifstream reads, unlike the O_DIRECT model path. Whether that accounts
+for the native page drop is not yet measured. The next candidate retains exact
+full-file SHA256 and verifies stable fd identity before/after using a fixed aligned
+1MiB tracked Direct buffer. The EOF tail must return its exact original length;
+short/negative/oversized reads and deadlines fail without retry. Failed/unknown
+work keeps its fd/buffer until OS shutdown. Only positive digest, identity and
+close permit release. Native pre/post-integrity memory records will test the
+cache-pressure hypothesis. No model payload or integrity check is omitted.

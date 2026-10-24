@@ -16,6 +16,7 @@
 #include "source_contention.h"
 #include "source_virtual_addresses.h"
 #include "model_integrity.h"
+#include "direct_integrity.h"
 #include "prior_model_integrity.h"
 #include "model_identity_namespace.h"
 #include "model_receipt.h"
@@ -540,10 +541,24 @@ int main(int argc, char ** argv) {
                 {"candidate_SELF_sha256", gate.at("candidate_SELF_sha256")},
                 {"model_receipt_sha256", gate.at("model_receipt_sha256")},
                 {"model_loaded", false}, {"Vulkan_initialized", false}});
-            qwen_app::verify_model_file("/app0/eboot.bin", gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
-                gate.at("candidate_SELF_sha256").get<std::string>(), {}, 60);
-            qwen_app::verify_model_file(startup.model_receipt, gate.at("model_receipt_bytes").get<std::uint64_t>(),
-                gate.at("model_receipt_sha256").get<std::string>(), {}, 30);
+            if (policy.contains("native_source_schedule")) {
+                if (policy.at("native_source_schedule").at("startup_integrity_direct") != true)
+                    throw std::runtime_error("The selected source candidate requires bounded direct startup integrity");
+                write_fresh_report(startup.admission_report+".system-memory.before-startup-integrity",
+                    system_memory_report(qwen_app::observe_native_system_memory()));
+                qwen_app::verify_native_startup_file_direct("/app0/eboot.bin",gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                    gate.at("candidate_SELF_sha256").get<std::string>(),60);
+                qwen_app::verify_native_startup_file_direct(startup.model_receipt,gate.at("model_receipt_bytes").get<std::uint64_t>(),
+                    gate.at("model_receipt_sha256").get<std::string>(),30);
+                write_fresh_report(startup.admission_report+".system-memory.after-startup-integrity",
+                    system_memory_report(qwen_app::observe_native_system_memory()));
+                qwen_native_stage("complete_SELF_and_receipt_direct_SHA256_passed GPU_not_started=1");
+            } else {
+                qwen_app::verify_model_file("/app0/eboot.bin", gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                    gate.at("candidate_SELF_sha256").get<std::string>(), {}, 60);
+                qwen_app::verify_model_file(startup.model_receipt, gate.at("model_receipt_bytes").get<std::uint64_t>(),
+                    gate.at("model_receipt_sha256").get<std::string>(), {}, 30);
+            }
             // Admit the CPU clock/context once, before metadata I/O can consume
             // kernel pages. All model metadata and GPU admission still follow.
             qwen_app::admit_cpu_runtime(qwen_native_stage);
@@ -764,6 +779,7 @@ int main(int argc, char ** argv) {
                     candidate.at("boundary_margin_bytes") != qwen_app::source_schedule_boundary_margin ||
                     candidate.at("coalesce_adjacent_original_bytes") != true ||
                     candidate.at("require_kernel_target_before_metadata") != true ||
+                    candidate.at("startup_integrity_direct") != true ||
                     candidate.at("unchanged_memory_precision_driver_and_cache_policy") != true ||
                     policy.contains("native_source_contention_probe"))
                     throw std::runtime_error("The private file/range source candidate policy is not admitted");
