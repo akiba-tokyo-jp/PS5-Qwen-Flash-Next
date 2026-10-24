@@ -147,7 +147,8 @@ static void validate_prior_shader_CPU(const Json & r,const Json & prior,const qw
     if(prior.at("all_original_assets_completed_on_this_boot")!=true||
        prior.at("same_encoded_resources_and_per_use_decoder_in_current_SELF")!=true||
        prior.at("current_module_input_full_SHA256_required")!=true||
-       r.at("schema")!="ps5-qwen-shader-storage-CPU-result-v1"||r.at("pid")!=prior.at("pid")||r.at("run_id")!=prior.at("run_id")||
+       r.at("schema")!=(assets.external_file.registered?"ps5-qwen-shader-storage-CPU-result-v3":"ps5-qwen-shader-storage-CPU-result-v1")||
+       r.at("pid")!=prior.at("pid")||r.at("run_id")!=prior.at("run_id")||
        r.at("GPU_calls")!=0||r.at("Vulkan_initialized")!=false||r.at("model_loaded")!=false||
        r.at("active_lease")!=false||r.at("failed")!=false||r.at("persistent_caches_enabled")!=false||
        r.at("all_original_SPIRV_bytes_preserved")!=true||r.at("shader_count")!=assets.assets||
@@ -155,6 +156,14 @@ static void validate_prior_shader_CPU(const Json & r,const Json & prior,const qw
        r.at("CPU_verified_lookups")!=assets.lookup_entries||r.at("original_bytes")!=assets.original_bytes||
        r.at("stored_bytes")!=assets.stored_bytes||r.at("registry_sha256")!=assets.registry_sha256)
         throw std::runtime_error("Prior complete native shader bytes do not bind the unchanged current resources and per-use SHA256");
+    if(assets.external_file.registered&&(!assets.initialized||!assets.external_file.verified||assets.external_file.failed||
+       assets.external_file.read_pending||assets.external_file.frame_requests||
+       r.at("all_assets_verified_in_this_run")!=true||r.at("prior_CPU_verified_assets")!=0||
+       r.at("verification_mode")!="all_assets_in_current_run"||r.at("external_file")!=true||
+       r.at("external_file_SHA256_verified")!=true||r.at("external_read_pending")!=false||r.at("external_source_failed")!=false||
+       r.at("external_file_bytes")!=assets.external_file.file_bytes||
+       r.at("codec_input_window_bytes")!=assets.external_file.input_window_bytes||r.at("external_frame_requests")!=assets.assets))
+        throw std::runtime_error("Prior external shader bytes require complete current file integrity and direct original-byte evidence");
 }
 
 static Json read_prior_shader_CPU(const Json & prior,const qwen_app::ShaderAssetStats & assets) {
@@ -660,13 +669,14 @@ int main(int argc, char ** argv) {
                storage.at("model_and_shader_precision_unchanged")!=true||storage.at("persistent_caches_enabled")!=false)
                 throw std::runtime_error("Lossless shader storage CPU admission is not authorized");
             const bool external=qwen_app::native_shader_file_registered();
+            const bool verify_all=storage.at("verify_all_original_assets_before_Vulkan").get<bool>();
             if(external!=storage.contains("external_file"))
                 throw std::runtime_error("External shader resources require their exact explicit private file policy");
             if(external) {
                 const auto &file=storage.at("external_file");
                 if(file.at("schema")!="ps5-qwen-external-shader-file-policy-v1"||
                    file.at("single_read_only_descriptor")!=true||file.at("new_model_source_window")!=false||
-                   storage.at("verify_all_original_assets_before_Vulkan")!=true||storage.contains("prior_native_CPU"))
+                   verify_all==storage.contains("prior_native_CPU"))
                     throw std::runtime_error("External shader resources require complete current file and original-byte verification");
                 qwen_app::initialize_native_shader_file(file.at("path").get<std::string>(),file.at("bytes").get<std::uint64_t>(),
                     file.at("sha256").get<std::string>());
@@ -681,7 +691,6 @@ int main(int argc, char ** argv) {
                declared.stored_bytes!=storage.at("stored_bytes")||declared.lookup_entries!=storage.at("lookup_entries")||
                declared.registry_sha256!=storage.at("registry_sha256"))
                 throw std::runtime_error("Shader CPU verification exceeds the exact private resource plan");
-            const bool verify_all=storage.at("verify_all_original_assets_before_Vulkan").get<bool>();
             Json prior_shader;
             if(!verify_all)prior_shader=read_prior_shader_CPU(storage.at("prior_native_CPU"),declared);
             const auto shaders=verify_all?qwen_app::verify_native_shader_assets_CPU():declared;

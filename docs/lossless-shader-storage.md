@@ -310,3 +310,26 @@ persistent refusal without another read/decode and invalid-counter refusal. The
 actual PS5 codec/providers and complete application link/import/SELF checks passed.
 A distinct physical CPU case is in progress; complete inference and throughput
 remain unqualified.
+
+The serial-boundary physical case subsequently passed all1527 current original
+shader bytes,382 lookups and complete current external resource SHA256. The
+stronger pre-metadata target refused at1503 free pages versus2974 required after
+20.000108006s. No model metadata, current whole reservations or GPU work began.
+Normal close/exact original restoration/full readback/final idle CPU and401
+unchanged parent inputs passed. See
+[the current-byte evidence](native-external-shader-bytes-20261024.json).
+
+The optional prior-byte profile now accepts this direct external v3 evidence,
+retaining the existing legacy v1 path. It verifies exact prior report SHA256,
+owner/run and unchanged encoded resources, full current external file SHA256,
+current382 lookups and unchanged per-use decoder/completion code. Evidence must
+have all1527 bytes checked in its own run with zero inherited checks. Failed or
+pending current files, changed bounds and evidence chains are refused. The
+current report states current0/prior1527; each actually used module still checks
+its complete original SPIR-V SHA256. Two positive legacy/external validators and
+101 altered/missing-evidence/current-file refusal controls passed.
+
+This avoids repeating unused shader reconstruction after immutable byte data has
+already qualified. It reuses no OS mapping, owner or memory admission. The same
+current whole rehearsal and both2974-page targets precede inference; a new CPU
+qualification and separate full native plan are still required.

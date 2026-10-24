@@ -1435,3 +1435,23 @@ read-only, all decoder/file/ownership code and budgets unchanged, the existing
 decode. Require actual-codec controls for initial and middle recovery, persistent
 refusal and invalid counters, plus current native link/import/SELF gates and a
 distinct current all-resource/whole-rehearsal CPU case before full inference.
+
+The serial-boundary case passed all1527 current original shaders,382 lookups and
+complete current external resource SHA256. The later2974-page pre-metadata target
+refused at1503 after its unchanged20s boundary wait. No model metadata/current
+reservations/GPU began. Normal close/exact restoration/full readback/final idle
+CPU and401 unchanged parent inputs passed. Preserve the positive immutable-byte
+evidence separately from the failed model-memory gate.
+
+A distinct external profile may reuse only that complete same-boot v3 shader
+report after exact report SHA256/owner/run, unchanged encoded resource manifest,
+current full external resource SHA256, current382 lookup checks and unchanged
+per-use decoder/completion provenance. Require direct prior evidence with1527
+current checks and zero inherited checks; reject evidence chains, pending/failed
+files and mismatched resource bounds. Its report must say current0/prior1527.
+Every actually used shader still requires current full original SHA256 before
+module creation. The actual current whole rehearsal and both2974-page targets
+remain mandatory; no OS mapping/ownership/available-memory state is reused.
+Require actual legacy/external validator refusal controls and native link/import/
+SELF gates, then a distinct bounded CPU whole-rehearsal case with normal close/
+exact restoration/final CPU before separate full inference qualification.

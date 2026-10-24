@@ -13,11 +13,11 @@ def main():
     def fp():return {str(x.relative_to(ROOT)):hashlib.sha256(x.read_bytes()).hexdigest()for x in paths}
     before=fp();text=paths[0].read_text();body=text.split('static void validate_prior_shader_CPU(',1)[1].split('\nstatic Json read_prior_shader_CPU(',1)[0]
     (a.out/'actual_prior_shader_validator.h').write_text('static void validate_prior_shader_CPU('+body,encoding='utf-8')
-    baseline=subprocess.check_output(['git','show','1924744:native/app/shader_assets.cpp'],cwd=ROOT).decode().replace('\r\n','\n')
+    baseline=subprocess.check_output(['git','show','79f3c34:native/app/shader_assets.cpp'],cwd=ROOT).decode().replace('\r\n','\n')
     current=paths[1].read_text();start='extern "C" const void *qwen_app_prepare_shader_code('
     assert baseline.split(start,1)[1]==current.split(start,1)[1], 'Per-use SHA256 restoration or positive lease completion changed'
     receipt=dict(state='running',inputs=before,steps=[],per_use_decoder_and_completion_text_unchanged=True,
-        source_revision='1924744',console_requests=0,GPU_calls=0)
+        source_revision='79f3c34',console_requests=0,GPU_calls=0)
     host=a.workspace/'toolchain/msys-clang64/clang64/bin';env=dict(os.environ,PATH=str(host)+os.pathsep+os.environ.get('PATH',''))
     engine=a.cache/'upstream/llama.cpp-0a1ef309cdbb9f2024f58a38fb4c42352c5db569'
     exe=a.out/'actual-prior-validator.exe'
