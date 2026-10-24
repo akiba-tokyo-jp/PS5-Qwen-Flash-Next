@@ -64,28 +64,23 @@ startup targets. General execution/deployment/release and CI remain disabled.
 The existing three-request sequence remains the minimum physical lifecycle
 control. Its counting output alone does not establish general reasoning quality,
 useful speculative acceptance or significance of a small throughput difference.
-Current status: implementation, screening and separate physical comparisons in progress.
+Current status: all eight proposals screened; selected implementations and physical comparisons completed.
+Unqualified variants remain explicitly unimplemented future work; see the final dispositions below.
 
-## Progress
+## Final disposition
 
-The [two-token prefill candidate](native-bounded-prefill-20261025.md) completed
-all physical and original-restoration gates. Mean TTFT fell 20.62%; decode changed
-+1.16%, without statistical significance established. All original budgets,
-monitoring and guards remain. Width 4 is the next separate private comparison;
-width 8 fails actual cache capacity. This candidate does not complete this plan.
+The [bounded results and eight-proposal table](performance-results-20261025.md)
+record the complete selection. Widths 2 and 4 passed independently; the compact
+route observer passed all three requests, actual frames, positive retirement and
+every original-restoration gate. The finite parent ended with 439 unchanged inputs.
+The representative 512 MiB physical comparison passed 192 complete pair hashes.
 
-The complete 76-file header screen selected 512 MiB for representative physical
-comparison: 32/32 sparse sampled pairs remain geometry-eligible, with no crossings.
-Smaller layouts produce 31/29/27 eligible pairs and 48/55/58 sampled descriptor
-opens versus 42; 64 MiB crosses two boundaries. These are sparse geometry samples,
-not a complete route replay or native speed measurement. Only 1.875 GiB of exact
-representative files was prepared, with no complete model copy or reconversion.
+No compared cache policy improves the actual external expert payload, so current
+Maya LFU4096 remains. Full splitting/packing fail current storage admission;
+the tested lossless codec fails the initial delivery-cost screen. Shared-state
+device copies and model-free drafts remain unimplemented prerequisite work.
+The plan does not claim eight implemented optimizations or full-layout speed.
 
-Nine original BF16 expert-matrix samples restore exactly under zlib. Plain and
-byte-plane ordering compress by 1.25x / 1.39x but take about 28.9 / 19.3 ms to
-restore on the host. This codec misses the initial delivery-cost screen; native
-decompression speed is unqualified. Shared-prefix host checkpoints require at
-least 118,038,528 recurrent/PLE bytes before attention/logits, exceeding the
-baseline 100,597,760 CPU bytes left at peak. A device-backed variant and n-gram
-verification both still require separately qualified complete hybrid-state
-copy/rollback. Existing contexts reserve zero recurrent rollback snapshots.
+All selected physical cases ended with the exact original restored, freshly
+numerically readmitted, normally closed and fully read back after idle CPU
+guards. Source/results are preserved as these private-repository artifacts.

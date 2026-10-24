@@ -1,25 +1,27 @@
-# Bounded two-token prefill on the physical PS5
+# Bounded prompt prefill on the physical PS5
 
-The two-token candidate completed arithmetic `4` and both fixed external answers,
+The two-token and four-token candidates each completed arithmetic `4` and both fixed external answers,
 including exact baseline token IDs and output bytes. All actual frames,
 positive retirement, ordinary close, exact original restoration, fresh original
 numerical readmission, ordinary original shutdown and final idle CPU/full raw
-readback passed. The finite continuation positively ended. This completes this
-candidate; the [eight-proposal performance plan](performance-plan-20261025.md)
-remains in progress.
+readback passed. The finite continuation positively ended. These complete the bounded prefill
+comparisons; the [eight-proposal performance plan](performance-plan-20261025.md)
+has completed screening and selected physical comparisons; unqualified variants remain future work.
 
-| Metric | Previous one-token control | Two-token candidate |
-| --- | --- | --- |
-| External TTFT | 89.441 / 87.378 s | 70.901 / 69.452 s |
-| Decode rate | 0.332877 / 0.337782 tokens/s | 0.336222 / 0.342238 tokens/s |
-| CPU heap peak | 436,273,152 bytes | 436,273,152 bytes |
+| Metric | One-token control | Two-token candidate | Four-token candidate |
+| --- | --- | --- | --- |
+| External TTFT | 89.441 / 87.378 s | 70.901 / 69.452 s | 57.636 / 56.767 s |
+| Decode rate, tokens/s | 0.332877 / 0.337782 | 0.336222 / 0.342238 | 0.339265 / 0.345914 |
+| CPU heap peak, bytes | 436,273,152 | 436,273,152 | 436,273,152 |
 
-Mean TTFT fell **20.62%**. Mean decode changed **+1.16%**; two short requests do
+Mean TTFT fell **20.62%** at width 2 and **35.30%** at width 4. Mean decode changed
+**+1.16% / +2.17%**; two short requests per candidate do
 not establish significance or sustained throughput improvement. Prompt batching
 primarily improves input latency. See [allowlisted counters](native-bounded-prefill-20261025.json).
 
-The explicit private profile accepts widths 1, 2 or 4; only width 2 has completed
-physical qualification here. Generation stays single-token and greedy. Every
+The explicit private profile accepts widths 1, 2 or 4; widths 2 and 4 have completed
+separate full physical qualification. The private width-4 profile is selected for further comparisons;
+the default remains width 1 without an explicit admitted profile. Generation stays single-token and greedy. Every
 prompt output is requested to keep the final-layer expert cache eligible, with
 unchanged causal positions. The actual cache method admits at most five tokens
 at 53 slots/top-10; eight needs 80 slots and is rejected. No width is silently
@@ -45,3 +47,10 @@ partial final batches, generated-token isolation, invalid widths/budgets,
 quarantine on setup/decode failures, actual PS5 ABI compilation, real imports,
 SELF roundtrip and the actual lifecycle's ownership/cleanup exception paths.
 The monitor and every validation guard stay enabled.
+
+The four-token case used a fresh run, policy and launch intent with the same
+qualified executable. Its complete collector passed without the earlier
+record-selection failure. Both actual frames were viewed; all three requests,
+positive retirement, original numerical restoration/close and final idle/full
+readback passed. The finite parent ended with all 425 frozen inputs unchanged.
+No model conversion or transfer was repeated for either prefill comparison.

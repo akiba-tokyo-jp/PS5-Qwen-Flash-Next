@@ -110,5 +110,92 @@
   "all_memory_predicates_and_reserves_preserved": true,
   "broad_quality_qualified": false,
   "statistical_significance_qualified": false,
-  "complete_eight_proposal_plan": false
+  "complete_eight_proposal_plan": false,
+  "four_token_candidate": {
+    "prefill_batch_tokens": 4,
+    "generated_token_batch_tokens": 1,
+    "candidate_SELF_sha256": "ab5200d8db3fe120051b6832201f5e51ac4778c36b78eba6ad68038db7a4ca23",
+    "CPU_heap_peak_bytes": 436273152,
+    "mean_TTFT_reduction_percent": 35.29896953680153,
+    "mean_decode_change_percent": 2.1651521488165404,
+    "exact_baseline_token_IDs_and_bytes_match": true,
+    "full_three_request_lifecycle_and_original_restoration_passed": true,
+    "finite_parent_ended": true,
+    "frozen_inputs_unchanged": 425,
+    "native_frames_viewed": 2,
+    "all_original_limits_reserves_and_monitoring_preserved": true,
+    "external_requests": [
+      {
+        "ordinal": 1,
+        "metrics": {
+          "decode_tokens_per_second": 0.33926544269115255,
+          "generated_tokens": 22,
+          "prefill_ms": 57608.59667900205,
+          "prompt_tokens": 30,
+          "total_ms": 122477.97615198791,
+          "ttft_ms": 57636.37106399238
+        },
+        "output": "1, 2, 3, 4, 5, 6, 7, 8",
+        "source_counters": {
+          "checkpoint_ns": 235859083,
+          "process_calls": 30,
+          "process_ns": 121514912847,
+          "source_bytes": 191978414080,
+          "source_chunks": 59153,
+          "source_coalesced_batches": 768,
+          "source_completed_windows": 59153,
+          "source_consumer_ns": 11142483842,
+          "source_handle_ns": 264860624,
+          "source_headroom_ns": 1656275894,
+          "source_parallel_batches": 24244,
+          "source_physical_read_bytes": 192934509536,
+          "source_physical_read_calls": 58385,
+          "source_pipeline_batches": 3431,
+          "source_read_ns": 102086340062,
+          "source_selected_serial_batches": 3431,
+          "source_worker_dispatch_ns": 25022754,
+          "source_worker_read_ns": 9375031343,
+          "stage_observer_ns": 226864762,
+          "synchronize_ns": 191646,
+          "work_guard_ns": 5021539
+        }
+      },
+      {
+        "ordinal": 2,
+        "metrics": {
+          "decode_tokens_per_second": 0.34591417797423263,
+          "generated_tokens": 22,
+          "prefill_ms": 56739.51092500985,
+          "prompt_tokens": 30,
+          "total_ms": 120418.12014099956,
+          "ttft_ms": 56767.261977002025
+        },
+        "output": "1, 2, 3, 4, 5, 6, 7, 8",
+        "source_counters": {
+          "checkpoint_ns": 218528682,
+          "process_calls": 30,
+          "process_ns": 119469308427,
+          "source_bytes": 189157089280,
+          "source_chunks": 58538,
+          "source_coalesced_batches": 981,
+          "source_completed_windows": 58538,
+          "source_consumer_ns": 10971739212,
+          "source_handle_ns": 263019409,
+          "source_headroom_ns": 1597648245,
+          "source_parallel_batches": 23798,
+          "source_physical_read_bytes": 190099667936,
+          "source_physical_read_calls": 57557,
+          "source_pipeline_batches": 3484,
+          "source_read_ns": 100720148805,
+          "source_selected_serial_batches": 3484,
+          "source_worker_dispatch_ns": 25460412,
+          "source_worker_read_ns": 9500581104,
+          "stage_observer_ns": 225495918,
+          "synchronize_ns": 211046,
+          "work_guard_ns": 5140044
+        }
+      }
+    ]
+  },
+  "highest_physically_qualified_prefill_width": 4
 }

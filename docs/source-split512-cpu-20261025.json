@@ -1,0 +1,67 @@
+{
+  "schema": "ps5-qwen-split512-CPU-screen-v1",
+  "modes": [
+    {
+      "mode": "original_serial",
+      "pairs": 48,
+      "mean_ms": 9.9635095625,
+      "round_mean_ms": [
+        10.024590875,
+        9.896494625,
+        9.9694431875
+      ]
+    },
+    {
+      "mode": "original_parallel",
+      "pairs": 48,
+      "mean_ms": 48.57883697916667,
+      "round_mean_ms": [
+        46.999887375,
+        50.320441,
+        48.4161825625
+      ]
+    },
+    {
+      "mode": "split512_serial",
+      "pairs": 48,
+      "mean_ms": 8.8736310625,
+      "round_mean_ms": [
+        8.86838225,
+        8.85385375,
+        8.8986571875
+      ]
+    },
+    {
+      "mode": "split512_parallel",
+      "pairs": 48,
+      "mean_ms": 6.922233645833333,
+      "round_mean_ms": [
+        6.898467125,
+        7.073592,
+        6.7946418125
+      ]
+    }
+  ],
+  "all_192_pairs_full_returned_SHA256_passed": true,
+  "hashing_outside_read_interval": true,
+  "actual_application_CPP_executor": true,
+  "source_window_bytes": 8388608,
+  "maximum_source_descriptors": 3,
+  "maximum_outstanding_reads": 2,
+  "new_fragments": 2,
+  "fragment_bytes_each": 536870912,
+  "GPU_calls": 0,
+  "title_launches": 0,
+  "original_model_and_SELF_unchanged": true,
+  "fresh_before_and_after_idle_CPU_passed": true,
+  "split_parallel_over_safe_original_serial_ratio": 1.439348925833685,
+  "current_four_token_selected_serial_pair_fractions": [
+    0.12062721935098267,
+    0.12327070728514312
+  ],
+  "full_layout_native_inference_measured": false,
+  "full_layout_storage_admitted": false,
+  "fresh_free_bytes_lower_bound": 126400000000,
+  "required_full_layout_and_storage_reserve_bytes": 393606790108,
+  "reject_reason": "A complete byte-preserving second layout cannot fit while retaining the sealed original model and 32 GiB storage reserve."
+}

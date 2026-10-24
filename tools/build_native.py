@@ -93,7 +93,7 @@ def main():
              "-nostdinc++", "-isystem", str(sdk / "target/include/c++/v1"), "-isystem", str(sdk / "target/include")]
     flags += [value for path in includes for value in ("-I", str(path))]
     flags += ["-DQWEN_NATIVE_PLATFORM="+str(int(native_platform is not None))]
-    files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "http_app.cpp", "bounded_demo.cpp", "chat_prompt.cpp", "native_main.cpp",
+    files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "completed_expert_routes.cpp", "http_app.cpp", "bounded_demo.cpp", "chat_prompt.cpp", "native_main.cpp",
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
@@ -185,6 +185,7 @@ def main():
     command += ["--wrap=" + name for name in ("malloc", "calloc", "realloc", "free", "posix_memalign",
                 "aligned_alloc", "memalign", "malloc_usable_size", "reallocf", "reallocarray", "getline", "getdelim")]
     command += ["--wrap=gguf_init_from_file"]
+    command += ["--wrap=ggml_backend_tensor_get_async","--wrap=ggml_backend_synchronize"]
     command += ["--version-script", str(ROOT / "cmake/native-symbols.map")]
     # The pinned linker script explicitly KEEP's every initializer array.
     # Discard unreachable payload-only SDK routines and their private imports.
