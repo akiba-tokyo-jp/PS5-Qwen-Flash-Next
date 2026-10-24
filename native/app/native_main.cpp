@@ -612,7 +612,8 @@ int main(int argc, char ** argv) {
                 {"shader_count",shaders.assets},{"original_bytes",shaders.original_bytes},{"stored_bytes",shaders.stored_bytes},
                 {"CPU_verified_assets",shaders.CPU_verified_assets},{"lookup_entries",shaders.lookup_entries},
                 {"CPU_verified_lookups",shaders.CPU_verified_lookups},{"registry_sha256",shaders.registry_sha256},
-                {"codec_output_bytes",shaders.codec_output_bytes},{"codec_scratch_bytes",shaders.codec_scratch_bytes},
+                {"codec_output_bytes",shaders.codec_output_bytes},{"codec_ordering_bytes",shaders.codec_ordering_bytes},
+                {"codec_scratch_bytes",shaders.codec_scratch_bytes},
                 {"active_lease",false},{"failed",false},{"all_original_SPIRV_bytes_preserved",true},
                 {"GPU_calls",0},{"Vulkan_initialized",false},{"model_loaded",false},{"persistent_caches_enabled",false}});
             qwen_native_stage("all_original_shader_CPU_bytes_and_lookups_verified_before_Vulkan");

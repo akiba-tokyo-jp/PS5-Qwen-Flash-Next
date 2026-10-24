@@ -44,6 +44,8 @@ int main(int argc,char **argv){try{
         const auto s=qwen_app::verify_native_shader_assets_CPU();
         check(s.assets==QWEN_EXPECTED_SHADER_COUNT&&s.CPU_verified_assets==s.assets&&
             s.lookup_entries==QWEN_EXPECTED_LOOKUP_COUNT&&s.CPU_verified_lookups==s.lookup_entries&&
+            s.stored_bytes==QWEN_EXPECTED_STORED_BYTES&&s.codec_output_bytes==QWEN_EXPECTED_OUTPUT_BYTES&&
+            s.codec_ordering_bytes==QWEN_EXPECTED_OUTPUT_BYTES&&
             s.registry_sha256==QWEN_EXPECTED_SHADER_REGISTRY&&!s.active_lease&&!s.failed,
             "Original shader bytes or lookup table mapping changed");
         if(mode=="concurrent") {

@@ -42,3 +42,24 @@ is introduced. All original startup and whole-rehearsal gates still follow.
 Host packaging and codec controls do not qualify native CPU execution, memory
 recovery or full-model generation. A distinct native CPU case must precede a
 distinct complete inference comparison and original restoration sequence.
+
+The first smaller native image subsequently passed all1527 original shader
+SHA256/length checks and382 lookup checks on the PS5. Its fixed output and codec
+scratch used101204 and7160 tracked bytes. The five-second quiet interval lost
+four free pages, versus3628 in the preceding phase control; the subsequent256
+journal-only lines changed no sampled VM populations. Initial conditions differ,
+so this is not proof of the proprietary backing object. The unchanged2974-page
+target still refused at2930 before the actual rehearsal or Vulkan. The hardened
+controller completed normal close, exact original restoration/full readback and
+fresh final CPU; all378 frozen inputs remained unchanged after parent exit.
+See [the native CPU result](native-shader-storage-CPU-20261024.json).
+
+The next distinct representation reversibly groups the four byte lanes of each
+SPIR-V word before compression and restores their original interleaving before
+SHA256 verification or Vulkan. It uses one additional fixed buffer bounded by
+the largest shader, charged to the unchanged CPU heap budget. Exactly identical
+resources may share stored bytes while retaining every original name, length,
+selection-table entry and original SHA256. It introduces no shader transform or
+model precision change. Host comparison measured10322484 unique stored bytes,
+versus12838336 in the first native image; this representation needs its own
+actual-codec, native import/SELF and distinct CPU execution gates.

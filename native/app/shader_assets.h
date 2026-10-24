@@ -8,7 +8,7 @@ struct ShaderAssetStats {
     std::uint64_t assets=0,original_bytes=0,stored_bytes=0,maximum_shader_bytes=0;
     std::uint64_t decoded_calls=0,raw_calls=0,CPU_verified_assets=0;
     std::uint64_t lookup_entries=0,CPU_verified_lookups=0;
-    std::uint64_t codec_output_bytes=0,codec_scratch_bytes=0;
+    std::uint64_t codec_output_bytes=0,codec_ordering_bytes=0,codec_scratch_bytes=0;
     bool initialized=false,active_lease=false,failed=false;
     std::string registry_sha256;
 };

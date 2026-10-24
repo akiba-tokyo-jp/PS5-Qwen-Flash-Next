@@ -18,10 +18,12 @@ def main():
         blob=pool[row['offset']:row['offset']+row['storage_bytes']];raw=unpack(blob)
         if hashlib.sha256(raw).hexdigest()!=row['original_sha256']:raise ValueError('Original compiled shader hash changed')
     (a.out/'shader_codec_sample.h').write_text(f'#define QWEN_EXPECTED_SHADER_COUNT {data["shader_count"]}\n#define QWEN_EXPECTED_LOOKUP_COUNT {data["lookup_entries"]}\n'+
+        f'#define QWEN_EXPECTED_STORED_BYTES {data["stored_bytes"]}\n#define QWEN_EXPECTED_OUTPUT_BYTES {data["maximum_shader_bytes"]}\n'+
         '#define QWEN_EXPECTED_SHADER_REGISTRY '+json.dumps(data['registry_sha256'])+'\n'+
         '#define QWEN_CODEC_SAMPLE_DATA '+sample['name']+'_data\n#define QWEN_CODEC_SAMPLE_SIZE '+str(sample['storage_bytes'])+'\n')
     paths=[ROOT/n for n in ('native/app/shader_assets.cpp','native/app/shader_assets.h','native/app/shader_assets_bridge.h',
         'native/thirdparty/zlib/zlib.h','native/thirdparty/zlib/zconf.h','tests/shader_assets.cpp','tests/shader_codec_stubs/ps5platform/heap.h',
+        'native/app/sha256_backend.cpp','native/app/model_cpu_budget.h','native/app/system_memory.h','native/app/profile_clock.h',
         'tools/check_shader_storage.py','tools/shader_storage.py')]
     r=dict(state='running',inputs={str(f.relative_to(ROOT)):record(f)['sha256']for f in paths},steps=[],console_requests=0,GPU_calls=0,
         storage_manifest=record(a.shader_storage_manifest),all_original_compiled_SPIRV_bytes_preserved=True)

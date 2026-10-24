@@ -4,6 +4,7 @@
 import hashlib,json,re,struct,zlib
 from pathlib import Path
 MAGIC=b'QWSPV001'
+SHUFFLED_MAGIC=b'QWSPV002'
 PREFIX=b'ps5-qwen-shader-storage-v1\0'
 MAX_SHADER=1<<20
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -31,15 +32,22 @@ def pack(raw):
     compressed=zlib.compress(raw,9)
     framed=MAGIC+struct.pack('<II',len(raw),len(compressed))+hashlib.sha256(raw).digest()+compressed
     framed+=b'\0'*((-len(framed))%4)
-    return framed if len(framed)<len(raw)else raw
+    ordered=b''.join(raw[i::4]for i in range(4));compressed=zlib.compress(ordered,9)
+    shuffled=SHUFFLED_MAGIC+struct.pack('<II',len(raw),len(compressed))+hashlib.sha256(raw).digest()+compressed
+    shuffled+=b'\0'*((-len(shuffled))%4)
+    return min((raw,framed,shuffled),key=len)
 def unpack(blob):
     if blob[:4]==b'\x03\x02\x23\x07':return blob
-    if len(blob)<48 or blob[:8]!=MAGIC:raise ValueError('Invalid shader storage header')
+    if len(blob)<48 or blob[:8]not in (MAGIC,SHUFFLED_MAGIC):raise ValueError('Invalid shader storage header')
     size,count=struct.unpack_from('<II',blob,8)
     if not 20<=size<=MAX_SHADER or size%4 or not count or count>len(blob)-48 or len(blob)!=((48+count+3)&~3):
         raise ValueError('Invalid shader storage lengths')
     if any(blob[48+count:]):raise ValueError('Shader padding changed')
     state=zlib.decompressobj();raw=state.decompress(blob[48:48+count],MAX_SHADER+1)
+    if blob[:8]==SHUFFLED_MAGIC and len(raw)==size:
+        restored=bytearray(size);words=size//4
+        for i in range(4):restored[i::4]=raw[i*words:(i+1)*words]
+        raw=bytes(restored)
     if not state.eof or state.unused_data or state.unconsumed_tail or len(raw)!=size or hashlib.sha256(raw).digest()!=blob[16:48]:
         raise ValueError('Shader storage did not restore exact original bytes')
     return raw
@@ -191,14 +199,19 @@ def registry_digest(assets):
     return digest.hexdigest()
 def write_storage(assets,out,tables):
     out=Path(out);pool=out/'shader-storage.private.bin';assembly=out/'shader-storage.private.S';metadata=out/'shader-registry.private.cpp'
-    rows=[];offset=0
+    rows=[];offset=0;unique={}
     with pool.open('xb')as target:
         for name,raw in assets:
             stored=pack(raw)
             if unpack(stored)!=raw:raise ValueError('Lossless shader byte roundtrip failed')
-            target.write(stored);rows.append(dict(name=name,offset=offset,storage_bytes=len(stored),original_bytes=len(raw),
+            raw_hash=hashlib.sha256(raw).hexdigest();canonical=unique.get(raw_hash)
+            if canonical is None:
+                canonical=dict(name=name,offset=offset,raw=raw);unique[raw_hash]=canonical
+                target.write(stored);offset+=len(stored)
+            elif canonical['raw']!=raw:raise ValueError('Original shader SHA256 collision')
+            rows.append(dict(name=name,offset=canonical['offset'],alias_of=canonical['name']if canonical['name']!=name else None,
+                storage_bytes=len(stored),original_bytes=len(raw),
                 original_sha256=hashlib.sha256(raw).hexdigest(),storage_sha256=hashlib.sha256(stored).hexdigest()))
-            offset+=len(stored)
     quoted=json.dumps(pool.as_posix())
     lines=['#ifdef _WIN32','.section .rdata,"dr"','#else','.section .rodata.qwen_shader_assets,"a",@progbits','#endif']
     cpp=['// Generated from immutable original compiled SPIR-V. Do not edit.','#include "shader_assets_bridge.h"',
@@ -224,8 +237,10 @@ def write_storage(assets,out,tables):
     cpp.append('static const qwen_shader_asset assets[] = {')
     for row in rows:
         name=row['name'];size=row['storage_bytes'];symbol=name+'_data'
-        lines+=['.balign 16','.globl '+symbol,'#ifndef _WIN32','.type '+symbol+',@object','#endif',symbol+':',
-            f'.incbin {quoted},{row["offset"]},{size}','#ifndef _WIN32',f'.size {symbol},{size}','#endif',
+        lines+=['.globl '+symbol,'#ifndef _WIN32','.type '+symbol+',@object','#endif']
+        if row['alias_of']:lines+=['.set '+symbol+','+row['alias_of']+'_data']
+        else:lines+=['.balign 16',symbol+':',f'.incbin {quoted},{row["offset"]},{size}']
+        lines+=['#ifndef _WIN32',f'.size {symbol},{size}','#endif',
             '.balign 8','.globl '+name+'_len','#ifndef _WIN32','.type '+name+'_len,@object','#endif',name+'_len:',f'.quad {size}',
             '#ifndef _WIN32',f'.size {name}_len,8','#endif']
         digest=','.join('0x'+row['original_sha256'][i:i+2]for i in range(0,64,2))
@@ -237,6 +252,7 @@ def write_storage(assets,out,tables):
           '    qwen_app_register_shader_lookups(lookups,sizeof(lookups)/sizeof(lookups[0]));','}']
     assembly.write_text('\n'.join(lines)+'\n',encoding='utf-8');metadata.write_text('\n'.join(cpp)+'\n',encoding='utf-8')
     return dict(shader_count=len(rows),original_bytes=sum(r['original_bytes']for r in rows),stored_bytes=offset,
+        logical_stored_bytes=sum(r['storage_bytes']for r in rows),unique_originals=len(unique),
         maximum_shader_bytes=max(r['original_bytes']for r in rows),registry_sha256=registry_digest(assets),
         pool=record(pool),assembly=record(assembly),registry=record(metadata),shaders=rows,
         lookup_tables=tables,lookup_entries=len(lookup_rows))

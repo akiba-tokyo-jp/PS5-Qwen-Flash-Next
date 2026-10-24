@@ -24,13 +24,14 @@ static_assert(sizeof(uInt)==4,"The native inflate provider requires 32-bit count
 namespace {
 constexpr std::size_t maximum_shader=1u<<20,maximum_scratch=1u<<20;
 constexpr unsigned char packed_magic[8]={'Q','W','S','P','V','0','0','1'};
+constexpr unsigned char shuffled_magic[8]={'Q','W','S','P','V','0','0','2'};
 const qwen_shader_asset *assets=nullptr;std::size_t asset_count=0;
 const qwen_shader_lookup *lookups=nullptr;std::size_t lookup_count=0;
 std::atomic<bool> registration_fault{false},initialized{false},failed{false},active{false};
 std::atomic<std::uint64_t> decoded_calls{0},raw_calls{0},verified_assets{0};
 std::atomic<std::uint64_t> verified_lookups{0};
 std::mutex codec_mutex;std::thread::id lease_owner;
-void *output=nullptr;std::size_t output_bytes=0;std::string registry_hash;
+void *output=nullptr,*ordered=nullptr;std::size_t output_bytes=0;std::string registry_hash;
 z_stream stream{};
 struct Allocation {void *pointer=nullptr;std::size_t bytes=0;};
 std::array<Allocation,8> scratch{};std::atomic<std::size_t> scratch_bytes{0};
@@ -110,6 +111,8 @@ void initialize_native_shader_assets() {
     for(std::size_t i=0;i<asset_count;++i)output_bytes=std::max(output_bytes,assets[i].original_bytes);
     output=ps5_heap_memalign(16,output_bytes);
     if(!output||!ps5_heap_owns(output))fail("The bounded shader decoder must use the existing Direct CPU heap");
+    ordered=ps5_heap_memalign(16,output_bytes);
+    if(!ordered||!ps5_heap_owns(ordered))fail("Reversible shader ordering must retain its bounded tracked Direct buffer");
     stream.zalloc=allocate_codec;stream.zfree=release_codec;stream.opaque=nullptr;
     if(inflateInit(&stream)!=Z_OK||allocator_fault)fail("Native shader inflate ABI or scratch admission failed");
     heap_admission();initialized.store(true);
@@ -118,8 +121,17 @@ ShaderAssetStats native_shader_asset_stats() {
     ShaderAssetStats s;s.assets=asset_count;s.initialized=initialized.load();s.active_lease=active.load();s.failed=failed.load();
     s.decoded_calls=decoded_calls.load();s.raw_calls=raw_calls.load();s.CPU_verified_assets=verified_assets.load();
     s.lookup_entries=lookup_count;s.CPU_verified_lookups=verified_lookups.load();
-    s.codec_output_bytes=output_bytes;s.codec_scratch_bytes=scratch_bytes.load();s.registry_sha256=registry_hash;
-    for(std::size_t i=0;i<asset_count;++i){s.original_bytes+=assets[i].original_bytes;s.stored_bytes+=assets[i].storage_bytes;s.maximum_shader_bytes=std::max<std::uint64_t>(s.maximum_shader_bytes,assets[i].original_bytes);}
+    s.codec_output_bytes=output_bytes;s.codec_ordering_bytes=output_bytes;s.codec_scratch_bytes=scratch_bytes.load();s.registry_sha256=registry_hash;
+    for(std::size_t i=0;i<asset_count;++i){
+        s.original_bytes+=assets[i].original_bytes;
+        bool alias=false;
+        for(std::size_t j=0;j<i;++j)if(assets[j].storage==assets[i].storage){
+            if(assets[j].storage_bytes!=assets[i].storage_bytes)fail("An exact shader alias changed its stored length");
+            alias=true;break;
+        }
+        if(!alias)s.stored_bytes+=assets[i].storage_bytes;
+        s.maximum_shader_bytes=std::max<std::uint64_t>(s.maximum_shader_bytes,assets[i].original_bytes);
+    }
     return s;
 }
 ShaderAssetStats verify_native_shader_assets_CPU() {
@@ -149,7 +161,8 @@ extern "C" const void *qwen_app_prepare_shader_code(const void *storage,std::siz
         if(reinterpret_cast<std::uintptr_t>(storage)%4)fail("Original SPIR-V is not word aligned");
         *original_bytes=stored_bytes;++raw_calls;return storage;
     }
-    if(stored_bytes<48||std::memcmp(data,packed_magic,sizeof(packed_magic)))fail("Unknown immutable shader storage format");
+    const bool shuffled=stored_bytes>=48&&!std::memcmp(data,shuffled_magic,sizeof(shuffled_magic));
+    if(stored_bytes<48||(!shuffled&&std::memcmp(data,packed_magic,sizeof(packed_magic))))fail("Unknown immutable shader storage format");
     const auto bytes=u32(data+8),compressed=u32(data+12);
     if(!bytes||bytes>output_bytes||bytes%4||!compressed||compressed>stored_bytes-48||
        stored_bytes!=((48ull+compressed+3)&~3ull))fail("Packed shader lengths exceed their bounded original");
@@ -160,8 +173,16 @@ extern "C" const void *qwen_app_prepare_shader_code(const void *storage,std::siz
     (void)qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
     if(inflateReset(&stream)!=Z_OK)fail("Shader decoder state did not reset positively");
     stream.next_in=const_cast<Bytef*>(data+48);stream.avail_in=compressed;
-    stream.next_out=static_cast<Bytef*>(output);stream.avail_out=bytes;
-    if(inflate(&stream,Z_FINISH)!=Z_STREAM_END||stream.total_out!=bytes||stream.total_in!=compressed||allocator_fault||
+    stream.next_out=static_cast<Bytef*>(shuffled?ordered:output);stream.avail_out=bytes;
+    if(inflate(&stream,Z_FINISH)!=Z_STREAM_END||stream.total_out!=bytes||stream.total_in!=compressed||allocator_fault)
+        fail("Lossless shader decompression did not complete exactly");
+    if(shuffled) {
+        const auto *from=static_cast<const unsigned char*>(ordered);auto *to=static_cast<unsigned char*>(output);
+        const std::size_t words=bytes/4;
+        for(std::size_t word=0;word<words;++word)for(unsigned lane=0;lane<4;++lane)
+            to[word*4+lane]=from[lane*words+word];
+    }
+    if(
        u32(static_cast<const unsigned char*>(output))!=0x07230203||
        std::memcmp(digest(output,bytes).data(),data+16,32))
         fail("Lossless shader restoration did not match its complete original SHA256");

@@ -1236,3 +1236,15 @@ distinct CPU-only native case with ordinary close/exact restoration/final CPU;
 full native inference remains a separate complete qualification. See
 docs/lossless-shader-storage.md. This does not establish the memory cause or
 authorize relaxing a failed guard.
+
+The first lossless shader CPU case passed all1527 original byte checks and382
+lookups on the physical PS5. Quiet free pages2954 ->2950 over five seconds;
+next256 journal-only lines changed none of the VM populations. The unchanged
+2974-page target refused at2930 before the actual rehearsal/Vulkan. Its hardened
+controller normally closed/restored the exact original/full readback/final CPU;
+parent exit and378 unchanged inputs passed. Never replay this SELF. See
+docs/native-shader-storage-CPU-20261024.json. A distinct representation may add
+reversible word-byte ordering and exact stored-byte aliases, preserving every
+original SHA256/name/lookup and all prior guards. Charge its one extra maximum-
+shader buffer to the existing tracked heap and repeat the actual-codec and
+distinct native CPU gates before full inference qualification.
