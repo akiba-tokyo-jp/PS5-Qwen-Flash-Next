@@ -8,8 +8,12 @@ FIELDS = {
 
 
 def validate_backpressure(record):
-    required=dict(schema='ps5-qwen-memory-backpressure-v1',enabled=True,
-        maximum_boundary_wait_ms=2000,maximum_total_wait_ms=10000,poll_interval_ms=100,
+    schema=record.get('schema')
+    limits={'ps5-qwen-memory-backpressure-v1':(2000,10000),'ps5-qwen-memory-backpressure-v2':(20000,60000)}
+    if schema not in limits:raise ValueError('Unknown memory backpressure policy')
+    boundary,total=limits[schema]
+    required=dict(schema=schema,enabled=True,
+        maximum_boundary_wait_ms=boundary,maximum_total_wait_ms=total,poll_interval_ms=100,
         memory_reserves_unchanged=True,IO_or_GPU_operations_retried=False,last_qualified=True,
         kernel_page_size=16384,kernel_extra_margin_bytes=4 << 20)
     if any(type(record.get(k)) is not type(v) or record[k]!=v for k,v in required.items()):
@@ -21,7 +25,7 @@ def validate_backpressure(record):
     if (not record['observations'] or record['pressure_events']!=record['recovered_admissions'] or
         not 0<record['kernel_reserved_pages']<=record['kernel_minimum_pages'] or
         record['pressure_events']>record['pause_calls'] or
-        record['cumulative_wait_ns']>10_000_000_000 or record['pause_calls']>100 or
+        record['cumulative_wait_ns']>total*1_000_000 or record['pause_calls']>total//100 or
         (record['pause_calls']==0)!=(record['cumulative_wait_ns']==0) or
         record['kernel_free_pages']<record['kernel_minimum_pages']+max(record['kernel_reserved_pages'],256)):
         raise ValueError('A pressure admission lacks bounded recovery')

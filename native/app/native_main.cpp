@@ -211,8 +211,8 @@ static std::uint64_t observed_system_headroom() {
 }
 static Json memory_backpressure_report() {
     const auto s=qwen_app::native_memory_backpressure_stats();
-    return {{"schema","ps5-qwen-memory-backpressure-v1"},{"enabled",s.enabled},
-        {"maximum_boundary_wait_ms",2000},{"maximum_total_wait_ms",10000},{"poll_interval_ms",100},
+    return {{"schema","ps5-qwen-memory-backpressure-v2"},{"enabled",s.enabled},
+        {"maximum_boundary_wait_ms",20000},{"maximum_total_wait_ms",60000},{"poll_interval_ms",100},
         {"observations",s.observations},{"pressure_events",s.pressure_events},
         {"recovered_admissions",s.recovered_admissions},{"cumulative_wait_ns",s.wait_ns},
         {"pause_calls",s.pause_calls},{"last_qualified",s.last_qualified},

@@ -23,7 +23,7 @@ int main(){try{
     {Ops ops;MemoryBackpressure g;g.enable();ops.free={1100,1155,1156};ops.issue_after(g);
      check(ops.operations==1&&ops.pauses==2&&g.stats().recovered_admissions==1&&g.stats().last_qualified,"Recovery bypassed a fresh exact guard");}
     {Ops ops;MemoryBackpressure g;g.enable();ops.value.kernel_free=1000;rejected([&]{ops.issue_after(g);});
-     check(!ops.operations&&ops.pauses==20&&g.stats().wait_ns==MemoryBackpressure::boundary_limit_ns,"Persistent pressure escaped its deadline");
+     check(!ops.operations&&ops.pauses==200&&g.stats().wait_ns==MemoryBackpressure::boundary_limit_ns,"Persistent pressure escaped its deadline");
      const auto n=ops.observations;ops.value.kernel_free=2000;rejected([&]{ops.issue_after(g);});check(ops.observations==n,"A failed admission retried");}
     {Ops ops;MemoryBackpressure g(300,500,100);g.enable();ops.free={1000,1000,1156,1000,1000,1156,1000,1000};
      ops.issue_after(g);ops.issue_after(g);rejected([&]{ops.issue_after(g);});check(ops.operations==2&&g.stats().wait_ns==500,"Total budget reset at a new boundary");}

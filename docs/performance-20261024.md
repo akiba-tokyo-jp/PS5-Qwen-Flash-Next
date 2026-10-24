@@ -128,3 +128,25 @@ to the pre-backpressure implementation. No additional GPU work, source read,
 quantization, reserve change or wait allowance is added. The affected native
 entry compile, link/import and SELF checks passed. Physical comparison remains
 pending.
+
+The early-admission candidate completed arithmetic and external request 1. That
+request measured 0.285474 tokens/s, 104.157 s TTFT and 181.164 s total, versus
+0.282978 / 105.237 / 182.934 in the profile control. Source producer read/wait
+fell from 158.595 to 156.286 s; worker dispatch totaled 0.258 s and worker reads
+78.987 s. This is a small single-request difference, not a qualified whole-plan
+speedup. It supports source I/O rather than thread dispatch as the main cost.
+
+External request 2 completed prefill and its first sample, then failed the
+unchanged kernel predicate before its next work boundary. Two pressure episodes
+recovered; the third reached the 2 s boundary limit. Cumulative waits were
+3.302 s. Ordinary close, exact original restoration, numerical readmission,
+ordinary shutdown, final CPU and full SELF checks all passed. Preserve
+[the failed result](bounded-memory-refusal-20261024.json); no request was retried.
+
+Recovery policy v2 changes only passive wait time: 20 s per completed boundary,
+60 s cumulatively, still using 100 ms observations and the exact original memory
+predicate. The boundary allowance matches the existing pre-integrity CPU wait.
+It does not retry I/O/inference/GPU work, release resources, reclaim pages or
+reduce reserves. A deadline, invalid observation or invalid clock still
+quarantines the graph. Host recovery/deadline/total-budget/no-retry checks and
+affected native compilation passed; complete physical qualification is pending.

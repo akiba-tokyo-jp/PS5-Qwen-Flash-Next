@@ -916,3 +916,14 @@ docs/pre-worker-memory-refusal-20261024.json. Enable bounded admission after the
 once-only CPU runtime admission and before model metadata, and guard every
 completed metadata-file read. Keep the original predicate/observer bodies and
 the existing 2 s / 10 s limits unchanged. Do not replay the consumed attempt.
+
+The early-admission artifact at df8c26c completed arithmetic and API1, then
+refused kernel headroom after API2 prefill/first sampling. Two pressure events
+recovered; the third exhausted the 2 s boundary allowance, with 3.302 s total
+waited. Its normal close and full original restoration/readmission/shutdown/final
+checks passed. See docs/bounded-memory-refusal-20261024.json. The subsequent v2
+policy supersedes the earlier wait constants with 20 s per completed boundary
+and 60 s cumulatively, keeping 100 ms observations and every original memory
+predicate/reserve. This changes waiting time only. Never retry I/O, inference or
+GPU work, release uncertain resources, or report speedup before all physical
+gates complete. Preserve the failed artifact and its consumed intents.

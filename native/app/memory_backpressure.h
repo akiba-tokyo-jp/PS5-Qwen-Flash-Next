@@ -18,8 +18,8 @@ class MemoryBackpressure {
     std::uint64_t boundary_ns_,total_ns_,poll_ns_;
     bool failed_=false;
 public:
-    static constexpr std::uint64_t boundary_limit_ns=2000000000ull;
-    static constexpr std::uint64_t total_limit_ns=10000000000ull;
+    static constexpr std::uint64_t boundary_limit_ns=20000000000ull;
+    static constexpr std::uint64_t total_limit_ns=60000000000ull;
     static constexpr std::uint64_t poll_interval_ns=100000000ull;
     explicit MemoryBackpressure(std::uint64_t boundary=boundary_limit_ns,
             std::uint64_t total=total_limit_ns,std::uint64_t poll=poll_interval_ns)

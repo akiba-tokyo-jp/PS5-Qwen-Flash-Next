@@ -74,5 +74,18 @@ class PerformanceResultTests(unittest.TestCase):
             bad=dict(record);bad[key]=value
             with self.assertRaises(ValueError):validate_backpressure(bad)
 
+    def test_v2_wait_allowance_is_finite_and_does_not_change_memory_reserves(self):
+        record=dict(schema='ps5-qwen-memory-backpressure-v2',enabled=True,
+            maximum_boundary_wait_ms=20000,maximum_total_wait_ms=60000,poll_interval_ms=100,
+            memory_reserves_unchanged=True,IO_or_GPU_operations_retried=False,last_qualified=True,
+            kernel_page_size=16384,kernel_extra_margin_bytes=4<<20,
+            observations=40,pressure_events=3,recovered_admissions=3,cumulative_wait_ns=3300000000,
+            pause_calls=33,kernel_free_pages=1156,kernel_minimum_pages=900,kernel_reserved_pages=206)
+        validate_backpressure(record)
+        for key,value in [('cumulative_wait_ns',60000000001),('maximum_total_wait_ms',60001),
+            ('memory_reserves_unchanged',False),('pause_calls',601)]:
+            bad=dict(record);bad[key]=value
+            with self.assertRaises(ValueError):validate_backpressure(bad)
+
 
 if __name__ == '__main__': unittest.main()
