@@ -1495,3 +1495,26 @@ interval before the unchanged owner observer; never retry or relax a failed
 service/owner guard. Strengthen the prelaunch metadata gate to the native kernel
 target as well as the original minimum/reserve to avoid a cold launch under an
 already-insufficient observation.
+
+
+The next full case refused before model metadata/Vulkan at 2,338 versus 2,974
+pages and completed ordinary close/exact original restoration/full readback/
+final idle CPU with all 412 frozen inputs unchanged. Preserve that consumed case.
+A separate Direct-integrity CPU helper then verified the complete 107,911,351-byte
+original SELF in 1,040,491,313 ns, with the Direct flag set, all 108 reads returned
+and fresh same-boot idle guards before/after. No title or GPU ran. Its immediate
+free-page observations 7,151 -> 13,738 do not prove stable memory admission or
+specific proprietary cache behavior.
+
+A distinct full sequence may replace only launch/preservation digest input with
+this qualified serial Direct stream. Keep one aligned 1 MiB window, exact full
+SHA256/stable path+descriptor identity/EOF/deadlines, per-read original kernel
+minimum/reserve, durable call markers and quarantine without retry. Preserve all
+other service/title/owner/registration/mounted-inode/claim/done guards. The fresh
+session may be staged once before original preservation and reused only with
+its unchanged current full SHA256 checks. Native complete original integrity
+must finish before rename; candidate full raw readback remains mandatory.
+Unknown helper completion prevents publication/launch and retains backing.
+Application/driver/precision/budgets/both native startup targets and the complete
+inference/frames/retirement/original numerical readmission plan are unchanged.
+See docs/launch-integrity-20261024.md.
