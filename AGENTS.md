@@ -1339,3 +1339,30 @@ EOF, deadlines and retained failures are unchanged. Full inference must relink
 this stricter provider and pass its focused stream/native compile plus normal
 link/import/SELF checks. The shader decoder, model I/O and pinned driver objects
 remain unchanged; their existing positive evidence remains data evidence.
+
+That complete candidate subsequently refused before Vulkan at2898 free pages
+against2974 after all76 current reservations/releases. Normal close, exact
+original restoration/full readback/final idle CPU and392 unchanged inputs passed.
+Do not replay the consumed case or lower its memory target.
+
+A distinct bounded lossless resource representation may group instruction headers
+and the first16 operand columns, retain long literal tails verbatim, and encode
+column differences reversibly. Require all original bytes/SHA256/lookups and the
+actual-codec malformed-span, length, heap-canary, ownership and native ABI gates.
+Charge its additional four ordering-buffer bytes to the existing tracked heap.
+Repeat a distinct CPU-only all-resource native qualification with ordinary close,
+exact restoration and final idle CPU before separate complete inference work.
+Keep every current rehearsal, memory predicate/reserve, wait, precision, pinned
+driver and disabled persistent-cache policy. Host storage savings do not prove
+native free-page headroom, proprietary cache behavior or inference throughput.
+
+The first column case refused the original minimum/reserve predicate after
+complete current SELF/receipt integrity and before shader initialization. Normal
+close/exact original restoration/full readback/final idle CPU and381 unchanged
+inputs passed. No current shader-byte or whole-rehearsal qualification resulted.
+The next distinct binary may connect only shader initialization's completed
+startup boundary to the existing passive admission controller. Keep its exact
+predicate,20s/60s bounds,100ms polls and failed-admission quarantine, and allocate
+no codec storage while waiting. Require actual codec recovery, persistent refusal,
+invalid-counter and native compile checks. This is no authorization to lower the
+stronger2974-page targets, skip current reservations or repeat a consumed case.

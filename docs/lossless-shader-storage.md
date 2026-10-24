@@ -159,3 +159,51 @@ source comparison isolates this stricter admission change; no SHA, identity,
 buffer, EOF, deadline or failure ownership changed. Focused actual-stream tests
 and the PS5 provider compile passed before relinking the application with the
 unchanged driver and shader objects. Full native throughput remains unqualified.
+
+The subsequent complete qualification passed current SELF/receipt integrity,
+all model metadata and all76 current virtual reservations/releases. Its stronger
+post-rehearsal predicate refused at2898 free pages against2974 required, before
+Vulkan or source workers. Normal close, exact original restoration/full readback,
+fresh final idle CPU and392 unchanged parent inputs passed. This76-page deficit
+is evidence from that run; it does not identify the backing allocation or permit
+lowering the target.
+
+The next representation adds `QWSPV003`, a bounded reversible layout of the same
+original SPIR-V words. Instruction headers and the first16 operand positions use
+separate byte planes; operand columns use unsigned modular differences and a
+reversible zigzag mapping. Remaining long literal operands retain their exact
+original order. The transformed stream adds one32-bit instruction count before
+ordinary zlib compression. The decoder validates instruction counts, every word
+span, column bounds and exact tail exhaustion before the original full SHA256.
+Sixteen fixed columns bound reconstruction work linearly in the original words.
+
+All1527 resources and382 lookups preserve their original identities and bytes.
+The unique embedded pool falls from10322484 to8258588 bytes, saving2063896 bytes.
+The output remains101204 bytes; the tracked ordering buffer grows by four bytes
+to101208. Existing raw/zlib/word-lane representations, Direct heap accounting,
+exclusive module-input leases, positive completion and quarantine remain intact.
+Fourteen actual-codec host modes passed, including malformed instruction counts,
+zero/overflowing/truncated spans, short transformed output, heap canaries and
+concurrent ownership. The actual PS5 codec compile and native link/import/SELF
+gates also passed. A distinct CPU-only PS5 case must verify all resources in its
+current run before separate complete inference qualification. Pool-size savings
+do not establish available kernel pages or a tokens/s improvement.
+
+The first native column case passed current SELF/receipt integrity but refused
+the original kernel minimum/reserve predicate before shader initialization.
+Its shader and whole-rehearsal gates remain unqualified. Normal close, exact
+original restoration/full readback/final idle CPU and381 unchanged inputs passed.
+The existing before/after integrity reports recorded1358 ->3558 free pages;
+the later refusal has no sampled page count, so no exact post-context value or
+allocation cause is inferred.
+
+Initialization now uses the same existing passive memory admission controller
+at its completed startup boundary. It retains the exact minimum/reserve predicate,
+20s per-boundary and60s whole-process bounds,100ms polling and quarantine on a
+failed admission. It allocates no decoder storage while waiting. Per-use shader
+guards,2974-page pre/post-rehearsal targets, actual whole reservations, driver,
+precision and cache policy remain unchanged. Seventeen actual-codec host modes
+passed, adding transient recovery before complete original-byte verification,
+persistent pressure without any codec allocation, and invalid counters without
+polling. This fixes an immediate-failure path; native recovery and throughput
+still require separate physical evidence.

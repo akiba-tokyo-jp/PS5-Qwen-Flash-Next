@@ -5,8 +5,58 @@ import hashlib,json,re,struct,zlib
 from pathlib import Path
 MAGIC=b'QWSPV001'
 SHUFFLED_MAGIC=b'QWSPV002'
+COLUMN_MAGIC=b'QWSPV003'
 PREFIX=b'ps5-qwen-shader-storage-v1\0'
 MAX_SHADER=1<<20
+COLUMN_PREFIX=16
+
+def column_encode(raw):
+    words=struct.unpack('<'+'I'*(len(raw)//4),raw);heads=[];operands=[];at=5
+    while at<len(words):
+        count=words[at]>>16
+        if not count or count>len(words)-at:raise ValueError('Invalid original SPIR-V instruction span')
+        heads.append(words[at]);operands.append(words[at+1:at+count]);at+=count
+    def packed(values):return struct.pack('<'+'I'*len(values),*values)
+    def shuffled(value):return b''.join(value[i::4]for i in range(4))
+    parts=[raw[:20],struct.pack('<I',len(heads)),shuffled(packed(heads))]
+    for column in range(min(COLUMN_PREFIX,max(map(len,operands),default=0))):
+        previous=0;values=[]
+        for row in operands:
+            if len(row)<=column:continue
+            word=row[column];difference=(word-previous)&0xffffffff;previous=word
+            values.append(((difference<<1)&0xffffffff)^(-((difference>>31)&1)&0xffffffff))
+        parts.append(shuffled(packed(values)))
+    parts.append(packed([word for row in operands for word in row[COLUMN_PREFIX:]]))
+    return b''.join(parts)
+
+def column_decode(encoded,size):
+    if len(encoded)!=size+4 or size<24 or size%4:raise ValueError('Invalid structured shader length')
+    words=size//4;count=struct.unpack_from('<I',encoded,20)[0]
+    if not count or count>words-5:raise ValueError('Invalid structured shader instruction count')
+    def plane(at,n,index):return sum(encoded[at+lane*n+index]<<(lane*8)for lane in range(4))
+    result=list(struct.unpack('<5I',encoded[:20]))+[0]*(words-5);positions=[];at=5
+    for i in range(count):
+        head=plane(24,count,i);length=head>>16
+        if not length or length>words-at:raise ValueError('Invalid structured shader word count')
+        result[at]=head;positions.append((at,length-1));at+=length
+    if at!=words:raise ValueError('Structured shader instruction spans do not fill the original')
+    cursor=24+4*count
+    for column in range(COLUMN_PREFIX):
+        live=[at for at,n in positions if n>column]
+        if not live:break
+        if len(live)>(len(encoded)-cursor)//4:raise ValueError('Truncated structured shader column')
+        previous=0
+        for i,at in enumerate(live):
+            delta=plane(cursor,len(live),i);word=(previous+((delta>>1)^-(delta&1)))&0xffffffff
+            result[at+column+1]=word;previous=word
+        cursor+=4*len(live)
+    for at,n in positions:
+        tail=max(0,n-COLUMN_PREFIX)
+        if tail>(len(encoded)-cursor)//4:raise ValueError('Truncated structured shader literal tail')
+        if tail:result[at+COLUMN_PREFIX+1:at+n+1]=struct.unpack_from('<'+'I'*tail,encoded,cursor)
+        cursor+=4*tail
+    if cursor!=len(encoded):raise ValueError('Trailing structured shader bytes')
+    return struct.pack('<'+'I'*len(result),*result)
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def record(path):
     path=Path(path).resolve();return dict(path=str(path),bytes=path.stat().st_size,sha256=sha(path))
@@ -35,15 +85,20 @@ def pack(raw):
     ordered=b''.join(raw[i::4]for i in range(4));compressed=zlib.compress(ordered,9)
     shuffled=SHUFFLED_MAGIC+struct.pack('<II',len(raw),len(compressed))+hashlib.sha256(raw).digest()+compressed
     shuffled+=b'\0'*((-len(shuffled))%4)
-    return min((raw,framed,shuffled),key=len)
+    compressed=zlib.compress(column_encode(raw),9)
+    columns=COLUMN_MAGIC+struct.pack('<II',len(raw),len(compressed))+hashlib.sha256(raw).digest()+compressed
+    columns+=b'\0'*((-len(columns))%4)
+    return min((raw,framed,shuffled,columns),key=len)
 def unpack(blob):
     if blob[:4]==b'\x03\x02\x23\x07':return blob
-    if len(blob)<48 or blob[:8]not in (MAGIC,SHUFFLED_MAGIC):raise ValueError('Invalid shader storage header')
+    if len(blob)<48 or blob[:8]not in (MAGIC,SHUFFLED_MAGIC,COLUMN_MAGIC):raise ValueError('Invalid shader storage header')
     size,count=struct.unpack_from('<II',blob,8)
     if not 20<=size<=MAX_SHADER or size%4 or not count or count>len(blob)-48 or len(blob)!=((48+count+3)&~3):
         raise ValueError('Invalid shader storage lengths')
     if any(blob[48+count:]):raise ValueError('Shader padding changed')
-    state=zlib.decompressobj();raw=state.decompress(blob[48:48+count],MAX_SHADER+1)
+    transformed_size=size+4 if blob[:8]==COLUMN_MAGIC else size
+    state=zlib.decompressobj();raw=state.decompress(blob[48:48+count],transformed_size+1)
+    if blob[:8]==COLUMN_MAGIC:raw=column_decode(raw,size)
     if blob[:8]==SHUFFLED_MAGIC and len(raw)==size:
         restored=bytearray(size);words=size//4
         for i in range(4):restored[i::4]=raw[i*words:(i+1)*words]
@@ -211,6 +266,7 @@ def write_storage(assets,out,tables):
             elif canonical['raw']!=raw:raise ValueError('Original shader SHA256 collision')
             rows.append(dict(name=name,offset=canonical['offset'],alias_of=canonical['name']if canonical['name']!=name else None,
                 storage_bytes=len(stored),original_bytes=len(raw),
+                encoding='prefix16_delta_columns'if stored[:8]==COLUMN_MAGIC else'word_lanes'if stored[:8]==SHUFFLED_MAGIC else'zlib'if stored[:8]==MAGIC else'original',
                 original_sha256=hashlib.sha256(raw).hexdigest(),storage_sha256=hashlib.sha256(stored).hexdigest()))
     quoted=json.dumps(pool.as_posix())
     lines=['#ifdef _WIN32','.section .rdata,"dr"','#else','.section .rodata.qwen_shader_assets,"a",@progbits','#endif']
@@ -253,7 +309,9 @@ def write_storage(assets,out,tables):
     assembly.write_text('\n'.join(lines)+'\n',encoding='utf-8');metadata.write_text('\n'.join(cpp)+'\n',encoding='utf-8')
     return dict(shader_count=len(rows),original_bytes=sum(r['original_bytes']for r in rows),stored_bytes=offset,
         logical_stored_bytes=sum(r['storage_bytes']for r in rows),unique_originals=len(unique),
-        maximum_shader_bytes=max(r['original_bytes']for r in rows),registry_sha256=registry_digest(assets),
+        maximum_shader_bytes=max(r['original_bytes']for r in rows),
+        maximum_ordering_buffer_bytes=max(r['original_bytes']+(4 if r['encoding']=='prefix16_delta_columns'else 0)for r in rows),
+        registry_sha256=registry_digest(assets),
         pool=record(pool),assembly=record(assembly),registry=record(metadata),shaders=rows,
         lookup_tables=tables,lookup_entries=len(lookup_rows))
 

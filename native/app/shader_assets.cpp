@@ -25,13 +25,14 @@ namespace {
 constexpr std::size_t maximum_shader=1u<<20,maximum_scratch=1u<<20;
 constexpr unsigned char packed_magic[8]={'Q','W','S','P','V','0','0','1'};
 constexpr unsigned char shuffled_magic[8]={'Q','W','S','P','V','0','0','2'};
+constexpr unsigned char column_magic[8]={'Q','W','S','P','V','0','0','3'};
 const qwen_shader_asset *assets=nullptr;std::size_t asset_count=0;
 const qwen_shader_lookup *lookups=nullptr;std::size_t lookup_count=0;
 std::atomic<bool> registration_fault{false},initialized{false},failed{false},active{false};
 std::atomic<std::uint64_t> decoded_calls{0},raw_calls{0},verified_assets{0};
 std::atomic<std::uint64_t> verified_lookups{0};
 std::mutex codec_mutex;std::thread::id lease_owner;
-void *output=nullptr,*ordered=nullptr;std::size_t output_bytes=0;std::string registry_hash;
+void *output=nullptr,*ordered=nullptr;std::size_t output_bytes=0,ordering_bytes=0;std::string registry_hash;
 z_stream stream{};
 struct Allocation {void *pointer=nullptr;std::size_t bytes=0;};
 std::array<Allocation,8> scratch{};std::atomic<std::size_t> scratch_bytes{0};
@@ -62,6 +63,47 @@ std::array<unsigned char,32> digest(const void *data,std::size_t bytes) {
     std::array<unsigned char,32> value{};sha256_final(&state,value.data());return value;
 }
 std::uint32_t u32(const unsigned char *p){return std::uint32_t(p[0])|(std::uint32_t(p[1])<<8)|(std::uint32_t(p[2])<<16)|(std::uint32_t(p[3])<<24);}
+void put32(unsigned char *p,std::uint32_t value){for(unsigned i=0;i<4;++i)p[i]=static_cast<unsigned char>(value>>(8*i));}
+std::uint32_t plane_word(const unsigned char *p,std::size_t count,std::size_t index) {
+    return std::uint32_t(p[index])|(std::uint32_t(p[count+index])<<8)|
+        (std::uint32_t(p[2*count+index])<<16)|(std::uint32_t(p[3*count+index])<<24);
+}
+void restore_columns(std::size_t bytes) {
+    if(bytes<24)fail("Structured shader lacks its bounded instruction header");
+    const auto *input=static_cast<const unsigned char*>(ordered);auto *target=static_cast<unsigned char*>(output);
+    const auto words=bytes/4;const std::size_t count=u32(input+20),end=bytes+4;
+    if(words<=5||!count||count>words-5)fail("Structured shader instruction count exceeds the original");
+    std::memcpy(target,input,20);std::size_t at=5;
+    for(std::size_t i=0;i<count;++i) {
+        const auto head=plane_word(input+24,count,i);const std::size_t length=head>>16;
+        if(!length||length>words-at)fail("Structured shader instruction exceeds its original span");
+        put32(target+4*at,head);at+=length;
+    }
+    if(at!=words)fail("Structured shader instruction spans do not fill the original");
+    std::size_t cursor=24+4*count;
+    // A fixed sixteen-column prefix bounds work linearly in original words.
+    // Long source/name literals retain their exact original order in the tail.
+    for(unsigned column=0;column<16;++column) {
+        std::size_t live=0;
+        for(at=5;at<words;at+=u32(target+4*at)>>16)if((u32(target+4*at)>>16)>column+1)++live;
+        if(!live)break;
+        if(live>(end-cursor)/4)fail("Structured shader operand column is truncated");
+        std::uint32_t previous=0;std::size_t index=0;
+        for(at=5;at<words;at+=u32(target+4*at)>>16)if((u32(target+4*at)>>16)>column+1) {
+            const auto value=plane_word(input+cursor,live,index++);
+            const std::uint32_t difference=(value>>1)^(0u-(value&1u));previous+=difference;
+            put32(target+4*(at+column+1),previous);
+        }
+        cursor+=4*live;
+    }
+    for(at=5;at<words;at+=u32(target+4*at)>>16) {
+        const std::size_t length=u32(target+4*at)>>16,tail=length>17?length-17:0;
+        if(tail>(end-cursor)/4)fail("Structured shader literal tail is truncated");
+        if(tail)std::memcpy(target+4*(at+17),input+cursor,4*tail);
+        cursor+=4*tail;
+    }
+    if(cursor!=end)fail("Structured shader has unconsumed bytes");
+}
 std::string identity() {
     sha256_t hash;sha256_init(&hash);
     static constexpr unsigned char prefix[]="ps5-qwen-shader-storage-v1";
@@ -106,12 +148,17 @@ bool native_shader_assets_registered(){return assets||registration_fault.load();
 void initialize_native_shader_assets() {
     if(initialized.load()||registration_fault.load()||!assets||!asset_count||!lookups||!lookup_count||failed.load())
         fail("A fresh immutable shader-resource registry is required");
-    (void)qualified_system_headroom(observe_native_system_memory());
+    // This completed startup boundary shares the existing process wait budget.
+    // No codec allocation or work begins before the original predicate passes.
+    (void)admit_native_system_memory();
     heap_admission();registry_hash=identity();
     for(std::size_t i=0;i<asset_count;++i)output_bytes=std::max(output_bytes,assets[i].original_bytes);
+    ordering_bytes=output_bytes;
+    for(std::size_t i=0;i<asset_count;++i)if(assets[i].storage_bytes>=48&&!std::memcmp(assets[i].storage,column_magic,8))
+        ordering_bytes=std::max(ordering_bytes,assets[i].original_bytes+4);
     output=ps5_heap_memalign(16,output_bytes);
     if(!output||!ps5_heap_owns(output))fail("The bounded shader decoder must use the existing Direct CPU heap");
-    ordered=ps5_heap_memalign(16,output_bytes);
+    ordered=ps5_heap_memalign(16,ordering_bytes);
     if(!ordered||!ps5_heap_owns(ordered))fail("Reversible shader ordering must retain its bounded tracked Direct buffer");
     stream.zalloc=allocate_codec;stream.zfree=release_codec;stream.opaque=nullptr;
     if(inflateInit(&stream)!=Z_OK||allocator_fault)fail("Native shader inflate ABI or scratch admission failed");
@@ -127,7 +174,7 @@ ShaderAssetStats native_shader_asset_stats() {
     ShaderAssetStats s;s.assets=asset_count;s.initialized=initialized.load();s.active_lease=active.load();s.failed=failed.load();
     s.decoded_calls=decoded_calls.load();s.raw_calls=raw_calls.load();s.CPU_verified_assets=verified_assets.load();
     s.lookup_entries=lookup_count;s.CPU_verified_lookups=verified_lookups.load();
-    s.codec_output_bytes=output_bytes;s.codec_ordering_bytes=output_bytes;s.codec_scratch_bytes=scratch_bytes.load();s.registry_sha256=registry_hash;
+    s.codec_output_bytes=output_bytes;s.codec_ordering_bytes=ordering_bytes;s.codec_scratch_bytes=scratch_bytes.load();s.registry_sha256=registry_hash;
     for(std::size_t i=0;i<asset_count;++i){
         s.original_bytes+=assets[i].original_bytes;
         bool alias=false;
@@ -162,7 +209,8 @@ extern "C" const void *qwen_app_prepare_shader_code(const void *storage,std::siz
         *original_bytes=stored_bytes;++raw_calls;return storage;
     }
     const bool shuffled=stored_bytes>=48&&!std::memcmp(data,shuffled_magic,sizeof(shuffled_magic));
-    if(stored_bytes<48||(!shuffled&&std::memcmp(data,packed_magic,sizeof(packed_magic))))fail("Unknown immutable shader storage format");
+    const bool columns=stored_bytes>=48&&!std::memcmp(data,column_magic,sizeof(column_magic));
+    if(stored_bytes<48||(!shuffled&&!columns&&std::memcmp(data,packed_magic,sizeof(packed_magic))))fail("Unknown immutable shader storage format");
     const auto bytes=u32(data+8),compressed=u32(data+12);
     if(!bytes||bytes>output_bytes||bytes%4||!compressed||compressed>stored_bytes-48||
        stored_bytes!=((48ull+compressed+3)&~3ull))fail("Packed shader lengths exceed their bounded original");
@@ -173,9 +221,12 @@ extern "C" const void *qwen_app_prepare_shader_code(const void *storage,std::siz
     (void)qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
     if(inflateReset(&stream)!=Z_OK)fail("Shader decoder state did not reset positively");
     stream.next_in=const_cast<Bytef*>(data+48);stream.avail_in=compressed;
-    stream.next_out=static_cast<Bytef*>(shuffled?ordered:output);stream.avail_out=bytes;
-    if(inflate(&stream,Z_FINISH)!=Z_STREAM_END||stream.total_out!=bytes||stream.total_in!=compressed||allocator_fault)
+    const auto decoded_bytes=bytes+(columns?4u:0u);
+    if((shuffled||columns)&&decoded_bytes>ordering_bytes)fail("Shader ordering exceeds its bounded tracked buffer");
+    stream.next_out=static_cast<Bytef*>((shuffled||columns)?ordered:output);stream.avail_out=decoded_bytes;
+    if(inflate(&stream,Z_FINISH)!=Z_STREAM_END||stream.total_out!=decoded_bytes||stream.total_in!=compressed||allocator_fault)
         fail("Lossless shader decompression did not complete exactly");
+    if(columns)restore_columns(bytes);
     if(shuffled) {
         const auto *from=static_cast<const unsigned char*>(ordered);auto *to=static_cast<unsigned char*>(output);
         const std::size_t words=bytes/4;

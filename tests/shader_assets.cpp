@@ -2,6 +2,7 @@
 // The actual codec, resource registry and lookup tables run with host heap I/O.
 #include "shader_assets.h"
 #include "system_memory.h"
+#include "memory_backpressure.h"
 #include "profile_clock.h"
 #include <ps5platform/heap.h>
 #include "ggml-vulkan-shaders.hpp"
@@ -18,28 +19,68 @@ namespace {
 std::mutex heap_mutex;std::map<const void*,std::size_t> allocations;
 std::size_t live=0,peak=0;bool refuse_heap=false;
 void check(bool ok,const char *m){if(!ok)throw std::runtime_error(m);}
+void check_guards() {
+    for(const auto &item:allocations) {
+        const auto *p=static_cast<const unsigned char*>(item.first);
+        for(std::size_t i=0;i<64;++i)check(p[-int(i)-1]==0xa5&&p[item.second+i]==0xa5,"Codec exceeded its tracked buffer");
+    }
+}
 }
 extern "C" void *ps5_heap_memalign(std::size_t,std::size_t size) {
-    if(refuse_heap)return nullptr;void *p=std::malloc(size);if(!p)return nullptr;
+    if(refuse_heap)return nullptr;auto *raw=static_cast<unsigned char*>(std::malloc(size+128));if(!raw)return nullptr;
+    std::memset(raw,0xa5,size+128);void *p=raw+64;
     std::lock_guard<std::mutex> lock(heap_mutex);allocations[p]=size;live+=size;peak=std::max(peak,live);return p;
 }
 extern "C" void *ps5_heap_calloc(std::size_t n,std::size_t bytes){void*p=ps5_heap_memalign(16,n*bytes);if(p)std::memset(p,0,n*bytes);return p;}
 extern "C" bool ps5_heap_owns(const void*p){std::lock_guard<std::mutex>lock(heap_mutex);return allocations.count(p)!=0;}
-extern "C" void ps5_heap_free(void*p){std::lock_guard<std::mutex>lock(heap_mutex);const auto it=allocations.find(p);check(it!=allocations.end(),"Unknown codec allocation released");live-=it->second;allocations.erase(it);std::free(p);}
-extern "C" void ps5_heap_stats(struct ps5_heap_stats *s){std::lock_guard<std::mutex>lock(heap_mutex);*s={};s->mapped_bytes=live;s->peak_bytes=peak;}
+extern "C" void ps5_heap_free(void*p){std::lock_guard<std::mutex>lock(heap_mutex);const auto it=allocations.find(p);check(it!=allocations.end(),"Unknown codec allocation released");check_guards();live-=it->second;allocations.erase(it);std::free(static_cast<unsigned char*>(p)-64);}
+extern "C" void ps5_heap_stats(struct ps5_heap_stats *s){std::lock_guard<std::mutex>lock(heap_mutex);check_guards();*s={};s->mapped_bytes=live;s->peak_bytes=peak;}
 namespace qwen_app {
-SystemMemoryObservation observe_native_system_memory(){SystemMemoryObservation s;s.page_size=16384;s.kernel_pages=138739;s.kernel_free=5000;s.kernel_minimum=898;s.kernel_target=2974;s.kernel_reserved=206;s.flexible_available=1ull<<30;return s;}
+namespace {
+MemoryBackpressure startup_gate;
+std::string startup_mode;
+std::uint64_t admission_clock=1,admission_pauses=0,admission_observations=0;
+}
+SystemMemoryObservation observe_native_system_memory(){
+    SystemMemoryObservation s;s.page_size=16384;s.kernel_pages=138739;s.kernel_free=5000;
+    s.kernel_minimum=898;s.kernel_target=2974;s.kernel_reserved=206;s.flexible_available=1ull<<30;
+    if(startup_mode=="startup_pressure"||(startup_mode=="startup_recovery"&&admission_pauses<2))s.kernel_free=1000;
+    if(startup_mode=="startup_invalid")s.page_size=4096;
+    return s;
+}
+SystemMemoryObservation admit_native_system_memory(){
+    struct Ops final:MemoryAdmissionOps {
+        SystemMemoryObservation observe()override{++admission_observations;return observe_native_system_memory();}
+        std::uint64_t now_ns()override{return admission_clock;}
+        void pause_ns(std::uint64_t ns)override{admission_clock+=ns;++admission_pauses;}
+    }ops;
+    return startup_gate.admit(ops);
+}
 }
 int main(int argc,char **argv){try{
     check(argc==2,"Select one shader storage control");const std::string mode=argv[1];
+    qwen_app::startup_mode=mode;qwen_app::startup_gate.enable();
     if(mode=="heap_refusal")refuse_heap=true;
     bool rejected=false;
     try{qwen_app::initialize_native_shader_assets();}catch(const std::exception&){rejected=true;}
+    if(mode=="startup_pressure"||mode=="startup_invalid") {
+        const auto s=qwen_app::native_shader_asset_stats();
+        check(rejected&&!s.initialized&&!s.active_lease&&live==0&&peak==0,"Startup pressure allocated codec storage");
+        const auto observations=qwen_app::admission_observations;
+        bool refused=false;try{qwen_app::initialize_native_shader_assets();}catch(...){refused=true;}
+        check(refused&&qwen_app::admission_observations==observations&&live==0,"Failed startup admission retried");
+        if(mode=="startup_pressure")check(qwen_app::admission_pauses==200&&
+            qwen_app::startup_gate.stats().wait_ns==20000000000ull,"Shader startup escaped the existing boundary wait");
+        else check(qwen_app::admission_pauses==0,"Invalid memory counters were polled as pressure");
+        std::cout<<mode<<" bounded admission without allocation passed\n";return 0;
+    }
     if(mode=="heap_refusal") {
         check(rejected&&qwen_app::native_shader_asset_stats().failed,"Heap refusal admitted shader code");
         std::cout<<mode<<" passed\n"<<std::flush;std::_Exit(0);
     }
     check(!rejected,"Actual shader codec initialization failed");
+    if(mode=="startup_recovery")check(qwen_app::admission_pauses==2&&
+        qwen_app::startup_gate.stats().recovered_admissions==1,"Shader startup bypassed bounded passive recovery");
     if(mode=="on_demand") {
         const auto before=qwen_app::native_shader_asset_stats();
         check(before.CPU_verified_assets==0&&before.CPU_verified_lookups==QWEN_EXPECTED_LOOKUP_COUNT&&
@@ -52,12 +93,12 @@ int main(int argc,char **argv){try{
             !after.active_lease&&!after.failed,"On-demand original bytes did not complete with their exclusive lease");
         std::cout<<mode<<" current lookups and per-use exact SHA256 passed\n";return 0;
     }
-    if(mode=="normal"||mode=="concurrent") {
+    if(mode=="normal"||mode=="concurrent"||mode=="startup_recovery") {
         const auto s=qwen_app::verify_native_shader_assets_CPU();
         check(s.assets==QWEN_EXPECTED_SHADER_COUNT&&s.CPU_verified_assets==s.assets&&
             s.lookup_entries==QWEN_EXPECTED_LOOKUP_COUNT&&s.CPU_verified_lookups==s.lookup_entries&&
             s.stored_bytes==QWEN_EXPECTED_STORED_BYTES&&s.codec_output_bytes==QWEN_EXPECTED_OUTPUT_BYTES&&
-            s.codec_ordering_bytes==QWEN_EXPECTED_OUTPUT_BYTES&&
+            s.codec_ordering_bytes==QWEN_EXPECTED_ORDERING_BYTES&&
             s.registry_sha256==QWEN_EXPECTED_SHADER_REGISTRY&&!s.active_lease&&!s.failed,
             "Original shader bytes or lookup table mapping changed");
         if(mode=="concurrent") {
@@ -73,6 +114,8 @@ int main(int argc,char **argv){try{
         std::cout<<mode<<" all original shader bytes/lookups passed\n";return 0;
     }
     std::vector<unsigned char> broken(QWEN_CODEC_SAMPLE_DATA,QWEN_CODEC_SAMPLE_DATA+QWEN_CODEC_SAMPLE_SIZE);
+    bool structured=false;
+    for(const auto &fixture:bad_shader_frames)if(mode==fixture.mode){broken.assign(fixture.data,fixture.data+fixture.bytes);structured=true;}
     std::size_t n=0;void*lease=nullptr;
     if(mode=="wrong_owner"||mode=="unknown_owner") {
         (void)qwen_app_prepare_shader_code(broken.data(),broken.size(),&n,&lease);check(lease,"The sample must exercise compressed ownership");
@@ -85,7 +128,8 @@ int main(int argc,char **argv){try{
         }
         const auto s=qwen_app::native_shader_asset_stats();check(s.failed&&s.active_lease,"Unknown/foreign ownership released its backing");
     }else {
-        if(mode=="checksum")broken[16]^=1;
+        if(structured){}
+        else if(mode=="checksum")broken[16]^=1;
         else if(mode=="length")std::memset(broken.data()+8,0xff,4);
         else if(mode=="format")broken[0]^=1;
         else throw std::runtime_error("Unknown shader control");
@@ -94,5 +138,6 @@ int main(int argc,char **argv){try{
         refused=false;try{(void)qwen_app_prepare_shader_code(QWEN_CODEC_SAMPLE_DATA,QWEN_CODEC_SAMPLE_SIZE,&n,&lease);}catch(...){refused=true;}
         check(refused,"A failed shader restoration retried");
     }
+    struct ps5_heap_stats heap{};ps5_heap_stats(&heap);
     std::cout<<mode<<" retention/quarantine passed\n"<<std::flush;std::_Exit(0);
 }catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}
