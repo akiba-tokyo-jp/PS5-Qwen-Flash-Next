@@ -264,7 +264,20 @@ def main():
                 require(result.get('source_parallel_worker_stopped') is True and
                     all(row['delta'].get('source_parallel_batches', 0) > 0 for row in summaries),
                     'Parallel reads were unused or their worker was not positively stopped')
-            if binding.get('require_pipelined_sources') is True:
+            if binding.get('require_selected_sources') is True:
+                download('.source.pipeline')
+                admission = read_record(Path(str(result_path) + '.source.pipeline'))
+                require(admission == dict(schema='ps5-qwen-source-schedule-admission-v1',
+                    source_window_bytes=8 << 20, CPU_IO_workers=1, maximum_outstanding_reads=2,
+                    preflight_equal_bytes=True, preflight_bytes_per_read=16384, Vulkan_initialized=False,
+                    file_range_schedule_enabled=True,coalesced_and_parallel_CPU_paths_passed=True,
+                    region_bytes=1<<30,boundary_margin_bytes=4<<20),
+                    'Selected source CPU preflight differs')
+                require(result.get('source_pipeline_worker_stopped') is True and
+                    all(row['delta'].get('source_parallel_batches',0)>0 for row in summaries) and
+                    sum(row['delta'].get('source_coalesced_batches',0)for row in summaries)>0,
+                    'Selected source paths were unused or their worker was not positively stopped')
+            elif binding.get('require_pipelined_sources') is True:
                 download('.source.pipeline')
                 admission = read_record(Path(str(result_path) + '.source.pipeline'))
                 require(admission == dict(schema='ps5-qwen-source-pipeline-admission-v1',

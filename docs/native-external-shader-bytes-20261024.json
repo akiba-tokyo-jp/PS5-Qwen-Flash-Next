@@ -1,0 +1,40 @@
+{
+  "schema": "ps5-qwen-external-shader-current-byte-evidence-v1",
+  "state": "all_current_shader_bytes_passed_later_pre_metadata_target_refused",
+  "candidate_SELF": {
+    "bytes": 27797415,
+    "sha256": "5e0e8faebc58c8bc8c9ed1310a166088feb69b3da8b4f80777cec5585fbd5a26"
+  },
+  "shader": {
+    "shader_count": 1527,
+    "original_bytes": 38712204,
+    "stored_bytes": 8258588,
+    "CPU_verified_assets": 1527,
+    "CPU_verified_lookups": 382,
+    "prior_CPU_verified_assets": 0,
+    "all_assets_verified_in_this_run": true,
+    "registry_sha256": "2364c5b8144f2aa0b601eb06ea447172a8f5086dfb8388d185e8e23d25c51005",
+    "external_file_SHA256_verified": true,
+    "external_read_calls": 527,
+    "external_returned_bytes": 25839672,
+    "external_frame_requests": 1527,
+    "codec_input_window_bytes": 49152
+  },
+  "kernel_target_pages": 2974,
+  "kernel_free_pages": 1503,
+  "passive_wait_ns": 20000108006,
+  "pause_calls": 200,
+  "original_memory_predicates_and_reserves_unchanged": true,
+  "model_metadata_started": false,
+  "current_whole_reservations_started": false,
+  "GPU_calls": 0,
+  "source_workers": 0,
+  "normal_OS_close": true,
+  "exact_original_restoration_and_full_readback": true,
+  "fresh_final_idle_CPU_passed": true,
+  "same_boot_original_numerical_admission_preserved": true,
+  "parent_positively_ended": true,
+  "frozen_inputs_unchanged": 401,
+  "full_plan_completed": false,
+  "native_tokens_per_second": null
+}

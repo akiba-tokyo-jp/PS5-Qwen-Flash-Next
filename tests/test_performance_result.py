@@ -74,6 +74,21 @@ class PerformanceResultTests(unittest.TestCase):
             bad=dict(record);bad[key]=value
             with self.assertRaises(ValueError):validate_backpressure(bad)
 
+    def test_selected_schedule_v4_requires_physical_read_and_completion_accounting(self):
+        self.record.update(schema='ps5-qwen-completed-performance-v4',
+            source_read_ns_is_producer_wait_time=True,maximum_parallel_source_reads=2,
+            file_range_schedule_enabled=True,physical_read_bytes_include_alignment=True,
+            worker_times_overlap_consumers=True)
+        self.record['delta'].update(source_bytes=100,source_chunks=6,source_completed_windows=6,
+            source_pipeline_batches=1,source_worker_read_ns=20,source_worker_dispatch_ns=1,
+            source_parallel_batches=1,source_coalesced_batches=1,source_selected_serial_batches=1,
+            source_physical_read_bytes=120,source_physical_read_calls=5)
+        validate_performance(self.record,self.result)
+        for field,value in [('source_physical_read_bytes',99),('source_physical_read_calls',6),
+                            ('source_selected_serial_batches',0),('source_parallel_batches',2)]:
+            bad=copy.deepcopy(self.record);bad['delta'][field]=value
+            with self.assertRaises(ValueError):validate_performance(bad,self.result)
+
     def test_v2_wait_allowance_is_finite_and_does_not_change_memory_reserves(self):
         record=dict(schema='ps5-qwen-memory-backpressure-v2',enabled=True,
             maximum_boundary_wait_ms=20000,maximum_total_wait_ms=60000,poll_interval_ms=100,

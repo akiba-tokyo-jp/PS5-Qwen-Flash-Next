@@ -9,6 +9,10 @@
 #include <atomic>
 #include <algorithm>
 #include <cstring>
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <time.h>
+#include "stage_memory_probe.h"
 
 extern "C" void qwen_native_set_fault_report(const char *);
 extern "C" void qwen_native_set_fault_journal(int);
@@ -19,6 +23,17 @@ int journal = -1;
 int diagnostic = -1;
 std::atomic<std::size_t> diagnostic_bytes{0};
 std::atomic<std::size_t> stage_bytes{0};
+std::atomic<bool> probe_enabled{false},probe_fault{false};
+std::atomic<std::size_t> probe_count{0},probe_active{0};
+qwen_app::StageMemorySample probe_samples[qwen_app::stage_memory_probe_capacity]{};
+bool probe_observation(std::uint32_t & free_pages,std::uint64_t & ns) {
+    struct {std::uint64_t first;std::uint32_t value;std::uint64_t last;} value{0x725b725b725b725bull,0,0x725b725b725b725bull};
+    std::size_t bytes=4;struct timespec now{};
+    if(sysctlbyname("vm.stats.vm0.v_free_count",&value.value,&bytes,nullptr,0)||bytes!=4||
+       value.first!=0x725b725b725b725bull||value.last!=0x725b725b725b725bull||
+       clock_gettime(CLOCK_MONOTONIC,&now)||now.tv_sec<0||now.tv_nsec<0||now.tv_nsec>=1000000000)return false;
+    free_pages=value.value;ns=std::uint64_t(now.tv_sec)*1000000000ull+std::uint64_t(now.tv_nsec);return ns!=0;
+}
 [[noreturn]] void stop_bootstrap(const char * reason) {
     if (journal >= 0) {
         (void) write(journal, reason, std::strlen(reason));
@@ -87,7 +102,54 @@ extern "C" void qwen_native_stage(const char * stage) {
     // Never start an unrecordable backend operation or delete prior evidence.
     if (bytes > 1024 || stage_bytes.fetch_add(bytes + 1) > (8u << 20) - 1025)
         stop_bootstrap("bootstrap_stage_capacity_exhausted");
-    if (write(journal, stage, bytes) != static_cast<ssize_t>(bytes) || write(journal, "\n", 1) != 1 || fsync(journal)) stop_bootstrap("bootstrap_stage_persist_failed");
+    // Keep the complete line in one bounded stack buffer. This preserves the
+    // durable-before-operation boundary while avoiding two tiny writes and
+    // direct-heap/constant input pointers on the native filesystem write path.
+    char line[1025];std::memcpy(line,stage,bytes);line[bytes]='\n';
+    qwen_app::StageMemorySample * sample=nullptr;
+    bool before_valid=false,write_valid=false,recording=false;
+    if(probe_enabled.load(std::memory_order_acquire)) {
+        recording=true;
+        probe_active.fetch_add(1);
+        const auto index=probe_count.fetch_add(1);
+        if(index<qwen_app::stage_memory_probe_capacity) {
+            sample=&probe_samples[index];
+            const auto kept=std::min(bytes,sizeof(sample->phase)-1);
+            std::memcpy(sample->phase,stage,kept);sample->phase[kept]=0;
+            // Compare a fixed CPU-only idle interval with the following write
+            // and fsync separately. A time-correlated background allocation
+            // must not be mistaken for an allocation caused by the journal.
+            const bool idle_valid=probe_observation(sample->free_idle_before,sample->idle_before_ns);
+            const struct timespec pause{0,static_cast<long>(qwen_app::stage_memory_probe_idle_ns)};
+            const bool idle_completed=nanosleep(&pause,nullptr)==0;
+            before_valid=probe_observation(sample->free_before,sample->before_ns)&&idle_valid&&idle_completed&&
+                sample->before_ns>=sample->idle_before_ns&&
+                sample->before_ns-sample->idle_before_ns>=qwen_app::stage_memory_probe_idle_ns;
+        } else probe_fault.store(true);
+    }
+    if (write(journal,line,bytes+1)!=static_cast<ssize_t>(bytes+1))stop_bootstrap("bootstrap_stage_persist_failed");
+    if(sample)write_valid=probe_observation(sample->free_after_write,sample->write_after_ns);
+    if(fsync(journal))stop_bootstrap("bootstrap_stage_persist_failed");
+    if(sample) {
+        sample->valid=probe_observation(sample->free_after,sample->after_ns)&&before_valid&&write_valid&&
+            sample->after_ns>=sample->write_after_ns&&sample->write_after_ns>=sample->before_ns;
+        if(!sample->valid)probe_fault.store(true);
+    }
+    if(recording)probe_active.fetch_sub(1);
+}
+namespace qwen_app {
+bool begin_native_stage_memory_probe() {
+    if(probe_count.load()||probe_fault.load()||probe_active.load()||probe_enabled.exchange(true))return false;
+    return true;
+}
+bool end_native_stage_memory_probe() {
+    return probe_enabled.exchange(false)&&!probe_active.load()&&!probe_fault.load()&&
+        probe_count.load()>0&&probe_count.load()<=stage_memory_probe_capacity;
+}
+std::size_t native_stage_memory_probe_count(){return std::min(probe_count.load(),stage_memory_probe_capacity);}
+const StageMemorySample * native_stage_memory_probe_sample(std::size_t index) {
+    return !probe_enabled.load()&&!probe_active.load()&&index<native_stage_memory_probe_count()?&probe_samples[index]:nullptr;
+}
 }
 extern "C" void qwen_native_trace_initializer(std::size_t index, std::uintptr_t address, bool completed) {
     char line[96];

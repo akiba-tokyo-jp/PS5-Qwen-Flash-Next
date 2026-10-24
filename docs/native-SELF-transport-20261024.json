@@ -1,0 +1,62 @@
+{
+  "schema": "ps5-qwen-native-SELF-transport-v1",
+  "first_streamed_case": {
+    "full_upload_positive_completion": true,
+    "first_readback_exceeded_raw_SELF_bound": true,
+    "publication_started": false,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "original_SELF_never_replaced": true,
+    "pending_upload_retained_without_retry": true,
+    "parent_positively_ended_and_frozen_inputs_unchanged": 385,
+    "full_original_readback_and_fresh_final_idle_CPU_passed": true
+  },
+  "server_protocol": {
+    "primary_source": "https://github.com/ps5-payload-dev/ftpsrv/blob/master/cmd.c",
+    "default_per_connection_SELF_to_ELF_conversion": true,
+    "required_command_before_each_RETR": "SELF",
+    "required_exact_reply": "226 SELF transfer mode disabled",
+    "unexpected_reply_refuses_before_RETR": true
+  },
+  "corrected_host_fault_controls_passed": 12,
+  "corrected_host_controls_console_requests": 0,
+  "corrected_raw_candidate_readback": {
+    "bytes": 38095127,
+    "sha256": "7336b52d00174a1765d6e1d2f6809cc9aa054be0d7927456c18f231fae2063ee",
+    "full_byte_count_and_SHA256_passed": true,
+    "explicit_conversion_disabled_reply_passed": true
+  },
+  "original_108MB_readback_20s_case": {
+    "host_deadline_expired": true,
+    "original_executable_never_replaced": true,
+    "title_launches": 0,
+    "pending_upload_retained_without_retry": true,
+    "parent_ended_and_frozen_inputs_unchanged": 385,
+    "independent_original_full_readback_and_fresh_final_idle_CPU_passed": true
+  },
+  "distinct_large_binary_profile": {
+    "host_full_binary_read_deadline_seconds": 60,
+    "native_memory_boundary_wait_ms": 20000,
+    "native_total_memory_wait_ms": 60000,
+    "native_memory_waits_unchanged": true
+  },
+  "corrected_transport_physically_qualified": false,
+  "large_binary_CPU_case": {
+    "full_raw_publication_and_original_restoration_readbacks_passed": true,
+    "ordinary_title_launch_accepted": true,
+    "kernel_free_pages_before_integrity": 1064,
+    "required_kernel_pages_before_work": 1154,
+    "SELF_reads_started": 0,
+    "model_metadata_files": 0,
+    "virtual_source_calls": 0,
+    "GPU_calls": 0,
+    "original_guard_refused_before_first_SELF_read": true,
+    "ordinary_close_exact_restoration_final_idle_CPU_passed": true,
+    "parent_ended_and_frozen_inputs_unchanged": 385,
+    "transport_memory_improvement_qualified": false
+  },
+  "memory_benefit_established": false,
+  "tokens_per_second_benefit_established": false,
+  "native_guards_reserves_precision_driver_and_cache_policy_changed": false,
+  "full_native_performance_plan_completed": false
+}
