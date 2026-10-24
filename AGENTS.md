@@ -1301,3 +1301,41 @@ partials and no retry/fallback after uncertainty. The transport changes no nativ
 I/O mode, model/GPU guard or source reservation. Require its host fault controls,
 new finite case, frozen inputs and normal-close/exact-restoration/final CPU gates;
 do not claim memory or tokens/s benefit from host tests.
+
+The first optional FTP readback was refused before publication/title launch
+because the returned length exceeded the raw SELF bound. ftpsrv enables per-
+connection SELF-to-ELF extraction by default. Preserve that failed pending file;
+do not retry its operation or accept extracted ELF bytes. Every new raw RETR
+connection must send SELF once and require the exact disabled acknowledgement
+before any RETR. Refuse unknown mode responses, preserve transfer exceptions,
+retain partials and require unchanged complete raw byte-count/SHA checks. The
+untouched original/full readback/fresh final CPU passed after parent termination.
+This is transport correctness evidence, not native memory or throughput evidence.
+
+The corrected raw FTP control subsequently completed full binary publication and
+ordinary title launch, but the original memory predicate refused before the first
+SELF read (the preceding sample had1064 free pages versus1154 required). No model
+metadata, source reservations, worker or Vulkan call began. Ordinary close, full
+raw original restoration/final idle CPU and385 unchanged parent inputs passed.
+Do not adopt FTP binary readbacks as a memory or performance improvement.
+
+A distinct full inference qualification may use the same standalone-Direct-
+qualified native binary with the previously qualified HTTP binary transport.
+Retain current SELF/receipt SHA, same-boot all1527 shader-byte evidence, current
+382 lookups and per-used-module full original SHA256. The original2974-page
+startup predicates before metadata and after the actual whole current reservation
+rehearsal remain mandatory, as does1154 before work. CPU-only controls must be
+disabled explicitly in this full policy. Require all three fixed requests, two
+actual native frames, positive module/GPU/model retirement, ordinary close,
+exact original restoration/fresh numerical readmission/close/final idle CPU and
+full readback before claiming completion or throughput improvement. A pre-GPU
+refusal requires the final-source known-idle/exception controls and ordinary
+restoration; unknown calls or any unretired GPU work must remain retained.
+
+Production Direct startup integrity now promotes the existing physically
+qualified CPU-control predicate to every read. Exact source comparison confirms
+this is the sole provider change: SHA256, stable identity, aligned1MiB window,
+EOF, deadlines and retained failures are unchanged. Full inference must relink
+this stricter provider and pass its focused stream/native compile plus normal
+link/import/SELF checks. The shader decoder, model I/O and pinned driver objects
+remain unchanged; their existing positive evidence remains data evidence.

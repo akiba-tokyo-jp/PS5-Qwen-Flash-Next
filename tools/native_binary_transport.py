@@ -6,6 +6,7 @@ This optional controller adapter preserves complete returned bytes and the
 caller's existing length/SHA or exact-byte checks. It changes no native code,
 source reads, memory predicate, driver policy or small management request.
 """
+from contextlib import contextmanager, suppress
 import ftplib
 import hashlib
 import json
@@ -42,6 +43,18 @@ class NativeBinaryFTP:
     def _finish(self,stem,value):
         with stem.with_suffix('.returned.private.json').open('x',encoding='utf-8')as out:json.dump(value,out,indent=2)
 
+    @contextmanager
+    def _connection(self,timeout):
+        ftp=self.ftp_factory()
+        try:
+            ftp.connect(self.base.HOST,2121,timeout=min(8,timeout));ftp.login()
+            yield ftp
+            ftp.quit()
+        finally:
+            # Do not let a failed QUIT replace the original transfer error.
+            # Closing this host socket neither retries nor deletes remote data.
+            with suppress(Exception):ftp.close()
+
     def _retrieve(self,remote,limit,timeout):
         remote=self._remote(remote)
         if not 0<limit<=MAXIMUM_BINARY_BYTES or not 0<timeout<=60:raise ValueError('Invalid bounded SELF transfer')
@@ -50,13 +63,18 @@ class NativeBinaryFTP:
             if self.clock()-begun>timeout:raise TimeoutError('SELF readback exceeded its finite deadline; no retry')
             if not block or len(raw)+len(block)>limit:raise RuntimeError('SELF readback exceeded its complete-byte bound')
             raw.extend(block);hash_state.update(block)
-        with self.ftp_factory()as ftp:
-            ftp.connect(self.base.HOST,2121,timeout=min(8,timeout));ftp.login()
+        with self._connection(timeout)as ftp:
+            # ftpsrv defaults to SELF-to-ELF extraction on every new connection.
+            # SELF is a toggle: require its explicit disabled acknowledgement
+            # before issuing RETR, rather than accepting a different executable.
+            if ftp.sendcmd('SELF')!='226 SELF transfer mode disabled':
+                raise RuntimeError('Raw SELF transfer mode was not positively disabled; no RETR or retry')
             reply=ftp.retrbinary('RETR '+remote,consume,blocksize=65536)
         if not reply.startswith('226')or self.clock()-begun>timeout:
             raise RuntimeError('SELF readback lacks positive finite FTP completion')
         self._finish(stem,dict(protocol='FTP RETR',bytes=len(raw),sha256=hash_state.hexdigest(),
-            positive_transfer_completion=True,caller_must_verify_exact_expected_bytes=True,automatic_retries=0))
+            SELF_to_ELF_conversion_disabled=True,positive_transfer_completion=True,
+            caller_must_verify_exact_expected_bytes=True,automatic_retries=0))
         return raw
 
     def web(self,path,limit=1<<20,timeout=15):
@@ -80,8 +98,7 @@ class NativeBinaryFTP:
         self.base.absent(remote);stem=self._event('FTP-STOR',remote);begun=self.clock()
         def sent(_):
             if self.clock()-begun>30:raise TimeoutError('Native SELF upload exceeded its finite deadline; retain the partial without retry')
-        with self.ftp_factory()as ftp:
-            ftp.connect(self.base.HOST,2121,timeout=8);ftp.login()
+        with self._connection(30)as ftp:
             with local.open('rb')as source:reply=ftp.storbinary('STOR '+remote,source,262144,callback=sent)
         if not reply.startswith('226')or self.clock()-begun>30:raise RuntimeError('Native SELF upload completion is unknown; retain it without retry')
         self._finish(stem,dict(protocol='FTP STOR',bytes=len(raw),sha256=expected,positive_transfer_completion=True,automatic_retries=0))

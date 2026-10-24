@@ -13,12 +13,21 @@ class TransportTests(unittest.TestCase):
         self.data=bytes(range(256))*8193
         test=self
         class FTP:
-            def __enter__(self):return self
-            def __exit__(self,*unused):return False
+            def __init__(self):self.self2elf=True
             def connect(self,*args,**kw):test.calls.append('connect')
             def login(self):test.calls.append('login')
+            def sendcmd(self,command):
+                test.calls.append(command)
+                if test.fault=='SELF_ack':return '226 SELF transfer mode enabled'
+                self.self2elf=not self.self2elf
+                return '226 SELF transfer mode disabled'
+            def quit(self):
+                test.calls.append('quit')
+                if test.fault=='quit':raise RuntimeError('Synthetic QUIT failure')
+            def close(self):test.calls.append('close')
             def retrbinary(self,command,callback,blocksize):
                 test.calls.append(command)
+                assert not self.self2elf,'Default SELF-to-ELF conversion must be disabled before RETR'
                 if test.fault=='network':raise TimeoutError('Synthetic transport loss')
                 data=test.files[command[5:]]
                 if test.fault=='corrupt':data=bytes([data[0]^1])+data[1:]
@@ -43,6 +52,7 @@ class TransportTests(unittest.TestCase):
         result=json.loads(next((self.root/'events').glob('*.returned.private.json')).read_text())
         self.assertEqual(result['sha256'],hashlib.sha256(self.data).hexdigest())
         self.assertEqual(result['bytes'],len(self.data));self.assertTrue(result['caller_must_verify_exact_expected_bytes'])
+        self.assertTrue(result['SELF_to_ELF_conversion_disabled'])
 
     def test_complete_upload_and_exact_readback(self):
         local=self.root/'self.bin';local.write_bytes(self.data)
@@ -91,5 +101,25 @@ class TransportTests(unittest.TestCase):
         self.assertEqual(len(self.HTTP),1);self.assertFalse(self.calls)
         local=self.root/'helper.elf';local.write_bytes(b'ELF')
         self.assertTrue(self.transport.stage_new(local,'/small-helper','unused')['small'])
+
+    def test_missing_raw_SELF_ack_refuses_before_RETR(self):
+        self.files[REMOTE]=self.data;self.fault='SELF_ack'
+        with self.assertRaisesRegex(RuntimeError,'not positively disabled'):
+            self.transport.web('/fs'+REMOTE,4<<20,20)
+        self.assertEqual(self.calls.count('SELF'),1)
+        self.assertFalse(any(c.startswith('RETR ')for c in self.calls));self.assertIn('close',self.calls)
+
+    def test_transfer_failure_is_not_masked_by_QUIT(self):
+        self.files[REMOTE]=self.data;self.fault='network'
+        with self.assertRaisesRegex(TimeoutError,'Synthetic transport loss'):
+            self.transport.web('/fs'+REMOTE,4<<20,20)
+        self.assertNotIn('quit',self.calls);self.assertIn('close',self.calls)
+
+    def test_QUIT_failure_retains_intent_without_positive_record_or_retry(self):
+        self.files[REMOTE]=self.data;self.fault='quit'
+        with self.assertRaisesRegex(RuntimeError,'Synthetic QUIT failure'):
+            self.transport.web('/fs'+REMOTE,4<<20,20)
+        self.assertEqual(sum(c.startswith('RETR ')for c in self.calls),1)
+        self.assertFalse(list((self.root/'events').glob('*.returned.private.json')))
 
 if __name__=='__main__':unittest.main()

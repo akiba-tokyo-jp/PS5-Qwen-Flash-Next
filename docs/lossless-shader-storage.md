@@ -132,5 +132,30 @@ positive transfer completion and complete byte-for-byte readback before publicat
 Retained partials are never overwritten; overflow, corrupt data, network errors
 and finite deadlines fail without fallback or retry. Small management/helper
 requests are unchanged. This host-only transport experiment changes no native
-SELF, source I/O, memory predicate or model/GPU gate. Its nine fault controls
-are separate from an actual PS5 memory benefit, which remains unqualified.
+SELF, source I/O, memory predicate or model/GPU gate.
+
+The first physical transfer exceeded the raw SELF readback bound and was
+refused before publication or title launch. The original executable remained
+untouched and subsequently passed full readback/fresh idle CPU verification.
+[ftpsrv's command implementation](https://github.com/ps5-payload-dev/ftpsrv/blob/master/cmd.c)
+converts SELF to ELF when its per-connection transfer mode is enabled. Every
+new RETR connection now sends SELF once and requires the exact disabled reply
+before reading raw bytes. Twelve host controls cover that acknowledgement and
+preservation of the original transfer exception. See
+[the transport evidence](native-SELF-transport-20261024.json). Physical memory
+and throughput benefits remain unqualified. The HTTP server also uses file
+callbacks; whole-file HTTP server allocation has not been established as a cause.
+
+With a distinct finite60s host-binary allowance, complete raw publication and
+ordinary launch passed. The native original predicate then refused before the
+first SELF read; its preceding sample was1064 free pages with1154 required.
+Ordinary close, exact original restoration/full readback/final CPU and385
+unchanged parent inputs passed. This does not support adopting FTP as a memory
+improvement. The next complete qualification uses the existing HTTP transport.
+
+The production Direct provider now checks the same original predicate before
+every integrity read, as the positive standalone CPU mode already did. Exact
+source comparison isolates this stricter admission change; no SHA, identity,
+buffer, EOF, deadline or failure ownership changed. Focused actual-stream tests
+and the PS5 provider compile passed before relinking the application with the
+unchanged driver and shader objects. Full native throughput remains unqualified.
