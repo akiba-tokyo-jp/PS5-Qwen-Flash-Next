@@ -244,6 +244,23 @@ static Json system_memory_report(const qwen_app::SystemMemoryObservation & memor
         {"CPU_heap_uses_Direct_pool",true},{"inactive_pages_counted_as_available",false}};
 }
 
+static Json diagnostic_VM_population() {
+    Json result=Json::object();
+    for(const auto & field : {std::pair<const char *,const char *>{"free","vm.stats.vm0.v_free_count"},
+        {"active","vm.stats.vm0.v_active_count"},{"inactive","vm.stats.vm0.v_inactive_count"},
+        {"wired","vm.stats.vm0.v_wire_count"},{"total","vm.stats.vm0.v_page_count"}}) {
+        struct {std::uint64_t first;std::uint32_t value;std::uint64_t last;} g{0x725b725b725b725bull,0,0x725b725b725b725bull};
+        std::size_t bytes=sizeof(g.value);
+        if(sysctlbyname(field.second,&g.value,&bytes,nullptr,0)||bytes!=sizeof(g.value)||
+           g.first!=0x725b725b725b725bull||g.last!=0x725b725b725b725bull)
+            throw std::runtime_error("CPU-only VM population observation is unavailable");
+        result[field.first]=g.value;
+    }
+    // Sequential observations classify page movement; they are not an atomic
+    // snapshot, a reclaim operation, or a replacement for the original reserve.
+    return result;
+}
+
 struct LoadProgress {
     std::chrono::steady_clock::time_point started=std::chrono::steady_clock::now();
     unsigned reported=0;
@@ -724,19 +741,25 @@ int main(int argc, char ** argv) {
             require_model_CPU_budget();
             qwen_native_stage("source_virtual_CPU_memory_admission_passed_before_probe GPU_not_started=1 model_loaded=0");
             const bool stage_memory_diagnostic=policy.contains("native_source_stage_memory_diagnostic");
+            Json VM_before;
             if(stage_memory_diagnostic) {
                 const auto & diagnostic=policy.at("native_source_stage_memory_diagnostic");
                 if(!startup.first_generation_validation||!policy.contains("native_source_schedule")||
-                   diagnostic.at("schema")!="ps5-qwen-native-stage-memory-policy-v2"||diagnostic.at("enabled")!=true||
+                   diagnostic.at("schema")!="ps5-qwen-native-stage-memory-policy-v3"||diagnostic.at("enabled")!=true||
                    diagnostic.at("CPU_only")!=true||diagnostic.at("maximum_records")!=qwen_app::stage_memory_probe_capacity||
                    diagnostic.at("matched_idle_ns")!=qwen_app::stage_memory_probe_idle_ns||diagnostic.at("split_write_and_sync")!=true||
+                   diagnostic.at("VM_population_snapshots")!=true||diagnostic.at("settled_idle_seconds")!=2||
                    diagnostic.at("ordinary_OS_close_required")!=true||!qwen_app::begin_native_stage_memory_probe())
                     throw std::runtime_error("Bounded CPU-only stage memory diagnostic is not admitted");
+                VM_before=diagnostic_VM_population();
             }
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
                 [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
             if(stage_memory_diagnostic) {
                 const bool complete=qwen_app::end_native_stage_memory_probe();
+                const auto VM_after=diagnostic_VM_population();
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                const auto VM_settled=diagnostic_VM_population();
                 Json samples=Json::array();
                 for(std::size_t i=0;i<qwen_app::native_stage_memory_probe_count();++i) {
                     const auto * sample=qwen_app::native_stage_memory_probe_sample(i);
@@ -747,7 +770,9 @@ int main(int argc, char ** argv) {
                         {"free_after_write",sample->free_after_write},{"free_after",sample->free_after},{"valid",sample->valid}});
                 }
                 write_fresh_report(startup.admission_report+".source.stage-memory",{
-                    {"schema","ps5-qwen-native-stage-memory-result-v2"},{"pid",getpid()},
+                    {"schema","ps5-qwen-native-stage-memory-result-v3"},{"pid",getpid()},
+                    {"VM_before",VM_before},{"VM_after",VM_after},{"VM_settled_after_two_seconds",VM_settled},
+                    {"inactive_pages_counted_as_available",false},
                     {"matched_idle_ns",qwen_app::stage_memory_probe_idle_ns},{"split_write_and_sync",true},
                     {"run_id",policy.at("native_first_generation_validation").at("run_id")},
                     {"samples_valid_and_complete",complete},{"samples",samples},

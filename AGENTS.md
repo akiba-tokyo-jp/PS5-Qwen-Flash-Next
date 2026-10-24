@@ -1157,3 +1157,20 @@ Keep the full current reservation rehearsal, every complete stage and fsync,
 bounded2048 samples, no retries, ordinary close and exact restoration. Normal
 modes keep the sampler and idle delay disabled. Require actual-bootstrap controls
 for middle-counter, idle and fsync failures as well as existing bounds/retention.
+
+The split-interval diagnostic completed all76 model reservations/releases and1227
+valid observations, normal close, exact original restoration/readback and final
+idle CPU. Its parent ended with191 unchanged inputs. Free pages4703 ->1633:
+matched idle2783 decrease/2.581102s, write1020/0.948515s, fsync734 increase/0.921029s,
+between intervals1 decrease. Journal I/O alone is not supported as the cause.
+Read-only root VM metadata passed with free6031, target2974, minimum898,
+reserved206, active29150, inactive72528, wired31030, total138739 and page16384.
+See docs/native-stage-memory-split-20261024.json. Never count inactive pages as
+available or lower any memory predicate/reserve based on these observations.
+
+A distinct CPU-only diagnostic may add canary-checked free/active/inactive/wired
+population snapshots before/after the unchanged whole rehearsal and after two
+seconds of completed idle. These sequential counters classify page movement;
+they never authorize reclaim, additional I/O/GPU work, or a reserve substitution.
+Preserve all existing bounded samples, actual reservations, durable stages,
+normal-close/restoration gates and the original numerical same-boot proof.
