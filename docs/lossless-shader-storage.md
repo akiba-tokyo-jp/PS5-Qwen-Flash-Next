@@ -222,3 +222,38 @@ with unchanged driver/engine objects. It was not adopted. A bounded read-only
 `vm.objects` size query on the PS5 returned ENOENT; no object data was fetched
 and no backing allocation was inferred. Neither control changes native memory
 admission or establishes the source of the remaining pressure.
+
+The next implementation moves the exact8258588-byte pool into an immutable
+SHA256-named application resource. Each linked `QWSPVX01` descriptor stores only
+the original frame offset, stored length and original length; shader names,
+original hashes, aliases and all382 lookup relocations remain unchanged. An
+offline matching link saved8232960 LOAD bytes. The packaged application SELF is
+27797031 bytes. These are binary-footprint measurements, not measured PS5 free
+pages or inference gains.
+
+The native reader owns one read-only resource descriptor and one49152-byte,
+16KiB-aligned input window in the existing tracked512MiB Direct CPU heap. It does
+not add a model-source window or change the model descriptor limit. It verifies
+the complete current resource SHA256 once, checks stable descriptor identity
+around reads, validates exact aligned EOF returns and performs the existing
+full original shader SHA256 before each module input is borrowed. Pending or
+failed reads quarantine the shared shader session without retry or manual free.
+The existing exclusive decoder lease also covers file reads and module-input
+lifetime. Persistent shader/pipeline caches remain disabled.
+
+Seventeen embedded-codec and27 external-codec host modes passed, including all
+1527 resources,382 lookups, concurrent ownership, canaries, file corruption,
+short EOF, changing identity, deadline/guard failures and quarantine during a
+read. Actual PS5 reader/session/codec compilation and the complete native link,
+module import audit, SELF integrity and six-segment roundtrip passed. Exact
+source-scope parity preserved the previously checked model parser, source I/O,
+virtual reservations and memory predicates without reparsing359GB of model data.
+
+`tools/static_shader_resource.py` publishes the small original SPIR-V resource
+before configuration or SELF publication. Existing content requires complete
+length/SHA256 verification. New content requires a fresh pending name, verified
+upload, a second absence check, positive rename acknowledgement and complete raw
+readback. Failures preserve partials and never replace an existing target. The
+actual publisher passed15 fault/success scenarios plus consumed-journal refusal.
+A distinct physical CPU qualification is in progress; full native inference,
+post-rehearsal headroom and tokens/s remain separate uncompleted gates.

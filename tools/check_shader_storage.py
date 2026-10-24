@@ -3,7 +3,8 @@
 """Run the actual shader codec/lookup fixtures and compile its PS5 provider."""
 import argparse,hashlib,json,os,struct,subprocess,zlib
 from pathlib import Path
-from shader_storage import record,validate_storage,unpack,COLUMN_MAGIC
+from shader_storage import record,unpack,COLUMN_MAGIC
+from external_shader_storage import validate_shader_resources as validate_storage
 ROOT=Path(__file__).resolve().parents[1]
 def main():
     p=argparse.ArgumentParser(description=__doc__)
@@ -14,6 +15,9 @@ def main():
     sdk=a.workspace/'toolchain/ps5-sdk-radv/ps5-payload-sdk';engine=a.cache/'upstream/llama.cpp-0a1ef309cdbb9f2024f58a38fb4c42352c5db569'
     root=a.shader_storage_manifest.parent;pool=Path(data['pool']['path']).read_bytes()
     sample=next(r for r in data['shaders']if r.get('encoding')=='prefix16_delta_columns')
+    external=data.get('storage_kind')=='external_file'
+    if external and sample['offset']+sample['storage_bytes']>=data['stored_bytes']-data['external_file_input_window_bytes']:
+        raise ValueError('The external corruption fixture must lie outside the final full-verification cache window')
     for row in data['shaders']:
         blob=pool[row['offset']:row['offset']+row['storage_bytes']];raw=unpack(blob)
         if hashlib.sha256(raw).hexdigest()!=row['original_sha256']:raise ValueError('Original compiled shader hash changed')
@@ -37,6 +41,9 @@ def main():
         f'#define QWEN_EXPECTED_ORDERING_BYTES {data["maximum_ordering_buffer_bytes"]}\n'+
         '#define QWEN_EXPECTED_SHADER_REGISTRY '+json.dumps(data['registry_sha256'])+'\n'+
         '#define QWEN_CODEC_SAMPLE_DATA '+sample['name']+'_data\n#define QWEN_CODEC_SAMPLE_SIZE '+str(sample['storage_bytes'])+'\n')
+    header+='#define QWEN_EXPECTED_FILE_SHA256 '+json.dumps(data['pool']['sha256'])+'\n'
+    header+='#define QWEN_EXPECTED_FILE_BYTES '+str(data['stored_bytes'])+'\n'
+    header+='#define QWEN_EXPECTED_FILE_WINDOW '+str(data.get('external_file_input_window_bytes',0))+'\n'
     for i,(mode,frame)in enumerate(fixtures):header+='static const unsigned char bad_frame_'+str(i)+'[]={'+','.join(str(b)for b in frame)+'};\n'
     header+='struct qwen_bad_shader_frame {const char *mode;const unsigned char *data;size_t bytes;};\nstatic const qwen_bad_shader_frame bad_shader_frames[]={\n'
     for i,(mode,frame)in enumerate(fixtures):header+='{'+json.dumps(mode)+',bad_frame_'+str(i)+',sizeof(bad_frame_'+str(i)+')},\n'
@@ -44,7 +51,9 @@ def main():
     paths=[ROOT/n for n in ('native/app/shader_assets.cpp','native/app/shader_assets.h','native/app/shader_assets_bridge.h',
         'native/thirdparty/zlib/zlib.h','native/thirdparty/zlib/zconf.h','tests/shader_assets.cpp','tests/shader_codec_stubs/ps5platform/heap.h',
         'native/app/sha256_backend.cpp','native/app/model_cpu_budget.h','native/app/system_memory.h','native/app/memory_backpressure.h','native/app/profile_clock.h',
-        'tools/check_shader_storage.py','tools/shader_storage.py')]
+        'native/app/shader_file.h','native/app/shader_file.cpp','native/app/shader_file_bridge.h','native/app/shader_file_native.h',
+        'native/app/shader_file_session.cpp','native/app/shader_file_native.cpp','tests/shader_file_fixture.cpp','tests/shader_file_fixture.h',
+        'tools/check_shader_storage.py','tools/shader_storage.py','tools/external_shader_storage.py')]
     r=dict(state='running',inputs={str(f.relative_to(ROOT)):record(f)['sha256']for f in paths},steps=[],console_requests=0,GPU_calls=0,
         storage_manifest=record(a.shader_storage_manifest),all_original_compiled_SPIRV_bytes_preserved=True)
     env=dict(os.environ,PATH=str(host)+os.pathsep+os.environ.get('PATH',''))
@@ -61,14 +70,25 @@ def main():
         exe=a.out/'actual-shader-storage.exe'
         run('actual_codec_compile',[host/'clang++.exe','-std=c++17','-O2','-Wall','-Wextra','-Werror','-I',ROOT/'tests/shader_codec_stubs',
             '-I',ROOT/'native/app','-I',a.out,'-I',a.cache/'build/llama-ps5/ggml/src/ggml-vulkan','-I',engine/'vendor','-I',engine/'vendor/hash',
-            ROOT/'tests/shader_assets.cpp',ROOT/'native/app/shader_assets.cpp',ROOT/'native/app/sha256_backend.cpp',host_asm,host_registry,
+            ROOT/'tests/shader_assets.cpp',ROOT/'tests/shader_file_fixture.cpp',ROOT/'native/app/shader_assets.cpp',
+            ROOT/'native/app/shader_file.cpp',ROOT/'native/app/shader_file_session.cpp',ROOT/'native/app/sha256_backend.cpp',host_asm,host_registry,
             '-L',host.parent/'lib','-lz','-o',exe])
-        for mode in ('normal','on_demand','concurrent','checksum','length','format','wrong_owner','heap_refusal','unknown_owner',
-            'startup_recovery','startup_pressure','startup_invalid',*(mode for mode,_ in fixtures)):run(mode,[exe,mode])
+        modes=['normal','on_demand','concurrent','wrong_owner','heap_refusal','unknown_owner','startup_recovery','startup_pressure','startup_invalid']
+        if external:modes+=['file_corrupt','file_short','file_oversized','file_pending','file_startup_guard','file_identity_during_read',
+            'file_timeout','file_wrong_sha','file_wrong_size','file_wrong_path','file_duplicate_configuration','file_unverified',
+            'file_changed_identity','file_frame_checksum','file_frame_timeout','file_frame_pressure','file_unknown_location','file_frame_quarantine']
+        else:modes+=['checksum','length','format',*(mode for mode,_ in fixtures)]
+        for mode in modes:run(mode,[exe,mode,*([data['pool']['path']]if external else[])])
         run('actual_PS5_codec_compile',[target/'clang++.exe','--no-default-config','--target=x86_64-sie-ps5','-DQWEN_NATIVE_PLATFORM=1',
             '-fno-stack-protector','-fno-plt','-femulated-tls','-fPIC','-std=c++17','-O1','-fexceptions','-fcxx-exceptions','-frtti','-nostdinc++',
             '-isystem',sdk/'target/include/c++/v1','-isystem',sdk/'target/include','-I',ROOT/'native/app','-I',engine/'vendor','-I',engine/'vendor/hash',
             '-Wall','-Wextra','-Werror','-c',ROOT/'native/app/shader_assets.cpp','-o',a.out/'shader-assets-PS5.o'])
+        provider=[target/'clang++.exe','--no-default-config','--target=x86_64-sie-ps5','-DQWEN_NATIVE_PLATFORM=1',
+            '-fno-stack-protector','-fno-plt','-femulated-tls','-fPIC','-std=c++17','-O1','-fexceptions','-fcxx-exceptions','-frtti','-nostdinc++',
+            '-isystem',sdk/'target/include/c++/v1','-isystem',sdk/'target/include','-I',ROOT/'native/app','-I',engine/'vendor','-I',engine/'vendor/hash',
+            '-Wall','-Wextra','-Werror']
+        for name in ('shader_file.cpp','shader_file_session.cpp','shader_file_native.cpp'):
+            run('actual_PS5_'+Path(name).stem+'_compile',[*provider,'-c',ROOT/'native/app'/name,'-o',a.out/(Path(name).stem+'-PS5.o')])
         assert r['inputs']=={str(f.relative_to(ROOT)):record(f)['sha256']for f in paths}
         r.update(state='focused_shader_storage_host_passed_not_console_admitted',shader_count=data['shader_count'],lookup_entries=data['lookup_entries'],
             original_bytes=data['original_bytes'],stored_bytes=data['stored_bytes'],registry_sha256=data['registry_sha256'])

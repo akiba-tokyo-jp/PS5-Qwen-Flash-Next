@@ -655,6 +655,22 @@ int main(int argc, char ** argv) {
                storage.at("enabled")!=true||
                storage.at("model_and_shader_precision_unchanged")!=true||storage.at("persistent_caches_enabled")!=false)
                 throw std::runtime_error("Lossless shader storage CPU admission is not authorized");
+            const bool external=qwen_app::native_shader_file_registered();
+            if(external!=storage.contains("external_file"))
+                throw std::runtime_error("External shader resources require their exact explicit private file policy");
+            if(external) {
+                const auto &file=storage.at("external_file");
+                if(file.at("schema")!="ps5-qwen-external-shader-file-policy-v1"||
+                   file.at("single_read_only_descriptor")!=true||file.at("new_model_source_window")!=false||
+                   storage.at("verify_all_original_assets_before_Vulkan")!=true||storage.contains("prior_native_CPU"))
+                    throw std::runtime_error("External shader resources require complete current file and original-byte verification");
+                qwen_app::initialize_native_shader_file(file.at("path").get<std::string>(),file.at("bytes").get<std::uint64_t>(),
+                    file.at("sha256").get<std::string>());
+                const auto admitted=qwen_app::native_shader_file_stats();
+                if(!admitted.verified||admitted.failed||admitted.read_pending||admitted.input_window_bytes!=file.at("input_window_bytes"))
+                    throw std::runtime_error("External shader file admission did not complete inside its exact tracked window");
+                qwen_native_stage("complete_external_shader_file_SHA256_passed GPU_not_started=1");
+            }
             qwen_app::initialize_native_shader_assets();
             const auto declared=qwen_app::native_shader_asset_stats();
             if(declared.assets!=storage.at("shader_count")||declared.original_bytes!=storage.at("original_bytes")||
@@ -670,9 +686,11 @@ int main(int argc, char ** argv) {
                shaders.original_bytes!=storage.at("original_bytes")||shaders.stored_bytes!=storage.at("stored_bytes")||
                shaders.registry_sha256!=storage.at("registry_sha256"))
                 throw std::runtime_error("Lossless shader CPU bytes or lookup identity did not match the private plan");
+            if(external&&shaders.external_file.frame_requests!=shaders.CPU_verified_assets)
+                throw std::runtime_error("External shader CPU verification did not restore every current original input");
             require_model_CPU_budget();
             write_fresh_report(startup.admission_report+".shader-assets.CPU",{
-                {"schema","ps5-qwen-shader-storage-CPU-result-v2"},{"pid",getpid()},
+                {"schema",external?"ps5-qwen-shader-storage-CPU-result-v3":"ps5-qwen-shader-storage-CPU-result-v2"},{"pid",getpid()},
                 {"verification_mode",verify_all?"all_assets_in_current_run":"prior_all_assets_and_current_use_SHA256"},
                 {"all_assets_verified_in_this_run",verify_all},
                 {"prior_CPU_verified_assets",verify_all?Json(0):prior_shader.at("CPU_verified_assets")},
@@ -683,6 +701,11 @@ int main(int argc, char ** argv) {
                 {"CPU_verified_lookups",shaders.CPU_verified_lookups},{"registry_sha256",shaders.registry_sha256},
                 {"codec_output_bytes",shaders.codec_output_bytes},{"codec_ordering_bytes",shaders.codec_ordering_bytes},
                 {"codec_scratch_bytes",shaders.codec_scratch_bytes},
+                {"external_file",shaders.external_file.registered},{"external_file_SHA256_verified",shaders.external_file.verified},
+                {"external_file_bytes",shaders.external_file.file_bytes},{"codec_input_window_bytes",shaders.external_file.input_window_bytes},
+                {"external_read_calls",shaders.external_file.read_calls},{"external_returned_bytes",shaders.external_file.returned_bytes},
+                {"external_frame_requests",shaders.external_file.frame_requests},
+                {"external_read_pending",shaders.external_file.read_pending},{"external_source_failed",shaders.external_file.failed},
                 {"active_lease",false},{"failed",false},{"all_original_SPIRV_bytes_preserved",true},
                 {"GPU_calls",0},{"Vulkan_initialized",false},{"model_loaded",false},{"persistent_caches_enabled",false}});
             qwen_native_stage(verify_all?"all_original_shader_CPU_bytes_and_lookups_verified_before_Vulkan":
@@ -1346,13 +1369,21 @@ int main(int argc, char ** argv) {
             qwen_app::stop_native_model_sources();
             if(policy.contains("native_shader_storage")) {
                 const auto shaders=qwen_app::native_shader_asset_stats();
-                if(shaders.failed||shaders.active_lease||shaders.decoded_calls+shaders.raw_calls<=shaders.CPU_verified_assets)
+                if(shaders.failed||shaders.active_lease||shaders.external_file.read_pending||
+                   (shaders.external_file.registered&&!shaders.external_file.verified)||
+                   (shaders.external_file.registered&&shaders.external_file.frame_requests!=shaders.decoded_calls+shaders.raw_calls)||
+                   shaders.decoded_calls+shaders.raw_calls<=shaders.CPU_verified_assets)
                     throw std::runtime_error("The completed Vulkan plan lacks positively retired original shader inputs");
                 write_fresh_report(startup.admission_report+".shader-assets.Vulkan",{
-                    {"schema","ps5-qwen-shader-storage-Vulkan-result-v1"},{"pid",getpid()},{"run_id",request.id},
+                    {"schema",shaders.external_file.registered?"ps5-qwen-shader-storage-Vulkan-result-v2":"ps5-qwen-shader-storage-Vulkan-result-v1"},
+                    {"pid",getpid()},{"run_id",request.id},
                     {"registry_sha256",shaders.registry_sha256},{"CPU_verified_assets_in_this_run",shaders.CPU_verified_assets},
                     {"module_input_restorations_after_CPU_verification",shaders.decoded_calls+shaders.raw_calls-shaders.CPU_verified_assets},
                     {"active_lease",false},{"failed",false},{"all_used_original_SPIRV_SHA256_checked",true},
+                    {"external_file",shaders.external_file.registered},{"external_file_SHA256_verified",shaders.external_file.verified},
+                    {"codec_input_window_bytes",shaders.external_file.input_window_bytes},{"external_read_pending",shaders.external_file.read_pending},
+                    {"external_read_calls",shaders.external_file.read_calls},{"external_returned_bytes",shaders.external_file.returned_bytes},
+                    {"external_frame_requests",shaders.external_file.frame_requests},
                     {"positive_plan_GPU_completion_and_retirement",true},{"persistent_caches_enabled",false}});
             }
             write_fresh_report(startup.admission_report + ".memory.backpressure", memory_backpressure_report());

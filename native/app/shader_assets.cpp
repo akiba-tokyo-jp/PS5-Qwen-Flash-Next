@@ -37,7 +37,7 @@ z_stream stream{};
 struct Allocation {void *pointer=nullptr;std::size_t bytes=0;};
 std::array<Allocation,8> scratch{};std::atomic<std::size_t> scratch_bytes{0};
 bool allocator_fault=false;
-[[noreturn]] void fail(const char *message){failed.store(true);throw std::runtime_error(message);}
+[[noreturn]] void fail(const char *message){failed.store(true);qwen_app::quarantine_native_shader_file();throw std::runtime_error(message);}
 void heap_admission() {
     struct ps5_heap_stats heap{};ps5_heap_stats(&heap);
     if(heap.libc_fallbacks||heap.mapped_bytes>qwen_app::maximum_model_CPU_heap_bytes||
@@ -148,14 +148,21 @@ bool native_shader_assets_registered(){return assets||registration_fault.load();
 void initialize_native_shader_assets() {
     if(initialized.load()||registration_fault.load()||!assets||!asset_count||!lookups||!lookup_count||failed.load())
         fail("A fresh immutable shader-resource registry is required");
+    const auto external=native_shader_file_stats();
+    if(external.registered&&(!external.verified||external.failed||external.read_pending))
+        fail("External shader resources require their positive current full-file admission");
     // This completed startup boundary shares the existing process wait budget.
     // No codec allocation or work begins before the original predicate passes.
     (void)admit_native_system_memory();
     heap_admission();registry_hash=identity();
     for(std::size_t i=0;i<asset_count;++i)output_bytes=std::max(output_bytes,assets[i].original_bytes);
     ordering_bytes=output_bytes;
+    if(external.registered)ordering_bytes+=4;
     for(std::size_t i=0;i<asset_count;++i)if(assets[i].storage_bytes>=48&&!std::memcmp(assets[i].storage,column_magic,8))
         ordering_bytes=std::max(ordering_bytes,assets[i].original_bytes+4);
+    if(external.registered)for(std::size_t i=0;i<asset_count;++i)
+        (void)parse_shader_file_location(assets[i].storage,shader_file_token_bytes,assets[i].storage_bytes,
+            assets[i].original_bytes,external.file_bytes);
     output=ps5_heap_memalign(16,output_bytes);
     if(!output||!ps5_heap_owns(output))fail("The bounded shader decoder must use the existing Direct CPU heap");
     ordered=ps5_heap_memalign(16,ordering_bytes);
@@ -175,6 +182,7 @@ ShaderAssetStats native_shader_asset_stats() {
     s.decoded_calls=decoded_calls.load();s.raw_calls=raw_calls.load();s.CPU_verified_assets=verified_assets.load();
     s.lookup_entries=lookup_count;s.CPU_verified_lookups=verified_lookups.load();
     s.codec_output_bytes=output_bytes;s.codec_ordering_bytes=ordering_bytes;s.codec_scratch_bytes=scratch_bytes.load();s.registry_sha256=registry_hash;
+    s.external_file=native_shader_file_stats();s.failed=s.failed||s.external_file.failed;
     for(std::size_t i=0;i<asset_count;++i){
         s.original_bytes+=assets[i].original_bytes;
         bool alias=false;
@@ -204,7 +212,18 @@ extern "C" const void *qwen_app_prepare_shader_code(const void *storage,std::siz
     if(!initialized.load()||failed.load()||!storage||!original_bytes||!lease||stored_bytes<20||stored_bytes>maximum_shader||stored_bytes%4)
         fail("Shader code requires its prior CPU storage admission");
     *lease=nullptr;const auto *data=static_cast<const unsigned char*>(storage);
+    bool file_lease=false;const qwen_shader_asset *external_asset=nullptr;
+    if(qwen_app::native_shader_file_registered()) {
+        for(std::size_t i=0;i<asset_count;++i)if(assets[i].storage==storage&&assets[i].storage_bytes==stored_bytes) {
+            external_asset=&assets[i];break;
+        }
+        if(!external_asset)fail("External shader input does not name a registered immutable location");
+        acquire();file_lease=true;
+        try{data=qwen_app::native_shader_file_frame(storage,stored_bytes,external_asset->original_bytes);}
+        catch(...){failed.store(true);throw;}
+    }
     if(u32(data)==0x07230203) {
+        if(file_lease)fail("External shader locations must use their individually SHA256-checked frames");
         if(reinterpret_cast<std::uintptr_t>(storage)%4)fail("Original SPIR-V is not word aligned");
         *original_bytes=stored_bytes;++raw_calls;return storage;
     }
@@ -215,7 +234,8 @@ extern "C" const void *qwen_app_prepare_shader_code(const void *storage,std::siz
     if(!bytes||bytes>output_bytes||bytes%4||!compressed||compressed>stored_bytes-48||
        stored_bytes!=((48ull+compressed+3)&~3ull))fail("Packed shader lengths exceed their bounded original");
     for(std::size_t i=48+compressed;i<stored_bytes;++i)if(data[i])fail("Packed shader alignment padding changed");
-    acquire();heap_admission();
+    if(!file_lease)acquire();
+    heap_admission();
     // These read-only observations do not mutate the producer's wait gate from
     // a compiler thread. A refusal starts no Vulkan operation and retains backing.
     (void)qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
@@ -233,11 +253,13 @@ extern "C" const void *qwen_app_prepare_shader_code(const void *storage,std::siz
         for(std::size_t word=0;word<words;++word)for(unsigned lane=0;lane<4;++lane)
             to[word*4+lane]=from[lane*words+word];
     }
-    if(
-       u32(static_cast<const unsigned char*>(output))!=0x07230203||
-       std::memcmp(digest(output,bytes).data(),data+16,32))
+    const auto actual=digest(output,bytes);
+    if(u32(static_cast<const unsigned char*>(output))!=0x07230203||std::memcmp(actual.data(),data+16,32)||
+       (external_asset&&(bytes!=external_asset->original_bytes||std::memcmp(actual.data(),external_asset->original_sha256,32))))
         fail("Lossless shader restoration did not match its complete original SHA256");
-    heap_admission();*original_bytes=bytes;*lease=output;++decoded_calls;return output;
+    heap_admission();
+    if(failed.load())fail("Quarantined shader input cannot publish a positive producer lease");
+    *original_bytes=bytes;*lease=output;++decoded_calls;return output;
 }
 extern "C" void qwen_app_complete_shader_code(void *lease) {
     if(!lease)return;

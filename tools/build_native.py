@@ -75,7 +75,7 @@ def main():
     if bool(model_io.get('shader_storage_extension'))!=bool(a.shader_storage_manifest):
         raise ValueError("The shader extension requires its separate exact resource manifest")
     if a.shader_storage_manifest:
-        from shader_storage import validate_storage
+        from external_shader_storage import validate_shader_resources as validate_storage
         shader_storage=validate_storage(a.shader_storage_manifest,a.model_io_manifest,receipt_path)
         model_io_objects += [Path(row['path'])for row in shader_storage['asset_objects']]
     out = cache / "build/application-native"
@@ -97,7 +97,7 @@ def main():
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
-                                                   "model_integrity.cpp", "direct_integrity.cpp", "direct_metadata.cpp", "shader_assets.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
+                                                   "model_integrity.cpp", "direct_integrity.cpp", "direct_metadata.cpp", "shader_assets.cpp", "shader_file.cpp", "shader_file_session.cpp", "shader_file_native.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
@@ -216,6 +216,7 @@ def main():
                "engine_build_provenance": built,
                "bounded_model_source_overrides": model_io,
                "lossless_shader_storage":shader_storage,
+               "shader_resource_manifest":record(a.shader_storage_manifest) if a.shader_storage_manifest else None,
                "bounded_model_source_manifest": record(a.model_io_manifest),
                "compiler": record(llvm / "clang++.exe"), "linker": record(llvm / "ld.lld.exe"),
                "application_sources": source_inputs, "application_headers": header_inputs,

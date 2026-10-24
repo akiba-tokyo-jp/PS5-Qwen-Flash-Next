@@ -1380,3 +1380,26 @@ hint did not improve the measured source path; do not enable it as an optimizati
 See docs/source-read-hint-cpu-20261024.json. The read-only vm.objects API was
 unavailable, so it supplies no backing-object diagnosis. Safe link folding saved
 only503432 bytes offline and was not adopted. Preserve all original guards.
+
+A distinct application may move the unchanged compressed original SPIR-V pool
+to one immutable, SHA256-named application resource. Its24-byte descriptors must
+retain every original shader name, length, digest and lookup relocation. Charge
+the single49152-byte aligned input window to the existing tracked Direct CPU
+heap and use one read-only resource descriptor, separate from the unchanged
+8MiB model-source window and eight model-source descriptors. Require current
+full resource SHA256, stable identity, exact EOF/read bounds, paired durable read
+markers and quarantine without retries on unknown or failed reads. This resource
+contains original SPIR-V bytes; persistent compiled caches remain disabled.
+
+Publication must preserve the original executable and configuration until exact
+resource readback succeeds. Use a fresh transaction, observed absence before a
+new pending upload, positive rename acknowledgement and complete raw byte-count/
+SHA256 readback; reuse existing data only after the same complete verification.
+Retain mismatches, partials and unknown acknowledgements without overwrite,
+deletion or retry. Require actual publication fault controls and final-source
+cleanup controls that distinguish pending shader reads from completed CPU idle.
+After host/native link/import/SELF gates, a distinct CPU-only case must verify
+all1527 current shaders,382 lookups and all76 current reservations/releases with
+normal close/exact restoration/final idle CPU. A separate complete native run
+must still pass both2974-page startup gates and every numerical, frame, retirement
+and original-app restoration gate before reporting a throughput improvement.
