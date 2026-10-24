@@ -35,7 +35,7 @@ def main():
         'pipeline_source.cpp', 'source_trace.cpp', 'selected_source.cpp', 'memory_backpressure.cpp', 'paired_cache.cpp', 'mapped_source.cpp')]
     sources += [Path(__file__), ROOT / 'tools/check_mapped_source.py', ROOT / 'tools/performance_result.py']
     sources += [ROOT/'tests/test_performance_result.py',ROOT/'tools/observe_native_plan.py']
-    sources += [ROOT/'native/app/native_main.cpp']
+    sources += [ROOT/'native/app/native_main.cpp',ROOT/'native/app/native_bootstrap.cpp',ROOT/'native/app/stage_memory_probe.h']
     before = {str(p.relative_to(ROOT)): sha(p) for p in sources}
     receipt = dict(state='running', console_requests=0, GPU_operations=0,
                    learned_model_inference=False, inputs=before, steps=[])

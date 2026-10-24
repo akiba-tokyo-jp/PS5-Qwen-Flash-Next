@@ -17,6 +17,7 @@
 #include "source_virtual_addresses.h"
 #include "model_integrity.h"
 #include "direct_integrity.h"
+#include "stage_memory_probe.h"
 #include "prior_model_integrity.h"
 #include "model_identity_namespace.h"
 #include "model_receipt.h"
@@ -722,8 +723,37 @@ int main(int argc, char ** argv) {
             // substitute for process-available or immediately reclaimable RAM.
             require_model_CPU_budget();
             qwen_native_stage("source_virtual_CPU_memory_admission_passed_before_probe GPU_not_started=1 model_loaded=0");
+            const bool stage_memory_diagnostic=policy.contains("native_source_stage_memory_diagnostic");
+            if(stage_memory_diagnostic) {
+                const auto & diagnostic=policy.at("native_source_stage_memory_diagnostic");
+                if(!startup.first_generation_validation||!policy.contains("native_source_schedule")||
+                   diagnostic.at("schema")!="ps5-qwen-native-stage-memory-policy-v1"||diagnostic.at("enabled")!=true||
+                   diagnostic.at("CPU_only")!=true||diagnostic.at("maximum_records")!=qwen_app::stage_memory_probe_capacity||
+                   diagnostic.at("ordinary_OS_close_required")!=true||!qwen_app::begin_native_stage_memory_probe())
+                    throw std::runtime_error("Bounded CPU-only stage memory diagnostic is not admitted");
+            }
             const auto mapping = qwen_app::admit_native_model_mapping(mapping_files,
                 [](const std::string & stage) { qwen_native_stage(stage.c_str()); });
+            if(stage_memory_diagnostic) {
+                const bool complete=qwen_app::end_native_stage_memory_probe();
+                Json samples=Json::array();
+                for(std::size_t i=0;i<qwen_app::native_stage_memory_probe_count();++i) {
+                    const auto * sample=qwen_app::native_stage_memory_probe_sample(i);
+                    if(!sample)throw std::runtime_error("Native stage memory sample ownership is not idle");
+                    samples.push_back({{"phase",sample->phase},{"before_ns",sample->before_ns},{"after_ns",sample->after_ns},
+                        {"free_before",sample->free_before},{"free_after",sample->free_after},{"valid",sample->valid}});
+                }
+                write_fresh_report(startup.admission_report+".source.stage-memory",{
+                    {"schema","ps5-qwen-native-stage-memory-result-v1"},{"pid",getpid()},
+                    {"run_id",policy.at("native_first_generation_validation").at("run_id")},
+                    {"samples_valid_and_complete",complete},{"samples",samples},
+                    {"mapped_files",mapping.files},{"completed_unmaps",mapping.unmapped},{"mapped_file_bytes",mapping.bytes},
+                    {"model_loaded",false},{"Vulkan_initialized",false},{"GPU_calls",0},{"source_workers",0},
+                    {"state","CPU_diagnostic_completed_waiting_for_ordinary_close"}});
+                if(!complete)throw std::runtime_error("Native stage memory diagnostic did not complete all bounded observations");
+                qwen_native_stage("source_stage_memory_CPU_diagnostic_completed_GPU_not_started_waiting_for_ordinary_close");
+                for(;;)std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
             qwen_native_stage("source_virtual_probe_all_reservations_and_releases_completed_before_backend GPU_not_started=1");
             write_fresh_report(startup.admission_report+".system-memory.after-virtual-probe-before-admission",
                 system_memory_report(qwen_app::observe_native_system_memory()));

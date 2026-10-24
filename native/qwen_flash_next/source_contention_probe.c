@@ -19,6 +19,12 @@
 #ifndef PROBE_SCHEDULE
 #define PROBE_SCHEDULE 0
 #endif
+#ifndef PROBE_SPLIT
+#define PROBE_SPLIT 0
+#endif
+#if PROBE_SPLIT
+#include "hash/sha256/sha256.h"
+#endif
 
 #define HALF (4u << 20)
 #define WINDOW (2u * HALF)
@@ -119,9 +125,14 @@ static int same(const struct stat *a,const struct stat *b) {
         a->st_mtim.tv_sec==b->st_mtim.tv_sec&&a->st_mtim.tv_nsec==b->st_mtim.tv_nsec&&a->st_ctim.tv_sec==b->st_ctim.tv_sec&&a->st_ctim.tv_nsec==b->st_ctim.tv_nsec;
 }
 static int identity(int fd,unsigned index,struct stat *out) {
-    if(fstat(fd,out)||!S_ISREG(out->st_mode)||out->st_size<=(off_t)(1024u<<20))return 0;
+    if(fstat(fd,out)||!S_ISREG(out->st_mode)||out->st_size<=0||
+       (!PROBE_SPLIT&&out->st_size<=(off_t)(1024u<<20)))return 0;
     const uint64_t actual[]={out->st_dev,out->st_ino,out->st_mode,out->st_uid,out->st_gid,(uint64_t)out->st_size,
         (uint64_t)out->st_mtim.tv_sec,(uint64_t)out->st_mtim.tv_nsec,(uint64_t)out->st_ctim.tv_sec,(uint64_t)out->st_ctim.tv_nsec};
+    // Fresh experimental fragments have a whole-file host/transport SHA256 and
+    // per-read original-byte hashes. Capture their current identity and require
+    // the same descriptor identity at close; sealed model admission is unchanged.
+    if(PROBE_SPLIT&&index>0)return actual[5]==probe_files[index].id[5];
     return !memcmp(actual,probe_files[index].id,sizeof(actual));
 }
 static void retain_uncertain(void) {
@@ -141,13 +152,16 @@ int main(int argc,char **argv) {
     if(!report("DIRECT mapping_returned=1 rc=%d aligned=%d",mapping_rc,window&&!((uintptr_t)window%16384))||mapping_rc||!window||((uintptr_t)window%16384))goto done;
     mapped=1;
     if(seteuid(1)||geteuid()!=1)goto done;
-    for(unsigned i=0;i<3;++i){unsigned file=i==2?1:0;fd[i]=open(probe_files[file].path,O_RDONLY|O_DIRECT|O_NOFOLLOW);int opened=fd[i]>=0,valid=opened&&identity(fd[i],file,&original[i]);if(!report("SOURCE index=%u opened=%d identity=%d errno=%d",i,opened,valid,errno)||!valid)goto done;}
-    if(original[0].st_ino!=original[1].st_ino||original[0].st_ino==original[2].st_ino)goto done;
+    for(unsigned i=0;i<3;++i){unsigned file=PROBE_SPLIT?i:(i==2?1:0);fd[i]=open(probe_files[file].path,O_RDONLY|O_DIRECT|O_NOFOLLOW);int opened=fd[i]>=0,valid=opened&&identity(fd[i],file,&original[i]);if(!report("SOURCE index=%u opened=%d identity=%d errno=%d",i,opened,valid,errno)||!valid)goto done;}
+    if(PROBE_SPLIT) {
+        if(original[0].st_dev!=original[1].st_dev||original[0].st_dev!=original[2].st_dev||
+           original[0].st_ino==original[1].st_ino||original[0].st_ino==original[2].st_ino||original[1].st_ino==original[2].st_ino)goto done;
+    } else if(original[0].st_ino!=original[1].st_ino||original[0].st_ino==original[2].st_ino)goto done;
     thread_ids[0]=pthread_getthreadid_np();
     if(PROBE_CPP){if(!probe_cpp_start())retain_uncertain();worker_started=1;}
     else{if(pthread_create(&io_thread,NULL,worker,NULL))goto done;worker_started=1;
         pthread_mutex_lock(&lock);while(!ready)pthread_cond_wait(&changed,&lock);pthread_mutex_unlock(&lock);}
-    sampling=1;if(pthread_create(&monitor,NULL,sampler,NULL))retain_uncertain();
+    sampling=PROBE_SPLIT?0:1;if(pthread_create(&monitor,NULL,sampler,NULL))retain_uncertain();
     started=now(CLOCK_MONOTONIC);if(!started)retain_uncertain();
     for(unsigned round=0;round<3;++round)for(unsigned order=0;order<PROBE_MODES;++order){
         unsigned mode=round%2?PROBE_MODES-1-order:order;current_mode=mode;
@@ -157,7 +171,8 @@ int main(int argc,char **argv) {
          * 5/6: serial/parallel different vnodes; 7/8 and 9/10: adjacent
          * experts with a shared alignment page, same/separate descriptors. */
         for(unsigned pair=0;pair<PAIRS;++pair){
-            if(!headroom()||now(CLOCK_MONOTONIC)-started>UINT64_C(30000000000)){work_ok=0;goto finish;}
+            const uint64_t diagnostic_limit=PROBE_SPLIT?UINT64_C(45000000000):UINT64_C(30000000000);
+            if(!headroom()||now(CLOCK_MONOTONIC)-started>diagnostic_limit){work_ok=0;goto finish;}
             int different=mode==5||mode==6;
             int second=different?fd[2]:(mode==3||mode==4||mode>=9)?fd[1]:fd[0];
             int first_fd=fd[0];
@@ -206,6 +221,15 @@ int main(int argc,char **argv) {
             uint64_t overlap_end=jobs[0].sample.end<jobs[1].sample.end?jobs[0].sample.end:jobs[1].sample.end;
             uint64_t overlap=overlap_end>overlap_start?overlap_end-overlap_start:0;
             if(jobs[0].sample.got!=(ssize_t)jobs[0].bytes||jobs[1].sample.got!=(ssize_t)jobs[1].bytes){work_ok=0;goto finish;}
+#if PROBE_SPLIT
+            // SHA256 covers every returned byte; hashing is outside the timed
+            // read interval and no extra source payload window is allocated.
+            for(unsigned i=0;i<2;++i) {
+                sha256_t hash;unsigned char digest[32];sha256_init(&hash);
+                sha256_update(&hash,jobs[i].target,jobs[i].bytes);sha256_final(&hash,digest);
+                if(memcmp(digest,expected_read_hashes[pair][i],32)){work_ok=0;goto finish;}
+            }
+#endif
             if(!report("PAIR round=%u mode=%u pair=%u bytes=%u wall_ns=%llu p0_ns=%llu p1_ns=%llu cpu0_ns=%llu cpu1_ns=%llu overlap_ns=%llu dispatch_ns=%llu wait_ns=%llu after_worker_ns=%llu nv0=%ld nv1=%ld ni0=%ld ni1=%ld e0=%d e1=%d parallel=%d calls=%u",
                 round,mode,pair,(unsigned)(jobs[0].bytes+jobs[1].bytes),(unsigned long long)(end-begin),(unsigned long long)(jobs[0].sample.end-jobs[0].sample.begin),
                 (unsigned long long)(jobs[1].sample.end-jobs[1].sample.begin),(unsigned long long)jobs[0].sample.cpu_ns,(unsigned long long)jobs[1].sample.cpu_ns,

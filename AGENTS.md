@@ -1099,3 +1099,29 @@ after all rehearsal reservations/releases positively complete and before driver
 initialization. Share the unchanged20s/60s passive wait budget, record the immediate
 post-probe memory before waiting, and retain every original work predicate/reserve.
 No eviction, reclamation, allocation retry or uncertain resource release is allowed.
+
+The post-probe target candidate subsequently refused before Vulkan after the
+completed16KiB qualification and all76 model reservations/releases. Immediate
+free pages were1849 and the final20s observation1843 below target2974. Its parent
+ended with all206 frozen inputs unchanged; normal close, exact original readback
+and fresh idle CPU passed. Do not replay it. Root CPU controls did not reproduce
+the large native decrease, including holding all original spans concurrently.
+Keep the actual whole rehearsal; no historical substitution is admitted.
+
+The owner's subsequent physical-file-splitting question prompted a bounded
+exact-byte control. Two16MiB original fragments were copied outside the sealed
+model directory and fully read back. All192 serial/parallel pairs passed complete
+returned-byte SHA256 using the actual executor and unchanged8MiB window. Mean
+original parallel/serial times were50.6867/9.9807ms; split parallel7.0580ms.
+See docs/source-split-cpu-20261024.md and JSON. This is CPU I/O evidence, separate
+from full512MiB layout qualification and native inference performance.
+
+A distinct explicit native CPU diagnostic may record at most2048 memory/time
+samples immediately before/after actual durable stage writes during the unchanged
+whole reservation rehearsal. It must stop before source-worker or Vulkan setup,
+publish an independently checked CPU report, then await ordinary OS close.
+Require native link/import/SELF and actual-bootstrap overflow/counter/short-write
+controls, fresh ownership guards, exact original restoration and final idle CPU.
+Preserve the same-boot preceding original numerical admission after this CPU-only
+case. Normal modes keep sampling disabled and retain every durable stage write.
+This diagnostic is intermediate work, not completion of the performance plan.
