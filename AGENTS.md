@@ -1419,3 +1419,19 @@ provider-class fault controls for transient recovery, persistent refusal without
 a read, invalid counters, failed-admission quarantine and a shared process budget,
 plus real PS5 provider compile/link/import/SELF gates. Repeat the distinct current
 all-resource CPU/whole-rehearsal gate before separate complete native inference.
+
+The distinct bounded-startup launch passed current SELF/receipt and complete
+external resource SHA256. All235 native shader-file reads returned before an
+original read-only memory guard refused during the CPU shader phase. No complete
+all-resource or current whole-rehearsal report resulted. Normal close/exact
+restoration/full readback/final idle CPU and401 unchanged parent inputs passed.
+Preserve this consumed case. Its last qualified shared-gate sample is not a
+measurement of the later independent guard's failure count.
+
+The serial CPU all-resource verifier may check the same shared admission
+controller before each next shader lease. Keep compiler-thread per-use guards
+read-only, all decoder/file/ownership code and budgets unchanged, the existing
+20s/60s shared bounds, and quarantine on failure before starting another read or
+decode. Require actual-codec controls for initial and middle recovery, persistent
+refusal and invalid counters, plus current native link/import/SELF gates and a
+distinct current all-resource/whole-rehearsal CPU case before full inference.

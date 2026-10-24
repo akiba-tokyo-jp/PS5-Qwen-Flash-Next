@@ -1,0 +1,37 @@
+{
+  "schema": "ps5-qwen-external-shader-CPU-phase-evidence-v1",
+  "state": "resource_SHA256_passed_later_read_only_CPU_guard_refused",
+  "application_source_revision": "8265d40",
+  "candidate_SELF": {
+    "bytes": 27797287,
+    "sha256": "f7ead989b2bb983b868a41fa2703df2d109ee516f1a05ee518eb8a3d7ac0f567"
+  },
+  "current_SELF_and_receipt_SHA256_passed": true,
+  "current_external_resource_SHA256_passed": true,
+  "current_all_shader_bytes_qualified": false,
+  "current_whole_reservation_report_completed": false,
+  "shader_file_native_reads": 235,
+  "shader_file_native_reads_returned": 235,
+  "last_shared_gate_sample": {
+    "enabled": true,
+    "kernel_free_pages": 2486,
+    "last_qualified": true,
+    "observations": 200,
+    "pause_calls": 0,
+    "cumulative_wait_ns": 0
+  },
+  "independent_read_only_guard_failure_page_count": null,
+  "GPU_calls": 0,
+  "source_workers": 0,
+  "normal_OS_close": true,
+  "exact_original_restoration_full_readback": true,
+  "fresh_final_idle_CPU_passed": true,
+  "same_boot_original_numerical_admission_preserved": true,
+  "parent_positively_ended": true,
+  "frozen_inputs_unchanged": 401,
+  "memory_predicates_and_reserves_unchanged": true,
+  "model_precision_and_driver_unchanged": true,
+  "persistent_caches_enabled": false,
+  "full_plan_completed": false,
+  "native_tokens_per_second": null
+}

@@ -73,7 +73,8 @@ def main():
             ROOT/'tests/shader_assets.cpp',ROOT/'tests/shader_file_fixture.cpp',ROOT/'native/app/shader_assets.cpp',
             ROOT/'native/app/shader_file.cpp',ROOT/'native/app/shader_file_session.cpp',ROOT/'native/app/sha256_backend.cpp',host_asm,host_registry,
             '-L',host.parent/'lib','-lz','-o',exe])
-        modes=['normal','on_demand','concurrent','wrong_owner','heap_refusal','unknown_owner','startup_recovery','startup_pressure','startup_invalid']
+        modes=['normal','on_demand','concurrent','wrong_owner','heap_refusal','unknown_owner','startup_recovery','startup_pressure','startup_invalid',
+            'CPU_recovery','CPU_middle_recovery','CPU_pressure','CPU_invalid']
         if external:modes+=['file_corrupt','file_short','file_oversized','file_pending','file_startup_guard','file_identity_during_read',
             'file_timeout','file_wrong_sha','file_wrong_size','file_wrong_path','file_duplicate_configuration','file_unverified',
             'file_changed_identity','file_frame_checksum','file_frame_timeout','file_frame_pressure','file_unknown_location','file_frame_quarantine']

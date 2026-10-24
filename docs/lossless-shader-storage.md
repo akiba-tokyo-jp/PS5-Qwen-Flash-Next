@@ -292,3 +292,21 @@ with transient1066-page pressure, persistent refusal without a read, invalid
 counters and process-wide budget exhaustion, then compile the actual PS5 provider.
 Native free-page recovery and complete inference remain unqualified until a new
 physical case passes all current gates.
+
+The bounded-startup launch passed complete current SELF/receipt and external
+resource SHA256 on the PS5. All235 resource reads returned before an original
+read-only guard refused during the CPU shader phase. Its final shared-gate sample
+was qualified at2486 free pages; the subsequent independent guard did not record
+its failing count, so2486 is not presented as that count. No complete all-resource
+or current reservation report resulted. Normal close, exact original restoration/
+full readback, fresh idle CPU and401 unchanged parent inputs passed.
+
+The serial CPU all-resource loop now checks the same admission controller before
+each next shader lease, sharing its existing process budget. It quarantines a
+failed boundary before another read or decode. The compiler-thread per-use guard,
+file reader, decompressor, SHA256 and ownership code are unchanged. Twenty-one
+embedded and31 external actual-codec modes passed, adding initial/middle recovery,
+persistent refusal without another read/decode and invalid-counter refusal. The
+actual PS5 codec/providers and complete application link/import/SELF checks passed.
+A distinct physical CPU case is in progress; complete inference and throughput
+remain unqualified.

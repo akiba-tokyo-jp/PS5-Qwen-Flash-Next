@@ -44,15 +44,23 @@ namespace {
 MemoryBackpressure startup_gate;
 std::string startup_mode;
 std::uint64_t admission_clock=1,admission_pauses=0,admission_observations=0;
+bool CPU_phase=false;std::uint64_t CPU_boundaries=0;
 }
 SystemMemoryObservation observe_native_system_memory(){
     SystemMemoryObservation s;s.page_size=16384;s.kernel_pages=138739;s.kernel_free=5000;
     s.kernel_minimum=898;s.kernel_target=2974;s.kernel_reserved=206;s.flexible_available=1ull<<30;
     if(startup_mode=="startup_pressure"||(startup_mode=="startup_recovery"&&admission_pauses<2))s.kernel_free=1000;
     if(startup_mode=="startup_invalid")s.page_size=4096;
+    if(CPU_phase) {
+        if(startup_mode=="CPU_pressure"||
+           (startup_mode=="CPU_recovery"&&admission_pauses<2)||
+           (startup_mode=="CPU_middle_recovery"&&CPU_boundaries>=17&&admission_pauses<2))s.kernel_free=1000;
+        if(startup_mode=="CPU_invalid")s.page_size=4096;
+    }
     return s;
 }
 SystemMemoryObservation admit_native_system_memory(){
+    if(CPU_phase)++CPU_boundaries;
     struct Ops final:MemoryAdmissionOps {
         SystemMemoryObservation observe()override{++admission_observations;return observe_native_system_memory();}
         std::uint64_t now_ns()override{return admission_clock;}
@@ -117,6 +125,19 @@ int main(int argc,char **argv){try{
     }
     if(mode=="startup_recovery")check(qwen_app::admission_pauses==2&&
         qwen_app::startup_gate.stats().recovered_admissions==1,"Shader startup bypassed bounded passive recovery");
+    qwen_app::CPU_phase=mode=="CPU_recovery"||mode=="CPU_middle_recovery"||mode=="CPU_pressure"||mode=="CPU_invalid";
+    if(mode=="CPU_pressure"||mode=="CPU_invalid") {
+        const auto calls=shader_file_fixture_calls();const auto before=qwen_app::native_shader_asset_stats();
+        bool refused=false;try{(void)qwen_app::verify_native_shader_assets_CPU();}catch(...){refused=true;}
+        const auto after=qwen_app::native_shader_asset_stats();
+        check(refused&&after.failed&&!after.active_lease&&after.CPU_verified_assets==0&&
+            after.decoded_calls==before.decoded_calls&&shader_file_fixture_calls()==calls,"CPU startup pressure entered a shader read or decode");
+        check(qwen_app::admission_pauses==(mode=="CPU_pressure"?200u:0u),"CPU startup polling did not retain the original bound");
+        const auto observations=qwen_app::admission_observations;refused=false;
+        try{(void)qwen_app::verify_native_shader_assets_CPU();}catch(...){refused=true;}
+        check(refused&&qwen_app::admission_observations==observations&&shader_file_fixture_calls()==calls,"Failed CPU boundary retried");
+        std::cout<<mode<<" before-read/decode refusal and retained backing passed\n"<<std::flush;std::_Exit(0);
+    }
     if(mode=="on_demand") {
         const auto before=qwen_app::native_shader_asset_stats();
         check(before.CPU_verified_assets==0&&before.CPU_verified_lookups==QWEN_EXPECTED_LOOKUP_COUNT&&
@@ -129,8 +150,10 @@ int main(int argc,char **argv){try{
             !after.active_lease&&!after.failed,"On-demand original bytes did not complete with their exclusive lease");
         std::cout<<mode<<" current lookups and per-use exact SHA256 passed\n";return 0;
     }
-    if(mode=="normal"||mode=="concurrent"||mode=="startup_recovery") {
+    if(mode=="normal"||mode=="concurrent"||mode=="startup_recovery"||mode=="CPU_recovery"||mode=="CPU_middle_recovery") {
         const auto s=qwen_app::verify_native_shader_assets_CPU();
+        if(qwen_app::CPU_phase)check(qwen_app::admission_pauses==2&&qwen_app::startup_gate.stats().recovered_admissions==1&&
+            qwen_app::CPU_boundaries==QWEN_EXPECTED_SHADER_COUNT,"CPU shader boundaries did not share the original admission controller");
         check(s.assets==QWEN_EXPECTED_SHADER_COUNT&&s.CPU_verified_assets==s.assets&&
             s.lookup_entries==QWEN_EXPECTED_LOOKUP_COUNT&&s.CPU_verified_lookups==s.lookup_entries&&
             s.stored_bytes==QWEN_EXPECTED_STORED_BYTES&&s.codec_output_bytes==QWEN_EXPECTED_OUTPUT_BYTES&&

@@ -198,6 +198,10 @@ ShaderAssetStats native_shader_asset_stats() {
 ShaderAssetStats verify_native_shader_assets_CPU() {
     if(!initialized.load()||verified_assets.load())fail("Shader CPU verification may only run once after initialization");
     for(std::size_t i=0;i<asset_count;++i) {
+        // This serial startup boundary precedes the next lease and all Vulkan
+        // initialization. Compiler-thread per-use guards remain read-only.
+        try{(void)admit_native_system_memory();}
+        catch(...){failed.store(true);quarantine_native_shader_file();throw;}
         std::size_t bytes=0;void *lease=nullptr;
         const void *data=qwen_app_prepare_shader_code(assets[i].storage,assets[i].storage_bytes,&bytes,&lease);
         const auto actual=digest(data,bytes);
