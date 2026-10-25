@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: MIT
+#version 450
+// Experimental exact reconstruction. CPU validation and owned buffer leases
+// precede dispatch. Two BF16 values share each aligned 32-bit output store.
+layout(local_size_x=256) in;
+layout(set=0,binding=0,std430) readonly buffer Encoded { uint data[]; } source;
+layout(set=0,binding=1,std430) writeonly buffer Original { uint data[]; } target;
+layout(push_constant) uniform Bounds { uint values; uint encoded_bytes; } limits;
+uint byte_at(uint offset) {
+    return (source.data[offset/4]>>((offset%4)*8))&255u;
+}
+uint original_bits(uint i) {
+    const uint tile=i/64u,j=i%64u,part=j/32u,shift=j%32u;
+    const uint map=source.data[5]/4u+tile*6u;
+    const uint a=source.data[map+part],b=source.data[map+2u+part],c=source.data[map+4u+part];
+    const uint code=((a>>shift)&1u)|(((b>>shift)&1u)<<1u)|(((c>>shift)&1u)<<2u);
+    uint exponent;
+    if(code!=0u)exponent=byte_at(47u+code);
+    else {
+        const uint prior_mask=shift==0u?0u:(0xffffffffu>>(32u-shift));
+        uint rank=uint(bitCount((~(a|b|c))&prior_mask));
+        if(part!=0u)rank+=uint(bitCount(~(source.data[map]|source.data[map+2u]|source.data[map+4u])));
+        const uint prefix=source.data[source.data[6]/4u+tile];
+        exponent=byte_at(source.data[7]+prefix+rank);
+    }
+    const uint sm=byte_at(source.data[4]+i);
+    return ((sm&128u)<<8u)|(exponent<<7u)|(sm&127u);
+}
+void main() {
+    const uint first=gl_GlobalInvocationID.x*2u;
+    if(limits.values!=source.data[1]||limits.encoded_bytes!=source.data[9]||first>=limits.values)return;
+    target.data[first/2u]=original_bits(first)|(original_bits(first+1u)<<16u);
+}

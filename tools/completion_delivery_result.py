@@ -4,6 +4,33 @@
 import re,statistics
 
 def fields(line):return {k:int(v)for k,v in re.findall(r'(\w+)=(-?\d+)',line)}
+
+def parse_preallocation_refusal(raw,manifest):
+    """A positive zero-work terminal is a refused test, never a speed result."""
+    lines=raw.decode('ascii').splitlines()
+    begin=[x for x in lines if x.startswith('BEGIN ')]
+    end=[x for x in lines if x.startswith('END ')]
+    observations=[fields(x)for x in lines if x.startswith('PREALLOC_HEADROOM ')]
+    if len(begin)!=1 or len(end)!=1 or len(observations)!=1:
+        raise ValueError('A unique positive refusal and capacity observation are required')
+    for line in (begin[0],end[0]):
+        if 'nonce='+manifest['nonce']not in line or 'GPU_calls=0'not in line or 'title_launches=0'not in line:
+            raise ValueError('Refusal owner or scope differs')
+    terminal=fields(end[0]);observation=observations[0];start=fields(begin[0])
+    if any(terminal.get(k)!=v for k,v in dict(success=0,pending_reads=0,all_workers_joined=0,Direct_released=1,automatic_retry=0).items()):
+        raise ValueError('The refusal is not a positively completed zero-work terminal')
+    if any(x.startswith(('DIRECT_ALLOC_','DIRECT_MAP_','VERIFY_','IO_','BATCH_','RETAIN '))for x in lines):
+        raise ValueError('The refused case started allocation or payload work')
+    total=manifest.get('io_bytes',8<<20)+manifest['destination_bytes']
+    required=observation['minimum']+max(observation['reserved'],256)+total//16384
+    if (total%16384 or start['total_Direct_bytes']!=total or observation['additional_pages']!=total//16384 or
+        observation['required']!=required or min(observation['free_first'],observation['free_last'])>=required or
+        observation['rc']!=0 or observation['flexible_bytes']<(264<<20)):
+        raise ValueError('The observed preallocation refusal does not match its unchanged floor')
+    return dict(status='refused_before_allocation',completed=True,allocations=0,payload_reads=0,
+        GPU_calls=0,title_launches=0,workers_started=0,unknown_completion=False,automatic_retries=0,
+        observed_free_pages=[observation['free_first'],observation['free_last']],required_free_pages=required,
+        total_Direct_bytes=total,whole_model_speed_qualified=False)
 def parse(raw,manifest):
     lines=raw.decode('ascii').splitlines();nonce=manifest['nonce']
     for prefix in ('BEGIN ','END '):
@@ -14,9 +41,11 @@ def parse(raw,manifest):
     if not all(x in end for x in ('success=1 ','pending_reads=0 ','all_workers_joined=1 ','Direct_released=1 ','automatic_retry=0'))or any(x.startswith('RETAIN ')for x in lines):
         raise ValueError('Positive completion and backing retirement are required')
     begin=fields(next(x for x in lines if x.startswith('BEGIN ')))
-    destination=manifest.get('destination_bytes',32<<20);total=(8<<20)+destination
+    io_bytes=manifest.get('io_bytes',8<<20)
+    if io_bytes not in (0,8<<20):raise ValueError('Unsupported source window budget')
+    destination=manifest.get('destination_bytes',32<<20);total=io_bytes+destination
     count=manifest.get('samples',9);groups=manifest.get('groups',1);modes=len(manifest['variants'])
-    if (begin['io_bytes'],begin['destination_bytes'],begin['total_Direct_bytes'],begin['maximum_outstanding_reads'])!=(8<<20,destination,total,2):
+    if (begin['io_bytes'],begin['destination_bytes'],begin['total_Direct_bytes'],begin['maximum_outstanding_reads'])!=(io_bytes,destination,total,2):
         raise ValueError('Separate buffer budgets differ')
     for before,after in ((f'DIRECT_ALLOC_BEFORE bytes={total}','DIRECT_ALLOC_RETURNED rc=0'),
         (f'DIRECT_MAP_BEFORE bytes={total}','DIRECT_MAP_RETURNED rc=0'),('DIRECT_UNMAP_BEFORE','DIRECT_UNMAP_RETURNED rc=0'),
@@ -85,4 +114,4 @@ def parse(raw,manifest):
                 (mode not in (3,5)or (statistics.median(matched)>1.05 and all(x>1 for x in matched)))))
     return dict(completed=True,complete_original_SHA256_exact=True,all_reads_returned=True,all_workers_joined=True,
         Direct_released=True,batches=len(rows),summary=summaries,rows=rows,
-        io_bytes=8<<20,destination_bytes=destination,whole_model_speed_qualified=False,production_adoption_qualified=False)
+        io_bytes=io_bytes,destination_bytes=destination,whole_model_speed_qualified=False,production_adoption_qualified=False)

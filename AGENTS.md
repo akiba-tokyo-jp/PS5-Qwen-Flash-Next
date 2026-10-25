@@ -1634,3 +1634,25 @@ only a design/capacity result. No hidden-state forecast, speculative read or
 native forecast speed has been implemented or qualified. Saved route IDs alone
 cannot validate router reuse. The installed fastest production SELF and rollback
 remain as recorded by config/production-installation.json.
+
+## BF16 system validation and current headroom (2026-10-25)
+
+The new exact-palette CPU cohort completed 108 original-byte deliveries and
+positive Direct retirement, but lost at 0.488x paired delivery throughput.
+Its GPU shader has host integer-bit/SPIR-V checks only. The one-worker demand
+queue passed host ownership controls; physical cases 2285 and 2288 positively
+refused before allocation at the unchanged 20/10 MiB admission gates. Preserve
+both failures and their explicit zero-work completion reviews; never replay them.
+
+The subsequent allocation-free same-owner snapshot observed 1767 free kernel
+pages versus native startup target 2974 and full prelaunch requirement 10142.
+This is a point observation, separate from Flexible/Direct capacity and the
+later canonical SELF readback. No GPU/title/model was started. Additional native
+work requires a distinct fresh case passing all unchanged memory and lifecycle
+gates; do not lower floors or deliberately reclaim/pressure memory to force a
+test. See docs/bf16-system-validation-20261025.md/.json.
+
+No new candidate is adopted or linked into the qualified production app.
+The exact installed fastest SELF and preserved rollback remain unchanged.
+Router forecasts, ready-expert execution and speculative verification remain
+unimplemented/unqualified; do not infer their completion from codec/queue tests.

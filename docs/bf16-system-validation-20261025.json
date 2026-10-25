@@ -1,0 +1,188 @@
+{
+  "schema": "ps5-qwen-bf16-system-validation-v1",
+  "date": "2026-10-25",
+  "status": "partial_validation_blocked_by_kernel_headroom",
+  "full_requested_validation_completed": false,
+  "precision": {
+    "weights": "original BF16/F32",
+    "KV": "F32",
+    "quantization": false
+  },
+  "production_SELF": {
+    "bytes": 28017271,
+    "sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d"
+  },
+  "production_changed": false,
+  "production_candidates_adopted": [],
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "application_relinked": false,
+  "application_built": false,
+  "new_full_model_generation_rate_qualified": false,
+  "palette": {
+    "host_controls": {
+      "all_65536_BF16_patterns_exact": true,
+      "maximum_size_roundtrips": 5,
+      "checks": 249
+    },
+    "SPIRV_validated": true,
+    "shader_logic": {
+      "all_65536_shader_logic_bits_exact": true,
+      "original_matrices": 27,
+      "GPU_execution": false
+    },
+    "native_case": 2280,
+    "original_matrix_deliveries": 108,
+    "all_original_SHA256_exact": true,
+    "all_reads_returned": true,
+    "Direct_released": true,
+    "summary": [
+      {
+        "variant": "raw",
+        "median_read_ms": 4.4779145,
+        "median_restore_ms": 0.0,
+        "median_delivery_ms": 4.4779145,
+        "paired_round_speedups": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "median_paired_speedup": 1.0,
+        "every_round_faster": false,
+        "clears_initial_delivery_gate": false,
+        "physical_bytes": 176947200
+      },
+      {
+        "variant": "palette64",
+        "median_read_ms": 3.4482935,
+        "median_restore_ms": 5.492982,
+        "median_delivery_ms": 8.9946795,
+        "paired_round_speedups": [
+          0.5206419375548795,
+          0.48422676564824735,
+          0.4776410060103545,
+          0.5189103180643435,
+          0.4805373803601676,
+          0.4913830520616612
+        ],
+        "median_paired_speedup": 0.4878049088549543,
+        "every_round_faster": false,
+        "clears_initial_delivery_gate": false,
+        "physical_bytes": 130154496
+      }
+    ],
+    "CPU_path": "rejected_slower",
+    "GPU_path": "implemented_shader_only_native_execution_unqualified"
+  },
+  "demand": {
+    "host_controls": {
+      "controls": 51,
+      "refill_while_other_read_pending": true,
+      "maximum_live_reads": 2,
+      "known_failure_joined": true
+    },
+    "native_speed_qualified": false,
+    "refusals": [
+      {
+        "case": 2285,
+        "status": "refused_before_allocation",
+        "completed": true,
+        "observed_free_pages": [
+          2008,
+          2008
+        ],
+        "required_free_pages": 2434,
+        "total_Direct_bytes": 20971520,
+        "allocations": 0,
+        "payload_reads": 0,
+        "workers_started": 0,
+        "unknown_completion": false,
+        "automatic_retries": 0
+      },
+      {
+        "case": 2288,
+        "status": "refused_before_allocation",
+        "completed": true,
+        "observed_free_pages": [
+          1761,
+          1761
+        ],
+        "required_free_pages": 1794,
+        "total_Direct_bytes": 10485760,
+        "allocations": 0,
+        "payload_reads": 0,
+        "workers_started": 0,
+        "unknown_completion": false,
+        "automatic_retries": 0
+      }
+    ]
+  },
+  "memory": {
+    "free_first": 1767,
+    "free_last": 1767,
+    "minimum": 898,
+    "reserved": 206,
+    "target": 2974,
+    "page_bytes": 16384,
+    "flexible_bytes": 8554283008,
+    "native_startup_target": 2974,
+    "full_prelaunch_required": 10142
+  },
+  "memory_observation_scope": "One metadata-only same-owner observation before the final canonical SELF readback; not future admission.",
+  "final": {
+    "production_SELF_full_readback_unchanged": true,
+    "held_reservation_unchanged": true,
+    "native_owners": 0,
+    "gateway_running": false,
+    "model_loaded": false,
+    "unknown_completion": false,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "CI_runs": 0
+  },
+  "candidates": [
+    {
+      "name": "one-worker demand refill",
+      "implementation": "experimental queue and bounded CPU fixture",
+      "disposition": "native comparison refused before allocation; no production integration"
+    },
+    {
+      "name": "GPU lossless reconstruction",
+      "implementation": "exact format, shader, host and native CPU controls",
+      "disposition": "CPU path rejected; GPU speed and full-model integration pending admission"
+    },
+    {
+      "name": "ready-expert compute scheduling",
+      "implementation": "design only",
+      "disposition": "GPU ownership/graph/numerical qualification pending admission"
+    },
+    {
+      "name": "two-slot router forecast",
+      "implementation": "design only",
+      "disposition": "actual hidden-state observation and prediction cost pending admission"
+    },
+    {
+      "name": "exact speculative verification",
+      "implementation": "route-union analysis only",
+      "disposition": "host snapshot exceeds CPU slack; device checkpoint remains unimplemented and GPU qualification pending admission"
+    }
+  ],
+  "qualified_native_source_sha256": {
+    "native/app/bf16_palette.h": "493ebcca553cd3ca25ee29fe65d2fa011aa4aaf2aab1c353fe4b1ce0ad701fcc",
+    "native/app/demand_source_batch.h": "3c5644e4117562780ad3973d85fa24496078d3003365899322c70aa76fc3c8c7",
+    "native/qwen_flash_next/bf16_palette_decode.comp": "4ac6073db29ca24adc43b7d67d667e019ef2cdc607c0ee858e75c1b6b8d8ca70",
+    "native/qwen_flash_next/bf16_palette_probe.c": "e2bc6c1a012f635ec5982b6f1d630c2046e0428a67ba7059cfc0985e09e2d2ec",
+    "native/qwen_flash_next/demand_batch_probe.c": "ebdb27875b5b48749639f71e74a406f638cc4d274a24d0d3045e6d12051aa1c6",
+    "native/qwen_flash_next/demand_batch_probe_cpp.cpp": "22d9cd5fca58073dfaa25c588f3f289d0f4266ada43f1d55670e85480b0d67df",
+    "native/qwen_flash_next/memory_headroom_probe.c": "0b5a7cffec996913a27e7266ac352d2df23c613807f2aaa8450ed9e2b9181c05"
+  }
+}
