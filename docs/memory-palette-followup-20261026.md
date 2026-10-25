@@ -1,5 +1,10 @@
 # Memory attribution and exact BF16 GPU delivery follow-up
 
+Historical partial checkpoint. The remaining frame-memory attribution, fused
+comparison and restoration subsequently completed; see the
+[completed finite plan](memory-plan-completion-20261026.md). The original
+observations and refusals below remain unchanged.
+
 The standalone GPU restoration cohort **completed and lost at 0.561503x** paired
 delivery throughput. It is rejected. The fused restoration/GEMV candidate passed
 host controls, SPIR-V validation, native linking/import checks and SELF roundtrip,

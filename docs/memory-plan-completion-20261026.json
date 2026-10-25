@@ -1,0 +1,242 @@
+{
+  "schema": "ps5-qwen-memory-recovery-and-fused-screen-v1",
+  "date": "2026-10-26",
+  "completed_scope": "Identify/reduce validation-artifact kernel-page consumption, finish pending finite GPU screens, preserve fastest production, and qualify reusable archival integrity",
+  "memory_and_current_candidate_screen_plan_completed": true,
+  "broader_unimplemented_BF16_research_completed": false,
+  "precision": {
+    "weights": "original BF16/F32",
+    "KV_cache": "F32",
+    "quantization": false
+  },
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "production_SELF": {
+    "bytes": 28017271,
+    "sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d"
+  },
+  "application_relinked_in_this_continuation": false,
+  "experimental_SELF_reused": true,
+  "driver_or_engine_rebuilt": false,
+  "production_changed": false,
+  "production_candidates_adopted": [],
+  "new_full_model_rate_qualified": false,
+  "thresholds": {
+    "page_bytes": 16384,
+    "minimum": 898,
+    "reserved": 206,
+    "operational_floor": 1154,
+    "native_startup": 2974,
+    "full_prelaunch": 10142,
+    "unchanged": true
+  },
+  "frame_residency": {
+    "case": 2444,
+    "source_payload_reads": 0,
+    "cache_advice_calls": 0,
+    "frame_bytes_each": 8294454,
+    "resident_pages_per_frame": [
+      507,
+      507
+    ],
+    "closed_log_resident_pages": 10,
+    "all_maps_queries_unmaps_returned": true,
+    "observed_frame_pages_are_not_future_available_memory": true
+  },
+  "required_artifact_preservation": {
+    "case": 2445,
+    "source_count": 17,
+    "captured_frames": 2,
+    "closed_journals": 15,
+    "original_captured_SHA256_identity_EOF_exact": true,
+    "all_reads_returned": true,
+    "free_pages_before": 9843,
+    "free_pages_after_two_frames": 10859,
+    "free_pages_after_journals": 10931,
+    "frame_interval_free_page_gain": 1016,
+    "total_free_page_gain": 1088,
+    "cache_advice_calls": 0,
+    "files_deleted": 0,
+    "title_launches": 0,
+    "GPU_calls": 0
+  },
+  "fresh_prelaunch": {
+    "case": 2450,
+    "consecutive_samples": 10,
+    "required_free_pages": 10142,
+    "observed_free_pages_min": 10921,
+    "observed_free_pages_max": 10922
+  },
+  "fused_GPU": {
+    "completed": true,
+    "all_original_bits_and_positive_retirement": true,
+    "rounds": 6,
+    "original_matrix_deliveries": 108,
+    "GPU_dispatches": 110,
+    "paired_round_delivery_ratios": [
+      0.9742357464755049,
+      1.0736773381155573,
+      0.9705233333517478,
+      0.9767875159673958,
+      0.9963119195182576,
+      0.9844813229056022
+    ],
+    "paired_round_median_ratio": 0.980634419436499,
+    "raw_median_round_delivery_ns": 97663798.5,
+    "palette_median_round_delivery_ns": 98881533.0,
+    "initial_delivery_screen_passed": false,
+    "raw_copy_check_excluded_from_baseline": true,
+    "palette_includes_validation_dispatch_fence": true,
+    "GEMV_fused": true,
+    "full_model_admitted": false,
+    "production_adoption": false,
+    "case": 2450,
+    "SELF": {
+      "bytes": 28058327,
+      "sha256": "a9b16ea7584b47c5077ee1ea3854a5c8d17a6bd6462c90d951e10921587c48af"
+    },
+    "raw_median_components_ms": {
+      "read_ns": 5.77756,
+      "dispatch_completion_ns": 4.944834,
+      "delivery_ns": 10.6724385
+    },
+    "palette_median_components_ms": {
+      "read_ns": 5.2181465,
+      "dispatch_completion_ns": 4.768306,
+      "delivery_ns": 10.592053,
+      "validation_and_host_residual_ms": 0.230333
+    },
+    "all65536_BF16_patterns_exact": true,
+    "same_F32_outputs_bit_exact": true,
+    "CPU_double_reference_passed": true,
+    "queue_submissions": 110,
+    "disposition": "rejected_no_consistent_gain"
+  },
+  "maintained_archival_integrity": {
+    "native_cases": [
+      2461,
+      2463
+    ],
+    "files_verified": [
+      2,
+      8
+    ],
+    "no_added_native_imports": true,
+    "producer_closure_and_captured_bytes_required": true,
+    "input_paths_rendered_separately_from_nonce": true,
+    "source_caps": {
+      "files": 64,
+      "file_bytes": 134217728,
+      "total_bytes": 268435456,
+      "live_read_window_bytes": 1048576
+    },
+    "original_boot_service_title_and_owner_guards_preserved": true,
+    "first_native_free_pages": [
+      6725,
+      10153
+    ],
+    "older_frame_control_free_pages": [
+      10149,
+      10149
+    ],
+    "older_frame_control_all_individual_deltas_zero": true,
+    "FTP_unavailable_SIZE_sentinel_never_counted_as_capacity": true
+  },
+  "conditional_full_model_integration": {
+    "triggered": false,
+    "reason": "Neither standalone nor fused GPU variant passed the original delivery screen; no unmeasured engine integration or generation replay"
+  },
+  "plan_stages": [
+    {
+      "stage": 1,
+      "name": "Preserve fastest and pause unadmitted allocations",
+      "completed": true
+    },
+    {
+      "stage": 2,
+      "name": "Identify avoidable validation readback and frame residency",
+      "completed": true
+    },
+    {
+      "stage": 3,
+      "name": "Reduce measured artifact consumption with complete integrity and unchanged reserves",
+      "completed": true
+    },
+    {
+      "stage": 4,
+      "name": "Production-thread-count demand screen",
+      "completed": true,
+      "disposition": "case2306 rejected at1.040344x"
+    },
+    {
+      "stage": 5,
+      "name": "Standalone and fused exact GPU delivery screens",
+      "completed": true,
+      "disposition": "case2390 rejected at0.561503x; case2450 rejected at0.980634x"
+    },
+    {
+      "stage": 6,
+      "name": "Conditional promotion decision, ordinary close, exact fastest restore, final integrity and source preservation",
+      "completed": true,
+      "disposition": "no new winner; retain installed fastest"
+    }
+  ],
+  "future_research_not_implemented": [
+    "ready-expert execution",
+    "hidden-state router forecasts",
+    "device/SSD state checkpoint and exact speculative verification"
+  ],
+  "limits": [
+    "Artifact-cache contribution is measured; every remaining kernel allocator is not attributed",
+    "Sequential VM counters and RSS are not additive total UMA capacity",
+    "No safe kernel-pool resizing or global reclaimability is established",
+    "Standalone raw timing excludes copy; fused timing includes GEMV in both arms; their ratios are not interchangeable",
+    "No new full-model decode, reasoning, or broad workload qualification follows"
+  ],
+  "final": {
+    "exact_fastest_SELF_and_prior_configuration_restored": true,
+    "full_raw_SELF_readback_verified": true,
+    "maintained_final_whole_SELF_integrity": true,
+    "fresh_idle_CPU_after_restore": true,
+    "latest_preservation_free_pages": 10149,
+    "page_bytes": 16384,
+    "native_owners": 0,
+    "gateway_running": false,
+    "model_loaded": false,
+    "unknown_completion": false,
+    "original_MOSS_not_substituted": true,
+    "numerical_generation_reexecuted": false,
+    "further_launch_requires_fresh_admission": true,
+    "CI_runs": 0,
+    "persistent_caches": false
+  },
+  "source_base_revision": "97943a11f653596f182bc6b7d957a596117a45fd",
+  "manual_host_checks": {
+    "host_controls_passed": true,
+    "test_methods": 3,
+    "native_object_code_and_relocations_equal_except_control_nonce": true,
+    "SHA256_object_byte_identical": true,
+    "linked_string_pool_layout_may_differ": true,
+    "qualified_native_case": 2461,
+    "actual_imports_subset_of_executed_image": true,
+    "PS5_operations": 0,
+    "CI_runs": 0
+  },
+  "qualified_raw_source_sha256": {
+    "native/qwen_flash_next/preservation_integrity_probe.c": "022a4b4fb94fb41cf5f02a0a0dd547b424b7afb1a2554c639a3e81a54ccd36fa",
+    "tools/build_preservation_integrity.py": "9588437c37c69dd9caf4937e65fdb8d21e169e6764dab893ab8f5d1efc1ef494",
+    "tools/build_launch_integrity.py": "1455dc8d3ca140d76cf72e8710b8d59b64a8ae57546a32ae3f7f50651f4b9881",
+    "tests/test_preservation_integrity.py": "c4df23633f592d390173ba1711c61e64fae26ccb60a729d3aada363e5a9fe80a"
+  },
+  "normalized_host_source_sha256": {
+    "tools/build_preservation_integrity.py": "9588437c37c69dd9caf4937e65fdb8d21e169e6764dab893ab8f5d1efc1ef494",
+    "tools/build_launch_integrity.py": "c9a64b5d9f686882775f4c409ced0d03cdd358bdd254f1f704a0f43624191111",
+    "tests/test_preservation_integrity.py": "c4df23633f592d390173ba1711c61e64fae26ccb60a729d3aada363e5a9fe80a"
+  }
+}

@@ -1720,3 +1720,34 @@ preserved, no native owner/gateway/model/unknown completion and no fresh generat
 rerun. The overall plan remains incomplete. Fused physical comparison and any
 conditional full-model integration remain pending. No new candidate is adopted.
 See docs/memory-palette-followup-20261026.md/.json for exact provenance and limits.
+
+## Completed memory recovery and finite GPU screens (2026-10-26)
+
+Case 2444 confirmed both captured production frames resident (507 pages each).
+Required whole SHA256/identity/EOF preservation, case 2445, observed 9,843 ->
+10,859 pages after those frames and 10,931 after closed journals. This identifies
+an avoidable artifact contribution, not every kernel consumer or a general
+reclamation mechanism. Preserve monitoring/captures, all floors and failures.
+
+Fresh case 2450 passed all ten unchanged 10,142-page observations and completed
+the fused original-BF16/F32-GEMV screen: all bit/numerical controls, 108 results,
+110 submissions/fences and positive device/epoch retirement. Its paired median
+0.980634x failed the original speed/consistency screen; keep it unadopted.
+Ordinary exact-owner close and exact fastest/settings restoration passed.
+No full-model integration/generation rerun is required for a rejected variant.
+
+The maintained archival builder/probe passed host controls and native cases
+2461/2463. Final restored/candidate integrity observed 6,725 -> 10,153 pages;
+eight older-frame controls had individually zero deltas and ended at 10,149.
+These point values are not a future launch admission. The registered fastest
+SELF remains ed4b360b..., original rollback preserved, no native owner/gateway/
+model/unknown completion. Keep the held reservation, pinned driver and disabled
+persistent caches/CI. Do not replay consumed cases or automatically launch.
+
+The finite memory-recovery and current delivery-screen plan is complete, with
+no new winning candidate. Broader ready-expert/forecast/speculation research is
+still unimplemented/unqualified and is not claimed complete by this checkpoint.
+See docs/memory-plan-completion-20261026.md/.json. Use the preservation builder
+only with complete captured bytes and positive producer closure; it builds but
+never executes a console helper. Large transport readbacks precede required
+native preservation and fresh memory/ownership admission.
