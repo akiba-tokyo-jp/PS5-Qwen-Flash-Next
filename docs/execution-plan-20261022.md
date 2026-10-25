@@ -1,5 +1,7 @@
 # Execution plan: first complete PS5 generation
 
+> Historical completed plan. Use the [plan status index](plan-index.md) for the current baseline and remaining proposals; the original dated sequence below is retained.
+
 This plan completed on 2026-10-24, including every implementation, physical
 generation, actual-frame review and final original-restoration gate. See
 [the completed result](native-full-generation-success-20261024.md).

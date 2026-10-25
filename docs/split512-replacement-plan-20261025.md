@@ -1,5 +1,7 @@
 # In-place 512 MiB model layout
 
+> Historical completed plan. The adopted layout and remaining proposals are indexed in [current plan status](plan-index.md); no repeat migration is scheduled.
+
 All eight completion steps subsequently passed, including full native inference,
 actual frame review and every original restoration/numerical/final idle gate.
 See the [completed implementation and measurements](native-split512-success-20261025.md).

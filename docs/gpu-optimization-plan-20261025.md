@@ -1,5 +1,7 @@
 # Original-precision GPU optimization qualification
 
+> Historical completed qualification plan. The selected artifact was subsequently installed in production. See the [current plan index](plan-index.md) and [placement result](production-installation-20261025.md).
+
 The owner authorized sequential implementation, physical validation and adoption
 of beneficial candidates after the PS5LM source investigation. The completed
 512 MiB result remains the control: BF16 weights, F32 KV, 53 expert slots,

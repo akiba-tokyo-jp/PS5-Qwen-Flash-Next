@@ -1,5 +1,7 @@
 # BF16 system candidate validation
 
+> Historical partial checkpoint. Its later one-worker demand and GPU delivery comparisons subsequently completed and were rejected. The [finite memory-plan completion](memory-plan-completion-20261026.md) supersedes the pending/refused status below; the [plan index](plan-index.md) separates broader unimplemented research.
+
 Historical checkpoint: the [2026-10-26 follow-up](kernel-memory-cause-20261026.md)
 records measured readback consumption, recovered CPU-fixture admission, the
 completed one-worker comparison and subsequent prelaunch refusals. GPU palette

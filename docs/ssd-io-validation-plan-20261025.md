@@ -1,5 +1,7 @@
 # Original-precision SSD I/O validation
 
+> Historical completed initial screen. Later one-worker and palette/GPU screens also completed without a new production winner; see the [current plan index](plan-index.md). Router forecasting remains a separate unimplemented proposal.
+
 The owner authorized this comparison after the 2026-10-25 research review.
 Preserve the installed production SELF `ed4b360b...169d` and all rollback evidence.
 Use the pinned cumulative-idle driver and keep persistent caches and CI disabled.

@@ -1,5 +1,7 @@
 # BF16-preserving system optimization research
 
+> Historical research baseline. Demand refill and CPU/standalone-GPU/fused-GEMV palette screens subsequently completed and failed their adoption gates. Use the [current plan index](plan-index.md) for those decisions and the remaining unimplemented proposals; the original estimates and priorities below describe the research date.
+
 Research date: 2026-10-25. Application baseline: `3e4276a86f52129300654d7bc2f845545c60e903`.
 This report adds offline analysis and implementation proposals. It changes no
 inference source, model, driver, production executable or console state, and

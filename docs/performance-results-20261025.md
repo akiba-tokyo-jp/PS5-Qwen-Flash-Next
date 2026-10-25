@@ -1,5 +1,7 @@
 # Bounded performance implementation and physical results
 
+> Historical result cohort. Later native codec and packing screens refined the proposal dispositions below; see the [current plan index](plan-index.md). Original measurements and controls are retained.
+
 All eight proposals were screened. Bounded prefill and compact completed-route
 observation were implemented and physically qualified. The representative
 512 MiB file comparison and subsequent complete-layout native qualification

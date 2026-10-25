@@ -5,133 +5,51 @@ The goal is to execute the complete text model with its original BF16 weights,
 streaming weights from SSD into bounded shared memory. No quantized substitute,
 expert pruning, or PC/cloud model execution is part of this goal.
 
-The latest [qualified performance profile](config/qualified-performance.json)
-selects BF16 indexed-vector decode and owned padded-bank Expert reads.
-The complete same-SELF PS5 comparison measured **0.39068 / 0.39819 tokens/s**
-versus **0.34838 / 0.35483**, an observed mean **12.18% gain**, with identical
-outputs, token IDs, Expert routes and physical source reads. TTFT fell from
-**57.65 / 56.68 s** to **50.14 / 49.26 s**. Both complete restoration and fresh
-original numerical-admission plans passed; the console ended idle.
-See [results](docs/gpu-optimization-results-20261025.md),
-[sanitized counters](docs/native-owned-bank-success-20261025.json),
-[profile usage](docs/qualified-performance-20261025.md) and the
-[PS5LM source assessment](docs/ps5lm-transfer-assessment-20261025.md).
-These are fixed short requests with original precision and unchanged budgets.
-The [authorized production placement](docs/production-installation-20261025.md)
-now leaves this exact fastest SELF in the actual startup path, with the original
-preserved as rollback. Post-placement inference, native frame review, ordinary
-shutdown and final full readback passed. This remains a finite application;
-another launch requires a fresh admission. Committed execution defaults and CI
-remain disabled.
+## Current status
 
-The [latest SSD delivery screen](docs/ssd-io-validation-results-20261025.md)
-completed four CPU-only PS5 cohorts. Lossless reconstruction/overlap and the
-tested packing copies were slower; completion-driven refill showed about 4%
-in small fixtures but failed its consistency/adoption gate. Production is
-unchanged. Actual router metadata is already F32; a smaller router-reuse design
-remains unimplemented and has no native speed result.
+The [plan status index](docs/plan-index.md) is the entry point for adopted
+techniques, rejected variants, remaining research and historical plan outcomes.
+**Implementation and validation of all proposals are not complete.** Ready-expert
+execution, hidden-state router forecasting and speculative verification remain
+unimplemented. Individual finite implementation, GPU optimization,
+production-placement and memory-recovery plans completed within their recorded
+scope; those completions do not close the remaining proposals.
+The [remaining validation plan](docs/remaining-validation-plan-20261026.md)
+specifies their implementation targets, dependencies and adoption gates;
+its experiments have not started.
 
-The [memory and exact-BF16 GPU follow-up](docs/memory-palette-followup-20261026.md)
-isolated validation-file residency and completed the standalone GPU restoration
-screen at **0.561503x** delivery throughput, so that variant is rejected. A fused
-restoration/GEMV candidate is built but has no physical result: its unchanged
-prelaunch memory gate refused before any launch. The exact fastest production
-SELF/settings are restored; the overall follow-up plan remains incomplete.
+The [qualified profile](config/qualified-performance.json) selects BF16
+indexed-vector decode and owned padded-bank reads. Its matched same-SELF
+comparison measured **0.39068 / 0.39819 tokens/s** versus **0.34838 / 0.35483**,
+an observed mean **12.18% gain**, with identical outputs, token IDs, expert routes
+and physical read bytes. See [GPU results](docs/gpu-optimization-results-20261025.md).
 
-The [remaining finite memory/GPU plan subsequently completed](docs/memory-plan-completion-20261026.md).
-Two captured production frames were resident; required complete native integrity
-recovered about 15.9 MiB without removing monitoring or changing reserves. A fresh
-fused GEMV comparison then completed at **0.980634x** paired throughput and was
-rejected. The reusable archival-integrity builder passed host and native checks.
-No new delivery candidate was adopted; the exact fastest SELF/settings are restored.
+The [production placement](docs/production-installation-20261025.md) left that
+exact fastest Qwen SELF installed and the original MOSS preserved as rollback.
+The deployment check measured **0.39109 / 0.39843 tokens/s**, with TTFT
+**50.13 / 49.28 seconds**, for two 30-token prompts and 22 generated tokens each.
+These are short, thinking-disabled requests; broader reasoning quality and
+sustained service remain unqualified.
 
-The [complete implementation and physical validation plan](docs/execution-plan-20261022.md)
-passed on 2026-10-24. One PS5 generated `4` for the arithmetic smoke request and
-completed two external API requests, each returning `1, 2, 3, 4, 5, 6, 7, 8`.
-Each external response generated 22 tokens at **0.28455 / 0.28882 tokens/s**;
-time to first token was **104.62 / 102.14 seconds**. See the
-[full-model result](docs/native-full-generation-success-20261024.md) and
-[sanitized measurements](docs/native-full-generation-success-20261024.json).
+The [latest finite memory/GPU plan](docs/memory-plan-completion-20261026.md)
+completed frame-residency attribution, required preservation integrity and the
+remaining fused GEMV comparison. Its **0.980634x** paired delivery result was
+rejected, as were the earlier standalone and CPU restoration variants. No new
+production candidate was adopted. These fixture ratios are not generation rates.
+The exact fastest SELF and settings were restored and fully read back.
 
-The subsequent [source-I/O performance work](docs/performance-20261024.md) also
-completed all physical/restoration gates. Bounded read/upload overlap measured
-**0.28518 / 0.28958 tokens/s**, an observed mean **0.82%** above its profile
-control and **0.24%** above the earlier functional control. This is a small
-two-request result, not a general speedup claim. The implementation preserves
-the 8 MiB window, original precision, every memory reserve and the selected driver.
+The current baseline retains original BF16/F32, F32 KV, all experts and required
+PLE, 711 physical parts up to 512 MiB, 53 global expert slots, bounded prefill four,
+known-demand overlap, qualified file/range reads and the compact route observer.
+The [adoption table](docs/plan-index.md#adopted-techniques) links each result;
+the [remaining-proposal table](docs/plan-index.md#remaining-proposals-and-prerequisites)
+keeps future work separate from completed screens.
 
-The [contention investigation](docs/source-contention-investigation-20261024.md)
-subsequently reproduced the rejected parallel-read slowdown in the loaded model
-and isolated it without GPU work: same-file reads across approximately 1 GiB
-offset regions cost about 49 ms per pair, versus 10 ms serial and 7 ms parallel
-across distinct files. Independent opens do not help. Production retains one
-read by default; [PS5-specific research](docs/ps5-source-io-workarounds-20261024.md)
-selected file/range-aware scheduling for separate qualification. The proprietary
-internal lock/cache implementation remains unproven.
-
-The selected schedule subsequently completed the entire physical plan on
-2026-10-25. Both fixed external answers/token IDs matched the single-read control
-at **0.33288 / 0.33778 tokens/s**, a mean observed gain of **16.68%**. TTFT was
-**89.44 / 87.38 seconds**. Qualified file/range pairs use at most two reads;
-excluded pairs keep the single-read pipeline. Logical source bytes were unchanged.
-This is one matched short-request result for the candidate bundle, which also
-includes startup and lossless shader-storage changes. See the
-[completed source-schedule report](docs/native-source-schedule-success-20261025.md)
-and [sanitized counters](docs/native-source-schedule-success-20261025.json).
-
-The [bounded prefill comparisons](docs/native-bounded-prefill-20261025.md)
-qualified widths 2 and 4. Width 4 measured **57.64 / 56.77 seconds** TTFT,
-a mean **35.30% reduction**, and **0.33927 / 0.34591 tokens/s** decode.
-Generation remains single-token, with all validation and monitoring retained.
-The [completed eight-proposal screen and selected implementation results](docs/performance-results-20261025.md)
-retain current Maya LFU after exact actual-demand replay found no better tested
-policy. The representative 512 MiB CPU read comparison improved 1.439x over
-safe serial; its subsequent complete-layout inference result is recorded below.
-The compact observer also completed all physical/restoration gates with an
-unchanged CPU heap peak and zero memory-pressure events. Small decode changes
-do not establish significance; state reuse and speculative drafts remain unimplemented.
-
-The subsequent [matched 512 / 256 / 128 MiB physical-file comparison](docs/source-layout-size-comparison-20261025.md)
-completed 576 exact-byte pairs on the PS5. Parallel means were **6.807 / 6.869 /
-6.896 ms**; smaller files showed no material benefit in this representative
-region. This CPU-only comparison does not establish a global file-size optimum.
-
-The authorized [in-place 512 MiB replacement and full physical plan](docs/native-split512-success-20261025.md)
-subsequently completed: 76 original logical files now use 711 physical files,
-with every original logical and physical SHA256 verified. Arithmetic and both
-22-token answers/token IDs matched the unsplit control. Decode measured
-**0.34461 / 0.35136 tokens/s**, an observed mean **1.50% gain**; TTFT was
-**57.56 / 56.59 seconds**. CPU heap peak increased 16 MiB within the unchanged
-512 MiB budget. All previously adopted improvements remain implemented.
-No complete second original model is kept on the PS5; verified host originals
-remain intact. All actual frames, positive retirement, ordinary close, exact
-original restoration, fresh numerical readmission, ordinary original shutdown
-and final idle CPU/full executable readback passed. This small two-request gain
-does not establish statistical significance or sustained throughput.
-
-The model stayed loaded across the three requests. The actual native passive
-frames were visually reviewed. Positive GPU/resource retirement, ordinary title
-close, exact original SELF restoration, original numerical readmission, ordinary
-shutdown, final CPU guards and complete original SELF readback all passed.
-No native application remains running. Committed execution/deployment controls
-and CI remain disabled; this result covers the finite validation session.
-
-The complete original BF16/F32 text model retains all experts and required PLE.
-Strata-style UMA admission and Maya aged-frequency eviction execute in the real
-cache. Source reads use protected virtual keys and one bounded 8 MiB window;
-model weights are not file-mapped. CPU heap peak was about 416 MiB inside its unchanged
-512 MiB budget. CPU/GPU utilization remains unavailable, and displayed raw GPU
-memory estimates are diagnostic. These short, thinking-disabled requests do not
-qualify broad answer quality, reasoning performance or sustained service.
-
-The earlier freeze and intermediate refusals remain documented in the
-[forensic record](docs/freeze-forensics-20261024.md),
-[native memory qualification](docs/native-memory-qualification-20261024.md),
-[full-model progress](docs/native-full-model-progress-20261024.md),
-[compact scheduler](docs/native-compact-scheduler-20261024.md) and
-[physical CPU accounting](docs/native-physical-CPU-accounting-20261024.md).
-The successful session supersedes their pending-generation status while
-preserving every failed result.
+The last recorded session ended normally with no native owner, gateway or loaded
+model. Another finite launch requires fresh admission; committed general
+execution/deployment controls and CI remain disabled. CPU/GPU utilization remains
+unavailable and is displayed as `--`. Earlier failures and intermediate refusals
+remain in the [forensic record](docs/freeze-forensics-20261024.md) and dated reports.
 
 ## Native driver integration
 
