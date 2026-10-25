@@ -1,11 +1,13 @@
 --- a/src/llama-moe-cache.cpp
 +++ b/src/llama-moe-cache.cpp
-@@ -1,3 +1,4 @@
+@@ -1,3 +1,6 @@
 +#include "mapped_source_bridge.h"
++#include "padded_cache_bridge.h"
++#include "padded_bank.h"
  #include "llama-moe-cache.h"
  
  #include "llama-impl.h"
-@@ -27,6 +28,8 @@
+@@ -27,6 +30,8 @@
  }
  
  static size_t app_advise_expert(const void * source, size_t bytes, size_t & budget) {
@@ -14,7 +16,7 @@
  #if defined(__unix__) || defined(__APPLE__)
      const long page = sysconf(_SC_PAGESIZE);
      if (page <= 0) return 0;
-@@ -258,6 +261,8 @@
+@@ -258,6 +263,8 @@
          int32_t ig = -1;                    // -1 if the layer is not cached
          ggml_tensor * slot_map = nullptr;   // I32 [1, n_expert] in host memory
          std::vector<ggml_tensor *> experts; // host expert tensors, in the order of the banks
@@ -23,7 +25,52 @@
      };
  
      struct binding {
-@@ -531,7 +536,12 @@
+@@ -351,7 +358,12 @@
+             const size_t alignment = ggml_backend_buft_get_alignment(devices[g.id].buft);
+             size_t res = 0;
+             for (const ggml_tensor * t : g.ref) {
+-                res += GGML_PAD(t->nb[2]*(n_slots + 1), alignment);
++                if(qwen_app_padded_cache_enabled()) {
++                    if(t->type!=GGML_TYPE_BF16||t->nb[2]!=qwen_app::bank_expert_bytes||t->ne[2]!=512||
++                       !((t->ne[0]==2560&&t->ne[1]==640)||(t->ne[0]==640&&t->ne[1]==2560)))
++                        throw std::runtime_error("Padded cache original tensor layout differs");
++                    res += GGML_PAD(qwen_app::padded_bank_stride*(n_slots + 1),alignment);
++                } else res += GGML_PAD(t->nb[2]*(n_slots + 1), alignment);
+             }
+             return res;
+         };
+@@ -402,6 +414,8 @@
+                 g.n_slots = 0;
+                 continue;
+             }
++            if(qwen_app_padded_cache_enabled()&&g.n_slots!=53)
++                throw std::runtime_error("Padded cache must retain exactly 53 active slots");
+             g.slru.init(model.layers.size(), n_expert, g.n_slots, g.layers.size());
+             n_tensors[g.id] += g.ref.size()*(1 + g.layers.size());
+             n_tensors_host  += g.layers.size();
+@@ -442,6 +456,10 @@
+             for (const ggml_tensor * t : g.ref) {
+                 ggml_tensor * bank = ggml_new_tensor_3d(ctx, t->type, t->ne[0], t->ne[1], g.n_slots + 1);
+                 GGML_ASSERT(bank->nb[2] == t->nb[2]);
++                if(qwen_app_padded_cache_enabled()) {
++                    bank->nb[2]=qwen_app::padded_bank_stride;
++                    bank->nb[3]=bank->nb[2]*bank->ne[2];
++                }
+                 ggml_format_name(bank, "moe_cache.%zu.%s", ig, t->name);
+                 g.banks.push_back(bank);
+             }
+@@ -451,7 +469,9 @@
+                 l.experts = llama_moe_cache_layer_experts(model.layers[il]);
+                 for (size_t ip = 0; ip < l.experts.size(); ++ip) {
+                     ggml_tensor * bank   = g.banks[ip];
+-                    ggml_tensor * cached = ggml_view_3d(ctx, bank, bank->ne[0], bank->ne[1], g.n_slots, bank->nb[1], bank->nb[2], 0);
++                    const size_t residue=qwen_app_padded_cache_enabled()?
++                        qwen_app_padded_source_residue(l.experts[ip]->data,ggml_nbytes(l.experts[ip])):0;
++                    ggml_tensor * cached = ggml_view_3d(ctx, bank, bank->ne[0], bank->ne[1], g.n_slots, bank->nb[1], bank->nb[2], residue);
+                     ggml_format_name(cached, "moe_cache.%s", l.experts[ip]->name);
+                     bindings[l.experts[ip]] = { il, (int32_t) ip, cached };
+                 }
+@@ -531,7 +551,12 @@
      }
  
      ggml_backend_t backend(int32_t il) const {
@@ -37,7 +84,7 @@
      }
  
      ~impl() {
-@@ -543,6 +553,11 @@
+@@ -543,6 +568,11 @@
              return nullptr;
          }
          const layer & l = layers[il];
@@ -49,7 +96,7 @@
  
          // large batches use most experts of a layer, so they gain little from the cache and would evict the experts used in generation
          if (n_tokens == 0 || n_tokens > max_batch || std::min(n_tokens*n_expert_used, l.slot_map->ne[1]) > groups[l.ig].n_slots) {
-@@ -553,7 +568,9 @@
+@@ -553,7 +583,9 @@
  
      ggml_tensor * get_experts(const ggml_tensor * w) const {
          const auto it = bindings.find(w);
@@ -60,10 +107,81 @@
      }
  
      int64_t copy_experts(ggml_backend_t backend, const ggml_tensor * w, ggml_tensor * dst, int64_t e, int64_t last) {
-@@ -656,6 +673,24 @@
+@@ -573,13 +605,13 @@
+             return 0;
+         }
+         int64_t n = 1;
+-        while (e + n <= last && slots[e + n] == slots[e] + n) {
++        while (!qwen_app_padded_cache_enabled() && e + n <= last && slots[e + n] == slots[e] + n) {
+             n++;
+         }
+ 
+         ggml_tensor * bank = g.banks[b.ip];
+         ggml_reset(ctx_views.get());
+-        ggml_tensor * src_view = ggml_view_3d(ctx_views.get(), bank, bank->ne[0], bank->ne[1], n, bank->nb[1], bank->nb[2], slots[e]*bank->nb[2]);
++        ggml_tensor * src_view = ggml_view_3d(ctx_views.get(), bank, bank->ne[0], bank->ne[1], n, bank->nb[1], bank->nb[2], slots[e]*bank->nb[2]+(qwen_app_padded_cache_enabled()?b.cached->view_offs:0));
+         ggml_tensor * dst_view = ggml_view_3d(ctx_views.get(), dst,  dst->ne[0],  dst->ne[1],  n, dst->nb[1],  dst->nb[2],  e*dst->nb[2]);
+         ggml_backend_view_init(src_view);
+         ggml_backend_view_init(dst_view);
+@@ -589,6 +621,28 @@
+         stats_copy.bytes += ggml_nbytes(src_view);
+ 
+         return n;
++    }
++
++    static void scatter_padded(ggml_tensor *bank,const void *source,size_t first_slot,size_t count,size_t residue) {
++        const size_t total=count*qwen_app::bank_expert_bytes;
++        if(!count||first_slot>=53||count>53-first_slot||!qwen_app_model_source_range(source,total))
++            throw std::runtime_error("Padded scatter requires complete owned original expert bytes");
++        qwen_app_record_padded_scatter(total);
++        for(size_t done=0;done<total;) {
++            size_t part=0;
++            const auto *window=static_cast<const uint8_t *>(qwen_app_model_source_chunk(
++                static_cast<const uint8_t *>(source)+done,total-done,&part));
++            if(!part||part>total-done)throw std::runtime_error("Padded scatter source did not advance");
++            for(size_t consumed=0;consumed<part;) {
++                const auto position=done+consumed;
++                const auto inside=position%qwen_app::bank_expert_bytes;
++                const auto bytes=std::min(part-consumed,qwen_app::bank_expert_bytes-inside);
++                const auto slot=first_slot+position/qwen_app::bank_expert_bytes;
++                ggml_backend_tensor_set(bank,window+consumed,slot*bank->nb[2]+residue+inside,bytes);
++                consumed+=bytes;
++            }
++            qwen_app_model_source_chunk_completed();done+=part;
++        }
+     }
+ 
+     bool copy(ggml_backend_t backend, const ggml_tensor * src, ggml_tensor * dst, ggml_cgraph * graph) {
+@@ -656,6 +710,50 @@
                  while (i + n < fills.size() && fills[i + n].expert == fills[i].expert + (int32_t) n && fills[i + n].slot == fills[i].slot + (int32_t) n) {
                      n++;
                  }
++                if(qwen_app_padded_cache_enabled()) {
++                    const auto residue=bindings.at(w).cached->view_offs;
++                    const auto *first=static_cast<const uint8_t *>(w->data)+fills[i].expert*expert_size;
++                    if(n>1) {
++                        // Keep the original coalesced source windows and scatter
++                        // each payload into its padded slot, without padding copies.
++                        scatter_padded(bank,first,fills[i].slot,n,residue);
++                        bytes+=n*expert_size;i+=n;continue;
++                    }
++                    const unsigned count=i+1<fills.size()?2:1;
++                    const int slots[2]={fills[i].slot,count==2?fills[i+1].slot:0};
++                    const void *second=count==2?static_cast<const uint8_t *>(w->data)+fills[i+1].expert*expert_size:nullptr;
++                    if(!qwen_app_try_owned_bank_reads(bank,first,second,count,slots,residue)) {
++                        if(count==2) {
++                            struct Upload {ggml_tensor *bank;size_t residue;int slots[2];};
++                            Upload job{bank,residue,{slots[0],slots[1]}};
++                            qwen_app_record_padded_scatter(2*expert_size);
++                            qwen_app_model_source_upload_pair(first,second,expert_size,&job,
++                                [](void *opaque,unsigned index,const void *window){
++                                    const auto &u=*static_cast<const Upload *>(opaque);
++                                    ggml_backend_tensor_set(u.bank,window,u.slots[index]*u.bank->nb[2]+u.residue,qwen_app::bank_expert_bytes);
++                                });
++                        } else scatter_padded(bank,first,slots[0],1,residue);
++                    }
++                    bytes+=count*expert_size;i+=count;continue;
++                }
 +                // Queue only the next known miss while the producer consumes
 +                // the current one. Total scratch stays 8 MiB; at most one read.
 +                if (n == 1 && i + 1 < fills.size() && qwen_app_model_source_pair_enabled(expert_size)) {
@@ -85,7 +203,7 @@
                  ggml_backend_tensor_set_async(backend, bank, (const uint8_t *) w->data + fills[i].expert*expert_size, fills[i].slot*expert_size, n*expert_size);
                  bytes += n*expert_size;
                  i += n;
-@@ -734,3 +769,5 @@
+@@ -734,3 +832,5 @@
      }
      return res;
  }

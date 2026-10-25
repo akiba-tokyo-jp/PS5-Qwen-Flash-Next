@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 #include "mapped_source.h"
 #include "mapped_source_bridge.h"
+#include "mapped_copy.h"
+#include "padded_cache_bridge.h"
 #include "paired_source_io.h"
 #include "device_buffer_budget.h"
 #include "system_memory.h"
@@ -150,6 +152,7 @@ void stop_native_model_sources() {
     device_budget.close_completed();
     required().close_completed();
     if (parallel_ready.load(std::memory_order_acquire)) ops.stop_parallel_completed();
+    if(qwen_app_padded_cache_enabled())configure_native_padded_cache(false,0);
     parallel_ready.store(false, std::memory_order_release);
     active.store(false, std::memory_order_release);
     compute_limits.store(false, std::memory_order_release);
@@ -159,6 +162,12 @@ DeviceBufferStats native_model_device_stats() { return device_budget.stats(); }
 }
 
 extern "C" bool qwen_app_model_reads_enabled() { return active.load(std::memory_order_acquire); }
+extern "C" bool qwen_app_try_streaming_model_window(void *destination,const void *source,std::size_t bytes) {
+    if(!qwen_app::mapped_copy_configured.load()||!qwen_app::mapped_copy_scope.load()||
+       !active.load(std::memory_order_acquire)||!compute_limits.load(std::memory_order_acquire))return false;
+    if(!required().borrowed_window_contains(source,bytes))return false;
+    return qwen_app::try_streaming_mapped_copy(destination,source,bytes);
+}
 extern "C" bool qwen_app_model_compute_limits_enabled() { return compute_limits.load(std::memory_order_acquire); }
 extern "C" std::size_t qwen_app_model_source_logical_size(int fd, std::size_t physical_bytes) {
     return qwen_app_model_reads_enabled() ? std::size_t(required().logical_file_bytes(fd)) :
@@ -175,6 +184,18 @@ extern "C" void qwen_app_model_mapping_after_unmap(void * at, std::size_t bytes)
 }
 extern "C" bool qwen_app_model_source_range(const void * at, std::size_t bytes) {
     return qwen_app_model_reads_enabled() && required().contains(reinterpret_cast<std::uintptr_t>(at), bytes);
+}
+extern "C" std::size_t qwen_app_padded_source_residue(const void *at,std::size_t bytes) {
+    if(!qwen_app_padded_cache_enabled())throw std::runtime_error("Padded cache is not admitted");
+    return required().source_bank_residue(reinterpret_cast<std::uintptr_t>(at),bytes);
+}
+extern "C" void qwen_app_record_padded_scatter(std::size_t bytes){required().record_padded_scatter(bytes);}
+extern "C" bool qwen_app_read_owned_bank(const void *first,const void *second,unsigned count,const int *slots,
+    std::size_t residue,void *bank,std::size_t capacity,std::size_t alignment){
+    if(!qwen_app_padded_cache_enabled()||!qwen_app_model_compute_limits_enabled()||!parallel_ready.load())
+        throw std::runtime_error("Direct bank reads require the admitted source/compute lifecycle");
+    return required().try_owned_bank_reads({reinterpret_cast<std::uintptr_t>(first),reinterpret_cast<std::uintptr_t>(second)},
+        count,slots,residue,bank,capacity,alignment);
 }
 extern "C" bool qwen_app_model_source_range_metadata(const void * at, std::size_t bytes) {
     return qwen_app_model_reads_enabled() && required().contains_metadata(reinterpret_cast<std::uintptr_t>(at), bytes);

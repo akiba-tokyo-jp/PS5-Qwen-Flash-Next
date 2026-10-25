@@ -1,11 +1,12 @@
 {
-  "phase": "finite-original-precision-inference-source-schedule-prefill-and-split512-validated",
+  "phase": "finite-original-precision-indexed-vector-and-owned-bank-qualified",
   "driver_qualification": "bounded-evidence-reviewed",
   "console_operations_enabled": false,
   "deployment_enabled": false,
   "console_validation_enabled": false,
   "validation_deployment_enabled": false,
   "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
-  "application_qualification": "physical-three-request-BF16-F32-generation-and-native-display-passed; bounded-prefill-and-complete-split512-layout-passed; all-adopted-optimizations-retained; exact-original-restored-freshly-numerically-readmitted-closed; final-idle-CPU-and-full-readback-passed",
-  "allowed_modes": []
+  "application_qualification": "same-SELF full-model owned-bank comparison passed; mean decode +12.182906%; BF16/F32 unchanged; all frames and resource retirement passed; exact original restored freshly numerically readmitted closed; final idle CPU and full readback passed",
+  "allowed_modes": [],
+  "qualified_performance_profile": "qualified-performance.json"
 }

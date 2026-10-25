@@ -51,6 +51,14 @@ def validate_overrides(path, base_receipt):
         raise ValueError("The source-reader bridge changed")
     if data.get("logical_bridge") != record(ROOT / "native/app/logical_source_bridge.h"):
         raise ValueError("The logical source size bridge changed")
+    if data.get("indexed_vector_policy") != record(ROOT / "native/app/indexed_vector.h"):
+        raise ValueError("The indexed-vector policy or measurement bridge changed")
+    if data.get("mapped_copy_policy") != record(ROOT / "native/app/mapped_copy.h"):
+        raise ValueError("The bounded mapped-copy policy changed")
+    if data.get("padded_bank_bridge") != record(ROOT / "native/app/padded_bank_bridge.h"):
+        raise ValueError("The owned padded-layout dispatch bridge changed")
+    if data.get("padded_cache_policy") != record(ROOT / "native/app/padded_cache_bridge.h") or data.get("padded_bank_layout") != record(ROOT / "native/app/padded_bank.h"):
+        raise ValueError("The qualified padded-cache ABI or layout changed")
     patches = [record(p) for p in sorted((ROOT / "patches/native-model-io").glob("*.patch"))]
     if data["patches"] != patches or len(patches) != 7 or set(data["sources"]) != set(BASELINES):
         raise ValueError("The exact seven model-I/O overrides are required")
@@ -90,6 +98,11 @@ def main():
     receipt = dict(schema="ps5-qwen-model-io-overrides-v1", base_engine_receipt=record(base),
         original_compile_recipes=record(recipes_path), bridge=record(ROOT / "native/app/mapped_source_bridge.h"),
         logical_bridge=record(ROOT / "native/app/logical_source_bridge.h"),
+        indexed_vector_policy=record(ROOT / "native/app/indexed_vector.h"),
+        mapped_copy_policy=record(ROOT / "native/app/mapped_copy.h"),
+        padded_bank_bridge=record(ROOT / "native/app/padded_bank_bridge.h"),
+        padded_cache_policy=record(ROOT / "native/app/padded_cache_bridge.h"),
+        padded_bank_layout=record(ROOT / "native/app/padded_bank.h"),
         patches=[record(p) for p in sorted((ROOT / "patches/native-model-io").glob("*.patch"))],
         sources={}, objects=[], steps=[], console_access=False, model_loaded=False, learned_host_inference=False)
     if len(receipt["patches"]) != 7:

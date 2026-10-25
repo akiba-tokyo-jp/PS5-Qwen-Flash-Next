@@ -2,6 +2,7 @@
 #pragma once
 #include "profile_clock.h"
 #include "source_read_schedule.h"
+#include "padded_bank.h"
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -33,6 +34,7 @@ struct SourceReadStats {
     std::uint64_t pipeline_batches = 0, worker_read_ns = 0, worker_dispatch_ns = 0;
     std::uint64_t physical_read_bytes = 0, physical_read_calls = 0;
     std::uint64_t coalesced_batches = 0, selected_serial_batches = 0;
+    std::uint64_t direct_bank_bytes = 0, direct_bank_reads = 0, padded_scatter_bytes = 0;
     bool schedule_enabled = false;
 };
 struct SourceReadRequest { int fd = -1; void * target = nullptr; std::size_t bytes = 0; std::uint64_t offset = 0; };
@@ -124,6 +126,16 @@ public:
         fail("Logical model size requires an admitted physical head descriptor");
     }
     void require_completed_window() { healthy(); if (busy_) fail("The model source window has not completed"); }
+    // Read-only authority check at the existing completed-window consumer.
+    // The read scheduler still decides which half is ready before handing it
+    // to a consumer; this query never publishes or retires a window itself.
+    bool borrowed_window_contains(const void *pointer,std::size_t bytes) {
+        healthy();
+        const auto start=reinterpret_cast<std::uintptr_t>(scratch_);
+        const auto address=reinterpret_cast<std::uintptr_t>(pointer);
+        return busy_&&pending_windows_&&bytes&&address>=start&&
+            address-start<model_read_window&&bytes<=model_read_window-(address-start);
+    }
     SourceReadRequest begin_metadata_window(const std::string & path) {
         require_completed_window();
         const auto file=std::find_if(files_.begin(),files_.end(),[&](const auto & item){return item.path==path;});
@@ -278,6 +290,81 @@ public:
         const auto offset = range->offset + at - range->at;
         return read_window(range->file, offset, std::size_t(std::min<std::uint64_t>(wanted,
             files_[range->file].bytes - offset)), copied);
+    }
+
+    std::size_t source_bank_residue(std::uintptr_t at,std::size_t bytes) {
+        require_completed_window();
+        if(!contains(at,bytes))fail("Padded bank source must be an admitted original tensor");
+        for(const auto &range:ranges_)if(at>=range.at&&at<range.at+range.bytes)
+            return std::size_t((range.offset+at-range.at)%model_read_alignment);
+        fail("Padded bank source position is unavailable");
+    }
+    void record_padded_scatter(std::size_t bytes) {
+        require_completed_window();stats_.padded_scatter_bytes+=bytes;
+    }
+    bool try_owned_bank_reads(const std::array<std::uintptr_t,2> &addresses,unsigned count,
+            const int *slots,std::size_t residue,void *bank,std::size_t capacity,std::size_t alignment) {
+        require_completed_window();
+        if(!schedule_enabled_||!slots||!bank||(count!=1&&count!=2)||capacity!=padded_bank_tensor_bytes||
+           reinterpret_cast<std::uintptr_t>(bank)%model_read_alignment||
+           capacity>UINTPTR_MAX-reinterpret_cast<std::uintptr_t>(bank))
+            fail("Direct bank reads require the qualified source schedule and actual owned extent");
+        std::array<SourceReadRequest,2> requests{};std::array<std::size_t,2> files{};
+        std::array<std::uint64_t,2> offsets{},expected{};
+        // Finish every eligibility decision before opening a handle or starting
+        // I/O. Cross-part/EOF envelopes retain the qualified staged reader.
+        bool eligible=true;
+        for(unsigned i=0;i<count;++i) {
+            if(slots[i]<0||!contains(addresses[i],bank_expert_bytes))fail("Direct bank source or slot is unowned");
+            PaddedBankSlot slot;
+            try{slot=padded_bank_slot(std::size_t(slots[i]),residue,capacity,alignment);}
+            catch(...){failed_=true;throw;}
+            const auto range=std::find_if(ranges_.begin(),ranges_.end(),[&](const auto &r){
+                return addresses[i]>=r.at&&addresses[i]<r.at+r.bytes;});
+            files[i]=range->file;offsets[i]=range->offset+addresses[i]-range->at;
+            if(offsets[i]%model_read_alignment!=residue)fail("Direct bank source/destination residues differ");
+            std::uint64_t aligned=0;std::size_t bytes=0;
+            if(!padded_source_envelope(offsets[i],files_[files[i]].bytes,aligned,bytes))eligible=false;
+            if(eligible&&bytes!=slot.requested_bytes)fail("Direct bank source envelope changed");
+            requests[i]={-1,static_cast<unsigned char *>(bank)+slot.aligned_write_offset,slot.requested_bytes,aligned};
+            expected[i]=slot.requested_bytes;
+        }
+        if(count==2) {
+            if(slots[0]==slots[1])fail("Concurrent direct bank destinations overlap");
+            if(files[0]==files[1]&&offsets[1]>=offsets[0]&&offsets[1]-offsets[0]==bank_expert_bytes)
+                eligible=false; // Preserve the existing coalesced source read.
+        }
+        if(!eligible)return false;
+        for(unsigned i=0;i<count;++i){ProfileScope timing(stats_.handle_ns);requests[i].fd=handle(files[i]);}
+        busy_=true;pending_windows_=count;
+        try {
+            const auto before_read=[&](unsigned){ProfileScope timing(stats_.headroom_ns);
+                if(ops_.system_headroom()<model_read_system_reserve+model_read_flexible_metadata_margin)
+                    fail("Fresh Flexible/kernel reserve cannot admit a direct bank read");};
+            if(count==1) {
+                before_read(0);std::int64_t got;
+                {ProfileScope timing(stats_.read_ns);got=ops_.read_at(requests[0].fd,requests[0].target,requests[0].bytes,requests[0].offset);}
+                if(got!=std::int64_t(expected[0]))fail("Direct bank read did not return exact bytes; no fallback");
+            } else if(source_schedule_parallel(files_[files[0]].identity,requests[0].offset,requests[0].bytes,
+                    files_[files[1]].identity,requests[1].offset,requests[1].bytes)) {
+                before_read(0);before_read(1);std::array<std::int64_t,2> got;
+                {ProfileScope timing(stats_.read_ns);got=ops_.read_pair(requests);}
+                for(unsigned i=0;i<2;++i)if(got[i]!=std::int64_t(expected[i]))
+                    fail("Direct parallel bank read did not return exact bytes; no fallback");
+                ++stats_.parallel_batches;
+            } else {
+                const auto timing=ops_.pipeline_pair(requests,expected,before_read,[](unsigned,const void *){});
+                stats_.read_ns+=timing.producer_wait_ns;stats_.worker_read_ns+=timing.worker_read_ns;
+                stats_.worker_dispatch_ns+=timing.worker_dispatch_ns;++stats_.pipeline_batches;++stats_.selected_serial_batches;
+            }
+        }catch(...){failed_=true;throw;}
+        for(unsigned i=0;i<count;++i){
+            ++stats_.physical_read_calls;stats_.physical_read_bytes+=expected[i];
+            stats_.maximum_chunk=std::max<std::uint64_t>(stats_.maximum_chunk,requests[i].bytes);
+        }
+        stats_.bytes+=count*bank_expert_bytes;stats_.chunks+=count;stats_.completed_windows+=count;
+        stats_.direct_bank_bytes+=count*bank_expert_bytes;stats_.direct_bank_reads+=count;
+        pending_windows_=0;busy_=false;return true;
     }
 
     std::array<const void *, 2> prepare_pair(const std::array<std::uintptr_t, 2> & addresses, std::size_t bytes) {

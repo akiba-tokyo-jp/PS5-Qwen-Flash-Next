@@ -245,8 +245,11 @@ Json serve_bounded_demo(const std::string & run_id, const std::string & assets,
             Json report;
             try {
             report = execute(job->ordinal, [job] { return !job->disconnected.load(); }, [&](const Json & event) {
-                const std::string text = "data: " + event.dump() + "\n\n";
-                {
+                // Final metrics may reach the display before evidence is
+                // persisted. Only its completed result is a stream terminal.
+                const bool monitor_only=event.value("type", "")=="completion_pending";
+                const std::string text = monitor_only?std::string():"data: " + event.dump() + "\n\n";
+                if(!monitor_only) {
                     std::lock_guard<std::mutex> lock(job->mutex);
                     if (job->disconnected || job->events.size() >= 64 || text.size() > (128u << 10))
                         throw std::runtime_error("The bounded inference observer disconnected or exceeded its queue");

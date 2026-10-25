@@ -109,7 +109,7 @@ def main():
         if status != 200 or json.loads(payload) != dict(state="accepted"):
             raise AssertionError("Positive finish acknowledgement was not delivered")
         if process.wait(timeout=15) != 0: raise RuntimeError("Synthetic transport failed during completed shutdown")
-        for failure_mode in ["--fail-request", "--fail-before-request"]:
+        for failure_mode in ["--fail-request", "--fail-before-request", "--fail-after-final-metrics"]:
             stdout.close(); stderr.close()
             with socket.socket() as candidate:
                 candidate.bind(("127.0.0.1", 0)); port = candidate.getsockname()[1]
@@ -129,7 +129,8 @@ def main():
                 time.sleep(.05)
             status, payload = request("POST", "/api/generate", valid)
             events = [json.loads(line[6:]) for line in payload.splitlines() if line.startswith(b"data: ")]
-            if status != 200 or len(events) != (2 if failure_mode == "--fail-request" else 1):
+            expected_events={"--fail-request":2,"--fail-before-request":1,"--fail-after-final-metrics":3}[failure_mode]
+            if status != 200 or len(events) != expected_events or sum(e.get("type")=="finished"for e in events)!=1:
                 raise AssertionError("Failed owner did not deliver its bounded terminal event")
             terminal = events[-1]
             if (terminal.get("id") != valid["id"] or terminal.get("type") != "finished" or
@@ -143,7 +144,9 @@ def main():
             streamed_requests=2, extra_request_rejected=True, premature_finish_rejected=True,
             assets_and_status_passed=True, finish_delivered_and_listener_stopped=True,
             owner_failure_does_not_hang_listener_shutdown=True,
-            failed_terminal_events_received=2, failure_before_first_token_is_explicit=True,
+            failed_terminal_events_received=3, failure_before_first_token_is_explicit=True,
+            frame_failure_after_final_metrics_emits_only_one_failed_terminal=True,
+            internal_completion_pending_events_never_streamed=True,
             console_access=False, learned_host_inference=False,
             reused_host_fixture=reused,
             source_sha256=source_digests)

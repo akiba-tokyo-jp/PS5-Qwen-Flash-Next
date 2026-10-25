@@ -1,0 +1,80 @@
+{
+  "schema": "ps5-qwen-qualified-performance-profile-v1",
+  "status": "adopted",
+  "qualification_date": "2026-10-25",
+  "application_SELF": {
+    "bytes": 28017271,
+    "sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d"
+  },
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "precision": {
+    "weights": "original BF16/F32",
+    "KV_cache": "F32",
+    "quantization": false
+  },
+  "unchanged_limits": {
+    "context_tokens": 256,
+    "prefill_tokens": 4,
+    "active_expert_slots": 53,
+    "expert_cache_bytes": 536870912,
+    "source_window_bytes": 8388608,
+    "physical_model_part_maximum_bytes": 536870912
+  },
+  "selected_native_policy": {
+    "native_bf16_indexed_vector": {
+      "schema": "ps5-qwen-BF16-indexed-vector-v1",
+      "enabled": true,
+      "decode_only": true,
+      "maximum_tokens": 1,
+      "original_shape_fixture_required": true,
+      "weights_BF16": true,
+      "activations_F32": true,
+      "accumulation_F32": true
+    },
+    "native_indexed_vector_fixture": {
+      "schema": "ps5-qwen-indexed-fixture-admission-v1",
+      "enabled": true,
+      "require_non_dyadic_F32": true,
+      "post_fixture_kernel_target_pages": 2974
+    },
+    "native_padded_expert_cache": {
+      "schema": "ps5-qwen-owned-padded-expert-cache-v1",
+      "enabled": true,
+      "active_slots": 53,
+      "physical_planes": 54,
+      "bank_stride": 3293184,
+      "cache_cap_bytes": 536870912,
+      "preserve_coalesced_source_reads": true,
+      "pre_IO_split_EOF_fallback": true,
+      "require_owned_synchronous_bank_lease": true,
+      "automatic_retries": 0,
+      "precision_unchanged": true,
+      "layout_qualification_SELF_SHA256": "5bb22cdf4603b038d8247597caafe8b08479c2e9bcc1fda44982b777ae2018db",
+      "layout_qualification_result_SHA256": "d277b1d03fcabe981408b8027a559e16134eb8b7e746bef366bb20ea63703cb5"
+    }
+  },
+  "disabled_native_policy": [
+    "native_mapped_streaming_copy"
+  ],
+  "qualification": {
+    "same_application_control": 2190,
+    "selected_case": 2210,
+    "external_prompt_tokens": 30,
+    "external_output_tokens": 22,
+    "requests_per_case": 2,
+    "thinking_enabled": false,
+    "outputs_and_token_IDs_equal": true,
+    "all_route_records_equal": true,
+    "physical_read_bytes_equal": true,
+    "complete_original_restoration_and_numerical_readmission": true,
+    "observed_mean_decode_gain_percent": 12.182906264173464
+  },
+  "usage": "Apply with tools/qualified_performance.py to an independently prepared private case. This profile does not grant execution or replay any consumed case."
+}

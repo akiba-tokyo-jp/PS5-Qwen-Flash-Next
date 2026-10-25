@@ -1,6 +1,21 @@
 # Unified diff context lines are data, including blank context at the end.
 *.patch text eol=lf whitespace=-blank-at-eol,-blank-at-eof
-# Keep imported native source bytes stable for immutable build provenance.
-native/driver/* text eol=lf
-native/driver/driver_journal_impl.inc whitespace=-blank-at-eof
-native/driver/radv_ps5_platform_native.c whitespace=-blank-at-eof
+# Preserve the exact imported native bytes, including the qualified mixed EOLs.
+# Forced LF normalization invalidates the archived native platform's receipts.
+native/driver/* -text whitespace=cr-at-eol
+native/app/expert_policy.h text eol=lf
+native/qwen_flash_next/launch_integrity*.h text eol=lf
+tests/launch_integrity.c text eol=lf
+native/driver/driver_journal_impl.inc whitespace=cr-at-eol,-blank-at-eof
+native/driver/radv_ps5_platform_native.c whitespace=cr-at-eol,-blank-at-eof
+# New native qualification sources retain their exact qualified byte streams.
+native/app/boundary_memory_trace.h -text whitespace=cr-at-eol
+native/app/direct_bmp*.h -text whitespace=cr-at-eol
+native/app/direct_report.h -text whitespace=cr-at-eol
+native/app/indexed_vector*.h -text whitespace=cr-at-eol
+native/app/mapped_copy.h -text whitespace=cr-at-eol
+native/app/owned_mapped_* -text whitespace=cr-at-eol
+native/app/padded_* -text whitespace=cr-at-eol
+native/app/queued_source_io.h -text whitespace=cr-at-eol
+native/qwen_flash_next/frame_output_probe* -text whitespace=cr-at-eol
+native/qwen_flash_next/queued_source_probe* -text whitespace=cr-at-eol

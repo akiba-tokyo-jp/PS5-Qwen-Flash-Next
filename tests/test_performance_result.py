@@ -122,6 +122,21 @@ class PerformanceResultTests(unittest.TestCase):
             bad=copy.deepcopy(self.record);bad['delta'][field]=value
             with self.assertRaises(ValueError):validate_performance(bad,self.result)
 
+    def test_owned_padded_bank_payload_and_fallback_counts(self):
+        self.test_selected_schedule_v4_requires_physical_read_and_completion_accounting()
+        self.record['owned_padded_bank_IO']=True
+        self.record['delta'].update(source_bytes=6553700,source_physical_read_bytes=6586488,
+            source_direct_bank_bytes=6553600,source_direct_bank_reads=2,source_padded_scatter_bytes=0)
+        validate_performance(self.record,self.result)
+        for field,value in [('source_direct_bank_bytes',6553601),('source_direct_bank_reads',3),
+                            ('source_padded_scatter_bytes',101)]:
+            bad=copy.deepcopy(self.record);bad['delta'][field]=value
+            with self.assertRaises(ValueError):validate_performance(bad,self.result)
+        bad=copy.deepcopy(self.record);bad.pop('owned_padded_bank_IO')
+        with self.assertRaises(ValueError):validate_performance(bad,self.result)
+        bad=copy.deepcopy(self.record);bad['delta'].pop('source_padded_scatter_bytes')
+        with self.assertRaises(ValueError):validate_performance(bad,self.result)
+
     def test_completed_split_fragments_require_exact_joined_pair_bounds(self):
         record=dict(schema='ps5-qwen-completed-performance-v5',
             process_includes_source_and_backend_work=True,GPU_timestamp_queries=False,

@@ -101,7 +101,7 @@ def main():
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
-                                                   "model_integrity.cpp", "direct_integrity.cpp", "direct_metadata.cpp", "shader_assets.cpp", "shader_file.cpp", "shader_file_session.cpp", "shader_file_native.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
+                                                   "model_integrity.cpp", "direct_integrity.cpp", "direct_metadata.cpp", "shader_assets.cpp", "shader_file.cpp", "shader_file_session.cpp", "shader_file_native.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "owned_mapped_probe.cpp", "owned_mapped_backend.cpp", "padded_bank_layout.cpp", "padded_bank_route.cpp", "padded_cache.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
@@ -117,14 +117,26 @@ def main():
     headers = b"".join(path.read_bytes() for path in header_paths)
     compiler_hash = sha(llvm / "clang++.exe")
     source_inputs = [record(path) for path in files]
+    # The diagnostic borrower uses the exact engine ABI, never a copied layout.
+    backend_abi_paths = [source / "ggml/src/ggml-backend-impl.h",
+        *[source / "ggml/src/ggml-vulkan" / name for name in
+          ("ggml-vulkan-types.h", "ggml-vulkan-common.h", "ggml-vulkan-push-constants.h")],
+        engine / "ggml/src/ggml-vulkan/ggml-vulkan-shaders.hpp"]
+    backend_abi_inputs = [record(path) for path in backend_abi_paths]
     env = os.environ.copy()
     env["PATH"] = str(workspace / "toolchain/msys-clang64/clang64/bin") + os.pathsep + env.get("PATH", "")
 
     def compile_one(path):
-        local_flags = flags + (["-I", str(workspace / "toolchain/Vulkan-Headers/include")] if path.name in {"vulkan_bridge.cpp", "vulkan_admission.cpp", "native_gpu.cpp"} else [])
+        local_flags = flags + (["-I", str(workspace / "toolchain/Vulkan-Headers/include")] if path.name in {"vulkan_bridge.cpp", "vulkan_admission.cpp", "native_gpu.cpp", "owned_mapped_backend.cpp"} else [])
+        if path.name == "owned_mapped_backend.cpp":
+            local_flags += ["-I", str(source / "ggml/src"), "-I", str(source / "ggml/src/ggml-vulkan"),
+                            "-I", str(engine / "ggml/src/ggml-vulkan"),
+                            "-I", str(workspace / "toolchain/shaderc-clang64/clang64/include")]
         if path.name == "httplib.cpp":
             local_flags += ["-Daccept4=qwen_native_accept_http"]
         identity = hashlib.sha256((str(path) + json.dumps(local_flags) + compiler_hash).encode() + path.read_bytes() + headers).hexdigest()
+        if path.name == "owned_mapped_backend.cpp":
+            identity = hashlib.sha256((identity + json.dumps(backend_abi_inputs,sort_keys=True)).encode()).hexdigest()
         obj = objects / (path.stem + "-" + identity[:20] + ".o")
         command = [str(llvm / "clang++.exe"), *local_flags, "-c", str(path), "-o", str(obj)]
         if not obj.exists():
@@ -145,6 +157,8 @@ def main():
         compiled = list(pool.map(compile_one, files))
     if source_inputs != [record(path) for path in files] or header_inputs != [record(path) for path in header_paths]:
         raise ValueError("An application source changed during compilation")
+    if backend_abi_inputs != [record(path) for path in backend_abi_paths]:
+        raise ValueError("The owned-mapping borrower engine ABI changed during compilation")
     # Keep deterministic source/link order and all static constructor sections.
     elf = out / "qwen-native.pie.elf"
     driver_archive = Path((native_platform or selected)["archive_path"])
@@ -208,7 +222,7 @@ def main():
     command += ["--as-needed", *map(str, public_imports), *map(str, weak_imports)]
     inputs = [*(obj for obj, _ in compiled), *model_io_objects, a.model_io_manifest, *engine_archives, driver_archive, *static_runtime, builtins, *imports,
               ROOT / "cmake/native-unwind.ld", ROOT / "cmake/native-symbols.map",
-              a.driver_root / "tooling/native/ps5-pie.ld", receipt_path]
+              a.driver_root / "tooling/native/ps5-pie.ld", receipt_path, *backend_abi_paths]
     if a.shader_storage_manifest:inputs.append(a.shader_storage_manifest)
     command.append("--threads=" + str(a.link_threads))
     before = [record(path) for path in inputs]
@@ -225,6 +239,7 @@ def main():
                "bounded_model_source_manifest": record(a.model_io_manifest),
                "compiler": record(llvm / "clang++.exe"), "linker": record(llvm / "ld.lld.exe"),
                "application_sources": source_inputs, "application_headers": header_inputs,
+               "owned_mapping_engine_ABI_inputs": backend_abi_inputs,
                "CRT_derived_from": record(a.driver_root / "tooling/native/app_crt.cpp"),
                "console_access": False, "model_loaded": False, "learned_host_inference": False,
                "SELF_packaged": False, "CI": False, "compile_commands": [cmd for _, cmd in compiled],

@@ -60,8 +60,18 @@ def validate_performance(record, result, *, split_sources=False):
     if schema.endswith(('v4','v5')):
         fields |= {'source_parallel_batches','source_coalesced_batches','source_selected_serial_batches',
                    'source_physical_read_bytes','source_physical_read_calls'}
+    padded=record.get('owned_padded_bank_IO',False)
+    if type(padded) is not bool or (padded and not schema.endswith(('v4','v5'))):
+        raise ValueError('Owned bank I/O requires selected source accounting')
+    if padded:
+        fields |= {'source_direct_bank_bytes','source_direct_bank_reads','source_padded_scatter_bytes'}
     if set(delta) != fields or any(type(v) is not int or not 0 <= v < 2**63 for v in delta.values()):
         raise ValueError('Invalid completed performance counters')
+    if padded and (delta['source_direct_bank_bytes']!=3276800*delta['source_direct_bank_reads'] or
+            delta['source_direct_bank_bytes']+delta['source_padded_scatter_bytes']>delta['source_bytes'] or
+            delta['source_direct_bank_reads']>delta['source_physical_read_calls'] or
+            delta['source_direct_bank_reads']>delta['source_chunks']):
+        raise ValueError('Direct bank payload/read/scatter accounting differs')
     if schema.endswith('v2') and (record.get('source_read_ns_is_batch_wall_time') is not True or
         record.get('maximum_parallel_source_reads') != 2 or
         not 0 < delta['source_parallel_batches'] <= delta['source_chunks'] // 2):
