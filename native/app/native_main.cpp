@@ -14,6 +14,7 @@
 #include "native_display.h"
 #include "startup.h"
 #include "gpu_admission.h"
+#include "palette_gpu_admission.h"
 #include "operator_admission.h"
 #include "moe_admission.h"
 #include "runtime_admission.h"
@@ -531,7 +532,7 @@ int main(int argc, char ** argv) {
         const auto policy = Json::parse(policy_file);
         if (!policy.at("console_operations_enabled").get<bool>())
             throw std::runtime_error("Console execution is disabled for this application integration phase");
-        const auto mode = startup.memory_validation ? "native-memory-validation" : startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : startup.moe_validation ? "moe-validation" : startup.first_generation_validation ? "first-generation-validation" : "inference";
+        const auto mode = startup.palette_validation ? "palette-validation" : startup.memory_validation ? "native-memory-validation" : startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : startup.moe_validation ? "moe-validation" : startup.first_generation_validation ? "first-generation-validation" : "inference";
         if (!policy.contains("allowed_modes") || !policy.at("allowed_modes").is_array() ||
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
@@ -578,7 +579,9 @@ int main(int argc, char ** argv) {
                 throw std::runtime_error("The inference-boundary memory diagnostic policy differs");
             boundary_memory_enabled=true;
         }
-        qwen_app::monitor_clock().initialize(startup.clock_calibration);
+        // The headless palette probe uses the admitted monotonic clock and
+        // publishes no monitor UTC state. Other modes keep their UTC guard.
+        if(!startup.palette_validation)qwen_app::monitor_clock().initialize(startup.clock_calibration);
         qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");
         llama_log_set(native_log, nullptr); ggml_log_set(native_log, nullptr);
         qwen_native_set_fault_report((startup.admission_report + ".fatal").c_str());
@@ -591,6 +594,27 @@ int main(int argc, char ** argv) {
             write_fresh_report(startup.admission_report,result);
             qwen_native_stage("memory_validation_completed_waiting_for_ordinary_close GPU_not_started=1 model_loaded=0");
             for(;;) (void)usleep(1000000);
+        }
+        if(startup.palette_validation) {
+            if(!policy.value("console_validation_enabled",false))
+                throw std::runtime_error("Native palette validation is not enabled");
+            if(setenv("MESA_SHADER_CACHE_DISABLE","true",1))
+                throw std::runtime_error("Palette diagnostic requires disabled persistent caches");
+            (void)qwen_app::admit_native_startup_memory();
+            qwen_app::admit_cpu_runtime(qwen_native_stage);qwen_app::inspect_vulkan_globals();
+            std::int64_t physical=0;std::size_t available=0,flexible=0;
+            const auto pool=sceKernelGetDirectMemorySize();
+            if(pool<=0||sceKernelAvailableDirectMemorySize(0,pool,65536,&physical,&available)<0||
+               sceKernelAvailableFlexibleMemorySize(&flexible)<0||available<(1ull<<30)||flexible<(64u<<20))
+                throw std::runtime_error("Palette diagnostic memory headroom is insufficient");
+            if(!qwen_native_gpu_frontend_linked())throw std::runtime_error("Native driver frontend is not linked");
+            native_resources_started=true;
+            auto report=qwen_app::admit_palette_gpu(policy,startup.admission_report+".driver.log");
+            qwen_native_driver_complete();
+            report["pid"]=getpid();report["positive_device_idle_and_epoch_retirement"]=true;
+            write_fresh_report(startup.admission_report,report);
+            qwen_native_stage("palette_validation_completed_waiting_for_ordinary_close model_loaded=0");
+            for(;;)(void)usleep(1000000);
         }
         if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) || setenv("LLAMA_APP_NO_MMAP_PREFETCH", "1", 1) ||
             setenv("GGML_VK_BOUNDED_STAGING", "1", 1) ||

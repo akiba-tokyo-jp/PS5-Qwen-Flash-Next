@@ -99,7 +99,7 @@ def main():
     flags += ["-DQWEN_NATIVE_PLATFORM="+str(int(native_platform is not None))]
     files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "completed_expert_routes.cpp", "http_app.cpp", "bounded_demo.cpp", "chat_prompt.cpp", "native_main.cpp",
                                                    "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
-                                                   "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
+                                                   "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "palette_gpu_dispatch.cpp", "palette_gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
                                                    "model_integrity.cpp", "direct_integrity.cpp", "direct_metadata.cpp", "shader_assets.cpp", "shader_file.cpp", "shader_file_session.cpp", "shader_file_native.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "owned_mapped_probe.cpp", "owned_mapped_backend.cpp", "padded_bank_layout.cpp", "padded_bank_route.cpp", "padded_cache.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
@@ -127,7 +127,7 @@ def main():
     env["PATH"] = str(workspace / "toolchain/msys-clang64/clang64/bin") + os.pathsep + env.get("PATH", "")
 
     def compile_one(path):
-        local_flags = flags + (["-I", str(workspace / "toolchain/Vulkan-Headers/include")] if path.name in {"vulkan_bridge.cpp", "vulkan_admission.cpp", "native_gpu.cpp", "owned_mapped_backend.cpp"} else [])
+        local_flags = flags + (["-I", str(workspace / "toolchain/Vulkan-Headers/include")] if path.name in {"vulkan_bridge.cpp", "vulkan_admission.cpp", "native_gpu.cpp", "owned_mapped_backend.cpp", "palette_gpu_dispatch.cpp"} else [])
         if path.name == "owned_mapped_backend.cpp":
             local_flags += ["-I", str(source / "ggml/src"), "-I", str(source / "ggml/src/ggml-vulkan"),
                             "-I", str(engine / "ggml/src/ggml-vulkan"),
