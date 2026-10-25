@@ -3,12 +3,16 @@
 #include "native_display.h"
 #include "tiled_frame.h"
 #include "monitor_clock.h"
+#include "direct_bmp_native.h"
+#include "system_memory.h"
 #include <ps5platform/kernel.h>
+#include <ps5platform/heap.h>
 #include <ps5platform/videoout.h>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
 #include <cstring>
+#include <cstdlib>
 #include <mutex>
 #include <stdexcept>
 #include <thread>
@@ -20,6 +24,7 @@
 extern "C" int sceSystemServiceHideSplashScreen();
 extern "C" bool qwen_native_faulted();
 extern "C" void qwen_native_mark_fault();
+extern "C" void qwen_native_stage(const char *);
 
 namespace qwen_app {
 struct NativeDisplay::Impl {
@@ -34,6 +39,7 @@ struct NativeDisplay::Impl {
     std::string capture_path, capture_request;
     std::uint64_t capture_minimum = 0;
     bool capture_ready = false;
+    bool direct_frame_evidence = false;
     MonitorSnapshot captured;
     int video = -1, front = 0;
     std::int64_t physical = 0, marker = 0;
@@ -75,7 +81,34 @@ struct NativeDisplay::Impl {
             throw std::runtime_error("Initial display completion is uncertain; backing retained");
         (void) sceSystemServiceHideSplashScreen();
     }
-    static void save_frame(const std::string & path, const MonitorRaster & raster) {
+    static void frame_guard() {
+        if(qualified_system_headroom(observe_native_system_memory()) < (264u << 20))
+            throw std::runtime_error("Frame persistence must preserve the original Flexible reserve");
+    }
+    static void save_frame_direct(const std::string & path, const MonitorRaster & raster) {
+        static_assert(MonitorRaster::width == frame_width && MonitorRaster::height == frame_height,
+                      "Direct frame evidence must preserve the original raster geometry");
+        frame_guard();
+        void *window = nullptr;
+        if(posix_memalign(&window,frame_write_alignment,frame_write_window) || !window || !ps5_heap_owns(window))
+            throw std::runtime_error("Frame persistence requires one tracked Direct CPU window");
+        struct Source {
+            const MonitorRaster &raster;
+            void copy_row(unsigned y,std::size_t at,unsigned char *target,std::size_t bytes) {
+                if(y>=frame_height || at>frame_row_bytes || bytes>frame_row_bytes-at)
+                    throw std::runtime_error("Frame persistence row bounds refused");
+                const auto *row=reinterpret_cast<const unsigned char*>(raster.pixels().data()+y*frame_width);
+                std::memcpy(target,row+at,bytes);
+            }
+        } source{raster};
+        // Failure retains the descriptor/window for ordinary OS title close.
+        // Only an exact returned write, durable commit and close permit release.
+        NativeFrameSink sink(path,true,qwen_native_stage,frame_guard,FrameMetadataABI::native_descriptor);
+        stream_direct_bmp(source,sink,window);
+        free(window);
+    }
+    void save_frame(const std::string & path, const MonitorRaster & raster) {
+        if(direct_frame_evidence) { save_frame_direct(path,raster); return; }
         constexpr std::uint32_t image_bytes = MonitorRaster::width * MonitorRaster::height * 4;
         unsigned char header[54] = {'B', 'M'};
         auto u16 = [&](unsigned offset, std::uint16_t value) {
@@ -154,7 +187,9 @@ struct NativeDisplay::Impl {
         // No unregister, unmap, release or retry. OS title close owns backing.
     }
 };
-NativeDisplay::NativeDisplay() : impl_(new Impl) {}
+NativeDisplay::NativeDisplay(bool direct_frame_evidence) : impl_(new Impl) {
+    impl_->direct_frame_evidence = direct_frame_evidence;
+}
 NativeDisplay::~NativeDisplay() {
     impl_->stop = true; impl_->changed.notify_all();
     if (impl_->worker.joinable()) impl_->worker.join();
@@ -177,9 +212,14 @@ MonitorSnapshot NativeDisplay::capture(const std::string & path, const std::stri
         throw std::runtime_error("The display cannot accept a frame-evidence request");
     impl_->capture_path = path; impl_->capture_request = request; impl_->capture_minimum = tokens;
     impl_->capture_ready = false; impl_->changed.notify_all();
-    if (!impl_->changed.wait_for(lock, std::chrono::seconds(10), [&] { return impl_->fault || impl_->capture_ready; }) || impl_->fault)
+    if (!impl_->changed.wait_for(lock, std::chrono::seconds(10), [&] { return impl_->fault || impl_->capture_ready; }))
         throw std::runtime_error("Positive displayed-frame evidence is missing; backing retained");
+    if(impl_->fault)throw std::runtime_error("Displayed-frame persistence failed: "+impl_->error);
     return impl_->captured;
 }
 bool NativeDisplay::failed() const { return impl_->fault; }
+void NativeDisplay::write_CPU_frame_fixture(const std::string & path) {
+    MonitorRaster raster; // A deterministic, all-zero raster for full-byte SHA admission.
+    Impl::save_frame_direct(path,raster);
+}
 } // namespace qwen_app

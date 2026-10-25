@@ -50,6 +50,9 @@ def main():
                 raise ValueError("Direct metadata checks require the data-disk native engine headers")
             command += ["-I",upstream / "ggml/include"]
         checks.append(("PS5_"+name,command))
+    padded_exe=a.out / "padded-source.exe"
+    checks.extend([("padded_control_compile",[host / "clang++.exe","-std=c++17","-O2","-Wall","-Wextra","-Werror",
+        "-I",app,ROOT / "tests/padded_source.cpp","-o",padded_exe]),("padded_control_failures",[padded_exe])])
     receipt = dict(schema="ps5-qwen-mapped-source-check-v1", console_access=False, learned_host_inference=False, steps=[])
     for label, command in checks:
         result = subprocess.run(list(map(str, command)), env=env, capture_output=True, timeout=180)
@@ -61,11 +64,12 @@ def main():
         print(label + " passed", flush=True)
     receipt["provider_object_sha256"] = hashlib.sha256(obj.read_bytes()).hexdigest()
     receipt["inputs"] = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in (app / "mapped_source.h", app / "mapped_source.cpp", app / "mapped_source_bridge.h", app / "profile_clock.h", app / "paired_source_io.h",
+        for path in (app / "mapped_source.h", app / "mapped_source.cpp", app / "mapped_source_bridge.h", app / "mapped_copy.h", app / "profile_clock.h", app / "paired_source_io.h",
                      app / "system_memory.h",app / "system_memory.cpp",app / "memory_backpressure.h",
                      app / "device_buffer_budget.h",app / "logical_source_bridge.h", app / "direct_metadata.h",
                      app / "direct_metadata.cpp",app / "model_mapping.cpp", ROOT / "tests/mapped_source.cpp",
-                     ROOT / "tests/split_source.cpp")}
+                     ROOT / "tests/split_source.cpp",ROOT / "tests/padded_source.cpp",app / "padded_bank.h",
+                     app / "padded_bank_layout.h",app / "padded_cache_bridge.h")}
     (a.out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
 
 

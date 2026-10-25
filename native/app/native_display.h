@@ -8,7 +8,7 @@ namespace qwen_app {
 // never frees registered or uncertain scan-out resources from a destructor.
 class NativeDisplay {
 public:
-    NativeDisplay();
+    explicit NativeDisplay(bool direct_frame_evidence = false);
     ~NativeDisplay();
     NativeDisplay(const NativeDisplay &) = delete;
     NativeDisplay & operator=(const NativeDisplay &) = delete;
@@ -19,6 +19,8 @@ public:
     MonitorSnapshot capture(const std::string & fresh_path, const std::string & request_id,
                             std::uint64_t minimum_tokens);
     bool failed() const;
+    // Private CPU admission uses the same writer without VideoOut or a model.
+    static void write_CPU_frame_fixture(const std::string & fresh_path);
 private:
     struct Impl;
     std::unique_ptr<Impl> impl_;

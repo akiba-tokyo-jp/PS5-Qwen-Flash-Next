@@ -58,6 +58,7 @@ int main() {
                 const auto lease=reader.begin_metadata_window(file.path);
                 check(lease.target==scratch&&lease.bytes==model_read_window&&ops.identity(lease.fd)==file.identity,
                     "Metadata did not reuse the existing original window and descriptor");
+                check(!reader.borrowed_window_contains(lease.target,100),"A metadata-only lease authorized a payload copy");
                 reader.end_metadata_window();reader.require_completed_window();
             }
             check(ops.peak==8&&ops.reads==0,"Metadata lease added buffers, payload reads or descriptors");
@@ -81,13 +82,20 @@ int main() {
             check(metadata_owned && ops.reads == 2, "Graph-worker range lookup read payload or lost immutable ownership");
             check(!reader.contains(base - model_read_alignment, 10), "An unowned pointer was treated as model data");
             std::size_t left = model_read_window + 100000, done = 0;
+            check(!reader.borrowed_window_contains(scratch,100),"An idle source window authorized a copy");
             while (left) {
                 std::size_t copied = 0;
                 const auto * data = static_cast<const unsigned char *>(reader.prepare(base + 123 + done, left, copied));
                 check(copied && copied <= model_read_window, "Invalid source window length");
+                check(reader.borrowed_window_contains(data,copied),"The completed payload consumer lost window authority");
+                check(!reader.borrowed_window_contains(data,0)&&
+                    !reader.borrowed_window_contains(reinterpret_cast<void *>(reinterpret_cast<std::uintptr_t>(scratch)-1),1)&&
+                    !reader.borrowed_window_contains(static_cast<unsigned char *>(scratch)+model_read_window,1)&&
+                    !reader.borrowed_window_contains(scratch,model_read_window+1),"A source copy escaped its window");
                 for (std::size_t i = 0; i < copied; ++i)
                     check(data[i] == (123 + done + i) % 251, "An original source byte changed");
                 done += copied; left -= copied; reader.completed();
+                check(!reader.borrowed_window_contains(data,copied),"A retired payload lease still authorized a copy");
             }
             const auto bytes = ops.files[0].bytes;
             reader.before_unmap(base, bytes); reader.after_unmap(base, bytes); reader.close_completed();

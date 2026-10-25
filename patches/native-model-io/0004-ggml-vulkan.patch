@@ -1,11 +1,32 @@
 --- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
 +++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
-@@ -1,3 +1,4 @@
+@@ -1,3 +1,6 @@
 +#include "mapped_source_bridge.h"
++#include "indexed_vector.h"
++#include "padded_bank_bridge.h"
  #include "ggml-vulkan-common.h"
  
  extern "C" void ggml_app_backend_phase(const char *) __attribute__((weak));
-@@ -12294,6 +12295,20 @@
+@@ -8002,6 +8004,7 @@
+ static bool ggml_vk_use_mul_mat_vec_id(const ggml_tensor * dst) {
+     const ggml_tensor * src0 = dst->src[0];
+     const ggml_tensor * ids = dst->src[2];
++    if (qwen_app_bf16_indexed_vector_enabled() && (qwen_app::bf16_indexed_vector_layout(dst) || qwen_app_padded_index_layout(dst))) return true;
+     return ids->ne[1] <= 8 && (src0->type == GGML_TYPE_F32 || src0->type == GGML_TYPE_F16 || ggml_is_quantized(src0->type));
+ }
+ 
+@@ -8015,7 +8018,9 @@
+     ggml_tensor * src1 = dst->src[1];
+     ggml_tensor * src2 = dst->src[2];
+     VK_LOG_DEBUG("ggml_vk_mul_mat_id(" << src0 << ", " << src1 << ", " << src2 << ", " << dst << ")");
+-    if (ggml_vk_use_mul_mat_vec_id(cgraph, node_idx)) {
++    const bool vector = ggml_vk_use_mul_mat_vec_id(cgraph, node_idx);
++    if (src0->type == GGML_TYPE_BF16) qwen_app_record_bf16_indexed_path(vector);
++    if (vector) {
+         ggml_vk_mul_mat_vec_id_q_f16(ctx, subctx, cgraph, node_idx);
+     } else {
+         ggml_vk_mul_mat_id_q_f16(ctx, subctx, src0, src1, src2, dst);
+@@ -12294,6 +12299,20 @@
          ctx->compute_ctx = subctx;
      }
  
@@ -26,7 +47,7 @@
      if (ctx->prealloc_x == nullptr || (ctx->prealloc_size_x > 0 && ctx->prealloc_x->size < ctx->prealloc_size_x)) {
          VK_LOG_MEMORY("ggml_vk_preallocate_buffers(x_size: " << ctx->prealloc_size_x << ")");
          // Resize buffer
-@@ -13010,6 +13025,7 @@
+@@ -13010,6 +13029,7 @@
      ggml_vk_destroy_buffer(ctx->prealloc_y);
      ggml_vk_destroy_buffer(ctx->prealloc_split_k);
      ggml_vk_destroy_buffer(ctx->prealloc_add_rms_partials);
@@ -34,7 +55,7 @@
      ggml_vk_destroy_buffer(ctx->sync_staging);
  
      ctx->prealloc_y_last_pipeline_used = nullptr;
-@@ -13071,6 +13087,7 @@
+@@ -13071,6 +13091,7 @@
      VK_LOG_MEMORY("ggml_backend_vk_buffer_free_buffer()");
      ggml_backend_vk_buffer_context * ctx = (ggml_backend_vk_buffer_context *)buffer->context;
      ggml_vk_destroy_buffer(ctx->dev_buffer);
@@ -42,7 +63,7 @@
      delete ctx;
  }
  
-@@ -13192,6 +13209,7 @@
+@@ -13192,6 +13213,7 @@
      VK_LOG_MEMORY("ggml_backend_vk_buffer_type_alloc_buffer(" << size << ")");
      ggml_backend_vk_buffer_type_context * ctx = (ggml_backend_vk_buffer_type_context *) buft->context;
  
@@ -50,7 +71,7 @@
      vk_buffer dev_buffer = nullptr;
      try {
          dev_buffer = ggml_vk_create_buffer_device(ctx->device, size);
-@@ -13201,6 +13219,7 @@
+@@ -13201,6 +13223,7 @@
  
      ggml_backend_vk_buffer_context * bufctx = new ggml_backend_vk_buffer_context(ctx->device, std::move(dev_buffer), ctx->name);
  
@@ -58,7 +79,7 @@
      return ggml_backend_buffer_init(buft, ggml_backend_vk_buffer_interface, bufctx, size);
  }
  
-@@ -13328,6 +13347,29 @@
+@@ -13328,6 +13351,29 @@
          return;
      }
  
@@ -88,7 +109,7 @@
      ggml_backend_vk_buffer_context * buf_ctx = (ggml_backend_vk_buffer_context *)tensor->buffer->context;
  
      vk_context cpy_ctx;
-@@ -16747,3 +16789,9 @@
+@@ -16747,3 +16793,9 @@
      ggml_vk_cmd_label_begin(subctx->s->buffer->buf, subctx->debug_labels.back().c_str());
  }
  

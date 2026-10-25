@@ -5,6 +5,20 @@ The goal is to execute the complete text model with its original BF16 weights,
 streaming weights from SSD into bounded shared memory. No quantized substitute,
 expert pruning, or PC/cloud model execution is part of this goal.
 
+The latest [qualified performance profile](config/qualified-performance.json)
+selects BF16 indexed-vector decode and owned padded-bank Expert reads.
+The complete same-SELF PS5 comparison measured **0.39068 / 0.39819 tokens/s**
+versus **0.34838 / 0.35483**, an observed mean **12.18% gain**, with identical
+outputs, token IDs, Expert routes and physical source reads. TTFT fell from
+**57.65 / 56.68 s** to **50.14 / 49.26 s**. Both complete restoration and fresh
+original numerical-admission plans passed; the console ended idle.
+See [results](docs/gpu-optimization-results-20261025.md),
+[sanitized counters](docs/native-owned-bank-success-20261025.json),
+[profile usage](docs/qualified-performance-20261025.md) and the
+[PS5LM source assessment](docs/ps5lm-transfer-assessment-20261025.md).
+These are fixed short requests with original precision and unchanged budgets.
+General execution/deployment and CI remain disabled.
+
 The [complete implementation and physical validation plan](docs/execution-plan-20261022.md)
 passed on 2026-10-24. One PS5 generated `4` for the arithmetic smoke request and
 completed two external API requests, each returning `1, 2, 3, 4, 5, 6, 7, 8`.

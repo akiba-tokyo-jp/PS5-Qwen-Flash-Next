@@ -10,6 +10,7 @@ int main(int argc, char ** argv) {
     if (argc != 3 && argc != 4) return 2;
     const bool inject_failure = argc == 4 && std::string(argv[3]) == "--fail-request";
     const bool fail_before_event = argc == 4 && std::string(argv[3]) == "--fail-before-request";
+    const bool fail_after_final_metrics = argc == 4 && std::string(argv[3]) == "--fail-after-final-metrics";
     using Json = nlohmann::json;
     const auto owner = std::this_thread::get_id();
     unsigned calls = 0, screens = 0;
@@ -36,6 +37,10 @@ int main(int argc, char ** argv) {
                             {"total_ms", i * 20}, {"ttft_ms", 20}, {"decode_tokens_per_second", 50}}}});
                     if (inject_failure) throw std::runtime_error("Synthetic owner failure after a published event");
                 }
+                publish(Json{{"id", std::string(32, 'a') + "-" + std::to_string(ordinal)},
+                    {"type", "completion_pending"}, {"state", "finalizing frame evidence"}, {"metrics", {{"generated_tokens", 2},
+                        {"total_ms", 50}, {"ttft_ms", 20}, {"decode_tokens_per_second", 50}}}});
+                if(fail_after_final_metrics)throw std::runtime_error("Synthetic frame persistence failure after final metrics");
                 publish(Json{{"id", std::string(32, 'a') + "-" + std::to_string(ordinal)},
                     {"type", "finished"}, {"state", "completed"}, {"metrics", {{"generated_tokens", 2},
                         {"total_ms", 50}, {"ttft_ms", 20}, {"decode_tokens_per_second", 50}}}});

@@ -1,13 +1,36 @@
 // SPDX-License-Identifier: MIT
 #include "llama_engine.h"
 #include "expert_policy.h"
+#include "indexed_vector.h"
+#include "mapped_copy.h"
 
 #include <algorithm>
 #include <cmath>
 #include <limits>
 #include <stdexcept>
+#include <atomic>
+
+namespace {
+std::atomic<bool> indexed_vector_enabled{false},indexed_vector_scope{false};
+std::atomic<std::uint64_t> indexed_matrix_calls{0},indexed_vector_calls{0},mapped_write_bytes{0},staging_write_bytes{0};
+}
+extern "C" bool qwen_app_bf16_indexed_vector_enabled() {
+    return indexed_vector_enabled.load(std::memory_order_relaxed) && indexed_vector_scope.load(std::memory_order_relaxed);
+}
+extern "C" void qwen_app_record_bf16_indexed_path(bool vector) {
+    (vector?indexed_vector_calls:indexed_matrix_calls).fetch_add(1,std::memory_order_relaxed);
+}
+extern "C" void qwen_app_record_upload_path(bool mapped,std::uint64_t bytes) {
+    (mapped?mapped_write_bytes:staging_write_bytes).fetch_add(bytes,std::memory_order_relaxed);
+}
 
 namespace qwen_app {
+void configure_bf16_indexed_vector(bool enabled) { indexed_vector_enabled.store(enabled,std::memory_order_relaxed); }
+void set_bf16_indexed_vector_scope(bool active) { indexed_vector_scope.store(active,std::memory_order_relaxed); }
+GpuPathStats gpu_path_stats() {
+    return {indexed_matrix_calls.load(std::memory_order_relaxed),indexed_vector_calls.load(std::memory_order_relaxed),
+        mapped_write_bytes.load(std::memory_order_relaxed),staging_write_bytes.load(std::memory_order_relaxed)};
+}
 namespace {
 void require_prefill_width(std::uint32_t tokens) {
     if (tokens != 1 && tokens != 2 && tokens != 4)
@@ -125,6 +148,12 @@ std::uint32_t LlamaEngine::tokenize(const std::string & prompt) {
 
 void LlamaEngine::process(llama_token token, llama_pos position, bool output) {
     if (!output) throw std::invalid_argument("Bounded source execution requires output/cache eligibility");
+    // Only next-token decode selects the candidate; partial prefill stays on
+    // the existing matrix route. Reset selection on every exception as well.
+    struct Scope {
+        Scope() { set_bf16_indexed_vector_scope(true);set_mapped_copy_scope(true); }
+        ~Scope() { set_mapped_copy_scope(false);set_bf16_indexed_vector_scope(false); }
+    } scope;
     process_batch(&token, 1, position);
 }
 
