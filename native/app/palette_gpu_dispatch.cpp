@@ -37,7 +37,8 @@ struct PaletteGpuDispatch::State {
     VkPipelineLayout layout=VK_NULL_HANDLE;VkDescriptorPool descriptor_pool=VK_NULL_HANDLE;
     VkDescriptorSet descriptor=VK_NULL_HANDLE;VkCommandPool command_pool=VK_NULL_HANDLE;
     VkCommandBuffer command=VK_NULL_HANDLE;VkFence fence=VK_NULL_HANDLE;
-    std::array<VkPipeline,2> pipelines{};
+    std::array<VkPipeline,4> pipelines{};
+    unsigned push_bytes=8;
     std::array<VkBuffer,2> buffers{};std::array<VkDeviceMemory,2> memory{};
     std::array<void *,2> mapped{};
     std::uint64_t allocated_bytes=0;bool completed=true;
@@ -53,11 +54,16 @@ struct PaletteGpuDispatch::State {
 #undef MEMBER
 };
 PaletteGpuDispatch::PaletteGpuDispatch(const std::uint32_t *copy,std::size_t copy_bytes,
-        const std::uint32_t *palette,std::size_t palette_bytes):state_(new State) {
+        const std::uint32_t *palette,std::size_t palette_bytes,
+        const std::uint32_t *gemv,std::size_t gemv_bytes,
+        const std::uint32_t *gemv_palette,std::size_t gemv_palette_bytes):state_(new State) {
     require(copy&&palette&&copy_bytes>=20&&palette_bytes>=20&&copy_bytes%4==0&&palette_bytes%4==0&&
         copy_bytes<=65536&&palette_bytes<=65536&&copy[0]==0x07230203&&palette[0]==0x07230203,
         "palette_invalid_verified_SPIRV_bounds");
+    require((!gemv&&!gemv_bytes)||(gemv&&gemv_bytes>=20&&gemv_bytes<=65536&&gemv_bytes%4==0&&gemv[0]==0x07230203),"palette_invalid_GEMV_SPIRV_bounds");
+    require((!gemv&&!gemv_palette&&!gemv_palette_bytes)||(gemv&&gemv_palette&&gemv_palette_bytes>=20&&gemv_palette_bytes<=65536&&gemv_palette_bytes%4==0&&gemv_palette[0]==0x07230203),"palette_invalid_fused_GEMV_SPIRV_bounds");
     auto &s=*state_;
+    if(gemv)s.push_bytes=16;
     VkApplicationInfo app{};app.sType=VK_STRUCTURE_TYPE_APPLICATION_INFO;app.pApplicationName="Qwen palette diagnostic";app.apiVersion=VK_API_VERSION_1_2;
     VkInstanceCreateInfo info{};info.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;info.pApplicationInfo=&app;
     qwen_native_stage("palette_before_instance_creation");
@@ -104,11 +110,11 @@ PaletteGpuDispatch::PaletteGpuDispatch(const std::uint32_t *copy,std::size_t cop
     for(unsigned i=0;i<2;++i){bindings[i].binding=i;bindings[i].descriptorType=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;bindings[i].descriptorCount=1;bindings[i].stageFlags=VK_SHADER_STAGE_COMPUTE_BIT;}
     VkDescriptorSetLayoutCreateInfo dl{};dl.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;dl.bindingCount=2;dl.pBindings=bindings.data();
     require(s.CreateDescriptorSetLayout(s.device,&dl,nullptr,&s.descriptor_layout)==VK_SUCCESS,"palette_descriptor_layout_failed");
-    VkPushConstantRange range{};range.stageFlags=VK_SHADER_STAGE_COMPUTE_BIT;range.size=8;
+    VkPushConstantRange range{};range.stageFlags=VK_SHADER_STAGE_COMPUTE_BIT;range.size=s.push_bytes;
     VkPipelineLayoutCreateInfo pl{};pl.sType=VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;pl.setLayoutCount=1;pl.pSetLayouts=&s.descriptor_layout;pl.pushConstantRangeCount=1;pl.pPushConstantRanges=&range;
     require(s.CreatePipelineLayout(s.device,&pl,nullptr,&s.layout)==VK_SUCCESS,"palette_pipeline_layout_failed");
-    const std::array<const std::uint32_t *,2> words{copy,palette};const std::array<std::size_t,2> sizes{copy_bytes,palette_bytes};
-    for(unsigned i=0;i<2;++i) {
+    const std::array<const std::uint32_t *,4> words{copy,palette,gemv,gemv_palette};const std::array<std::size_t,4> sizes{copy_bytes,palette_bytes,gemv_bytes,gemv_palette_bytes};
+    for(unsigned i=0;i<(gemv?4u:2u);++i) {
         VkShaderModuleCreateInfo sm{};sm.sType=VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;sm.codeSize=sizes[i];sm.pCode=words[i];VkShaderModule module=VK_NULL_HANDLE;
         require(s.CreateShaderModule(s.device,&sm,nullptr,&module)==VK_SUCCESS,"palette_shader_module_failed");
         VkComputePipelineCreateInfo cp{};cp.sType=VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;cp.layout=s.layout;
@@ -135,9 +141,19 @@ PaletteGpuDispatch::PaletteGpuDispatch(const std::uint32_t *copy,std::size_t cop
 unsigned char *PaletteGpuDispatch::source(){return static_cast<unsigned char *>(state_->mapped[0]);}
 unsigned char *PaletteGpuDispatch::target(){return static_cast<unsigned char *>(state_->mapped[1]);}
 std::uint64_t PaletteGpuDispatch::dispatch(bool palette,std::uint32_t values,std::uint32_t encoded_bytes) {
-    auto &s=*state_;
-    require(s.completed&&values&&values%64==0&&std::uint64_t(values)*2<=buffer_bytes-16&&
+    require(values&&values%64==0&&std::uint64_t(values)*2<=buffer_bytes-16&&
         encoded_bytes&&encoded_bytes<=buffer_bytes,"palette_dispatch_bounds_or_lifetime_failed");
+    const std::array<std::uint32_t,2> limits{values,encoded_bytes};
+    return dispatch_internal(palette?1:0,limits.data(),sizeof(limits),(values/2+255)/256);
+}
+std::uint64_t PaletteGpuDispatch::matvec(bool palette,std::uint32_t columns,std::uint32_t rows,std::uint32_t encoded_bytes) {
+    require(((columns==640&&rows==2560)||(columns==2560&&rows==640))&&encoded_bytes>=64&&encoded_bytes<=buffer_bytes&&
+        (palette||encoded_bytes==3276800)&&state_->pipelines[2]&&state_->pipelines[3]&&state_->push_bytes==16,"palette_GEMV_bounds_or_pipeline_failed");
+    const std::array<std::uint32_t,4> limits{columns,rows,palette?1u:0u,encoded_bytes};
+    return dispatch_internal(palette?3:2,limits.data(),sizeof(limits),rows);
+}
+std::uint64_t PaletteGpuDispatch::dispatch_internal(unsigned pipeline,const std::uint32_t *limits,unsigned push_bytes,unsigned groups) {
+    auto &s=*state_;require(s.completed,"palette_dispatch_bounds_or_lifetime_failed");
     const auto started=now_ns();require(started!=0,"palette_dispatch_clock_failed");
     require(s.ResetFences(s.device,1,&s.fence)==VK_SUCCESS,"palette_fence_reset_failed");
     require(s.ResetCommandBuffer(s.command,0)==VK_SUCCESS,"palette_command_reset_failed");
@@ -145,11 +161,10 @@ std::uint64_t PaletteGpuDispatch::dispatch(bool palette,std::uint32_t values,std
     require(s.BeginCommandBuffer(s.command,&begin)==VK_SUCCESS,"palette_command_begin_failed");
     VkMemoryBarrier barrier{};barrier.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER;barrier.srcAccessMask=VK_ACCESS_HOST_WRITE_BIT;barrier.dstAccessMask=VK_ACCESS_SHADER_READ_BIT|VK_ACCESS_SHADER_WRITE_BIT;
     s.CmdPipelineBarrier(s.command,VK_PIPELINE_STAGE_HOST_BIT,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,0,1,&barrier,0,nullptr,0,nullptr);
-    s.CmdBindPipeline(s.command,VK_PIPELINE_BIND_POINT_COMPUTE,s.pipelines[palette?1:0]);
+    s.CmdBindPipeline(s.command,VK_PIPELINE_BIND_POINT_COMPUTE,s.pipelines[pipeline]);
     s.CmdBindDescriptorSets(s.command,VK_PIPELINE_BIND_POINT_COMPUTE,s.layout,0,1,&s.descriptor,0,nullptr);
-    const std::array<std::uint32_t,2> limits{values,encoded_bytes};
-    s.CmdPushConstants(s.command,s.layout,VK_SHADER_STAGE_COMPUTE_BIT,0,sizeof(limits),limits.data());
-    s.CmdDispatch(s.command,(values/2+255)/256,1,1);
+    s.CmdPushConstants(s.command,s.layout,VK_SHADER_STAGE_COMPUTE_BIT,0,push_bytes,limits);
+    s.CmdDispatch(s.command,groups,1,1);
     barrier.srcAccessMask=VK_ACCESS_SHADER_WRITE_BIT;barrier.dstAccessMask=VK_ACCESS_HOST_READ_BIT;
     s.CmdPipelineBarrier(s.command,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,VK_PIPELINE_STAGE_HOST_BIT,0,1,&barrier,0,nullptr,0,nullptr);
     require(s.EndCommandBuffer(s.command)==VK_SUCCESS,"palette_command_end_failed");

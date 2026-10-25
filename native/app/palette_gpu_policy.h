@@ -17,7 +17,8 @@ inline void require_palette_gpu_policy(const nlohmann::json &policy,bool display
         check(e.at(key).is_number_unsigned()&&e.at(key).get<std::uint64_t>()<=limit);
     };
     const auto &p=policy.at("native_palette_validation");
-    check(!display&&p.is_object()&&p.size()==12&&p.at("schema")=="ps5-qwen-exact-palette-GPU-v1"&&
+    const bool gemv=p.value("schema",std::string())=="ps5-qwen-exact-palette-GEMV-v1";
+    check(!display&&p.is_object()&&p.size()==(gemv?13:12)&&(gemv||p.at("schema")=="ps5-qwen-exact-palette-GPU-v1")&&
         p.at("enabled").is_boolean()&&p.at("enabled")==true&&
         p.at("driver_revision")=="872cc1264ad8ba5d6b888b092968fa5858a38c58"&&p.at("profile")=="cumulative-idle"&&
         p.at("native_archive_sha256")=="b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925"&&
@@ -29,6 +30,8 @@ inline void require_palette_gpu_policy(const nlohmann::json &policy,bool display
     const auto path=pack.at("path").get<std::string>();
     check(pack.at("bytes").get<std::uint64_t>()>0&&path=="/app0/qwen-runtime/palette-samples.pack");
     const auto &samples=p.at("samples");check(samples.is_array()&&samples.size()==9);
+    if(gemv){const auto &columns=p.at("GEMV_columns");check(columns.is_array()&&columns.size()==9);
+        for(const auto &value:columns)check(value.is_number_unsigned()&&(value==640u||value==2560u));}
     std::array<std::array<std::uint64_t,2>,18> ranges{};unsigned range_count=0;
     for(const auto &sample:samples) {
         check(sample.is_object()&&sample.size()==2);
@@ -42,8 +45,9 @@ inline void require_palette_gpu_policy(const nlohmann::json &policy,bool display
             if(std::string(role)=="raw")check(bytes==3276800);
         }
     }
-    const auto &shaders=p.at("shaders");check(shaders.is_object()&&shaders.size()==2);
-    for(const auto *name:{"copy","palette"}) {
+    const auto &shaders=p.at("shaders");check(shaders.is_object()&&shaders.size()==(gemv?4:2));
+    for(const auto *name:{"copy","palette","gemv-raw","gemv-palette"}) {
+        if(std::string(name).find("gemv")==0&&!gemv)continue;
         const auto &s=shaders.at(name);check(s.is_object()&&s.size()==3);digest(s);integer(s,"bytes",65536);
         check(s.at("bytes").get<unsigned>()>=20&&s.at("bytes").get<unsigned>()%4==0&&s.at("path")==std::string("/app0/qwen-runtime/palette-")+name+".spv");
     }

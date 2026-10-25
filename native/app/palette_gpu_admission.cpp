@@ -8,6 +8,7 @@
 #include "system_memory.h"
 #include "native_gpu.h"
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <fcntl.h>
 #include <fstream>
@@ -48,9 +49,12 @@ std::array<std::uint64_t,10> identity(int fd) {
 Json admit_palette_gpu(const Json &policy,const std::string &journal) {
     require_palette_gpu_policy(policy,false);const auto &p=policy.at("native_palette_validation");
     const auto &pack=p.at("pack");const auto path=pack.at("path").get<std::string>();
+    const bool fused=p.contains("GEMV_columns");
     qwen_native_stage("palette_before_full_Direct_pack_integrity");
     verify_native_startup_file_direct(path,pack.at("bytes"),pack.at("sha256"),30);
     const auto copy=shader(p.at("shaders").at("copy")),palette=shader(p.at("shaders").at("palette"));
+    const auto gemv_raw=fused?shader(p.at("shaders").at("gemv-raw")):std::vector<std::uint32_t>{};
+    const auto gemv_palette=fused?shader(p.at("shaders").at("gemv-palette")):std::vector<std::uint32_t>{};
     const int fd=open(path.c_str(),O_RDONLY|O_NOFOLLOW|O_DIRECT);
     check(fd>=0&&(fcntl(fd,F_GETFL)&O_DIRECT)==O_DIRECT,"Palette Direct source descriptor is unavailable");
     const auto original=identity(fd);check(original[5]==pack.at("bytes"),"Palette pack size changed");
@@ -61,7 +65,8 @@ Json admit_palette_gpu(const Json &policy,const std::string &journal) {
     check(tail==static_cast<ssize_t>(original[5]-tail_offset)&&identity(fd)==original,"Palette complete pack EOF or identity differs");
     (void)admit_native_startup_memory();
     qwen_native_gpu_initialize(journal.c_str());qwen_native_driver_begin();
-    auto *gpu=new PaletteGpuDispatch(copy.data(),copy.size()*4,palette.data(),palette.size()*4);
+    auto *gpu=new PaletteGpuDispatch(copy.data(),copy.size()*4,palette.data(),palette.size()*4,
+        fused?gemv_raw.data():nullptr,gemv_raw.size()*4,fused?gemv_palette.data():nullptr,gemv_palette.size()*4);
     std::vector<unsigned char> patterns(65536*2),encoded(qwen_palette_bound(65536));
     for(unsigned i=0;i<65536;++i){patterns[2*i]=static_cast<unsigned char>(i);patterns[2*i+1]=static_cast<unsigned char>(i>>8);}
     const auto encoded_size=qwen_palette_encode(patterns.data(),patterns.size(),encoded.data(),encoded.size());
@@ -77,6 +82,7 @@ Json admit_palette_gpu(const Json &policy,const std::string &journal) {
         for(unsigned i=0;i<16;++i)check(gpu->target()[patterns.size()+i]==0xa5,"Palette all-pattern output canary changed");
     }
     qwen_native_stage("palette_all65536_BF16_patterns_GPU_exact");
+    std::array<std::vector<unsigned char>,9> references;
     Json rounds=Json::array();const auto begun=ProfileClock::now();
     for(unsigned round=0;round<6;++round)for(unsigned sample=0;sample<9;++sample)for(unsigned order=0;order<2;++order) {
         check(profile_elapsed_ns(begun)<120000000000ull,"Palette finite cohort deadline exceeded");
@@ -85,7 +91,9 @@ Json admit_palette_gpu(const Json &policy,const std::string &journal) {
         (void)admit_native_system_memory();check(identity(fd)==original,"Palette source identity changed before read");
         const auto bytes=e.at("bytes").get<std::size_t>(),requested=e.at("requested").get<std::size_t>();
         const auto offset=e.at("offset").get<std::uint64_t>();
-        std::memset(gpu->target(),0xa5,matrix_bytes+16);
+        const auto columns=fused?p.at("GEMV_columns").at(sample).get<unsigned>():0u;
+        const unsigned rows=fused?matrix_bytes/2/columns:0u,output_bytes=fused?rows*4:matrix_bytes;
+        std::memset(gpu->target(),0xa5,output_bytes+16);
         const auto started=ProfileClock::now();qwen_native_stage("palette_matrix_Direct_read_before");
         const auto got=pread(fd,gpu->source(),requested,static_cast<off_t>(offset));
         qwen_native_stage("palette_matrix_Direct_read_returned");
@@ -93,21 +101,42 @@ Json admit_palette_gpu(const Json &policy,const std::string &journal) {
         const auto read_ns=profile_elapsed_ns(started);
         qwen_palette_plan plan{};
         if(mode)check(qwen_palette_prepare(gpu->source(),bytes,gpu->target(),matrix_bytes,&plan)!=0,"Palette original matrix prevalidation failed");
-        const auto dispatch_ns=gpu->dispatch(mode!=0,matrix_bytes/2,static_cast<std::uint32_t>(bytes));++dispatches;
-        const auto delivery_ns=mode?profile_elapsed_ns(started):read_ns;
+        const auto dispatch_ns=fused?gpu->matvec(mode!=0,columns,rows,static_cast<std::uint32_t>(bytes)):
+            gpu->dispatch(mode!=0,matrix_bytes/2,static_cast<std::uint32_t>(bytes));++dispatches;
+        const auto delivery_ns=(fused||mode)?profile_elapsed_ns(started):read_ns;
         check(hash(gpu->source(),bytes)==e.at("sha256"),"Palette original input SHA256 differs");
-        check(hash(gpu->target(),matrix_bytes)==item.at("raw").at("sha256"),"Palette original GPU output SHA256 differs");
-        for(unsigned i=0;i<16;++i)check(gpu->target()[matrix_bytes+i]==0xa5,"Palette original output canary changed");
+        if(fused) {
+            if(references[sample].empty()) {
+                check(!mode,"The first fused result must be the original raw control");
+                for(unsigned row=0;row<rows;++row) {
+                    double expected=0;
+                    for(unsigned column=0;column<columns;++column) {
+                        const auto i=std::size_t(row)*columns+column;
+                        const std::uint32_t bits=(std::uint32_t(gpu->source()[2*i])|(std::uint32_t(gpu->source()[2*i+1])<<8))<<16;
+                        float weight;std::memcpy(&weight,&bits,4);
+                        expected+=double(weight)*(double(int(column%7)-3)*0.5);
+                    }
+                    float actual;std::memcpy(&actual,gpu->target()+4*row,4);
+                    check(std::isfinite(expected)&&std::isfinite(actual)&&std::abs(double(actual)-expected)<=1e-5+1e-5*std::abs(expected),"Original raw GEMV differs from CPU double reference");
+                }
+                references[sample].assign(gpu->target(),gpu->target()+output_bytes);
+            }
+            check(std::memcmp(gpu->target(),references[sample].data(),output_bytes)==0,"Raw and exact-palette F32 GEMV bits differ");
+        } else check(hash(gpu->target(),matrix_bytes)==item.at("raw").at("sha256"),"Palette original GPU output SHA256 differs");
+        for(unsigned i=0;i<16;++i)check(gpu->target()[output_bytes+i]==0xa5,"Palette original output canary changed");
         check(identity(fd)==original,"Palette source identity changed after read");
         rounds.push_back({{"round",round},{"sample",sample},{"mode",mode},{"read_ns",read_ns},{"dispatch_completion_ns",dispatch_ns},{"delivery_ns",delivery_ns},{"physical_bytes",requested},{"original_SHA256_exact",true}});
     }
     check(close(fd)==0,"Palette source close did not complete");
     check(dispatches==110,"Palette fixed dispatch count differs");
-    return {{"schema","ps5-qwen-exact-palette-GPU-result-v1"},{"passed",true},
+    Json result={{"schema",fused?"ps5-qwen-exact-palette-GEMV-result-v1":"ps5-qwen-exact-palette-GPU-result-v1"},{"passed",true},
         {"all65536_BF16_patterns_exact",true},{"original_matrix_deliveries",108},{"GPU_dispatches",dispatches},
         {"rounds",rounds},{"model_loaded",false},{"full_model_inference",false},{"quantization",false},
         {"live_GPU_buffer_bytes",2*PaletteGpuDispatch::buffer_bytes},{"device_lifetime","retained until ordinary OS close"},
         {"raw_delivery_includes_copy_check",false},{"palette_delivery_includes_validation_dispatch_fence",true},
         {"all_fences_positively_completed",true},{"source_file_closed",true},{"automatic_retries",0}};
+    if(fused){result["raw_delivery_includes_GEMV_compute"]=true;result["palette_decode_fused_into_GEMV"]=true;
+        result["same_F32_outputs_bit_exact"]=true;result["CPU_double_reference_passed"]=true;result["queue_submissions"]=110;}
+    return result;
 }
 }

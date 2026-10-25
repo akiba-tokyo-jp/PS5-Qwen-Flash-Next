@@ -1689,3 +1689,34 @@ Neither point admits a later title. Do not reuse the old recovered 13,620-page
 snapshot as current admission or count inactive pages as available. The overall
 plan remains incomplete, and no new candidate is in production. Require fresh
 unchanged gates for further GPU work. See docs/kernel-memory-cause-20261026.md/.json.
+
+## Memory attribution and GPU delivery follow-up (2026-10-26)
+
+The bounded process census found 89 processes in two snapshots, no stopped/zombie
+accumulation and stable tracked-service RSS. PROT_NONE/mincore file metadata
+identified selected validation executables and packs as resident; all queries
+and owned unmaps returned. RSS is not additive physical consumption, and resident
+or inactive pages do not grant admission. No global reclaimability or safe
+kernel-pool resize is established. Preserve all original floors and ownership.
+
+Case 2390 completed the standalone exact GPU palette screen: all 65,536 BF16
+patterns, 108 original matrix deliveries, 110 submissions and positive device/
+epoch retirement. It lost at paired median 0.561503x and is rejected. Ordinary
+exact-owner close and exact fastest/config restoration passed. Preserve the
+known returned CPU path-rendering refusals and every consumed execution.
+
+The fused BF16-restoration/F32-GEMV variant passed host ownership/policy/result,
+SPIR-V, native import/link and SELF checks. Case 2420 then refused at the unchanged
+prelaunch gate: 9,941 free pages versus 10,142 required, zero title/GPU launches.
+No fused GPU numerical or speed result exists. The exact installed fastest SELF
+and prior settings were restored/full-read-back; fresh idle guards passed.
+Final required artifact integrity, case 2430, completed 15 sources and observed
+9,928 free pages, still below prelaunch admission. This is a point observation,
+not permission to retry. Diagnose further consumption before another publication;
+do not repeat cycles under the same insufficient conditions or lower any reserve.
+
+The installed fastest SELF remains ed4b360b..., with the original rollback
+preserved, no native owner/gateway/model/unknown completion and no fresh generation
+rerun. The overall plan remains incomplete. Fused physical comparison and any
+conditional full-model integration remain pending. No new candidate is adopted.
+See docs/memory-palette-followup-20261026.md/.json for exact provenance and limits.

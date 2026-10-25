@@ -6,7 +6,7 @@ from palette_gpu_result import parse
 
 class PaletteResults(unittest.TestCase):
     def fixture(self):
-        p={'native_palette_validation':{'rounds':6,'samples':[{'raw':{'requested':3276800},'encoded':{'requested':2408448}}for _ in range(9)]}}
+        p={'native_palette_validation':{'schema':'ps5-qwen-exact-palette-GPU-v1','rounds':6,'samples':[{'raw':{'requested':3276800},'encoded':{'requested':2408448}}for _ in range(9)]}}
         rows=[dict(round=r,sample=s,mode=(r+o)%2,read_ns=70 if(r+o)%2 else 100,
             dispatch_completion_ns=5,delivery_ns=80 if(r+o)%2 else 100,
             physical_bytes=2408448 if(r+o)%2 else 3276800,original_SHA256_exact=True)
@@ -38,4 +38,20 @@ class PaletteResults(unittest.TestCase):
         altered=copy.deepcopy(result);altered['rounds'][1]['delivery_ns']=74
         with self.assertRaises(ValueError):parse(altered,p,42)
         with self.assertRaises(ValueError):parse(dict(result,rounds=result['rounds'][:-1]),p,42)
+    def test_fused_GEMV_requires_compute_in_both_timings(self):
+        result,p=self.fixture();result.update(schema='ps5-qwen-exact-palette-GEMV-result-v1',
+            raw_delivery_includes_GEMV_compute=True,palette_decode_fused_into_GEMV=True,
+            same_F32_outputs_bit_exact=True,CPU_double_reference_passed=True,queue_submissions=110)
+        p['native_palette_validation'].update(schema='ps5-qwen-exact-palette-GEMV-v1',GEMV_columns=[2560]*9)
+        for row in result['rounds']:
+            if not row['mode']:row['delivery_ns']=110
+        summary=parse(result,p,42);self.assertTrue(summary['GEMV_fused']);self.assertFalse(summary['production_adoption'])
+        for key,value in [('raw_delivery_includes_GEMV_compute',False),('same_F32_outputs_bit_exact',False),('CPU_double_reference_passed',False),('queue_submissions',109)]:
+            altered=copy.deepcopy(result);altered[key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):parse(altered,p,42)
+        altered=copy.deepcopy(result);altered['rounds'][0]['delivery_ns']=100
+        with self.assertRaises(ValueError):parse(altered,p,42)
+        legacy,legacy_policy=self.fixture()
+        with self.assertRaises(ValueError):parse(legacy,p,42)
+        with self.assertRaises(ValueError):parse(result,legacy_policy,42)
 if __name__=='__main__':unittest.main()

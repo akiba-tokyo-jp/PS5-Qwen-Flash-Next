@@ -31,6 +31,13 @@ in small fixtures but failed its consistency/adoption gate. Production is
 unchanged. Actual router metadata is already F32; a smaller router-reuse design
 remains unimplemented and has no native speed result.
 
+The [memory and exact-BF16 GPU follow-up](docs/memory-palette-followup-20261026.md)
+isolated validation-file residency and completed the standalone GPU restoration
+screen at **0.561503x** delivery throughput, so that variant is rejected. A fused
+restoration/GEMV candidate is built but has no physical result: its unchanged
+prelaunch memory gate refused before any launch. The exact fastest production
+SELF/settings are restored; the overall follow-up plan remains incomplete.
+
 The [complete implementation and physical validation plan](docs/execution-plan-20261022.md)
 passed on 2026-10-24. One PS5 generated `4` for the arithmetic smoke request and
 completed two external API requests, each returning `1, 2, 3, 4, 5, 6, 7, 8`.

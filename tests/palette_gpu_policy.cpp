@@ -45,6 +45,14 @@ int main(int argc,char **argv) {
     changed=policy;changed["native_palette_validation"]["shaders"]["palette"]["bytes"]=21u;refusal(changed);
     changed=policy;changed["native_palette_validation"]["samples"][1]=changed["native_palette_validation"]["samples"][0];refusal(changed);
     assert(p.size()==12&&rejected>=38);
+    auto fused=policy;auto &g=fused["native_palette_validation"];g["schema"]="ps5-qwen-exact-palette-GEMV-v1";
+    g["GEMV_columns"]=Json::array();for(unsigned i=0;i<9;++i)g["GEMV_columns"].push_back(i%3==2?640u:2560u);
+    for(const char *name:{"gemv-raw","gemv-palette"})g["shaders"][name]={{"path",std::string("/app0/qwen-runtime/palette-")+name+".spv"},{"bytes",20u},{"sha256",hash}};
+    require_palette_gpu_policy(fused,false);
+    auto bad=fused;bad["native_palette_validation"]["GEMV_columns"][0]=1280u;refusal(bad);
+    bad=fused;bad["native_palette_validation"]["GEMV_columns"].erase(0);refusal(bad);
+    bad=fused;bad["native_palette_validation"]["shaders"].erase("gemv-raw");refusal(bad);
+    bad=fused;bad["native_palette_validation"]["schema"]="ps5-qwen-exact-palette-GPU-v1";refusal(bad);
     if(argc==3) {
         std::ifstream f(argv[1]);require_palette_gpu_policy(Json::parse(f),false);
         char *args[]={argv[0],argv[2]};const auto startup=qwen_app::read_startup(2,args);

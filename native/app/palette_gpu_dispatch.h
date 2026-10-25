@@ -8,9 +8,12 @@ namespace qwen_app {
 class PaletteGpuDispatch {
     struct State;
     State *state_;
+    std::uint64_t dispatch_internal(unsigned,const std::uint32_t *,unsigned,unsigned);
 public:
     PaletteGpuDispatch(const std::uint32_t *copy_spirv,std::size_t copy_bytes,
-        const std::uint32_t *palette_spirv,std::size_t palette_bytes);
+        const std::uint32_t *palette_spirv,std::size_t palette_bytes,
+        const std::uint32_t *gemv_raw_spirv=nullptr,std::size_t gemv_raw_bytes=0,
+        const std::uint32_t *gemv_palette_spirv=nullptr,std::size_t gemv_palette_bytes=0);
     PaletteGpuDispatch(const PaletteGpuDispatch &)=delete;
     PaletteGpuDispatch &operator=(const PaletteGpuDispatch &)=delete;
     ~PaletteGpuDispatch()=default;
@@ -20,5 +23,6 @@ public:
     // Includes host visibility, recording, submit and positive fence completion.
     // A failed result never resets or releases possibly in-flight resources.
     std::uint64_t dispatch(bool palette,std::uint32_t values,std::uint32_t encoded_bytes);
+    std::uint64_t matvec(bool palette,std::uint32_t columns,std::uint32_t rows,std::uint32_t encoded_bytes);
 };
 }
