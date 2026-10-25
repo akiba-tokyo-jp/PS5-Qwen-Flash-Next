@@ -1656,3 +1656,36 @@ No new candidate is adopted or linked into the qualified production app.
 The exact installed fastest SELF and preserved rollback remain unchanged.
 Router forecasts, ready-expert execution and speculative verification remain
 unimplemented/unqualified; do not infer their completion from codec/queue tests.
+
+## Memory-cause follow-up and unqualified GPU palette probe (2026-10-26)
+
+Case 2311 positively completed a same-process idle/HTTP/Direct/idle control:
+the full 28,017,271-byte raw SELF readback consumed 1,712 free pages, and complete
+Direct SHA256/identity/EOF verification returned 1,712 pages. A preserved rollback
+control returned 6,592 pages. This establishes a scoped operational contribution;
+the proprietary cache mechanism and all remaining consumption are not identified.
+Keep raw readbacks before final required Direct integrity and fresh admission;
+reuse sealed packs with current native whole integrity, without cache purges,
+pressure, reserve changes, reduced checks or replay of consumed operations.
+
+Case 2306 completed 60 batches / 360 exact matrix deliveries and positive worker
+joins/Direct release. Its one-worker refill median paired ratio 1.040344x failed
+the original >1.05x / every-round-positive gate. Do not adopt it as a measured
+production win. No new full-model speed follows from the fixture.
+
+The new strict headless palette mode is experimental. Its source, linked SELF,
+actual imports, SPIR-V and host ownership/result controls passed; actual GPU
+dispatches remain zero. Case 2320 refused an external source path before GPU,
+2334 refused stale unused monitor calibration, and 2344/2354 refused the unchanged
+10,142-page prelaunch gate with zero launches. All were positively reviewed and
+the exact installed fastest SELF and prior configuration restored/full-read-back;
+fresh idle CPU guards passed. Preserve failures and every consumed intent. The
+corrected app0 pack access and GPU numerical/delivery completion remain pending.
+
+Case 2354's final required six-source Direct proof ended at 9,751 free pages,
+before a refused gate that did not log its exact failing count. After restoration
+readbacks, the later read-only category observation was 6,351-6,352 free pages.
+Neither point admits a later title. Do not reuse the old recovered 13,620-page
+snapshot as current admission or count inactive pages as available. The overall
+plan remains incomplete, and no new candidate is in production. Require fresh
+unchanged gates for further GPU work. See docs/kernel-memory-cause-20261026.md/.json.

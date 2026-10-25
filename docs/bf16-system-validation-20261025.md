@@ -1,5 +1,10 @@
 # BF16 system candidate validation
 
+Historical checkpoint: the [2026-10-26 follow-up](kernel-memory-cause-20261026.md)
+records measured readback consumption, recovered CPU-fixture admission, the
+completed one-worker comparison and subsequent prelaunch refusals. GPU palette
+delivery and a new full-model comparison remain unqualified.
+
 Status: **partial validation, blocked by measured kernel headroom**. The complete
 requested candidate validation and production adoption are not finished.
 No new full-model generation speed or production optimization is claimed.

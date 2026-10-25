@@ -7,6 +7,7 @@
 #include "moe_admission.h"
 #include "first_generation_policy.h"
 #include "memory_probe.h"
+#include "palette_gpu_admission.h"
 
 namespace qwen_app {
 inline constexpr unsigned native_model_verification_seconds = 7200;
@@ -16,6 +17,7 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
                                              const std::string & mode,
                                              bool native_display) {
     if (mode == "display-validation" || mode == "runtime-validation") return;
+    if (mode == "palette-validation") {require_palette_gpu_policy(policy,native_display);return;}
     if (mode == "native-memory-validation") {
         require_memory_probe_policy(policy,native_display);return;
     }

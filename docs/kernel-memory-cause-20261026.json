@@ -1,0 +1,391 @@
+{
+  "schema": "ps5-qwen-kernel-memory-cause-and-candidates-v1",
+  "date": "2026-10-26",
+  "overall_plan_completed": false,
+  "status": "partial; GPU palette delivery and full-model comparison blocked by unchanged prelaunch admission",
+  "original_precision": {
+    "weights": "original BF16/F32",
+    "KV": "F32",
+    "quantization": false,
+    "all_experts_and_PLE": true
+  },
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_caches": false
+  },
+  "thresholds": {
+    "page_bytes": 16384,
+    "minimum_pages": 898,
+    "reserved_pages": 206,
+    "operational_floor_pages": 1154,
+    "native_startup_pages": 2974,
+    "full_prelaunch_pages": 10142,
+    "unchanged": true
+  },
+  "matched_network_control": {
+    "case": 2311,
+    "source_bytes": 28017271,
+    "reads": 28,
+    "samples": 56,
+    "idle_before_delta_pages": {
+      "free_first": 0,
+      "free_last": 0,
+      "active": 0,
+      "inactive": 0,
+      "wired": 0,
+      "cache": 0
+    },
+    "network_interval_delta_pages": {
+      "free_first": -1712,
+      "free_last": -1712,
+      "active": 0,
+      "inactive": 1702,
+      "wired": 10,
+      "cache": 0
+    },
+    "direct_interval_delta_pages": {
+      "free_first": 1712,
+      "free_last": 1712,
+      "active": 0,
+      "inactive": -804,
+      "wired": -908,
+      "cache": 0
+    },
+    "idle_after_delta_pages": {
+      "free_first": -1,
+      "free_last": -1,
+      "active": 1,
+      "inactive": 0,
+      "wired": 0,
+      "cache": 0
+    },
+    "lowest_free_pages": 11906,
+    "final_free_pages": 13620,
+    "full_network_SELF_readback_exact": true,
+    "network_readback_elapsed_ns": 4031000000,
+    "proprietary_cache_mechanism_proven": false
+  },
+  "prior_direct_controls": [
+    {
+      "case": 2302,
+      "source_bytes": 28017271,
+      "reads": 28,
+      "free_delta_pages": 1712,
+      "final_free_pages": 3353
+    },
+    {
+      "case": 2309,
+      "source_bytes": 107911351,
+      "reads": 104,
+      "free_delta_pages": 6592,
+      "final_free_pages": 13632
+    }
+  ],
+  "demand_screen": {
+    "case": 2306,
+    "batches": 60,
+    "original_matrix_deliveries": 360,
+    "summary": [
+      {
+        "variant": "raw_pair_waves",
+        "median_batch_ms": 30.2704775,
+        "median_restore_ms": 0.0,
+        "median_copy_ms": 0.0,
+        "median_no_read_active_inside_span_ms": 4.3826545,
+        "paired_round_speedups": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "median_paired_speedup": 1.0,
+        "matched_schedule_speedups": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "median_matched_schedule_speedup": 1.0,
+        "clears_initial_delivery_gate": false
+      },
+      {
+        "variant": "raw_one_worker_refill",
+        "median_batch_ms": 29.0822095,
+        "median_restore_ms": 0.0,
+        "median_copy_ms": 0.0,
+        "median_no_read_active_inside_span_ms": 1.8858405,
+        "paired_round_speedups": [
+          1.057205096143103,
+          1.0228785337881563,
+          1.0319828363864292,
+          1.048704626989956,
+          1.0514827216535547,
+          1.016798356015216,
+          1.0216300066479524,
+          1.0856604579896039,
+          0.9922390174034014,
+          1.053793660366169
+        ],
+        "median_paired_speedup": 1.0403437316881927,
+        "matched_schedule_speedups": [
+          1.057205096143103,
+          1.0228785337881563,
+          1.0319828363864292,
+          1.048704626989956,
+          1.0514827216535547,
+          1.016798356015216,
+          1.0216300066479524,
+          1.0856604579896039,
+          0.9922390174034014,
+          1.053793660366169
+        ],
+        "median_matched_schedule_speedup": 1.0403437316881927,
+        "clears_initial_delivery_gate": false
+      }
+    ],
+    "complete_original_SHA256_exact": true,
+    "all_workers_joined": true,
+    "Direct_released": true,
+    "pack_reupload_bytes": 0,
+    "network_pack_readback_bytes": 0,
+    "initial_gate": "paired median >1.05 and every paired round >1.0",
+    "production_adoption": false
+  },
+  "GPU_palette": {
+    "implemented": true,
+    "host_API_and_SPIRV_checks": true,
+    "native_link_import_SELF_checks": true,
+    "GPU_dispatches_executed": 0,
+    "delivery_speed_qualified": false,
+    "full_model_speed_qualified": false,
+    "production_adoption": false,
+    "source_at_execution_base_revision": "3b2b00564318b9aeb5f6a3ff9a4ae5ed5ef86bab",
+    "experimental_SELF": {
+      "bytes": 28050295,
+      "sha256": "9ceec2293884197a296164f9b283585cc336180070862711ffbdf615bf18f093"
+    },
+    "explicit_buffer_allocation_ceiling_bytes": 16777216,
+    "buffer_payload_bytes": 8388608,
+    "driver_and_pipeline_overhead_included_in_buffer_ceiling": false,
+    "consumed_cases": [
+      {
+        "case": 2320,
+        "title_launches": 1,
+        "GPU_initializations": 0,
+        "reason": "external sample path unavailable before GPU; native access scope not identified"
+      },
+      {
+        "case": 2334,
+        "title_launches": 1,
+        "GPU_initializations": 0,
+        "reason": "unused monitor clock calibration stale; source and GPU not reached"
+      },
+      {
+        "case": 2344,
+        "title_launches": 0,
+        "GPU_initializations": 0,
+        "reason": "unchanged prelaunch gate positively refused"
+      },
+      {
+        "case": 2354,
+        "title_launches": 0,
+        "GPU_initializations": 0,
+        "reason": "unchanged prelaunch gate positively refused after complete final Direct proof"
+      }
+    ]
+  },
+  "final_published_Direct": {
+    "case": 2354,
+    "files": [
+      {
+        "index": 0,
+        "free_before": 6321,
+        "free_after": 8037,
+        "whole_SHA256_identity_EOF": 1,
+        "role": "published_candidate"
+      },
+      {
+        "index": 1,
+        "free_before": 8037,
+        "free_after": 8037,
+        "whole_SHA256_identity_EOF": 1,
+        "role": "preserved_control"
+      },
+      {
+        "index": 2,
+        "free_before": 8037,
+        "free_after": 8036,
+        "whole_SHA256_identity_EOF": 1,
+        "role": "title_pack"
+      },
+      {
+        "index": 3,
+        "free_before": 8036,
+        "free_after": 8036,
+        "whole_SHA256_identity_EOF": 1,
+        "role": "retained_2334"
+      },
+      {
+        "index": 4,
+        "free_before": 8036,
+        "free_after": 9752,
+        "whole_SHA256_identity_EOF": 1,
+        "role": "retained_2344"
+      },
+      {
+        "index": 5,
+        "free_before": 9752,
+        "free_after": 9751,
+        "whole_SHA256_identity_EOF": 1,
+        "role": "original_rollback"
+      }
+    ],
+    "free_pages_after_last_source": 9751,
+    "required_free_pages": 10142,
+    "all_files_whole_SHA256_identity_EOF_exact": true,
+    "large_HTTP_reads_after_proof": 0,
+    "subsequent_admission": false
+  },
+  "restored_idle_categories": {
+    "case": 2363,
+    "rows": [
+      {
+        "index": 0,
+        "free_first": 6352,
+        "free_last": 6352,
+        "active": 27841,
+        "inactive": 71915,
+        "wired": 32631,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      },
+      {
+        "index": 1,
+        "free_first": 6352,
+        "free_last": 6352,
+        "active": 27841,
+        "inactive": 71923,
+        "wired": 32623,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      },
+      {
+        "index": 2,
+        "free_first": 6352,
+        "free_last": 6352,
+        "active": 27841,
+        "inactive": 71923,
+        "wired": 32623,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      },
+      {
+        "index": 3,
+        "free_first": 6352,
+        "free_last": 6352,
+        "active": 27841,
+        "inactive": 71923,
+        "wired": 32623,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      },
+      {
+        "index": 4,
+        "free_first": 6351,
+        "free_last": 6351,
+        "active": 27842,
+        "inactive": 71923,
+        "wired": 32623,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      }
+    ],
+    "sequential_not_atomic": true,
+    "payload_reads": 0,
+    "allocations": 0,
+    "observations_after_required_restoration_readbacks": true,
+    "inactive_counted_as_available": false
+  },
+  "final_state": {
+    "installed_SELF": {
+      "bytes": 28017271,
+      "sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d"
+    },
+    "exact_prior_configuration_restored": true,
+    "full_raw_SELF_readback_verified": true,
+    "fresh_idle_CPU": true,
+    "native_owners": 0,
+    "gateway_running": false,
+    "model_loaded": false,
+    "numerical_generation_reexecuted": false,
+    "unknown_completion": false,
+    "production_candidate_adopted": false,
+    "reservation_held": true,
+    "CI_runs": 0
+  },
+  "limitations": [
+    "No measured GPU palette execution or new full-model tokens/s",
+    "No per-process or file attribution for all remaining inactive/wired pages",
+    "Kernel VM categories are sequential observations, not total PS5 UMA capacity",
+    "Earlier case2304 exceeded its original host timing window and is rejected as a formal matched comparison"
+  ],
+  "source_sha256": {
+    "native/app/native_main.cpp": "a3a2d73cb366cf902db457cff22b15f742f7ed60dd58e8aa57d1f79d09501c51",
+    "native/app/startup.cpp": "384c1dca8610aa457c810d5ca402fe0d8239de7c7de93412af877b1a4199ade5",
+    "native/app/startup.h": "056a4cfc65394b54ccce71ad01a33090375c78317e2d0fc628a516ba5e8e9d6a",
+    "native/app/validation_policy.h": "8dcef8ef6781253badafd9201949a9d70d7a8434642f3b61afbff014fcad84bd",
+    "native/app/kernel_memory_trace.h": "caf2cab19ab1af0b910aaa055f137918991914f53bd70a29e57f0dae9f0d3ea0",
+    "native/app/palette_gpu_admission.cpp": "a541876d18fe3055dc9ef9c4915340bc0e12cbfb40c6b00e9fc6fdadee847f59",
+    "native/app/palette_gpu_admission.h": "7d87c965a0c6d4b8881bf614999aec4faeb6e10d034103914719f17075826520",
+    "native/app/palette_gpu_dispatch.cpp": "1a87d1f637ad9e113716ff522fb422c22b20699dc54bc579c8012e50b2516d3c",
+    "native/app/palette_gpu_dispatch.h": "e37d0b0897702f993e8b24cdc736ab607b063dd96bde5f1a773d8086cd7d6692",
+    "native/app/palette_gpu_policy.h": "9b896ad050b552cc844d97a0c400a51c74fcee3c481a97bc23dd05ca9de49709",
+    "native/qwen_flash_next/bf16_copy.comp": "806c0c9e18e5c2cb451e226e19944e0cfdbc40786ef9135bc918f9063fd5665b",
+    "native/qwen_flash_next/kernel_memory_trace_probe.c": "02748d7bd12db81249701bae3ec80343d2a069b2bad6506cae4bea2654ba429a",
+    "native/qwen_flash_next/kernel_memory_category_probe.c": "ba71f3da2d0910117e85fd995784247d3f8dd911a95bc9862da7ac666213281b",
+    "native/qwen_flash_next/bf16_palette_decode.comp": "4ac6073db29ca24adc43b7d67d667e019ef2cdc607c0ee858e75c1b6b8d8ca70",
+    "tools/build_native.py": "c87c50ad9b7198f97a5f834bfe280638a8f0c2ad574a07ba4b5459c1ad1d9706",
+    "tools/palette_gpu_result.py": "73b8f9dd7ca8d8218193c4fdec5b4d6fc14f46b48adc9d8ce609efa6ba2a4963",
+    "tools/kernel_memory_trace_result.py": "33d6daca5448bbdbccd5bc2c7d64e2186495b350a2731e06c24fff6741d77e50"
+  }
+}
