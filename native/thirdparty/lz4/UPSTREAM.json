@@ -1,0 +1,33 @@
+{
+  "repository": "https://github.com/lz4/lz4",
+  "revision": "ebb370ca83af193212df4dcbadcc5d87bc0de2f0",
+  "release": "v1.10.0",
+  "license": "BSD-2-Clause",
+  "files": [
+    {
+      "path": "lz4.c",
+      "sha256": "9396f7de527bc8435de9c7569fb7998e56545a84b4f3c2d808c0235c01774539",
+      "bytes": 118145
+    },
+    {
+      "path": "lz4.h",
+      "sha256": "26b82efc53d1570f3b54eef02e9c4764c1ad374ff03cac04e2ced5ea4d4c552f",
+      "bytes": 46014
+    },
+    {
+      "path": "lz4hc.c",
+      "sha256": "126cafafdb91767e6e55238298a910903851b35b2cee27ce80ae2280469ee232",
+      "bytes": 93376
+    },
+    {
+      "path": "lz4hc.h",
+      "sha256": "e43824e8a9ba16f54100c4ccbccfa5782a858ca9ab83c48aac303fea3e76e21e",
+      "bytes": 20308
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "8b58c446121a109ccf32edc094bba3010a3d85e4ee3702950db55e4d3e87736c",
+      "bytes": 1311
+    }
+  ]
+}

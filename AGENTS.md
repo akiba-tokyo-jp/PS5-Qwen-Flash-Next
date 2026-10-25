@@ -1606,3 +1606,31 @@ an unrestricted service. Another launch requires a distinct fresh case and all
 unchanged memory, session, source, owner and completion guards. Keep the same
 pinned driver, original precision, budgets/reserves and disabled persistent caches.
 Committed global execution defaults and CI remain disabled.
+
+## Bounded SSD CPU screen (2026-10-25)
+
+The codec/native-delivery/continuous-refill/packing initial gates are recorded in
+docs/ssd-io-validation-results-20261025.md/.json. Cases 2255, 2258, 2267 and 2269
+positively completed all original-byte hashes, reads, worker joins where used,
+Direct retirement, fresh idle guards and unchanged production SELF readback.
+No title/GPU/model operation or production executable change was made.
+Lossless CPU restoration/overlap and the tested packed-copy paths lost; the
+roughly 4% raw refill signal failed the predeclared small-fixture adoption gate.
+The new codec/queue/probe files are experimental and are not linked into the
+qualified production application. Do not replay any consumed case.
+
+Case 2261 returned a positive zero-allocation/zero-payload-read preallocation
+refusal for a 40 MiB CPU fixture. Its allocation-free metadata review and later
+distinct smaller cohorts completed. It is not an unknown in-flight GPU call.
+The smaller fixtures separately charged 8 MiB I/O and 10 MiB destinations;
+their 18 MiB total is not the production scratch budget or admitted GPU memory.
+Keep all original floors/reserves, exact completion ownership and held reservation.
+
+Actual model metadata has 49 F32 router matrices, including the unused MTP
+router; current inference loads 48 text layers with top-10 experts. Do not
+automatically charge another BF16-to-F32 router copy. Literal upstream staging
+and victim margins fail current capacity, while a two-slot smaller forecast is
+only a design/capacity result. No hidden-state forecast, speculative read or
+native forecast speed has been implemented or qualified. Saved route IDs alone
+cannot validate router reuse. The installed fastest production SELF and rollback
+remain as recorded by config/production-installation.json.
