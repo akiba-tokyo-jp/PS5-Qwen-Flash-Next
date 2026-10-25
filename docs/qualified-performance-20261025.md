@@ -36,3 +36,9 @@ The committed general execution/deployment controls remain disabled. Selecting
 an optimization profile does not automatically start an unattended service.
 At completion the exact original title was restored and normally closed; no
 native owner, gateway or loaded model remains.
+
+That restoration describes optimization qualification. The subsequent explicitly
+authorized [production placement](production-installation-20261025.md) leaves the
+exact qualified Qwen SELF installed as the canonical executable, preserves the
+original as rollback, and ends after verified ordinary shutdown. Another bounded
+run still requires a fresh execution admission.
