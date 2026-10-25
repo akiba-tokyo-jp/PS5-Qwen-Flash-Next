@@ -232,8 +232,19 @@
     "broad_reasoning_quality_qualified": false,
     "sustained_service_qualified": false,
     "small_decode_change_significance_qualified": false,
-    "full_split_layout_native_speed_qualified": false,
+    "full_split_layout_native_speed_qualified": true,
+    "full_split_layout_native_speed_scope": "Two completed short requests per layout; significance and sustained service unqualified.",
     "uploaded_expert_bytes_are_not_physical_SSD_bandwidth": true,
     "CI_and_general_release_enabled": false
+  },
+  "complete_split512_layout": {
+    "implemented": true,
+    "complete_physical_plan_passed": true,
+    "logical_files": 76,
+    "physical_files": 711,
+    "mean_decode_gain_percent": 1.5020188347362629,
+    "mean_TTFT_reduction_percent": 0.3455240643790325,
+    "all_other_adopted_optimizations_retained": true,
+    "result": "native-split512-success-20261025.json"
   }
 }

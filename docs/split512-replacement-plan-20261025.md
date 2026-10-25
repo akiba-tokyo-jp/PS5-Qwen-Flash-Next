@@ -1,5 +1,9 @@
 # In-place 512 MiB model layout
 
+All eight completion steps subsequently passed, including full native inference,
+actual frame review and every original restoration/numerical/final idle gate.
+See the [completed implementation and measurements](native-split512-success-20261025.md).
+
 The owner authorized replacing the PS5 model originals with a complete 512 MiB
 layout, without keeping a second full original model on the console. This
 supersedes the previous duplicate-layout storage prerequisite. Retain the exact

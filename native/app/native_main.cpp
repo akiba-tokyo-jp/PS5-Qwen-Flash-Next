@@ -258,10 +258,12 @@ static ModelFileIdentity model_directory_identity(const std::string & path) {
 }
 
 static void inspect_container(const std::string & path, bool first, qwen_app::ModelFootprint & footprint,
-                              std::unordered_set<std::string> & names, std::uint64_t expected_bytes) {
+                              std::unordered_set<std::string> & names, std::uint64_t expected_bytes,
+                              std::uint64_t physical_bytes) {
     std::ifstream file(path, std::ios::binary|std::ios::ate);
-    if(!file || file.tellg()<0 || static_cast<std::uint64_t>(file.tellg())!=expected_bytes)
-        throw std::runtime_error("Transferred model size differs from the conversion receipt");
+    if(!expected_bytes || !physical_bytes || physical_bytes>expected_bytes || !file || file.tellg()<0 ||
+       static_cast<std::uint64_t>(file.tellg())!=physical_bytes)
+        throw std::runtime_error("Transferred model size differs from the admitted physical source");
     footprint.mapped_files=qwen_app::checked_memory_sum(footprint.mapped_files,expected_bytes);
     std::unique_ptr<gguf_context, decltype(&gguf_free)> metadata(
         gguf_init_from_file(path.c_str(), {true, nullptr}), gguf_free);
@@ -944,7 +946,7 @@ int main(int argc, char ** argv) {
                 (prior_integrity ? " prior_native_SHA256_matched=1 sealed_identity_unchanged=1" : " SHA256_matched=1");
             qwen_native_stage(completed.c_str());
             inspect_container(model_file(startup.model_receipt, file.at("path").get<std::string>()), first,
-                footprint,tensor_names,file.at("bytes").get<std::uint64_t>()); first = false;
+                footprint,tensor_names,file_bytes,split_integrity?file_identities.back()[5]:file_bytes); first = false;
             if (startup.first_generation_validation) require_model_CPU_budget();
             mapping_files.push_back({model_file(startup.model_receipt, file.at("path").get<std::string>()),
                                      file.at("bytes").get<std::uint64_t>()});

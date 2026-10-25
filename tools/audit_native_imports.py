@@ -10,8 +10,9 @@ import subprocess
 from driver_inputs import sha
 
 
-def audit(workspace, cache):
-    receipt = json.loads((cache / "build/application-native/receipt.private.json").read_text())
+def audit(workspace, cache, native_build=None):
+    native_build = Path(native_build) if native_build else cache / "build/application-native"
+    receipt = json.loads((native_build / "receipt.private.json").read_text())
     image = Path(receipt["artifact"]["path"])
     if sha(image) != receipt["artifact"]["sha256"]:
         raise ValueError("Native image changed after linking")

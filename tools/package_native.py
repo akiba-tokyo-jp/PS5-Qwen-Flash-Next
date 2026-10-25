@@ -28,11 +28,14 @@ def main():
     p.add_argument("--cache", type=Path, required=True)
     p.add_argument("--driver-root", type=Path, required=True)
     p.add_argument("--driver-manifest", type=Path, required=True)
+    p.add_argument("--native-build", type=Path,
+                   help="Native build directory; defaults to cache/build/application-native")
     p.add_argument("--out", type=Path, required=True, help="Fresh local package directory")
     a = p.parse_args()
     lock = json.loads((ROOT / "native/qwen_flash_next/dependencies.lock.json").read_text(encoding="utf-8"))
     selected = validate_driver(a.driver_root, a.driver_manifest, lock["ps5_vulkan_inference"])
-    link_receipt = a.cache / "build/application-native/receipt.private.json"
+    native_build = a.native_build.resolve() if a.native_build else a.cache / "build/application-native"
+    link_receipt = native_build / "receipt.private.json"
     linked = json.loads(link_receipt.read_text(encoding="utf-8"))
     if linked.get("link_returncode") != 0 or not linked.get("input_hashes_stable") or linked["driver"] != selected:
         raise ValueError("A successful matching native link receipt is required")
@@ -63,7 +66,7 @@ def main():
         dispatch.get("passed") is not True or dispatch.get("image_sha256") != sha(image) or
         len(dispatch.get("required_physical_callbacks", [])) != 6):
         raise ValueError("The actual native Vulkan callback-table audit is required before packaging")
-    imported = audit(a.workspace, a.cache)
+    imported = audit(a.workspace, a.cache, native_build)
     if imported["missing"]:
         raise ValueError("Real module import audit failed: " + ", ".join(imported["missing"]))
     if linked.get("mmap_public_provider_required") is not True or imported["resolved"].get("mmap") != "libkernel.sprx":

@@ -122,6 +122,37 @@ class PerformanceResultTests(unittest.TestCase):
             bad=copy.deepcopy(self.record);bad['delta'][field]=value
             with self.assertRaises(ValueError):validate_performance(bad,self.result)
 
+    def test_completed_split_fragments_require_exact_joined_pair_bounds(self):
+        record=dict(schema='ps5-qwen-completed-performance-v5',
+            process_includes_source_and_backend_work=True,GPU_timestamp_queries=False,
+            hot_path_logs_added=False,GPU_operations_added=False,
+            source_read_ns_is_producer_wait_time=True,maximum_parallel_source_reads=2,
+            file_range_schedule_enabled=True,physical_read_bytes_include_alignment=True,
+            worker_times_overlap_consumers=True,prefill_batch_tokens=4,
+            generated_token_batch_tokens=1,all_prompt_outputs_requested=True,
+            delta=dict(source_bytes=85770516480,source_chunks=26400,source_completed_windows=26400,
+                source_coalesced_batches=447,source_parallel_batches=11801,source_pipeline_batches=203,
+                source_selected_serial_batches=346,source_physical_read_calls=26096,
+                source_physical_read_bytes=86195402176,source_read_ns=44381506094,
+                source_consumer_ns=5114190678,source_handle_ns=201543989,source_headroom_ns=891332633,
+                source_worker_read_ns=491343633,source_worker_dispatch_ns=1516297,
+                process_calls=8,process_ns=54464944337,synchronize_ns=48834,checkpoint_ns=74266775,
+                work_guard_ns=3352234,stage_observer_ns=57855941))
+        result=dict(stop_reason='end_of_generation',prefill_batch_tokens=4,
+            metrics=dict(prompt_tokens=26,generated_tokens=1))
+        validate_performance(record,result,split_sources=True)
+        with self.assertRaises(ValueError):validate_performance(record,result)
+        for field,value in [('source_physical_read_calls',26095),('source_physical_read_calls',26240),
+                ('source_selected_serial_batches',202),('source_parallel_batches',13000),
+                ('source_physical_read_bytes',85770516480+32768*26096+1)]:
+            bad=copy.deepcopy(record);bad['delta'][field]=value
+            with self.assertRaises(ValueError):validate_performance(bad,result,split_sources=True)
+        double=copy.deepcopy(record);double['delta']['source_physical_read_calls']=26239
+        validate_performance(double,result,split_sources=True)
+        for flag in (1,'yes',None):
+            with self.assertRaises(ValueError):validate_performance(record,result,split_sources=flag)
+        with self.assertRaises(ValueError):validate_performance(self.record,self.result,split_sources=True)
+
     def test_v2_wait_allowance_is_finite_and_does_not_change_memory_reserves(self):
         record=dict(schema='ps5-qwen-memory-backpressure-v2',enabled=True,
             maximum_boundary_wait_ms=20000,maximum_total_wait_ms=60000,poll_interval_ms=100,

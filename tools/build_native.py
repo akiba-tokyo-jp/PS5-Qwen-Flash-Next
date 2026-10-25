@@ -37,6 +37,10 @@ def main():
     parser.add_argument("--native-platform-manifest", type=Path,
                         help="Exact host-built native platform manifest; does not authorize console execution")
     parser.add_argument("--cache", type=Path, required=True)
+    parser.add_argument("--out", type=Path,
+                        help="Dedicated native build directory; defaults to cache/build/application-native")
+    parser.add_argument("--object-cache", type=Path,
+                        help="Content-addressed object cache; defaults to the native build directory")
     parser.add_argument("--runtime-imports", type=Path, required=True,
                         help="Local source-generated SceAgc import stubs; never copied to the repository")
     parser.add_argument("--model-io-manifest", type=Path, required=True,
@@ -78,8 +82,8 @@ def main():
         from external_shader_storage import validate_shader_resources as validate_storage
         shader_storage=validate_storage(a.shader_storage_manifest,a.model_io_manifest,receipt_path)
         model_io_objects += [Path(row['path'])for row in shader_storage['asset_objects']]
-    out = cache / "build/application-native"
-    objects = out / "objects"
+    out = a.out.resolve() if a.out else cache / "build/application-native"
+    objects = a.object_cache.resolve() if a.object_cache else out / "objects"
     objects.mkdir(parents=True, exist_ok=True)
     source = cache / "upstream" / ("llama.cpp-" + lock["llama_cpp"]["revision"])
     llvm = workspace / "toolchain/llvm-mingw-20261006-ucrt-x86_64/bin"

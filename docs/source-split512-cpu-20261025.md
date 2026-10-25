@@ -1,5 +1,11 @@
 # Representative 512 MiB physical-file comparison
 
+This is the historical CPU-only result before the owner authorized in-place
+replacement. The later [complete 512 MiB layout and native qualification](native-split512-success-20261025.md)
+passed without a second complete console copy; its observed mean decode gain
+was 1.50%. The storage refusal and unmeasured status below describe this earlier
+duplicate-layout proposal, not the current completed implementation.
+
 One finite CPU-only PS5 comparison used the application's actual C++ executor,
 the same 8 MiB Direct window, two outstanding reads and three source descriptors.
 All 192 pairs passed SHA256 of every returned byte. Hashing was outside the read

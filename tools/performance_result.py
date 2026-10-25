@@ -7,7 +7,7 @@ FIELDS = {
     'process_ns', 'synchronize_ns', 'checkpoint_ns', 'work_guard_ns', 'stage_observer_ns'}
 
 
-def validate_first_performance(record, aggregate, first):
+def validate_first_performance(record, aggregate, first, *, split_sources=False):
     # The first terminal owns request-specific batching metadata. Its numerical
     # result must still agree exactly with the complete lifecycle aggregate.
     for key in ('metrics','token_ids','output_bytes','stop_reason'):
@@ -16,7 +16,7 @@ def validate_first_performance(record, aggregate, first):
     if ('prefill_batch_tokens' in aggregate and
             aggregate['prefill_batch_tokens'] != first.get('prefill_batch_tokens')):
         raise ValueError('Aggregate and first-terminal prefill widths differ')
-    return validate_performance(record, first)
+    return validate_performance(record, first, split_sources=split_sources)
 
 
 def validate_backpressure(record):
@@ -44,8 +44,11 @@ def validate_backpressure(record):
     return record
 
 
-def validate_performance(record, result):
+def validate_performance(record, result, *, split_sources=False):
     schema = record.get('schema')
+    if type(split_sources) is not bool or (split_sources and schema not in (
+            'ps5-qwen-completed-performance-v4', 'ps5-qwen-completed-performance-v5')):
+        raise ValueError('Split source accounting requires an admitted selected schedule')
     if (schema not in tuple('ps5-qwen-completed-performance-v'+str(v) for v in range(1,6)) or
         record.get('process_includes_source_and_backend_work') is not True or
         record.get('GPU_timestamp_queries') is not False or
@@ -71,10 +74,20 @@ def validate_performance(record, result):
         record.get('maximum_parallel_source_reads') != 2 or record.get('file_range_schedule_enabled') is not True or
         record.get('physical_read_bytes_include_alignment') is not True or
         delta['source_physical_read_bytes'] < delta['source_bytes'] or
-        delta['source_physical_read_calls'] != delta['source_chunks']-delta['source_coalesced_batches'] or
-        delta['source_selected_serial_batches'] != delta['source_pipeline_batches'] or
-        delta['source_parallel_batches']+delta['source_coalesced_batches']+delta['source_pipeline_batches'] > delta['source_chunks']//2):
+        delta['source_parallel_batches']+delta['source_coalesced_batches']+delta['source_selected_serial_batches'] > delta['source_chunks']//2):
         raise ValueError('Selected source scheduling lacks exact bounded completion evidence')
+    if schema.endswith(('v4','v5')):
+        joined = delta['source_selected_serial_batches'] - delta['source_pipeline_batches']
+        extra = delta['source_physical_read_calls'] - (delta['source_chunks'] - delta['source_coalesced_batches'])
+        # A split fallback pair completes two logical windows without the worker.
+        # Each window is smaller than a part and can add at most one read.
+        if split_sources:
+            if (not 0 <= joined <= delta['source_chunks']//2 or not joined <= extra <= 2*joined or
+                    delta['source_physical_read_bytes'] > delta['source_bytes'] +
+                    32768*delta['source_physical_read_calls']):
+                raise ValueError('Split fragments exceed bounded physical read accounting')
+        elif joined != 0 or extra != 0:
+            raise ValueError('Unsplit source physical read accounting differs')
     metrics = result['metrics']
     reason = result['stop_reason']
     if reason not in ('end_of_generation', 'output_token_limit'):
