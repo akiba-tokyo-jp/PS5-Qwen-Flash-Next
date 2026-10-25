@@ -1586,3 +1586,23 @@ ended with 456 frozen inputs unchanged. No native owner, gateway or loaded
 model remains. Preserve the same pinned 872cc126 cumulative-idle driver,
 disabled persistent caches, every budget/reserve/startup/wait limit and held
 reservation. General execution/deployment/release and CI remain disabled.
+
+
+## Authorized production placement (2026-10-25)
+
+The owner explicitly authorized production placement after the qualified profile.
+The exact `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`
+SELF now occupies the registered title's actual startup path. Post-placement
+arithmetic, both 22-token external requests, native frame review, positive
+source/GPU/model retirement, ordinary close and final full readback passed.
+The original remains verified as rollback; do not restore it merely because the
+successful production verification finished. No native owner, gateway or loaded
+model remains. See docs/production-installation-20261025.md and
+config/production-installation.json for the sanitized current state.
+
+Preserve the earlier zero-launch headroom refusal and every consumed case. This
+production placement does not authorize replaying the completed run binding or
+an unrestricted service. Another launch requires a distinct fresh case and all
+unchanged memory, session, source, owner and completion guards. Keep the same
+pinned driver, original precision, budgets/reserves and disabled persistent caches.
+Committed global execution defaults and CI remain disabled.

@@ -17,7 +17,12 @@ See [results](docs/gpu-optimization-results-20261025.md),
 [profile usage](docs/qualified-performance-20261025.md) and the
 [PS5LM source assessment](docs/ps5lm-transfer-assessment-20261025.md).
 These are fixed short requests with original precision and unchanged budgets.
-General execution/deployment and CI remain disabled.
+The [authorized production placement](docs/production-installation-20261025.md)
+now leaves this exact fastest SELF in the actual startup path, with the original
+preserved as rollback. Post-placement inference, native frame review, ordinary
+shutdown and final full readback passed. This remains a finite application;
+another launch requires a fresh admission. Committed execution defaults and CI
+remain disabled.
 
 The [complete implementation and physical validation plan](docs/execution-plan-20261022.md)
 passed on 2026-10-24. One PS5 generated `4` for the arithmetic smoke request and
