@@ -2,7 +2,7 @@
 import sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from completion_delivery_result import parse
+from completion_delivery_result import parse,parse_preallocation_refusal
 class CompletedDelivery(unittest.TestCase):
     def setUp(self):
         self.m=dict(nonce='c'*32,rounds=1,pack=dict(bytes=16384),variants=['raw_waves','raw_continuous','compressed_waves','compressed_continuous'],
@@ -36,6 +36,24 @@ class CompletedDelivery(unittest.TestCase):
             ('BATCH_BEGIN round=0 mode=1','BATCH_BEGIN round=0 mode=0')]
         for a,b in changes:
             with self.subTest(a=a),self.assertRaises(ValueError):parse(self.text.replace(a,b,1).encode(),self.m)
+    def test_zero_io_budget(self):
+        m=dict(self.m,io_bytes=0)
+        text=self.text.replace('io_bytes=8388608','io_bytes=0').replace('41943040','33554432')
+        self.assertEqual(parse(text.encode(),m)['io_bytes'],0)
+        with self.assertRaises(ValueError):parse(text.encode(),self.m)
+    def test_positive_preallocation_refusal(self):
+        m=dict(self.m,io_bytes=0,destination_bytes=10<<20)
+        text=('BEGIN nonce='+'c'*32+' io_bytes=0 destination_bytes=10485760 total_Direct_bytes=10485760 maximum_outstanding_reads=2 GPU_calls=0 title_launches=0\n'
+              'PREALLOC_HEADROOM free_first=1761 free_last=1761 minimum=898 reserved=206 additional_pages=640 required=1794 flexible_bytes=8554283008 rc=0\n'
+              'END success=0 nonce='+'c'*32+' pending_reads=0 all_workers_joined=0 Direct_released=1 GPU_calls=0 title_launches=0 automatic_retry=0\n')
+        proof=parse_preallocation_refusal(text.encode(),m)
+        self.assertTrue(proof['completed']);self.assertFalse(proof['unknown_completion'])
+        self.assertEqual(proof['allocations'],0)
+        for a,b in [('success=0','success=1'),('pending_reads=0','pending_reads=1'),
+                    ('required=1794','required=1000'),('free_first=1761 free_last=1761','free_first=2000 free_last=2000'),
+                    ('Direct_released=1','Direct_released=0'),('END success','DIRECT_ALLOC_BEFORE bytes=10485760\nEND success'),
+                    ('END success','UNKNOWN success')]:
+            with self.subTest(a=a),self.assertRaises(ValueError):parse_preallocation_refusal(text.replace(a,b,1).encode(),m)
     def test_packed_three_matrices(self):
         m=dict(self.m,samples=3,variants=self.m['variants']+['packed_waves','packed_continuous'],
             extents=[x[:3]for x in self.m['extents']])
