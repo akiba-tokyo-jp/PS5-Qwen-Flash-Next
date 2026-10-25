@@ -38,6 +38,13 @@ restoration/GEMV candidate is built but has no physical result: its unchanged
 prelaunch memory gate refused before any launch. The exact fastest production
 SELF/settings are restored; the overall follow-up plan remains incomplete.
 
+The [remaining finite memory/GPU plan subsequently completed](docs/memory-plan-completion-20261026.md).
+Two captured production frames were resident; required complete native integrity
+recovered about 15.9 MiB without removing monitoring or changing reserves. A fresh
+fused GEMV comparison then completed at **0.980634x** paired throughput and was
+rejected. The reusable archival-integrity builder passed host and native checks.
+No new delivery candidate was adopted; the exact fastest SELF/settings are restored.
+
 The [complete implementation and physical validation plan](docs/execution-plan-20261022.md)
 passed on 2026-10-24. One PS5 generated `4` for the arithmetic smoke request and
 completed two external API requests, each returning `1, 2, 3, 4, 5, 6, 7, 8`.

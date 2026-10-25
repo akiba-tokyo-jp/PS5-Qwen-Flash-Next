@@ -99,6 +99,7 @@ done:
     receipt=dict(schema='ps5-qwen-launch-Direct-integrity-build-v1',state='host_checked_not_console_executed',
         inputs=before+[record(path)for path in sorted(set(extra))],steps=steps,commands=commands,
         controller=record(controller),CPU_probe=record(probe_elf),generated_controller=record(generated),
+        CPU_probe_commands=[compile_probe,link_probe],
         owner_service_title_session_guards_unchanged=True,only_controller_change='digest_matches input adapter',
         observed_preparation_inputs=observed,controller_journal_prefix=remote,
         byte_count_SHA256_stable_identity_and_EOF_required=True,original_SELF=original_SELF,
