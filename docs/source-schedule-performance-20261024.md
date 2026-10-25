@@ -1,5 +1,7 @@
 # File/range source schedule candidate
 
+> Historical completed candidate plan. The schedule was qualified and adopted; see the [terminal result](native-source-schedule-success-20261025.md) and [current plan index](plan-index.md).
+
 The owner requested implementing the source-bandwidth proposal and comparing it
 on the physical PS5. The candidate retains all BF16/F32 weights, experts and PLE,
 the 8 MiB Direct source window, every CPU/device/system budget and reserve, driver

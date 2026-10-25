@@ -1,5 +1,7 @@
 # Kernel memory consumption and BF16 candidate qualification
 
+> Historical partial checkpoint. The remaining frame attribution and fused GPU comparison subsequently completed; see [finite-plan completion](memory-plan-completion-20261026.md) and the [current plan index](plan-index.md). Pending statements below describe this earlier checkpoint.
+
 Subsequent evidence is recorded in the
 [memory attribution and GPU follow-up](memory-palette-followup-20261026.md).
 It completes the standalone GPU screen with a negative result; the fused candidate

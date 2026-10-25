@@ -1,5 +1,7 @@
 # Bounded performance work after the completed source-schedule baseline
 
+> Historical completed screen. The later in-place 512 MiB replacement superseded the duplicate-layout storage blocker recorded below. Use the [plan index](plan-index.md) and [complete layout result](native-split512-success-20261025.md) for current dispositions.
+
 The owner authorized implementation and physical comparison on 2026-10-25.
 Validation, monitoring and durable completion records stay enabled. The control
 is main `bd1e25cb217287a5f1efb9193aac61f279c8a5a7`, whose tree matches the

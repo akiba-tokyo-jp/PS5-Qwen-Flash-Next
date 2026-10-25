@@ -1,5 +1,7 @@
 # Critical review of execution efficiency
 
+> Historical planning review. The first-generation sequence subsequently completed; see the [plan status index](plan-index.md#historical-plan-lifecycle) and [terminal result](native-full-generation-success-20261024.md). Pending observations below describe the review date.
+
 ## Assessment
 
 The original plan did not minimize elapsed time to a correct physical PS5 result.

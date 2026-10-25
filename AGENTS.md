@@ -17,6 +17,19 @@ and credential hashes outside commits. Build and model data belong on the data d
 GitHub Actions and other CI must remain disabled. Use focused manual checks.
 Do not spawn agents or delegate without the owner's explicit authorization.
 
+## Current plan navigation
+
+Read [docs/plan-index.md](docs/plan-index.md) for current proposal dispositions and
+links to terminal results. Earlier dated blocks below preserve historical guards,
+refusals and intermediate pending states; later explicit completion evidence
+supersedes their pending status. The finite memory-recovery and GPU screens are
+complete; broader unimplemented research is separate, and implementation and
+validation of all proposals are not complete. This navigation note does not relax
+any execution, memory, ownership, preservation or completion guard.
+The remaining work is specified in
+[docs/remaining-validation-plan-20261026.md](docs/remaining-validation-plan-20261026.md).
+Its planning status does not assert implementation, execution or adoption.
+
 ## Current integration phase
 
 On 2026-10-22 the owner supplied the updated driver and authorized acquisition

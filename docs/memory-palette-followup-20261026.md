@@ -1,5 +1,7 @@
 # Memory attribution and exact BF16 GPU delivery follow-up
 
+> Current disposition: this is a historical partial checkpoint. The fused GEMV screen later completed at 0.980634x and was rejected. See [finite-plan completion](memory-plan-completion-20261026.md) and the [current plan index](plan-index.md); the refusal below remains preserved.
+
 Historical partial checkpoint. The remaining frame-memory attribution, fused
 comparison and restoration subsequently completed; see the
 [completed finite plan](memory-plan-completion-20261026.md). The original
