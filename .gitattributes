@@ -25,4 +25,5 @@ native/app/demand_source_batch.h -text whitespace=cr-at-eol
 native/qwen_flash_next/bf16_* -text whitespace=cr-at-eol
 native/qwen_flash_next/completion_* -text whitespace=cr-at-eol
 native/qwen_flash_next/demand_batch_* -text whitespace=cr-at-eol
+native/qwen_flash_next/memory_headroom_probe.c -text whitespace=cr-at-eol
 native/thirdparty/lz4/* -text whitespace=cr-at-eol
