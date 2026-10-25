@@ -27,3 +27,7 @@ native/qwen_flash_next/completion_* -text whitespace=cr-at-eol
 native/qwen_flash_next/demand_batch_* -text whitespace=cr-at-eol
 native/qwen_flash_next/memory_headroom_probe.c -text whitespace=cr-at-eol
 native/thirdparty/lz4/* -text whitespace=cr-at-eol
+native/app/file_residency.h -text whitespace=cr-at-eol
+native/qwen_flash_next/file_residency_probe.c -text whitespace=cr-at-eol
+native/qwen_flash_next/kernel_process_memory_probe.c -text whitespace=cr-at-eol
+native/app/palette_gpu_* -text whitespace=cr-at-eol

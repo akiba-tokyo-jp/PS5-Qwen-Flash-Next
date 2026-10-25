@@ -1,5 +1,11 @@
 # Kernel memory consumption and BF16 candidate qualification
 
+Subsequent evidence is recorded in the
+[memory attribution and GPU follow-up](memory-palette-followup-20261026.md).
+It completes the standalone GPU screen with a negative result; the fused candidate
+remains unmeasured after a zero-launch memory refusal. The historical cases and
+point observations below are preserved unchanged.
+
 The requested plan is **not complete**. A same-process control identifies large
 HTTP readbacks as one reproducible source of free-page consumption, and the
 revised integrity order recovers pages without reducing any guard. The one-worker

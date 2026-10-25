@@ -22,7 +22,7 @@ unsigned char *source_bytes=reinterpret_cast<unsigned char *>((reinterpret_cast<
 unsigned char *target_bytes=reinterpret_cast<unsigned char *>((reinterpret_cast<std::uintptr_t>(target_storage)+16383)&~std::uintptr_t(16383));
 unsigned resets,submits,waits,barriers,allocations,pipelines,creates,dispatches;
 bool timeout_wait=false,coherent=true,oversized=false,fail_submit=false;
-std::array<std::uint32_t,2> constants{};VkPipeline bound{};
+std::array<std::uint32_t,4> constants{};VkPipeline bound{};
 void reset() {
     resets=submits=waits=barriers=allocations=pipelines=creates=dispatches=0;
     timeout_wait=oversized=fail_submit=false;coherent=true;
@@ -39,7 +39,7 @@ VkResult VKAPI_CALL fake_AllocateMemory(VkDevice,const VkMemoryAllocateInfo *,co
 VkResult VKAPI_CALL fake_BindBufferMemory(VkDevice,VkBuffer,VkDeviceMemory,VkDeviceSize offset){assert(offset==0);return VK_SUCCESS;}
 VkResult VKAPI_CALL fake_MapMemory(VkDevice,VkDeviceMemory memory,VkDeviceSize,VkDeviceSize,VkMemoryMapFlags,void **out){*out=memory==handle<VkDeviceMemory>(1)?source_bytes:target_bytes;return VK_SUCCESS;}
 VkResult VKAPI_CALL fake_CreateDescriptorSetLayout(VkDevice,const VkDescriptorSetLayoutCreateInfo *info,const VkAllocationCallbacks *,VkDescriptorSetLayout *out){assert(info->bindingCount==2);*out=handle<VkDescriptorSetLayout>(6);return VK_SUCCESS;}
-VkResult VKAPI_CALL fake_CreatePipelineLayout(VkDevice,const VkPipelineLayoutCreateInfo *info,const VkAllocationCallbacks *,VkPipelineLayout *out){assert(info->pushConstantRangeCount==1&&info->pPushConstantRanges[0].size==8);*out=handle<VkPipelineLayout>(7);return VK_SUCCESS;}
+VkResult VKAPI_CALL fake_CreatePipelineLayout(VkDevice,const VkPipelineLayoutCreateInfo *info,const VkAllocationCallbacks *,VkPipelineLayout *out){assert(info->pushConstantRangeCount==1&&(info->pPushConstantRanges[0].size==8||info->pPushConstantRanges[0].size==16));*out=handle<VkPipelineLayout>(7);return VK_SUCCESS;}
 VkResult VKAPI_CALL fake_CreateShaderModule(VkDevice,const VkShaderModuleCreateInfo *info,const VkAllocationCallbacks *,VkShaderModule *out){assert(info->codeSize==20);*out=handle<VkShaderModule>(8);return VK_SUCCESS;}
 VkResult VKAPI_CALL fake_CreateComputePipelines(VkDevice,VkPipelineCache cache,std::uint32_t n,const VkComputePipelineCreateInfo *,const VkAllocationCallbacks *,VkPipeline *out){assert(!cache&&n==1);*out=handle<VkPipeline>(100+(++pipelines));return VK_SUCCESS;}
 VkResult VKAPI_CALL fake_CreateDescriptorPool(VkDevice,const VkDescriptorPoolCreateInfo *,const VkAllocationCallbacks *,VkDescriptorPool *out){*out=handle<VkDescriptorPool>(9);return VK_SUCCESS;}
@@ -59,9 +59,22 @@ void VKAPI_CALL fake_CmdPipelineBarrier(VkCommandBuffer,VkPipelineStageFlags src
 }
 void VKAPI_CALL fake_CmdBindPipeline(VkCommandBuffer,VkPipelineBindPoint,VkPipeline pipeline){bound=pipeline;}
 void VKAPI_CALL fake_CmdBindDescriptorSets(VkCommandBuffer,VkPipelineBindPoint,VkPipelineLayout,std::uint32_t,std::uint32_t,const VkDescriptorSet *,std::uint32_t,const std::uint32_t *){}
-void VKAPI_CALL fake_CmdPushConstants(VkCommandBuffer,VkPipelineLayout,VkShaderStageFlags,std::uint32_t offset,std::uint32_t size,const void *data){assert(offset==0&&size==8);std::memcpy(constants.data(),data,8);}
+void VKAPI_CALL fake_CmdPushConstants(VkCommandBuffer,VkPipelineLayout,VkShaderStageFlags,std::uint32_t offset,std::uint32_t size,const void *data){assert(offset==0&&(size==8||size==16));std::memcpy(constants.data(),data,size);}
 void VKAPI_CALL fake_CmdDispatch(VkCommandBuffer,std::uint32_t x,std::uint32_t y,std::uint32_t z){
-    assert(x==(constants[0]/2+255)/256&&y==1&&z==1);++dispatches;
+    assert(y==1&&z==1);++dispatches;
+    if(bound==handle<VkPipeline>(103)||bound==handle<VkPipeline>(104)) {
+        assert(x==constants[1]);const unsigned columns=constants[0],rows=constants[1];
+        std::vector<unsigned char> restored(columns*rows*2);const unsigned char *weights=source_bytes;
+        if(bound==handle<VkPipeline>(104)){assert(qwen_palette_decode(source_bytes,constants[3],restored.data(),restored.size()));weights=restored.data();}
+        for(unsigned row=0;row<rows;++row){float result=0;
+            for(unsigned col=0;col<columns;++col){const auto i=std::size_t(row)*columns+col;
+                std::uint32_t bits=(std::uint32_t(weights[2*i])|(std::uint32_t(weights[2*i+1])<<8))<<16;float value;std::memcpy(&value,&bits,4);
+                result+=value*(float(int(col%7)-3)*0.5f);}
+            std::memcpy(target_bytes+4*row,&result,4);
+        }
+        return;
+    }
+    assert(x==(constants[0]/2+255)/256);
     // The host substitutes execution only to test API sequencing and ownership.
     // This is not execution or qualification of the SPIRV kernel.
     if(bound==handle<VkPipeline>(101))std::memcpy(target_bytes,source_bytes,constants[0]*2);
@@ -109,5 +122,22 @@ int main() {
     rejected([&]{gpu->dispatch(false,65536,131072);});assert(waits==0);
     const auto failed_resets=resets;rejected([&]{gpu->dispatch(false,65536,131072);});assert(resets==failed_resets);
     reset();rejected([&]{new PaletteGpuDispatch(spv.data(),19,spv.data(),20);});assert(creates==0);
+    reset();gpu=new PaletteGpuDispatch(spv.data(),20,spv.data(),20,spv.data(),20,spv.data(),20);
+    assert(pipelines==4&&allocations==2);
+    std::vector<unsigned char> matrix(3276800),packed(qwen_palette_bound(1638400));
+    for(std::size_t i=0;i<matrix.size();i+=2){matrix[i]=0x80;matrix[i+1]=0x3f;}
+    std::memcpy(gpu->source(),matrix.data(),matrix.size());gpu->matvec(false,2560,640,3276800);
+    std::vector<unsigned char> expected(gpu->target(),gpu->target()+640*4);
+    auto packed_bytes=qwen_palette_encode(matrix.data(),matrix.size(),packed.data(),packed.size());assert(packed_bytes);
+    std::memcpy(gpu->source(),packed.data(),packed_bytes);gpu->matvec(true,2560,640,static_cast<std::uint32_t>(packed_bytes));
+    assert(std::memcmp(gpu->target(),expected.data(),expected.size())==0&&submits==2&&waits==2&&dispatches==2&&barriers==4);
+    std::memcpy(gpu->source(),matrix.data(),matrix.size());gpu->matvec(false,640,2560,3276800);
+    expected.assign(gpu->target(),gpu->target()+2560*4);
+    std::memcpy(gpu->source(),packed.data(),packed_bytes);gpu->matvec(true,640,2560,static_cast<std::uint32_t>(packed_bytes));
+    assert(std::memcmp(gpu->target(),expected.data(),expected.size())==0&&submits==4&&waits==4&&dispatches==4&&barriers==8);
+    const auto before_bad=resets;rejected([&]{gpu->matvec(false,2560,640,1);});rejected([&]{gpu->matvec(false,2560,641,3276800);});assert(resets==before_bad);
+    timeout_wait=true;rejected([&]{gpu->matvec(false,2560,640,3276800);});const auto failed_matvec_resets=resets;
+    rejected([&]{gpu->matvec(false,2560,640,3276800);});rejected([&]{gpu->dispatch(false,65536,131072);});assert(resets==failed_matvec_resets);
+    reset();rejected([&]{new PaletteGpuDispatch(spv.data(),20,spv.data(),20,spv.data(),20);});assert(creates==0);
     return 0;
 }

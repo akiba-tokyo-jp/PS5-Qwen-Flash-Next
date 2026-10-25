@@ -8,7 +8,16 @@ def parse(result,policy,owner_pid):
         if not value:raise ValueError(message)
     def integer(value):return type(value)is int and value>0
     p=policy['native_palette_validation']
-    require(result.get('schema')=='ps5-qwen-exact-palette-GPU-result-v1','Unknown GPU result schema')
+    fused=result.get('schema')=='ps5-qwen-exact-palette-GEMV-result-v1'
+    require(fused or result.get('schema')=='ps5-qwen-exact-palette-GPU-result-v1','Unknown GPU result schema')
+    if fused:
+        require(p.get('schema')=='ps5-qwen-exact-palette-GEMV-v1','Fused policy differs')
+        columns=p.get('GEMV_columns');require(type(columns)is list and len(columns)==9 and all(type(x)is int and x in(640,2560)for x in columns),'Fused source geometry differs')
+        for key in ('raw_delivery_includes_GEMV_compute','palette_decode_fused_into_GEMV','same_F32_outputs_bit_exact','CPU_double_reference_passed'):
+            require(result.get(key)is True,'Fused numerical/timing completion is required: '+key)
+        require(type(result.get('queue_submissions'))is int and result['queue_submissions']==110,'Fused submission count differs')
+    else:
+        require(p.get('schema')=='ps5-qwen-exact-palette-GPU-v1','Standalone policy differs')
     require(integer(owner_pid)and type(result.get('pid'))is int and result['pid']==owner_pid,'GPU owner differs')
     for key in ('passed','all65536_BF16_patterns_exact','positive_device_idle_and_epoch_retirement',
                 'all_fences_positively_completed','source_file_closed','palette_delivery_includes_validation_dispatch_fence'):
@@ -26,7 +35,7 @@ def parse(result,policy,owner_pid):
         require(row.get('original_SHA256_exact')is True,'Original matrix digest is incomplete')
         read=row.get('read_ns');dispatch=row.get('dispatch_completion_ns');delivery=row.get('delivery_ns')
         require(all(integer(v)for v in (read,dispatch,delivery)),'Timing must be positive integer nanoseconds')
-        require(delivery>=read+dispatch if mode else delivery==read,'Complete delivery timing scope differs')
+        require(delivery>=read+dispatch if mode or fused else delivery==read,'Complete delivery timing scope differs')
         expected=p['samples'][s]['encoded'if mode else'raw']['requested']
         require(type(row.get('physical_bytes'))is int and row['physical_bytes']==expected,'Physical source envelope differs')
         totals[r][mode]+=delivery;reads[r][mode]+=read
@@ -38,4 +47,4 @@ def parse(result,policy,owner_pid):
         palette_median_round_delivery_ns=median(x[1]for x in totals),
         initial_delivery_screen_passed=median(ratios)>1.05 and all(x>1 for x in ratios),
         raw_copy_check_excluded_from_baseline=True,palette_includes_validation_dispatch_fence=True,
-        full_model_admitted=False,production_adoption=False)
+        GEMV_fused=fused,full_model_admitted=False,production_adoption=False)
