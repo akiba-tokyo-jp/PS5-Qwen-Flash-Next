@@ -82,7 +82,13 @@ def validate(path, expected):
         all_SHA256_matched=True, model_loaded=False, Vulkan_initialized=False))
     require(number(integrity.get("verification_elapsed_ms")) and integrity["verification_elapsed_ms"] <= 7200000,
         "Whole-model verification deadline was not met")
-    if integrity.get("verification_mode") == "prior_native_SHA_and_unchanged_sealed_identity":
+    integrity_mode = integrity.get("verification_mode")
+    split_integrity = integrity_mode == "prior_complete_split_logical_SHA_and_unchanged_physical_identities"
+    require(integrity_mode in (None, "complete_native_SHA_this_run",
+        "prior_native_SHA_and_unchanged_sealed_identity",
+        "prior_complete_split_logical_SHA_and_unchanged_physical_identities"),
+        "Unknown native integrity mode")
+    if split_integrity or integrity_mode == "prior_native_SHA_and_unchanged_sealed_identity":
         exact(integrity, dict(payload_SHA_computed_in_this_run=False, metadata_validation_deadline_seconds=60))
         require(integrity["verification_elapsed_ms"] <= 60000 and
             number(integrity.get("prior_native_verification_elapsed_ms")) and
@@ -92,6 +98,18 @@ def validate(path, expected):
             value = integrity.get(key)
             require(type(value) is str and len(value) == 64 and all(c in "0123456789abcdef" for c in value),
                 "Reused native integrity evidence is not identified")
+    if split_integrity:
+        digest = expected.get("split512_integrity_sha256")
+        require(type(digest) is str and len(digest) == 64 and all(c in "0123456789abcdef" for c in digest),
+            "Independent sealed split integrity binding is required")
+        exact(integrity, dict(prior_native_integrity_report_sha256=digest,
+            sealed_identity_snapshot_sha256=digest))
+        require(integer(expected.get("physical_files"), expected["files"] + 1, 1024),
+            "Independent complete physical source count is required")
+        exact(source, dict(split512_layout=True, logical_files=expected["files"],
+            physical_files=expected["physical_files"]))
+    elif "split512_integrity_sha256" in expected:
+        raise ValueError("The independently bound split layout was not used")
     exact(mapping, dict(all_SHA256_matched=True, original_footprint_matched=True, mapped_files=expected["files"],
         mapped_file_bytes=expected["bytes"], completed_unmaps=expected["files"], model_loaded=False,
         Vulkan_initialized=False, GPU_compute_calls=0, mapped_payload_reads=0, resident_set_qualified=False,

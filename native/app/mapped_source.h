@@ -20,6 +20,12 @@ inline constexpr std::uint64_t model_read_system_reserve = 256ull << 20;
 inline constexpr std::uint64_t model_read_flexible_metadata_margin = 8ull << 20;
 using SourceIdentity = std::array<std::uint64_t, 10>;
 struct SourceFile { std::string path; std::uint64_t bytes; SourceIdentity identity; };
+struct LogicalSourceFile {
+    std::string path;
+    std::uint64_t bytes;
+    std::vector<std::size_t> parts;
+};
+inline constexpr std::uint64_t model_source_part_bytes = 512ull << 20;
 struct SourceReadStats {
     std::uint64_t bytes = 0, chunks = 0, maximum_chunk = 0, mappings = 0, retired_ranges = 0;
     std::uint64_t headroom_ns = 0, handle_ns = 0, read_ns = 0, consumer_ns = 0, completed_windows = 0;
@@ -64,9 +70,11 @@ struct SourceReadOps {
 // address/offset keys only: this reader never dereferences mapped model bytes.
 class MappedSourceReader {
 public:
-    MappedSourceReader(std::vector<SourceFile> files, SourceReadOps & ops, void * scratch)
+    MappedSourceReader(std::vector<SourceFile> files, SourceReadOps & ops, void * scratch,
+            std::vector<LogicalSourceFile> logical = {})
         : files_(std::move(files)), ops_(ops), scratch_(scratch), owner_(std::this_thread::get_id()) {
-        if (files_.empty() || files_.size() > 256 || !scratch_ ||
+        const bool split = !logical.empty();
+        if (files_.empty() || files_.size() > (split ? 1024u : 256u) || !scratch_ ||
             reinterpret_cast<std::uintptr_t>(scratch_) % model_read_alignment)
             throw std::invalid_argument("A complete source plan and aligned 8 MiB read window are required");
         std::uint64_t total = 0;
@@ -80,10 +88,41 @@ public:
                     throw std::invalid_argument("Original-model sources must be distinct");
             total += file.bytes;
         }
+        if (!split) {
+            for (std::size_t i = 0; i < files_.size(); ++i)
+                logical.push_back({files_[i].path, files_[i].bytes, {i}});
+        }
+        if (logical.empty() || logical.size() > 256)
+            throw std::invalid_argument("A bounded complete logical model is required");
+        std::vector<bool> used(files_.size(), false);
+        for (const auto & file : logical) {
+            if (file.parts.empty() || file.parts.size() > 1024 || !file.bytes ||
+                file.parts.front() >= files_.size() || file.path != files_[file.parts.front()].path)
+                throw std::invalid_argument("Invalid logical model source head");
+            std::uint64_t bytes = 0;
+            for (std::size_t i = 0; i < file.parts.size(); ++i) {
+                const auto part = file.parts[i];
+                if (part >= files_.size() || used[part] ||
+                    (split && (files_[part].bytes > model_source_part_bytes ||
+                     (i + 1 < file.parts.size() && files_[part].bytes != model_source_part_bytes))))
+                    throw std::invalid_argument("Split sources must cover unique complete 512 MiB parts");
+                used[part] = true; bytes += files_[part].bytes;
+            }
+            if (bytes != file.bytes) throw std::invalid_argument("Split sources do not preserve the original logical size");
+        }
+        if (std::find(used.begin(), used.end(), false) != used.end())
+            throw std::invalid_argument("A physical model source is outside its logical layout");
+        logical_ = std::move(logical);
     }
     MappedSourceReader(const MappedSourceReader &) = delete;
     MappedSourceReader & operator=(const MappedSourceReader &) = delete;
     const SourceReadStats & stats() const { return stats_; }
+    std::uint64_t logical_file_bytes(int fd) {
+        healthy(); const auto identity = ops_.identity(fd);
+        for (const auto & file : logical_)
+            if (files_[file.parts.front()].identity == identity) return file.bytes;
+        fail("Logical model size requires an admitted physical head descriptor");
+    }
     void require_completed_window() { healthy(); if (busy_) fail("The model source window has not completed"); }
     SourceReadRequest begin_metadata_window(const std::string & path) {
         require_completed_window();
@@ -175,17 +214,23 @@ public:
     void register_mapping(std::uintptr_t at, std::uint64_t bytes, int fd) {
         healthy();
         const auto identity = ops_.identity(fd);
-        const auto match = std::find_if(files_.begin(), files_.end(), [&](const auto & file) {
-            return file.identity == identity && file.bytes == bytes;
+        const auto match = std::find_if(logical_.begin(), logical_.end(), [&](const auto & file) {
+            return files_[file.parts.front()].identity == identity && file.bytes == bytes;
         });
-        if (match == files_.end()) fail("An engine mapping is not a verified original-model file");
+        if (match == logical_.end()) fail("An engine mapping is not a verified original-model file");
         const auto span = rounded(bytes);
         if (!at || at % model_read_alignment || at >= (1ull << 47) || span > (1ull << 47) - at)
             fail("An engine mapping has an invalid native range");
         for (const auto & range : ranges_)
             if (at < range.at + range.bytes && range.at < at + span) fail("Engine model mappings overlap");
-        if (ranges_.size() >= 8192) fail("Engine mapping metadata exceeds its bound");
-        ranges_.push_back({at, span, 0, std::size_t(match - files_.begin())}); ++stats_.mappings;
+        if (match->parts.size() > 8192 - ranges_.size()) fail("Engine mapping metadata exceeds its bound");
+        const auto owner = std::size_t(stats_.mappings);
+        std::uint64_t offset = 0;
+        for (const auto part : match->parts) {
+            ranges_.push_back({at + offset, rounded(files_[part].bytes), 0, part, owner});
+            offset += files_[part].bytes;
+        }
+        ++stats_.mappings;
     }
 
     bool contains(std::uintptr_t at, std::uint64_t bytes) {
@@ -198,17 +243,30 @@ public:
     bool contains_metadata(std::uintptr_t at, std::uint64_t bytes) const {
         if (!bytes) return false;
         if (at > std::numeric_limits<std::uintptr_t>::max() - bytes) throw std::runtime_error("Source pointer arithmetic overflow");
-        for (const auto & range : ranges_) {
-            if (at < range.at + range.bytes && range.at < at + bytes) {
-                if (at < range.at || bytes > range.at + range.bytes - at)
-                    throw std::runtime_error("A model upload crosses an unowned or retired mapping range");
-                const auto offset = range.offset + at - range.at;
-                if (offset > files_[range.file].bytes || bytes > files_[range.file].bytes - offset)
-                    throw std::runtime_error("A model upload exceeds its original file payload");
-                return true;
-            }
+        const auto first = std::find_if(ranges_.begin(), ranges_.end(), [&](const auto & range) {
+            return at >= range.at && at < range.at + range.bytes;
+        });
+        if (first == ranges_.end()) {
+            for (const auto & range : ranges_)
+                if (at < range.at + range.bytes && range.at < at + bytes)
+                    throw std::runtime_error("A model upload starts outside its owned mapping");
+            return false;
         }
-        return false;
+        const auto owner = first->owner;
+        std::uint64_t done = 0;
+        while (done < bytes) {
+            const auto cursor = at + done;
+            const auto range = std::find_if(ranges_.begin(), ranges_.end(), [&](const auto & item) {
+                return item.owner == owner && cursor >= item.at && cursor < item.at + item.bytes;
+            });
+            if (range == ranges_.end()) throw std::runtime_error("A model upload crosses an unowned or retired mapping range");
+            const auto offset = range->offset + cursor - range->at;
+            if (offset >= files_[range->file].bytes)
+                throw std::runtime_error("A model upload exceeds its original file payload");
+            done += std::min({bytes - done, files_[range->file].bytes - offset,
+                range->bytes - (cursor - range->at)});
+        }
+        return true;
     }
 
     const void * prepare(std::uintptr_t at, std::size_t wanted, std::size_t & copied) {
@@ -217,7 +275,9 @@ public:
         const auto range = std::find_if(ranges_.begin(), ranges_.end(), [&](const auto & candidate) {
             return at >= candidate.at && at < candidate.at + candidate.bytes;
         });
-        return read_window(range->file, range->offset + at - range->at, wanted, copied);
+        const auto offset = range->offset + at - range->at;
+        return read_window(range->file, offset, std::size_t(std::min<std::uint64_t>(wanted,
+            files_[range->file].bytes - offset)), copied);
     }
 
     std::array<const void *, 2> prepare_pair(const std::array<std::uintptr_t, 2> & addresses, std::size_t bytes) {
@@ -233,6 +293,7 @@ public:
             });
             files[i] = range->file; offsets[i] = range->offset + addresses[i] - range->at;
         }
+        if (pair_crosses_part(files, offsets, bytes)) return crossing_pair(addresses, bytes);
         return read_pair_windows(files, offsets, bytes);
     }
 
@@ -257,6 +318,13 @@ public:
                 return addresses[i] >= candidate.at && addresses[i] < candidate.at + candidate.bytes;
             });
             files[i] = range->file; offsets[i] = range->offset + addresses[i] - range->at;
+        }
+        if (pair_crosses_part(files, offsets, bytes)) {
+            const auto windows = crossing_pair(addresses, bytes);
+            try {
+                for (unsigned i = 0; i < 2; ++i) consume(i, windows[i]);
+                completed(); return;
+            } catch (...) { failed_ = true; throw; }
         }
         pipeline_windows(files, offsets, bytes, consume);
     }
@@ -307,8 +375,8 @@ public:
         for (const auto & range : ranges_) {
             const auto range_end = range.at + range.bytes;
             if (range_end <= at || range.at >= end) { kept.push_back(range); continue; }
-            if (range.at < at) kept.push_back({range.at, at - range.at, range.offset, range.file});
-            if (range_end > end) kept.push_back({end, range_end - end, range.offset + end - range.at, range.file});
+            if (range.at < at) kept.push_back({range.at, at - range.at, range.offset, range.file, range.owner});
+            if (range_end > end) kept.push_back({end, range_end - end, range.offset + end - range.at, range.file, range.owner});
         }
         if (kept.size() > 8192) fail("Retired mapping metadata exceeds its bound");
         ranges_ = std::move(kept); ++stats_.retired_ranges;
@@ -322,9 +390,10 @@ public:
         }
     }
 private:
-    struct Range { std::uintptr_t at; std::uint64_t bytes, offset; std::size_t file; };
+    struct Range { std::uintptr_t at; std::uint64_t bytes, offset; std::size_t file, owner; };
     struct Handle { int fd = -1; std::size_t file = 0; std::uint64_t age = 0; };
     std::vector<SourceFile> files_;
+    std::vector<LogicalSourceFile> logical_;
     SourceReadOps & ops_;
     void * scratch_;
     std::thread::id owner_;
@@ -364,6 +433,52 @@ private:
         *target = {fd, file, ++age_};
         if (ops_.identity(fd) != files_[file].identity) fail("Direct model source identity changed");
         return fd;
+    }
+    bool pair_crosses_part(const std::array<std::size_t, 2> & files,
+            const std::array<std::uint64_t, 2> & offsets, std::size_t bytes) const {
+        for (unsigned i = 0; i < 2; ++i)
+            if (offsets[i] >= files_[files[i]].bytes || bytes > files_[files[i]].bytes - offsets[i]) return true;
+        return false;
+    }
+    std::array<const void *, 2> crossing_pair(const std::array<std::uintptr_t, 2> & addresses,
+            std::size_t bytes) {
+        if (busy_) fail("A crossing source pair overlaps an active lease");
+        std::array<const void *, 2> windows{};
+        busy_ = true; pending_windows_ = 2;
+        try {
+            for (unsigned i = 0; i < 2; ++i) {
+                auto * target = static_cast<unsigned char *>(scratch_) + i * (model_read_window / 2);
+                const auto leading = std::size_t(addresses[i] % model_read_alignment);
+                const auto first = addresses[i] - leading;
+                std::size_t done = 0;
+                while (done < leading + bytes) {
+                    const auto at = first + done;
+                    const auto range = std::find_if(ranges_.begin(), ranges_.end(), [&](const auto & item) {
+                        return at >= item.at && at < item.at + item.bytes;
+                    });
+                    if (range == ranges_.end()) fail("A crossing read lost its admitted source part");
+                    const auto offset = range->offset + at - range->at;
+                    const auto logical = std::size_t(std::min<std::uint64_t>(leading + bytes - done,
+                        files_[range->file].bytes - offset));
+                    const auto requested = std::size_t(rounded(logical));
+                    if (!logical || done + requested > model_read_window / 2 || offset % model_read_alignment ||
+                        ops_.system_headroom() < model_read_system_reserve + model_read_flexible_metadata_margin)
+                        fail("A crossing read escaped its fixed half window or reserves");
+                    const int fd = handle(range->file);
+                    std::int64_t got;
+                    { ProfileScope timing(stats_.read_ns); got = ops_.read_at(fd, target + done, requested, offset); }
+                    const auto expected = std::min<std::uint64_t>(requested, files_[range->file].bytes - offset);
+                    if (got != std::int64_t(expected) || expected < logical)
+                        fail("A crossing source read did not return exact admitted bytes");
+                    ++stats_.physical_read_calls; stats_.physical_read_bytes += expected;
+                    stats_.maximum_chunk = std::max<std::uint64_t>(stats_.maximum_chunk, requested);
+                    done += logical;
+                }
+                windows[i] = target + leading;
+            }
+        } catch (...) { failed_ = true; throw; }
+        stats_.bytes += bytes * 2; stats_.chunks += 2; ++stats_.selected_serial_batches;
+        consumer_started_ = ProfileClock::now(); return windows;
     }
     void pipeline_windows(const std::array<std::size_t, 2> & files,
             const std::array<std::uint64_t, 2> & offsets, std::size_t bytes,
@@ -521,7 +636,7 @@ private:
 };
 // The native provider allocates exactly one aligned window. It is explicitly
 // shut down only after model destruction and positive native completion.
-void start_native_model_sources(std::vector<SourceFile> files);
+void start_native_model_sources(std::vector<SourceFile> files, std::vector<LogicalSourceFile> logical = {});
 SourceReadRequest begin_native_metadata_window(const std::string & path);
 void end_native_metadata_window();
 void start_native_source_parallel_reads();

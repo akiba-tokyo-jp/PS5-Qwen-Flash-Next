@@ -2,7 +2,8 @@
 
 All eight proposals were screened. Bounded prefill and compact completed-route
 observation were implemented and physically qualified. The representative
-512 MiB file comparison also completed. The remaining variants did not pass
+512 MiB file comparison and subsequent complete-layout native qualification
+also completed. The remaining variants did not pass
 their current storage, delivery-cost or state-restoration prerequisites; they
 are not represented as implemented. See the
 [complete allowlisted measurements](performance-results-20261025.json).
@@ -17,7 +18,7 @@ used as native BF16 performance evidence.
 | Proposal | Disposition and measured evidence |
 | --- | --- |
 | Bounded prefill | Widths 2 and 4 implemented and independently qualified. Width 4 reduced mean external TTFT 35.30%; decode changed +2.17%, with significance unqualified. Width 8 requires 80 active slots and fails the unchanged 53-slot capacity. |
-| Physical splitting | All 76 headers and 512/256/128/64 MiB geometry screened. Representative 512 MiB PS5 CPU reads improved 1.439x over safe serial, with all 192 pair hashes exact. A complete second layout needs 393.6 GB including reserve versus 126.4 GB free. Full-layout native inference is not implemented or qualified. |
+| Physical splitting | All 76 originals replaced in place by 711 parts, with every logical/physical SHA256 verified and host originals retained. Full native inference/frames/retirement/original numerical restoration passed. Mean decode improved 1.50%; TTFT fell 0.35% versus the compact-observer control. No complete second console copy. See the [complete layout result](native-split512-success-20261025.md). |
 | Expert-centric packing | One expert is 9.375 MiB versus 8 MiB scratch. At least two reads plus an indexed gather/reorder path are needed. A complete second text-expert pack alone is 241.6 GB before reserve and cannot fit. Not implemented. |
 | Cache admission/profile | Actual complete demand captured; exact linked C++ replay and an independent Python implementation agree. None of 11 compared settings saves expert payload versus current Maya LFU4096. LRU/SLRU add 3.32%; retain the current policy. |
 | Shared prefix | A host checkpoint needs at least 118,038,528 recurrent/PLE bytes before attention/logits, versus 100,597,760 CPU bytes left at the baseline peak. Reject that host variant. A device checkpoint remains separate unimplemented copy/restore/lifetime work. |

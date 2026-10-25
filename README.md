@@ -45,8 +45,8 @@ a mean **35.30% reduction**, and **0.33927 / 0.34591 tokens/s** decode.
 Generation remains single-token, with all validation and monitoring retained.
 The [completed eight-proposal screen and selected implementation results](docs/performance-results-20261025.md)
 retain current Maya LFU after exact actual-demand replay found no better tested
-policy. Representative 512 MiB reads improve 1.439x over safe serial; a complete
-second layout fails current storage capacity, and no full-layout native gain is claimed.
+policy. The representative 512 MiB CPU read comparison improved 1.439x over
+safe serial; its subsequent complete-layout inference result is recorded below.
 The compact observer also completed all physical/restoration gates with an
 unchanged CPU heap peak and zero memory-pressure events. Small decode changes
 do not establish significance; state reuse and speculative drafts remain unimplemented.
@@ -54,8 +54,20 @@ do not establish significance; state reuse and speculative drafts remain unimple
 The subsequent [matched 512 / 256 / 128 MiB physical-file comparison](docs/source-layout-size-comparison-20261025.md)
 completed 576 exact-byte pairs on the PS5. Parallel means were **6.807 / 6.869 /
 6.896 ms**; smaller files showed no material benefit in this representative
-region. Keep 512 MiB as the provisional candidate, without claiming a global
-optimum or a full-layout inference speedup. No title, model or GPU ran in this test.
+region. This CPU-only comparison does not establish a global file-size optimum.
+
+The authorized [in-place 512 MiB replacement and full physical plan](docs/native-split512-success-20261025.md)
+subsequently completed: 76 original logical files now use 711 physical files,
+with every original logical and physical SHA256 verified. Arithmetic and both
+22-token answers/token IDs matched the unsplit control. Decode measured
+**0.34461 / 0.35136 tokens/s**, an observed mean **1.50% gain**; TTFT was
+**57.56 / 56.59 seconds**. CPU heap peak increased 16 MiB within the unchanged
+512 MiB budget. All previously adopted improvements remain implemented.
+No complete second original model is kept on the PS5; verified host originals
+remain intact. All actual frames, positive retirement, ordinary close, exact
+original restoration, fresh numerical readmission, ordinary original shutdown
+and final idle CPU/full executable readback passed. This small two-request gain
+does not establish statistical significance or sustained throughput.
 
 The model stayed loaded across the three requests. The actual native passive
 frames were visually reviewed. Positive GPU/resource retirement, ordinary title

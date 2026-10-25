@@ -49,6 +49,8 @@ def validate_overrides(path, base_receipt):
         raise ValueError("The original native engine receipt changed")
     if data["bridge"] != record(ROOT / "native/app/mapped_source_bridge.h"):
         raise ValueError("The source-reader bridge changed")
+    if data.get("logical_bridge") != record(ROOT / "native/app/logical_source_bridge.h"):
+        raise ValueError("The logical source size bridge changed")
     patches = [record(p) for p in sorted((ROOT / "patches/native-model-io").glob("*.patch"))]
     if data["patches"] != patches or len(patches) != 7 or set(data["sources"]) != set(BASELINES):
         raise ValueError("The exact seven model-I/O overrides are required")
@@ -87,6 +89,7 @@ def main():
     isolated = out / "source"
     receipt = dict(schema="ps5-qwen-model-io-overrides-v1", base_engine_receipt=record(base),
         original_compile_recipes=record(recipes_path), bridge=record(ROOT / "native/app/mapped_source_bridge.h"),
+        logical_bridge=record(ROOT / "native/app/logical_source_bridge.h"),
         patches=[record(p) for p in sorted((ROOT / "patches/native-model-io").glob("*.patch"))],
         sources={}, objects=[], steps=[], console_access=False, model_loaded=False, learned_host_inference=False)
     if len(receipt["patches"]) != 7:

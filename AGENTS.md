@@ -1546,3 +1546,43 @@ cumulative-idle driver and disabled persistent caches remain unchanged. The
 reservation stays held. Committed general execution/deployment/release and CI
 remain disabled. Configuration status now records the passed finite qualification;
 it does not authorize automatically starting ordinary inference or another test.
+
+## Completed in-place 512 MiB physical plan (2026-10-25)
+
+All 76 original logical files (359,246,956,672 bytes) were replaced in place by
+711 physical parts of at most 512 MiB. Every reassembled logical SHA256 and
+physical part SHA256 passed; freshly verified host originals remain intact.
+No second complete original console model is retained. Preserve the sealed
+layout, positive migration journals, refused attempts and unpublished forensic
+fragments. Never repeat a consumed publication/truncation or infer completion
+from a partial pending file. See docs/native-split512-success-20261025.md/.json.
+
+Candidate SELF
+`9727228738d6ffb3f153a4bd0e6cac3375c50d02c9eae56e1c0d68fe3042e31f`
+completed arithmetic `4` and both 22-token external answers with exact control
+bytes/token IDs. Both actual frames were viewed. Decode was
+0.344610/0.351360 tokens/s, mean +1.50% versus the unsplit compact-observer
+control; TTFT was 57.555/56.589s. This does not establish significance, broad
+quality, reasoning, sustained service or a global optimum. CPU heap peak rose
+16 MiB to 453,050,368 bytes within the unchanged 512 MiB budget.
+
+The actual startup inspection must distinguish first-part physical size from
+original logical GGUF bounds/footprint. All 76 real metadata-prefix checks and
+four invalid-size controls passed. The saved-result collector's unsplit physical
+read equality was repaired only after positive native retirement. Split serial
+boundary pairs add one or two physical reads outside pipeline batches; enforce
+the bounded counts and alignment overhead only after independent split-layout
+admission. Default unsplit accounting remains exact. No generation, model load,
+finish POST or candidate launch was repeated for the host repair.
+
+All adopted Maya LFU4096/53-slot cache, known-miss overlap, selected reads and
+coalescing, prefill four, compact completed-route observation and byte-identical
+shader/Direct metadata paths remain implemented and exercised. Alternative
+unselected proposals retain their recorded dispositions. Positive source/GPU/
+model retirement, ordinary candidate close, exact original restoration, fresh
+original numerical readmission, ordinary original shutdown and final idle
+CPU/full executable readback passed. The finite host continuation positively
+ended with 456 frozen inputs unchanged. No native owner, gateway or loaded
+model remains. Preserve the same pinned 872cc126 cumulative-idle driver,
+disabled persistent caches, every budget/reserve/startup/wait limit and held
+reservation. General execution/deployment/release and CI remain disabled.

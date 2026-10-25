@@ -5,6 +5,8 @@
 #include "device_buffer_budget.h"
 #include "system_memory.h"
 #include "source_contention.h"
+#include "direct_metadata.h"
+#include "logical_source_bridge.h"
 #include <ps5platform/kernel.h>
 #include <ps5platform/heap.h>
 #include <atomic>
@@ -101,7 +103,7 @@ qwen_app::MappedSourceReader & required() {
 }
 
 namespace qwen_app {
-void start_native_model_sources(std::vector<SourceFile> files) {
+void start_native_model_sources(std::vector<SourceFile> files, std::vector<LogicalSourceFile> logical) {
     if (reader || window || active.load() || sysconf(_SC_PAGESIZE) != long(model_read_alignment))
         throw std::runtime_error("A new native source reader and qualified page size are required");
     if (posix_memalign(&window, model_read_alignment, model_read_window) || !window)
@@ -110,7 +112,7 @@ void start_native_model_sources(std::vector<SourceFile> files) {
         throw std::runtime_error("The source read window is outside the tracked Direct CPU heap");
     // Keep the window/descriptors on failed setup. Ordinary OS close owns the
     // complete retained process, including failures before GPU initialization.
-    reader = std::make_unique<MappedSourceReader>(std::move(files), ops, window);
+    reader = std::make_unique<MappedSourceReader>(std::move(files), ops, window, std::move(logical));
     reader->preflight();
     active.store(true, std::memory_order_release);
 }
@@ -158,6 +160,10 @@ DeviceBufferStats native_model_device_stats() { return device_budget.stats(); }
 
 extern "C" bool qwen_app_model_reads_enabled() { return active.load(std::memory_order_acquire); }
 extern "C" bool qwen_app_model_compute_limits_enabled() { return compute_limits.load(std::memory_order_acquire); }
+extern "C" std::size_t qwen_app_model_source_logical_size(int fd, std::size_t physical_bytes) {
+    return qwen_app_model_reads_enabled() ? std::size_t(required().logical_file_bytes(fd)) :
+        std::size_t(qwen_app::native_metadata_logical_bytes(fd,physical_bytes));
+}
 extern "C" void qwen_app_model_mapping_open(void * at, std::size_t bytes, int fd) {
     if (qwen_app_model_reads_enabled()) required().register_mapping(reinterpret_cast<std::uintptr_t>(at), bytes, fd);
 }

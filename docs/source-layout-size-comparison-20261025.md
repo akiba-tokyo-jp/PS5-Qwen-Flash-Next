@@ -1,5 +1,10 @@
 # Physical PS5 comparison of 512 / 256 / 128 MiB files
 
+This report preserves the earlier representative CPU comparison. The subsequent
+[complete in-place 512 MiB layout and native validation](native-split512-success-20261025.md)
+passed, with an observed mean decode gain of 1.50%. Full-layout 256/128 MiB
+inference remains unmeasured; the earlier scope statements below are historical.
+
 The representative region did not become faster with smaller physical files.
 Parallel pair means were **6.807 / 6.869 / 6.896 ms** for 512 / 256 / 128 MiB.
 Keep **512 MiB as the provisional layout candidate**. This establishes neither

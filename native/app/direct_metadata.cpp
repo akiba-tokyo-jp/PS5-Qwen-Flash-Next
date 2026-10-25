@@ -46,11 +46,23 @@ struct Callback {
 }
 namespace qwen_app {
 void enable_native_direct_metadata(){if(enabled.exchange(true)||busy.load()||!accepted.empty())throw std::runtime_error("Direct metadata may only be admitted once");}
-void register_native_direct_metadata(const std::string &path,const std::array<std::uint64_t,10>&key) {
+void register_native_direct_metadata(const std::string &path,const std::array<std::uint64_t,10>&key,
+        std::uint64_t logical_bytes) {
+    if (!logical_bytes) logical_bytes=key[5];
     if(!enabled.load()||busy.load()||accepted.size()>=256||path.empty()||path.size()>1024||path.find('\0')!=std::string::npos||!key[5])
         throw std::runtime_error("Direct metadata requires its complete sealed source admission");
+    if(logical_bytes<key[5]||logical_bytes>(512ull<<30)||
+       (logical_bytes!=key[5]&&key[5]!=model_source_part_bytes))
+        throw std::runtime_error("Logical metadata length requires a complete physical first part");
     for(const auto &item:accepted)if(item.path==path||item.identity==key)throw std::runtime_error("Duplicate metadata source admission");
-    accepted.push_back({path,key[5],key});
+    accepted.push_back({path,logical_bytes,key});
+}
+std::uint64_t native_metadata_logical_bytes(int fd,std::uint64_t physical_bytes) {
+    if(!enabled.load()||accepted.empty())return physical_bytes;
+    const auto actual=identity(fd);
+    if(actual[5]!=physical_bytes)throw std::runtime_error("Logical metadata physical size changed");
+    for(const auto &file:accepted)if(file.identity==actual)return file.bytes;
+    throw std::runtime_error("Logical model descriptor is outside the admitted metadata sources");
 }
 DirectMetadataStats native_direct_metadata_stats(){if(busy.load())throw std::runtime_error("Metadata completion remains unknown");return totals;}
 }
