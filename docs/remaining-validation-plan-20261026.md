@@ -12,6 +12,34 @@ the exact [production artifact and rollback](production-installation-20261025.md
 F32 KV, every expert/PLE, driver `872cc126` / `cumulative-idle`, disabled persistent
 caches and all current budgets. No second Flash-Next machine is required.
 
+## Radiance references and applicability
+
+Radiance-inspired candidates are integrated into the existing work packages,
+with no new runtime dependency. The inspected source reference is the
+[`magiccodingman/vllm-radiance` fork at `1d2e24849c9d8441b9614acade5252c9937a2bbf`](https://github.com/magiccodingman/vllm-radiance/tree/1d2e24849c9d8441b9614acade5252c9937a2bbf).
+It is a continuation of the original vLLM fork, distinct from the author's newer
+standalone Radiance engine. The original author records that transition in the
+[vLLM image notice](https://hub.docker.com/r/stilldeadcode/vllm-radiance).
+No standalone-engine source audit or PS5 performance result is implied here.
+
+| Reference mechanism | Existing work package | Transfer decision and first gate |
+| --- | --- | --- |
+| [Metadata reuse](https://github.com/magiccodingman/vllm-radiance/blob/1d2e24849c9d8441b9614acade5252c9937a2bbf/patch_gdn_metadata.py#L1-L29), `_radiance_arange` / `_radiance_empty_idx` | Order 1, CPU metadata audit | Cache only invariant data and omit unused work after proving an analogous native cost. The native C++ engine has no Python/Torch dispatch chain to remove |
+| [Temporary lifetime and gate-parameter reuse](https://github.com/magiccodingman/vllm-radiance/blob/1d2e24849c9d8441b9614acade5252c9937a2bbf/radiance_gdn.py), `_gate_params` / `forward_core_fused` | Order 2, allocation lifetimes | Audit repeated casts, copies and retained layer temporaries. Reuse original F32 constants; no extra converted weight corpus or claim of an existing native leak |
+| [Dual-output input projection](https://github.com/magiccodingman/vllm-radiance/blob/1d2e24849c9d8441b9614acade5252c9937a2bbf/radiance_gdnmerge.py#L1-L28), `_merge_one` / `merge_model` | Order 8, graph and kernel specialization | Reuse a shared activation across original projections without quantization or a second weight pack. The donor implementation merges MXFP4 rows; its packed layout is not a BF16 solution |
+| [GDN fusion and strided gates](https://github.com/magiccodingman/vllm-radiance/blob/1d2e24849c9d8441b9614acade5252c9937a2bbf/radiance_gdn.py), `_plan` / `conv_prep` / `recurrent_update` / `output_norm` | Order 8, graph and kernel specialization | Check original F32 intermediates, state and sigmoid output gate before a Vulkan design. RDNA4 HIP/WMMA kernels and device-wide barrier assumptions do not transfer directly |
+| [Shape-specific small GEMM](https://github.com/magiccodingman/vllm-radiance/blob/1d2e24849c9d8441b9614acade5252c9937a2bbf/radiance_gemm.py), `config_for` / `maybe_gemm` | Order 8, graph and kernel specialization | Measure actual one/two/four-token shapes against the adopted indexed-vector route. Donor BF16-input/output and `M>=6` eligibility do not match the current F32 path or its token widths |
+| [Adaptive draft depth](https://github.com/magiccodingman/vllm-radiance/blob/1d2e24849c9d8441b9614acade5252c9937a2bbf/radiance_draft.py), `_batch_ceil` / `_install_drafter_hooks` | Order 7, after complete checkpoint qualification | Adapt width using accepted-token benefit and discarded I/O; first keep the model-free draft. No borrowed MTP confidence thresholds or extra draft-model weights |
+
+These are source-observed design references and proposed PS5 adaptations, not
+measured PS5 improvements. Before any code reuse, check the exact donor/library
+licenses and retain attribution. FP8/MXFP4/INT2, approximate verification heads,
+multi-GPU all-reduce and reduced-precision KV are excluded from this plan.
+Keep the existing application/driver and persistent-cache policy. Do not copy
+the donor's speculative exactness claims: its current
+[README qualification](https://github.com/magiccodingman/vllm-radiance/blob/1d2e24849c9d8441b9614acade5252c9937a2bbf/README.md#L6-L14)
+still marks strict cross-mode output equivalence unpassed.
+
 ## Work order and dependencies
 
 Perform cheap feasibility work before native implementations. Share the allocation
@@ -20,14 +48,14 @@ do not build a separate framework for each. Native cases run sequentially.
 
 | Order | Work package | Dependency and first useful result |
 | --- | --- | --- |
-| 1 | Bounded workload and measurement contract | Reuse existing fixed-request evidence; define additional short workloads and measure baseline variability |
+| 1 | Bounded workload, CPU metadata and measurement contract | Reuse fixed-request evidence; define short workloads, baseline variability and any recurring native metadata cost before caching it |
 | 2 | Allocation lifetimes and cache capacity | Existing ledgers and route replay; identify a concrete removable live allocation or close an impossible capacity variant before console allocation |
 | 3 | Expert-major delivery without added copies | Existing physical source traces and owned-bank geometry; determine whether any calls or wait can actually be removed |
 | 4 | Ready-expert execution | Existing real demand and slot ownership; measure an exact two-wave graph before model integration |
 | 5 | Hidden-state router observation, then optional forecast reads | Real early input is required; first measure predictions without speculative I/O |
 | 6 | One complete state checkpoint and prefix reuse | Allocation feasibility from order 2; complete KV/recurrent/PLE/logit continuation is required |
 | 7 | Exact speculative verification | Qualified checkpoint from order 6; start width two and prompt lookup without a learned draft model |
-| 8 | Additional shader specialization | Only if a completed post-streaming profile identifies a material kernel cost |
+| 8 | Additional graph and shader specialization | Screen Radiance-inspired GDN/dual-output/small-GEMM applicability offline; implement only if a completed profile identifies material cost |
 
 Orders 2 and 3 begin with existing host metadata, not fresh full-model runs.
 Reorder later native candidates only when those feasibility results supply a
@@ -84,6 +112,30 @@ then requires explicit profile selection, exact production placement, post-place
 inference/frame/lifecycle verification and full SELF/settings readback. Merge of
 source alone does not establish adoption. Do not add gains from different controls.
 
+## CPU metadata reuse
+
+Audit `native/app/llama_engine.cpp::LlamaEngine/process_batch`,
+`streaming_context_params`, the maintained cache overlay and upstream graph-input
+setup. The engine already allocates its batch and greedy sampler once; do not
+count that existing reuse as a new Radiance improvement. Use existing counters
+first, then bounded timing/allocation counters for any unresolved host-only gap.
+Never remove the required synchronization, current admission, failure checks,
+completion journaling or monitor work to make the candidate appear faster.
+
+For a measured repeated cost, distinguish immutable geometry from token positions,
+sequence/reset state and actual expert selections. A reusable metadata record
+must bind model, graph shape, dtype, strides and owner epoch; reset/invalidate it
+on every changed binding. Cache constant index ranges, reuse bounded storage or
+avoid unused transforms only when their native equivalents exist. Avoid adding
+new GPU readbacks to save a smaller CPU operation.
+
+Host tests compare exact masks, positions, offsets and output flags at widths
+one/two/four, request reset, changed geometry and failure paths. Measure reduced
+allocations and CPU duration with identical graph submissions, read bytes and
+guard calls, then compare full-model TTFT/decode. If the analogous cost is absent
+or smaller than the added lookup/invalidation overhead, close that subcandidate
+without a native implementation or full-model replay.
+
 ## Allocation lifetimes and useful cache capacity
 
 Start with `native/app/model_cpu_budget.h`, `native_allocator_budget.h`,
@@ -110,6 +162,13 @@ Do not resize kernel pools, count inactive pages as free, increase caps or remov
 monitoring. If no admissible extra capacity or transient release exists, record
 that variant as ruled out under current limits; the ledger remains useful to
 the checkpoint and graph proposals.
+
+Include the Radiance `_gate_params` and `forward_core_fused` lifetime patterns
+in this audit: identify constants prepared repeatedly and layer-local temporary
+references that outlive their last consumer. This is an analogy to inspect, not
+evidence of the same bug here. Preserve original tensor types, avoid duplicate
+F32 router/state copies, and release a temporary only after every CPU/GPU owner
+has completed. Charge persistent replacement storage before claiming a saving.
 
 ## Expert-major delivery without added copies
 
@@ -240,6 +299,23 @@ and are not measured savings. Low acceptance or checkpoint cost can close the
 variant before production. Sampling requires a later distribution-correct
 verification design; same-seed equality alone would not qualify it.
 
+After fixed-width verification qualifies, test the Radiance-inspired adaptive
+controller as a separate switch: ordinary single-token decoding versus width
+two, and later width four. Use prior acceptance, n-gram availability, observed
+verification/rollback cost and wasted source bytes to decide whether to draft.
+Never peek at future target tokens or omit target verification. The current
+model-free drafter has no MTP confidence; do not transplant a confidence-product
+threshold or compute extra target logits just to emulate the donor controller.
+Keep `load_mtp=false`; enabling native MTP or DFlash is separate model/state/I/O
+qualification and is not required for this candidate.
+
+Price the controller's CPU work, telemetry and any synchronization. Test abrupt
+high-to-low acceptance, absent n-gram matches, request reset, each width change
+and the full forced-rejection matrix. Retain the checkpoint and exact emitted-
+continuation gates. Compare accepted tokens/s, wasted bytes/token and tails
+against both ordinary decode and the qualified fixed-width control. If controller
+overhead or extra SSD traffic erases its benefit, retain fixed or ordinary decode.
+
 ## Shader specialization after profiling
 
 Use existing completed counters before adding profiling. If new profiling is
@@ -256,6 +332,41 @@ and fixed F64 references before any model run. Compare total source-to-output
 delivery and full-model decode, not just a faster shader interval. If no material
 kernel target exists, retain an explicit deferred status rather than claim an
 implemented optimization.
+
+Radiance adds three specific subcandidates to this package. First screen their
+actual graph shapes, dtypes and existing fused coverage using
+[`qwen4exp.cpp` at the pinned upstream revision](https://github.com/ggml-org/llama.cpp/blob/0a1ef309cdbb9f2024f58a38fb4c42352c5db569/src/models/qwen4exp.cpp):
+
+- **Shared-input projections:** `build_qkvz` and `build_layer_attn_linear` contain
+  projections of the same activation. Check dual-destination BF16-weight/F32-input
+  kernels for the original `wqkv`, `wqkv_gate`, `ssm_beta` and `ssm_alpha` tensors.
+  Keep independent original weight views and F32 output/reduction semantics;
+  do not copy the donor's MXFP4 concatenation or repack the full model. Prove
+  identical source/role ownership, output strides and all original projection
+  results before measuring activation bytes and launch count.
+- **GDN and gated-normalization fusion:** inspect `build_recurrent_attn` and
+  existing fused-GDN support before changing `build_layer_attn_linear` or
+  `build_norm_gated`. Target only remaining redundant intermediates or contiguous
+  copies. The pinned `build_norm_gated` uses **sigmoid**, which must not become
+  SiLU. Current recurrent sources and intermediates stay F32; donor BF16 working
+  buffers do not authorize downcasts. Prefer workgroup-local fusion or ordinary
+  separate dispatches; do not transplant the donor's device-wide grid-counter
+  barrier or assume RDNA4 resident-workgroup guarantees on PS5. Test state
+  initialization/continuation, strides, tails, norm epsilon, softplus/sigmoid and
+  extreme-decay inputs against the existing path and independent references.
+- **Small dense projections:** apply shape-gated dispatch ideas to actual F32
+  routers and BF16-weight/F32-input projections in the Vulkan overlay, retaining
+  their original types. The donor's `config_for` table and BF16-only `maybe_gemm`
+  are not a measured configuration for PS5. Start with actual M=1/2/4 token
+  geometry, also checking expert-index expansion, and compare with the current
+  vector/matrix route. No FP8 conversion, new reduction approximation or imported
+  RDNA4 WMMA dependency is eligible.
+
+Keep these switches independent of ready-expert scheduling and speculative
+width. Each surviving subcandidate must pass host/layout checks, a bounded native
+numerical fixture, full original-model comparison and the shared adoption gate.
+Measure TTFT and decode separately; a long-prefill kernel win elsewhere does not
+establish benefit at the current four-token prefill. No PS5 gain is yet measured.
 
 ## Case safety and completion records
 
