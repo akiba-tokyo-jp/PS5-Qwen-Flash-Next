@@ -15,6 +15,15 @@ The driver selection remains `872cc126` / `cumulative-idle`, with
 persistent caches disabled. Raw private evidence, SDK inputs, binaries and
 original weight fragments remain outside Git.
 
+The [later memory controls](PLE-memory-first-plan-20261026.md#subsequent-physical-controls-and-reduction)
+completed actual small-title CPU shader attribution and reduced an observed
+closed-file cache component. Registry/decoder initialization changed free pages
+by zero; the entire shader interval lost 22 pages. Normal close, exact fastest
+restoration and native integrity of 15 closed sources passed. Post-close free
+pages were 9,079–9,080. No GPU was initialized and no new decode speed is claimed.
+The four-graph PLE smoke, its finite GPU comparison and all other outstanding
+packages remain incomplete; see the [phase-specific next step](PLE-memory-first-plan-20261026.md#next-ple-admission-and-execution).
+
 ## CPU batch metadata
 
 `native/app/batch_metadata_reuse.h` is an experimental adapter, not linked into

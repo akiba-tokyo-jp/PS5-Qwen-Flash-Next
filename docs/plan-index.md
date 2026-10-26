@@ -122,9 +122,16 @@ it is not a universal 5% requirement for every future improvement.
 ## Remaining proposals and prerequisites
 
 The owner now prioritizes [memory attribution before PLE](PLE-memory-first-plan-20261026.md).
-CPU-only cases 2662/2664 completed process/category and seven-file residency
-checks; the shader-startup decline remains unattributed. Do not wait for assumed
-memory recovery or equate the regular gate with a measured PLE hardware limit.
+Later closed-file controls reduced a measured retained-file component. An
+independently linked small CPU title completed actual shader initialization:
+registry/decoder change was zero pages and the complete interval lost 22 pages,
+with no Vulkan/model code linked. Exact fastest restoration and post-close
+observations passed at 9,079–9,080 free pages. The native-title wired component
+must still be priced separately; no proprietary allocator or new speed result
+is claimed. See the [aggregate evidence](CPU-shader-memory-controls-20261026.json).
+The next distinct four-graph PLE smoke remains unimplemented; its provisional
+8,425-page allowance retains fresh post-CPU/pool/operational guards. It does not
+change the regular full-model gate or complete the remaining optimization plan.
 
 These proposals have no qualified production speed result. They are a research
 backlog, not unfinished steps of the completed finite memory plan. The pinned
