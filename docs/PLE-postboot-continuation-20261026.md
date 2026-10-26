@@ -107,3 +107,14 @@ independent admission and phase observations.
 The latest completed production speed measurements remain 0.391093 / 0.398430
 tok/s. The driver pin, original precision, persistent-cache policy and disabled
 CI remain unchanged.
+
+## Subsequent authorized restoration and low-memory refusal
+
+The [2026-10-27 continuation](postboot-runtime-memory-20261027.md) supersedes
+the authorization-pending state above. The same existing runtime completed one
+entry after the owner's instruction. New-boot discovery and full CPU admission
+passed. Inventory then refused before any query at 1060 free pages; an existing-
+shell, boot-bound screen observed 1017 -> 1012, below floor 1154. No title/GPU,
+current-boot shader bootstrap, performance adoption or production change occurred.
+The implementation/validation request remains incomplete for measured resource
+and remaining package prerequisites, with no unknown operation or automatic retry.
