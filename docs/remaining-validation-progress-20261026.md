@@ -565,6 +565,39 @@ completed native controls. The four added cases fit the planned 30-token prompt,
 execution, output quality and the surviving candidate's broader comparisons
 remain unqualified.
 
+## Ready-wave and graph feasibility follow-up
+
+See the [source, ownership and case report](remaining-feasibility-20261026.md).
+Host 2640 passed the top-ten ready-wave ownership and split byte-root geometry
+prototype: 64 refusals, ten failed/unknown retention cases, 120 actual GGML views
+and 3,180 bounded envelopes. Native metadata is 432 bytes; raw bank extent and
+53 slots are unchanged. Actual independent backing, graph integration and GPU/I/O
+overlap remain unqualified.
+
+Saved-route screen 2643 preserved the current read packet choices and matched
+all native cache counters plus 12,471 actual C++ physical eligibility/schedule
+queries. Its narrow last-serial-read variant has opportunities in 194/1056 and
+183/1056 external decode layer steps. These counts are not saved time or tok/s.
+Existing parallel pairs must not be silently serialized for this experiment.
+
+Audit 2644 limits the initialized-batch loop's measured opportunity to about
+0.1334 ms per fixed request even when pricing every process at width four.
+A full-model run solely for this small loop is not justified. Original GDN
+constants are already F32; repeated conversion of those constants is absent.
+The one BF16 PLE convolution does have recurring tap copies and casts.
+
+The new isolated PLE graph prototype retains casts, data and arithmetic order,
+with separate coefficient-copy and shifted-input-copy switches. Host 2646 passed
+64 GGML graphs, 64 refusals and 1,638,400 exact deterministic F32 comparisons;
+all four actual PS5 model unity variants compiled. This is not backend arithmetic
+or speed qualification. Strided MUL requires verified Vulkan placement because
+the current CPU fallback rejects that stride. Production overlays are unchanged.
+
+No new physical headroom was proven. ELF zero fill is only about 1.5 MB and
+external shaders already use Direct I/O. Passive regular-gate 2641 refused at
+6577 free pages with zero launches/payload operations. Earlier restored cases
+and the exact fastest app remain preserved; no new candidate is adopted.
+
 ## Remaining package scope
 
 The peak-live allocation review, broader tokenized workloads, ready-expert
