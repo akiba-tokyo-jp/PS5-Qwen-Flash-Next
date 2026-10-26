@@ -17,6 +17,7 @@
 #include "palette_gpu_admission.h"
 #include "vector_bank_admission.h"
 #include "device_state_admission.h"
+#include "ple_slice_admission.h"
 #include "operator_admission.h"
 #include "moe_admission.h"
 #include "runtime_admission.h"
@@ -621,7 +622,7 @@ int main(int argc, char ** argv) {
         const auto policy = Json::parse(policy_file);
         if (!policy.at("console_operations_enabled").get<bool>())
             throw std::runtime_error("Console execution is disabled for this application integration phase");
-        const auto mode = startup.device_state_validation ? "device-state-validation" : startup.vector_bank_validation ? "vector-bank-validation" : startup.palette_validation ? "palette-validation" : startup.memory_validation ? "native-memory-validation" : startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : startup.moe_validation ? "moe-validation" : startup.first_generation_validation ? "first-generation-validation" : "inference";
+        const auto mode = startup.PLE_slice_validation ? "PLE-slice-validation" : startup.device_state_validation ? "device-state-validation" : startup.vector_bank_validation ? "vector-bank-validation" : startup.palette_validation ? "palette-validation" : startup.memory_validation ? "native-memory-validation" : startup.display_validation ? "display-validation" : startup.runtime_validation ? "runtime-validation" : startup.monitor_validation ? "monitor-validation" : startup.model_validation ? "model-validation" : startup.operator_validation ? "operator-validation" : startup.moe_validation ? "moe-validation" : startup.first_generation_validation ? "first-generation-validation" : "inference";
         if (!policy.contains("allowed_modes") || !policy.at("allowed_modes").is_array() ||
             std::find(policy.at("allowed_modes").begin(), policy.at("allowed_modes").end(), Json(mode)) == policy.at("allowed_modes").end())
             throw std::runtime_error("This application mode has not passed the preceding qualification stage");
@@ -670,7 +671,7 @@ int main(int argc, char ** argv) {
         }
         // Headless delivery probes use the admitted monotonic clock and
         // publishes no monitor UTC state. Other modes keep their UTC guard.
-        if(!startup.palette_validation&&!startup.vector_bank_validation&&!startup.device_state_validation)qwen_app::monitor_clock().initialize(startup.clock_calibration);
+        if(!startup.palette_validation&&!startup.vector_bank_validation&&!startup.device_state_validation&&!startup.PLE_slice_validation)qwen_app::monitor_clock().initialize(startup.clock_calibration);
         qwen_native_stage("policy_admitted GPU_not_started=1 model_loaded=0");
         llama_log_set(native_log, nullptr); ggml_log_set(native_log, nullptr);
         qwen_native_set_fault_report((startup.admission_report + ".fatal").c_str());
@@ -684,7 +685,7 @@ int main(int argc, char ** argv) {
             qwen_native_stage("memory_validation_completed_waiting_for_ordinary_close GPU_not_started=1 model_loaded=0");
             for(;;) (void)usleep(1000000);
         }
-        if(startup.palette_validation||startup.vector_bank_validation||startup.device_state_validation) {
+        if(startup.palette_validation||startup.vector_bank_validation||startup.device_state_validation||startup.PLE_slice_validation) {
             if(!policy.value("console_validation_enabled",false))
                 throw std::runtime_error("Native delivery validation is not enabled");
             if(setenv("MESA_SHADER_CACHE_DISABLE","true",1))
@@ -699,22 +700,22 @@ int main(int argc, char ** argv) {
             if(!qwen_native_gpu_frontend_linked())throw std::runtime_error("Native driver frontend is not linked");
             if(startup.device_state_validation&&!qwen_app::device_state_fixture_linked())
                 throw std::runtime_error("Host-qualified device-state fixture inputs are not linked");
-            if(startup.vector_bank_validation||startup.device_state_validation) {
-                qwen_native_stage(startup.device_state_validation?"device_state_before_shared_shader_CPU_admission GPU_not_started=1":"vector_bank_before_shared_shader_CPU_admission GPU_not_started=1");
+            if(startup.vector_bank_validation||startup.device_state_validation||startup.PLE_slice_validation) {
+                qwen_native_stage(startup.PLE_slice_validation?"PLE_slice_before_shared_shader_CPU_admission GPU_not_started=1":startup.device_state_validation?"device_state_before_shared_shader_CPU_admission GPU_not_started=1":"vector_bank_before_shared_shader_CPU_admission GPU_not_started=1");
                 admit_shader_storage_CPU(policy,startup.admission_report,true,Json(startup.admission_report));
-                qwen_native_stage(startup.device_state_validation?"device_state_shared_shader_CPU_admission_completed GPU_not_started=1":"vector_bank_shared_shader_CPU_admission_completed GPU_not_started=1");
+                qwen_native_stage(startup.PLE_slice_validation?"PLE_slice_shared_shader_CPU_admission_completed GPU_not_started=1":startup.device_state_validation?"device_state_shared_shader_CPU_admission_completed GPU_not_started=1":"vector_bank_shared_shader_CPU_admission_completed GPU_not_started=1");
             }
             native_resources_started=true;
-            auto report=startup.device_state_validation?qwen_app::admit_device_state_fixture(policy,startup.admission_report+".driver.log"):startup.vector_bank_validation?
+            auto report=startup.PLE_slice_validation?qwen_app::admit_PLE_slice_fixture(policy,startup.admission_report+".driver.log"):startup.device_state_validation?qwen_app::admit_device_state_fixture(policy,startup.admission_report+".driver.log"):startup.vector_bank_validation?
                 qwen_app::admit_vector_bank(policy,startup.admission_report+".driver.log"):
                 qwen_app::admit_palette_gpu(policy,startup.admission_report+".driver.log");
             qwen_native_driver_complete();
-            if(startup.vector_bank_validation||startup.device_state_validation) {
+            if(startup.vector_bank_validation||startup.device_state_validation||startup.PLE_slice_validation) {
                 const auto shaders=qwen_app::native_shader_asset_stats();
                 if(!shaders.initialized||shaders.failed||shaders.active_lease||shaders.external_file.read_pending||
                    !shaders.external_file.verified||shaders.CPU_verified_assets!=shaders.assets||
                    shaders.decoded_calls+shaders.raw_calls<shaders.CPU_verified_assets||
-                   (startup.vector_bank_validation&&shaders.decoded_calls+shaders.raw_calls==shaders.CPU_verified_assets)||
+                   ((startup.vector_bank_validation||startup.PLE_slice_validation)&&shaders.decoded_calls+shaders.raw_calls==shaders.CPU_verified_assets)||
                    shaders.external_file.frame_requests!=shaders.decoded_calls+shaders.raw_calls)
                     throw std::runtime_error("Vector bank shader inputs lack complete CPU and per-use retirement");
                 report["shader_CPU_verified_assets"]=shaders.CPU_verified_assets;
@@ -724,7 +725,7 @@ int main(int argc, char ** argv) {
             }
             report["pid"]=getpid();report["positive_device_idle_and_epoch_retirement"]=true;
             write_fresh_report(startup.admission_report,report);
-            qwen_native_stage(startup.device_state_validation?"device_state_validation_completed_waiting_for_ordinary_close model_loaded=0":startup.vector_bank_validation?
+            qwen_native_stage(startup.PLE_slice_validation?"PLE_slice_validation_completed_waiting_for_ordinary_close model_loaded=0":startup.device_state_validation?"device_state_validation_completed_waiting_for_ordinary_close model_loaded=0":startup.vector_bank_validation?
                 "vector_bank_validation_completed_waiting_for_ordinary_close model_loaded=0":
                 "palette_validation_completed_waiting_for_ordinary_close model_loaded=0");
             for(;;)(void)usleep(1000000);
