@@ -248,6 +248,12 @@ These point observations are not a later launch admission or a speed result.
 
 ## Next PLE admission and execution
 
+The provisional calculation below was exercised by case 2704 and refused at
+the unchanged native startup target before shader CPU admission or GPU work.
+Exact restoration completed. Do not reuse this allowance for that unchanged
+full application. The four-graph schema is now implemented; see the
+[physical refusal and isolated-title continuation](PLE-smoke-startup-20261026.md).
+
 The separate provisional PLE prelaunch calculation is **8,425 pages**:
 5,195 measured startup decline + the existing 2,974-page GPU startup target +
 256 variation pages. Require fresh consecutive admission and independently
@@ -257,8 +263,8 @@ hardware minimum or a replacement for the regular 10,142-page full-model gate.
 Keep the conservative 1 GiB Direct / 64 MiB Flexible setup checks while measuring
 their actual peaks; they are not currently the blocking condition.
 
-The strict four-graph width-one smoke scope still needs implementation before
-execution. It must use its own schema, preserve F64/exact-F32/canary and Vulkan
+The strict four-graph width-one smoke scope is implemented in its own schema.
+It preserves F64/exact-F32/canary and Vulkan
 placement gates, and retain backing after uncertainty. It must not silently
 alter the frozen 208-graph benchmark. Surviving variants still need the finite
 comparison, same-model acceptance and production placement. No optimization or

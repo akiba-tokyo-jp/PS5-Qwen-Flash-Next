@@ -38,6 +38,27 @@ def stages(result):
     return '\n'.join(lines+['PLE_slice_validation_completed_waiting_for_ordinary_close model_loaded=0'])
 
 class Controls(unittest.TestCase):
+    def test_paired_v2_keeps_all_208_events_and_source_integrity(self):
+        r=good();r.update(schema='ps5-qwen-PLE-slice-paired-fixture-v2',shader_CPU_verified_assets=0,
+            prior_all_shader_CPU_report_SHA256='0'*64,prior_all_shader_CPU_assets=1527,current_complete_external_file_SHA256_checked=True,
+            source_guard_current_full_SHA256_checked=True,source_guard_bytes_not_used_for_numerics=True)
+        review=validate(r,7,stages(r));self.assertEqual(review['GPU_graphs'],208);self.assertFalse(review['smoke_only'])
+        for key,value in [('source_guard_current_full_SHA256_checked',False),('source_guard_bytes_not_used_for_numerics',False),
+            ('GPU_graphs',4),('shader_CPU_verified_assets',1527)]:
+            bad=copy.deepcopy(r);bad[key]=value
+            with self.assertRaises(ValueError):validate(bad,7,stages(bad))
+    def test_smoke_has_no_performance_comparison(self):
+        r=good();r.update(schema='ps5-qwen-PLE-slice-smoke-v1',GPU_graphs=4,shader_CPU_verified_assets=0,
+            prior_all_shader_CPU_report_SHA256='0'*64,prior_all_shader_CPU_assets=1527,current_complete_external_file_SHA256_checked=True)
+        r['widths']=r['widths'][:1];r['widths'][0]['batches']=[]
+        review=validate(r,7,stages(r));self.assertTrue(review['smoke_only']);self.assertEqual(review['GPU_graphs'],4)
+        self.assertEqual(review['width_summaries'][0]['candidates'],{})
+        for key,value in [('GPU_graphs',208),('shader_CPU_verified_assets',1527),('prior_all_shader_CPU_assets',0),
+            ('prior_all_shader_CPU_report_SHA256','bad'),('current_complete_external_file_SHA256_checked',False)]:
+            bad=copy.deepcopy(r);bad[key]=value
+            with self.assertRaises(ValueError):validate(bad,7,stages(bad))
+        bad=copy.deepcopy(r);bad['schema']='ps5-qwen-PLE-slice-fixture-v1'
+        with self.assertRaises(ValueError):validate(bad,7,stages(bad))
     def test_complete_is_not_model_or_production_adoption(self):
         r=good();review=validate(r,7,stages(r));self.assertEqual(review['GPU_graphs'],208)
         self.assertFalse(review['model_quality_or_speed_qualified']);self.assertFalse(review['production_adopted'])
