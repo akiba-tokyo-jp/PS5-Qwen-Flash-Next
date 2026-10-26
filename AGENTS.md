@@ -1785,3 +1785,24 @@ condition, lower reserves, force reclaim/reset or assume recovery. Current CPU
 headers may be generated only from authenticated complete same-boot evidence
 and the positively completed runtime receipt. Keep historical consumed cases
 unchanged and preserve original precision, driver/caches, production and CI.
+
+### Constraint classification correction (2026-10-27)
+
+The owner requires separating actual inability from unrun/unimplemented work
+and explicitly challenged treating our chosen conditions as physical limits.
+Report verification status and execution constraint separately. The 1154-page
+operational formula, adopted 2974-page startup target, regular 10142-page
+prelaunch margin and selected 512 MiB cache cap are application policies,
+not demonstrated hardware minima. A guard refusal is policy-blocked and
+potentially revisable; it does not prove the pending arithmetic cannot run.
+Host implementation and offline investigation remain executable where they
+have no separate blocker. Missing native integration is not a hardware failure.
+
+See docs/plan-index.md#verification-status-and-origin-of-execution-constraints.
+This correction itself changes no runtime guard and authorizes no replay.
+A technically justified, separately scoped admission revision can be engineered
+under the owner's existing experiment authorization; do not request permission
+again solely because a historical file recorded our old chosen margin. Preserve
+identity, original precision, numerical checks, positive completion and failure
+handling as distinct correctness requirements. Label confirmed resource/API
+limits only with the exact reported bound/failure and affected configuration.

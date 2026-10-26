@@ -8,6 +8,9 @@ The regular prelaunch margin is not an established PLE hardware minimum.
 It defines their work and terminal decisions. Current dispositions
 and historical results are in the [plan index](plan-index.md). Planning does not
 start a console session or change the installed application.
+The [status and constraint-origin classification](plan-index.md#verification-status-and-origin-of-execution-constraints)
+separates not-run/not-implemented stages, revisable policy blocks and demonstrated
+resource/API limits. The selected memory/cache budgets are not physical minima.
 
 The objective is faster original-precision inference on the existing single PS5,
 with independently reported TTFT, generated tokens/s and resource safety. Preserve
@@ -421,6 +424,12 @@ Keep raw sessions, SDK/binaries, paths and traces outside Git. CI stays disabled
 Use explicit states: unimplemented, prototype, host-qualified, native-fixture-
 qualified, full-model-qualified, production-adopted, rejected, inconclusive, or
 blocked with a concrete unmet prerequisite. Deferred work remains incomplete.
+For blocked work, state whether the blocker is a chosen application policy,
+missing implementation, or a demonstrated device/OS/API constraint. Report
+revisability, evidence and required changes; never call a selected guard refusal
+physical impossibility. Unrun target arithmetic and a measured inconclusive
+comparison are distinct results. Incomplete is an overall aggregate, not the
+individual test's disposition.
 A rejected fixture may close that tested variant without a full-model run; it
 does not mean another unimplemented proposal was tested. Update the single
 [plan index](plan-index.md) with each decision. The overall implementation and
