@@ -1,0 +1,32 @@
+--- a/src/models/qwen4exp.cpp
++++ b/src/models/qwen4exp.cpp
+@@ -1,4 +1,8 @@
+ #include "models.h"
++#if defined(QWEN_EXPERIMENTAL_PLE_SLICE_MODE)
++#include "ple_slice_graph.h"
++static_assert(QWEN_EXPERIMENTAL_PLE_SLICE_MODE >= 0 && QWEN_EXPERIMENTAL_PLE_SLICE_MODE <= 3);
++#endif
+ #include "llama-impl.h"
+ #include "llama-memory-hybrid-idx.h"
+ #include "llama-memory-recurrent.h"
+@@ -1429,6 +1433,12 @@
+         // tap k reads (kern-1-k)*dilation positions back
+         const int64_t start = hist - (kern - 1 - k) * dil;
+ 
++#if defined(QWEN_EXPERIMENTAL_PLE_SLICE_MODE)
++        const auto taps = qwen_app::build_experimental_PLE_tap(ctx0, padded, model.layers[il].ple_conv1d,
++                n_seq_tokens, k, static_cast<qwen_app::PLESliceMode>(QWEN_EXPERIMENTAL_PLE_SLICE_MODE));
++        ggml_tensor * shifted = taps.shifted;
++        ggml_tensor * wk = taps.coefficient;
++#else
+         ggml_tensor * shifted = ggml_cont(ctx0,
+                 ggml_transpose(ctx0,
+                         ggml_view_3d(ctx0, padded, n_seq_tokens, hc_dim, n_seqs,
+@@ -1445,6 +1455,7 @@
+         if (wk->type != GGML_TYPE_F32) {
+             wk = ggml_cast(ctx0, wk, GGML_TYPE_F32);
+         }
++#endif
+ 
+         ggml_tensor * term = ggml_mul(ctx0, shifted, wk);
+         conv_out = conv_out ? ggml_add(ctx0, conv_out, term) : term;
