@@ -2,7 +2,9 @@
 
 This continues the [remaining validation plan](remaining-validation-plan-20261026.md).
 **The overall implementation and validation request remains incomplete.**
-The current obstacle is measured kernel VM headroom, not missing authorization.
+The current guard refusal is based on measured kernel VM headroom and selected
+application policy, not missing authorization. Physical infeasibility has not
+been demonstrated; see the [constraint classification](plan-index.md#verification-status-and-origin-of-execution-constraints).
 No new inference-speed result or performance adoption follows from this work.
 
 ## Completed current-boot actions
@@ -56,6 +58,10 @@ ran, so earlier ShellUI RSS must not be presented as current.
 
 Even the unchanged operational floor `898 + max(206, 256) = 1154` was unmet.
 Startup target 2974 and regular full-model prelaunch 10142 remain unchanged.
+These are application admission rules incorporating OS counters and chosen
+margins; failure of the rules does not demonstrate an impossible allocation.
+Their revision requires a separately characterized workload/scope, not a claim
+that the existing values are hardware minima.
 The old PLE phase price 8190 belongs to the earlier SELF and cannot qualify the
 new bootstrap SELF. No allocation/title/GPU work was attempted to force progress.
 There was no system-process kill, reset, cache pressure/advice or pool resize.
@@ -101,8 +107,10 @@ host failure ran on PS5.
 ## Remaining prerequisites
 
 Do not loop on refused cases or stage a title under this measured condition.
-A supported identified correction or an observed external-state change must
-precede a useful new screen. Then require fresh native admission, all 1527
+A supported identified correction, a technically justified revision of the
+case's admission/scope, or an observed external-state change must precede a
+useful new screen. No revised runtime threshold has been qualified by this
+classification correction. Then require fresh native admission, all 1527
 current-boot shader checks, own-SELF pricing, PLE timing and any surviving
 original-model qualification/placement. The other remaining packages retain
 their incomplete dispositions. No automatic recovery or scheduled retry exists.

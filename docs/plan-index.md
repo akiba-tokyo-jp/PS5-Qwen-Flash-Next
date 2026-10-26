@@ -13,6 +13,65 @@ old pending statements do not create a second work queue. This index changes
 neither execution authorization nor the admission and preservation requirements
 in [AGENTS.md](../AGENTS.md).
 
+## Verification status and origin of execution constraints
+
+Classification clarified on 2026-10-27 at the owner's request. Verification
+status and execution availability are separate fields. A refusal by our own
+guard does **not** establish physical impossibility. The latest saved 1012-page
+observation is historical evidence, not a fresh measurement.
+
+| Term | Meaning |
+| --- | --- |
+| Scope-qualified | The stated test actually completed and passed; broader model/performance acceptance is separate |
+| Measured, inconclusive or rejected | A comparison ran; the evidence failed to establish a repeatable gain or failed its declared adoption gate |
+| Not run | The target test has not executed; report its actual preparation and blocking conditions separately |
+| Not implemented | Source, integration or controller work is still missing; this is not a hardware limitation |
+| Policy-blocked, revisable | A chosen application budget, margin, sequence or scope prevents execution; physical feasibility remains unresolved |
+| Confirmed resource/API limit | A concrete required allocation, reported device/API bound or capability is established for the stated configuration; name the evidence and the change needed |
+| Incomplete | Overall aggregate only; never substitute it for an individual test's actual result or blocker |
+
+The previously reported PLE/prefix/native comparisons are **policy-blocked**,
+not demonstrated physically impossible. Their early memory guards returned
+before the relevant model/GPU work. No new physical-impossibility result is
+created by this classification correction.
+
+| Condition | Origin | Can the application rule be revised? |
+| --- | --- | --- |
+| Operational guard 1154 pages | Application formula `898 + max(206,256)`; 898/206 are observed OS counters and 256 is our 4 MiB margin | Yes, subject to workload-specific characterization. The addition/comparison is our rule, not a hardware-reported allocation minimum. A safe replacement has not been established |
+| Startup guard 2974 pages | Observed `v_free_target` adopted by `MemoryBackpressure` as a startup predicate | Yes, the decision to require this value is application policy. It is not proof of a universal PS5 startup minimum; OS internals are not thereby authorized for modification |
+| Regular prelaunch 10142 pages | Adopted startup target 2974 plus our additional 7168 pages / 112 MiB | Yes. Completed isolated PLE case 2741 used a lower prelaunch cohort beginning at 8137 pages. That does not qualify a new SELF or lower current-memory experiment automatically |
+| Historical PLE phase price 8190 pages | Completed old-SELF decline 4960 plus adopted startup target 2974 and our variation allowance 256 | Revisable estimate for its exact measured scope; not a physical minimum or transferable proof for the new SELF |
+| Expert cache 512 MiB | Selected application/profile budget | Revisable after complete resource/ownership qualification. Exceeding this selected cap is not proof that the PS5 cannot physically hold a larger cache |
+| Actual device allocation/buffer bounds and Direct/Flexible quota | Returned device/OS APIs for the actual native context | A client threshold change cannot create capacity or a missing capability. Record the exact returned limit/failure separately; do not substitute a policy refusal |
+
+The 1012-to-1154 difference is only 142 pages / 2.21875 MiB. It does not price
+title startup: earlier isolated/full-title intervals observed about 77.5 /
+102.796875 MiB of free-page decline. Those are sequential global observations,
+not proven irreducible costs. Neither the small guard gap nor inactive-page
+counts prove that the pending title can or cannot run. See the exact formulas in
+[`system_memory.h`](../native/app/system_memory.h),
+[`memory_backpressure.h`](../native/app/memory_backpressure.h) and the
+[measured PLE phases](PLE-postboot-continuation-20261026.md).
+
+| Work item / next stage | Verification status | Execution constraint and remaining work |
+| --- | --- | --- |
+| Memory attribution, peak-live audit, source integration and offline model/graph controls | Partial; further host work not run/not implemented | Host investigation can continue. Do not classify it as physically unavailable because a native guard refused |
+| PLE current-boot shader bootstrap and 208-graph timing | Prior four-graph numerics scope-qualified; new bootstrap/timing not run | Policy-blocked by selected memory admission/current-boot prerequisites; own-SELF characterization remains. Physical infeasibility is unproven |
+| Prefix A/B then B/A | Consumer host-qualified; A1 returned before backend work | Native comparison policy-blocked, not a completed speed comparison or a physical allocation-failure result |
+| Ready-expert source/GPU overlap | Partial graphs and ownership prototypes host-qualified | Actual backing/controller integration is not implemented/qualified; native stage is additionally policy-blocked. Host implementation can proceed |
+| Real hidden-state observation and forecasting | Shadow prototype host-qualified | Actual model observation/forecast integration is missing; native stage additionally policy-blocked. No physical impossibility demonstrated |
+| Width-two speculation, conditional width four/adaptive control | Width-two API prototype host-qualified | Actual native arithmetic/controller not qualified; width four/adaptive implementation missing. Native stage additionally policy-blocked |
+| Additional workload quality/performance and other GPU kernels | Host metadata prepared; native work not run; some kernels not implemented | Distinguish missing implementation from policy-blocked native execution; no physical-impossibility result |
+| Original-file versus expert-major delivery | Comparison actually ran, 7/8 rounds faster; inconclusive and unadopted | This is measured evidence, not an unexecuted or physically unavailable test |
+| Complete state checkpoint | Actual model continuation scope-qualified | No pending correctness rerun. Prefix/speculative speed acceptance is separate |
+| Expanded caches beyond selected 512 MiB | Host geometry/traffic screen only | Cannot execute under the unchanged selected cap; classify as a revisable configuration limit, not physical impossibility |
+
+Classification changes do not lower any runtime guard or launch another case.
+Any engineering revision must declare its changed margin/scope, measured basis
+and failure handling before execution, under the owner's existing experiment
+authorization. Exact owner/source identity, numerical checks and positive
+completion are distinct correctness requirements, not tunable free-page margins.
+
 ## Current production baseline
 
 The subsequent [PLE four-graph implementation and startup result](PLE-smoke-startup-20261026.md)
@@ -148,9 +207,10 @@ with no Vulkan/model code linked. Exact fastest restoration and post-close
 observations passed at 9,079–9,080 free pages. The native-title wired component
 must still be priced separately; no proprietary allocator or new speed result
 is claimed. See the [aggregate evidence](CPU-shader-memory-controls-20261026.json).
-The next distinct four-graph PLE smoke remains unimplemented; its provisional
-8,425-page allowance retains fresh post-CPU/pool/operational guards. It does not
-change the regular full-model gate or complete the remaining optimization plan.
+The four-graph PLE smoke subsequently completed on the physical GPU; its earlier
+8425-page provisional full-application allowance is historical. The current
+timing stage and policy-blocked prerequisites are classified above. Neither the
+smoke nor a failed admission completes the overall optimization plan.
 
 These proposals have no qualified production speed result. They are a research
 backlog, not unfinished steps of the completed finite memory plan. The pinned
@@ -163,8 +223,8 @@ native CPU metadata, original-byte vector-delivery and device-copy fixtures.
 GPU-bank exactness passed, but the actual original-file layout comparison was
 inconclusive at 1.040x source / 1.037x total, with only seven of eight rounds
 faster. No production-layout migration or model speed gain follows. The 136 MiB
-device-copy prerequisite also passed; complete-model continuation is a separate
-qualification.
+device-copy prerequisite and subsequent complete-model continuation both passed
+their stated correctness scopes; prefix/speculative speed acceptance is separate.
 
 The [remaining-proposal validation plan](remaining-validation-plan-20261026.md)
 defines the implementation targets, dependency order, bounded tests, stop/adoption
@@ -181,7 +241,7 @@ original BF16/F32 is preserved.
 | Broader workload characterization | Four execution-disabled prompts rendered through the actual C++ template and original tokenizer metadata: 20/21/27/17 tokens; native control counts matched. [Host scope](remaining-validation-progress-20261026.md#bounded-workload-metadata) | Native token-ID equality, quality and matched metrics remain open. Expand surviving mechanisms beyond the fixed regression; existing two counting traces are insufficient to rank workload-dependent ideas |
 | CPU metadata reuse | Native-fixture-qualified prototype; [measured scope](remaining-validation-progress-20261026.md#cpu-batch-metadata). The specific loop's generous saved-work estimate is only 0.1334 ms per fixed request; not linked into `LlamaEngine` | [Audit 2644](remaining-feasibility-20261026.md#scope-the-small-cpu-metadata-candidate) does not justify a new full-model comparison solely for this loop. Other context/backend metadata costs are not bounded by this result |
 | Execute ready experts while actual-demand reads continue | Whole-expert/actual-backing metadata and same-53-slot split-root prototypes passed host controls. Saved-route serial-pair opportunities occur in 18.37% / 17.33% of external decode layer steps. [Scope](remaining-feasibility-20261026.md#ready-expert-ownership-and-backing) | Qualify independent backing, partial indexed widths, multi-owner source leases and original-order two-wave graph; measure actual overlap and total cost. Preserve existing parallel/coalesced packets |
-| One-layer hidden-state router forecast with at most two reserved slots | Capacity/source review only; no hidden-state capture, forecast kernel or speculative transfer. Upstream `qwen4exp.cpp::build_hc_mix/build_hc_combine`, `build_layer_ffn`; `native/app/expert_policy.h` and cache overlay | Shadow observation of useful missing experts and readiness at demand, graph cost and wasted bytes before speculative I/O. Reuse original F32 routers without an extra cast/copy |
+| One-layer hidden-state router forecast with at most two reserved slots | Capacity/source review plus host-qualified shadow graph/observer/callback prototype; no actual hidden-state capture or speculative transfer. Upstream `qwen4exp.cpp::build_hc_mix/build_hc_combine`, `build_layer_ffn`; `native/app/expert_policy.h` and cache overlay | Integrate actual model observation, then measure useful missing experts, readiness, graph cost and wasted bytes before speculative I/O. Reuse original F32 routers without an extra cast/copy |
 | Exact speculative verification or model-free drafts | Complete-model checkpoint qualified. Past-only draft and one-draft width-two adapter prototypes passed host controls, including actual-adapter rollback/bonus/EOG/unknown-completion cases. [Scope](remaining-validation-progress-20261026.md#model-free-draft-and-width-two-adapter-prototypes) | No native policy/controller enables the prototype. Actual two-target arithmetic, all continuation/route checks, discarded I/O and matched speed/memory remain unqualified. Width four/adaptive controller remain open |
 | Repeated-prefix state reuse | Default-off consumer implemented and host-qualified; same-SELF A1 case 2601 returned a known pre-backend memory refusal, with zero GPU/model execution. [Consumer and refusal evidence](remaining-validation-progress-20261026.md#exact-prefix-consumer-and-reduced-headroom-experiment) | Diagnose the metadata-phase kernel decline before continuing the finite A/B then B/A cohort. Restore 2608/preserve 2609 passed. The owner's separately recorded experimental gate does not change production defaults; no prefix speed result exists |
 | Zero-copy expert-major layout or vectored Direct I/O | Native bank numerics/retirement passed. Compact-record bank screen: 1.252x source / 1.183x total. Actual original-file comparison: 1.040x / 1.037x, only 7/8 rounds faster; inconclusive and unadopted. [Results and scope](remaining-validation-progress-20261026.md#compact-records-and-actual-production-source-layout) | No migration or integration from the failed production-shaped screen. Coalescing/fallback, partial-pack coverage and whole-model results remain unqualified; do not infer tokens/s from same-file fixtures |
