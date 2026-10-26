@@ -41,6 +41,7 @@ ShaderAssetStats verify_native_shader_assets_CPU() {
 static void require_model_CPU_budget(){calls.push_back("heap");if(fault=="heap")throw std::runtime_error("Host heap refusal");}
 static void write_fresh_report(const std::string &,const Json &value){calls.push_back("report");report=value;}
 static Json read_prior_shader_CPU(const Json &,const qwen_app::ShaderAssetStats &a){return {{"CPU_verified_assets",a.assets}};}
+static void sample_boundary_memory(const char *){}
 extern "C" void qwen_native_stage(const char *){calls.push_back("stage");}
 
 #include "actual_shader_CPU_admission.inc"

@@ -539,6 +539,7 @@ static bool observe_model_load(float progress,void * opaque) {
 }
 
 static void admit_shader_storage_CPU(const Json &policy,const std::string &report_path,bool allow_storage,const Json &run_id) {
+    sample_boundary_memory("shader_CPU_admission_begin");
     if(qwen_app::native_shader_assets_registered()!=policy.contains("native_shader_storage"))
         throw std::runtime_error("Packed shader resources require explicit prior CPU validation");
     if(policy.contains("native_shader_storage")) {
@@ -557,21 +558,27 @@ static void admit_shader_storage_CPU(const Json &policy,const std::string &repor
                file.at("single_read_only_descriptor")!=true||file.at("new_model_source_window")!=false||
                verify_all==storage.contains("prior_native_CPU"))
                 throw std::runtime_error("External shader resources require complete current file and original-byte verification");
+            sample_boundary_memory("shader_file_initialization_before");
             qwen_app::initialize_native_shader_file(file.at("path").get<std::string>(),file.at("bytes").get<std::uint64_t>(),
                 file.at("sha256").get<std::string>());
+            sample_boundary_memory("shader_file_initialization_returned");
             const auto admitted=qwen_app::native_shader_file_stats();
             if(!admitted.verified||admitted.failed||admitted.read_pending||admitted.input_window_bytes!=file.at("input_window_bytes"))
                 throw std::runtime_error("External shader file admission did not complete inside its exact tracked window");
             qwen_native_stage("complete_external_shader_file_SHA256_passed GPU_not_started=1");
         }
+        sample_boundary_memory("shader_registry_initialization_before");
         qwen_app::initialize_native_shader_assets();
+        sample_boundary_memory("shader_registry_initialization_returned");
         const auto declared=qwen_app::native_shader_asset_stats();
         if(declared.assets!=storage.at("shader_count")||declared.original_bytes!=storage.at("original_bytes")||
            declared.stored_bytes!=storage.at("stored_bytes")||declared.lookup_entries!=storage.at("lookup_entries")||
            declared.registry_sha256!=storage.at("registry_sha256"))
             throw std::runtime_error("Shader CPU verification exceeds the exact private resource plan");
         Json prior_shader;
+        sample_boundary_memory("shader_prior_proof_before");
         if(!verify_all)prior_shader=read_prior_shader_CPU(storage.at("prior_native_CPU"),declared);
+        sample_boundary_memory("shader_prior_proof_returned");
         const auto shaders=verify_all?qwen_app::verify_native_shader_assets_CPU():declared;
         if(shaders.failed||shaders.active_lease||(verify_all&&shaders.CPU_verified_assets!=shaders.assets)||
            (verify_all&&shaders.CPU_verified_lookups!=shaders.lookup_entries)||shaders.assets!=storage.at("shader_count")||
@@ -603,6 +610,7 @@ static void admit_shader_storage_CPU(const Json &policy,const std::string &repor
         qwen_native_stage(verify_all?"all_original_shader_CPU_bytes_and_lookups_verified_before_Vulkan":
             "prior_all_original_shader_CPU_bytes_bound_current_module_SHA256_required_before_Vulkan");
     }
+    sample_boundary_memory("shader_CPU_admission_returned");
 }
 
 int main(int argc, char ** argv) {
@@ -1072,8 +1080,45 @@ int main(int argc, char ** argv) {
             qwen_native_stage("startup_SELF_CPU_control_completed_GPU_not_started_waiting_for_ordinary_close");
             for(;;)std::this_thread::sleep_for(std::chrono::seconds(1));
         }
+        const bool shader_startup_memory_diagnostic=policy.contains("native_shader_startup_memory_diagnostic");
+        Json shader_startup_VM_before;
+        if(shader_startup_memory_diagnostic) {
+            qwen_app::require_shader_startup_memory_policy(policy);
+            if(!startup.first_generation_validation||!boundary_memory_enabled||display)
+                throw std::runtime_error("Shader startup attribution requires the independent headless CPU path");
+            shader_startup_VM_before=diagnostic_VM_population();
+            if(!qwen_app::begin_native_stage_memory_probe())
+                throw std::runtime_error("Shader startup stage attribution cannot be reentered");
+        }
         admit_shader_storage_CPU(policy,startup.admission_report,startup.first_generation_validation,
             policy.contains("native_first_generation_validation")?policy.at("native_first_generation_validation").at("run_id"):Json(nullptr));
+        if(shader_startup_memory_diagnostic) {
+            const bool complete=qwen_app::end_native_stage_memory_probe();
+            if(!complete)throw std::runtime_error("Shader startup stage observations did not completely return");
+            const auto VM_after=diagnostic_VM_population();Json samples=Json::array();
+            for(std::size_t i=0;i<qwen_app::native_stage_memory_probe_count();++i) {
+                const auto *s=qwen_app::native_stage_memory_probe_sample(i);
+                if(!s||!s->valid)throw std::runtime_error("Shader startup stage observation is missing or invalid");
+                samples.push_back({{"phase",s->phase},{"idle_before_ns",s->idle_before_ns},{"before_ns",s->before_ns},
+                    {"write_after_ns",s->write_after_ns},{"after_ns",s->after_ns},{"free_idle_before",s->free_idle_before},
+                    {"free_before",s->free_before},{"free_after_write",s->free_after_write},{"free_after",s->free_after},{"valid",true}});
+            }
+            const auto operations=boundary_memory_report();
+            const auto shader_input=qwen_app::native_shader_file_stats();
+            if(!shader_input.verified||shader_input.failed||shader_input.read_pending)
+                throw std::runtime_error("Shader startup file ownership did not positively return");
+            write_fresh_report(startup.admission_report+".shader-startup-memory",{
+                {"schema","ps5-qwen-shader-startup-memory-result-v1"},{"pid",getpid()},
+                {"run_id",policy.at("native_first_generation_validation").at("run_id")},
+                {"VM_before",shader_startup_VM_before},{"VM_after",VM_after},{"samples",samples},
+                {"operation_boundaries",operations},{"matched_idle_ns",qwen_app::stage_memory_probe_idle_ns},
+                {"shader_read_calls",shader_input.read_calls},{"shader_returned_bytes",shader_input.returned_bytes},
+                {"shader_file_bytes",shader_input.file_bytes},{"shader_input_window_bytes",shader_input.input_window_bytes},
+                {"all_shader_input_calls_returned",true},{"CPU_only",true},{"GPU_calls",0},{"source_workers",0},
+                {"model_metadata_files",0},{"model_loaded",false},{"ordinary_OS_close_required",true}});
+            qwen_native_stage("shader_startup_memory_CPU_completed_GPU_not_started_waiting_for_ordinary_close");
+            for(;;)(void)usleep(1000000);
+        }
         if(startup.model_validation || startup.first_generation_validation) {
             const bool selected_startup = startup.first_generation_validation && policy.contains("native_source_schedule");
             if (selected_startup && policy.at("native_source_schedule").at("require_kernel_target_before_metadata") != true)

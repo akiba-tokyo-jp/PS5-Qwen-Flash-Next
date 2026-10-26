@@ -2,6 +2,9 @@
 
 Plan date: 2026-10-26. **This plan itself does not implement or validate proposals.**
 Execution outcomes are tracked in the [progress record](remaining-validation-progress-20261026.md).
+The owner's subsequent priority is the [memory-first PLE sequence](PLE-memory-first-plan-20261026.md):
+finish attribution and any measured fix before another PLE GPU comparison.
+The regular prelaunch margin is not an established PLE hardware minimum.
 It defines their work and terminal decisions. Current dispositions
 and historical results are in the [plan index](plan-index.md). Planning does not
 start a console session or change the installed application.

@@ -1,5 +1,10 @@
 # Bounded native PLE copy fixture
 
+The current order and phase-specific admission design are in the
+[memory-first plan](PLE-memory-first-plan-20261026.md). It supersedes treating
+the regular 10,142-page gate as the sole outstanding issue. No replacement
+launch threshold is activated by this documentation.
+
 This is preparation for a physical numerical/placement comparison, not a measured
 optimization. The overall remaining plan is incomplete. The installed fastest
 SELF remains `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`;

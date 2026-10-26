@@ -1,7 +1,7 @@
 # PS5 Flash Next plan status
 
 Status consolidated on 2026-10-26 against main
-`20561804df73bc3d4d7a3d7322d4063fea3ffc95`. **Implementation and validation of
+`6f067d056a6eaae9c0fc38138a0c8dd257a41528`. **Implementation and validation of
 all proposed techniques are not complete.** Ready-expert execution, hidden-state
 router forecasting, speculative verification and other proposals below remain
 incomplete; several now have default-off host prototypes. Individual finite plans have completed within their recorded
@@ -120,6 +120,11 @@ conversion or integration. The original fixture adoption gate remains recorded;
 it is not a universal 5% requirement for every future improvement.
 
 ## Remaining proposals and prerequisites
+
+The owner now prioritizes [memory attribution before PLE](PLE-memory-first-plan-20261026.md).
+CPU-only cases 2662/2664 completed process/category and seven-file residency
+checks; the shader-startup decline remains unattributed. Do not wait for assumed
+memory recovery or equate the regular gate with a measured PLE hardware limit.
 
 These proposals have no qualified production speed result. They are a research
 backlog, not unfinished steps of the completed finite memory plan. The pinned
