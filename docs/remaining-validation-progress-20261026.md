@@ -598,6 +598,32 @@ external shaders already use Direct I/O. Passive regular-gate 2641 refused at
 6577 free pages with zero launches/payload operations. Earlier restored cases
 and the exact fastest app remain preserved; no new candidate is adopted.
 
+## Native PLE fixture prepared; physical gate refused
+
+The [bounded native fixture](PLE-slice-fixture-20261026.md) now has an independent
+headless policy and startup path, full four-tap graphs, explicit Vulkan placement,
+guarded readbacks, original-order F32/F64 checks and durable width/mode/ordinal
+bindings. The finite future cohort is 208 graphs, with construction measured
+separately from complete graph/fence/readback time. It reuses the existing source
+guard and reports its two preflight reads; no source-free ledger exception exists.
+
+Host 2653 passed 16 complete GGML graphs / 409,600 exact deterministic F32 outputs;
+root-tensor metadata peaks at 8,643,328 bytes and 64,000 bytes of metadata. These
+are not physical allocation results. Admission 2652 passed 52 refusals and three
+actual native units. Shared shader check 2655 retained the original helper and
+passed nine refusal controls. Eight result-review tests passed.
+
+Full app/package 2654 passed the actual link/import audit and six SELF segment
+roundtrips at SELF `21dd6eae31e97440814403d86de0a087151aad9cf665c4317f30bce57943a25c`.
+Driver/profile/native archive and engine/shader inputs are unchanged. No new SELF
+or settings were published to the PS5 and no candidate was adopted.
+
+After that preparation, new read-only CPU case 2656 returned the regular memory
+refusal at 6257 free pages versus 10142 required, with zero title/GPU launches,
+payload reads and explicit allocations. Owner/idle checks returned normally.
+The physical PLE numerical/speed comparison remains outstanding; neither this
+host package nor a prelaunch refusal completes the overall plan.
+
 ## Remaining package scope
 
 The peak-live allocation review, broader tokenized workloads, ready-expert

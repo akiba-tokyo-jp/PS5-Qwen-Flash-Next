@@ -40,7 +40,7 @@ Startup read_startup(int argc, char ** argv) {
                 integer("utc_epoch_ms"), integer("uncertainty_ms")};
         }
         const auto mode = data.value("mode", std::string("inference"));
-        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation" && mode != "native-memory-validation" && mode != "palette-validation" && mode != "vector-bank-validation" && mode != "device-state-validation" && mode != "model-validation" && mode != "operator-validation" && mode != "moe-validation" && mode != "first-generation-validation")
+        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation" && mode != "native-memory-validation" && mode != "palette-validation" && mode != "vector-bank-validation" && mode != "device-state-validation" && mode != "PLE-slice-validation" && mode != "model-validation" && mode != "operator-validation" && mode != "moe-validation" && mode != "first-generation-validation")
             throw std::invalid_argument("Unknown application mode");
         result.monitor_validation = mode == "monitor-validation";
         result.display_validation = mode == "display-validation";
@@ -49,6 +49,11 @@ Startup read_startup(int argc, char ** argv) {
         result.palette_validation = mode == "palette-validation";
         result.vector_bank_validation = mode == "vector-bank-validation";
         result.device_state_validation = mode == "device-state-validation";
+        result.PLE_slice_validation = mode == "PLE-slice-validation";
+        if(result.PLE_slice_validation&&result.native_display)
+            throw std::invalid_argument("PLE slice validation requires display disabled");
+        if(result.PLE_slice_validation&&result.clock_calibration)
+            throw std::invalid_argument("Headless PLE slice validation has no monitor clock calibration");
         if(result.device_state_validation&&result.native_display)
             throw std::invalid_argument("Device-state validation requires display disabled");
         if(result.vector_bank_validation&&result.native_display)

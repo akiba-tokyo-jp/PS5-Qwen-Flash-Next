@@ -10,6 +10,7 @@
 #include "palette_gpu_admission.h"
 #include "vector_bank_admission.h"
 #include "device_state_admission.h"
+#include "ple_slice_admission.h"
 #include "model_checkpoint_policy.h"
 #include "prefix_validation_policy.h"
 #include "metadata_memory_policy.h"
@@ -25,6 +26,7 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
     if (mode == "palette-validation") {require_palette_gpu_policy(policy,native_display);return;}
     if (mode == "vector-bank-validation") {require_vector_bank_policy(policy,native_display);return;}
     if (mode == "device-state-validation") {require_device_state_policy(policy,native_display);return;}
+    if (mode == "PLE-slice-validation") {require_PLE_slice_policy(policy,native_display);return;}
     if (mode == "native-memory-validation") {
         require_memory_probe_policy(policy,native_display);return;
     }

@@ -12,7 +12,7 @@ def main():
     up=a.cache/'upstream/llama.cpp-0a1ef309cdbb9f2024f58a38fb4c42352c5db569';host=a.workspace/'toolchain/msys-clang64/clang64/bin'
     config=a.out/'app-config.json';config.write_text(json.dumps(dict(schema='ps5-qwen-app-v1',mode='device-state-validation',native_display=False,
         development_policy='/app0/qwen-runtime/development.json',model_receipt='/app0/qwen-runtime/model-receipt.json',web_assets='/app0/qwen-runtime/web'))+'\n')
-    main=ROOT/'native/app/native_main.cpp';text=main.read_text();branch=text[text.index('if(startup.palette_validation||startup.vector_bank_validation||startup.device_state_validation)'):text.index('if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) ||')]
+    main=ROOT/'native/app/native_main.cpp';text=main.read_text();branch=text[text.index('if(startup.palette_validation||startup.vector_bank_validation||startup.device_state_validation'):text.index('if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) ||')]
     assert branch.index('device_state_fixture_linked()')<branch.index('admit_shader_storage_CPU(')<branch.index('native_resources_started=true')<branch.index('admit_device_state_fixture(')
     exe=a.out/'device-policy-tests.exe'
     commands=[[str(host/'clang++.exe'),'-std=c++17','-O2','-Wall','-Wextra','-Werror','-I',str(ROOT/'native/app'),'-I',str(up/'vendor'),str(ROOT/'tests/device_state_policy.cpp'),str(ROOT/'native/app/startup.cpp'),'-o',str(exe)],

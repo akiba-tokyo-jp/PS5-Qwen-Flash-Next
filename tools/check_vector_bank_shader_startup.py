@@ -13,7 +13,7 @@ def main():
     main=ROOT/'native/app/native_main.cpp';source=main.read_text()
     start=source.index('static void admit_shader_storage_CPU(');end=source.index('\nint main(',start)
     helper=source[start:end];extracted=a.out/'actual_shader_CPU_admission.inc';extracted.write_text(helper,newline='\n')
-    branch=source[source.index('if(startup.palette_validation||startup.vector_bank_validation||startup.device_state_validation)'):source.index('if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) ||')]
+    branch=source[source.index('if(startup.palette_validation||startup.vector_bank_validation||startup.device_state_validation'):source.index('if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) ||')]
     assert branch.index('admit_shader_storage_CPU(')<branch.index('native_resources_started=true')<branch.index('qwen_app::admit_vector_bank(')
     assert 'qwen_native_gpu_initialize'not in helper and 'ggml_backend_'not in helper
     old=(a.cache/'vector-bank-app-build-2511/source-at-execution/native_main.cpp').read_text()
