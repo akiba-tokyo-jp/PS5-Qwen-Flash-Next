@@ -40,13 +40,19 @@ Startup read_startup(int argc, char ** argv) {
                 integer("utc_epoch_ms"), integer("uncertainty_ms")};
         }
         const auto mode = data.value("mode", std::string("inference"));
-        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation" && mode != "native-memory-validation" && mode != "palette-validation" && mode != "model-validation" && mode != "operator-validation" && mode != "moe-validation" && mode != "first-generation-validation")
+        if (mode != "inference" && mode != "monitor-validation" && mode != "display-validation" && mode != "runtime-validation" && mode != "native-memory-validation" && mode != "palette-validation" && mode != "vector-bank-validation" && mode != "device-state-validation" && mode != "model-validation" && mode != "operator-validation" && mode != "moe-validation" && mode != "first-generation-validation")
             throw std::invalid_argument("Unknown application mode");
         result.monitor_validation = mode == "monitor-validation";
         result.display_validation = mode == "display-validation";
         result.runtime_validation = mode == "runtime-validation";
         result.memory_validation = mode == "native-memory-validation";
         result.palette_validation = mode == "palette-validation";
+        result.vector_bank_validation = mode == "vector-bank-validation";
+        result.device_state_validation = mode == "device-state-validation";
+        if(result.device_state_validation&&result.native_display)
+            throw std::invalid_argument("Device-state validation requires display disabled");
+        if(result.vector_bank_validation&&result.native_display)
+            throw std::invalid_argument("Vector bank validation requires display disabled");
         if(result.palette_validation&&result.native_display)
             throw std::invalid_argument("Palette validation requires display disabled");
         if(result.memory_validation && result.native_display)

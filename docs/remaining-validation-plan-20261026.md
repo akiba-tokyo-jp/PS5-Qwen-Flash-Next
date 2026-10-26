@@ -1,7 +1,8 @@
 # Validation plan for remaining Flash Next proposals
 
-Plan date: 2026-10-26. **The remaining proposals are not implemented or validated
-by this plan.** It defines their work and terminal decisions. Current dispositions
+Plan date: 2026-10-26. **This plan itself does not implement or validate proposals.**
+Execution outcomes are tracked in the [progress record](remaining-validation-progress-20261026.md).
+It defines their work and terminal decisions. Current dispositions
 and historical results are in the [plan index](plan-index.md). Planning does not
 start a console session or change the installed application.
 
@@ -251,8 +252,10 @@ Share this implementation with speculative verification. Target
 `native/app/llama_engine.cpp::prefill/process_batch/next`, `streaming_context_params`,
 upstream `llama-memory-recurrent.cpp::seq_rm/state_read/state_write`, hybrid/KV
 modules and Qwen4Exp PLE/logit state. A proposed application checkpoint wrapper
-must explicitly bind model, sequence, positions, sampler and every state owner;
-it does not exist yet. `seq_rm` on KV alone is insufficient.
+must explicitly bind model, sequence, positions, sampler and every state owner.
+The wrapper has now passed the finite complete-model continuation comparison
+recorded in the progress report; prefix and speculative consumers still need
+their own qualification. `seq_rm` on KV alone is insufficient.
 
 The measured host checkpoint minimum, 118038528 bytes before KV/logits, exceeds
 the 83820544-byte CPU slack. Do not implement that rejected host allocation.

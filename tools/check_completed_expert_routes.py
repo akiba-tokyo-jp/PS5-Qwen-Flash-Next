@@ -11,7 +11,8 @@ import subprocess
 ROOT=Path(__file__).resolve().parents[1]
 SCENARIOS=('positive','width3','width4','internal_sync','other_thread_sync','other_backend_sync',
  'get_failure','sync_failure','negative_id','large_id','bad_layer','wrong_order','width8','bad_count',
- 'other_thread_get','finish_pending','duplicate_get','finish_mismatch','overflow','begin_twice','retained_batches')
+ 'other_thread_get','finish_pending','duplicate_get','finish_mismatch','overflow','begin_twice','retained_batches',
+ 'range_equal','range_bounds','range_mismatch','range_wrong_owner','range_pending')
 
 
 def record(path):

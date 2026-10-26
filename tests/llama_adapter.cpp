@@ -38,6 +38,17 @@ void llama_app_expert_counters(llama_app_expert_stats * result) { *result = {7, 
 llama_model_params llama_model_default_params() { return {}; }
 llama_context_params llama_context_default_params() { return {}; }
 const llama_vocab * llama_model_get_vocab(const llama_model *) { return &vocabulary; }
+const llama_model * llama_get_model(const llama_context *) { return nullptr; }
+llama_pos llama_memory_seq_pos_min(llama_memory_t,llama_seq_id){return -1;}
+llama_pos llama_memory_seq_pos_max(llama_memory_t,llama_seq_id){return -1;}
+size_t llama_state_seq_get_size_ext(llama_context *,llama_seq_id,llama_state_seq_flags){return 0;}
+size_t llama_state_seq_get_data_ext(llama_context *,uint8_t *,size_t,llama_seq_id,llama_state_seq_flags){return 0;}
+size_t llama_state_seq_set_data_ext(llama_context *,const uint8_t *,size_t,llama_seq_id,llama_state_seq_flags){return 0;}
+llama_token llama_get_sampled_token_ith(llama_context *,int32_t){return LLAMA_TOKEN_NULL;}
+float *llama_get_sampled_probs_ith(llama_context *,int32_t){return nullptr;}
+float *llama_get_sampled_logits_ith(llama_context *,int32_t){return nullptr;}
+void llama_sampler_apply(llama_sampler *,llama_token_data_array *){throw std::runtime_error("Disabled checkpoint unexpectedly sampled restored logits");}
+void llama_sampler_accept(llama_sampler *,llama_token){}
 llama_batch_ext * llama_batch_ext_init(llama_context *) { return new llama_batch_ext; }
 void llama_batch_ext_free(llama_batch_ext * batch) { ++freed; delete batch; }
 llama_sampler * llama_sampler_init_greedy() { return reinterpret_cast<llama_sampler *>(1); }

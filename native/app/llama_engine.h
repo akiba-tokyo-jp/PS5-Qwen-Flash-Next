@@ -5,8 +5,19 @@
 #include "profile_clock.h"
 
 #include <vector>
+#include <array>
+#include <memory>
+#include <thread>
 
 namespace qwen_app {
+class ModelCheckpoint;
+struct CheckpointValidationStats {
+    bool enabled=false,completed=false;
+    std::uint32_t captures=0,restores=0,prefill_replays=0,next_replays=0,route_rows_compared=0;
+    std::uint64_t maximum_payload_bytes=0,maximum_metadata_bytes=0;
+    double maximum_absolute_logit_error=0;
+    std::array<std::int32_t,34> capture_positions{};
+};
 struct LlamaTimingStats {
     std::uint64_t process_calls = 0, process_ns = 0, synchronize_ns = 0;
     std::uint64_t checkpoint_ns = 0, work_guard_ns = 0, stage_observer_ns = 0;
@@ -30,6 +41,10 @@ public:
     std::uint32_t prefill_batch_tokens() const { return prefill_tokens_; }
     void set_stage_observer(void (*observer)(const char *)) { stage_ = observer; }
     void set_gpu_boundaries(void (*begin)(),void (*complete)(),void (*retain)(),void (*checkpoint)()=nullptr);
+    void enable_checkpoint_validation(std::function<void(std::uint64_t)> admit,
+        std::function<std::uint32_t()> route_cursor,
+        std::function<void(std::uint32_t,std::uint32_t,std::uint32_t)> compare_routes);
+    CheckpointValidationStats checkpoint_validation_stats()const{return checkpoint_stats_;}
     // Called before work and after synchronized decode/checkpoint boundaries.
     void set_work_guard(std::function<void()> guard, std::uint32_t prompt_token_limit = 0) {
         work_guard_ = std::move(guard); prompt_token_limit_ = prompt_token_limit;
@@ -38,6 +53,14 @@ public:
 private:
     void process(llama_token token, llama_pos position, bool output);
     void process_batch(const llama_token * tokens, std::uint32_t count, llama_pos position);
+    void process_batch_once(const llama_token * tokens, std::uint32_t count, llama_pos position);
+    Token next_once();
+    Token validate_next_checkpoint();
+    const float *effective_logits()const;
+    void capture_checkpoint_in_active_epoch();
+    void restore_checkpoint_in_active_epoch();
+    void compare_checkpoint_logits();
+    void compare_checkpoint_routes(std::uint32_t first,std::uint32_t first_end,std::uint32_t second);
     void require_healthy() const;
     llama_model * model_;
     llama_context * context_;
@@ -58,6 +81,16 @@ private:
     std::function<void()> work_guard_;
     std::uint32_t prompt_token_limit_ = 0;
     mutable LlamaTimingStats timing_;
+    std::unique_ptr<ModelCheckpoint> checkpoint_;
+    CheckpointValidationStats checkpoint_stats_;
+    std::function<void(std::uint64_t)> checkpoint_admit_;
+    std::function<std::uint32_t()> checkpoint_route_cursor_;
+    std::function<void(std::uint32_t,std::uint32_t,std::uint32_t)> checkpoint_compare_routes_;
+    std::vector<float> checkpoint_reference_logits_,restored_logits_;
+    std::vector<llama_token_data> checkpoint_candidates_;
+    std::uint64_t request_epoch_=0;
+    std::thread::id producer_=std::this_thread::get_id();
+    bool inside_prefill_=false,restored_logits_active_=false;
     void guard() const {
         if (work_guard_) { ProfileScope timing(timing_.work_guard_ns); work_guard_(); }
     }

@@ -249,6 +249,14 @@ def main():
             require(native == observed_streams[ordinal-1][:-1], "External token events differ from native durable records")
         failure_check()
         review = validate(result_path, expected)
+        checkpoint_validation=None
+        if binding.get('require_model_checkpoint_validation') is True:
+            from model_checkpoint_result import validate_checkpoint
+            download('.model-checkpoint')
+            checkpoint_validation=read_record(Path(str(result_path)+'.model-checkpoint'))
+            checkpoint_review=validate_checkpoint(checkpoint_validation,result['demonstration']['requests'][1],
+                pid=expected['pid'],run_id=expected['run_id'])
+            exclusive(out/'model-checkpoint-review.private.json',checkpoint_review)
         # The full native validator admits the exact split integrity/layout first.
         split_sources = bool(expected.get('split512_integrity_sha256'))
         if performance_required:
@@ -257,7 +265,7 @@ def main():
             for ordinal, native_request in enumerate(result['demonstration']['requests'], 1):
                 summaries.append(validate_performance(
                     read_record(Path(str(result_path) + '.demo' + str(ordinal) + '.performance')), native_request,
-                    split_sources=split_sources))
+                    split_sources=split_sources,checkpoint_validation=checkpoint_validation if ordinal==2 else None))
             if binding.get('require_parallel_sources') is True:
                 download('.source.parallel')
                 admission = read_record(Path(str(result_path) + '.source.parallel'))

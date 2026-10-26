@@ -52,7 +52,33 @@ int main(int argc,char ** argv) {
     __wrap_ggml_backend_synchronize(backend);check(get_calls==1&&syncs==1);get_calls=0;syncs=0;
     qwen_app::begin_completed_expert_routes();
     exercise=true;
-    if(scenario=="begin_twice") {
+    if(scenario.rfind("range_",0)==0) {
+        check(qwen_app::completed_expert_route_cursor()==0);
+        for(unsigned row=0;row<96;++row) {
+            if(row==48&&scenario=="range_mismatch"){++input[0];ggml_backend_tensor_set(tensor,input.data(),0,ggml_nbytes(tensor));}
+            ggml_format_name(tensor,"ffn_moe_topk-%u (cont) (reshaped)",row%48);
+            __wrap_ggml_backend_tensor_get_async(backend,tensor,target.data(),0,ggml_nbytes(tensor));
+            __wrap_ggml_backend_synchronize(backend);
+        }
+        check(qwen_app::completed_expert_route_cursor()==96);
+        if(scenario=="range_equal") {
+            qwen_app::compare_completed_expert_route_ranges(0,48,48);
+            qwen_app::compare_completed_expert_route_ranges(96,96,0);
+            check(qwen_app::finish_completed_expert_routes(2).size()==96);
+        }else {
+            if(scenario=="range_bounds")rejected([]{qwen_app::compare_completed_expert_route_ranges(48,96,48);});
+            else if(scenario=="range_mismatch")rejected([]{qwen_app::compare_completed_expert_route_ranges(0,48,48);});
+            else if(scenario=="range_wrong_owner") {
+                std::atomic<bool> refused{false};std::thread child([&]{try{qwen_app::completed_expert_route_cursor();}catch(...){refused=true;}});child.join();check(refused);
+            }else if(scenario=="range_pending") {
+                ggml_set_name(tensor,"ffn_moe_topk-0 (cont) (reshaped)");
+                __wrap_ggml_backend_tensor_get_async(backend,tensor,target.data(),0,ggml_nbytes(tensor));
+                rejected([]{qwen_app::completed_expert_route_cursor();});
+                __wrap_ggml_backend_synchronize(backend);
+            }else throw std::runtime_error("Unknown range control");
+            check(qwen_app::completed_expert_routes_pending());rejected([]{qwen_app::finish_completed_expert_routes(2);});
+        }
+    }else if(scenario=="begin_twice") {
         rejected([]{qwen_app::begin_completed_expert_routes();});check(get_calls==0);
     }else {
         const bool positive=scenario=="positive"||scenario=="width3"||scenario=="width4"||scenario=="internal_sync"||scenario=="other_thread_sync"||scenario=="other_backend_sync"||scenario=="retained_batches";

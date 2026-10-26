@@ -12,6 +12,8 @@ struct Startup {
     bool runtime_validation = false;
     bool memory_validation = false;
     bool palette_validation = false;
+    bool vector_bank_validation = false;
+    bool device_state_validation = false;
     bool model_validation = false;
     bool operator_validation = false;
     bool moe_validation = false;
