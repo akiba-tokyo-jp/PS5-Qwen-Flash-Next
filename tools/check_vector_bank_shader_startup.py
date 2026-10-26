@@ -21,7 +21,9 @@ def main():
     old_end=old.index('        if(startup.model_validation || startup.first_generation_validation)',old_start)
     body=old[old_start:old_end].replace('!startup.first_generation_validation','!allow_storage').replace('startup.admission_report','report_path').replace('policy.at("native_first_generation_validation").at("run_id")','run_id')
     body='\n'.join(line[4:]if line.startswith('    ')else line for line in body.splitlines())+'\n'
-    assert helper.rstrip('\n')==('static void admit_shader_storage_CPU(const Json &policy,const std::string &report_path,bool allow_storage,const Json &run_id) {\n'+body+'}').rstrip('\n')
+    # Diagnostic observations do not replace any original admission or work.
+    original_work='\n'.join(line for line in helper.splitlines()if not line.strip().startswith('sample_boundary_memory('))
+    assert original_work.rstrip('\n')==('static void admit_shader_storage_CPU(const Json &policy,const std::string &report_path,bool allow_storage,const Json &run_id) {\n'+body+'}').rstrip('\n')
     host=a.workspace/'toolchain/msys-clang64/clang64/bin';up=a.cache/'upstream/llama.cpp-0a1ef309cdbb9f2024f58a38fb4c42352c5db569';exe=a.out/'shader-startup-tests.exe'
     files=[main,ROOT/'tests/vector_bank_shader_startup.cpp',a.policy,Path(__file__)]
     fixed=[record(p)for p in files]
@@ -32,7 +34,7 @@ def main():
         r=subprocess.run(cmd,capture_output=True,timeout=120,env=env);(a.out/(str(i)+'.private.log')).write_bytes(r.stdout+r.stderr)
         if r.returncode:raise RuntimeError(r.stderr.decode(errors='replace')[-3000:])
     assert fixed==[record(p)for p in files]
-    result=json.loads(r.stdout);result.update(shared_old_body_preserved_except_parameters=True,CPU_admission_before_GPU_boundary_source_checked=True,
+    result=json.loads(r.stdout);result.update(shared_old_body_preserved_except_parameters_and_diagnostic_observations=True,CPU_admission_before_GPU_boundary_source_checked=True,
         inputs=fixed,extracted=record(extracted),command=command,native_execution=False)
     (a.out/'receipt.private.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({k:v for k,v in result.items()if k not in ('inputs','extracted','command')}),flush=True)

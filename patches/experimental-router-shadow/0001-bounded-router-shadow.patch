@@ -1,0 +1,27 @@
+--- a/src/models/qwen4exp.cpp
++++ b/src/models/qwen4exp.cpp
+@@ -1,4 +1,8 @@
+ #include "models.h"
++#if defined(QWEN_EXPERIMENTAL_ROUTER_SHADOW_LAYER)
++#include "router_shadow_graph.h"
++static_assert(QWEN_EXPERIMENTAL_ROUTER_SHADOW_LAYER >= 0 && QWEN_EXPERIMENTAL_ROUTER_SHADOW_LAYER < 48);
++#endif
+ #include "llama-impl.h"
+ #include "llama-memory-hybrid-idx.h"
+ #include "llama-memory-recurrent.h"
+@@ -461,6 +465,15 @@
+                 model.layers[il].hc_attn_inject,
+                 &inject, il);
+ 
++#if defined(QWEN_EXPERIMENTAL_ROUTER_SHADOW_LAYER)
++        if (il == QWEN_EXPERIMENTAL_ROUTER_SHADOW_LAYER) {
++            // Observe this layer's actual post-PLE attention input before its
++            // attention block. The later authoritative FFN top-k is unchanged.
++            auto * shadow = qwen_app::build_router_shadow(ctx0, cur, model.layers[il].ffn_gate_inp);
++            cb(shadow, "qwen_router_shadow_topk", il);
++            ggml_build_forward_expand(gf, shadow);
++        }
++#endif
+         ggml_build_forward_expand(gf, cur);
+ 
+         if (hparams.is_recr(il)) {

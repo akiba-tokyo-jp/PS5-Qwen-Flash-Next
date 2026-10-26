@@ -626,6 +626,37 @@ host package nor a prelaunch refusal completes the overall plan.
 
 ## Remaining package scope
 
+The owner subsequently made [memory attribution before PLE](PLE-memory-first-plan-20261026.md)
+the current priority. Cases 2662/2664 completed CPU-only physical process/category
+and file-residency diagnosis. There were 89 processes with no native owner or
+stopped/zombie accumulation; all seven selected executable/frame/shader files
+had zero resident pages and all 132 query windows retired. Free pages were 6274
+in the process census. This is not a new launch admission or recovered capacity.
+
+Saved case 2616 localizes a 1406-page decline to 717.446223 ms in CPU shader
+preparation with unchanged 16 MiB Direct heap, zero model metadata and zero GPU.
+Its individual cause remains unproven. The new independent shader-startup CPU
+diagnostic reuses the original stage/idle/write/fsync probe and returns before
+model metadata or Vulkan. Host 2667 passed 35 scope refusals and actual native
+main compilation; 2668 passed the extracted original shader orchestration and
+nine refusals, with only read-only diagnostic observations added. Five focused
+reviewer tests passed. These are host/SDK checks, not physical attribution.
+The earlier 2666 host test used a one-asset synthetic policy against a harness
+expecting 1527 assets; its failed control is retained. The separately corrected
+2668 used the real qualified 1527-asset policy, with zero console operations.
+
+Before this reprioritization, host 2660 implemented partial ready-expert graphs
+at widths one through ten, original-order reduction and actual-router shadow
+graph/observer/callback prototypes. It passed 20 actual GGML partial graphs,
+138 invalid-shape/ordinal refusals, 2560 cancellation-sensitive F32 reduction
+values, four shadow graphs and 384 bounded observation records / 17 refusals.
+The callback/graph headers and actual isolated model shadow-off/layer23 unity
+variants compiled with the PS5 SDK. This did not execute BF16 expert matrices,
+read real hidden states, qualify buffer independence/overlap, integrate a native
+controller or change the production engine. The fixed host observer is 34600
+bytes; native physical cost and runtime integration remain open. These candidates
+are paused behind memory attribution, not completed by this metadata checkpoint.
+
 The peak-live allocation review, broader tokenized workloads, ready-expert
 execution, hidden-state observation/forecasts, prefix reuse, exact speculative
 verification/adaptive width and eligible graph specializations remain incomplete.
