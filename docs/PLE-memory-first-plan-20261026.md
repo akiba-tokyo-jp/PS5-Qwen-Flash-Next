@@ -3,8 +3,10 @@
 The owner requested a PLE-specific physical admission plan and made memory
 attribution the first priority. This supersedes preparing unrelated optimization
 prototypes while treating the regular launch gate as the only outstanding issue.
-Neither the memory cause nor the overall implementation/validation request is
-complete. Do not wait for assumed recovery or replace 10,142 with an arbitrary
+The controllable closed-file contribution has since been measured and reduced,
+and native CPU shader attribution has completed. The precise proprietary
+allocator and the overall implementation/validation request remain incomplete.
+Do not wait for assumed recovery or replace 10,142 with an arbitrary
 smaller constant: `target + 7,168` is not a measured PLE kernel-memory cost.
 
 ## Completed physical diagnosis
@@ -117,7 +119,8 @@ decline between its final prelaunch observation and pre-integrity title snapshot
 `5,195 + 1,154 = 6,349` is reference arithmetic **before** variation/allocation
 overhead, not a qualified gate or a PLE minimum. At 6,274 that worst saved decline
 would leave 1,079 pages, below the floor. Substituting the old 6,046-page
-experiment therefore also lacks a safety basis. No new threshold is activated.
+experiment therefore also lacks a safety basis. This describes the earlier
+unreduced state; the separately priced CPU-only case below did not use 6,046.
 
 PLE tensor metadata establishes 8,643,328 raw root bytes, a 16 MiB raw-buffer cap
 and 64,000 bytes of used GGML metadata. It also uses the existing 8 MiB source
@@ -133,8 +136,9 @@ operation observations. The independent CPU diagnostic stops before the stronger
 model-startup gate. Its strict policy is in `shader_startup_memory_policy.h`;
 `tools/shader_startup_memory_result.py` reviews signed changes without declaring
 a cause, reclaimability, GPU qualification or adoption. Source/host/SDK checks
-are distinct from packaging and execution. No physical shader-attribution result
-exists yet. Ready-expert/router prototypes are paused behind this sequence.
+are distinct from packaging and execution. The later independent small-title
+result below supplies physical CPU evidence. Ready-expert/router prototypes
+remain paused behind the PLE sequence.
 
 Keep the installed fastest SELF, driver `872cc126` / `cumulative-idle`, disabled
 persistent caches and production limits. Raw identities, paths, SDK inputs,
@@ -151,3 +155,111 @@ It has not been published or executed. Host 2667 passed 35 scope refusals and
 actual main compilation; 2668 passed shared shader orchestration and nine
 refusals. Five reviewer test groups passed, including owner/scope, finite reads,
 paired stages, invalid/ring-overwritten observations and strict numeric types.
+
+## Subsequent physical controls and reduction
+
+[Aggregate evidence](CPU-shader-memory-controls-20261026.json) records the later
+finite cases. The isolated 8,258,588-byte input controls completed 169 reads and
+338 durable markers each. Static input case 2674 lost two free pages; case 2679
+used a separately owned 128 KiB CPU Direct allocation, positively unmapped and
+released it, and lost 19 pages including allocation and unclassified gaps.
+Neither reproduces the historical 1,406-page decline. The Direct window is not
+the title heap arena, so these controls alone do not qualify title initialization.
+
+Cases 2677/2678 refused before allocation. A zero Direct-size result in the CPU
+helper context was not treated as an empty physical pool. Case 2679 bound the
+already qualified CPU allocation sequence from the successful 8 MiB control;
+no GPU or production quota predicate changed.
+
+Eight older retained SELF files had 160 resident pages; complete original
+SHA256/identity/EOF verification recovered 158 pages without changing their
+bytes. The saved owned-file catalog avoided further directory enumeration.
+Stable-prefix case 2690 completed 694 returned reads across 347 other files,
+changing free pages from 2,420 to 3,790. A historical container-format refusal
+was retained separately; that consumed source was excluded.
+
+Whole-range case 2692 completed 301 files and part of one more, then positively
+refused with all 13,987 reads returned and no live mapping. Its exact refusing
+predicate was not logged; elapsed time alone is not proof of which predicate
+failed. The separately declared continuation 2693 excluded the completed 301
+files, finished the remaining 46 with 1,344 returned reads, and changed free
+pages from 8,155 to 8,856. These cohorts record current whole-file hashes and
+stable identities; they do not authenticate every historical file against its
+original digest. All source files were opened read-only. No cache-advice,
+pressure, pool resize, GPU operation or automatic resubmission was used.
+
+A large change before the older-file scan coincided with preparation that
+included FTP directory enumeration. No matched interval isolates that operation,
+so a causal FTP claim is not established. Process inventories remained stable;
+the larger category change was inactive memory. The demonstrated controllable
+component is retained owned-file residency. It does not make all inactive pages
+available for admission.
+
+Detailed durable before/returned records remain enabled. The new CPU observer
+polls a fixed 512-byte completed-boundary status and retrieves the complete
+journal once after its terminal record. It avoids repeatedly fetching a growing
+journal. Four manual tests cover ambiguous acknowledgements, wrong owner,
+existing output and finite observation limits; actual C variants compile for
+the static/Direct and prefix/whole scopes. This changes observation transport,
+not the amount of native completion evidence.
+
+## Independent small CPU title result
+
+`mini_shader_memory.cpp` links the actual shared shader-admission helper,
+original tracked heap, registry, file reader and decoder, with no inference
+engine or Vulkan implementation. Six exact CPU zlib members come from the
+unchanged qualified archive. Duplicate CRC member names are resolved by their
+exported symbol and recorded occurrence. The 1,195,526-byte SELF
+`98401bd5b0d5474d83697d369f4865c16e0ef8e2e939fbb3b8050b0284c14d8c`
+passed real strong-module imports and six segment roundtrips.
+
+Case 2694 required ten fresh observations of at least **6,605** pages:
+5,195 measured worst full-title startup decline + 1,154 operational floor +
+256 separately declared metadata/variation pages. This was frozen after the
+reduction, not substituted for the previously insufficient 6,239-page state.
+Actual observations were 8,783–8,784. CPU Direct heap and Flexible metadata
+limits remained separate; no Direct payload was counted as kernel RAM.
+
+The physical title completed 169 shader read pairs and 340 stage observations:
+
+| Original CPU operation | Signed free-page change | Elapsed |
+| --- | ---: | ---: |
+| Complete external file verification | -26 | 1.440045080 s |
+| Registry and decoder initialization | 0 | 0.000605480 s |
+| Prior complete CPU proof | 0 | 0.000181059 s |
+
+The entire shader interval changed free pages 3,885 -> 3,863. The tracked heap
+remained 16 MiB. Matched idle/write/fsync/read-marker changes were -47/+44/-17/+4
+pages; these are sequential global changes, not a causal subtraction or evidence
+that removing monitoring is appropriate. The large old shader-correlated event
+was not reproduced by actual shader initialization.
+
+The small title still had a substantial wired component: 38,111 pages while
+active versus 32,801 after ordinary closure and restoration. This occurs
+without a linked inference engine or Vulkan implementation. It prices the
+native-title/runtime interval; it does not identify one proprietary allocator or
+prove that all of the difference belongs exclusively to the OS.
+
+Exact fastest SELF and all five original settings were restored. Native complete
+integrity of 15 restored/closed sources passed. Five post-close category snapshots
+observed 9,079–9,080 free pages, 71,460 inactive and 32,801 wired. No native owner,
+gateway, loaded model, GPU initialization or unknown completion remained.
+These point observations are not a later launch admission or a speed result.
+
+## Next PLE admission and execution
+
+The separate provisional PLE prelaunch calculation is **8,425 pages**:
+5,195 measured startup decline + the existing 2,974-page GPU startup target +
+256 variation pages. Require fresh consecutive admission and independently
+repeat the existing post-CPU target, operational floor, Direct/Flexible and
+ownership checks. This is an experimental cohort allowance, not a measured
+hardware minimum or a replacement for the regular 10,142-page full-model gate.
+Keep the conservative 1 GiB Direct / 64 MiB Flexible setup checks while measuring
+their actual peaks; they are not currently the blocking condition.
+
+The strict four-graph width-one smoke scope still needs implementation before
+execution. It must use its own schema, preserve F64/exact-F32/canary and Vulkan
+placement gates, and retain backing after uncertainty. It must not silently
+alter the frozen 208-graph benchmark. Surviving variants still need the finite
+comparison, same-model acceptance and production placement. No optimization or
+generation-speed improvement was adopted by these CPU diagnostics.

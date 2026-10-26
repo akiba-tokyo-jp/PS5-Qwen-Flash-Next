@@ -1,0 +1,329 @@
+{
+  "schema": "ps5-qwen-CPU-shader-memory-controls-v1",
+  "date": "2026-10-26",
+  "overall_optimization_plan_complete": false,
+  "precision": "Original BF16/F32 and F32 KV, unchanged",
+  "isolated_IO_controls": [
+    {
+      "reads": 169,
+      "returned_bytes": 8258588,
+      "durable_stage_records": 338,
+      "initial_free_pages": 6248,
+      "final_free_pages": 6246,
+      "minimum_observed_free_pages": 6230,
+      "intervals": {
+        "matched_idle": {
+          "signed_free_page_decline": 0,
+          "elapsed_ns": 726902080,
+          "intervals": 338
+        },
+        "write": {
+          "signed_free_page_decline": -1,
+          "elapsed_ns": 317450225,
+          "intervals": 338
+        },
+        "fsync": {
+          "signed_free_page_decline": 1,
+          "elapsed_ns": 303880134,
+          "intervals": 338
+        },
+        "pread": {
+          "signed_free_page_decline": 1,
+          "elapsed_ns": 99187927,
+          "intervals": 169
+        },
+        "SHA256": {
+          "signed_free_page_decline": 0,
+          "elapsed_ns": 54483038,
+          "intervals": 169
+        },
+        "quiet": {
+          "signed_free_page_decline": 1,
+          "elapsed_ns": 1001175438,
+          "intervals": 5
+        }
+      },
+      "signed_total_free_page_decline": 2,
+      "unclassified_signed_page_decline": 0,
+      "case": 2674,
+      "owned_CPU_Direct_bytes": 0,
+      "GPU_calls": 0
+    },
+    {
+      "reads": 169,
+      "returned_bytes": 8258588,
+      "durable_stage_records": 338,
+      "initial_free_pages": 6207,
+      "final_free_pages": 6188,
+      "minimum_observed_free_pages": 6172,
+      "intervals": {
+        "matched_idle": {
+          "signed_free_page_decline": 0,
+          "elapsed_ns": 725496611,
+          "intervals": 338
+        },
+        "write": {
+          "signed_free_page_decline": 0,
+          "elapsed_ns": 320030350,
+          "intervals": 338
+        },
+        "fsync": {
+          "signed_free_page_decline": 0,
+          "elapsed_ns": 306345106,
+          "intervals": 338
+        },
+        "pread": {
+          "signed_free_page_decline": 1,
+          "elapsed_ns": 100140764,
+          "intervals": 169
+        },
+        "SHA256": {
+          "signed_free_page_decline": 0,
+          "elapsed_ns": 58336973,
+          "intervals": 169
+        },
+        "quiet": {
+          "signed_free_page_decline": 1,
+          "elapsed_ns": 1001083385,
+          "intervals": 5
+        }
+      },
+      "signed_total_free_page_decline": 19,
+      "unclassified_signed_page_decline": 17,
+      "case": 2679,
+      "owned_CPU_Direct_bytes": 131072,
+      "GPU_calls": 0
+    }
+  ],
+  "CPU_title": {
+    "shader_read_pairs": 169,
+    "samples": 340,
+    "signed_page_changes": {
+      "matched_idle_pages": -47,
+      "journal_write_pages": 44,
+      "journal_fsync_pages": -17,
+      "read_marker_gap_pages": 4
+    },
+    "operation_deltas": {
+      "shader_file_initialization_before": {
+        "signed_free_page_change": -26,
+        "elapsed_ns": 1440045080,
+        "CPU_heap_mapped_before": 16777216,
+        "CPU_heap_mapped_after": 16777216
+      },
+      "shader_registry_initialization_before": {
+        "signed_free_page_change": 0,
+        "elapsed_ns": 605480,
+        "CPU_heap_mapped_before": 16777216,
+        "CPU_heap_mapped_after": 16777216
+      },
+      "shader_prior_proof_before": {
+        "signed_free_page_change": 0,
+        "elapsed_ns": 181059,
+        "CPU_heap_mapped_before": 16777216,
+        "CPU_heap_mapped_after": 16777216
+      }
+    },
+    "VM_before": {
+      "active": 24862,
+      "free": 3885,
+      "inactive": 71926,
+      "total": 138739,
+      "wired": 38066
+    },
+    "VM_after": {
+      "active": 24869,
+      "free": 3863,
+      "inactive": 71896,
+      "total": 138739,
+      "wired": 38111
+    },
+    "case": 2694,
+    "CPU_only": true,
+    "Vulkan_implementation_linked": false,
+    "model_engine_linked": false,
+    "SELF_bytes": 1195526,
+    "SELF_sha256": "98401bd5b0d5474d83697d369f4865c16e0ef8e2e939fbb3b8050b0284c14d8c",
+    "actual_imports_missing": 0,
+    "SELF_roundtrip_segments": 6,
+    "fresh_prelaunch_free_pages": [
+      8783,
+      8784
+    ],
+    "CPU_prelaunch_required_pages": 6605,
+    "operational_floor_pages": 1154,
+    "GPU_startup_target_pages": 2974,
+    "GPU_calls": 0,
+    "model_loaded": false,
+    "unknown_completion": false
+  },
+  "file_cache_controls": {
+    "eight_old_files_case": 2685,
+    "resident_pages": 160,
+    "known_original_integrity_case": 2686,
+    "free_page_gain": 158,
+    "stable_prefix_case": 2690,
+    "prefix_files": 347,
+    "prefix_reads": 694,
+    "prefix_free_before": 2420,
+    "prefix_free_after": 3790,
+    "whole_first_case": 2692,
+    "first_completed_files": 301,
+    "first_partially_read_files": 1,
+    "first_reads_returned": 13987,
+    "first_file_free_before": 3760,
+    "last_complete_file_free_after": 8171,
+    "first_case_known_returned_refusal": true,
+    "exact_first_refusing_predicate_not_logged": true,
+    "remaining_case": 2693,
+    "remaining_files": 46,
+    "remaining_reads_returned": 1344,
+    "remaining_free_before": 8155,
+    "remaining_free_after": 8856,
+    "completed_files_not_replayed": 301,
+    "original_digest_equality_claimed_for_current_digest_cohorts": false,
+    "payload_mutations": 0,
+    "cache_advice_calls": 0,
+    "Direct_allocations": 0,
+    "GPU_calls": 0,
+    "unknown_completion": false
+  },
+  "returned_scope_refusals": [
+    {
+      "case": 2677,
+      "reads": 0,
+      "allocations": 0,
+      "reason": "CPU quota precondition, no allocation attempted"
+    },
+    {
+      "case": 2678,
+      "reads": 0,
+      "allocations": 0,
+      "reason": "Zero CPU-context size is not proof of an empty physical pool"
+    },
+    {
+      "case": 2689,
+      "reads_returned": 1,
+      "live_mapping": 0,
+      "reason": "Historical container header differs; source excluded from remaining prefix cohort"
+    }
+  ],
+  "transport": {
+    "status_bytes": 512,
+    "growing_journal_polled": false,
+    "journal_retrieved_once_after_terminal": true,
+    "durable_IO_records_preserved": true,
+    "automatic_resubmissions": 0
+  },
+  "restored": {
+    "exact_fastest_SELF": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d",
+    "exact_original_settings": true,
+    "closed_sources_integrity_verified": 15,
+    "post_close_categories": [
+      {
+        "index": 0,
+        "free_first": 9080,
+        "free_last": 9080,
+        "active": 25398,
+        "inactive": 71460,
+        "wired": 32801,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      },
+      {
+        "index": 1,
+        "free_first": 9080,
+        "free_last": 9080,
+        "active": 25398,
+        "inactive": 71460,
+        "wired": 32801,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      },
+      {
+        "index": 2,
+        "free_first": 9080,
+        "free_last": 9080,
+        "active": 25398,
+        "inactive": 71460,
+        "wired": 32801,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      },
+      {
+        "index": 3,
+        "free_first": 9080,
+        "free_last": 9080,
+        "active": 25398,
+        "inactive": 71460,
+        "wired": 32801,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      },
+      {
+        "index": 4,
+        "free_first": 9079,
+        "free_last": 9079,
+        "active": 25399,
+        "inactive": 71460,
+        "wired": 32801,
+        "cache": 0,
+        "total": 138739,
+        "minimum": 898,
+        "reserved": 206,
+        "target": 2974,
+        "page_bytes": 16384,
+        "operational_floor_observed": 1
+      }
+    ],
+    "native_owners": 0,
+    "model_loaded": false,
+    "unknown_completion": false
+  },
+  "interpretation": {
+    "closed_file_component_reduced": true,
+    "large_tracked_service_RSS_leak_not_observed": true,
+    "shader_registry_large_decline_not_reproduced": true,
+    "native_wired_component_observed_without_model_or_Vulkan": true,
+    "precise_proprietary_allocator_identified": false,
+    "FTP_listing_causal_effect_proven": false,
+    "inactive_counted_as_available": false,
+    "new_generation_speed_result": false,
+    "new_production_optimization_adopted": false
+  },
+  "proposed_PLE_prelaunch": {
+    "measured_decline_pages": 5195,
+    "GPU_startup_target_pages": 2974,
+    "extra_pages": 256,
+    "total_pages": 8425,
+    "GPU_qualified": false,
+    "regular_full_model_gate_unchanged": 10142
+  },
+  "provenance": {
+    "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "CPU_codec_donor_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_caches_enabled": false,
+    "CI_runs": 0
+  }
+}
