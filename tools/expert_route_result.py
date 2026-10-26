@@ -3,7 +3,7 @@
 """Validate completed selected-ID metadata; never execute learned inference."""
 
 
-def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=None):
+def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=None,prefix_validation=None):
     expected=dict(schema='ps5-qwen-completed-expert-routes-v1',complete=True,capture_failed=False,
         pid=pid,run_id=run_id,cache_reset_before_request=cold,layers_per_process=48,experts=512,
         experts_per_token=10,cache_slots=53,maximum_records=4608,
@@ -22,6 +22,11 @@ def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=
         if width!=4:raise ValueError('Checkpoint routes require the qualified four-token path')
         validate_checkpoint(checkpoint_validation,result,pid=pid,run_id=run_id)
         tokens=checkpoint_process_geometry(result,checkpoint_validation)
+    if prefix_validation is not None:
+        from prefix_reuse_result import prefix_process_geometry
+        if checkpoint_validation is not None or width!=4:raise ValueError('Prefix routes require an independent four-token comparison')
+        if prefix_validation.get('pid')!=pid or prefix_validation.get('run_id')!=run_id:raise ValueError('Prefix route owner differs')
+        tokens=prefix_process_geometry(result,prefix_validation)
     calls=len(tokens);rows=record.get('records')
     if type(record.get('process_calls'))is not int or record['process_calls']!=calls or type(rows)is not list or len(rows)!=48*calls:
         raise ValueError('Expert routes do not cover the complete request')

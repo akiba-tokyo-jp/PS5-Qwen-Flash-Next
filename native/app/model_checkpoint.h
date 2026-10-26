@@ -27,6 +27,8 @@ public:
     void capture(const CheckpointApplicationState &,const float *logits,std::size_t count,
         const Admit &,const Stage &,const Complete &);
     const CheckpointApplicationState &restore(std::uint64_t epoch,const Stage &,const Complete &);
+    bool matches_complete_prompt(const std::vector<llama_token> &)const;
+    void rebind_complete_prompt(std::uint64_t epoch,const std::vector<llama_token> &);
     const std::vector<float> &logits()const;
     void discard();
     bool saved()const;

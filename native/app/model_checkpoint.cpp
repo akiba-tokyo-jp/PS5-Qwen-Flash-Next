@@ -74,6 +74,16 @@ const CheckpointApplicationState &ModelCheckpoint::restore(std::uint64_t epoch,c
     }catch(...){status_=Status::quarantined;throw;}
 }
 const std::vector<float> &ModelCheckpoint::logits()const {owner();check(status_==Status::saved,"No saved checkpoint logits exist");return data_->logits;}
+bool ModelCheckpoint::matches_complete_prompt(const std::vector<llama_token> &prompt)const {
+    owner();
+    return status_==Status::saved&&data_->application.ready&&data_->application.pending==LLAMA_TOKEN_NULL&&
+        data_->application.position==llama_pos(prompt.size())&&!prompt.empty()&&data_->application.prompt==prompt;
+}
+void ModelCheckpoint::rebind_complete_prompt(std::uint64_t epoch,const std::vector<llama_token> &prompt) {
+    owner();check(epoch>data_->application.request_epoch&&matches_complete_prompt(prompt),
+        "Prefix reuse requires an exact complete prompt and a later request on the same model/context");
+    data_->application.request_epoch=epoch;
+}
 void ModelCheckpoint::discard(){owner();status_=Status::empty;data_->application={};data_->metadata.clear();data_->logits.clear();data_->bytes=0;}
 bool ModelCheckpoint::saved()const{return status_==Status::saved;}
 bool ModelCheckpoint::quarantined()const{return status_==Status::quarantined;}

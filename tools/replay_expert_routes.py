@@ -12,17 +12,22 @@ from expert_route_result import validate_routes
 class RouteCache:
     """Current aged-LFU with optional decay or recency-only eviction.
 
-    All actual selections contain at least ten unique experts, so the native
-    soft floor is (53 - selected) // 48 == 0. Empty slots and slot-order ties
+    At the qualified 53 slots, the native soft floor is zero. Research capacities
+    use the same native layer-floor formula explicitly. Empty slots and slot-order ties
     follow the linked planner. Hits precede sorted misses; the whole current
     selected set stays protected throughout every fill.
     """
-    def __init__(self, decay=4096, recency_only=False):
+    def __init__(self, decay=4096, recency_only=False, slots=53, eviction_mode='lfu'):
         if type(decay) is not int or decay <= 0:
             raise ValueError('A positive layer-route decay interval is required')
         self.decay = decay
         self.recency_only = recency_only
-        self.keys = [-1] * 53
+        if eviction_mode not in('lfu','layer_distance','frequency_over_distance')or(eviction_mode!='lfu'and(slots!=53 or recency_only or decay!=4096)):
+            raise ValueError('Cyclic research policies retain the original 53-slot observation scope')
+        self.eviction_mode=eviction_mode
+        if type(slots)is not int or not 40<=slots<=160:
+            raise ValueError('Bounded metadata-only cache capacity required')
+        self.keys = [-1] * slots
         self.mapping = {}
         self.counts = [0] * (49 * 512)
         self.recency = [0] * len(self.counts)
@@ -63,12 +68,21 @@ class RouteCache:
             try:
                 slot = self.keys.index(-1)
             except ValueError:
+                floor=(len(self.keys)-len(selected))//48
+                residents=[0]*48
+                if floor:
+                    for resident in self.keys:residents[resident//512]+=1
                 eligible = [n for n, resident in enumerate(self.keys)
-                            if resident not in active]
+                            if resident not in active and
+                            (not floor or resident//512==layer or residents[resident//512]>floor)]
                 if not eligible:
                     raise ValueError('No victim preserves the entire selected set')
-                slot = min(eligible, key=lambda n: (self.counts[self.keys[n]],
-                                                   self.recency[self.keys[n]]))
+                def rank(n):
+                    key=self.keys[n];distance=(key//512-layer)%48 or 48
+                    if self.eviction_mode=='layer_distance':return(-distance,self.counts[key],self.recency[key])
+                    if self.eviction_mode=='frequency_over_distance':return(self.counts[key]/distance,self.recency[key])
+                    return(self.counts[key],self.recency[key])
+                slot = min(eligible,key=rank)
                 del self.mapping[self.keys[slot]]
             self.keys[slot] = key
             self.mapping[key] = slot

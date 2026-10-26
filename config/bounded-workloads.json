@@ -1,0 +1,16 @@
+{
+  "schema": "ps5-qwen-bounded-workload-proposals-v1",
+  "context_tokens": 256,
+  "maximum_rendered_prompt_tokens": 30,
+  "maximum_output_tokens": 22,
+  "prefill_tokens": 4,
+  "thinking": false,
+  "sampler": "greedy",
+  "console_execution_enabled": false,
+  "requests": [
+    {"name": "ja_dialogue", "prompt": "こんにちは。短く返事して。"},
+    {"name": "code_copy", "prompt": "Copy exactly: int x = 7;"},
+    {"name": "short_reasoning", "prompt": "Mia has 3 pens, then buys 2. How many?"},
+    {"name": "low_repetition", "prompt": "Name four unrelated objects."}
+  ]
+}

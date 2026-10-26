@@ -8,6 +8,13 @@ extern "C" {
 #include "hash/sha256/sha256.h"
 }
 namespace qwen_app {
+std::array<std::uint8_t,32> model_logit_fingerprint(const float *values,std::size_t count) {
+    static_assert(sizeof(float)==4,"Original logit fingerprints require F32");
+    if(!values||!count||count>262144)throw std::invalid_argument("Bounded completed original logits required");
+    sha256_t hash;sha256_init(&hash);
+    sha256_update(&hash,reinterpret_cast<const unsigned char *>(values),count*sizeof(float));
+    std::array<std::uint8_t,32> digest{};sha256_final(&hash,digest.data());return digest;
+}
 std::string sha256_metadata_bytes(const std::string & bytes) {
     if (bytes.empty() || bytes.size() > (1u << 20)) throw std::invalid_argument("Bounded integrity metadata is required");
     sha256_t hash; sha256_init(&hash); sha256_update(&hash, reinterpret_cast<const unsigned char *>(bytes.data()), bytes.size());

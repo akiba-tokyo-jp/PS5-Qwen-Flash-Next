@@ -32,6 +32,8 @@
 #include "model_integrity.h"
 #include "direct_integrity.h"
 #include "direct_metadata.h"
+#include "metadata_memory_probe.h"
+#include "metadata_memory_policy.h"
 #include "stage_memory_probe.h"
 #include "shader_assets.h"
 #include "prior_model_integrity.h"
@@ -71,6 +73,20 @@
 #include <sys/stat.h>
 
 using Json = nlohmann::json;
+static qwen_app::MetadataMemoryProbe metadata_memory;
+static std::size_t metadata_file_index=0;
+static void sample_metadata_memory(std::size_t phase) {
+    if(!metadata_memory.enabled())return;
+    qwen_app::MetadataMemoryProbe::Sample s;
+    s.memory=qwen_app::observe_native_system_memory();
+    struct ps5_heap_stats heap{};ps5_heap_stats(&heap);
+    const auto direct=qwen_app::native_direct_metadata_stats();
+    s.monotonic_ns=std::chrono::duration_cast<std::chrono::nanoseconds>(
+        qwen_app::ProfileClock::now().time_since_epoch()).count();
+    s.heap_mapped=heap.mapped_bytes;s.heap_peak=heap.peak_bytes;
+    s.direct_reads=direct.physical_reads;s.direct_bytes=direct.physical_bytes;
+    metadata_memory.record(metadata_file_index,phase,s);
+}
 // A required link symbol prevents accidental use of an unpatched eager loader.
 extern "C" bool llama_app_mmap_prefetch_disabled();
 extern "C" bool ggml_app_bounded_staging_enabled();
@@ -365,14 +381,17 @@ static ModelFileIdentity model_directory_identity(const std::string & path) {
 static void inspect_container(const std::string & path, bool first, qwen_app::ModelFootprint & footprint,
                               std::unordered_set<std::string> & names, std::uint64_t expected_bytes,
                               std::uint64_t physical_bytes) {
+    sample_metadata_memory(0);
     std::ifstream file(path, std::ios::binary|std::ios::ate);
     if(!expected_bytes || !physical_bytes || physical_bytes>expected_bytes || !file || file.tellg()<0 ||
        static_cast<std::uint64_t>(file.tellg())!=physical_bytes)
         throw std::runtime_error("Transferred model size differs from the admitted physical source");
+    sample_metadata_memory(1);
     footprint.mapped_files=qwen_app::checked_memory_sum(footprint.mapped_files,expected_bytes);
     std::unique_ptr<gguf_context, decltype(&gguf_free)> metadata(
         gguf_init_from_file(path.c_str(), {true, nullptr}), gguf_free);
     if (!metadata) throw std::runtime_error("GGUF metadata could not be read");
+    sample_metadata_memory(2);
     if(first) {
         const auto layers=gguf_find_key(metadata.get(),"qwen4exp.block_count");
         const auto mtp=gguf_find_key(metadata.get(),"qwen4exp.nextn_predict_layers");
@@ -410,6 +429,7 @@ static void inspect_container(const std::string & path, bool first, qwen_app::Mo
         if(std::strstr(name,".ffn_")&&std::strstr(name,"_exps.weight")&&gguf_get_tensor_ne(metadata.get(),i)[2]!=512)
             throw std::runtime_error("Every original expert must remain present");
     }
+    sample_metadata_memory(3);
     if (!first) return;
     const auto architecture = gguf_find_key(metadata.get(), "general.architecture");
     if (architecture < 0 || gguf_get_kv_type(metadata.get(), architecture) != GGUF_TYPE_STRING ||
@@ -1121,6 +1141,12 @@ int main(int argc, char ** argv) {
         };
         require_prior_metadata();
         const bool direct_metadata=policy.contains("native_direct_metadata");
+        if(policy.contains("native_metadata_memory_diagnostic")) {
+            qwen_app::require_metadata_memory_policy(policy);
+            if(!startup.first_generation_validation||receipt.at("files").size()!=qwen_app::MetadataMemoryProbe::files||display)
+                throw std::runtime_error("Metadata memory diagnostic requires the exact headless CPU-only scope");
+            metadata_memory.enable();
+        }
         if(direct_metadata) {
             const auto &candidate=policy.at("native_direct_metadata");
             if(!startup.first_generation_validation||!prior_integrity||!policy.contains("native_source_schedule")||
@@ -1185,6 +1211,7 @@ int main(int argc, char ** argv) {
             qwen_native_stage(completed.c_str());
             inspect_container(model_file(startup.model_receipt, file.at("path").get<std::string>()), first,
                 footprint,tensor_names,file_bytes,split_integrity?file_identities.back()[5]:file_bytes); first = false;
+            sample_metadata_memory(4);++metadata_file_index;
             if (startup.first_generation_validation) require_model_CPU_budget();
             mapping_files.push_back({model_file(startup.model_receipt, file.at("path").get<std::string>()),
                                      file.at("bytes").get<std::uint64_t>()});
@@ -1234,6 +1261,29 @@ int main(int argc, char ** argv) {
                     throw std::runtime_error("A split physical source changed after complete native verification");
         };
         require_unchanged_model();
+
+        if(metadata_memory.enabled()) {
+            if(!metadata_memory.complete())throw std::runtime_error("Every metadata phase must positively complete");
+            static const char *phases[]={"before_size","after_size","after_parser","after_tensor_scan","after_container_returned"};
+            Json rows=Json::array();
+            for(std::size_t i=0;i<metadata_memory.size();++i) {
+                const auto &s=metadata_memory.at(i);
+                rows.push_back({{"file_index",i/qwen_app::MetadataMemoryProbe::phases},
+                    {"phase",phases[i%qwen_app::MetadataMemoryProbe::phases]},
+                    {"monotonic_ns",s.monotonic_ns},{"kernel_free_pages",s.memory.kernel_free},
+                    {"Flexible_available_bytes",s.memory.flexible_available},{"CPU_heap_mapped_bytes",s.heap_mapped},
+                    {"CPU_heap_peak_bytes",s.heap_peak},{"cumulative_Direct_reads",s.direct_reads},
+                    {"cumulative_Direct_bytes",s.direct_bytes}});
+            }
+            write_fresh_report(startup.admission_report+".metadata-memory",{
+                {"schema","ps5-qwen-metadata-memory-result-v1"},{"pid",getpid()},
+                {"run_id",policy.at("native_first_generation_validation").at("run_id")},
+                {"complete",true},{"files",76},{"records",rows},{"all_original_integrity_and_footprint_checks_passed",true},
+                {"all_metadata_parsers_and_descriptors_returned",true},{"GPU_calls",0},{"source_workers",0},
+                {"virtual_source_calls",0},{"model_loaded",false},{"ordinary_OS_close_required",true}});
+            qwen_native_stage("metadata_memory_CPU_diagnostic_completed_GPU_not_started_waiting_for_ordinary_close");
+            for(;;)std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
 
         if (startup.model_validation || startup.first_generation_validation) {
             qwen_native_stage("source_virtual_CPU_memory_admission_before_probe GPU_not_started=1 model_loaded=0");
@@ -1736,8 +1786,30 @@ int main(int argc, char ** argv) {
             std::array<CompletedRouteEvidence,3> completed_expert_reports;
             qwen_app::CheckpointValidationStats completed_checkpoint_validation;
             const bool checkpoint_model_candidate=policy.contains("native_model_checkpoint_validation");
+            const bool prefix_model_validation=policy.contains("native_prefix_validation");
+            const bool prefix_reuse_enabled=prefix_model_validation&&policy.at("native_prefix_validation").at("prefix_reuse_enabled").get<bool>();
+            std::array<std::array<std::array<std::uint8_t,32>,33>,2> prefix_logit_fingerprints{};
+            std::array<std::uint32_t,2> prefix_logit_counts{};
+            std::array<qwen_app::PrefixReuseStats,2> completed_prefix_stats{};
+            qwen_app::CheckpointValidationStats prefix_allocation_stats;
+            std::uint32_t prefix_route_rows_compared=0;
             if(checkpoint_model_candidate&&(!expert_routes||prefill_tokens!=4))
                 throw std::runtime_error("Complete checkpoint comparison requires original route observation and prefill four");
+            if(prefix_model_validation&&(!expert_routes||prefill_tokens!=4||checkpoint_model_candidate))
+                throw std::runtime_error("Prefix validation requires original route observation and an independent saved state");
+            const auto admit_complete_checkpoint=[&](std::uint64_t bytes) {
+                require_model_CPU_budget();require_unchanged_model();
+                if(bytes<118038528u||bytes>142606336u)
+                    throw std::runtime_error("Complete original KV/recurrent/PLE snapshot exceeds its priced payload");
+                const auto rounded=(bytes+(2u<<20)-1)&~std::uint64_t((2u<<20)-1);
+                const auto stats=qwen_app::native_model_device_stats();
+                if(rounded>qwen_app::model_postload_device_budget-stats.live)
+                    throw std::runtime_error("Complete checkpoint cannot retain the existing aggregate device cap");
+                if(!hardware.gpu_total_bytes)throw std::runtime_error("Checkpoint requires an admitted native Direct pool identity");
+                const auto available=qwen_native_allocator_budget(*hardware.gpu_total_bytes);
+                if(available.available<rounded+memory_budget.direct_reserve||observed_system_headroom()<memory_budget.flexible_reserve)
+                    throw std::runtime_error("Complete checkpoint cannot retain observed Direct/Flexible/kernel reserve");
+            };
             engine->set_work_guard([&] {
                 trial.require_time();
                 require_model_CPU_budget();
@@ -1875,19 +1947,16 @@ int main(int argc, char ** argv) {
                     const auto external_performance = performance_snapshot(*engine);
                     const auto external_cache=engine->expert_cache_metrics();
                     if(checkpoint_model_candidate&&ordinal==2) {
-                        engine->enable_checkpoint_validation([&](std::uint64_t bytes) {
-                            require_model_CPU_budget();require_unchanged_model();
-                            if(bytes<118038528u||bytes>142606336u)
-                                throw std::runtime_error("Complete original KV/recurrent/PLE snapshot exceeds its priced payload");
-                            const auto rounded=(bytes+(2u<<20)-1)&~std::uint64_t((2u<<20)-1);
-                            const auto device_stats=qwen_app::native_model_device_stats();
-                            if(rounded>qwen_app::model_postload_device_budget-device_stats.live)
-                                throw std::runtime_error("Complete checkpoint cannot retain the existing aggregate device cap");
-                            if(!hardware.gpu_total_bytes)throw std::runtime_error("Checkpoint requires an admitted native Direct pool identity");
-                            const auto available=qwen_native_allocator_budget(*hardware.gpu_total_bytes);
-                            if(available.available<rounded+memory_budget.direct_reserve||observed_system_headroom()<memory_budget.flexible_reserve)
-                                throw std::runtime_error("Complete checkpoint cannot retain observed Direct/Flexible/kernel reserve");
-                        },qwen_app::completed_expert_route_cursor,qwen_app::compare_completed_expert_route_ranges);
+                        engine->enable_checkpoint_validation(admit_complete_checkpoint,
+                            qwen_app::completed_expert_route_cursor,qwen_app::compare_completed_expert_route_ranges);
+                    }
+                    if(prefix_model_validation) {
+                        if(ordinal==1&&prefix_reuse_enabled)engine->enable_prefix_reuse(admit_complete_checkpoint);
+                        engine->set_logits_observer([&,ordinal](const float *values,std::size_t count) {
+                            auto &next=prefix_logit_counts.at(ordinal-1);
+                            if(next>=33)throw std::runtime_error("Completed prefix logit trace exceeds its fixed request bound");
+                            prefix_logit_fingerprints.at(ordinal-1).at(next++)=qwen_app::model_logit_fingerprint(values,count);
+                        });
                     }
                     if(expert_routes){
                         if(!external_cache)throw std::runtime_error("Actual expert cache counters are required before route capture");
@@ -1917,6 +1986,14 @@ int main(int argc, char ** argv) {
                         sample_boundary_memory("external_token_after_publish");
                     }, observed_inference_stage);
                     engine->set_work_guard({});
+                    if(prefix_model_validation) {
+                        engine->set_logits_observer({});
+                        if(generated.stop_reason!="end_of_generation"||generated.metrics.prompt_tokens!=30||
+                           prefix_logit_counts.at(ordinal-1)!=generated.token_ids.size()+1)
+                            throw std::runtime_error("Prefix logit trace must include every original sampled state and EOG");
+                        completed_prefix_stats.at(ordinal-1)=engine->prefix_reuse_stats();
+                        prefix_allocation_stats=engine->checkpoint_validation_stats();
+                    }
                     if(checkpoint_model_candidate&&ordinal==2) {
                         completed_checkpoint_validation=engine->checkpoint_validation_stats();
                         const auto &c=completed_checkpoint_validation;
@@ -1961,6 +2038,27 @@ int main(int argc, char ** argv) {
                     if (display->failed()) throw std::runtime_error("The passive native display failed");
                     display->publish(snapshot);
                 }, [&](const auto & ready) { write_fresh_report(startup.admission_report + ".demo.ready", ready); });
+            if(prefix_model_validation) {
+                const auto &first=completed_prefix_stats[0],&second=completed_prefix_stats[1];
+                if(prefix_logit_counts[0]!=23||prefix_logit_counts[1]!=23||prefix_logit_fingerprints[0]!=prefix_logit_fingerprints[1]||
+                   first.enabled!=prefix_reuse_enabled||second.enabled!=prefix_reuse_enabled||first.request_hit||
+                   first.captures!=(prefix_reuse_enabled?1u:0u)||first.restores||
+                   second.captures!=(prefix_reuse_enabled?1u:0u)||second.restores!=(prefix_reuse_enabled?1u:0u)||
+                   second.request_hit!=prefix_reuse_enabled||second.last_reused_prompt_tokens!=(prefix_reuse_enabled?30u:0u)||
+                   demo.at("requests").at(0).at("token_ids")!=demo.at("requests").at(1).at("token_ids")||
+                   demo.at("requests").at(0).at("output_bytes")!=demo.at("requests").at(1).at("output_bytes"))
+                    throw std::runtime_error("Prefix continuation logits, emitted tokens or state reuse differ");
+                const auto &ordinary=completed_expert_reports[1],&repeated=completed_expert_reports[2];
+                const std::size_t offset=prefix_reuse_enabled?8*48:0;
+                if(!ordinary.complete||!repeated.complete||ordinary.rows.size()!=offset+repeated.rows.size())
+                    throw std::runtime_error("Prefix continuation route geometry differs");
+                for(std::size_t i=0;i<repeated.rows.size();++i) {
+                    const auto &a=ordinary.rows[i+offset],&b=repeated.rows[i];
+                    if(a.layer!=b.layer||a.tokens!=b.tokens||!std::equal(a.ids.begin(),a.ids.begin()+10*a.tokens,b.ids.begin()))
+                        throw std::runtime_error("Prefix continuation original expert selections differ");
+                }
+                prefix_route_rows_compared=std::uint32_t(repeated.rows.size());
+            }
             write_fresh_report(startup.admission_report + ".demo.result", demo);
             require_unchanged_model();
             require_model_CPU_budget();
@@ -1973,6 +2071,33 @@ int main(int argc, char ** argv) {
             const auto device_stats = qwen_app::native_model_device_stats();
             struct ps5_heap_stats final_heap{}; ps5_heap_stats(&final_heap);
             qwen_app::stop_native_model_sources();
+            if(prefix_model_validation) {
+                if(device_stats.live)throw std::runtime_error("Prefix snapshot owner has not positively retired with its context");
+                Json traces=Json::array(),requests=Json::array();
+                for(std::size_t ordinal=0;ordinal<2;++ordinal) {
+                    Json hashes=Json::array();
+                    for(std::uint32_t i=0;i<prefix_logit_counts[ordinal];++i) {
+                        std::string value;value.reserve(64);
+                        for(const auto byte:prefix_logit_fingerprints[ordinal][i]) {
+                            value.push_back("0123456789abcdef"[byte>>4]);value.push_back("0123456789abcdef"[byte&15]);
+                        }
+                        hashes.push_back(value);
+                    }
+                    traces.push_back(hashes);const auto &p=completed_prefix_stats[ordinal];
+                    requests.push_back({{"ordinal",ordinal+1},{"prefix_hit",p.request_hit},{"reused_prompt_tokens",p.last_reused_prompt_tokens},
+                        {"cumulative_captures",p.captures},{"cumulative_restores",p.restores},
+                        {"cumulative_capture_ns",p.capture_ns},{"cumulative_restore_ns",p.restore_ns}});
+                }
+                write_fresh_report(startup.admission_report+".prefix-reuse",{
+                    {"schema","ps5-qwen-exact-prefix-validation-result-v1"},{"pid",getpid()},{"run_id",request.id},{"complete",true},
+                    {"prefix_reuse_enabled",prefix_reuse_enabled},{"requests",requests},{"request_logit_SHA256",traces},
+                    {"full_F32_logit_arrays_compared",23},{"all_F32_logit_fingerprints_exact",true},
+                    {"original_route_rows_compared",prefix_route_rows_compared},{"all_original_expert_selections_exact",true},
+                    {"all_emitted_tokens_and_bytes_exact",true},{"emitted_once",true},{"additional_GPU_downloads",0},
+                    {"saved_state_payload_bytes",prefix_allocation_stats.maximum_payload_bytes},{"CPU_metadata_bytes",prefix_allocation_stats.maximum_metadata_bytes},
+                    {"device_ledger_peak_bytes",device_stats.peak},{"device_ledger_live_bytes",device_stats.live},
+                    {"all_model_source_and_snapshot_owners_retired",true},{"speedup_qualified",false}});
+            }
             if(checkpoint_model_candidate) {
                 const auto &c=completed_checkpoint_validation;
                 if(!c.completed||device_stats.live)throw std::runtime_error("Complete checkpoint owner has not positively retired with the model");

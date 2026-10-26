@@ -44,7 +44,7 @@ def validate_backpressure(record):
     return record
 
 
-def validate_performance(record, result, *, split_sources=False, checkpoint_validation=None):
+def validate_performance(record, result, *, split_sources=False, checkpoint_validation=None, prefix_validation=None):
     schema = record.get('schema')
     if type(split_sources) is not bool or (split_sources and schema not in (
             'ps5-qwen-completed-performance-v4', 'ps5-qwen-completed-performance-v5')):
@@ -115,6 +115,10 @@ def validate_performance(record, result, *, split_sources=False, checkpoint_vali
         from model_checkpoint_result import checkpoint_process_geometry
         if width!=4:raise ValueError('Checkpoint replay accounting requires the qualified four-token path')
         expected=len(checkpoint_process_geometry(result,checkpoint_validation))
+    if prefix_validation is not None:
+        from prefix_reuse_result import prefix_process_geometry
+        if checkpoint_validation is not None or width!=4:raise ValueError('Prefix and replay accounting require independent original four-token paths')
+        expected=len(prefix_process_geometry(result,prefix_validation))
     if delta['process_calls'] != expected or delta['process_ns'] <= 0:
         raise ValueError('Completed decode call count differs')
     if not delta['source_chunks'] or delta['source_chunks'] != delta['source_completed_windows']:
@@ -126,4 +130,5 @@ def validate_performance(record, result, *, split_sources=False, checkpoint_vali
         raise ValueError('Source intervals exceed their enclosing decode interval')
     return dict(delta=delta, measured_source_wall_fraction=source_ns / decode_ns,
                 GPU_compute_time_qualified=False,
-                deliberate_state_validation_replays_included=checkpoint_validation is not None)
+                deliberate_state_validation_replays_included=checkpoint_validation is not None,
+                prefix_reused_prompt_tokens=30 if prefix_validation is not None and prefix_validation['prefix_reuse_enabled']and result.get('ordinal')==2 else 0)
