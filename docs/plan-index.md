@@ -26,10 +26,13 @@ exists; the overall remaining plan is still in progress.
 The [subsequent phase/backing/postboot record](PLE-postboot-continuation-20261026.md)
 prices future same-SELF admission from both completed physical cases and records
 an actual-allocation borrower prototype. The owner then restarted the PS5.
-New-boot CPU discovery passed, but the native compatibility runtime is absent
-and its restoration awaits explicit authorization. New-boot free memory was
-3499 pages; recovery is not assumed. Old-boot shader evidence is historical,
-so a separate CPU-bootstrap path is prepared before another GPU comparison.
+The [current runtime/memory continuation](postboot-runtime-memory-20261027.md)
+records the subsequent instruction and successful one-entry restoration of the
+same runtime. New-boot discovery/full CPU admission passed. A process helper
+refused before inventory at 1060 free pages; a boot-bound passive screen observed
+1017 -> 1012, below operational floor 1154. No title/GPU or shader bootstrap ran.
+Authorization is no longer the blocker; current-boot shader proof and sufficient
+memory remain unqualified. Reusable pre-staging/current-CPU tools are implemented.
 
 The installed finite application is the qualified original-precision engine,
 SELF `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`

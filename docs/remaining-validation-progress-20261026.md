@@ -739,3 +739,20 @@ operation was rejected by automated approval pending explicit authorization.
 Current-boot shader requalification is implemented as a strict isolated CPU-only
 bootstrap; 104 admission refusals and three SDK units passed (2768). Physical
 shader bootstrap, PLE timing, original-model checks and adoption remain open.
+
+## Runtime restored; new cases screened before staging
+
+The [2026-10-27 runtime/memory record](postboot-runtime-memory-20261027.md)
+supersedes the earlier pending authorization. Following the owner's instruction,
+the exact existing runtime completed one entry. New-boot discovery 2771 and full
+CPU admission 2772 passed. Process-memory helper 2773 returned a known refusal
+at 1060 free pages before its inventory; no unknown completion remains. Passive
+screen 2776 used the existing shell, matched both boot observations and refused
+at 1017 -> 1012 free pages, below unchanged operational floor 1154. It made zero
+new ELF requests/title/GPU launches or kernel changes.
+
+New reusable pre-staging and current-CPU-header tools passed eight focused host
+test groups, actual completed-evidence authentication and two real native ABI
+compilations. They preserve all native admission and production requirements.
+No current-boot shader bootstrap, PLE timing, model comparison or adoption ran.
+All outstanding packages retain their incomplete status; CI remains disabled.

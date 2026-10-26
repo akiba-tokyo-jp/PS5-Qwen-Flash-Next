@@ -1764,3 +1764,24 @@ See docs/memory-plan-completion-20261026.md/.json. Use the preservation builder
 only with complete captured bytes and positive producer closure; it builds but
 never executes a console helper. Large transport readbacks precede required
 native preservation and fresh memory/ownership admission.
+
+## Current-boot runtime and passive admission (2026-10-27)
+
+The owner explicitly instructed continuation after the disclosed volatile
+kernel/ShellCore restoration. The same existing compatibility runtime has now
+positively completed one entry; missing permission is no longer its blocker.
+Discovery/full CPU admission were rebound to actual new-boot owners. Do not use
+the historical helper's embedded old-boot constants or old shader proof.
+See docs/postboot-runtime-memory-20261027.md for terminal evidence.
+
+The subsequent inventory refused before queries at 1060 free pages. The existing-
+shell screen observed 1017 -> 1012, below unchanged operational floor 1154.
+No current-boot title, GPU or shader bootstrap ran. No new SELF/settings were
+placed, no unknown completion remains and the overall plan is incomplete.
+Before preparing/transferring another native case, use the boot-bound passive
+screen; passing still requires every unchanged native owner, integrity, memory,
+pool and completion guard. Do not repeat cases under the same insufficient
+condition, lower reserves, force reclaim/reset or assume recovery. Current CPU
+headers may be generated only from authenticated complete same-boot evidence
+and the positively completed runtime receipt. Keep historical consumed cases
+unchanged and preserve original precision, driver/caches, production and CI.
