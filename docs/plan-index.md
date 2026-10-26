@@ -23,6 +23,14 @@ controller-file integrity, 7883 pages against 8108. Exact restoration completed.
 No new PLE speed or adoption result
 exists; the overall remaining plan is still in progress.
 
+The [subsequent phase/backing/postboot record](PLE-postboot-continuation-20261026.md)
+prices future same-SELF admission from both completed physical cases and records
+an actual-allocation borrower prototype. The owner then restarted the PS5.
+New-boot CPU discovery passed, but the native compatibility runtime is absent
+and its restoration awaits explicit authorization. New-boot free memory was
+3499 pages; recovery is not assumed. Old-boot shader evidence is historical,
+so a separate CPU-bootstrap path is prepared before another GPU comparison.
+
 The installed finite application is the qualified original-precision engine,
 SELF `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`
 (28,017,271 bytes). Original MOSS remains preserved as rollback. The latest

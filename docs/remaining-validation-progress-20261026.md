@@ -716,3 +716,26 @@ restoration (2754) and complete post-readback integrity of 15 sources (2755)
 passed. The full-model gate remains 10142; the PLE startup target remains 2974
 and operational floor 1154. The remaining uncontrolled VM component is still
 an attribution task, not a reason to assume recovery or lower those floors.
+
+## Phase pricing and new-boot prerequisite
+
+See the [phase/backing/postboot record](PLE-postboot-continuation-20261026.md).
+The offline calculator 2760 uses both completed same-SELF cases, taking separate
+phase maxima: CPU 7701 pages, pre-GPU 8190, with operational/startup floors and
+256 variation pages retained. Six manual test groups passed; no launch is
+admitted. Historical consumed thresholds/results are unchanged.
+
+The experimental split-bank borrower now exposes actual VkDeviceMemory identity
+through a synchronous guarded callback. Host/API-mock check 2763 and actual SDK
+compilation passed, including shared-allocation refusal. Production root guards,
+cache geometry, source scheduler and GPU model graphs are unchanged; actual
+independent backing and overlap still require their native fixture.
+
+The owner confirmed restart completion. New-boot discovery 2764 and read-only
+category/process observations 2766/2767 passed. The new census had 88 processes,
+zero native owners and 3499 free pages, so no recovery is claimed. The absent
+compatibility runtime has not been restored: the temporary kernel/ShellCore
+operation was rejected by automated approval pending explicit authorization.
+Current-boot shader requalification is implemented as a strict isolated CPU-only
+bootstrap; 104 admission refusals and three SDK units passed (2768). Physical
+shader bootstrap, PLE timing, original-model checks and adoption remain open.

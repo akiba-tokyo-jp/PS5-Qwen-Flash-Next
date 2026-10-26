@@ -75,6 +75,23 @@ int main(int argc,char **argv) {
     paired_scope["schema"]="ps5-qwen-PLE-slice-paired-policy-v2";paired_scope["rounds"]=8u;
     paired_scope["maximum_graphs"]=208u;paired_scope["widths"]={1u,2u,3u,4u};
     qwen_app::require_native_validation_policy(paired,"PLE-slice-validation",false);
+    auto bootstrap=v2;bootstrap["native_PLE_slice_validation"]["schema"]="ps5-qwen-PLE-slice-CPU-bootstrap-policy-v1";
+    bootstrap["native_shader_storage"]["verify_all_original_assets_before_Vulkan"]=true;
+    bootstrap["native_shader_storage"].erase("prior_native_CPU");
+    bootstrap["native_isolated_PLE_title"]={{"schema","ps5-qwen-isolated-PLE-title-v1"},{"model_loading_enabled",false},
+        {"source_workers",0u},{"CPU_only_startup_calibration",true},{"candidate_SELF_bytes",23101706u},
+        {"candidate_SELF_sha256",h},{"shader_report_run_id",run}};
+    qwen_app::require_native_validation_policy(bootstrap,"PLE-slice-validation",false);
+    if(qwen_app::PLE_slice_prior_proof(bootstrap)||!qwen_app::PLE_slice_CPU_bootstrap(bootstrap))return 20;
+    const auto reject_bootstrap=[&](const std::function<void(nlohmann::json&)> &edit){auto p=bootstrap;edit(p);try{qwen_app::require_native_validation_policy(p,"PLE-slice-validation",false);return false;}catch(...){++refused;return true;}};
+    for(const auto &item:bootstrap.at("native_isolated_PLE_title").items())
+        if(!reject_bootstrap([&](auto &p){p["native_isolated_PLE_title"].erase(item.key());}))return 21;
+    if(!reject_bootstrap([](auto &p){p["native_isolated_PLE_title"]["CPU_only_startup_calibration"]=false;})||
+       !reject_bootstrap([](auto &p){p["native_isolated_PLE_title"]["shader_report_run_id"]="bad";})||
+       !reject_bootstrap([](auto &p){p["native_isolated_PLE_title"]["candidate_SELF_sha256"]="bad";})||
+       !reject_bootstrap([](auto &p){p["native_isolated_PLE_title"]["source_workers"]=1u;})||
+       !reject_bootstrap([](auto &p){p["native_shader_storage"]["verify_all_original_assets_before_Vulkan"]=false;})||
+       !reject_bootstrap([&](auto &p){p["native_shader_storage"]["prior_native_CPU"]=storage.at("prior_native_CPU");}))return 22;
     std::array<std::uint64_t,10> identity{{1,2,0100644,0,0,63488000,0,0,0,0}};
     qwen_app::require_PLE_source_identity(identity,63488000);
     for(const auto &item:{std::pair<unsigned,std::uint64_t>{1,0},{2,0100666},{2,0100664},{2,0120777},{5,1}}) {

@@ -152,6 +152,7 @@ void prepare_PLE_source_owner(const Json &policy) {
 }
 Json admit_PLE_slice_fixture(const Json &policy,const std::string &journal) {
     require_PLE_slice_policy(policy,false);
+    check(!PLE_slice_CPU_bootstrap(policy),"CPU-only shader bootstrap cannot initialize a GPU fixture");
     const bool smoke=PLE_slice_smoke(policy),explicit_source=PLE_slice_explicit_source(policy);
     check(qwen_native_gpu_frontend_linked()&&ggml_app_bounded_device_buffers_hooks()&&ggml_app_bounded_workspace_hooks(),
         "PLE fixture requires the actual native frontend and bounded device/workspace hooks");

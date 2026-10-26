@@ -88,19 +88,23 @@ int main(int argc,char **argv) {
            policy.at("allowed_modes")!=Json::array({"PLE-slice-validation"}))
             throw std::runtime_error("Isolated PLE title requires its exact headless smoke mode");
         const auto &binding=policy.at("native_isolated_PLE_title");
-        if(!binding.is_object()||binding.size()!=6||binding.at("schema")!="ps5-qwen-isolated-PLE-title-v1"||
+        const bool bootstrap=qwen_app::PLE_slice_CPU_bootstrap(policy);
+        if(!binding.is_object()||binding.size()!=(bootstrap?7u:6u)||binding.at("schema")!="ps5-qwen-isolated-PLE-title-v1"||
            binding.at("model_loading_enabled")!=false||binding.at("source_workers")!=0u||
            !binding.at("CPU_only_startup_calibration").is_boolean()||
            !binding.at("candidate_SELF_bytes").is_number_unsigned()||!binding.at("candidate_SELF_bytes").get<std::uint64_t>()||
            binding.at("candidate_SELF_bytes")>(32u<<20))
             throw std::runtime_error("Exact isolated PLE SELF and calibration scope required");
+        const auto shader_run=bootstrap?binding.at("shader_report_run_id").get<std::string>():report;
+        if(bootstrap&&report!="/app0/qwen-runtime/plan-"+shader_run+".json")
+            throw std::runtime_error("CPU-only shader bootstrap requires its exact fresh plan report");
         qwen_app::enable_native_memory_backpressure();require_model_CPU_budget();
         qwen_app::verify_native_startup_file_direct("/app0/eboot.bin",binding.at("candidate_SELF_bytes").get<std::uint64_t>(),
             binding.at("candidate_SELF_sha256").get<std::string>(),30);
         qwen_native_stage("isolated_PLE_complete_SELF_SHA256_passed_GPU_not_started");observe("SELF_integrity_completed");
         qwen_app::admit_cpu_runtime(qwen_native_stage);qwen_app::inspect_vulkan_globals();
         qwen_native_stage("PLE_slice_before_shared_shader_CPU_admission GPU_not_started=1");
-        admit_shader_storage_CPU(policy,report,true,Json(report));
+        admit_shader_storage_CPU(policy,report,true,Json(shader_run));
         qwen_native_stage("PLE_slice_shared_shader_CPU_admission_completed GPU_not_started=1");observe("CPU_shader_completed");
         source_metadata["shader_resource"]=source_identity_diagnostic(policy.at("native_shader_storage").at("external_file").at("path").get<std::string>());
         if(qwen_app::PLE_slice_explicit_source(policy))source_metadata["qualified_source_guard"]=

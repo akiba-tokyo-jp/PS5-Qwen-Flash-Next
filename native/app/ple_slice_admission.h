@@ -7,16 +7,19 @@
 #include <string>
 #include <utility>
 namespace qwen_app {
+inline bool PLE_slice_CPU_bootstrap(const nlohmann::json &policy) {
+    return policy.at("native_PLE_slice_validation").at("schema")=="ps5-qwen-PLE-slice-CPU-bootstrap-policy-v1";
+}
 inline bool PLE_slice_smoke(const nlohmann::json &policy) {
     const auto &schema=policy.at("native_PLE_slice_validation").at("schema");
-    return schema=="ps5-qwen-PLE-slice-smoke-policy-v1"||schema=="ps5-qwen-PLE-slice-smoke-policy-v2";
+    return schema=="ps5-qwen-PLE-slice-smoke-policy-v1"||schema=="ps5-qwen-PLE-slice-smoke-policy-v2"||PLE_slice_CPU_bootstrap(policy);
 }
 inline bool PLE_slice_explicit_source(const nlohmann::json &policy) {
     const auto &schema=policy.at("native_PLE_slice_validation").at("schema");
-    return schema=="ps5-qwen-PLE-slice-smoke-policy-v2"||schema=="ps5-qwen-PLE-slice-paired-policy-v2";
+    return schema=="ps5-qwen-PLE-slice-smoke-policy-v2"||schema=="ps5-qwen-PLE-slice-paired-policy-v2"||PLE_slice_CPU_bootstrap(policy);
 }
 inline bool PLE_slice_prior_proof(const nlohmann::json &policy) {
-    return PLE_slice_smoke(policy)||PLE_slice_explicit_source(policy);
+    return !PLE_slice_CPU_bootstrap(policy)&&(PLE_slice_smoke(policy)||PLE_slice_explicit_source(policy));
 }
 inline void require_PLE_source_identity(const std::array<std::uint64_t,10> &identity,std::uint64_t bytes) {
     const auto mode=identity[2];
@@ -46,6 +49,18 @@ inline void require_PLE_slice_policy(const nlohmann::json &policy,bool display) 
     check(s.is_object()&&s.size()==(prior?12u:11u)&&s.at("schema")=="ps5-qwen-shader-storage-policy-v1"&&s.at("enabled")==true&&
         s.at("verify_all_original_assets_before_Vulkan")==!prior&&s.at("model_and_shader_precision_unchanged")==true&&
         s.at("persistent_caches_enabled")==false&&s.contains("prior_native_CPU")==prior);
+    if(PLE_slice_CPU_bootstrap(policy)) {
+        const auto &binding=policy.at("native_isolated_PLE_title");
+        check(binding.is_object()&&binding.size()==7&&binding.at("schema")=="ps5-qwen-isolated-PLE-title-v1"&&
+            binding.at("CPU_only_startup_calibration")==true&&binding.at("model_loading_enabled")==false&&
+            binding.at("source_workers").is_number_unsigned()&&binding.at("source_workers")==0u&&
+            binding.at("candidate_SELF_bytes").is_number_unsigned()&&binding.at("candidate_SELF_bytes")>0&&
+            binding.at("candidate_SELF_bytes")<=(32u<<20));
+        const auto run=binding.at("shader_report_run_id").get<std::string>();
+        check(run.size()==32&&run.find_first_not_of("0123456789abcdef")==std::string::npos);
+        const auto candidate=binding.at("candidate_SELF_sha256").get<std::string>();
+        check(candidate.size()==64&&candidate.find_first_not_of("0123456789abcdef")==std::string::npos);
+    }
     const auto hash=[&](const Json &value){check(value.is_string());const auto h=value.get<std::string>();check(h.size()==64&&h.find_first_not_of("0123456789abcdef")==std::string::npos);return h;};
     (void)hash(s.at("registry_sha256"));
     if(prior) {
