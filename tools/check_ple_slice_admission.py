@@ -41,6 +41,10 @@ def main():
         commands.append(command)
     text=(ROOT/'native/app/native_main.cpp').read_text();branch=text[text.index('if(startup.palette_validation||startup.vector_bank_validation||startup.device_state_validation'):text.index('if (setenv("MESA_SHADER_CACHE_DISABLE", "true", 1) ||')]
     assert branch.index('admit_native_startup_memory()')<branch.index('admit_shader_storage_CPU(')<branch.index('native_resources_started=true')<branch.index('admit_PLE_slice_fixture(')<branch.index('qwen_native_driver_complete()')<branch.index('write_fresh_report(')
+    fixture_source=(ROOT/'native/app/ple_slice_admission.cpp').read_text()
+    fixture_entry=fixture_source[fixture_source.index('Json admit_PLE_slice_fixture('):]
+    assert fixture_entry.index('check(!PLE_slice_CPU_bootstrap(policy)')<fixture_entry.index('qwen_native_gpu_initialize(')
+    assert text.index('CPU-only PLE shader bootstrap requires the isolated CPU entry point')<text.index('native_resources_started=true')
     fixed=[record(f)for f in files];env=dict(os.environ,PATH=str(host)+os.pathsep+os.environ.get('PATH',''));controls=None
     for i,c in enumerate(commands):
         r=subprocess.run(c,capture_output=True,env=env,timeout=180);(a.out/f'{i}.private.log').write_bytes(r.stdout+r.stderr)
