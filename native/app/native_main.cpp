@@ -720,13 +720,20 @@ int main(int argc, char ** argv) {
             qwen_native_driver_complete();
             if(startup.vector_bank_validation||startup.device_state_validation||startup.PLE_slice_validation) {
                 const auto shaders=qwen_app::native_shader_asset_stats();
+                const bool prior_PLE=startup.PLE_slice_validation&&qwen_app::PLE_slice_prior_proof(policy);
+                const auto current_CPU=prior_PLE?0u:shaders.assets;
                 if(!shaders.initialized||shaders.failed||shaders.active_lease||shaders.external_file.read_pending||
-                   !shaders.external_file.verified||shaders.CPU_verified_assets!=shaders.assets||
+                   !shaders.external_file.verified||shaders.CPU_verified_assets!=current_CPU||
                    shaders.decoded_calls+shaders.raw_calls<shaders.CPU_verified_assets||
                    ((startup.vector_bank_validation||startup.PLE_slice_validation)&&shaders.decoded_calls+shaders.raw_calls==shaders.CPU_verified_assets)||
                    shaders.external_file.frame_requests!=shaders.decoded_calls+shaders.raw_calls)
                     throw std::runtime_error("Vector bank shader inputs lack complete CPU and per-use retirement");
                 report["shader_CPU_verified_assets"]=shaders.CPU_verified_assets;
+                if(prior_PLE) {
+                    report["prior_all_shader_CPU_report_SHA256"]=policy.at("native_shader_storage").at("prior_native_CPU").at("report_sha256");
+                    report["prior_all_shader_CPU_assets"]=shaders.assets;
+                    report["current_complete_external_file_SHA256_checked"]=true;
+                }
                 report["shader_module_inputs_after_CPU_verification"]=shaders.decoded_calls+shaders.raw_calls-shaders.CPU_verified_assets;
                 report["all_used_shader_inputs_SHA256_checked"]=true;
                 report["all_shader_input_leases_returned"]=true;

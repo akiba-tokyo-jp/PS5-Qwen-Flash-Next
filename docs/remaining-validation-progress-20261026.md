@@ -21,8 +21,9 @@ closed-file cache component. Registry/decoder initialization changed free pages
 by zero; the entire shader interval lost 22 pages. Normal close, exact fastest
 restoration and native integrity of 15 closed sources passed. Post-close free
 pages were 9,079–9,080. No GPU was initialized and no new decode speed is claimed.
-The four-graph PLE smoke, its finite GPU comparison and all other outstanding
-packages remain incomplete; see the [phase-specific next step](PLE-memory-first-plan-20261026.md#next-ple-admission-and-execution).
+The subsequent four-graph PLE smoke passed exact physical GPU checks (2741).
+The finite timing comparison and other outstanding packages remain incomplete;
+see the [latest physical record](PLE-smoke-startup-20261026.md).
 
 ## CPU batch metadata
 
@@ -683,3 +684,35 @@ cannot hold an extra expert with the current qualified three-bank ownership and
 dispatch geometry. A hypothetical byte-storage view passed host geometry only,
 with a very small route-traffic benefit. See the plan for each remaining
 prerequisite and adoption gate.
+
+## PLE source owner qualified before Vulkan
+
+The [four-graph/source-owner record](PLE-smoke-startup-20261026.md) preserves the
+full-title startup refusal, a subsequent pre-driver source-identity refusal and
+their exact restoration. Native CPU-only case 2738 now completes current source
+SHA256, read-only identity and the original two-read prerequisite using the same
+bounded window. It confirms shader-resource mode 0777 is unsuitable for that
+owner while the explicitly qualified source is 0644; no guard or permission was
+relaxed. Four CPU phase observations retain the operational/startup reserves,
+16 MiB heap and zero libc fallbacks. Normal close and exact fastest/settings
+restoration completed. Controller-upload residency is another measured
+contributor and is now included in post-use integrity.
+
+Ninety-one policy/identity refusals, three SDK units, ten result-review tests,
+actual native imports/dispatch and six SELF roundtrips passed. The v2 four-graph
+and 208-graph scopes remain experimental. The subsequent four-graph physical
+case 2741 passed exact F32/F64 numerical, canary and positive retirement checks;
+ordinary close and exact fastest/settings restoration passed. See the linked
+record for phase observations and preservation evidence. The paired speed comparison,
+original-model acceptance and production adoption are still outstanding, as are
+the other remaining packages above. Source qualification is not overall plan
+completion or a new generation-speed result.
+
+The paired-v2 preparation (2748) reused the same isolated SELF. Two distinct
+prelaunch metadata controls returned 7858 / 7883 pages versus 8108; the latter
+followed measured completed-controller residency and whole-file integrity.
+No title or GPU launched, and no timing result exists. Exact fastest/settings
+restoration (2754) and complete post-readback integrity of 15 sources (2755)
+passed. The full-model gate remains 10142; the PLE startup target remains 2974
+and operational floor 1154. The remaining uncontrolled VM component is still
+an attribution task, not a reason to assume recovery or lower those floors.

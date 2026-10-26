@@ -6,6 +6,7 @@
 #include "mapped_source_bridge.h"
 #include "native_gpu.h"
 #include "profile_clock.h"
+#include "direct_integrity.h"
 #include "system_memory.h"
 #include "ggml-alloc.h"
 #include "ggml-backend.h"
@@ -24,6 +25,8 @@
 extern "C" void qwen_native_stage(const char *);
 namespace qwen_app { namespace {
 using Json=nlohmann::json;
+struct SourceAdmission {bool attempted=false,ready=false,consumed=false;std::thread::id producer;std::string binding;};
+SourceAdmission source_admission;
 constexpr std::size_t channels=PLE_fixture_channels,guard=PLE_fixture_guard,maximum_payload=PLE_fixture_payload_cap;
 void check(bool ok,const char *text){if(!ok)throw std::runtime_error(text);}
 std::uint64_t now(){return std::chrono::duration_cast<std::chrono::nanoseconds>(ProfileClock::now().time_since_epoch()).count();}
@@ -120,29 +123,50 @@ struct PLEFixture {
     }
 };
 }
-Json admit_PLE_slice_fixture(const Json &policy,const std::string &journal) {
+void prepare_PLE_source_owner(const Json &policy) {
     require_PLE_slice_policy(policy,false);
-    check(qwen_native_gpu_frontend_linked()&&ggml_app_bounded_device_buffers_hooks()&&ggml_app_bounded_workspace_hooks(),
-        "PLE fixture requires the actual native frontend and bounded device/workspace hooks");
-    check(!setenv("MESA_SHADER_CACHE_DISABLE","true",1),"PLE fixture requires disabled persistent caches");
-    for(const auto *key:{"GGML_VK_BOUNDED_STAGING","GGML_VK_DISABLE_ASYNC","GGML_VK_SERIALIZE_SUBMISSIONS","GGML_VK_MAX_NODES_PER_SUBMIT"})
-        check(!setenv(key,"1",1),"PLE fixture requires the existing serialized Vulkan profile");
-    // Reuse the existing source-owner prerequisite of the device ledger. The
-    // already CPU-qualified shader resource supplies only its bounded preflight;
-    // no model source, new worker, relaxed guard or source-free ledger is added.
-    const auto &file=policy.at("native_shader_storage").at("external_file");const auto path=file.at("path").get<std::string>();
+    check(!source_admission.attempted,"PLE source owner cannot prepare twice or retry");
+    source_admission.attempted=true;source_admission.producer=std::this_thread::get_id();
+    source_admission.binding=Json::array({policy.at("native_PLE_slice_validation"),policy.at("native_shader_storage")}).dump();
+    const bool explicit_source=PLE_slice_explicit_source(policy);
+    const auto &file=explicit_source?policy.at("native_PLE_slice_validation").at("source_guard"):
+        policy.at("native_shader_storage").at("external_file");
+    const auto path=file.at("path").get<std::string>();
     const int fd=open(path.c_str(),O_RDONLY|O_NOFOLLOW|O_DIRECT);check(fd>=0,"PLE fixture source guard descriptor refused");
     struct stat s{};check(!fstat(fd,&s)&&S_ISREG(s.st_mode)&&s.st_size>0&&std::uint64_t(s.st_size)==file.at("bytes"),"PLE fixture source guard identity differs");
     const std::array<std::uint64_t,10> identity{{std::uint64_t(s.st_dev),std::uint64_t(s.st_ino),std::uint64_t(s.st_mode),
         std::uint64_t(s.st_uid),std::uint64_t(s.st_gid),std::uint64_t(s.st_size),std::uint64_t(s.st_mtim.tv_sec),
         std::uint64_t(s.st_mtim.tv_nsec),std::uint64_t(s.st_ctim.tv_sec),std::uint64_t(s.st_ctim.tv_nsec)}};
+    require_PLE_source_identity(identity,file.at("bytes").get<std::uint64_t>());
     check(!close(fd),"PLE fixture source guard descriptor close refused");
+    if(explicit_source) {
+        qwen_native_stage("PLE_source_whole_integrity_before_GPU_not_started");
+        verify_native_startup_file_direct(path,file.at("bytes").get<std::uint64_t>(),file.at("sha256").get<std::string>(),30);
+        qwen_native_stage("PLE_source_whole_integrity_returned_GPU_not_started");
+    }
     start_native_model_sources({{path,identity[5],identity}});
+    const auto source=native_model_source_stats();
+    check(source.physical_read_calls==2&&!source.worker_read_ns,"PLE CPU source preflight did not return its two bounded reads");
+    source_admission.ready=true;
+    qwen_native_stage("PLE_source_owner_CPU_preflight_completed_GPU_not_started");
+}
+Json admit_PLE_slice_fixture(const Json &policy,const std::string &journal) {
+    require_PLE_slice_policy(policy,false);
+    const bool smoke=PLE_slice_smoke(policy),explicit_source=PLE_slice_explicit_source(policy);
+    check(qwen_native_gpu_frontend_linked()&&ggml_app_bounded_device_buffers_hooks()&&ggml_app_bounded_workspace_hooks(),
+        "PLE fixture requires the actual native frontend and bounded device/workspace hooks");
+    check(!setenv("MESA_SHADER_CACHE_DISABLE","true",1),"PLE fixture requires disabled persistent caches");
+    for(const auto *key:{"GGML_VK_BOUNDED_STAGING","GGML_VK_DISABLE_ASYNC","GGML_VK_SERIALIZE_SUBMISSIONS","GGML_VK_MAX_NODES_PER_SUBMIT"})
+        check(!setenv(key,"1",1),"PLE fixture requires the existing serialized Vulkan profile");
+    if(!source_admission.attempted)prepare_PLE_source_owner(policy);
+    check(source_admission.ready&&!source_admission.consumed&&source_admission.producer==std::this_thread::get_id()&&
+        source_admission.binding==Json::array({policy.at("native_PLE_slice_validation"),policy.at("native_shader_storage")}).dump(),"PLE requires its exact completed CPU source owner");
+    source_admission.consumed=true;
     (void)admit_native_startup_memory();qwen_native_gpu_initialize(journal.c_str());qwen_native_driver_begin();
     llama_backend_init();enforce_native_model_compute_limits();
     auto *backend=ggml_backend_vk_init(0);check(backend&&ggml_backend_is_vk(backend),"PLE Vulkan backend unavailable");
     Json widths=Json::array();unsigned total_graphs=0;double maximum_error=0;const auto begun=now();
-    for(unsigned width=1;width<=4;++width) {
+    for(unsigned width=1;width<=(smoke?1u:4u);++width) {
         check(now()-begun<120000000000ull,"PLE finite cohort deadline exceeded before preparation");
         // Raw ownership deliberately survives exceptions. The ordinary OS close
         // remains responsible for all failed or unknown GPU/resource completion.
@@ -151,22 +175,22 @@ Json admit_PLE_slice_fixture(const Json &policy,const std::string &journal) {
             check(now()-begun<120000000000ull,"PLE finite cohort deadline exceeded; backing retained");
             warmups.push_back({{"mode",mode},{"ordinal",mode+1},{"graph_completion_and_readback_ns",f->run(mode)}});
         }
-        for(unsigned candidate=1;candidate<=3;++candidate)for(unsigned round=0;round<8;++round)for(unsigned arm=0;arm<2;++arm) {
+        for(unsigned candidate=1;candidate<=3;++candidate)for(unsigned round=0;round<(smoke?0u:8u);++round)for(unsigned arm=0;arm<2;++arm) {
             check(now()-begun<120000000000ull,"PLE finite cohort deadline exceeded; backing retained");
             const unsigned mode=(round+arm)%2?candidate:0;
             const auto ordinal=f->completed_graphs+1;const auto elapsed=f->run(mode);
             batches.push_back({{"candidate",candidate},{"round",round},{"mode",mode},{"ordinal",ordinal},{"graph_completion_and_readback_ns",elapsed}});
         }
-        check(f->completed_graphs==52,"PLE width cohort is incomplete");
+        check(f->completed_graphs==(smoke?4u:52u),"PLE width cohort is incomplete");
         f->close_completed();total_graphs+=f->completed_graphs;maximum_error=std::max(maximum_error,f->maximum_error);
         widths.push_back({{"tokens",width},{"graph_construction_ns",f->construction_ns},{"CONT_nodes",f->copy_nodes},{"warmups",warmups},{"batches",batches},
             {"raw_device_buffer_cap_bytes",maximum_payload},{"all_operations_on_single_Vulkan_backend",true}});
         delete f;
     }
     ggml_backend_free(backend);qwen_native_driver_checkpoint();const auto ledger=native_model_device_stats();
-    check(total_graphs==208&&!ledger.live,"PLE fixture GPU/ledger cohort did not complete");
+    check(total_graphs==(smoke?4u:208u)&&!ledger.live,"PLE fixture GPU/ledger cohort did not complete");
     const auto source=native_model_source_stats();stop_native_model_sources();
-    return {{"schema","ps5-qwen-PLE-slice-fixture-v1"},{"widths",widths},{"GPU_graphs",total_graphs},
+    return {{"schema",smoke?"ps5-qwen-PLE-slice-smoke-v1":explicit_source?"ps5-qwen-PLE-slice-paired-fixture-v2":"ps5-qwen-PLE-slice-fixture-v1"},{"widths",widths},{"GPU_graphs",total_graphs},
         {"maximum_absolute_error",maximum_error},{"F64_reference_passed",true},{"all_F32_outputs_bit_exact",true},
         {"input_and_output_canaries_intact",true},{"original_BF16_to_F32_casts_preserved",true},
         {"timed_scope","graph_compute_synchronization_driver_checkpoints_and_output_readback"},
@@ -175,6 +199,7 @@ Json admit_PLE_slice_fixture(const Json &policy,const std::string &journal) {
         {"device_ledger_live_bytes",ledger.live},{"model_loaded",false},{"source_preflight_read_calls",source.physical_read_calls},
         {"source_preflight_read_bytes",source.physical_read_bytes},{"existing_source_scratch_bytes",model_read_window},
         {"source_worker_read_ns",source.worker_read_ns},
+        {"source_guard_current_full_SHA256_checked",explicit_source},{"source_guard_bytes_not_used_for_numerics",true},
         {"driver_final_epoch_retirement_requires_caller",true}};
 }
 }

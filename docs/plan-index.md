@@ -15,6 +15,14 @@ in [AGENTS.md](../AGENTS.md).
 
 ## Current production baseline
 
+The subsequent [PLE four-graph implementation and startup result](PLE-smoke-startup-20261026.md)
+records exact fastest/settings restoration, the separately linked weightless
+title and four exact physical GPU graphs with positive retirement. The paired
+208-graph case subsequently refused before launch at 7858 and, after measured
+controller-file integrity, 7883 pages against 8108. Exact restoration completed.
+No new PLE speed or adoption result
+exists; the overall remaining plan is still in progress.
+
 The installed finite application is the qualified original-precision engine,
 SELF `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`
 (28,017,271 bytes). Original MOSS remains preserved as rollback. The latest
@@ -167,7 +175,7 @@ original BF16/F32 is preserved.
 | Repeated-prefix state reuse | Default-off consumer implemented and host-qualified; same-SELF A1 case 2601 returned a known pre-backend memory refusal, with zero GPU/model execution. [Consumer and refusal evidence](remaining-validation-progress-20261026.md#exact-prefix-consumer-and-reduced-headroom-experiment) | Diagnose the metadata-phase kernel decline before continuing the finite A/B then B/A cohort. Restore 2608/preserve 2609 passed. The owner's separately recorded experimental gate does not change production defaults; no prefix speed result exists |
 | Zero-copy expert-major layout or vectored Direct I/O | Native bank numerics/retirement passed. Compact-record bank screen: 1.252x source / 1.183x total. Actual original-file comparison: 1.040x / 1.037x, only 7/8 rounds faster; inconclusive and unadopted. [Results and scope](remaining-validation-progress-20261026.md#compact-records-and-actual-production-source-layout) | No migration or integration from the failed production-shaped screen. Coalescing/fallback, partial-pack coverage and whole-model results remain unqualified; do not infer tokens/s from same-file fixtures |
 | Larger useful cache or shorter allocation lifetimes | Partial host screen: packed 54 slots save 0.049% traffic; conservative 128-slot expansion saves 4.899% for 706.641 MiB extra banks and exceeds the existing cache cap. Same-53 cyclic eviction candidates failed the host screen. [Scope](remaining-validation-progress-20261026.md#cache-capacity-feasibility) | Wider peak-live ledger and metadata pressure attribution remain incomplete. Current native geometry/caps, LFU policy and fastest SELF are unchanged; no expansion or kernel-pool resize is adopted |
-| Additional graph/vector/workgroup tuning | Actual shapes audited. Native PLE fixture now has a strict headless mode, complete graph/readback checks, 208-graph finite design and full linked/import-audited SELF. [Package and gate](PLE-slice-fixture-20261026.md) | New CPU-only 2656 refused regular prelaunch at 6257/10142 pages, with zero title/GPU execution. Physical placement/numerics and complete cost comparison remain open before model integration. Broader dual-output/GDN/small-GEMM tuning requires material cost evidence |
+| Additional graph/vector/workgroup tuning | Actual shapes audited. Independent headless PLE title passed four physical width-one graphs: original and three modes, exact F32/F64 checks, single Vulkan placement and positive retirement. [Physical record](PLE-smoke-startup-20261026.md#four-graph-physical-gpu-completion) | Paired 208-graph case 2748 refused before launch at 7858/7883 against 8108 pages; exact fastest/settings restored. Timing comparison, widths two through four and actual-model acceptance remain open. Broader dual-output/GDN/small-GEMM tuning requires material cost evidence |
 
 Start future selection with workload evidence and source-wait reduction. Ready
 execution and router observation have distinct ownership and numerical gates;
