@@ -3,7 +3,7 @@
 """Validate completed selected-ID metadata; never execute learned inference."""
 
 
-def validate_routes(record,result,*,width,pid,run_id,cold):
+def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=None):
     expected=dict(schema='ps5-qwen-completed-expert-routes-v1',complete=True,capture_failed=False,
         pid=pid,run_id=run_id,cache_reset_before_request=cold,layers_per_process=48,experts=512,
         experts_per_token=10,cache_slots=53,maximum_records=4608,
@@ -17,6 +17,11 @@ def validate_routes(record,result,*,width,pid,run_id,cold):
         raise ValueError('Route request counts exceed their admitted bounds')
     if reason not in ('end_of_generation','output_token_limit'):raise ValueError('Route capture requires a completed request')
     tokens=[min(width,prompt-n)for n in range(0,prompt,width)]+[1]*(generated-(reason=='output_token_limit'))
+    if checkpoint_validation is not None:
+        from model_checkpoint_result import checkpoint_process_geometry,validate_checkpoint
+        if width!=4:raise ValueError('Checkpoint routes require the qualified four-token path')
+        validate_checkpoint(checkpoint_validation,result,pid=pid,run_id=run_id)
+        tokens=checkpoint_process_geometry(result,checkpoint_validation)
     calls=len(tokens);rows=record.get('records')
     if type(record.get('process_calls'))is not int or record['process_calls']!=calls or type(rows)is not list or len(rows)!=48*calls:
         raise ValueError('Expert routes do not cover the complete request')

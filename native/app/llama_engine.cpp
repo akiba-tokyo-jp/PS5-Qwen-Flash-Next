@@ -3,6 +3,7 @@
 #include "expert_policy.h"
 #include "indexed_vector.h"
 #include "mapped_copy.h"
+#include "model_checkpoint.h"
 
 #include <algorithm>
 #include <cmath>
@@ -126,6 +127,7 @@ LlamaEngine::~LlamaEngine() {
 
 void LlamaEngine::require_healthy() const {
     if (failed_) throw std::runtime_error("Model adapter is quarantined");
+    if(checkpoint_&&producer_!=std::this_thread::get_id())throw std::runtime_error("Checkpoint adapter requires its original producer");
 }
 
 std::uint32_t LlamaEngine::tokenize(const std::string & prompt) {
@@ -142,6 +144,8 @@ std::uint32_t LlamaEngine::tokenize(const std::string & prompt) {
     const int count = llama_tokenize(vocabulary_, prompt.data(), length, prompt_.data(), int(prompt_.size()), true, true);
     if (count <= 0 || std::size_t(count) > prompt_.size()) throw std::runtime_error("Tokenization failed");
     prompt_.resize(std::size_t(count));
+    if(request_epoch_==UINT64_MAX)throw std::runtime_error("Request epoch exhausted");
+    ++request_epoch_;
     stage("inference_tokenization_completed");
     return std::uint32_t(count);
 }
@@ -158,9 +162,27 @@ void LlamaEngine::process(llama_token token, llama_pos position, bool output) {
 }
 
 void LlamaEngine::process_batch(const llama_token * tokens, std::uint32_t count, llama_pos position) {
+    if(checkpoint_&&inside_prefill_&&(position==4||position==28)) {
+        capture_checkpoint_in_active_epoch();
+        const auto first=checkpoint_route_cursor_();
+        process_batch_once(tokens,count,position);
+        const auto first_end=checkpoint_route_cursor_();
+        const auto *reference=effective_logits();const auto vocabulary=llama_vocab_n_tokens(vocabulary_);
+        if(!reference||vocabulary<=0)throw std::runtime_error("Checkpoint prefill reference logits unavailable");
+        checkpoint_reference_logits_.assign(reference,reference+vocabulary);
+        restore_checkpoint_in_active_epoch();
+        const auto second=checkpoint_route_cursor_();process_batch_once(tokens,count,position);
+        compare_checkpoint_logits();compare_checkpoint_routes(first,first_end,second);
+        ++checkpoint_stats_.prefill_replays;stage("model_checkpoint_prefill_replay_verified");return;
+    }
+    process_batch_once(tokens,count,position);
+}
+
+void LlamaEngine::process_batch_once(const llama_token * tokens, std::uint32_t count, llama_pos position) {
     if (!tokens || !count || count > prefill_tokens_ || position < 0 ||
         std::uint64_t(position) + count > llama_n_ctx(context_))
         throw std::invalid_argument("Invalid bounded causal batch");
+    restored_logits_active_=false;
     guard();
     llama_batch_ext_clear(batch_);
     for (std::uint32_t i = 0; i < count; ++i) {
@@ -196,6 +218,7 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
         llama_sampler_reset(sampler_);
         position_ = 0;
         pending_ = LLAMA_TOKEN_NULL;
+        inside_prefill_=true;
         for (std::size_t i = 0; i < prompt_.size();) {
             // A zero-output single-token batch crops the final Qwen layer to
             // zero rows, which disables its expert-slot cache path. Request
@@ -205,12 +228,16 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
             position_ += count;
             i += count;
         }
-        boundary.complete();ready_ = true;
+        inside_prefill_=false;boundary.complete();ready_ = true;
         stage("inference_prefill_completed");
-    } catch (...) { failed_ = true; throw; }
+    } catch (...) { inside_prefill_=false;failed_ = true; throw; }
 }
 
 Token LlamaEngine::next() {
+    if(checkpoint_)return validate_next_checkpoint();
+    return next_once();
+}
+Token LlamaEngine::next_once() {
     require_healthy();
     if (!ready_) throw std::logic_error("Prefill required before decoding");
     try {
@@ -221,13 +248,21 @@ Token LlamaEngine::next() {
             process(pending_, position_++, true);
         }
         const auto count = llama_vocab_n_tokens(vocabulary_);
-        const auto * logits = llama_get_logits_ith(context_, -1);
+        const auto * logits = effective_logits();
         if (!logits || count <= 0) throw std::runtime_error("Missing logits");
         for (int i = 0; i < count; ++i) {
             if (!std::isfinite(logits[i])) throw std::runtime_error("Non-finite model logits");
         }
         stage("inference_before_sampling");
-        pending_ = llama_sampler_sample(sampler_, context_, -1);
+        if(restored_logits_active_) {
+            checkpoint_candidates_.resize(std::size_t(count));
+            for(llama_token id=0;id<count;++id)checkpoint_candidates_[id]={id,logits[id],0.0f};
+            llama_token_data_array candidates{checkpoint_candidates_.data(),checkpoint_candidates_.size(),-1,false};
+            llama_sampler_apply(sampler_,&candidates);
+            if(candidates.selected<0||std::size_t(candidates.selected)>=candidates.size)
+                throw std::runtime_error("Restored greedy sampler returned no selected token");
+            pending_=candidates.data[candidates.selected].id;llama_sampler_accept(sampler_,pending_);
+        }else pending_ = llama_sampler_sample(sampler_, context_, -1);
         if (pending_ < 0 || pending_ >= count) throw std::runtime_error("Invalid sampled token");
         if (llama_vocab_is_eog(vocabulary_, pending_)) { boundary.complete();stage("inference_end_of_generation_observed"); return {pending_, {}, true}; }
         std::string piece(256, '\0');
@@ -252,11 +287,80 @@ void LlamaEngine::finish() {
     stage("inference_before_successful_request_reset");
     llama_memory_clear(llama_get_memory(context_), true);
     llama_sampler_reset(sampler_);
+    if(checkpoint_) {
+        checkpoint_->discard();
+        checkpoint_stats_.completed=checkpoint_stats_.captures>0&&checkpoint_stats_.captures==checkpoint_stats_.restores;
+    }
+    restored_logits_active_=false;restored_logits_.clear();checkpoint_reference_logits_.clear();checkpoint_candidates_.clear();
     ready_ = false;
     pending_ = LLAMA_TOKEN_NULL;
     prompt_.clear();
     boundary.complete();stage("inference_request_reset_completed");
     } catch (...) {failed_=true;throw;}
+}
+
+const float *LlamaEngine::effective_logits()const {
+    return restored_logits_active_?restored_logits_.data():llama_get_logits_ith(context_,-1);
+}
+void LlamaEngine::enable_checkpoint_validation(std::function<void(std::uint64_t)> admit,
+    std::function<std::uint32_t()> cursor,std::function<void(std::uint32_t,std::uint32_t,std::uint32_t)> compare) {
+    require_healthy();
+    if(producer_!=std::this_thread::get_id()||checkpoint_||ready_||!prompt_.empty()||prefill_tokens_!=4||llama_n_ctx(context_)!=256||!admit||!cursor||!compare||
+       !gpu_begin_||!gpu_complete_||!gpu_retain_||!gpu_checkpoint_)
+        throw std::invalid_argument("Checkpoint validation requires the original bounded context and complete owner hooks");
+    checkpoint_=std::make_unique<ModelCheckpoint>(model_,context_);checkpoint_admit_=std::move(admit);
+    checkpoint_route_cursor_=std::move(cursor);checkpoint_compare_routes_=std::move(compare);checkpoint_stats_.enabled=true;
+}
+void LlamaEngine::capture_checkpoint_in_active_epoch() {
+    guard();
+    if(!checkpoint_||checkpoint_stats_.captures>=checkpoint_stats_.capture_positions.size())
+        throw std::runtime_error("Checkpoint validation capture bound exhausted");
+    if(llama_get_sampled_token_ith(context_,-1)!=LLAMA_TOKEN_NULL||llama_get_sampled_probs_ith(context_,-1)||llama_get_sampled_logits_ith(context_,-1))
+        throw std::runtime_error("Checkpoint validation requires the existing full-logit CPU greedy sampler");
+    CheckpointApplicationState state{request_epoch_,position_,pending_,ready_,prompt_};
+    checkpoint_->capture(state,effective_logits(),std::size_t(llama_vocab_n_tokens(vocabulary_)),checkpoint_admit_,
+        [&](const char *value){stage(value);},[&]{llama_synchronize(context_);gpu_checkpoint_();guard();});
+    checkpoint_stats_.capture_positions[checkpoint_stats_.captures++]=position_;
+    checkpoint_stats_.maximum_payload_bytes=std::max(checkpoint_stats_.maximum_payload_bytes,checkpoint_->payload_bytes());
+    checkpoint_stats_.maximum_metadata_bytes=std::max<std::uint64_t>(checkpoint_stats_.maximum_metadata_bytes,checkpoint_->metadata_bytes());
+}
+void LlamaEngine::restore_checkpoint_in_active_epoch() {
+    guard();const auto &saved=checkpoint_->restore(request_epoch_,[&](const char *value){stage(value);},
+        [&]{llama_synchronize(context_);gpu_checkpoint_();guard();});
+    if(saved.prompt!=prompt_)throw std::runtime_error("Restored checkpoint belongs to another prompt");
+    position_=saved.position;pending_=saved.pending;ready_=saved.ready;
+    restored_logits_=checkpoint_->logits();restored_logits_active_=true;llama_sampler_reset(sampler_);++checkpoint_stats_.restores;
+}
+void LlamaEngine::compare_checkpoint_logits() {
+    const auto count=llama_vocab_n_tokens(vocabulary_);const auto *actual=effective_logits();
+    if(!actual||count<=0||checkpoint_reference_logits_.size()!=std::size_t(count))throw std::runtime_error("Checkpoint continuation logits missing");
+    for(int i=0;i<count;++i) {
+        const double reference=checkpoint_reference_logits_[i],error=std::abs(double(actual[i])-reference);
+        if(!std::isfinite(reference)||!std::isfinite(actual[i])||error>1e-5+1e-5*std::abs(reference))
+            throw std::runtime_error("Restored complete-model logits differ from original operations");
+        checkpoint_stats_.maximum_absolute_logit_error=std::max(checkpoint_stats_.maximum_absolute_logit_error,error);
+    }
+}
+void LlamaEngine::compare_checkpoint_routes(std::uint32_t first,std::uint32_t first_end,std::uint32_t second) {
+    const auto end=checkpoint_route_cursor_();
+    if(first_end<first||end<second||first_end-first!=end-second)throw std::runtime_error("Restored route process count differs");
+    checkpoint_compare_routes_(first,second,first_end-first);checkpoint_stats_.route_rows_compared+=first_end-first;
+}
+Token LlamaEngine::validate_next_checkpoint() {
+    require_healthy();if(!ready_)throw std::logic_error("Prefill required before checkpoint validation");
+    try {
+        {GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);capture_checkpoint_in_active_epoch();boundary.complete();}
+        const auto first=checkpoint_route_cursor_();const auto reference=next_once();const auto first_end=checkpoint_route_cursor_();
+        const auto *values=effective_logits();const auto count=llama_vocab_n_tokens(vocabulary_);
+        if(!values||count<=0)throw std::runtime_error("Checkpoint target reference logits unavailable");
+        checkpoint_reference_logits_.assign(values,values+count);
+        {GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);restore_checkpoint_in_active_epoch();boundary.complete();}
+        const auto second=checkpoint_route_cursor_();const auto actual=next_once();
+        if(reference.id!=actual.id||reference.piece!=actual.piece||reference.end_of_generation!=actual.end_of_generation)
+            throw std::runtime_error("Restored greedy continuation token or emitted bytes differ");
+        compare_checkpoint_logits();compare_checkpoint_routes(first,first_end,second);
+        ++checkpoint_stats_.next_replays;stage("model_checkpoint_next_replay_verified_emitted_once");return actual;
+    }catch(...){failed_=true;throw;}
 }
 
 } // namespace qwen_app

@@ -60,6 +60,22 @@ bool completed_expert_routes_pending() {
     std::lock_guard<std::mutex> lock(observer_mutex);
     return capture_quarantined||(observer&&(observer->ids||observer->failed));
 }
+std::uint32_t completed_expert_route_cursor() {
+    std::lock_guard<std::mutex> lock(observer_mutex);healthy();
+    if(observer->ids||observer->used%expert_route_layers)fail("Route comparison requires a completed whole process");
+    return std::uint32_t(observer->used);
+}
+void compare_completed_expert_route_ranges(std::uint32_t first,std::uint32_t second,std::uint32_t count) {
+    std::lock_guard<std::mutex> lock(observer_mutex);healthy();
+    if(observer->ids||observer->used%expert_route_layers||first%expert_route_layers||second%expert_route_layers||count%expert_route_layers||
+       first>observer->used||second>observer->used||count>observer->used-first||count>observer->used-second)
+        fail("Route comparison exceeds its completed owned process ranges");
+    for(std::uint32_t i=0;i<count;++i) {
+        const auto &a=observer->rows[first+i];const auto &b=observer->rows[second+i];
+        if(a.layer!=b.layer||a.tokens!=b.tokens)fail("Restored expert-route geometry differs");
+        for(unsigned j=0;j<10*a.tokens;++j)if(a.ids[j]!=b.ids[j])fail("Restored original expert selections differ");
+    }
+}
 void quarantine_completed_expert_routes() {
     std::lock_guard<std::mutex> lock(observer_mutex);
     capture_quarantined=true;if(observer)observer->failed=true;

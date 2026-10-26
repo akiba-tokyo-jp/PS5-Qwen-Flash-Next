@@ -47,6 +47,8 @@ def main():
                         help="Seven exact isolated source-reader overrides; original archives stay immutable")
     parser.add_argument("--shader-storage-manifest",type=Path,
                         help="Explicit lossless shader resources and checked Vulkan-input extension")
+    parser.add_argument("--device-state-fixture-manifest",type=Path,
+                        help="Host-qualified pinned state-copy extraction for the isolated, default-off fixture")
     parser.add_argument("--jobs", type=int, default=4)
     parser.add_argument("--link-threads", type=int, default=2,
                         help="Bound host linker workers independently from compilation")
@@ -83,6 +85,10 @@ def main():
         shader_storage=validate_storage(a.shader_storage_manifest,a.model_io_manifest,receipt_path)
         model_io_objects += [Path(row['path'])for row in shader_storage['asset_objects']]
     out = a.out.resolve() if a.out else cache / "build/application-native"
+    device_state_fixture=None
+    if a.device_state_fixture_manifest:
+        from prepare_device_state_fixture import validate as validate_device_state_fixture
+        device_state_fixture=validate_device_state_fixture(a.device_state_fixture_manifest,cache)
     objects = a.object_cache.resolve() if a.object_cache else out / "objects"
     objects.mkdir(parents=True, exist_ok=True)
     source = cache / "upstream" / ("llama.cpp-" + lock["llama_cpp"]["revision"])
@@ -97,9 +103,9 @@ def main():
              "-nostdinc++", "-isystem", str(sdk / "target/include/c++/v1"), "-isystem", str(sdk / "target/include")]
     flags += [value for path in includes for value in ("-I", str(path))]
     flags += ["-DQWEN_NATIVE_PLATFORM="+str(int(native_platform is not None))]
-    files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "completed_expert_routes.cpp", "http_app.cpp", "bounded_demo.cpp", "chat_prompt.cpp", "native_main.cpp",
-                                                   "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
-                                                   "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "palette_gpu_dispatch.cpp", "palette_gpu_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
+    files = [ROOT / "native/app" / name for name in ("session.cpp", "llama_engine.cpp", "model_checkpoint.cpp", "completed_expert_routes.cpp", "http_app.cpp", "bounded_demo.cpp", "chat_prompt.cpp", "native_main.cpp",
+                                                   "device_state_admission.cpp", "vulkan_bridge.cpp", "native_socket.cpp", "monitor_raster.cpp",
+                                                   "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "palette_gpu_dispatch.cpp", "palette_gpu_admission.cpp", "vector_bank_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
                                                    "model_integrity.cpp", "direct_integrity.cpp", "direct_metadata.cpp", "shader_assets.cpp", "shader_file.cpp", "shader_file_session.cpp", "shader_file_native.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "owned_mapped_probe.cpp", "owned_mapped_backend.cpp", "padded_bank_layout.cpp", "padded_bank_route.cpp", "padded_cache.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
@@ -134,9 +140,13 @@ def main():
                             "-I", str(workspace / "toolchain/shaderc-clang64/clang64/include")]
         if path.name == "httplib.cpp":
             local_flags += ["-Daccept4=qwen_native_accept_http"]
+        if path.name == "device_state_admission.cpp" and device_state_fixture:
+            local_flags += ["-DQWEN_DEVICE_STATE_FIXTURE=1","-I",str(Path(device_state_fixture["generated"]["path"]).parent)]
         identity = hashlib.sha256((str(path) + json.dumps(local_flags) + compiler_hash).encode() + path.read_bytes() + headers).hexdigest()
         if path.name == "owned_mapped_backend.cpp":
             identity = hashlib.sha256((identity + json.dumps(backend_abi_inputs,sort_keys=True)).encode()).hexdigest()
+        if path.name == "device_state_admission.cpp" and device_state_fixture:
+            identity = hashlib.sha256((identity+json.dumps(device_state_fixture,sort_keys=True)).encode()).hexdigest()
         obj = objects / (path.stem + "-" + identity[:20] + ".o")
         command = [str(llvm / "clang++.exe"), *local_flags, "-c", str(path), "-o", str(obj)]
         if not obj.exists():
@@ -224,6 +234,9 @@ def main():
               ROOT / "cmake/native-unwind.ld", ROOT / "cmake/native-symbols.map",
               a.driver_root / "tooling/native/ps5-pie.ld", receipt_path, *backend_abi_paths]
     if a.shader_storage_manifest:inputs.append(a.shader_storage_manifest)
+    if device_state_fixture:
+        inputs += [a.device_state_fixture_manifest,Path(device_state_fixture["generated"]["path"])]
+        inputs += [Path(row["path"])for row in device_state_fixture["inputs"]]
     command.append("--threads=" + str(a.link_threads))
     before = [record(path) for path in inputs]
     receipt = {"schema": "ps5-qwen-native-link-v1", "driver": selected, "engine_receipt": record(receipt_path),
@@ -236,6 +249,7 @@ def main():
                "bounded_model_source_overrides": model_io,
                "lossless_shader_storage":shader_storage,
                "shader_resource_manifest":record(a.shader_storage_manifest) if a.shader_storage_manifest else None,
+               "isolated_device_state_fixture":device_state_fixture,
                "bounded_model_source_manifest": record(a.model_io_manifest),
                "compiler": record(llvm / "clang++.exe"), "linker": record(llvm / "ld.lld.exe"),
                "application_sources": source_inputs, "application_headers": header_inputs,

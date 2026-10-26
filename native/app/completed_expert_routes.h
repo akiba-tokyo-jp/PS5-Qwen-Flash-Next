@@ -22,5 +22,9 @@ public:using std::runtime_error::runtime_error;
 void begin_completed_expert_routes();
 std::vector<CompletedExpertRoute> finish_completed_expert_routes(std::uint64_t completed_process_calls);
 bool completed_expert_routes_pending();
+// Inspect only positively completed whole-process rows on the original owner.
+// These calls add no download and retain the existing bounded observer storage.
+std::uint32_t completed_expert_route_cursor();
+void compare_completed_expert_route_ranges(std::uint32_t first,std::uint32_t second,std::uint32_t count);
 void quarantine_completed_expert_routes();
 } // namespace qwen_app

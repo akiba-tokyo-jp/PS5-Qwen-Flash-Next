@@ -36,6 +36,27 @@ def write(path, value):
         output.write(json.dumps(value, indent=2) + "\n"); output.flush(); os.fsync(output.fileno())
 
 
+def qualified_control(context, production=False, installation=None):
+    if any(context.get(k)is not False for k in ('native_running','gateway_running','model_loaded')):
+        raise ValueError('A positively idle preserved control is required')
+    if production:
+        required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
+            'original_rollback_full_readback_verified','arithmetic_smoke_passed','outputs_and_token_ids_equal_to_qualified_selected_case',
+            'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified')
+        if not isinstance(installation,dict)or installation.get('schema')!='ps5-qwen-production-installation-v1'or any(installation.get(k)is not True for k in required):
+            raise ValueError('The exact qualified production installation record is required')
+        if context.get('production_deployment_completed')is not True or context.get('original_restored')is not False or context.get('console_reserved')is not True:
+            raise ValueError('The task must still own the installed qualified production control')
+        control=context.get('production_SELF',{});expected=installation.get('application_SELF',{})
+        if set(expected)!={'bytes','sha256'}or any(control.get(k)!=v for k,v in expected.items()):
+            raise ValueError('The preserved production SELF differs from its qualified installation')
+        return control
+    if(context.get('original_restored')is not True or context.get('original_numerical_re_admission')!='passed'or
+       context.get('complete_original_SELF_readback_after_shutdown')is not True or context.get('original_moe_admitted')is not True):
+        raise ValueError('The completed original restoration and indexed-MoE context is required')
+    return context['original_SELF']
+
+
 def data_plan_path(complete, completion_path, cache):
     """Bind a reviewed continuation to its original plan and positive directory proof."""
     if complete.get("schema") == "ps5-qwen-model-data-continuation-complete-v1":
@@ -79,6 +100,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("workspace", "cache", "package", "data-completion", "out"):
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument('--production-control',action='store_true',
+        help='Preserve the exact already qualified installed Qwen SELF instead of the historical MOSS control')
     args = parser.parse_args(); cache, out = args.cache.resolve(), args.out.resolve()
     if out.parent != cache or out.exists(): raise ValueError("A fresh separate physical case in the data cache is required")
     package = read(args.package)
@@ -105,13 +128,9 @@ def main():
         raise ValueError("The published full-model receipt differs")
     reservation = args.workspace / "driver-work/PS5-Vulkan-Inference/.local/gpu-development-20261021/active-context.private.json"
     context_path = Path(read(reservation)["context"]); context = read(context_path)
-    if (context.get("original_restored") is not True or context.get("original_numerical_re_admission") != "passed" or
-            context.get("complete_original_SELF_readback_after_shutdown") is not True or
-            context.get("native_running") is not False or context.get("gateway_running") is not False or
-            context.get("model_loaded") is not False or context.get("original_moe_admitted") is not True):
-        raise ValueError("The completed original restoration and indexed-MoE context is required")
-    original = bound(context["original_SELF"])
-    if sha(original) != "2da5c0851cdebe83225edc054f3daf7e4aecd408d3893a9171eb4ad43a22d92d":
+    installation=read(ROOT/'config/production-installation.json')if args.production_control else None
+    original = bound(qualified_control(context,args.production_control,installation))
+    if not args.production_control and sha(original) != "2da5c0851cdebe83225edc054f3daf7e4aecd408d3893a9171eb4ad43a22d92d":
         raise ValueError("The exact preserved original SELF differs")
     policy = read(ROOT / "config/development.json")
     if any(policy[key] is not False for key in ("console_operations_enabled", "deployment_enabled", "console_validation_enabled", "validation_deployment_enabled")) or policy["allowed_modes"] != []:
@@ -138,13 +157,16 @@ def main():
         native_first_generation_validation=json.loads(result.stdout))
     write(out / "private-policy/development.json", policy)
     write(out / "preflight-complete.private.json", dict(state="original_normally_closed_source_SELF_preserved",
-        SELF=record(original), prior_completed_context=record(context_path), console_connections=0, GPU_calls=0))
+        SELF=record(original),control_kind='qualified production Qwen SELF'if args.production_control else'legacy MOSS SELF',
+        legacy_MOSS_rollback=context['original_SELF']if args.production_control else None,
+        prior_completed_context=record(context_path), console_connections=0, GPU_calls=0))
     write(out / "case-inputs.private.json", dict(schema="ps5-qwen-first-case-inputs-v1", binding=binding,
         package=record(args.package), candidate=record(candidate), original=record(original),
         model_receipt=record(receipt), transfer=record(complete["transfer"]["path"]), data_completion=record(args.data_completion),
         data_plan=record(plan_path), prior_context=record(context_path), reservation=record(reservation),
         native_policy_emitter=record(executable), policy_command=command,
         native_policy_sources=[record(ROOT / "tools/first_generation_policy.cpp"), record(ROOT / "native/app/first_generation_policy.h")],
+        preserved_production_control=args.production_control,
         fresh_session_required_before_mutation=True, console_access=False, learned_host_inference=False))
     shutil.copyfile(args.package, out / "candidate-package.private.json")
     print(json.dumps(dict(private_case_prepared=True, native_policy_gate_passed=True, console_connections=0, GPU_calls=0)))

@@ -60,7 +60,7 @@ def main():
         commands.extend([
             [host / "clang++.exe", "-std=c++17", "-O2", "-Wall", "-Wextra", "-Werror",
              "-I", source.parent, "-I", upstream / "include", "-I", upstream / "ggml/include",
-             source.parent / "llama_engine.cpp", ROOT / "tests/llama_adapter.cpp", "-o", adapter_test],
+             source.parent / "llama_engine.cpp", source.parent / "model_checkpoint.cpp", ROOT / "tests/llama_adapter.cpp", "-o", adapter_test],
             [adapter_test]])
         names.extend(["adapter_stub_compile", "adapter_api_scenarios"])
     receipt = {"schema": "ps5-qwen-application-check-v1", "console_access": False,

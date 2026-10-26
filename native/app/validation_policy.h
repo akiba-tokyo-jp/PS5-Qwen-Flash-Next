@@ -8,6 +8,9 @@
 #include "first_generation_policy.h"
 #include "memory_probe.h"
 #include "palette_gpu_admission.h"
+#include "vector_bank_admission.h"
+#include "device_state_admission.h"
+#include "model_checkpoint_policy.h"
 
 namespace qwen_app {
 inline constexpr unsigned native_model_verification_seconds = 7200;
@@ -18,11 +21,14 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
                                              bool native_display) {
     if (mode == "display-validation" || mode == "runtime-validation") return;
     if (mode == "palette-validation") {require_palette_gpu_policy(policy,native_display);return;}
+    if (mode == "vector-bank-validation") {require_vector_bank_policy(policy,native_display);return;}
+    if (mode == "device-state-validation") {require_device_state_policy(policy,native_display);return;}
     if (mode == "native-memory-validation") {
         require_memory_probe_policy(policy,native_display);return;
     }
     if (mode == "first-generation-validation") {
         require_first_generation_policy(policy, native_display);
+        if(policy.contains("native_model_checkpoint_validation"))require_model_checkpoint_policy(policy);
         return;
     }
     if (mode == "moe-validation") {

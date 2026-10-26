@@ -44,7 +44,7 @@ def validate_backpressure(record):
     return record
 
 
-def validate_performance(record, result, *, split_sources=False):
+def validate_performance(record, result, *, split_sources=False, checkpoint_validation=None):
     schema = record.get('schema')
     if type(split_sources) is not bool or (split_sources and schema not in (
             'ps5-qwen-completed-performance-v4', 'ps5-qwen-completed-performance-v5')):
@@ -111,6 +111,10 @@ def validate_performance(record, result, *, split_sources=False):
             record.get('all_prompt_outputs_requested') is not True):
             raise ValueError('Batched prefill scope differs')
     expected = (metrics['prompt_tokens'] + width - 1)//width + metrics['generated_tokens'] - (reason == 'output_token_limit')
+    if checkpoint_validation is not None:
+        from model_checkpoint_result import checkpoint_process_geometry
+        if width!=4:raise ValueError('Checkpoint replay accounting requires the qualified four-token path')
+        expected=len(checkpoint_process_geometry(result,checkpoint_validation))
     if delta['process_calls'] != expected or delta['process_ns'] <= 0:
         raise ValueError('Completed decode call count differs')
     if not delta['source_chunks'] or delta['source_chunks'] != delta['source_completed_windows']:
@@ -121,4 +125,5 @@ def validate_performance(record, result, *, split_sources=False):
     if delta['source_read_ns'] <= 0 or source_ns > decode_ns:
         raise ValueError('Source intervals exceed their enclosing decode interval')
     return dict(delta=delta, measured_source_wall_fraction=source_ns / decode_ns,
-                GPU_compute_time_qualified=False)
+                GPU_compute_time_qualified=False,
+                deliberate_state_validation_replays_included=checkpoint_validation is not None)

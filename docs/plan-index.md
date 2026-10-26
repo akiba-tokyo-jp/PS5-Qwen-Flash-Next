@@ -60,7 +60,7 @@ proposed technique was implemented or adopted.
 | [SSD validation plan](ssd-io-validation-plan-20261025.md) | Initial delivery and capacity screens complete; no production candidate admitted | [SSD results](ssd-io-validation-results-20261025.md) |
 | [BF16 system research](bf16-system-optimization-research-20261025.md) | Research complete; its broader implementation proposals are not all complete | [Remaining proposals below](#remaining-proposals-and-prerequisites) |
 | [Initial BF16 validation](bf16-system-validation-20261025.md), [kernel-memory investigation](kernel-memory-cause-20261026.md), [palette follow-up](memory-palette-followup-20261026.md) | Historical partial checkpoints; the finite demand, memory-recovery and GPU screens subsequently completed | [Memory-plan completion](memory-plan-completion-20261026.md) |
-| [Remaining proposal validation](remaining-validation-plan-20261026.md) | Planned, not executed; implementation and validation remain incomplete | [Ordered work and dependencies](remaining-validation-plan-20261026.md#work-order-and-dependencies) |
+| [Remaining proposal validation](remaining-validation-plan-20261026.md) | In progress; metadata, vector ABI and bank/source fixtures executed. Actual production-source screen remains inconclusive; other packages remain open | [Execution progress](remaining-validation-progress-20261026.md) |
 
 The [Strata source review](strata-update-review-20261024.md),
 [PS5-specific I/O research](ps5-source-io-workarounds-20261024.md) and
@@ -127,6 +127,14 @@ upstream source targets refer to llama.cpp
 `0a1ef309cdbb9f2024f58a38fb4c42352c5db569`; maintained changes belong in this
 repository's overlays, not immutable qualified build products.
 
+The [execution progress](remaining-validation-progress-20261026.md) records
+native CPU metadata, original-byte vector-delivery and device-copy fixtures.
+GPU-bank exactness passed, but the actual original-file layout comparison was
+inconclusive at 1.040x source / 1.037x total, with only seven of eight rounds
+faster. No production-layout migration or model speed gain follows. The 136 MiB
+device-copy prerequisite also passed; complete-model continuation is a separate
+qualification.
+
 The [remaining-proposal validation plan](remaining-validation-plan-20261026.md)
 defines the implementation targets, dependency order, bounded tests, stop/adoption
 conditions and full-model/production gates for every row below. It is a plan,
@@ -139,12 +147,12 @@ PS5 adaptations, with original BF16/F32 preserved.
 | Proposal | Implementation status and source targets | Prerequisite before a new comparison |
 | --- | --- | --- |
 | Broader workload characterization | Proposed Japanese dialogue, code/copying, reasoning and low-repetition prompts within context 256; [research priorities](bf16-system-optimization-research-20261025.md#whole-system-priorities-and-exclusions) | Separate TTFT, decode, per-token tails, source bytes and routes. Existing two short requests are insufficient to rank workload-dependent ideas |
-| CPU metadata reuse | Unimplemented native audit/adaptation, included in work package 1; `native/app/llama_engine.cpp::process_batch`, upstream graph-input setup and cache overlay | Demonstrate recurring native cost, exact shape/position/reset equivalence and a benefit including invalidation overhead; the Python/Torch overhead removed by Radiance is absent here |
+| CPU metadata reuse | Native-fixture-qualified prototype; exact batch metadata checks and native timing in the [progress record](remaining-validation-progress-20261026.md#cpu-batch-metadata). Not linked into `LlamaEngine` | Price its small absolute saving and integrate only for a full-model benefit including invalidation overhead; the Python/Torch chain is absent |
 | Execute ready experts while actual-demand reads continue | Design only. `patches/native-model-io/0002-llama-moe-cache.patch`, upstream `src/llama-moe-cache.cpp::impl::copy` and `src/models/qwen4exp.cpp::graph::build_layer_ffn` | Whole-expert filling/ready/GPU-pinned ownership, exact selected IDs and original reduction order, then graph overhead and real overlap measurement |
 | One-layer hidden-state router forecast with at most two reserved slots | Capacity/source review only; no hidden-state capture, forecast kernel or speculative transfer. Upstream `qwen4exp.cpp::build_hc_mix/build_hc_combine`, `build_layer_ffn`; `native/app/expert_policy.h` and cache overlay | Shadow observation of useful missing experts and readiness at demand, graph cost and wasted bytes before speculative I/O. Reuse original F32 routers without an extra cast/copy |
-| Exact speculative verification or model-free drafts | Accepted-path route analysis only. `native/app/llama_engine.cpp::next/process_batch`, `streaming_context_params`, upstream recurrent/hybrid/KV modules and PLE state | Complete device/SSD checkpoint, commit and rollback for KV/recurrent/PLE/logits; first width two. Current host snapshot needs at least 118,038,528 bytes before KV/logits and exceeds the measured 83,820,544-byte CPU slack |
-| Repeated-prefix state reuse | Unimplemented checkpoint/copy/restore/lifetime work; same state modules as speculative verification | Full state and physical memory admission. Measure repeated-prefix TTFT separately; it does not improve steady single-token decode by itself |
-| Zero-copy expert-major layout or vectored Direct I/O | Design only; `native/app/mapped_source.h::try_owned_bank_reads`, `padded_cache.cpp` and cache overlay | ABI/alignment/completion qualification and bounded sidecar landing directly into owned banks. Full second model pack does not fit; losing gather-copy results are not evidence for this different mechanism |
+| Exact speculative verification or model-free drafts | Complete-model checkpoint qualified: 25 captures/restores, zero F32 logit error, exact continuation tokens/bytes and 1,152 layer routes. [Continuation result](remaining-validation-progress-20261026.md#complete-model-continuation). Speculative verification remains open | Width two and every rejection need independent graph/arithmetic/rollback qualification. Whole CPU snapshots still fail the 83,820,544-byte slack; device payload avoids that allocation |
+| Repeated-prefix state reuse | Complete-model checkpoint passed, including partial prefill and every generated state/EOG; prefix consumer remains unqualified | Bind cross-request exact prompt/model ownership and price capture/restore. Measure repeated-prefix TTFT separately; it does not improve steady single-token decode by itself. Last 7,038 free pages does not admit another launch |
+| Zero-copy expert-major layout or vectored Direct I/O | Native bank numerics/retirement passed. Compact-record bank screen: 1.252x source / 1.183x total. Actual original-file comparison: 1.040x / 1.037x, only 7/8 rounds faster; inconclusive and unadopted. [Results and scope](remaining-validation-progress-20261026.md#compact-records-and-actual-production-source-layout) | No migration or integration from the failed production-shaped screen. Coalescing/fallback, partial-pack coverage and whole-model results remain unqualified; do not infer tokens/s from same-file fixtures |
 | Larger useful cache or shorter allocation lifetimes | Audit proposal; `native/app/model_cpu_budget.h`, `owned_mapped_backend.cpp`, cache and Vulkan overlays | Complete peak-live CPU/Direct/Flexible/UMA ledger and correct layer-floor replay before extra allocation. The artifact-residency fix does not qualify cache expansion or kernel-pool resizing |
 | Additional graph/vector/workgroup tuning | Deferred after indexed-vector adoption; Radiance-inspired GDN/dual-output/small-GEMM candidates added to work package 8. Targets include Qwen4Exp graph methods, Vulkan overlays, `mul_mat_vec.comp::iter_aligned_nonquant` and `ggml_vk_mul_mat_id` | Screen geometry/types and existing fusion first; identify material cost before native implementation. Preserve F32 intermediates and the sigmoid gate. Source wait is 92.435% of process time; the non-source ideal process ceiling is only a conditional 1.082x |
 
