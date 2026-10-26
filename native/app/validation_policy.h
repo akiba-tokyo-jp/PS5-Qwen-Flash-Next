@@ -11,6 +11,8 @@
 #include "vector_bank_admission.h"
 #include "device_state_admission.h"
 #include "model_checkpoint_policy.h"
+#include "prefix_validation_policy.h"
+#include "metadata_memory_policy.h"
 
 namespace qwen_app {
 inline constexpr unsigned native_model_verification_seconds = 7200;
@@ -29,6 +31,8 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
     if (mode == "first-generation-validation") {
         require_first_generation_policy(policy, native_display);
         if(policy.contains("native_model_checkpoint_validation"))require_model_checkpoint_policy(policy);
+        if(policy.contains("native_prefix_validation"))require_prefix_validation_policy(policy);
+        if(policy.contains("native_metadata_memory_diagnostic"))require_metadata_memory_policy(policy);
         return;
     }
     if (mode == "moe-validation") {

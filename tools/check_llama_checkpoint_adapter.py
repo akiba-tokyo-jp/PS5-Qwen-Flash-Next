@@ -15,7 +15,10 @@ def main():
     inputs=sources+[ROOT/'native/app/llama_engine.h',ROOT/'native/app/model_checkpoint.h',sampler,inc,Path(__file__)];fixed=[record(p)for p in inputs]
     exe=a.out/'checkpoint-adapter-tests.exe';command=[str(host/'clang++.exe'),'-std=c++17','-O2','-Wall','-Wextra','-Werror','-I',str(ROOT/'native/app'),'-I',str(up/'include'),'-I',str(up/'ggml/include'),'-I',str(a.out),*map(str,sources),'-o',str(exe)]
     env=dict(os.environ,PATH=str(host)+os.pathsep+os.environ.get('PATH',''));results=[]
-    for name,c in [('compile',command)]+[(n,[str(exe),n])for n in ('positive','short_capture','short_restore','missing_PLE','wrong_routes','no_budget')]:
+    for name,c in [('compile',command)]+[(n,[str(exe),n])for n in ('positive','short_capture','short_restore','missing_PLE','wrong_routes','no_budget',
+        'prefix-positive','prefix-miss','prefix-short-restore','prefix-missing-PLE','prefix-no-budget','prefix-wrong-model','prefix-observer-failure',
+        'spec-accepted','spec-rejected','spec-discard','spec-target-EOG','spec-invalid','spec-short-restore','spec-missing-PLE',
+        'spec-missing-row','spec-unknown-sync','spec-process-failure','spec-wrong-model','spec-no-budget')]:
         r=subprocess.run(c,capture_output=True,timeout=120,env=env);(a.out/(name+'.private.log')).write_bytes(r.stdout+r.stderr)
         if r.returncode:raise RuntimeError(name+': '+r.stderr.decode(errors='replace')[-3000:])
         if name!='compile':results.append(json.loads(r.stdout))

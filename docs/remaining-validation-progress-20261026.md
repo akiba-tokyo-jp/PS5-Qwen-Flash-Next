@@ -8,9 +8,10 @@ does not establish generation speed, full-model acceptance or production adoptio
 The qualified production control is
 `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`.
 Temporary native fixtures preserve that control and restore it after ordinary
-closure; publication of a diagnostic SELF does not adopt it. The completed CPU
-cases below made no title, GPU, model-file or application
-changes. The driver selection remains `872cc126` / `cumulative-idle`, with
+closure; publication of a diagnostic SELF does not adopt it. The initial
+standalone CPU cases made no title, GPU, model-file or application changes.
+Later title-based CPU diagnostics are recorded separately with exact restoration.
+The driver selection remains `872cc126` / `cumulative-idle`, with
 persistent caches disabled. Raw private evidence, SDK inputs, binaries and
 original weight fragments remain outside Git.
 
@@ -354,6 +355,216 @@ The next consumers remain exact repeated-prefix reuse and width-two verification
 each with its own admission, comparison and adoption gates. The production
 executable and prior settings are restored; no new optimization is adopted.
 
+## Exact-prefix consumer and reduced-headroom experiment
+
+`ModelCheckpoint::matches_complete_prompt/rebind_complete_prompt` and
+`LlamaEngine::prefill` now implement default-off exact complete-prompt reuse on
+the same context/producer. Partial, generated, older, other-model and mismatched
+prompts refuse; prefix reuse and checkpoint replay are mutually exclusive.
+The original complete device snapshot is preserved across request cleanup and
+retired with its context. The adapter observes the existing full F32 CPU logits
+without adding a GPU download. The two requests' 23 original arrays, including
+EOG, must have identical SHA256 values, exact tokens/bytes and original routes.
+The enabled warm request has 22 original decode processes instead of 30 including
+prefill; result collectors require the explicitly bound prefix proof before
+accepting this accounting.
+
+Host 2592/2593 passed ownership/refusal/retention and 13 adapter scenarios.
+Host 2594 passed 27 policy refusals, original F32 bit-hash comparison and actual
+native compilation. The device executable passed linking, actual imports and
+six-segment SELF roundtrip as
+`ff2ef965e52386f04c44b763bc3bb0484e26761dfb44381f1190ebcb708d2c05`.
+These are implementation/host results, not a measured prefix benefit.
+
+After the owner explicitly authorized reduced-headroom experiments while
+physical recovery was unavailable until evening, case 2601 attempted the A1
+control of the planned A/B then B/A cohort. All ten observations passed the
+separately recorded experimental 6046-page gate at 6363–6364 pages. The regular
+10142-page production gate, native startup target 2974 and operational floor
+`minimum + max(reserved,256)` were recorded separately and preserved as specified
+in the [experimental exception](remaining-validation-plan-20261026.md#owner-authorized-reduced-headroom-experiment).
+
+The application returned a **known pre-backend memory refusal**. All original
+76-file metadata/footprint checks completed. The 77 virtual reserve/protection/
+release calls, including the small prerequisite, all returned, and all 76 model
+ranges were released. No model was loaded, GPU initialized, source worker
+started or external generation POST issued. The application waited within its
+original backpressure bound but did not regain the unchanged startup target.
+
+| Observed native interval | Free 16 KiB kernel pages |
+| --- | ---: |
+| After current SELF/receipt Direct integrity | 3401 |
+| Before original model metadata/integrity inspection | 3361 |
+| Before virtual-source rehearsal | 2102 |
+| After all virtual ranges were released | 2089 |
+| Last failed startup admission | 2077 |
+
+The large observed decline occurs **before** the virtual rehearsal: 1259 pages
+in the metadata/integrity interval, compared with 13 pages around the completed
+virtual operations. The tracked CPU heap grew from 16 to 32 MiB. These phase
+observations do not identify the allocator or establish that the heap caused
+the kernel-page decline. Original GGUF Direct metadata completed 86 reads /
+90177536 physical bytes, maximum logical prefix 10946389 bytes, with its window
+retired. No extra readback or inference repeats were used to repair this refusal.
+
+Review 2607 proved the returned CPU-only terminal and allowed ordinary exact-owner
+closure. Restoration 2608 returned the exact fastest SELF/settings, full
+readbacks, fresh idle CPU and the held reservation. Preservation 2609 verified
+18 closed artifacts and observed 6709 free pages. This point is not a future
+launch admission. The fastest production executable remains unchanged; no prefix
+timing or speed result exists. The cohort is incomplete and case 2601 is consumed.
+
+Metadata-only case 2611 inspected first and last 1 MiB of each sealed first part:
+152 regions, all resident/modified/referenced counts zero, with matching owned
+map/query/unmap completion and no payload reads, cache advice, title or GPU calls.
+This is a post-close observation in the payload's source namespace, not proof
+about every page or the application's mounted-file cache while it was running.
+The earlier case 2597 similarly found zero residency in 32 actual last-layer
+expert ranges and three positively closed executable controls.
+
+`metadata_memory_probe.h` and `native_main.cpp::inspect_container` now provide a
+separate default-off CPU-only attribution prototype: five observations per file
+around size access, GGUF parsing, tensor inspection and container retirement.
+Its fixed 27376-byte record store preserves all 380 observations. The dedicated
+policy disallows prefix/checkpoint/stage diagnostics and terminates before any
+virtual-source operation, worker or GPU initialization. Host 2614 passed all
+380 records and 31 refusal cases; 2613 compiled the actual native units. Build
+2615 passed actual imports/link and SELF roundtrip as
+`dbe2f323e1f2af917b95312731111c74069db757110281d4acfb22e3426bf4c8`.
+
+Distinct CPU-only case 2616 passed ten experimental observations at 6606 pages
+but refused **before the metadata loop**. Free pages were 1411 before current
+SELF/receipt integrity, 3139 after it and 1688 at failed startup readmission
+after shader CPU admission. No original container was parsed and no virtual
+source, worker, GPU or generation request started. The same 2974-page startup
+target and bounded wait remained unchanged. This earlier refusal shows that
+the metadata interval from case 2601 is not a unique explanation for all of the
+current title's pressure or system variation. The CPU probe remains physically
+unqualified; do not attribute its missing measurements to a specific parser or
+reduce the runtime floor to complete them.
+
+Review 2624 proved the returned pre-metadata terminal and ordinarily closed the
+exact owner. Restore 2625 returned the exact fastest/settings and fresh idle
+reservation; preservation 2626 verified 13 closed artifacts, ending at 6451 free
+pages. No unknown completion remains. Neither consumed case is eligible for
+replay; dependent physical comparisons need a materially improved fresh memory
+condition. Physical attribution and any resulting code optimization remain open.
+
+## Cache capacity feasibility
+
+Host 2599 used actual GGML allocation-free tensor metadata, 60 residue/role views
+and 3240 read envelopes. A 1D BF16 byte-storage root could represent 54 useful
+slots within the same 533495808-byte three-bank allocation; 55 cannot fit. The
+current 3D ownership/dispatch predicates reject that representation. No existing
+53-slot guard was relaxed and no 54-slot application was built or executed.
+
+Host 2600 replayed the actual `ExpertPolicy` and independent Python policy on
+the frozen production routes. Both capacities matched. Across the two external
+requests, misses changed from 38781 to 38762: only 19 experts / 186777600 bytes,
+or 0.048993% of baseline uploaded traffic. This is a traffic screen, not a speed
+measurement or a hard bound on critical-path latency. The actual soft layer floor
+is zero for both capacities at the recorded top-10 through top-40 selections;
+do not assume a one-expert-per-layer floor. Cache expansion remains unpromoted
+and requires new ownership/dispatch qualification plus the wider lifetime audit.
+
+The finite research expansion screen 2630 replayed 53, 54, 64, 80, 96, 112, 128,
+144 and 160 slots through the actual C++ policy and an independent Python replay
+with the native layer floor. All nine matched, and the 53-slot control matched
+the native counters. This prices the existing **3D root plus one spare plane**;
+the 54-slot row here is a different representation from the preceding packed
+byte-storage hypothesis. No extra allocation was made.
+
+| Hypothetical slots | Three banks, MiB | Extra banks versus control, MiB | External logical upload reduction |
+| --- | ---: | ---: | ---: |
+| 53 | 508.781 | 0 | 0 |
+| 64 | 612.422 | 103.641 | 0.436% |
+| 96 | 913.922 | 405.141 | 3.200% |
+| 128 | 1215.422 | 706.641 | 4.899% |
+| 160 | 1516.922 | 1008.141 | 6.740% |
+
+Every expanded 3D candidate exceeds the existing 512 MiB cache cap. Adding the
+bank delta to the observed checkpoint device peak is only an arithmetic envelope
+under unchanged-other-lifetimes assumptions: 128 slots would be 1726.641 MiB,
+while 144/160 already exceed the 1792 MiB ledger cap. No geometry, UMA/kernel
+headroom, peak lifetime or native speed admission follows. The modest traffic
+reduction at a large extra footprint lowers this candidate's present priority.
+
+Screen 2631 separately kept all 53 slots and tested two causal cyclic-order
+eviction prototypes in `cyclic_expert_policy.h`, using the actual aged-frequency
+observer and an independent Python replay. Layer-distance eviction increased
+external misses from 38781 to 39286 (+1.302% traffic). Frequency divided by next
+layer distance reduced aggregate misses to 38726 (0.142%), but the repeated
+request worsened from 19244 to 19282. Both failed the declared requirement for
+fewer misses in each external request. These variants are rejected at the
+metadata screen and need no native integration/speed run. No future expert IDs,
+speculative reads, bank changes or production policy changes were used.
+
+## Model-free draft and width-two adapter prototypes
+
+`model_free_draft.h::propose_model_free_token` now implements a bounded pure
+metadata prototype. It accepts only the prompt and already committed generated
+IDs, prefers generated-history suffixes of length one through four, and requires
+at least two suffix tokens for prompt lookup. It introduces no weights, logits,
+learned host inference or speculative reads. Its second exploratory mode requires
+at least two historical matching successors with no conflicting successor; this
+is a recurrence rule, not a calibrated confidence estimate.
+
+Host 2628 passed 12 input refusals, suffix/recency/provenance controls and future
+suffix mutation controls. On each of the **same two saved counting traces**, 21
+positions were eligible: latest-match proposed 12 times and matched six saved
+next tokens; the consistent-pair screen proposed five times and matched all five.
+The latter rule was explored after inspecting this workload and is **not** an
+independent accuracy or throughput evaluation. Prompt lookup on actual model
+traces was not evaluated because those saved traces contain generated IDs only.
+EOG targets, target width-two arithmetic, rejected-draft traffic and new workloads
+remain necessary before any speed claim or adoption.
+
+`LlamaEngine::enable_speculative_step_prototype/next_with_one_draft` adds an
+independent default-off adapter prototype. No `native_main` policy or automatic
+draft controller enables it. Verification width two means the original pending
+token **plus one draft**. It captures the qualified complete state, runs both
+original target positions with the existing matrix route, and checks both full
+finite F32 CPU logit rows with the original greedy sampler. Acceptance samples
+the first target once and pins the second target row for the next ordinary
+`next()` call. Rejection, including an EOG target, restores the entire checkpoint
+and computes the original pending token before emitting anything. The expert
+cache's observed work is not rolled back or omitted from future cost accounting.
+
+All snapshot, model, sequence, request and producer guards remain. The prototype
+caps attempts at 32 and vocabulary at 262144, rejects a second verification or
+prefill while its bonus is pending, and discards a queued row on successful
+request cleanup. Unknown processing/synchronization, missing logits, incomplete
+restore or corrupted PLE retain the failed owner and block subsequent work.
+These are transaction/API controls, not physical arithmetic qualification. The
+current matrix and staging behavior must be priced; a saved route match does
+not establish that this path beats two optimized single-token decodes.
+
+Host 2633 passed **25 actual-adapter/API-stub scenarios**, including the original
+checkpoint/prefix controls and width-two acceptance, zero acceptance, queued-row
+discard, EOG, invalid draft/duplicate prefill, incomplete restore, missing PLE,
+missing row, failed process, unknown synchronization, wrong model and refused
+budget. All three emitted/EOG F32 arrays matched the opaque ordinary reference
+in successful two-output cases. Accepted cases used nine process calls, versus
+ten ordinary calls for that stub prompt; rejected cases used eleven. These
+counts are API behavior only, not throughput or learned-model inference. Native
+host check 2634 passed the original 27 policy refusals, F32 bit hash and actual
+compilation of all four native units. The prototype has no full native package,
+physical width-two fixture, full-model comparison, automatic controller or
+production adoption.
+
+## Bounded workload metadata
+
+`config/bounded-workloads.json` remains execution-disabled. Host 2629 used the
+actual `chat_prompt.cpp` C++ renderer, unchanged original template and original
+tokenizer metadata through the existing conversion environment. No weights were
+read or evaluated and no new dependency was installed. Rendered prompt counts
+were arithmetic control 26, counting control 30, Japanese dialogue 20, code/copy
+21, short reasoning 27 and low-repetition 17. Both control counts matched their
+completed native controls. The four added cases fit the planned 30-token prompt,
+22-token output cap and context 256. Exact native token-ID equality, native
+execution, output quality and the surviving candidate's broader comparisons
+remain unqualified.
+
 ## Remaining package scope
 
 The peak-live allocation review, broader tokenized workloads, ready-expert
@@ -361,5 +572,7 @@ execution, hidden-state observation/forecasts, prefix reuse, exact speculative
 verification/adaptive width and eligible graph specializations remain incomplete.
 The finite complete-state continuation comparison has passed. Device checkpoints
 are not ruled out by the rejected CPU snapshot. The existing cache cap still
-cannot hold an extra expert with the current three-bank geometry and spare
-planes. See the plan for each remaining prerequisite and adoption gate.
+cannot hold an extra expert with the current qualified three-bank ownership and
+dispatch geometry. A hypothetical byte-storage view passed host geometry only,
+with a very small route-traffic benefit. See the plan for each remaining
+prerequisite and adoption gate.

@@ -382,6 +382,27 @@ observations never authorize a new launch. Reuse the qualified driver, sealed
 model lineage, shader evidence and returned integrity receipts only within their
 exact unchanged scope; no routine reconversion or redundant full transfer.
 
+### Owner-authorized reduced-headroom experiment
+
+After disclosure of the 7036-page idle observation and regular 10142-page gate,
+the owner explicitly permitted experiments while physical recovery is unavailable
+until evening. This supersedes the earlier prohibition on changing the additional
+prelaunch margin only for a separately recorded finite experimental cohort. It
+does not establish that the reduced margin is safe or sufficient.
+
+The exact-prefix A/B then B/A cohort uses the same packaged executable with a
+frozen reuse switch. Its experimental gate requires ten fresh consecutive
+observations at or above 6046 pages: the unchanged startup target 2974 plus
+3072 pages (48 MiB) of additional prelaunch margin. The regular extra margin
+remains 7168 pages (112 MiB), and the regular production gate remains 10142.
+Both thresholds must be recorded in the experimental log. The native startup
+target, operational floor, bounded backpressure, CPU/Direct/Flexible/device
+allocation caps, positive completion, ordinary close and exact fastest-control
+restoration requirements remain unchanged. There is no forced reset or
+automatic retry. A returned refusal closes its case; unknown completion retains
+all backing and prevents dependent console execution. Passing this experimental
+gate does not qualify a changed production default.
+
 Keep durable bounded progress/completion records and all existing deadlines.
 Perform large transport/visual capture before required native Direct integrity
 of positively closed artifacts, then fresh admission. Preserve monitoring. A

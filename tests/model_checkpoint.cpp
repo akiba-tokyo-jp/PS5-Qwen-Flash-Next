@@ -76,6 +76,18 @@ int main() {
         short_capture=false;short_restore=false;wrong_position=false;context.memory.maximum=7;
     }
     check(captures==6&&restores==5&&completions==8);
+    app={3,3,LLAMA_TOKEN_NULL,true,{1,2,3}};context.memory.minimum=0;context.memory.maximum=2;
+    saved.capture(app,logits.data(),logits.size(),admit,stage,complete);check(saved.matches_complete_prompt(app.prompt));
+    auto changed=app.prompt;changed.back()=4;check(!saved.matches_complete_prompt(changed));
+    const auto restore_before=restores;
+    reject([&]{saved.rebind_complete_prompt(3,app.prompt);});reject([&]{saved.rebind_complete_prompt(0,app.prompt);});
+    reject([&]{saved.rebind_complete_prompt(4,changed);});check(restores==restore_before);
+    saved.rebind_complete_prompt(4,app.prompt);reject([&]{saved.restore(3,stage,complete);});
+    check(saved.restore(4,stage,complete).request_epoch==4&&saved.logits()==logits);
+    app.request_epoch=5;app.ready=false;
+    saved.capture(app,logits.data(),logits.size(),admit,stage,complete);check(!saved.matches_complete_prompt(app.prompt));
+    reject([&]{saved.rebind_complete_prompt(6,app.prompt);});saved.discard();
+    check(!saved.matches_complete_prompt(app.prompt));reject([&]{saved.rebind_complete_prompt(7,app.prompt);});
     std::cout<<"{\"full_stub_state_and_application_roundtrip\":true,\"partial_prefill_state\":true,\"wrong_epoch_model_and_thread_refused\":true,\"bounded_failure_controls\":"<<refused
-        <<",\"uncertain_cases_retained\":4,\"CPU_whole_state_payload\":false,\"PS5_operations\":0,\"model_arithmetic\":false}"<<std::endl;
+        <<",\"exact_complete_prefix_rebinding_checked\":true,\"uncertain_cases_retained\":4,\"CPU_whole_state_payload\":false,\"PS5_operations\":0,\"model_arithmetic\":false}"<<std::endl;
 }

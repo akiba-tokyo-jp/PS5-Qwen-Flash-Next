@@ -162,7 +162,7 @@ void LlamaEngine::process(llama_token token, llama_pos position, bool output) {
 }
 
 void LlamaEngine::process_batch(const llama_token * tokens, std::uint32_t count, llama_pos position) {
-    if(checkpoint_&&inside_prefill_&&(position==4||position==28)) {
+    if(checkpoint_stats_.enabled&&inside_prefill_&&(position==4||position==28)) {
         capture_checkpoint_in_active_epoch();
         const auto first=checkpoint_route_cursor_();
         process_batch_once(tokens,count,position);
@@ -208,12 +208,25 @@ void LlamaEngine::process_batch_once(const llama_token * tokens, std::uint32_t c
 
 void LlamaEngine::prefill(std::uint32_t context_tokens) {
     require_healthy();
+    if(speculative_stats_.enabled&&(ready_||speculative_bonus_ready_))
+        throw std::invalid_argument("A speculative request cannot prefill again before successful request cleanup");
     if (prompt_.empty() || prompt_.size() >= context_tokens || context_tokens > llama_n_ctx(context_))
         throw std::invalid_argument("Invalid context admission");
     try {
         guard();
         GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);
         stage("inference_before_prefill");
+        if(prefix_stats_.enabled&&checkpoint_->matches_complete_prompt(prompt_)) {
+            {ProfileScope timing(prefix_stats_.restore_ns);
+                checkpoint_->rebind_complete_prompt(request_epoch_,prompt_);
+                restore_checkpoint_in_active_epoch();}
+            if(!ready_||pending_!=LLAMA_TOKEN_NULL||position_!=llama_pos(prompt_.size()))
+                throw std::runtime_error("Restored prefix is not a complete unsampled prompt");
+            boundary.complete();++prefix_stats_.restores;prefix_stats_.request_hit=true;
+            prefix_stats_.last_reused_prompt_tokens=std::uint32_t(prompt_.size());
+            stage("inference_exact_prefix_prefill_restored_completed");return;
+        }
+        prefix_stats_.request_hit=false;prefix_stats_.last_reused_prompt_tokens=0;
         llama_memory_clear(llama_get_memory(context_), true);
         llama_sampler_reset(sampler_);
         position_ = 0;
@@ -228,14 +241,73 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
             position_ += count;
             i += count;
         }
-        inside_prefill_=false;boundary.complete();ready_ = true;
+        inside_prefill_=false;
+        if(prefix_stats_.enabled) {
+            ready_=true;
+            {ProfileScope timing(prefix_stats_.capture_ns);capture_checkpoint_in_active_epoch();}
+            ++prefix_stats_.captures;
+        }
+        boundary.complete();ready_ = true;
         stage("inference_prefill_completed");
     } catch (...) { inside_prefill_=false;failed_ = true; throw; }
 }
 
 Token LlamaEngine::next() {
-    if(checkpoint_)return validate_next_checkpoint();
+    if(speculative_bonus_ready_) {
+        require_healthy();
+        restored_logits_=std::move(speculative_bonus_logits_);restored_logits_active_=true;
+        speculative_bonus_ready_=false;pending_=LLAMA_TOKEN_NULL;++speculative_stats_.queued_bonus_samples;
+    }
+    if(checkpoint_stats_.enabled)return validate_next_checkpoint();
     return next_once();
+}
+
+Token LlamaEngine::next_with_one_draft(llama_token draft) {
+    require_healthy();
+    const auto count=llama_vocab_n_tokens(vocabulary_);
+    if(!speculative_stats_.enabled||!checkpoint_||!ready_||pending_==LLAMA_TOKEN_NULL||
+       llama_vocab_is_eog(vocabulary_,pending_)||speculative_bonus_ready_||draft<0||draft>=count||
+       count<=0||count>262144||std::uint64_t(position_)+2>llama_n_ctx(context_)||speculative_stats_.attempts>=32)
+        throw std::invalid_argument("One draft requires an original pending token and an admitted bounded prototype owner");
+    try {
+        guard();
+        {
+            GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);
+            ++speculative_stats_.attempts;capture_checkpoint_in_active_epoch();
+            const llama_token pair[]={pending_,draft};
+            // Two original causal target tokens, not two draft tokens. The
+            // existing matrix route remains selected, independently of prefill.
+            process_batch_once(pair,2,position_);
+            const auto *first=llama_get_logits_ith(context_,0),*second=llama_get_logits_ith(context_,1);
+            if(!first||!second||llama_get_sampled_token_ith(context_,-1)!=LLAMA_TOKEN_NULL||
+               llama_get_sampled_probs_ith(context_,-1)||llama_get_sampled_logits_ith(context_,-1))
+                throw std::runtime_error("Width-two verification requires both complete original F32 CPU logit rows");
+            checkpoint_candidates_.resize(std::size_t(count));
+            for(llama_token id=0;id<count;++id) {
+                if(!std::isfinite(first[id])||!std::isfinite(second[id]))
+                    throw std::runtime_error("Non-finite width-two target logits");
+                checkpoint_candidates_[id]={id,first[id],0.0f};
+            }
+            llama_token_data_array candidates{checkpoint_candidates_.data(),checkpoint_candidates_.size(),-1,false};
+            llama_sampler_apply(sampler_,&candidates);
+            if(candidates.selected<0||std::size_t(candidates.selected)>=candidates.size)
+                throw std::runtime_error("Width-two target greedy selection failed");
+            const auto target=candidates.data[candidates.selected].id;
+            if(target==draft&&!llama_vocab_is_eog(vocabulary_,target)) {
+                restored_logits_.assign(first,first+count);speculative_bonus_logits_.assign(second,second+count);
+                restored_logits_active_=true;speculative_bonus_ready_=true;pending_=LLAMA_TOKEN_NULL;
+                position_+=2;++speculative_stats_.accepted;
+                stage("speculative_width_two_target_completed_draft_accepted_bonus_pinned");
+            }else {
+                // The batched row is never emitted on rejection. Restore every
+                // original state owner, then evaluate the pending token normally.
+                restore_checkpoint_in_active_epoch();++speculative_stats_.rejected;
+                stage("speculative_width_two_rejected_complete_state_restored");
+            }
+            boundary.complete();
+        }
+        return next_once();
+    }catch(...){failed_=true;throw;}
 }
 Token LlamaEngine::next_once() {
     require_healthy();
@@ -252,6 +324,11 @@ Token LlamaEngine::next_once() {
         if (!logits || count <= 0) throw std::runtime_error("Missing logits");
         for (int i = 0; i < count; ++i) {
             if (!std::isfinite(logits[i])) throw std::runtime_error("Non-finite model logits");
+        }
+        if(logits_observer_) {
+            if(llama_get_sampled_token_ith(context_,-1)!=LLAMA_TOKEN_NULL||llama_get_sampled_probs_ith(context_,-1)||llama_get_sampled_logits_ith(context_,-1))
+                throw std::runtime_error("Logit observation requires the existing full-logit CPU greedy path");
+            logits_observer_(logits,std::size_t(count));
         }
         stage("inference_before_sampling");
         if(restored_logits_active_) {
@@ -287,10 +364,11 @@ void LlamaEngine::finish() {
     stage("inference_before_successful_request_reset");
     llama_memory_clear(llama_get_memory(context_), true);
     llama_sampler_reset(sampler_);
-    if(checkpoint_) {
+    if(checkpoint_stats_.enabled||speculative_stats_.enabled) {
         checkpoint_->discard();
-        checkpoint_stats_.completed=checkpoint_stats_.captures>0&&checkpoint_stats_.captures==checkpoint_stats_.restores;
+        if(checkpoint_stats_.enabled)checkpoint_stats_.completed=checkpoint_stats_.captures>0&&checkpoint_stats_.captures==checkpoint_stats_.restores;
     }
+    speculative_bonus_ready_=false;speculative_bonus_logits_.clear();
     restored_logits_active_=false;restored_logits_.clear();checkpoint_reference_logits_.clear();checkpoint_candidates_.clear();
     ready_ = false;
     pending_ = LLAMA_TOKEN_NULL;
@@ -310,6 +388,26 @@ void LlamaEngine::enable_checkpoint_validation(std::function<void(std::uint64_t)
         throw std::invalid_argument("Checkpoint validation requires the original bounded context and complete owner hooks");
     checkpoint_=std::make_unique<ModelCheckpoint>(model_,context_);checkpoint_admit_=std::move(admit);
     checkpoint_route_cursor_=std::move(cursor);checkpoint_compare_routes_=std::move(compare);checkpoint_stats_.enabled=true;
+}
+void LlamaEngine::enable_prefix_reuse(std::function<void(std::uint64_t)> admit) {
+    require_healthy();
+    if(producer_!=std::this_thread::get_id()||checkpoint_||ready_||!prompt_.empty()||prefill_tokens_!=4||llama_n_ctx(context_)!=256||!admit||
+       !gpu_begin_||!gpu_complete_||!gpu_retain_||!gpu_checkpoint_)
+        throw std::invalid_argument("Prefix reuse requires one original bounded context and complete owner hooks");
+    checkpoint_=std::make_unique<ModelCheckpoint>(model_,context_);checkpoint_admit_=std::move(admit);prefix_stats_.enabled=true;
+}
+void LlamaEngine::set_logits_observer(std::function<void(const float *,std::size_t)> observer) {
+    require_healthy();
+    if(producer_!=std::this_thread::get_id()||ready_||!prompt_.empty())
+        throw std::invalid_argument("Completed-logit observation must be bound before tokenization on the original producer");
+    logits_observer_=std::move(observer);
+}
+void LlamaEngine::enable_speculative_step_prototype(std::function<void(std::uint64_t)> admit) {
+    require_healthy();
+    if(producer_!=std::this_thread::get_id()||checkpoint_||ready_||!prompt_.empty()||prefill_tokens_!=4||llama_n_ctx(context_)!=256||!admit||
+       !gpu_begin_||!gpu_complete_||!gpu_retain_||!gpu_checkpoint_)
+        throw std::invalid_argument("Width-two prototype requires the original bounded context and complete owner hooks");
+    checkpoint_=std::make_unique<ModelCheckpoint>(model_,context_);checkpoint_admit_=std::move(admit);speculative_stats_.enabled=true;
 }
 void LlamaEngine::capture_checkpoint_in_active_epoch() {
     guard();

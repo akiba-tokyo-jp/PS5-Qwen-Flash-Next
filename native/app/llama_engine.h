@@ -18,6 +18,15 @@ struct CheckpointValidationStats {
     double maximum_absolute_logit_error=0;
     std::array<std::int32_t,34> capture_positions{};
 };
+struct PrefixReuseStats {
+    bool enabled=false,request_hit=false;
+    std::uint32_t captures=0,restores=0,last_reused_prompt_tokens=0;
+    std::uint64_t capture_ns=0,restore_ns=0;
+};
+struct SpeculativeStepStats {
+    bool enabled=false;
+    std::uint32_t attempts=0,accepted=0,rejected=0,queued_bonus_samples=0;
+};
 struct LlamaTimingStats {
     std::uint64_t process_calls = 0, process_ns = 0, synchronize_ns = 0;
     std::uint64_t checkpoint_ns = 0, work_guard_ns = 0, stage_observer_ns = 0;
@@ -45,6 +54,14 @@ public:
         std::function<std::uint32_t()> route_cursor,
         std::function<void(std::uint32_t,std::uint32_t,std::uint32_t)> compare_routes);
     CheckpointValidationStats checkpoint_validation_stats()const{return checkpoint_stats_;}
+    void enable_prefix_reuse(std::function<void(std::uint64_t)> admit);
+    PrefixReuseStats prefix_reuse_stats()const{return prefix_stats_;}
+    void set_logits_observer(std::function<void(const float *,std::size_t)> observer);
+    // Host-qualified prototype entry only. No native policy or automatic draft
+    // controller enables this path; width-two model arithmetic remains unqualified.
+    void enable_speculative_step_prototype(std::function<void(std::uint64_t)> admit);
+    Token next_with_one_draft(llama_token draft);
+    SpeculativeStepStats speculative_step_stats()const{return speculative_stats_;}
     // Called before work and after synchronized decode/checkpoint boundaries.
     void set_work_guard(std::function<void()> guard, std::uint32_t prompt_token_limit = 0) {
         work_guard_ = std::move(guard); prompt_token_limit_ = prompt_token_limit;
@@ -83,6 +100,11 @@ private:
     mutable LlamaTimingStats timing_;
     std::unique_ptr<ModelCheckpoint> checkpoint_;
     CheckpointValidationStats checkpoint_stats_;
+    PrefixReuseStats prefix_stats_;
+    SpeculativeStepStats speculative_stats_;
+    bool speculative_bonus_ready_=false;
+    std::vector<float> speculative_bonus_logits_;
+    std::function<void(const float *,std::size_t)> logits_observer_;
     std::function<void(std::uint64_t)> checkpoint_admit_;
     std::function<std::uint32_t()> checkpoint_route_cursor_;
     std::function<void(std::uint32_t,std::uint32_t,std::uint32_t)> checkpoint_compare_routes_;

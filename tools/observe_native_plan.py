@@ -257,6 +257,16 @@ def main():
             checkpoint_review=validate_checkpoint(checkpoint_validation,result['demonstration']['requests'][1],
                 pid=expected['pid'],run_id=expected['run_id'])
             exclusive(out/'model-checkpoint-review.private.json',checkpoint_review)
+        prefix_validation=None
+        if binding.get('require_prefix_validation')is not None:
+            scope=binding['require_prefix_validation']
+            require(type(scope)is dict and set(scope)=={'prefix_reuse_enabled'}and type(scope['prefix_reuse_enabled'])is bool and
+                checkpoint_validation is None,'Prefix and replay validation must use distinct frozen cases')
+            from prefix_reuse_result import validate_prefix
+            download('.prefix-reuse');prefix_validation=read_record(Path(str(result_path)+'.prefix-reuse'))
+            prefix_review=validate_prefix(prefix_validation,*result['demonstration']['requests'],pid=expected['pid'],run_id=expected['run_id'],
+                expected_enabled=scope['prefix_reuse_enabled'])
+            exclusive(out/'prefix-reuse-review.private.json',prefix_review)
         # The full native validator admits the exact split integrity/layout first.
         split_sources = bool(expected.get('split512_integrity_sha256'))
         if performance_required:
@@ -265,7 +275,8 @@ def main():
             for ordinal, native_request in enumerate(result['demonstration']['requests'], 1):
                 summaries.append(validate_performance(
                     read_record(Path(str(result_path) + '.demo' + str(ordinal) + '.performance')), native_request,
-                    split_sources=split_sources,checkpoint_validation=checkpoint_validation if ordinal==2 else None))
+                    split_sources=split_sources,checkpoint_validation=checkpoint_validation if ordinal==2 else None,
+                    prefix_validation=prefix_validation))
             if binding.get('require_parallel_sources') is True:
                 download('.source.parallel')
                 admission = read_record(Path(str(result_path) + '.source.parallel'))
