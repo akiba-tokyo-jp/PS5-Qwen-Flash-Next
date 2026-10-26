@@ -51,6 +51,14 @@ records 169 returned Direct reads / 8,258,588 bytes, a 49,152-byte input window,
 It does **not** identify the responsible operation. Code paging and concurrent
 OS activity remain alternatives.
 
+The older [SELF-only control](native-SELF-read-controls-20261024.json) is a
+counterexample: without shader initialization or model metadata, free pages fell
+4,728 -> 2,994 during five seconds of quiet, while wired rose 34,406 -> 36,147.
+That executable was 38,095,127 bytes, not the current fixture; its magnitude is
+not a current matched estimate. It nevertheless disproves the claim that shader
+work is necessary for this decline. Do not repeat that unchanged historical
+control or diagnose a shader leak from timing alone.
+
 Current SELF/receipt Direct integrity in that case changed free pages from
 1,411 to 3,139. This supports the existing integrity order but does not explain
 the later loss. Case 2601 separately lost 1,259 pages during metadata checks
@@ -131,3 +139,15 @@ exists yet. Ready-expert/router prototypes are paused behind this sequence.
 Keep the installed fastest SELF, driver `872cc126` / `cumulative-idle`, disabled
 persistent caches and production limits. Raw identities, paths, SDK inputs,
 binaries and console records remain private.
+
+Package 2670 passed the full application link, actual module import audit
+(zero missing imports) and six SELF segment roundtrips. It uses source commit
+`fa9ff60` and unchanged driver/engine/shader archives. The linked PIE SHA256 is
+`04c13268f6244a2976bdcdf869398df816600a365af2dd993cc12587ed221447`;
+the converted ELF is `aa56eaf2b5e3918c7e61087f444f0cd70a9f6a8f92a398523a73421091f0422d`;
+the 28,258,439-byte SELF is
+`8dddba9df84629a5e12a74152b0bee17c00da6a6b81809798ee9218b4b1c54f5`.
+It has not been published or executed. Host 2667 passed 35 scope refusals and
+actual main compilation; 2668 passed shared shader orchestration and nine
+refusals. Five reviewer test groups passed, including owner/scope, finite reads,
+paired stages, invalid/ring-overwritten observations and strict numeric types.

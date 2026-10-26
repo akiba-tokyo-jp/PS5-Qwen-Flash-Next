@@ -645,6 +645,14 @@ The earlier 2666 host test used a one-asset synthetic policy against a harness
 expecting 1527 assets; its failed control is retained. The separately corrected
 2668 used the real qualified 1527-asset policy, with zero console operations.
 
+Full app/package 2670 then passed actual linking, zero missing imports and six
+SELF roundtrips at `8dddba9df84629a5e12a74152b0bee17c00da6a6b81809798ee9218b4b1c54f5`
+(28258439 bytes). Driver/engine/shader archives stayed unchanged; no PS5
+publication or execution occurred. Earlier SELF-only quiet controls also showed
+a decline without shader/model work, so this localized interval is not proof
+of a shader leak. The physical attribution and PLE-specific launch qualification
+remain open; production is unchanged.
+
 Before this reprioritization, host 2660 implemented partial ready-expert graphs
 at widths one through ten, original-order reduction and actual-router shadow
 graph/observer/callback prototypes. It passed 20 actual GGML partial graphs,

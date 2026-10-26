@@ -24,7 +24,7 @@ class Controls(unittest.TestCase):
         self.assertFalse(r['proprietary_cause_identified']);self.assertFalse(r['GPU_execution_qualified'])
     def test_owner_and_scope(self):
         for key,value in [('pid',True),('pid',8),('run_id','b'*32),('GPU_calls',1),('source_workers',1),('model_metadata_files',1),
-            ('CPU_only',False),('model_loaded',True),('all_shader_input_calls_returned',False)]:
+            ('CPU_only',False),('model_loaded',True),('all_shader_input_calls_returned',False),('matched_idle_ns',2000000.0)]:
             r=good();r[key]=value
             with self.assertRaises(ValueError):validate(r,7,'a'*32)
     def test_counts_and_window(self):
@@ -38,7 +38,8 @@ class Controls(unittest.TestCase):
             with self.assertRaises(ValueError):validate(r,7,'a'*32)
     def test_ring_wrap_or_missing_phase_is_not_complete(self):
         for change in(lambda r:r['operation_boundaries'].update(total_observations=65),
-            lambda r:r['operation_boundaries'].update(invalid_observation=True),lambda r:r['operation_boundaries']['rows'][0].update(phase='missing')):
+            lambda r:r['operation_boundaries'].update(invalid_observation=True),lambda r:r['operation_boundaries']['rows'][0].update(phase='missing'),
+            lambda r:r['operation_boundaries']['rows'][0].update(sequence=True)):
             r=good();change(r)
             with self.assertRaises(ValueError):validate(r,7,'a'*32)
 if __name__=='__main__':unittest.main()

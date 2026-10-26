@@ -5,10 +5,11 @@ def validate(result,pid,run_id):
     def require(ok):
         if not ok:raise ValueError('Incomplete or inconsistent CPU shader startup evidence')
     def integer(value,minimum=0):return type(value)is int and value>=minimum
+    require(integer(pid,1)and isinstance(run_id,str)and len(run_id)==32 and all(c in '0123456789abcdef'for c in run_id))
     require(result.get('schema')=='ps5-qwen-shader-startup-memory-result-v1'and type(result.get('pid'))is int and result['pid']==pid and result.get('run_id')==run_id)
     for key in('all_shader_input_calls_returned','CPU_only','ordinary_OS_close_required'):require(result.get(key)is True)
     for key in('GPU_calls','source_workers','model_metadata_files'):require(type(result.get(key))is int and result[key]==0)
-    require(result.get('model_loaded')is False and result.get('matched_idle_ns')==2000000)
+    require(result.get('model_loaded')is False and type(result.get('matched_idle_ns'))is int and result['matched_idle_ns']==2000000)
     calls=result.get('shader_read_calls');require(integer(calls,1)and calls<=16384)
     require(integer(result.get('shader_file_bytes'),1)and result['shader_file_bytes']<=128<<20)
     require(result.get('shader_returned_bytes')==result['shader_file_bytes']and type(result['shader_returned_bytes'])is int)
@@ -21,7 +22,7 @@ def validate(result,pid,run_id):
         require(isinstance(s,dict)and s.get('valid')is True and isinstance(s.get('phase'),str))
         for key in('idle_before_ns','before_ns','write_after_ns','after_ns'):require(integer(s.get(key),1))
         require(s['idle_before_ns']+2000000<=s['before_ns']<=s['write_after_ns']<=s['after_ns'])
-        for key in('free_idle_before','free_before','free_after_write','free_after'):require(integer(s.get(key)))
+        for key in('free_idle_before','free_before','free_after_write','free_after'):require(integer(s.get(key))and s[key]<=0xffffffff)
         if previous:require(s['idle_before_ns']>=previous['after_ns'])
         sums['matched_idle_pages']+=s['free_before']-s['free_idle_before']
         sums['journal_write_pages']+=s['free_after_write']-s['free_before']
@@ -39,7 +40,7 @@ def validate(result,pid,run_id):
         'shader_prior_proof_returned','shader_CPU_admission_returned'}
     require(required<={r.get('phase')for r in rows})
     for i,row in enumerate(rows):
-        require(row.get('valid')is True and row.get('sequence')==i+1 and integer(row.get('kernel_free_pages'))and integer(row.get('monotonic_ns'),1))
+        require(row.get('valid')is True and integer(row.get('sequence'),1)and row['sequence']==i+1 and integer(row.get('kernel_free_pages'))and integer(row.get('monotonic_ns'),1))
         if i:require(row['monotonic_ns']>=rows[i-1]['monotonic_ns'])
     return dict(CPU_observations_complete=True,shader_read_pairs=read_pairs,samples=len(samples),
         signed_page_changes=sums,page_change_sign='positive_is_more_free_pages',
