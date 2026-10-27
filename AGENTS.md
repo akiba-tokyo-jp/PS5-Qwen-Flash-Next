@@ -19,6 +19,18 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The latest continuation is `docs/gpu-phase-calibration-20261028.md` / `.json`.
+Case 3593 completed one empty native Vulkan backend lifetime, sampled global
+free pages 2778 -> 2770 (8-page maximum decline), no model/source work, positive
+backend synchronization/retirement and ordinary exact-owner OS close. Exact
+fastest/five settings, native whole integrity and fresh idle passed. This does
+not qualify resident weight/load/context cost, C2/C3 or a speedup. Cases
+3555/3567 are consumed CPU-policy refusals; 3580 was abandoned before publication
+or launch. Do not replay them. Automatic approval review rejected the source
+patch for a new up-to-8.75-GB raw-buffer experiment; it was not applied/executed.
+Its explicit risk decision is pending. Preserve this constraint, rather than
+calling it physical impossibility or bypassing it.
+
 Latest measured VM results are `docs/vm-revalidation-results-20261028.md` /
 `.json` and `docs/resident-startup-calibration-20261028.json`. All 16 families
 and 22 prior items remain classified separately. Case 3538 completed the
