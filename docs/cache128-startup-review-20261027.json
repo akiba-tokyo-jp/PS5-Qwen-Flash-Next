@@ -1,0 +1,55 @@
+{
+  "schema": "ps5-qwen-cache-startup-review-public-v1",
+  "date": "2026-10-27",
+  "offline_startup_review_completed": true,
+  "model_startup_prerequisite": "unresolved_revisable_resource_policy",
+  "supported_removable_owned_startup_cost_found": false,
+  "native_early_display_already_disabled": true,
+  "observed_CPU_heap_bytes": [16777216, 33554432],
+  "CPU_heap_pool": "Direct, not kernel free pages",
+  "previous_model_attempt": {
+    "case": 2860,
+    "selected_prelaunch_pages": 6207,
+    "observed_initial_free_pages": 8272,
+    "observed_lowest_phase_free_pages": 1523,
+    "maximum_observed_interval_decline_pages": 6749,
+    "exclusive_kernel_owner_identified": false
+  },
+  "repriced_model_scope": {
+    "observed_decline_pages": 6749,
+    "unchanged_native_startup_target_pages": 2974,
+    "variation_pages": 256,
+    "computed_price_pages": 9979,
+    "regular_policy_lower_bound_pages": 10142,
+    "selected_prelaunch_pages": 10142,
+    "kernel_operational_floor_pages": 1154,
+    "application_policy_not_physical_minimum": true,
+    "native_memory_predicates_changed": false,
+    "original_full_candidate_package_reused": true,
+    "candidate_rebuilt": false
+  },
+  "fresh_readonly_screen": {
+    "case": 3014,
+    "boot_matched_before_and_after": true,
+    "free_first_pages": 6708,
+    "free_last_pages": 6708,
+    "wired_pages": 30296,
+    "may_prepare_model_cohort": false,
+    "ELF_requests": 0,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "sysctl_writes": 0,
+    "recovery_attempts": 0,
+    "automatic_retries": 0
+  },
+  "required_change": "Supported material reduction of the full startup envelope, or sufficient actual headroom under a reviewed scope; no reboot dependency or repeated unchanged probe.",
+  "independent_existing_host_deliverable": "tools/cache_cohort_result.py: full raw-evidence A53/B128/B128/A53 comparison",
+  "new_model_speed_result": false,
+  "production_adopted": false,
+  "CI_runs": 0,
+  "private_evidence": {
+    "completion": {"bytes": 915, "sha256": "7cf9a35b84c19d86daa8cc896a657218a70ca014c1451aa837bfa1178f56191c"},
+    "predeclared_ledger": {"bytes": 5231, "sha256": "eb3bb905712c9438bd7221f28acde65b89e301aefc55f6b8481a1dfbbe89ebe6"},
+    "readonly_screen": {"bytes": 1008, "sha256": "d52bf24e9a838ee954d05c3811510776ab565c91ce4930160e48d83c9681ad75"}
+  }
+}

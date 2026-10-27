@@ -10,13 +10,17 @@ expert pruning, or PC/cloud model execution is part of this goal.
 The [plan status index](docs/plan-index.md) is the entry point for adopted
 techniques, rejected variants, remaining research and historical plan outcomes.
 **Implementation and validation of all proposals are not complete.** Ready-expert
-execution, hidden-state router forecasting and speculative verification remain
-unimplemented. Individual finite implementation, GPU optimization,
+execution and hidden-state router forecasting remain incomplete; exact width-two
+speculation has a default-off implementation but lacks native acceptance/speed
+qualification. Individual finite implementation, GPU optimization,
 production-placement and memory-recovery plans completed within their recorded
 scope; those completions do not close the remaining proposals.
 The [remaining validation plan](docs/remaining-validation-plan-20261026.md)
-specifies their implementation targets, dependencies and adoption gates;
-its experiments have not started.
+specifies their implementation targets, dependencies and adoption gates.
+Scoped experiments have run; several model comparisons remain incomplete.
+The [bounded startup review and cache-cohort reviewer](docs/remaining-validation-progress-20261026.md#bounded-startup-review-and-cache-cohort-reviewer-2026-10-27)
+record the latest policy refusal and offline comparison implementation, with no
+new model-speed result or production adoption.
 
 The [qualified profile](config/qualified-performance.json) selects BF16
 indexed-vector decode and owned padded-bank reads. Its matched same-SELF
