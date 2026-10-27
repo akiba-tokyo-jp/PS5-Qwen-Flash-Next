@@ -1,0 +1,367 @@
+{
+  "schema": "ps5-qwen-final-current-environment-dispositions-v1",
+  "date": "2026-10-27",
+  "finite_queue_disposition_complete": true,
+  "unclassified_items": 0,
+  "executable_items_left_under_established_conditions": 0,
+  "all_proposals_implemented": false,
+  "all_native_validations_completed": false,
+  "original_speed_objective_achieved": false,
+  "scope": "Current-environment execution decisions; unavailable stages stay unexecuted and missing integration stays unimplemented",
+  "basis_commit": "186d3ce0b83be4a4c48a36bbfb6860e7b750fcd9",
+  "new_PS5_operations": 0,
+  "new_title_launches": 0,
+  "new_GPU_calls": 0,
+  "CI_runs": 0,
+  "new_model_speed_winner": false,
+  "new_production_acceleration_adopted": false,
+  "production_SELF": {
+    "bytes": 28017271,
+    "sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d"
+  },
+  "production_profile": "config/qualified-performance.json",
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "observation_is_historical_not_fresh": true,
+  "last_measured_free_pages": 6583,
+  "staged_CPU_entry_pages": 8159,
+  "observed_initial_CPU_decline_pages": 6749,
+  "reboot_dependency": false,
+  "unchanged_refused_cases_repeated": false,
+  "counts": {
+    "closed_audit": 1,
+    "closed_small_target": 1,
+    "completed": 2,
+    "execution_unavailable": 15,
+    "inconclusive": 1,
+    "rejected_no_gain": 2
+  },
+  "items": [
+    {
+      "id": "startup-reduction",
+      "package": "startup",
+      "label": "Reduce unresolved startup kernel consumption",
+      "implementation": "Bounded source, metadata, reservation, quiet-start and controller audits completed; no supported reclaim implementation",
+      "disposition": "execution_unavailable",
+      "reason": "No removable owned cause or callable OS reclaim owner was established. This is unavailable through established interfaces, not proof that all possible code changes are impossible.",
+      "reopen_only_after": "A supported measured reduction of the initial CPU interval, or a material independently established resource change; no reboot dependency",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "cpu-metadata",
+      "package": "metadata",
+      "label": "Invariant batch metadata reuse",
+      "implementation": "Native CPU prototype qualified; not linked into production",
+      "disposition": "closed_small_target",
+      "reason": "Specific-loop generous saving is only 0.1334 ms per fixed request; no full-model replay is justified solely for it.",
+      "reopen_only_after": "Evidence of a different material repeated metadata cost",
+      "evidence": "remaining-feasibility-20261026.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "lifetimes",
+      "package": "allocation",
+      "label": "Allocation lifetime and constant-reuse audit",
+      "implementation": "Existing owner/alias ledger and original tensor audit completed",
+      "disposition": "closed_audit",
+      "reason": "Rehearsal reservations are already released; fixed GDN parameters are already F32. No supported additional saving repairs the earlier initial CPU decline.",
+      "reopen_only_after": "An identified owned allocation with a proven final consumer and material reclaimable cost",
+      "evidence": "remaining-feasibility-20261026.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "peak-live",
+      "package": "allocation",
+      "label": "Additional full-model peak-live characterization",
+      "implementation": "Additional native instrumentation/coverage is not completed",
+      "disposition": "execution_unavailable",
+      "reason": "Requires another admitted model lifetime. Existing global page deltas do not identify an exclusive proprietary owner.",
+      "reopen_only_after": "An admitted changed full-model scope with priced observation cost",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "cache128",
+      "package": "cache",
+      "label": "53/128-slot A/B/B/A",
+      "implementation": "128-slot implementation, 360 layout graphs and independent reviewers qualified; A53 completed three requests",
+      "disposition": "execution_unavailable",
+      "reason": "B128/B128/A53 did not run: screen 3174 observed 6583 pages against staged CPU entry 8159. The cohort is not a completed benchmark.",
+      "reopen_only_after": "Material startup/resource change and a newly frozen complete matched cohort; do not resume the old unmatched arms",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "other-cache",
+      "package": "cache",
+      "label": "Further cache capacities",
+      "implementation": "Fifteen capacities replayed; additional native capacity integrations are not implemented",
+      "disposition": "execution_unavailable",
+      "reason": "No completed native capacity winner or admitted model cost profile supports another capacity integration.",
+      "reopen_only_after": "Completed executable capacity comparison and a priced next candidate",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "checkpoint",
+      "package": "state",
+      "label": "Complete model checkpoint",
+      "implementation": "Complete-model continuation physically qualified",
+      "disposition": "completed",
+      "reason": "Correctness prerequisite passed; prefix/speculative speed benefits are separate and unproven.",
+      "reopen_only_after": "Changed state/model/precision implementation; no unchanged correctness rerun",
+      "evidence": "remaining-validation-progress-20261026.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "prefix",
+      "package": "prefix",
+      "label": "Exact-prefix reuse TTFT",
+      "implementation": "Default-off consumer and reviewers host-qualified",
+      "disposition": "execution_unavailable",
+      "reason": "Requires the same full-model startup path; no native prefix speed comparison completed.",
+      "reopen_only_after": "Material startup/resource change, then a fresh matched prefix cohort",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "width2",
+      "package": "speculation",
+      "label": "Width-two exact verification and speed",
+      "implementation": "Causal native policy/controller, complete checkpoint and 30 adapter controls exist",
+      "disposition": "execution_unavailable",
+      "reason": "Actual acceptance, forced rejection/restore, continuation/routes and speed require another admitted model lifetime.",
+      "reopen_only_after": "Material startup/resource change, native exactness first and matched speed second",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "width4",
+      "package": "speculation",
+      "label": "Width-four verification",
+      "implementation": "Dependent model integration is not implemented",
+      "disposition": "execution_unavailable",
+      "reason": "Native width-two arithmetic, rollback and cost prerequisites are missing. Host code could be written, but validated integration cannot be completed now.",
+      "reopen_only_after": "Qualified native width two and a separately priced width-four scope",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "adaptive",
+      "package": "speculation",
+      "label": "Radiance-inspired adaptive draft depth",
+      "implementation": "Dependent adaptive model integration is not implemented",
+      "disposition": "execution_unavailable",
+      "reason": "No native fixed-width acceptance/cost result exists to select or validate the controller.",
+      "reopen_only_after": "Qualified fixed-width verification and measured acceptance, rollback and source costs",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "expert-major",
+      "package": "delivery",
+      "label": "Original-file versus expert-major delivery",
+      "implementation": "Actual original-byte bank/source comparison executed",
+      "disposition": "inconclusive",
+      "reason": "Eight rounds, seven faster; about 1.040x source and 1.037x total did not meet the original screen. No full repack/integration follows.",
+      "reopen_only_after": "A materially different delivery mechanism supported by new evidence",
+      "evidence": "remaining-validation-progress-20261026.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "source-cpu",
+      "package": "delivery",
+      "label": "Original-source CPU two-call reader",
+      "implementation": "Actual shared reader completed eight cases and 240 matrix deliveries",
+      "disposition": "completed",
+      "reason": "Source-only ratio 1.06735x. Production already uses qualified paired reads; this is not a new model-speed or adoption proof.",
+      "reopen_only_after": "A distinct production-path delta with a relevant model comparison",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "ready",
+      "package": "ready",
+      "label": "Ready-expert split overlap",
+      "implementation": "All 40 original-source/backing/numerical GPU graphs completed",
+      "disposition": "rejected_no_gain",
+      "reason": "Both reverse comparisons were about 0.9-1.4% slower; stop this variant before model integration.",
+      "reopen_only_after": "A materially different mechanism that removes the measured overhead",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "router-observe",
+      "package": "router",
+      "label": "Actual hidden-state router observation",
+      "implementation": "Shadow prototype host-qualified; actual model capture integration is not implemented",
+      "disposition": "execution_unavailable",
+      "reason": "Needs actual FFN hidden states and an admitted tap off/on model cost comparison. Recorded selected IDs cannot substitute.",
+      "reopen_only_after": "Admitted model lifetime and priced actual hidden-state observation",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "router-forecast",
+      "package": "router",
+      "label": "Hidden-state forecast and speculative transfers",
+      "implementation": "Dependent actual model forecast/transfer integration is not implemented",
+      "disposition": "execution_unavailable",
+      "reason": "Actual hidden-state usefulness, ready-before-demand and added-cost measurements are missing; no justified transfer candidate exists.",
+      "reopen_only_after": "Measured observation benefit exceeding forecast, eviction and I/O costs",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "workloads",
+      "package": "workloads",
+      "label": "Broader workload quality and performance",
+      "implementation": "Four original-template/tokenizer metadata cases completed",
+      "disposition": "execution_unavailable",
+      "reason": "Native token equality, answer quality and matched metrics require additional admitted model requests. Host metadata is not quality evidence.",
+      "reopen_only_after": "Admitted model scope and a surviving candidate requiring workload regression",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "ple",
+      "package": "kernel",
+      "label": "PLE copy-elision modes at widths one through four",
+      "implementation": "All 208 alternating physical graphs, numerical and retirement checks completed",
+      "disposition": "rejected_no_gain",
+      "reason": "Median effects -0.092% to +0.046% with mixed wins; no repeatable speed winner. No model integration follows.",
+      "reopen_only_after": "A materially different PLE mechanism",
+      "evidence": "finite-execution-dispositions-20261027.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "dual-output",
+      "package": "kernel",
+      "label": "Radiance shared-input projections",
+      "implementation": "Actual tensor/shape audit completed; portable Vulkan kernel is not implemented",
+      "disposition": "execution_unavailable",
+      "reason": "Donor MXFP4 merging does not implement original BF16/F32. Native material per-kernel cost and numerical comparison are absent; the 80 MiB weight pair remains.",
+      "reopen_only_after": "An admitted material-cost profile and a separately priced portable numerical fixture",
+      "evidence": "remaining-feasibility-20261026.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "gdn-fusion",
+      "package": "kernel",
+      "label": "Radiance GDN and gated-normalization fusion",
+      "implementation": "Original F32 and sigmoid semantics audited; portable additional fusion is not implemented",
+      "disposition": "execution_unavailable",
+      "reason": "RDNA4 HIP/WMMA and device-wide barrier assumptions do not directly transfer. No measured eligible native target justifies a validated integration.",
+      "reopen_only_after": "Measured uncovered cost and an independently qualified Vulkan design preserving original semantics",
+      "evidence": "remaining-feasibility-20261026.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "small-gemm",
+      "package": "kernel",
+      "label": "Radiance small dense projection dispatch",
+      "implementation": "Actual one/two/four-token type/shape eligibility reviewed; additional kernel is not implemented",
+      "disposition": "execution_unavailable",
+      "reason": "Donor BF16-only M>=6 path does not match the F32/current widths. Native target profile and portable numerical/performance comparison are missing.",
+      "reopen_only_after": "Measured eligible native shape/cost and a separately qualified portable candidate",
+      "evidence": "remaining-validation-plan-20261026.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    },
+    {
+      "id": "workgroup",
+      "package": "kernel",
+      "label": "Further vector/workgroup specialization",
+      "implementation": "Qualified indexed-vector route retained; further tuning is not implemented",
+      "disposition": "execution_unavailable",
+      "reason": "Existing non-source time includes CPU/guards/transfer/completion, not isolated shader cost. No material kernel target has been established.",
+      "reopen_only_after": "An admitted model profile identifying material kernel cost with bounded observation overhead",
+      "evidence": "gpu-optimization-plan-20261025.md",
+      "decision_complete": true,
+      "production_adopted": false,
+      "permanent_physical_impossibility_established": false
+    }
+  ],
+  "private_evidence_digests": [
+    {
+      "bytes": 2009,
+      "sha256": "81f23bf386b542f90760779438b6566a46da9b78b00cf809b2a22eaa29c38d22"
+    },
+    {
+      "bytes": 3772,
+      "sha256": "83bfa985d86bc142f6809702cb806117abf60d40ba0e0aa70d7f7618a5975b03"
+    },
+    {
+      "bytes": 901,
+      "sha256": "96f0b8285eab39812c68a7242e75e42d9ded3691e50daa127c9ceaa9528bc792"
+    },
+    {
+      "bytes": 36141,
+      "sha256": "0e02b99e28a2563f19ac20bd9d1b65ddbbcbf308438d34c2787cb551ddbcdc15"
+    },
+    {
+      "bytes": 1299,
+      "sha256": "c17869c18957258a7acfa3ba79609d6339d2eba0a27fe87602196bcc4567b85f"
+    },
+    {
+      "bytes": 1314,
+      "sha256": "8b368f92e39df85d923c12225283acd0b34437643be301aa7aeff8941a7f5846"
+    },
+    {
+      "bytes": 1423,
+      "sha256": "f35654e6fde3b7ca82e73b936e4c06fdbd5e47d41aec070791afac8b4f200d3f"
+    },
+    {
+      "bytes": 554,
+      "sha256": "c3e51efbb883badb72bd25d21a68681444cbbe18e9d97b286a0ba266f0789d22"
+    }
+  ]
+}

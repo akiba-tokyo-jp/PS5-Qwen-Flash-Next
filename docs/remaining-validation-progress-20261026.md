@@ -1,5 +1,16 @@
 # Remaining validation: execution progress
 
+## Final current-environment disposition
+
+The owner's latest instruction is to execute available work and classify the rest
+as execution unavailable. The [final 22-stage ledger](final-current-environment-dispositions-20261027.md)
+now supersedes all current-status and prospective next-step wording below.
+Every stage has a finite decision; no item is waiting for user action or reboot.
+This current queue is closed with explicit execution-unavailable outcomes.
+Missing code remains unimplemented and unrun native tests remain unrun; the
+original all-implementation/native-validation speed objective is not achieved.
+Earlier case records remain historical and must not be replayed unchanged.
+
 This is an intermediate execution record for the
 [remaining-proposal plan](remaining-validation-plan-20261026.md). The overall
 implementation and validation request is incomplete. Fixture qualification
