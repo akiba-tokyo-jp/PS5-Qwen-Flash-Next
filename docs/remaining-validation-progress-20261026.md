@@ -1342,3 +1342,38 @@ No PS5 operation, startup retry or memory poll occurred. Forty connected graphs
 (12 backing + 14 numerical + 14 original-source) remain physically unrun. The
 eight-descriptor limit is per new reader; no title-wide/kernel reduction is
 claimed. Native timing, model integration and adoption remain incomplete.
+
+## Later physical comparisons, 2026-10-27
+
+The [physical source/ready and PLE results](finite-execution-dispositions-20261027.md#physical-original-source-and-ready-comparison-cases-3067-3106)
+supersede earlier pending/unavailable statements for these precise fixture
+scopes. The original-source CPU cohort completed eight reverse-controlled
+cases; two calls gave a 1.06735x source-fixture ratio. The full forty-graph
+ready comparison passed exact/F64 numerics, actual backing, all 180 original
+reads and retirement, but overlap lost both reverse comparisons by about
+0.9–1.4%. The PLE widths-one-through-four comparison completed all 208 graphs;
+its -0.092% to +0.046% median effects and mixed per-pair wins supplied no
+repeatable gain. Both variants are closed without model integration/adoption.
+Neither fixture replaces a model tokens/s measurement.
+
+Both titles were normally closed and the exact fastest SELF/settings fully
+verified after restoration. No reboot or unknown completion occurred. Native
+resource state changed: the post-ready screen observed 9160 pages and admitted
+PLE under its original 8190-page requirement. The post-PLE screen observed 8874.
+A separately scoped 8159-page CPU entry for the existing full-model comparison
+is now being prepared, retaining the native 2974-page GPU gate and operational,
+pool, precision and device limits. The regular 10142-page rule remains the
+default. This new staged admission has not completed a model request, reduced
+kernel consumption, qualified a winner or finished the overall plan.
+
+The [subsequent original-model control](finite-execution-dispositions-20261027.md#original-model-control-and-remaining-current-environment-limit-cases-3130-3175)
+actually completed warmup and both 30-prompt/22-output-token requests at 53
+slots. Decode was 0.355716 / 0.398618 tok/s; TTFT was 50.056118 / 49.220898 s.
+All native output/source/shader checks and positive retirement passed. Ordinary
+close and exact fastest SELF/settings restoration completed. The next B128
+screen observed 6583 pages against the CPU entry price 8159; no B title ran.
+The A53/B128/B128/A53 cohort is incomplete and supplies no adoption decision.
+Remaining full-model validation is currently unavailable; no supported reduction
+of the earlier 6749-page initial CPU interval was established. This is neither
+an assertion of permanent physical impossibility nor overall plan completion.
+Do not repeat unchanged refusals or request reboot.

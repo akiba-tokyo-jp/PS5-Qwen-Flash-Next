@@ -55,13 +55,13 @@ def main():
     fixture_cmd[fixture_cmd.index('-c')+1]=str(fixture);fixture_cmd[fixture_cmd.index('-o')+1]=str(fixture_obj)
     additions=[]
     if a.split_bank:
-        for name in('split_bank_allocation.cpp','ready_expert_fixture.cpp','ready_expert_native.cpp','ready_original_source.cpp','padded_bank_route.cpp'):
+        for name in('split_bank_allocation.cpp','ready_expert_fixture.cpp','ready_expert_native.cpp','ready_original_source.cpp','padded_bank_route.cpp','system_memory.cpp'):
             src=ROOT/'native/app'/name;target=a.out/(src.stem+'.o');c=fixture_cmd.copy()
             c[c.index('-c')+1]=str(src);c[c.index('-o')+1]=str(target);additions.append(c)
             if name=='ready_original_source.cpp'and a.ready_source_plan:c+=['-DQWEN_READY_ORIGINAL_PLAN=1','-I',str(a.out)]
-            # Replace an older qualified route object explicitly. No other
+            # Replace older qualified route/memory objects explicitly. No other
             # qualified runtime/driver member is silently substituted.
-            if name=='padded_bank_route.cpp':
+            if name in('padded_bank_route.cpp','system_memory.cpp'):
                 old=next(c for c in prior['compile_commands']if '-c'in c and Path(c[c.index('-c')+1]).name==name)
                 command.remove(old[old.index('-o')+1])
             command.insert(command.index('--start-group'),str(target))

@@ -49,7 +49,8 @@ def validate_original(r,plan,plan_sha):
             owner['Direct_read_calls']==30 and type(owner.get('two_call_batches'))is int and owner['two_call_batches']==pair_count and
             type(owner.get('maximum_descriptor_cache'))is int and owner['maximum_descriptor_cache']==8 and integer(owner.get('peak_open_descriptors'),1,8)and
             integer(owner.get('descriptor_opens'),len(plan['files']),30)and type(owner.get('descriptor_closes'))is int and owner['descriptor_opens']==owner['descriptor_closes']and
-            owner.get('inner_reader_joined')is True and owner.get('all_descriptors_closed')is True and owner.get('model_source_plan_sha256')==plan_sha,
+            owner.get('inner_reader_joined')is True and owner.get('all_descriptors_closed')is True and owner.get('model_source_plan_sha256')==plan_sha and
+            owner.get('CPU_only_source_fixture')is False and type(owner.get('source_IO_depth'))is int and owner['source_IO_depth']==2,
             'Original source lacks exact two-call/LRU/close evidence')
         reads=c['reads'];require(type(reads)is list and len(reads)==30,'All thirty original roles required');j=0;previous_batch_end=last_end
         group_end=[0,0]
@@ -96,10 +97,37 @@ def validate_original_stages(text,original,plan):
     require([l for l in lines if l.startswith('ready_original_batch_before ')]==expected and
         lines.count('ready_original_batch_all_calls_and_byte_proofs_returned')==len(expected),'Original durable batch plans/returned calls differ')
     require([l for l in lines if l.startswith('ready_original_dispatch_before ')]==phases,'Original durable graph epochs differ')
+def validate_app_namespace(proof,policy,plan):
+    require(type(policy)is dict and set(policy)=={'schema','canonical_root','directory_identity','receipt_identity','allow_app0_device_translation'} and
+        policy['schema']=='ps5-qwen-ready-original-app-namespace-v1' and policy['allow_app0_device_translation']is True,'Exact application namespace policy required')
+    root=policy['canonical_root'];require(type(root)is str and root.startswith('/data/')and len(root)<1024 and not root.endswith('/')and
+        '..'not in root and '\0'not in root and '\\'not in root,'Sealed canonical model root required')
+    require(type(proof)is dict and len(proof)==8 and proof.get('schema')==policy['schema']and
+        proof.get('all_nine_non_device_fields_exact')is True and proof.get('original_receipt_SHA256_checked')is True and
+        proof.get('all_part_bytes_still_checked_before_GPU')is True,'Complete original namespace evidence required')
+    source=proof.get('canonical_source_device');app=proof.get('application_device')
+    require(integer(source,1,2**64-1)and integer(app,1,2**64-1),'Exact source/application device pair required')
+    for key,kind in (('directory_identity',0o040000),('receipt_identity',0o100000)):
+        expected=policy[key];actual=proof.get(key)
+        require(type(expected)is list and type(actual)is list and len(expected)==len(actual)==10 and
+            all(integer(v,0,2**64-1)for v in expected+actual)and expected[0]==source and actual[0]==app and expected[1:]==actual[1:]and
+            expected[1]>0 and expected[5]>0 and expected[2]&0o170000==kind and not expected[2]&0o022,'Namespace anchor fields differ')
+    require(all(f['path'].startswith(root+'/')and len(f['path'])>len(root)+1 and f['identity'][0]==source for f in plan['files']),
+        'Original part lies outside the canonical namespace')
+
 def validate_combined(report,policy,plan,sha,text,pid):
     expected=dict(schema='ps5-qwen-ready-original-policy-v1',enabled=True,same_title_numerical_gate_required=True,unique_original_experts=10,source_IO_depth=2,cohort_runs=6,source_plan_sha256=sha)
     require(exact(policy.get('native_ready_expert_original'),expected)and exact(policy.get('native_ready_expert_numerical'),POLICY),'Exact original/numerical policies required')
-    validate_backing(report,policy['native_isolated_split_bank_title'],pid,ready_numerical=True,original_source=True);validate_ready(report['ready_numerical'])
+    if 'native_ready_expert_original_namespace'in policy:
+        validate_app_namespace(report.get('original_source_namespace'),policy['native_ready_expert_original_namespace'],plan)
+        require(text.splitlines().count('ready_original_app_namespace_bound_before_GPU')==1,'Single pre-GPU namespace binding required')
+    validate_backing(report,policy['native_isolated_split_bank_title'],pid,ready_numerical=True,original_source=True,scoped_memory='native_split_bank_phase_memory'in policy);validate_ready(report['ready_numerical'])
+    if 'native_split_bank_phase_memory'in policy:
+        expected_memory=dict(schema='ps5-qwen-split-bank-phase-memory-v1',enabled=True,GPU_extra_operational_pages=1024,model_loads=0,
+            regular_model_startup_target_unchanged=True,operational_floor_unchanged=True)
+        require(exact(policy['native_split_bank_phase_memory'],expected_memory)and report.get('scoped_GPU_phase_memory')is True and
+            type(report.get('scoped_GPU_required_free_pages'))is int and report['scoped_GPU_required_free_pages']==2178 and
+            integer(report.get('kernel_free_after_CPU_source_before_GPU'),2178,1000000),'Exact scoped fixture GPU memory admission required')
     result=validate_original(report.get('ready_original'),plan,sha)
     numerical_end=max(s['end_ns']for c in report['ready_numerical']['cases']for s in c['submissions'])
     require(report['ready_original']['cases'][0]['reads'][0]['begin_ns']>=numerical_end,'Original source started before the complete numerical prerequisite')

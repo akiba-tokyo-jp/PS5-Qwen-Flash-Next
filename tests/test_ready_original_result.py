@@ -2,7 +2,7 @@
 import copy,sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from ready_original_result import packets,validate_original,validate_original_stages,validate_combined
+from ready_original_result import packets,validate_original,validate_original_stages,validate_combined,validate_app_namespace
 from ready_expert_result import POLICY
 from test_ready_expert_result import sample as numerical_sample
 from test_split_bank_result import fixture as backing_sample
@@ -29,7 +29,7 @@ def sample(durations=(1000,1100,800,805,1110,1005)):
             source_joined=True,wave_retired=True,maximum_absolute_error=1e-8,maximum_normalized_error=.001,output_F32_sha256='a'*64,
             contribution_F32_sha256='b'*64,reads=reads,submissions=submits,source_to_output_ns=duration,
             source_owner=dict(reads=copy.deepcopy(reads),Direct_read_calls=30,two_call_batches=12,maximum_descriptor_cache=8,peak_open_descriptors=3,
-                descriptor_opens=3,descriptor_closes=3,inner_reader_joined=True,all_descriptors_closed=True,model_source_plan_sha256='c'*64)))
+                descriptor_opens=3,descriptor_closes=3,inner_reader_joined=True,all_descriptors_closed=True,model_source_plan_sha256='c'*64,CPU_only_source_fixture=False,source_IO_depth=2)))
         prior+=count;clock+=10
     r=dict(schema='ps5-qwen-ready-original-result-v1',unique_original_experts=10,original_contributions=10,source_IO_depth=2,
         source_coordinator_workers=1,inner_IO_workers=1,Direct_read_calls=180,GPU_graphs=14,initial_positive_graph_epoch=26,final_positive_graph_epoch=40,
@@ -37,6 +37,23 @@ def sample(durations=(1000,1100,800,805,1110,1005)):
         physical_GPU_timestamp_overlap_qualified=False,model_speed_qualified=False,production_adopted=False,reference_absolute_tolerance=1e-5,reference_relative_tolerance=1e-5,cases=cases)
     return r,plan
 class OriginalResult(unittest.TestCase):
+    def test_sealed_application_namespace(self):
+        directory=[1,2,0o040755,0,0,64,7,0,7,0];receipt=[1,3,0o100644,0,0,90,7,0,7,0]
+        p=dict(schema='ps5-qwen-ready-original-app-namespace-v1',canonical_root='/data/source/model',
+            directory_identity=directory,receipt_identity=receipt,allow_app0_device_translation=True)
+        proof=dict(schema=p['schema'],canonical_source_device=1,application_device=9,directory_identity=[9]+directory[1:],
+            receipt_identity=[9]+receipt[1:],all_nine_non_device_fields_exact=True,original_receipt_SHA256_checked=True,all_part_bytes_still_checked_before_GPU=True)
+        plan=dict(files=[dict(path='/data/source/model/part',identity=receipt)])
+        validate_app_namespace(proof,p,plan)
+        for key in ('directory_identity','receipt_identity'):
+            for i in range(10):
+                bad=copy.deepcopy(proof);bad[key][i]+=1
+                with self.assertRaises(ValueError):validate_app_namespace(bad,p,plan)
+        for key in ('all_nine_non_device_fields_exact','original_receipt_SHA256_checked','all_part_bytes_still_checked_before_GPU'):
+            bad=copy.deepcopy(proof);bad[key]=False
+            with self.assertRaises(ValueError):validate_app_namespace(bad,p,plan)
+        bad=copy.deepcopy(plan);bad['files'][0]['path']='/data/source/model-other/part'
+        with self.assertRaises(ValueError):validate_app_namespace(proof,p,bad)
     def reject(self,change):
         r,p=sample();change(r)
         with self.assertRaises((ValueError,KeyError,TypeError)):validate_original(r,p,'c'*64)
@@ -62,6 +79,8 @@ class OriginalResult(unittest.TestCase):
         self.reject(lambda r:r['cases'][3].__setitem__('last_completed_GPU_epoch',99))
     def test_no_false_model_claim(self):
         for key in('model_speed_qualified','production_adopted','physical_GPU_timestamp_overlap_qualified'):self.reject(lambda r,k=key:r.__setitem__(k,True))
+        self.reject(lambda r:r['cases'][0]['source_owner'].__setitem__('CPU_only_source_fixture',True))
+        self.reject(lambda r:r['cases'][0]['source_owner'].__setitem__('source_IO_depth',1))
     def test_native_journal_binding(self):
         r,p=sample();lines=[]
         for c in r['cases']:
@@ -98,6 +117,14 @@ class OriginalResult(unittest.TestCase):
             for s in c['submissions']:lines+=['ready_original_dispatch_before plan='+str(c['plan_epoch'])+' phase='+str(s['phase'])+' epoch='+str(s['epoch']),phases[s['phase']],'ready_expert_graph_synchronized_driver_completion_returned']
         lines.append('split_bank_validation_completed_waiting_for_ordinary_close');text='\n'.join(lines)
         self.assertFalse(validate_combined(report,policy,p,'c'*64,text,123)['production_adopted'])
+        scoped=copy.deepcopy(policy);scoped['native_split_bank_phase_memory']=dict(schema='ps5-qwen-split-bank-phase-memory-v1',enabled=True,
+            GPU_extra_operational_pages=1024,model_loads=0,regular_model_startup_target_unchanged=True,operational_floor_unchanged=True)
+        scoped_report=copy.deepcopy(report);scoped_report.update(scoped_GPU_phase_memory=True,scoped_GPU_required_free_pages=2178,kernel_free_after_CPU_source_before_GPU=2178)
+        self.assertFalse(validate_combined(scoped_report,scoped,p,'c'*64,text,123)['production_adopted'])
+        scoped_report['kernel_free_after_CPU_source_before_GPU']=2177
+        with self.assertRaises(ValueError):validate_combined(scoped_report,scoped,p,'c'*64,text,123)
+        scoped_report['kernel_free_after_CPU_source_before_GPU']=2178;scoped['native_split_bank_phase_memory']['GPU_extra_operational_pages']=512
+        with self.assertRaises(ValueError):validate_combined(scoped_report,scoped,p,'c'*64,text,123)
         altered=copy.deepcopy(report);altered['ready_numerical']['cases'][0]['source_joined']=False
         with self.assertRaises(ValueError):validate_combined(altered,policy,p,'c'*64,text,123)
         altered=copy.deepcopy(report);altered['ready_original']['cases'][0]['reads'][0]['begin_ns']=1

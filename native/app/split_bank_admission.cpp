@@ -55,7 +55,8 @@ struct Fixture {
     ggml_backend_t backend=nullptr;int fd=-1;Identity source{};
     SplitBankAllocation allocation;unsigned reads=0,graphs=0;std::uint64_t non_exact=0;
     double maximum_error=0,maximum_normalized_error=0;Json cases=Json::array();
-    bool ready_requested=false;Json ready_result,original_result;const ReadyOriginalPlan *original=nullptr;
+    bool ready_requested=false;Json ready_result,original_result,original_namespace;ReadyOriginalPlan app_original;
+    const ReadyOriginalPlan *original=nullptr;
     const std::chrono::steady_clock::time_point deadline=std::chrono::steady_clock::now()+std::chrono::seconds(120);
     void bounded(){check(std::chrono::steady_clock::now()<deadline,"Split backing finite deadline exceeded; owners retained");(void)admit_native_system_memory();}
     static int use(const SplitBankBackings &banks,const SplitBankRoots &roots,void *opaque) {
@@ -162,11 +163,31 @@ Json admit_split_bank_backing(const Json &policy,const std::string &journal,bool
     if(policy.contains("native_ready_expert_original")) {
         f->original=compiled_ready_original_plan();
         check(f->original&&f->original->sha256==policy.at("native_ready_expert_original").at("source_plan_sha256"),"Exact compiled original-source plan is not admitted");
+        if(policy.contains("native_ready_expert_original_namespace")) {
+            const auto &ns=policy.at("native_ready_expert_original_namespace");
+            const auto expected=ns.at("receipt_identity").get<SourceIdentity>();
+            check(expected[5]<=1u<<20,"Original receipt exceeds bounded namespace verification");
+            verify_native_startup_file_direct("/app0/qwen-runtime/model/model-receipt.json",expected[5],
+                f->original->original_receipt_sha256,30);
+            const auto current=[](const char *path,bool directory){
+                struct stat s{};check(!stat(path,&s)&&s.st_ino&&!(s.st_mode&0022)&&
+                    (directory?S_ISDIR(s.st_mode):S_ISREG(s.st_mode)),"Original namespace anchor is not admitted");
+                return SourceIdentity{std::uint64_t(s.st_dev),std::uint64_t(s.st_ino),std::uint64_t(s.st_mode),std::uint64_t(s.st_uid),std::uint64_t(s.st_gid),
+                    std::uint64_t(s.st_size),std::uint64_t(s.st_mtim.tv_sec),std::uint64_t(s.st_mtim.tv_nsec),std::uint64_t(s.st_ctim.tv_sec),std::uint64_t(s.st_ctim.tv_nsec)};
+            };
+            const auto directory=current("/app0/qwen-runtime/model",true),receipt=current("/app0/qwen-runtime/model/model-receipt.json",false);
+            f->app_original=bind_ready_original_app_namespace(*f->original,ns,directory,receipt);f->original=&f->app_original;
+            f->original_namespace={{"schema","ps5-qwen-ready-original-app-namespace-v1"},
+                {"canonical_source_device",expected[0]},{"application_device",directory[0]},
+                {"directory_identity",directory},{"receipt_identity",receipt},{"all_nine_non_device_fields_exact",true},
+                {"original_receipt_SHA256_checked",true},{"all_part_bytes_still_checked_before_GPU",true}};
+            qwen_native_stage("ready_original_app_namespace_bound_before_GPU");
+        }
     }
     f->fd=open(split_bank_pack_path,O_RDONLY|O_NOFOLLOW|O_DIRECT);
     check(f->fd>=0&&(fcntl(f->fd,F_GETFL)&O_DIRECT),"Split original Direct descriptor refused");f->source=identity(f->fd);
     start_native_model_sources({{split_bank_pack_path,split_bank_pack_bytes,f->source}});
-    const auto before_GPU=admit_native_startup_memory();GPU_started=true;
+    const auto before_GPU=admit_split_bank_GPU_memory(policy);GPU_started=true;
     qwen_native_stage("split_bank_CPU_source_owner_completed_before_GPU_initialization");
     qwen_native_gpu_initialize(journal.c_str());qwen_native_driver_begin();llama_backend_init();
     enforce_native_model_compute_limits();f->backend=ggml_backend_vk_init(0);check(f->backend,"Split original Vulkan backend unavailable");
@@ -183,9 +204,12 @@ Json admit_split_bank_backing(const Json &policy,const std::string &journal,bool
         {"all_original_raw_and_envelope_SHA256_checked",true},{"positive_resource_retirement",true},{"all_started_IO_closed",true},
         {"source_workers",f->original?2:f->ready_requested?1:0},{"model_loaded",false},{"GPU_IO_overlap_tested",false},{"generation_speed_measured",false},
         {"device_ledger_peak_bytes",ledger.peak},{"device_ledger_live_bytes",ledger.live},
-        {"kernel_free_after_CPU_source_before_GPU",before_GPU.kernel_free},{"kernel_startup_target_pages",before_GPU.kernel_target}};
+        {"kernel_free_after_CPU_source_before_GPU",before_GPU.kernel_free},{"kernel_startup_target_pages",before_GPU.kernel_target},
+        {"scoped_GPU_required_free_pages",split_bank_GPU_requirement(policy,before_GPU)},
+        {"scoped_GPU_phase_memory",policy.contains("native_split_bank_phase_memory")}};
     if(f->ready_requested)result["ready_numerical"]=f->ready_result;
     if(f->original)result["ready_original"]=f->original_result;
+    if(!f->original_namespace.is_null())result["original_source_namespace"]=f->original_namespace;
     delete f;return result;
 }
 }

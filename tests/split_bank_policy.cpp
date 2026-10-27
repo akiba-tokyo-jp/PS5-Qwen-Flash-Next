@@ -64,5 +64,18 @@ int main() {
         auto p=original;p["native_ready_expert_original"].erase(it.key());refuse(p);p=original;p["native_ready_expert_original"][it.key()]=nullptr;refuse(p);
         if(it->is_number_unsigned())for(const auto &v:Json::array({true,double(it->get<unsigned>()),-1})){p=original;p["native_ready_expert_original"][it.key()]=v;refuse(p);}
     }
+    auto scoped=original;scoped["native_split_bank_phase_memory"]={{"schema","ps5-qwen-split-bank-phase-memory-v1"},{"enabled",true},
+        {"GPU_extra_operational_pages",1024u},{"model_loads",0u},{"regular_model_startup_target_unchanged",true},{"operational_floor_unchanged",true}};
+    qwen_app::require_split_bank_policy(scoped,true,false,false);
+    for(auto it=scoped.at("native_split_bank_phase_memory").begin();it!=scoped.at("native_split_bank_phase_memory").end();++it) {
+        auto p=scoped;p["native_split_bank_phase_memory"].erase(it.key());refuse(p);p=scoped;p["native_split_bank_phase_memory"][it.key()]=nullptr;refuse(p);
+    }
+    for(const auto &v:Json::array({0u,512u,1023u,1025u,1024.0,true,-1})) {auto p=scoped;p["native_split_bank_phase_memory"]["GPU_extra_operational_pages"]=v;refuse(p);}
+    {auto p=scoped;p.erase("native_ready_expert_numerical");p.erase("native_ready_expert_original");p["native_isolated_split_bank_title"]["source_workers"]=0u;refuse(p);}
+    qwen_app::SystemMemoryObservation memory{512u<<20,16384,138739,2178,898,2974,206};
+    if(qwen_app::split_bank_GPU_requirement(scoped,memory)!=2178||qwen_app::split_bank_GPU_requirement(original,memory)!=2974)
+        throw std::runtime_error("Scoped fixture and regular startup targets must remain distinct");
+    memory.kernel_free=1153;try{(void)qwen_app::split_bank_GPU_requirement(scoped,memory);throw std::logic_error("Operational floor reduced");}
+    catch(const qwen_app::KernelMemoryPressure &){++refusals;}
     std::cout<<Json{{"exact_scope_passed",true},{"refusal_controls",refusals},{"PS5_operations",0},{"GPU_calls",0}}.dump()<<'\n';
 }

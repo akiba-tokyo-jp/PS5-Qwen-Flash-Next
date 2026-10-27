@@ -63,6 +63,30 @@ The remaining work is specified in
 [docs/remaining-validation-plan-20261026.md](docs/remaining-validation-plan-20261026.md).
 Its planning status does not assert implementation, execution or adoption.
 
+### Later native comparison status (2026-10-27)
+
+The original-source CPU cohort and complete 40-graph ready comparison now have
+physical evidence. The overlap variant lost both reverse comparisons; close it
+without model integration. The 208-graph PLE comparison at widths 1–4 also passed
+numerics and retirement but supplied no repeatable speed winner. Both titles
+were normally closed and the exact fastest SELF/settings restored. See the
+latest sections of `docs/finite-execution-dispositions-20261027.md`.
+
+A changed-state screen after these completed native lifetimes admits a new
+CPU-staged full-model comparison at 8159 pages, using the exact full-title
+6749-page observed CPU decline, operational floor 1154 and variation 256.
+The regular 10142-page price remains the default. This staged CPU price does
+not admit a GPU: the native 2974-page GPU gate and all operational/pool/device
+predicates remain mandatory. A returned CPU refusal terminates that matched
+cohort; do not reuse its other arms as if all four matched runs had completed.
+The first A53 arm has now completed real-model warmup and both 22-token
+requests, followed by positive retirement, ordinary close and exact fastest
+restoration. Next B128 screen 3174 observed 6583 pages; its 8159-page CPU entry
+was unavailable and no B title ran. The matched cohort and remaining dependent
+native validation are incomplete. This is not measured kernel savings,
+permanent physical impossibility or adoption. Do not repeat that unchanged
+refused scope or treat the one successful control as the complete cohort.
+
 ## Current integration phase
 
 On 2026-10-22 the owner supplied the updated driver and authorized acquisition

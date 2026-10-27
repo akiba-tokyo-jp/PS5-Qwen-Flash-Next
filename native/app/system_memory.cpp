@@ -47,5 +47,6 @@ public:
 void enable_native_memory_backpressure(){admission_gate.enable();}
 SystemMemoryObservation admit_native_system_memory(){NativeAdmissionOps ops;return admission_gate.admit(ops);}
 SystemMemoryObservation admit_native_startup_memory(){NativeAdmissionOps ops;return admission_gate.admit(ops,true);}
+SystemMemoryObservation admit_native_fixture_memory(unsigned extra){NativeAdmissionOps ops;return admission_gate.admit_fixture(ops,extra);}
 MemoryBackpressureStats native_memory_backpressure_stats(){return admission_gate.stats();}
 }

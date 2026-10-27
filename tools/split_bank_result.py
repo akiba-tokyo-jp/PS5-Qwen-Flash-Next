@@ -21,7 +21,7 @@ def require(good,message):
 def integer(value,low,high):return type(value)is int and low<=value<=high
 def finite(value,high):return type(value)in(int,float)and math.isfinite(value)and 0<=value<=high
 
-def validate_report(report,binding,expected_pid,*,ready_numerical=False,original_source=False):
+def validate_report(report,binding,expected_pid,*,ready_numerical=False,original_source=False,scoped_memory=False):
     r=report;b=binding
     require(type(r)is dict and type(b)is dict and integer(expected_pid,1,0x7fffffff),'Bound report, title and expected owner required')
     require(not original_source or ready_numerical,'Original-source scope requires the preceding numerical gate')
@@ -48,8 +48,12 @@ def validate_report(report,binding,expected_pid,*,ready_numerical=False,original
     require(integer(r.get('shader_module_inputs'),1,8192),'Actual original shader inputs required')
     require(integer(r.get('Direct_available_before_GPU'),1<<30,16<<30)and integer(r.get('Flexible_available_before_GPU'),64<<20,16<<30),
         'Actual Direct/Flexible setup headroom required')
-    require(r.get('kernel_startup_target_pages')==2974 and integer(r.get('kernel_free_after_CPU_source_before_GPU'),2974,1000000),
-        'Unchanged native startup admission must follow CPU source preparation')
+    require(type(scoped_memory)is bool and (not scoped_memory or ready_numerical),'Scoped memory requires the isolated numerical cohort')
+    required=2178 if scoped_memory else 2974
+    if scoped_memory:require(r.get('scoped_GPU_phase_memory')is True and type(r.get('scoped_GPU_required_free_pages'))is int and r['scoped_GPU_required_free_pages']==required,
+        'Exact model-free GPU-phase memory scope required')
+    require(r.get('kernel_startup_target_pages')==2974 and integer(r.get('kernel_free_after_CPU_source_before_GPU'),required,1000000),
+        'Declared GPU phase admission must follow CPU source preparation')
     cases=r.get('cases');require(type(cases)is list and len(cases)==6,'Exactly six original matrices required')
     maximum=normalized=0.0
     for index,c in enumerate(cases):

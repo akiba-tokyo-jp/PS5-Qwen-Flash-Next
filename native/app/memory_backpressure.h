@@ -33,7 +33,7 @@ public:
     }
     const MemoryBackpressureStats & stats() const {return stats_;}
 private:
-    SystemMemoryObservation admit_impl(MemoryAdmissionOps & ops, bool require_kernel_target) {
+    SystemMemoryObservation admit_impl(MemoryAdmissionOps & ops, bool require_kernel_target,std::uint32_t extra_operational_pages=0) {
         bool waiting=false;std::uint64_t boundary_wait=0;
         for(;;) {
             stats_.last_qualified=false;stats_.last=ops.observe();++stats_.observations;
@@ -41,6 +41,8 @@ private:
                 (void)qualified_system_headroom(stats_.last);
                 if (require_kernel_target && stats_.last.kernel_free < stats_.last.kernel_target)
                     throw KernelMemoryPressure();
+                if(extra_operational_pages&&stats_.last.kernel_free<std::uint64_t(stats_.last.kernel_minimum)+
+                    std::max<std::uint64_t>(stats_.last.kernel_reserved,256)+extra_operational_pages)throw KernelMemoryPressure();
                 stats_.last_qualified=true;
                 if(waiting)++stats_.recovered_admissions;
                 return stats_.last;
@@ -66,6 +68,11 @@ public:
         if(failed_)throw std::runtime_error("A failed memory admission is quarantined; no retry");
         try {return admit_impl(ops, require_kernel_target);}
         catch(...) {if(stats_.enabled)failed_=true;throw;}
+    }
+    SystemMemoryObservation admit_fixture(MemoryAdmissionOps &ops,unsigned extra_operational_pages) {
+        if(extra_operational_pages!=1024)throw std::invalid_argument("Exact isolated fixture operational allowance required");
+        if(failed_)throw std::runtime_error("A failed memory admission is quarantined; no retry");
+        try{return admit_impl(ops,false,extra_operational_pages);}catch(...){if(stats_.enabled)failed_=true;throw;}
     }
 };
 }
