@@ -1,0 +1,313 @@
+{
+  "schema": "ps5-qwen-three-path-validation-v1",
+  "date": "2026-10-27",
+  "scope": "One physical read-only AIO comparison, causal cache replay, and conditional expert-sharing verification traffic screen",
+  "three_bounded_scope_decisions_complete": true,
+  "all_three_full_model_speed_comparisons_completed": false,
+  "OS_AIO": {
+    "completed": true,
+    "returned_known_refusal": false,
+    "rounds": 8,
+    "original_matrix_deliveries": 16,
+    "physical_bytes": 52690944,
+    "round_modes": [
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    "elapsed_ns": [
+      9171849,
+      10512309,
+      10833372,
+      6621551,
+      7243870,
+      10870898,
+      10982115,
+      6373859
+    ],
+    "control_mean_ns": 7352782.25,
+    "AIO_mean_ns": 10799673.5,
+    "paired_ratios": [
+      0.8724866249650767,
+      0.6112179107299186,
+      0.6663543342969458,
+      0.5803853811401538
+    ],
+    "mean_source_ratio": 0.6808337539093196,
+    "control_spread_fraction": 0.38053486488056953,
+    "decision": "source_fixture_loser",
+    "all_source_owners_retired": true,
+    "initialization_and_allocation_outside_both_timed_arms": true,
+    "wait_and_completed_ID_retirement_inside_AIO_interval": true,
+    "native_model_speed_qualified": false,
+    "production_adopted": false,
+    "GPU_calls": 0,
+    "title_launches": 0,
+    "artifact_bytes": 479528,
+    "artifact_sha256": "8c61e7d54c451014c961e1a99a4f6b00adc97f67be7d007149535588ec843691",
+    "application_requests_per_batch": 2,
+    "kernel_internal_worker_and_split_behavior_not_profiled": true,
+    "elapsed_increase_percent": 46.878734236961805,
+    "broader_kernel_or_raw_NVMe_path_status": "execution_unavailable_through_established_interfaces"
+  },
+  "predictive_cache": {
+    "variants": [
+      {
+        "deadline": false,
+        "prefetch_slots": 0,
+        "external_logical_expert_bytes": 381232742400,
+        "external_byte_increase_percent": -0.0,
+        "misses": 38781,
+        "speculative_loads": 0,
+        "useful_at_next_layer": 0,
+        "unused_at_next_layer": 0,
+        "speculative_victims": 0
+      },
+      {
+        "deadline": true,
+        "prefetch_slots": 0,
+        "external_logical_expert_bytes": 383188992000,
+        "external_byte_increase_percent": 0.5131378767953443,
+        "misses": 38980,
+        "speculative_loads": 0,
+        "useful_at_next_layer": 0,
+        "unused_at_next_layer": 0,
+        "speculative_victims": 0
+      },
+      {
+        "deadline": false,
+        "prefetch_slots": 1,
+        "external_logical_expert_bytes": 381547315200,
+        "external_byte_increase_percent": 0.08251463345452237,
+        "misses": 38570,
+        "speculative_loads": 243,
+        "useful_at_next_layer": 218,
+        "unused_at_next_layer": 25,
+        "speculative_victims": 243
+      },
+      {
+        "deadline": false,
+        "prefetch_slots": 2,
+        "external_logical_expert_bytes": 381970022400,
+        "external_byte_increase_percent": 0.1933936721590479,
+        "misses": 38385,
+        "speculative_loads": 471,
+        "useful_at_next_layer": 418,
+        "unused_at_next_layer": 53,
+        "speculative_victims": 471
+      },
+      {
+        "deadline": true,
+        "prefetch_slots": 1,
+        "external_logical_expert_bytes": 383857459200,
+        "external_byte_increase_percent": 0.6884814728862043,
+        "misses": 38805,
+        "speculative_loads": 243,
+        "useful_at_next_layer": 219,
+        "unused_at_next_layer": 24,
+        "speculative_victims": 243
+      },
+      {
+        "deadline": true,
+        "prefetch_slots": 2,
+        "external_logical_expert_bytes": 384437452800,
+        "external_byte_increase_percent": 0.840617828317991,
+        "misses": 38632,
+        "speculative_loads": 475,
+        "useful_at_next_layer": 421,
+        "unused_at_next_layer": 54,
+        "speculative_victims": 475
+      }
+    ],
+    "causal_counts_before_target_observation": true,
+    "fixed_slots": 53,
+    "transition_context_limit": 512,
+    "targets_per_context": 16,
+    "EWMA_gap_alpha": 0.25,
+    "transition_minimum_prior_observations": 2,
+    "minimum_past_target_frequency": 0.75,
+    "logical_payload_only_not_physical_IO": true,
+    "all_speculative_and_reload_deliveries_counted": true,
+    "traffic_saving_candidate": false,
+    "latency_hiding_effect_measured": false,
+    "actual_backing_and_foreground_wait_qualification": false,
+    "full_model_execution_status": "execution_unavailable"
+  },
+  "expert_aware_verification": {
+    "conditional_width_two_traffic": {
+      "complete_counterfactual": true,
+      "rejected_branch_routes_unknown": false,
+      "external_logical_expert_bytes": 368934912000,
+      "reference_external_bytes": 381232742400,
+      "external_byte_reduction_fraction": 0.032258064516129004,
+      "assumes_original_per_token_routes_under_batching": true,
+      "excludes_checkpoint_and_verification_time": true,
+      "native_batch_arithmetic_qualified": false,
+      "native_speed_qualified": false
+    },
+    "conditional_requests": [
+      {
+        "ordinal": 0,
+        "attempts": 0,
+        "logical_expert_bytes": 85770240000,
+        "decode_expert_deliveries": 471
+      },
+      {
+        "ordinal": 1,
+        "attempts": 5,
+        "logical_expert_bytes": 185617612800,
+        "decode_expert_deliveries": 9413
+      },
+      {
+        "ordinal": 2,
+        "attempts": 5,
+        "logical_expert_bytes": 183317299200,
+        "decode_expert_deliveries": 9260
+      }
+    ],
+    "local_opportunity_metadata": [
+      {
+        "ordinal": 0,
+        "eligible_positions": 0,
+        "fixed_two_proposals": 0,
+        "fixed_two_matches": 0,
+        "adaptive_widths": {
+          "1": 1,
+          "2": 0,
+          "4": 0
+        },
+        "unknown_rejected_branch_routes": 0,
+        "correct_windows": 0,
+        "local_serial_deliveries": 0,
+        "local_union_deliveries": 0,
+        "local_source_bytes_saved": 0,
+        "predicted_route_observations": 1,
+        "checkpoint_overhead_in_selector_seconds": 0,
+        "fixed_compute_per_target_seconds_assumption": 0.18,
+        "historical_effective_source_bytes_per_second_assumption": 1939000000,
+        "local_windows_overlap_and_cannot_be_summed_as_request_savings": true,
+        "rejected_branch_IO_and_eviction_cost_unknown": true,
+        "actual_width_two_or_four_arithmetic_qualified": false,
+        "native_speed_qualified": false
+      },
+      {
+        "ordinal": 1,
+        "eligible_positions": 21,
+        "fixed_two_proposals": 5,
+        "fixed_two_matches": 5,
+        "adaptive_widths": {
+          "1": 22,
+          "2": 0,
+          "4": 0
+        },
+        "unknown_rejected_branch_routes": 0,
+        "correct_windows": 5,
+        "local_serial_deliveries": 4556,
+        "local_union_deliveries": 3882,
+        "local_source_bytes_saved": 6625689600,
+        "predicted_route_observations": 22,
+        "checkpoint_overhead_in_selector_seconds": 0,
+        "fixed_compute_per_target_seconds_assumption": 0.18,
+        "historical_effective_source_bytes_per_second_assumption": 1939000000,
+        "local_windows_overlap_and_cannot_be_summed_as_request_savings": true,
+        "rejected_branch_IO_and_eviction_cost_unknown": true,
+        "actual_width_two_or_four_arithmetic_qualified": false,
+        "native_speed_qualified": false
+      },
+      {
+        "ordinal": 2,
+        "eligible_positions": 21,
+        "fixed_two_proposals": 5,
+        "fixed_two_matches": 5,
+        "adaptive_widths": {
+          "1": 22,
+          "2": 0,
+          "4": 0
+        },
+        "unknown_rejected_branch_routes": 0,
+        "correct_windows": 5,
+        "local_serial_deliveries": 4481,
+        "local_union_deliveries": 3859,
+        "local_source_bytes_saved": 6114508800,
+        "predicted_route_observations": 22,
+        "checkpoint_overhead_in_selector_seconds": 0,
+        "fixed_compute_per_target_seconds_assumption": 0.18,
+        "historical_effective_source_bytes_per_second_assumption": 1939000000,
+        "local_windows_overlap_and_cannot_be_summed_as_request_savings": true,
+        "rejected_branch_IO_and_eviction_cost_unknown": true,
+        "actual_width_two_or_four_arithmetic_qualified": false,
+        "native_speed_qualified": false
+      }
+    ],
+    "selector_assumptions": {
+      "acceptance_per_draft_token": 0.5,
+      "checkpoint_seconds": 0,
+      "compute_seconds_per_target": 0.18,
+      "effective_source_bytes_per_second": 1939000000
+    },
+    "causal_adaptive_selector_chose_only_width_one": true,
+    "native_cost_metadata_SDK_compile_passed": true,
+    "native_target_arithmetic_qualified": false,
+    "checkpoint_restore_and_rejected_branch_time_measured": false,
+    "full_model_execution_status": "execution_unavailable"
+  },
+  "full_model_gate": {
+    "last_observed_free_pages": 5799,
+    "staged_CPU_required_pages": 8159,
+    "earlier_same_full_title_initial_decline_pages": 6749,
+    "physical_impossibility_established": false,
+    "new_model_title_launches": 0,
+    "reboot_dependency": false
+  },
+  "checks": {
+    "final_predictive_python_groups": 8,
+    "AIO_result_groups": 3,
+    "actual_AIO_lifecycle_host_controls": 16,
+    "expert_cost_host_refusals": 16,
+    "native_AIO_build_and_import_audit": true,
+    "native_expert_cost_object_bytes": 11096,
+    "CI_runs": 0
+  },
+  "production_SELF": {
+    "bytes": 28017271,
+    "sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d"
+  },
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "new_model_speed_winner": false,
+  "production_adopted": false,
+  "production_application_files_changed": 0,
+  "PS5_CPU_ELF_executions": 1,
+  "GPU_calls": 0,
+  "title_launches": 0,
+  "unknown_completion": false,
+  "evidence_digests": [
+    {
+      "bytes": 37140,
+      "sha256": "eb6595e52d68367dcef93edef6341598ff464d97f85d889b2ad3eafffd28805e"
+    },
+    {
+      "bytes": 47071,
+      "sha256": "f92602dbc9da3f516a2fce92bd8bcb4be3870a825bf9a1c01a1b6218e6cc449f"
+    },
+    {
+      "bytes": 624,
+      "sha256": "41f1484b9290b30544541b6279cc18374a33a00c6cfc6040419016d96b95bd9f"
+    },
+    {
+      "bytes": 51601,
+      "sha256": "6b8a719e84e6833917ee83f5a3e59e3f43a9f9b70fa632c0b876cd26869fe5bf"
+    }
+  ]
+}

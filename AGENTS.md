@@ -19,6 +19,16 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner subsequently selected a new three-path validation: OS I/O,
+predictive caching and expert-aware verification. Its authoritative scope and
+results are `docs/three-path-validation-20261027.md` / `.json`. This specifically
+reopens those new finite scopes without replaying consumed model cases. The new
+CPU AIO comparison physically completed and lost; causal metadata screens found
+no cache traffic winner and a conditional 3.2258% width-two traffic opportunity.
+Full-model prediction/verification is execution unavailable at the new 5799-page
+observation versus 8159-page CPU entry. This does not close the original speed
+objective or permit unsafe ownership, precision, startup or completion changes.
+
 The owner's latest execution instruction closes the current queue by executing
 available stages and explicitly recording execution-unavailable stages. Use
 `docs/final-current-environment-dispositions-20261027.md` and its JSON as the
