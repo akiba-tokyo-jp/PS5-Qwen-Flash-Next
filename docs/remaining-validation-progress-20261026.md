@@ -1326,3 +1326,19 @@ or measured new-SELF cost. The single existing-shell screen observed 6630 ->
 followed. The new native numerical stage is unavailable under present conditions;
 it is not passed or physically impossible. No production files/settings were
 changed. Overall implementation/native validation remains incomplete.
+
+## Original-source depth-two runner, 2026-10-27
+
+The previously missing ten-distinct-original-Expert source/cohort runner is now
+implemented, default-off, and host/native-build-qualified. The [3048-3062 record](finite-execution-dispositions-20261027.md#ten-original-expertdepth-two-implementation-cases-3048-3062)
+binds thirty original BF16 ranges, the actual paired source controller, native
+GGML adapter and independent result/journal review. Eleven host scenarios, 110
+policy refusals, 21 reviewer groups, original-byte F64/staged-F32 reference,
+strict SDK compile, native link and SELF six-segment roundtrip passed. Final SELF
+is `99009bc81063bb1447c5f3c8a73c62471bada4cf498bf92fff3742e9079f8c00`.
+Driver/profile/archive and disabled persistent caches are unchanged.
+
+No PS5 operation, startup retry or memory poll occurred. Forty connected graphs
+(12 backing + 14 numerical + 14 original-source) remain physically unrun. The
+eight-descriptor limit is per new reader; no title-wide/kernel reduction is
+claimed. Native timing, model integration and adoption remain incomplete.

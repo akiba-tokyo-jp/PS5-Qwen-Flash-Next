@@ -3,6 +3,7 @@
 #include "split_bank_allocation.h"
 #include <nlohmann/json.hpp>
 namespace qwen_app {
+struct ReadyOriginalPlan;
 struct ReadyFixtureMatrix {
     std::uint64_t offset;unsigned residue;const char *raw,*envelope;
 };
@@ -12,6 +13,8 @@ struct ReadyFixtureMatrix {
 nlohmann::json run_ready_expert_fixture(ggml_backend_t,int source_fd,
     const SplitBankBackings &,const SplitBankRoots &,const std::array<ReadyFixtureMatrix,6>&,
     std::uint64_t prior_positive_graph_epoch);
+nlohmann::json run_ready_original_fixture(ggml_backend_t,int source_fd,const SplitBankBackings &,
+    const SplitBankRoots &,const std::array<ReadyFixtureMatrix,6>&,const ReadyOriginalPlan &,std::uint64_t prior_positive_graph_epoch);
 inline void require_ready_fixture_policy(const nlohmann::json &p) {
     const auto &r=p.at("native_ready_expert_numerical");
     if(r!=nlohmann::json{{"schema","ps5-qwen-ready-numerical-policy-v1"},{"enabled",true},

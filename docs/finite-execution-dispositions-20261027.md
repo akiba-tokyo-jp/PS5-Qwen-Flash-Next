@@ -17,7 +17,7 @@ model-speed winner or production adoption.
 | Exact width-two arithmetic, rejection/restore and speed | Complete checkpoint physically qualified; causal controller, native policy and independent reviews implemented | **Native validation unavailable:** it requires the full-model startup path. Do not repeat checkpoint correctness tests. Width-four/adaptive verification integration is **unavailable at this stage** because the required native width-two correctness/cost decision is absent |
 | PLE 208-graph comparison | Four physical smoke graphs passed. Closed CPU/GPU records reproduce CPU price 7701 and GPU-continuation price 8190 | **Native comparison unavailable**, independently of the full-model rule. One next-item screen (3031) observed 6709 -> 6709 against the exact PLE price 8190; no title/ELF/GPU operation followed |
 | Prefix reuse comparison | Default-off consumer implemented, complete checkpoint qualified, old returned refusal closed/restored | **Native validation unavailable** under the shared full-model startup condition. The completed attribution work is not another pending prerequisite investigation |
-| Ready-expert execution | Execution owner/dispatch adapter pass 40 host controls. The native entry now connects twelve backing graphs to a six-run repeated-ID numerical cohort, with actual Direct reads, graph callbacks and independent review | **Native numerical entry implemented and build-qualified; native execution unavailable** after changed-scope screen 3046. Representative ten-unique-expert/two-call timing and production-model integration remain **unimplemented / dependency-gated**. The two-expert gate is not the missing representative performance proof |
+| Ready-expert execution | Backing/numerical entry and the subsequent ten-distinct-original-Expert/depth-two source comparison are implemented and native-build-qualified; independent host/reference/policy/report checks passed | **Native execution remains unavailable** under the last established startup conditions (3046). Representative timing is implemented but **unrun**; model integration is **unimplemented / conditional on the actual fixture decision**. Host checks do not qualify performance |
 | Actual hidden-state router observation and forecasts | Existing host-qualified shadow prototype; no actual hidden-state capture | **Validated model integration unavailable in this environment.** Recorded selected IDs cannot replace the missing hidden-state/cost measurements. Do not implement speculative transfers from that surrogate |
 | Broader workloads | Four original-template/tokenizer metadata cases completed; no new console generation | **Native quality/performance validation unavailable** under the full-model condition. Host metadata is not answer-quality evidence |
 | Further cache sizes and graph/Radiance tuning | Fifteen cache capacities replayed; original-shape audits and prior PLE numerics exist. Donor HIP/WMMA kernels do not directly match this Vulkan stack | **Further validated integration unavailable at the required native stage.** No native capacity winner, added cost profile or portable-kernel numerical comparison exists. Unimplemented portable candidates remain explicitly unimplemented, not benchmark failures |
@@ -169,3 +169,80 @@ then a fixture winner's model integration and matched model A/B/B/A. Those
 later implementations are still missing; do not silently count them as done,
 run them before their prerequisite, or substitute this repeated-ID gate for
 their speed decision. No new generation speed or production adoption exists.
+
+## Ten-original-Expert/depth-two implementation, cases 3048-3062
+
+This continuation supersedes the missing representative runner above, not its
+physical acceptance or model integration. Native gates constrain execution and
+adoption; they do not block writing the next strictly disabled implementation.
+Treating them as a condition for all source work had unnecessarily stopped it.
+
+A bounded offline inspection of the existing ELF/load regions and largest owned
+BSS symbols found no supported large startup kernel reduction. The disabled
+311296-byte probe array is not evidence of reclaimable kernel pages. Required
+driver tables and virtual extents cannot be subtracted from free-kernel counts.
+No formatter setting, driver trim, guard, monitoring or OS ownership changed.
+This inspection is closed; it does not justify another unchanged startup/poll.
+
+| Source / function | Implemented behavior |
+| --- | --- |
+| `tools/prepare_ready_original_plan.py` | Bind one completed native ten-distinct-Expert selection to thirty original BF16 envelopes in sealed <=512 MiB parts. Reuse retained ranges; no repack, reconversion or new weight corpus |
+| `ready_original_source.cpp::parse_ready_original_plan` | Require a bounded SHA256-bound private manifest, exact lineage/identities, interleaved 5/5 slots, offsets/residues and raw/envelope hashes |
+| `ReadyOriginalSource::fill_group` | Use the real two-call reader, role admissions and empirical parallel-region restrictions. Persist plans before I/O; check returned bytes, hashes and pre/post identity. Bound the descriptor LRU to eight entries, pinning the first descriptor during pair admission |
+| `ReadyOriginalSource::stop_new_work` | Stop later batch admission after failure; never cancel native I/O, close uncertain descriptors or free failed GPU/backing owners. Positive completion requires joined inner/outer readers and closed cached descriptors |
+| `ready_expert_fixture.cpp::run_ready_original_fixture` | Connect actual BF16/F32 GGML graphs in serial, split-serial, overlap, overlap, split-serial, serial order. Preserve original contribution order, NaN overwrite checks, matrix/canary hashes, exact F32 controls and unchanged F64 limits |
+| `split_bank_admission.cpp::Fixture::run` | Require twelve positive backing and fourteen repeated-ID numerical graphs in the same title before fourteen optional original-source graphs: epochs 0 -> 12 -> 26 -> 40 |
+| `tools/build_isolated_ple.py --ready-source-plan` | Embed the private manifest only in the explicit experimental build. Ordinary builds return no compiled plan; policy refuses missing/mismatched bytes |
+| `tools/ready_original_result.py::validate_combined` | Independently replay batch eligibility and bind prerequisites, 180 reads, fourteen original graphs, exact outputs, epochs, journal plans and cross-cohort chronology. A fixture winner permits separate model qualification only |
+
+The original layer-zero selection spans ten physical parts. Activation and route
+weights are deterministic fixture inputs, not captured live hidden state. Each
+run reads thirty 3293184-byte envelopes including 98304000 BF16 payload bytes,
+at depth at most two (one source coordinator and one inner I/O worker). The
+eight-descriptor cap applies **only to this reader's cache**. Existing pack,
+legacy source-window, shader, journal and policy owners remain separate. No
+whole-title descriptor cap or kernel saving is claimed. Model integration must
+share/replace producer-bound source owners rather than duplicate their pools.
+
+`source_to_output_ns` includes source-thread/descriptor/read/hash cost and actual
+graph submission, synchronization and retirement through output readiness.
+Workspace preparation and later CPU readback/F64/hash checks are outside every
+control's timed interval. A fixture winner needs both reverse pair gains above
+observed control/candidate drift and read/API interval intersections in both
+overlap cases. This does not establish physical GPU timestamp overlap or tok/s.
+
+Eleven actual-controller host scenarios passed, including depth two, identity,
+short-read/hash/read-exception/memory/close failures and GPU refusal. These use
+metadata addresses, no learned host inference or real GPU arithmetic. The
+manifest-enabled getter matches exact embedded bytes; 110 policy refusals and
+21 result-review groups passed (seven each for backing, numerical and original).
+
+Independent original-byte F64/staged-F32 verification passed: maximum reference
+output 0.08244509216328239, absolute error 1.9551170644255267e-8, normalized error
+0.001933445538135913 under unchanged `1e-5 + 1e-5*abs(ref)` limits. Receipt 3062
+binds its exact pre-cancellation source snapshot and unchanged decoder/reference,
+activation and weights. The same matrices were not rerun for unrelated changes.
+
+Strict SDK compilation, native link 3060, actual imports/dispatch, SELF 3061
+integrity and all six roundtrip segments passed. SELF size is 23225738 bytes,
+SHA256 `99009bc81063bb1447c5f3c8a73c62471bada4cf498bf92fff3742e9079f8c00`.
+Driver remains `872cc1264ad8ba5d6b888b092968fa5858a38c58`, `cumulative-idle`,
+with application-linked archive
+`b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925`.
+Persistent caches stay disabled. No PS5 upload/title/ELF/GPU operation, memory
+poll, deployment, reboot or CI run occurred. Production is unchanged.
+
+| Private receipt | SHA256 |
+| --- | --- |
+| Final unchanged-input/package binding 3062 | `1002ded2878dfaa004c0ecd96cc1a78e036368d8213481397e823c3595bb5e30` |
+| Source controls / strict SDK 3059 | `fe3732b0a12155e6f617970456a2e580aa423a4019a217bc0bd03d5e96ca87b8` |
+| Policy 3054 | `a283a85a4015f8527fcbf0ebbad94b4072b406c94784bc61164ef72dac78cab4` |
+| Original-byte reference 3055 | `a16fa2dee6fa636f9ec7dfaa39b08791068c9096a99aeeb3b6c5580e1ee7d81e` |
+| Native link 3060 | `1a758ec84568719a56496e9ec95de1542b451721c65a049df33329037f730afb` |
+| SELF 3061 | `06d258e748fce2681e3260ab67e59f44d642470f447159455c1b542f77d727fa` |
+
+Physical backing/numerical acceptance and representative timing remain **unrun**;
+the exact new SELF's startup cost is not established. Do not call 8159 a physical
+minimum or infer a gain from a build. Model integration, matched model A/B/B/A
+and production placement remain incomplete. Overall requested implementation
+and validation is not complete.
