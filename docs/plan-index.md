@@ -17,8 +17,9 @@ in [AGENTS.md](../AGENTS.md).
 
 Classification clarified on 2026-10-27 at the owner's request. Verification
 status and execution availability are separate fields. A refusal by our own
-guard does **not** establish physical impossibility. The latest saved 1012-page
-observation is historical evidence, not a fresh measurement.
+guard does **not** establish physical impossibility. The earlier 1012-page
+observation is superseded by completed CPU case 2780's 2939-page observation;
+both are historical snapshots, not fresh launch admission.
 
 | Term | Meaning |
 | --- | --- |
@@ -55,22 +56,32 @@ counts prove that the pending title can or cannot run. See the exact formulas in
 
 | Work item / next stage | Verification status | Execution constraint and remaining work |
 | --- | --- | --- |
-| Memory attribution, peak-live audit, source integration and offline model/graph controls | Partial; further host work not run/not implemented | Host investigation can continue. Do not classify it as physically unavailable because a native guard refused |
-| PLE current-boot shader bootstrap and 208-graph timing | Prior four-graph numerics scope-qualified; new bootstrap/timing not run | Policy-blocked by selected memory admission/current-boot prerequisites; own-SELF characterization remains. Physical infeasibility is unproven |
+| Memory attribution, peak-live audit, source integration and offline model/graph controls | CPU shader bootstrap, original metadata, representative reservation and quiet-start attribution scope-qualified; complete kernel-owner attribution remains unresolved | Quiet-start loss occurred without journal/allocation/virtual calls. Completed new-controller residency/integrity found 319 pages; later free was 6942. Continue distinct allocation/integration work; do not repeat consumed attribution scopes |
+| PLE current-boot shader bootstrap and 208-graph timing | Current-boot 1527-shader bootstrap scope-qualified (2812); prior four-graph numerics scope-qualified; 208-graph timing not run | Latest passive free 6942 is below the existing same-SELF price 8108. That policy remains revisable; no physical allocation failure proves impossibility |
 | Prefix A/B then B/A | Consumer host-qualified; A1 returned before backend work | Native comparison policy-blocked, not a completed speed comparison or a physical allocation-failure result |
 | Ready-expert source/GPU overlap | Partial graphs and ownership prototypes host-qualified | Actual backing/controller integration is not implemented/qualified; native stage is additionally policy-blocked. Host implementation can proceed |
 | Real hidden-state observation and forecasting | Shadow prototype host-qualified | Actual model observation/forecast integration is missing; native stage additionally policy-blocked. No physical impossibility demonstrated |
-| Width-two speculation, conditional width four/adaptive control | Width-two API prototype host-qualified | Actual native arithmetic/controller not qualified; width four/adaptive implementation missing. Native stage additionally policy-blocked |
+| Width-two speculation, conditional width four/adaptive control | Causal width-two controller/native policy and result review implemented; 30 adapter controls passed | Actual native width-two arithmetic/rollback and speed not qualified; width four/adaptive implementation missing. Separate prefix timing does not block it |
 | Additional workload quality/performance and other GPU kernels | Host metadata prepared; native work not run; some kernels not implemented | Distinguish missing implementation from policy-blocked native execution; no physical-impossibility result |
 | Original-file versus expert-major delivery | Comparison actually ran, 7/8 rounds faster; inconclusive and unadopted | This is measured evidence, not an unexecuted or physically unavailable test |
 | Complete state checkpoint | Actual model continuation scope-qualified | No pending correctness rerun. Prefix/speculative speed acceptance is separate |
-| Expanded caches beyond selected 512 MiB | Host geometry/traffic screen only | Cannot execute under the unchanged selected cap; classify as a revisable configuration limit, not physical impossibility |
+| Expanded caches beyond selected 512 MiB | Fifteen capacities replayed; 128-slot implementation, host controls and all 360 physical layout graphs passed | The first model A returned a CPU preparation refusal; B arms were not run. Independent 128-slot model review is implemented; a new matched cohort remains. 128 preserves the 512 MiB single-buffer and 1792 MiB aggregate ledger caps; 160 has a revisable allowance gap. No cache speedup is adopted |
 
 Classification changes do not lower any runtime guard or launch another case.
 Any engineering revision must declare its changed margin/scope, measured basis
 and failure handling before execution, under the owner's existing experiment
 authorization. Exact owner/source identity, numerical checks and positive
 completion are distinct correctness requirements, not tunable free-page margins.
+
+The latest [source-memory attribution](source-memory-attribution-20261027.json)
+records completed CPU cases 2920 (all 76 original metadata containers), 2950
+(representative eight-region A/B/B/A), and 2970 (five-second no-log/no-allocation
+control), each normally closed and restored. Metadata and warm reservation API
+intervals did not reproduce the large decline; the quiet interval did. This
+supports pricing asynchronous title/runtime/OS consumption, not blaming the
+parser or reservation API. The individual proprietary owner remains unresolved.
+The representative shared arena showed no repeatable speed benefit and was not
+adopted. These completed scopes do not complete the model-speed queue.
 
 ## Current production baseline
 
@@ -89,9 +100,17 @@ The [current runtime/memory continuation](postboot-runtime-memory-20261027.md)
 records the subsequent instruction and successful one-entry restoration of the
 same runtime. New-boot discovery/full CPU admission passed. A process helper
 refused before inventory at 1060 free pages; a boot-bound passive screen observed
-1017 -> 1012, below operational floor 1154. No title/GPU or shader bootstrap ran.
-Authorization is no longer the blocker; current-boot shader proof and sufficient
-memory remain unqualified. Reusable pre-staging/current-CPU tools are implemented.
+1017 -> 1012, below operational floor 1154. These were earlier checkpoints.
+Subsequent CPU case 2812 fully verified all 1,527 shaders / 382 lookups on this
+boot and normally closed with exact fastest/settings restoration. Expanded-cache
+case 2820 then returned a known CPU startup-policy refusal at 2,293 versus 2,974
+pages, before model metadata or any GPU work, and restored exactly. No hang or
+new model speed was observed. The default-off single-slice layout revision removes
+unneeded whole-model preparation and prices its GPU phase independently; its
+111 host refusal controls and all 360 physical GPU layout graphs passed. Normal
+close/restoration and both native C++/independent Python reviews passed; model
+speed qualification and adoption remain pending.
+See the [current evidence and exact experimental budget](remaining-validation-progress-20261026.md#current-boot-cpu-bootstrap-and-restored-title-alias-2026-10-27).
 
 The installed finite application is the qualified original-precision engine,
 SELF `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`
@@ -245,7 +264,7 @@ original BF16/F32 is preserved.
 | Exact speculative verification or model-free drafts | Complete-model checkpoint qualified. Past-only draft and one-draft width-two adapter prototypes passed host controls, including actual-adapter rollback/bonus/EOG/unknown-completion cases. [Scope](remaining-validation-progress-20261026.md#model-free-draft-and-width-two-adapter-prototypes) | No native policy/controller enables the prototype. Actual two-target arithmetic, all continuation/route checks, discarded I/O and matched speed/memory remain unqualified. Width four/adaptive controller remain open |
 | Repeated-prefix state reuse | Default-off consumer implemented and host-qualified; same-SELF A1 case 2601 returned a known pre-backend memory refusal, with zero GPU/model execution. [Consumer and refusal evidence](remaining-validation-progress-20261026.md#exact-prefix-consumer-and-reduced-headroom-experiment) | Diagnose the metadata-phase kernel decline before continuing the finite A/B then B/A cohort. Restore 2608/preserve 2609 passed. The owner's separately recorded experimental gate does not change production defaults; no prefix speed result exists |
 | Zero-copy expert-major layout or vectored Direct I/O | Native bank numerics/retirement passed. Compact-record bank screen: 1.252x source / 1.183x total. Actual original-file comparison: 1.040x / 1.037x, only 7/8 rounds faster; inconclusive and unadopted. [Results and scope](remaining-validation-progress-20261026.md#compact-records-and-actual-production-source-layout) | No migration or integration from the failed production-shaped screen. Coalescing/fallback, partial-pack coverage and whole-model results remain unqualified; do not infer tokens/s from same-file fixtures |
-| Larger useful cache or shorter allocation lifetimes | Partial host screen: packed 54 slots save 0.049% traffic; conservative 128-slot expansion saves 4.899% for 706.641 MiB extra banks and exceeds the existing cache cap. Same-53 cyclic eviction candidates failed the host screen. [Scope](remaining-validation-progress-20261026.md#cache-capacity-feasibility) | Wider peak-live ledger and metadata pressure attribution remain incomplete. Current native geometry/caps, LFU policy and fastest SELF are unchanged; no expansion or kernel-pool resize is adopted |
+| Larger useful cache or shorter allocation lifetimes | Default-off 128-slot candidate passed all 120 physical cases / 360 graphs, exact original residues, F32/canary and retirement checks. Historical replay predicts 4.899% less upload, not model speed. [Physical result](cache128-layout-20261027.json) | Same-SELF A53/B128 then B128/A53 retains every model guard; first control is prepared. Wider lifetime/metadata work remains incomplete. Production remains 53 slots / 512 MiB; no expansion or kernel-pool resize is adopted |
 | Additional graph/vector/workgroup tuning | Actual shapes audited. Independent headless PLE title passed four physical width-one graphs: original and three modes, exact F32/F64 checks, single Vulkan placement and positive retirement. [Physical record](PLE-smoke-startup-20261026.md#four-graph-physical-gpu-completion) | Paired 208-graph case 2748 refused before launch at 7858/7883 against 8108 pages; exact fastest/settings restored. Timing comparison, widths two through four and actual-model acceptance remain open. Broader dual-output/GDN/small-GEMM tuning requires material cost evidence |
 
 Start future selection with workload evidence and source-wait reduction. Ready

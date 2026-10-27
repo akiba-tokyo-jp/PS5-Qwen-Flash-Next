@@ -4,6 +4,8 @@
 #include "indexed_vector.h"
 #include "mapped_copy.h"
 #include "model_checkpoint.h"
+#include "padded_cache_geometry.h"
+#include "model_free_draft.h"
 
 #include <algorithm>
 #include <cmath>
@@ -88,8 +90,9 @@ llama_context_params streaming_context_params(std::uint32_t context_tokens,
     require_prefill_width(prefill_tokens);
     if (context_tokens < 2 || !expert_cache_bytes) throw std::invalid_argument("Invalid streaming budget");
     if (prefill_tokens > context_tokens ||
-        (prefill_tokens > 1 && expert_cache_bytes != (512u << 20)))
-        throw std::invalid_argument("Batched prefill requires the complete admitted 512 MiB expert cache");
+        (prefill_tokens > 1 && expert_cache_bytes != selected_padded_cache_geometry().cache_bytes())||
+        (selected_padded_cache_geometry().active_slots==128&&context_tokens!=256))
+        throw std::invalid_argument("Batched prefill requires the complete selected cache and context scope");
     auto params = llama_context_default_params();
     params.n_ctx = context_tokens;
     params.n_batch = params.n_ubatch = prefill_tokens;
@@ -253,12 +256,36 @@ void LlamaEngine::prefill(std::uint32_t context_tokens) {
 }
 
 Token LlamaEngine::next() {
+    const bool bonus=speculative_bonus_ready_;
     if(speculative_bonus_ready_) {
         require_healthy();
         restored_logits_=std::move(speculative_bonus_logits_);restored_logits_active_=true;
         speculative_bonus_ready_=false;pending_=LLAMA_TOKEN_NULL;++speculative_stats_.queued_bonus_samples;
     }
     if(checkpoint_stats_.enabled)return validate_next_checkpoint();
+    Token result;
+    if(speculative_stats_.controller_enabled) {
+        require_healthy();
+        if(!ready_||speculative_committed_tokens_.size()>=32)
+            throw std::invalid_argument("The causal width-two controller requires its bounded active request");
+        // History contains only already returned tokens. Leave room for both
+        // verified outputs, and never replace a pending queued bonus/draft.
+        if(!bonus&&pending_!=LLAMA_TOKEN_NULL&&!llama_vocab_is_eog(vocabulary_,pending_)&&
+           !speculative_committed_tokens_.empty()&&speculative_committed_tokens_.size()<=30&&
+           std::uint64_t(position_)+2<=llama_n_ctx(context_)&&speculative_stats_.attempts<32) {
+            ++speculative_stats_.proposal_checks;
+            const auto draft=propose_model_free_token(prompt_.data(),prompt_.size(),
+                speculative_committed_tokens_.data(),speculative_committed_tokens_.size(),
+                std::size_t(llama_vocab_n_tokens(vocabulary_)),DraftEvidence::consistent_pair);
+            if(draft.found&&!llama_vocab_is_eog(vocabulary_,draft.token)) {
+                if(draft.origin==DraftOrigin::prompt)++speculative_stats_.prompt_proposals;
+                else ++speculative_stats_.generated_proposals;
+                result=next_with_one_draft(draft.token);
+            } else {++speculative_stats_.no_draft;result=next_once();}
+        }else result=next_once();
+        if(!result.end_of_generation)speculative_committed_tokens_.push_back(result.id);
+        return result;
+    }
     return next_once();
 }
 
@@ -369,6 +396,7 @@ void LlamaEngine::finish() {
         if(checkpoint_stats_.enabled)checkpoint_stats_.completed=checkpoint_stats_.captures>0&&checkpoint_stats_.captures==checkpoint_stats_.restores;
     }
     speculative_bonus_ready_=false;speculative_bonus_logits_.clear();
+    speculative_committed_tokens_.clear();
     restored_logits_active_=false;restored_logits_.clear();checkpoint_reference_logits_.clear();checkpoint_candidates_.clear();
     ready_ = false;
     pending_ = LLAMA_TOKEN_NULL;
@@ -408,6 +436,12 @@ void LlamaEngine::enable_speculative_step_prototype(std::function<void(std::uint
        !gpu_begin_||!gpu_complete_||!gpu_retain_||!gpu_checkpoint_)
         throw std::invalid_argument("Width-two prototype requires the original bounded context and complete owner hooks");
     checkpoint_=std::make_unique<ModelCheckpoint>(model_,context_);checkpoint_admit_=std::move(admit);speculative_stats_.enabled=true;
+}
+void LlamaEngine::enable_model_free_speculation(std::function<void(std::uint64_t)> admit) {
+    if(selected_padded_cache_geometry().active_slots!=53)
+        throw std::invalid_argument("Initial causal width-two qualification retains the 53-slot control");
+    enable_speculative_step_prototype(std::move(admit));
+    speculative_committed_tokens_.reserve(32);speculative_stats_.controller_enabled=true;
 }
 void LlamaEngine::capture_checkpoint_in_active_epoch() {
     guard();

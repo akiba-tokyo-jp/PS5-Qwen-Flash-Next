@@ -69,7 +69,7 @@ def main():
                      app / "device_buffer_budget.h",app / "logical_source_bridge.h", app / "direct_metadata.h",
                      app / "direct_metadata.cpp",app / "model_mapping.cpp", ROOT / "tests/mapped_source.cpp",
                      ROOT / "tests/split_source.cpp",ROOT / "tests/padded_source.cpp",app / "padded_bank.h",
-                     app / "padded_bank_layout.h",app / "padded_cache_bridge.h")}
+                     app / "padded_bank_layout.h",app / "padded_cache_bridge.h",app / "padded_cache_geometry.h")}
     (a.out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n")
 
 

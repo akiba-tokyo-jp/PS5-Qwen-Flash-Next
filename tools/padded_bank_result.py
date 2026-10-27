@@ -7,8 +7,10 @@ RESIDUES=(32,160,256,640,832,1120,1152,1184,1632,1696,1728,1760,1792,1824,
           2080,2208,2240,2304,2336,2784,3232,6688,6720,8320,11360,11424,12768,12832,12864,12928)
 SOURCE_SHA='16fffd6b293d7d218adff19ba8a4f2d5176341b43b15fda3c9d63aa3f0677b1a'
 
-def validate_layout(r,stages,pid,run_id):
-    assert r['schema']=='ps5-qwen-padded-bank-layout-result-v1' and r['pid']==pid and r['run_id']==run_id
+def validate_layout_report(r,pid,run_id,*,expected_slots=53):
+    assert expected_slots in (53,128)
+    schema='ps5-qwen-padded-bank-layout-result-v1'if expected_slots==53 else'ps5-qwen-padded-bank-layout-result-v2'
+    assert r['schema']==schema and r['pid']==pid and r['run_id']==run_id
     assert r['source_SHA256']==SOURCE_SHA and r['eligible'] is True
     assert r['all_started_IO_closed'] is True and r['Direct_reads']==1 and r['GPU_graphs']==360
     assert r['model_loaded'] is False and r['VideoOut_started'] is False and r['automatic_retries']==0
@@ -18,7 +20,11 @@ def validate_layout(r,stages,pid,run_id):
     alignment=r['descriptor_alignment']
     assert isinstance(alignment,int) and 0<alignment<=16384 and alignment&(alignment-1)==0
     assert all(offset%alignment==0 for offset in RESIDUES) and r['memory_flags']&7==7
-    assert r['active_slots']==53 and r['physical_planes']==54 and r['bank_stride']==3293184
+    assert r['active_slots']==expected_slots and r['physical_planes']==expected_slots+1 and r['bank_stride']==3293184
+    if expected_slots==128:
+        assert r['driver_revision']=='872cc1264ad8ba5d6b888b092968fa5858a38c58' and r['profile']=='cumulative-idle'
+        assert r['native_archive_sha256']=='b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925'
+        assert len(r['candidate_SELF_sha256'])==64 and set(r['candidate_SELF_sha256'])<=set('0123456789abcdef')
     assert r['maximum_absolute_error_limit']==1e-6 and r['reference_accumulation']=='F64'
     expected={(k,n,v,offset)for k,n in ((2560,640),(640,2560))for v in (1,10)for offset in RESIDUES}
     actual=set()
@@ -30,6 +36,12 @@ def validate_layout(r,stages,pid,run_id):
         error=row['maximum_absolute_error']
         assert math.isfinite(error) and 0<=error<=1e-6 and row['non_BF16_exact_F32_inputs']>0
     assert actual==expected
+    return dict(eligible=True,positive_GPU_and_source_retirement=True,
+                model_inference=False,full_model_speed_qualified=False)
+
+
+def validate_layout(r,stages,pid,run_id,*,expected_slots=53):
+    validate_layout_report(r,pid,run_id,expected_slots=expected_slots)
     lines=stages.splitlines()
     assert 'native_exception_admission_failed' not in stages
     assert stages.endswith('padded_layout_completed_model_not_loaded_waiting_for_ordinary_close\n')

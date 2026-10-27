@@ -49,6 +49,11 @@ def validate(path, expected):
         value = expected.get(key)
         require(type(value) is str and len(value) == length and all(c in "0123456789abcdef" for c in value),
             "Invalid independent run or digest binding")
+    resident_requirement=12110548480
+    if 'cache128'in expected:
+        from cache128_result import validate_binding,MODEL_REQUIREMENT
+        validate_binding(expected['cache128'])
+        resident_requirement=MODEL_REQUIREMENT
     require(not Path(str(path) + ".failure").exists() and not Path(str(path) + ".fatal").exists(),
         "A native failure/fatal record prevents positive admission")
     result = read_record(path)
@@ -123,15 +128,15 @@ def validate(path, expected):
         CPU_source_read_window_in_Direct_heap=True,
         model_loaded=False, Vulkan_initialized=False))
     exact(memory, dict(device_weights_bytes=8755105280, mapped_file_bytes=expected["bytes"],
-        planned_resident_headroom_bytes=12110548480, CPU_budget_bytes=512 << 20,
+        planned_resident_headroom_bytes=resident_requirement, CPU_budget_bytes=512 << 20,
         maximum_explicitly_addressed_CPU_model_page_bytes=160432128,
         maximum_resident_CPU_model_source_bytes=0, CPU_heap_budget_includes_source_read_window=True,
         maximum_CPU_heap_bytes=512 << 20, Flexible_reserve_bytes=256 << 20,
         kernel_extra_margin_bytes=4 << 20,
         maximum_postload_device_buffer_bytes=512 << 20,
         maximum_aggregate_postload_device_buffer_bytes=1792 << 20))
-    require(integer(memory.get("driver_free_bytes"), 12110548480, 2**63-1) and
-        integer(memory.get("Direct_largest_available_bytes"), 12110548480, 2**63-1) and
+    require(integer(memory.get("driver_free_bytes"), resident_requirement, 2**63-1) and
+        integer(memory.get("Direct_largest_available_bytes"), resident_requirement, 2**63-1) and
         integer(memory.get("Flexible_available_bytes"), 264 << 20, 2**63-1), "Fresh scoped memory observations do not admit the bounded model")
     kernel_free, kernel_minimum, kernel_reserved = (memory.get(key) for key in
         ("kernel_vm0_free_pages", "kernel_vm0_minimum_pages", "kernel_vm0_reserved_pages"))
@@ -283,6 +288,9 @@ def validate(path, expected):
             struct.unpack_from("<III", header, 10) == (54, 40, 1920) and
             struct.unpack_from("<IHH", header, 22) == (1080, 1, 32), "The completed scanout-source bitmap layout differs")
         measured.append(dict(id=request_id, text=bytes(pieces).decode("utf-8", errors="replace"), metrics=values))
+    if 'cache128'in expected:
+        from cache128_result import validate_model
+        validate_model(path,expected,result,read_record)
     return dict(state="native_plan_requests_completed", stop_reason=reason, text=text,
         output_is_complete_UTF8=valid_utf8, metrics=metrics, answer_quality_qualified=False,
         external_requests=measured, native_display_started=True,

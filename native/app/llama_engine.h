@@ -24,8 +24,9 @@ struct PrefixReuseStats {
     std::uint64_t capture_ns=0,restore_ns=0;
 };
 struct SpeculativeStepStats {
-    bool enabled=false;
+    bool enabled=false,controller_enabled=false;
     std::uint32_t attempts=0,accepted=0,rejected=0,queued_bonus_samples=0;
+    std::uint32_t proposal_checks=0,no_draft=0,prompt_proposals=0,generated_proposals=0;
 };
 struct LlamaTimingStats {
     std::uint64_t process_calls = 0, process_ns = 0, synchronize_ns = 0;
@@ -57,9 +58,10 @@ public:
     void enable_prefix_reuse(std::function<void(std::uint64_t)> admit);
     PrefixReuseStats prefix_reuse_stats()const{return prefix_stats_;}
     void set_logits_observer(std::function<void(const float *,std::size_t)> observer);
-    // Host-qualified prototype entry only. No native policy or automatic draft
-    // controller enables this path; width-two model arithmetic remains unqualified.
+    // Default-off experimental APIs. Native width-two arithmetic and speed
+    // require their own finite qualification; host checks do not establish them.
     void enable_speculative_step_prototype(std::function<void(std::uint64_t)> admit);
+    void enable_model_free_speculation(std::function<void(std::uint64_t)> admit);
     Token next_with_one_draft(llama_token draft);
     SpeculativeStepStats speculative_step_stats()const{return speculative_stats_;}
     // Called before work and after synchronized decode/checkpoint boundaries.
@@ -104,6 +106,7 @@ private:
     SpeculativeStepStats speculative_stats_;
     bool speculative_bonus_ready_=false;
     std::vector<float> speculative_bonus_logits_;
+    std::vector<llama_token> speculative_committed_tokens_;
     std::function<void(const float *,std::size_t)> logits_observer_;
     std::function<void(std::uint64_t)> checkpoint_admit_;
     std::function<std::uint32_t()> checkpoint_route_cursor_;

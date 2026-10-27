@@ -58,7 +58,13 @@ int32_t llama_process(llama_context *c,llama_process_type,llama_batch_ext *b){
     c->memory.position=b->positions.back()+1;c->memory.KV_tag=c->memory.recurrent_tag=c->memory.PLE_tag=c->memory.position;
     c->row_count=unsigned(b->tokens.size());check(c->row_count<=4);
     for(unsigned i=0;i<c->row_count;++i) {
-        const int position=b->positions[i]+1;const int selected=position<30?0:std::min(33,position+1);
+        const int position=b->positions[i]+1;int selected=position<30?0:std::min(33,position+1);
+        if(scenario.rfind("auto-",0)==0&&scenario!="auto-no-draft"&&position>=30) {
+            const std::array<int,9> accepted{{7,8,7,8,7,8,9,10,33}},rejected{{7,8,7,8,7,9,10,11,33}};
+            if(scenario=="auto-limit")selected=(position-30)%2?8:7;
+            else {const auto &sequence=scenario=="auto-rejected"?rejected:accepted;
+                selected=sequence.at(std::min<std::size_t>(8,position-30));}
+        }
         c->batch_logits[i].fill(-1.125f);c->batch_logits[i][selected]=10.25f;
     }
     c->logits=c->batch_logits[c->row_count-1];
@@ -181,9 +187,37 @@ int prefix_case() {
         <<",\"process_calls\":"<<processes<<",\"captures\":"<<captures<<",\"restores\":"<<restores
         <<",\"full_logit_observations\":"<<observed.size()<<",\"PS5_operations\":0,\"learned_model_inference\":false}"<<std::endl;return 0;
 }
+int automatic_case() {
+    llama_model model;llama_context context{&model,{},{},{}};
+    const unsigned requests=scenario=="auto-repeat"?2:scenario=="auto-limit"?3:1;
+    {
+        qwen_app::LlamaEngine engine(&model,&context,4);engine.set_gpu_boundaries(begin,complete,retain,checkpoint);
+        engine.enable_model_free_speculation([](std::uint64_t bytes){check(bytes==16);});
+        for(unsigned request=0;request<requests;++request) {
+            engine.tokenize("past tokens only");engine.prefill(256);std::vector<int> emitted;
+            for(unsigned i=0;i<32;++i){const auto token=engine.next();if(token.end_of_generation)break;emitted.push_back(token.id);}
+            const std::vector<int> expected=scenario=="auto-no-draft"?std::vector<int>{31,32}:
+                scenario=="auto-rejected"?std::vector<int>{7,8,7,8,7,9,10,11}:std::vector<int>{7,8,7,8,7,8,9,10};
+            if(scenario=="auto-limit") {
+                check(emitted.size()==32);for(unsigned i=0;i<32;++i)check(emitted[i]==(i%2?8:7));
+                const auto before=processes;bool stopped=false;try{engine.next();}catch(const std::invalid_argument&){stopped=true;}
+                check(stopped&&before==processes&&!engine.failed());
+            }else check(emitted==expected);
+            engine.finish();check(context.memory.position==0);
+        }
+        const auto stats=engine.speculative_step_stats();check(stats.enabled&&stats.controller_enabled&&stats.attempts<=32);
+        if(scenario=="auto-limit")check(stats.attempts==32&&stats.accepted==32&&captures==32&&restores==0);
+        else if(scenario=="auto-no-draft")check(stats.attempts==0&&captures==0&&processes==10);
+        else if(scenario=="auto-rejected")check(stats.attempts==1&&stats.rejected==1&&restores==1&&processes==17);
+        else check(stats.attempts==requests&&stats.accepted==requests&&restores==0&&processes==15*requests);
+        check(begins==completed&&!retained&&!active);
+    }
+    check(freed==2);std::cout<<"{\"scenario\":\""<<scenario<<"\",\"passed\":true,\"PS5_operations\":0}"<<std::endl;return 0;
+}
 int main(int argc,char **argv) {
     check(argc==2);scenario=argv[1];if(scenario.rfind("prefix-",0)==0)return prefix_case();
     if(scenario.rfind("spec-",0)==0)return speculative_case();
+    if(scenario.rfind("auto-",0)==0)return automatic_case();
     llama_model model;llama_context context{&model,{},{},{}};
     unsigned checked=0;std::vector<int> emitted;
     {

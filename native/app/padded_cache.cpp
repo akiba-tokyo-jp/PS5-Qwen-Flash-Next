@@ -3,6 +3,7 @@
 #include "padded_bank_bridge.h"
 #include "padded_bank_layout.h"
 #include "padded_bank.h"
+#include "padded_cache_geometry.h"
 #include "mapped_source_bridge.h"
 #include <atomic>
 #include <stdexcept>
@@ -24,6 +25,9 @@ void configure_native_padded_cache(bool value,std::size_t alignment){
 }
 }
 extern "C" bool qwen_app_padded_cache_enabled(){return enabled.load();}
+extern "C" std::size_t qwen_app_padded_buffer_batch_limit(std::size_t actual){
+    return qwen_app::selected_padded_buffer_batch_limit(actual,qwen_app_model_compute_limits_enabled());
+}
 extern "C" bool qwen_app_try_owned_bank_reads(ggml_tensor *bank,const void *first,const void *second,
     unsigned count,const int *slots,std::size_t residue){
     if(!enabled.load()||!slots||!first||(count!=1&&count!=2)||(count==2&&!second))

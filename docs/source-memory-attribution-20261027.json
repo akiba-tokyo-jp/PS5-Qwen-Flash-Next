@@ -1,0 +1,202 @@
+{
+  "schema": "ps5-qwen-source-memory-attribution-summary-v1",
+  "date": "2026-10-27",
+  "model_speed_or_adoption_qualified": false,
+  "full_application_control": {
+    "case": 2860,
+    "SELF_sha256": "b9c8584b8f2e60f70b768941e61c40808312b06e961cde0f14f41a9cc0ace3a8",
+    "prelaunch_free_pages": 8272,
+    "before_SELF_integrity_free_pages": 1544,
+    "after_SELF_integrity_free_pages": 3285,
+    "before_model_metadata_free_pages": 3259,
+    "after_completed_virtual_rehearsal_free_pages": 1523,
+    "after_bounded_startup_wait_free_pages": 1540,
+    "selected_startup_target_pages": 2974,
+    "returned_refusal": true,
+    "all_76_protected_ranges_positively_unmapped": true,
+    "GPU_calls": 0,
+    "model_loads": 0,
+    "generation_POSTs": 0,
+    "normal_close_and_exact_fastest_restoration_passed": true
+  },
+  "small_CPU_metadata_attribution": {
+    "case": 2920,
+    "SELF_sha256": "7757d6dd79bc406945ee8a9688f1ca4e9ead80adc7981f66f540f73dfde787f6",
+    "SELF_bytes": 1082438,
+    "driver_or_inference_engine_linked": false,
+    "GGUF_metadata_utility_linked": true,
+    "verbatim_original_container_inspector": true,
+    "completed_containers": 76,
+    "ordered_observations": 380,
+    "native_result_bytes": 133016,
+    "native_result_sha256": "433c8dd726bd30bd70a368f35f864e9d25d6c6c4090b07336f8b0089dfff968e",
+    "Direct_metadata_reads": 86,
+    "Direct_metadata_bytes": 90177536,
+    "CPU_heap_peak_bytes": 33554432,
+    "CPU_heap_selected_allowance_bytes": 67108864,
+    "before_metadata": {
+      "free": 2582,
+      "active": 22033,
+      "inactive": 80158,
+      "wired": 33966
+    },
+    "after_metadata": {
+      "free": 2595,
+      "active": 22025,
+      "inactive": 80149,
+      "wired": 33970
+    },
+    "free_page_decrease_by_interval": {
+      "size_queries": 0,
+      "Direct_GGUF_parser": -8,
+      "tensor_scan": 1,
+      "container_retirement": -4,
+      "between_files": -2,
+      "whole_source_identities_before": 0,
+      "whole_source_identities_after": 0,
+      "total_metadata_interval": -13
+    },
+    "negative_decrease_means_more_free_pages": true,
+    "whole_original_source_identity_checks_before_and_after_passed": true,
+    "all_original_types_dimensions_PLE_and_footprint_passed": true,
+    "virtual_source_calls": 0,
+    "GPU_calls": 0,
+    "model_loads": 0,
+    "source_workers": 0,
+    "native_double_process_parent_service_AppInfo_and_title_guards_at_close_passed": true,
+    "normal_OS_close_completed": true,
+    "native_owner_absence_verified": true,
+    "exact_fastest_SELF_and_five_settings_restored": true,
+    "fresh_idle_session_and_full_native_readback_passed": true,
+    "unknown_completion": false
+  },
+  "interpretation": {
+    "metadata_alone_not_shown_to_explain_earlier_1736_page_decline": true,
+    "cold_warm_and_background_OS_differences_remain": true,
+    "individual_kernel_owner_not_identified": true,
+    "observer_perturbation_requires_separate_accounting": true,
+    "extra_ELF_owner_observer_free_pages": 981,
+    "extra_ELF_owner_observer_selected_floor_pages": 1154,
+    "subsequent_resident_shell_free_pages": 2807,
+    "different_observations_are_not_exclusive_cost_measurements": true
+  },
+  "next_gate": {
+    "purpose": "Check newly completed controller-file residency, then price and resume independent GPU/model scopes",
+    "repeat_unmodified_zero_residency_files": false,
+    "cache_pressure_or_advice_allowed": false,
+    "full_model_startup_policy_is_a_hardware_minimum": false,
+    "full_model_speed_qualified": false
+  },
+  "representative_virtual_source_comparison": {
+    "case": 2950,
+    "SELF_sha256": "87e019c094890cf70126a5c33a4fa037a3d7ac14e7fd1ce10db736ca8b596e2d",
+    "SELF_bytes": 843974,
+    "virtual_bytes": 27624914944,
+    "logical_regions_per_round": 8,
+    "order": [
+      "per_file",
+      "shared_arena",
+      "shared_arena",
+      "per_file"
+    ],
+    "matched_markers_per_round": 72,
+    "native_reserve_query_release_sets": 18,
+    "all_ranges_positively_retired": true,
+    "round_elapsed_ns": [
+      197940598,
+      103976115,
+      106176482,
+      103423477
+    ],
+    "reserve_API_free_decline_pages": [
+      2,
+      0,
+      0,
+      0
+    ],
+    "matched_journal_interval_free_decline_pages": [
+      0,
+      4,
+      1409,
+      0
+    ],
+    "GPU_calls": 0,
+    "model_payload_reads": 0,
+    "normal_close_and_exact_fastest_restoration_passed": true,
+    "shared_arena_speed_advantage_established": false,
+    "individual_kernel_owner_identified": false,
+    "interpretation": "The 1409-page decline followed the reserve API. Matched journal and asynchronous title startup remain confounded; warm per-file time does not show an arena speed advantage."
+  },
+  "quiet_start_control": {
+    "case": 2970,
+    "SELF_sha256": "e98327d1c436e5814b89c1b1375bbae6513fb8f7c2fbc605be02902bcc1e6336",
+    "SELF_bytes": 847942,
+    "elapsed_ns": 5000481353,
+    "journal_writes_in_interval": 0,
+    "allocations_in_interval": 0,
+    "virtual_calls_in_interval": 0,
+    "GPU_calls": 0,
+    "model_payload_reads": 0,
+    "VM_before": {
+      "free": 3455,
+      "active": 21236,
+      "inactive": 79901,
+      "wired": 34147
+    },
+    "VM_after": {
+      "free": 2048,
+      "active": 21238,
+      "inactive": 79885,
+      "wired": 35568
+    },
+    "free_decline_pages": 1407,
+    "wired_increase_pages": 1421,
+    "round_elapsed_ns": [
+      102747113,
+      102776139,
+      102786483,
+      102843897
+    ],
+    "reserve_API_free_decline_pages": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "matched_journal_interval_free_decline_pages": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "all_18_native_ranges_positively_retired": true,
+    "normal_close_and_exact_fastest_restoration_passed": true,
+    "individual_kernel_owner_identified": false,
+    "interpretation": "The large decline occurs without the suspected application journal or virtual calls. Asynchronous title/runtime or concurrent OS consumption must be priced; a specific proprietary owner is not identified."
+  },
+  "newly_completed_controller_residency": {
+    "case": 2990,
+    "closed_controller_files": 46,
+    "resident_pages": 319,
+    "resident_bytes": 5226496,
+    "modified_pages": 0,
+    "source_payload_reads": 0,
+    "all_PROT_NONE_windows_positively_unmapped": true,
+    "unknown_completion": false,
+    "whole_original_integrity_case": 2991,
+    "whole_sources_authenticated": 46,
+    "all_reads_returned": true,
+    "cache_advice_calls": 0,
+    "pressure_allocations": 0,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "subsequent_passive_case": 2992,
+    "subsequent_free_pages": [
+      6942,
+      6942
+    ],
+    "selected_PLE_policy_pages": 8108,
+    "PLE_native_admission_granted": false,
+    "exclusive_recovery_amount_established": false
+  }
+}

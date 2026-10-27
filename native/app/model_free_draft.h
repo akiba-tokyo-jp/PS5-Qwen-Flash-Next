@@ -13,7 +13,7 @@ struct ModelFreeDraft {
     DraftOrigin origin=DraftOrigin::none;
     std::size_t matched_tokens=0,source_offset=0,historical_matches=0;
 };
-// Pure token metadata prototype, not linked into inference. Only committed past
+// Pure token metadata proposal. Only committed past
 // tokens enter this API. Width-two verification would process one pending token
 // plus this single draft; no model probabilities or future targets are inputs.
 inline ModelFreeDraft propose_model_free_token(const std::int32_t *prompt,std::size_t prompt_count,

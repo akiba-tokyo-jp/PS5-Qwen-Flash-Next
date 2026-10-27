@@ -45,6 +45,12 @@ def main():
     require(expected.get("schema") == "ps5-qwen-first-generation-binding-v1" and
         re.fullmatch("[0-9a-f]{32}", expected.get("run_id", "")) and integer(expected.get("pid"), 1, 2**31-1),
         "A fresh exact native owner and run are required")
+    if 'cache128'in expected:
+        from cache128_result import validate_binding
+        validate_binding(expected['cache128'])
+        require(not any(binding.get(k)for k in ('require_model_checkpoint_validation',
+            'require_prefix_validation','require_model_free_speculation')),
+            'The 128-slot comparison requires an independent model scope')
     host = binding["host"]
     address = ipaddress.ip_address(host)
     require(address.version == 4 and address.is_private and not address.is_loopback and
@@ -248,6 +254,16 @@ def main():
             native = [read_record(Path(str(result_path) + prefix + ".token-" + str(i))) for i in range(1, len(tokens)+1)]
             require(native == observed_streams[ordinal-1][:-1], "External token events differ from native durable records")
         failure_check()
+        if 'cache128'in expected:
+            from cache128_result import validate_binding
+            proof=validate_binding(expected['cache128'])
+            for suffix in ('.memory.after-load','.first.expert-routes','.demo1.expert-routes','.demo2.expert-routes'):
+                download(suffix)
+            proof_remote=MODEL_ROOT+Path(proof['report_path']).name
+            raw=get(8080,'/fs'+quote(proof_remote,safe='/'),131072)
+            require(raw is not None and len(raw)==proof['report_bytes']and
+                hashlib.sha256(raw).hexdigest()==proof['report_sha256'],'The independent complete layout proof differs')
+            with Path(str(result_path)+'.cache128.layout-qualification').open('xb')as stream:stream.write(raw)
         review = validate(result_path, expected)
         checkpoint_validation=None
         if binding.get('require_model_checkpoint_validation') is True:
@@ -268,6 +284,14 @@ def main():
                 expected_enabled=scope['prefix_reuse_enabled'])
             exclusive(out/'prefix-reuse-review.private.json',prefix_review)
         # The full native validator admits the exact split integrity/layout first.
+        speculative_validation=None
+        if binding.get('require_model_free_speculation')is True:
+            require(checkpoint_validation is None and prefix_validation is None,
+                'Causal width-two qualification requires its independent frozen case')
+            from model_free_speculation_result import validate_speculation
+            download('.model-free-speculation')
+            speculative_validation=read_record(Path(str(result_path)+'.model-free-speculation'))
+            exclusive(out/'model-free-speculation-review.private.json',validate_speculation(speculative_validation,result))
         split_sources = bool(expected.get('split512_integrity_sha256'))
         if performance_required:
             summaries = [validate_first_performance(read_record(Path(str(result_path) + '.first.performance')), result,
@@ -276,7 +300,8 @@ def main():
                 summaries.append(validate_performance(
                     read_record(Path(str(result_path) + '.demo' + str(ordinal) + '.performance')), native_request,
                     split_sources=split_sources,checkpoint_validation=checkpoint_validation if ordinal==2 else None,
-                    prefix_validation=prefix_validation))
+                    prefix_validation=prefix_validation,
+                    speculative_validation=speculative_validation['requests'][1]if speculative_validation is not None and ordinal==2 else None))
             if binding.get('require_parallel_sources') is True:
                 download('.source.parallel')
                 admission = read_record(Path(str(result_path) + '.source.parallel'))

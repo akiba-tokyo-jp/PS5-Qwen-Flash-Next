@@ -74,11 +74,31 @@ def headers(session, runtime, nonce):
     return {'observer_context.h': observer + '};\n', 'close_context.h': guard + '};\n'}
 
 
+def launcher_header(session,runtime,template):
+    rows=current_processes(session,runtime)
+    if not isinstance(template,str)or not 0<len(template)<=16384 or '\0'in template:
+        raise ValueError('A bounded qualified ordinary-launcher identity template is required')
+    compat=rows[-1]
+    replacements=dict(BOOT_SEC=str(session['boot'][0])+'LL',BOOT_USEC=str(session['boot'][1])+'LL',
+        COMPATIBILITY_PID=str(compat['pid']),COMPATIBILITY_START_SEC=str(compat['start_sec'])+'LL',
+        COMPATIBILITY_START_USEC=str(compat['start_usec'])+'LL')
+    for key,value in replacements.items():
+        template,count=re.subn(r'^#define '+key+r' .*$',lambda _: '#define '+key+' '+value,template,flags=re.M)
+        if count!=1:raise ValueError('One exact ordinary-launch identity macro is required: '+key)
+    pattern=r'(static const struct expected_service expected_services\[\]=\{)\n(.*?)\n\};'
+    found=list(re.finditer(pattern,template,re.S))
+    if len(found)!=1 or re.findall(r'\{"([^"\n]+)"',found[0][2])!=[name for _,name in ROLES]:
+        raise ValueError('The qualified launcher must retain all eight original service guards')
+    body='\n'.join('{'+json.dumps(p['name'])+f',{p["pid"]},{p["ppid"]},{p["uid"]}U,{p["start_sec"]}LL,{p["start_usec"]}LL'+'},'for p in rows)
+    return re.sub(pattern,lambda m:m[1]+'\n'+body+'\n};',template,flags=re.S)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--session', type=Path, required=True)
     parser.add_argument('--runtime', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--launcher-template',type=Path,help='Qualified session_context.h; only actual boot/process identity data is rebound')
     args = parser.parse_args()
     inputs = []
     values = []
@@ -88,6 +108,10 @@ def main():
         values.append(json.loads(raw))
     nonce = secrets.token_hex(16)
     generated = headers(*values, nonce)
+    if args.launcher_template:
+        raw=args.launcher_template.read_bytes()
+        generated['launcher_session_context.h']=launcher_header(*values,raw.decode('utf-8'))
+        inputs.append(dict(path=str(args.launcher_template.resolve()),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest()))
     args.out.mkdir(parents=True, exist_ok=False)
     for name, text in generated.items():
         with (args.out / name).open('x', encoding='utf-8', newline='\n') as stream:
