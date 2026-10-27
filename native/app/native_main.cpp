@@ -744,6 +744,7 @@ static void isolated_large_cache_layout(const qwen_app::Startup &startup,const J
     for(;;)(void)usleep(1000000);
 }
 
+#include "driver_tables.h"
 int main(int argc, char ** argv) {
     qwen_native_stage("main_entered GPU_not_started=1 model_loaded=0");
     llama_model * model = nullptr;
@@ -754,6 +755,7 @@ int main(int argc, char ** argv) {
     bool native_resources_started = false;
     std::string validation_report;
     try {
+        qwen_app::restore_native_driver_tables();
         const auto startup = qwen_app::read_startup(argc, argv);
         qwen_native_stage("configuration_read GPU_not_started=1 model_loaded=0");
         validation_report = startup.admission_report;

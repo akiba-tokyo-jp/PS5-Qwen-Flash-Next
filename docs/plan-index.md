@@ -1,5 +1,14 @@
 # PS5 Flash Next plan status
 
+The continuing [native worker and startup investigation](native-worker-and-cold-start-20261027.md)
+adds a completed real PS5 persistent-worker test and exact CPU NIR restoration.
+Two changed titles exposed known pre-GPU integration refusals and were normally
+closed with exact fastest/settings restoration. A unique cold-data section
+namespace and real final-ELF geometry audit address the identified link error.
+This active follow-up does not complete predictive GPU overlap, speculative
+model arithmetic or matched model-speed validation. Keep those pending instead
+of applying the older finite-queue closure below to this reopened work.
+
 The [native predictive integration](native-predictive-integration-20261027.md)
 supersedes the two replay-only implementation statuses below: the cache worker
 and expert-aware width-one/two connections are now implemented and host checked,

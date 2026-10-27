@@ -59,6 +59,17 @@ def main():
         platform=validate_native_platform(linked['native_platform']['manifest_path'],selected,lock['native_platform_base'])
         if platform!=linked['native_platform']:raise ValueError('Linked native platform provenance changed')
     image = Path(linked["artifact"]["path"])
+    driver_tables=linked.get('lossless_driver_tables')
+    if driver_tables:
+        from driver_table_storage import validate as validate_driver_tables
+        manifest=linked.get('driver_table_manifest')
+        if not manifest or record(Path(manifest['path']))!=manifest or linked.get('lossless_driver_tables_link_map_passed')is not True:
+            raise ValueError('The exact linked driver-table manifest and symbols are required')
+        if validate_driver_tables(manifest['path'],driver_tables['source_archive']['path'])!=driver_tables:
+            raise ValueError('Cold driver table inputs changed after link')
+        from driver_table_storage import audit_linked_storage
+        if audit_linked_storage(image,driver_tables)!=linked.get('lossless_driver_table_geometry'):
+            raise ValueError('Actual native driver table geometry was not qualified')
     if sha(image) != linked["artifact"]["sha256"]:
         raise ValueError("Native PIE differs from the link receipt")
     dispatch = linked.get("native_dispatch_audit", {})
@@ -145,6 +156,7 @@ def main():
         ("extract", [str(tool), "self", "--extract", "--file", str(executable), "--out", str(extracted)]),
     ]
     receipt = {"schema": "ps5-qwen-local-self-v1", "driver": selected, "native_link_receipt": record(link_snapshot),
+               "lossless_driver_tables":driver_tables,
                "linked_driver":linked.get('linked_driver',selected),
                "engine_build_receipt": record(engine_snapshot),
                "native_link_receipt_origin": record(link_receipt),

@@ -19,6 +19,20 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The continuing native worker/startup investigation is tracked in
+`docs/native-worker-and-cold-start-20261027.md`. The actual persistent worker
+completed four original-role jobs in CPU case 3225; all 640 NIR constants also
+passed CPU reconstruction/protection in case 3239. This is not model/GPU overlap
+or model-speed acceptance. Changed titles 3248 and 3265 returned known CPU
+refusals before GPU work; both were normally closed and the exact fastest SELF
+and settings restored. Preserve both failures. The first exposed an incorrect
+fixture-only admission API; the second exposed an empty final linked table
+range. Source fixes retain the operational reserve and use a unique input-section
+namespace. Actual final-ELF plan pointers, hashes, exclusive NOBITS destinations
+and load permissions now require a separate audit before packaging. Do not
+replay either consumed title or infer startup savings from file size. Continue
+the newly corrected finite scope, then the original selected model validations.
+
 The owner's continuation now implements the previously missing native prediction
 and expert-cost connections. See `docs/native-predictive-integration-20261027.md`
 for the actual source paths, host/native-build evidence and remaining physical
