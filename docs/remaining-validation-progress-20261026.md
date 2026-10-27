@@ -1166,3 +1166,79 @@ while a parked case may permit one pre-existing independent host deliverable.
 Primary metrics are explicit per mechanism. Correctness/resource refusals close
 the remaining arms; valid speed adoption still requires reverse confirmation.
 These are plan corrections only, with no app, hardware, runtime-guard or CI work.
+
+## Bounded startup review and cache-cohort reviewer, 2026-10-27
+
+The one-pass review required by Step 0 is complete. This completes the review,
+not the common model-startup prerequisite or any model-speed comparison. Saved
+production 2240, refusal 2860, shader 2812, metadata 2920, reservation 2950 and
+quiet-start 2970 were reused. No new diagnostic title or external survey ran.
+
+The full model had early display disabled already. Before SELF integrity its
+CPU heap was 16 MiB, rising to 32 MiB after metadata/reservations, all tracked
+Direct and with zero libc fallbacks. The startup integrity window is 1 MiB;
+the separate source window is 8 MiB. Removing the screen or treating these
+Direct bytes as reclaimed kernel pages would not be a supported fix. The
+metadata/reservation/quiet controls prevent claiming an exclusive app cause
+for the large global decline. Its proprietary/asynchronous owner is unresolved.
+
+The concrete scope correction is the pre-title refusal screen/prelaunch price:
+the old selected 6207 pages did not cover case 2860's maximum observed
+`8272 - 1523 = 6749` decline. Adding the unchanged startup target and variation
+gives `6749 + 2974 + 256 = 9979`; the selected price retains the higher regular
+10142 policy. This is a revisable estimate, not an irreducible hardware cost.
+No native predicate was reduced and the unchanged full package 2831 was reused
+without rebuilding. The ledger retains the 1154-page operational floor, 2974
+startup target, 512 MiB Direct CPU heap cap, 256 MiB Flexible reserve, workspace,
+staging, platform/Direct reserves and 1792 MiB aggregate device cap. Cache 128's
+708 MiB rounded increment is priced separately, with its explicit context
+allowance and fresh postload pool proof required. No unknown owner was freed.
+
+One fixed existing-shell screen (3014) observed **6708 -> 6708 free pages**,
+30296 wired, with matching boot before/after. It refused preparation under the
+reviewed price. There were zero ELF requests, title launches, GPU calls, setters,
+recovery attempts, retries or CI runs. The exact fastest production SELF/settings
+remain inactive. The prerequisite is **unresolved under revisable resource
+policy**, not demonstrated physical impossibility. A new attempt needs a supported
+material reduction of the full startup envelope or sufficient actual headroom
+under a reviewed scope. Reboot is unavailable. Do not repeat the same screen,
+probe or offline pass to fill this gap. The [public receipt](cache128-startup-review-20261027.json)
+binds the private ledger, screen and completion without publishing endpoints.
+
+The independent existing cache-comparison deliverable now has an offline
+implementation in `tools/cache_cohort_result.py`. It consumes four raw evidence
+sets in A53/B128/B128/A53 order, each with independently captured binding,
+published policy/app and complete sidecar path/size/SHA256. It reuses the native
+generation, layout, routes, resource, backpressure and performance reviewers.
+Only the priced cache geometry/proof and per-arm run/clock/report fields can
+differ. Exact outputs, rendered prompts, token counts and every selected expert
+route must match. Calibrated frame epochs must establish the declared order.
+
+For both external cache conditions, both ordered gains must exceed the larger
+observed control/candidate decode spread. The warmup is excluded from primary
+speed but retained in latency checks. TTFT, prefill and whole-request time are
+reported separately; candidate variability cannot enlarge tolerated latency
+regression. One fast arm or traffic reduction alone never qualifies adoption.
+Mixed/noisy speed results remain inconclusive. A speed candidate still needs
+ordinary-close/restoration and production-placement proof; the tool never sets
+production adopted or claims statistical significance.
+
+Run the offline review with:
+
+```text
+python -B tools/cache_cohort_result.py --manifest PRIVATE_COHORT_MANIFEST.json
+```
+
+The manifest schema is `ps5-qwen-cache-capacity-cohort-v1`, with the documented
+`timing_boundary` constant and four `arms`. Each arm contains `active_slots`,
+captures named `result`, `binding`, `policy`, `app`, and an `evidence` array for
+every result sidecar. Each capture has `path`, `bytes`, and `sha256`. The binding
+is the existing independent native binding, including `cache128` only for B.
+The native operator still owns fresh same-boot/owner/source admission and the
+frozen predeclared experiment; this offline tool cannot authorize an execution.
+
+Focused manual checks passed: eight cohort/capture/policy fault groups, five
+expanded-cache native-result groups and eleven performance groups. These are
+synthetic metadata tests, not GPU arithmetic or measured model acceleration.
+No native app/driver change or new speed adoption follows. The full cache,
+width-two, PLE/prefix and later native work remain incomplete.
