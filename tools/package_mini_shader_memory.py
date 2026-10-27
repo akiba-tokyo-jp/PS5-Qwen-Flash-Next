@@ -10,8 +10,16 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for k in ('workspace','cache','native','format-control','out'):p.add_argument('--'+k,type=Path,required=True)
+    p.add_argument('--driver-table-fixture',action='store_true',help='Package only the separately audited minimal cold-table GPU fixture')
     a=p.parse_args();m=json.loads(a.native.read_text());control=json.loads(a.format_control.read_text())
-    if m.get('CPU_only')is not True or m.get('driver_code_linked')is not False or m.get('model_engine_linked')is not False:
+    if a.driver_table_fixture:
+        if(m.get('schema')!='ps5-qwen-driver-table-fixture-link-v1'or not m.get('native_dispatch_audit',{}).get('passed')or
+           m.get('GPU_graphs')!=1 or m.get('model_loaded')is not False or not m.get('lossless_driver_tables')):
+            raise ValueError('An exact audited standalone cold-table fixture is required')
+        from driver_table_storage import audit_linked_storage
+        if audit_linked_storage(m['artifact']['path'],m['lossless_driver_tables'])!=m.get('lossless_driver_table_geometry'):
+            raise ValueError('Actual relocated driver-table destinations must pass before packaging')
+    elif m.get('CPU_only')is not True or m.get('driver_code_linked')is not False or m.get('model_engine_linked')is not False:
         raise ValueError('Independent CPU-only build required')
     for row in m['inputs_before']+[m['artifact'],control['format_tool'],*control['format_tool_sources']]:
         if record(row['path'])!=row:raise ValueError('A qualified build/format input changed')
@@ -21,6 +29,7 @@ def main():
     tool=control['format_tool']['path'];image=m['artifact']['path'];pie=a.out/'application.pie.elf'
     converted,SELF,extracted=(a.out/name for name in ('eboot.elf','eboot.bin','roundtrip.elf'))
     providers=[r for r in m['inputs_before']if r['path'].endswith('.so')]
+    if a.driver_table_fixture:providers=[r for r in providers if not Path(r['path']).name.endswith('_stub_weak.so')]
     if any(Path(r['path']).name.endswith('_stub_weak.so')for r in providers):raise ValueError('Weak module stubs are forbidden')
     commands=[('strip_debug',[str(llvm/'llvm-objcopy.exe'),'--strip-debug',image,str(pie)]),
         ('convert',[tool,'link','--in',str(pie),'--out',str(converted),*[v for r in providers for v in ('--stub',r['path'])]]),
@@ -43,7 +52,8 @@ def main():
         if kind not in (1,2,0x61000000)or not size:continue
         if recovered[offset:offset+size]!=expected[offset:offset+size]:raise ValueError('CPU SELF segment differs')
         segments+=1
-    if segments!=6 or SELF.stat().st_size>4<<20:raise ValueError('Exact six-segment small CPU SELF required')
+    maximum=24<<20 if a.driver_table_fixture else 4<<20
+    if segments!=6 or SELF.stat().st_size>maximum:raise ValueError('Exact six-segment bounded SELF required')
     for row in fixed:
         if record(row['path'])!=row:raise ValueError('A frozen CPU packaging input changed')
     receipt=dict(schema='ps5-qwen-mini-shader-self-v1',SELF=record(SELF),native_pie=m['artifact'],converted_elf=record(converted),
@@ -53,6 +63,12 @@ def main():
         current_run_all_asset_bootstrap=m.get('current_run_all_asset_bootstrap',False),
         CPU_bootstrap_policy_controls=m.get('CPU_bootstrap_policy_controls'),
         GPU_calls=0,PS5_operations=0,CI_runs=0,release_qualified=False,installed=False)
+    if a.driver_table_fixture:
+        receipt.update(schema='ps5-qwen-driver-table-fixture-self-v1',CPU_only=False,driver_code_linked=True,
+            model_engine_linked=True,full_model_execution=False,linked_driver=m['linked_driver'],
+            lossless_driver_tables=m['lossless_driver_tables'],native_dispatch_audit=m['native_dispatch_audit'])
+        from driver_table_storage import audit_converted_storage
+        receipt['converted_driver_table_audit']=audit_converted_storage(m['artifact']['path'],converted,m['lossless_driver_tables'])
     (a.out/'receipt.private.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(dict(CPU_SELF_packaged=True,bytes=receipt['SELF']['bytes'],sha256=receipt['SELF']['sha256'],roundtrip_segments=segments,PS5_operations=0)),flush=True)
 if __name__=='__main__':main()

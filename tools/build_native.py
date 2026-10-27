@@ -50,6 +50,9 @@ def main():
     parser.add_argument("--device-state-fixture-manifest",type=Path,
                         help="Host-qualified pinned state-copy extraction for the isolated, default-off fixture")
     parser.add_argument("--jobs", type=int, default=4)
+    parser.add_argument("--icf-safe",action="store_true",help="Explicitly record address-safe identical-code folding for a separately qualified image")
+    parser.add_argument("--driver-table-manifest",type=Path,
+                        help="Explicit lossless NIR table overlay; separately unqualified on the console")
     parser.add_argument("--link-threads", type=int, default=2,
                         help="Bound host linker workers independently from compilation")
     parser.add_argument("--link-timeout-seconds", type=int, default=600,
@@ -108,6 +111,12 @@ def main():
                                                    "native_display.cpp", "startup.cpp", "gpu_admission.cpp", "palette_gpu_dispatch.cpp", "palette_gpu_admission.cpp", "vector_bank_admission.cpp", "ple_slice_admission.cpp", "native_fault.cpp", "native_memory.cpp", "memory_probe.cpp", "system_memory.cpp", "source_contention.cpp",
                                                    "native_addr.cpp", "native_bootstrap.cpp", "native_crt.cpp", "runtime_admission.cpp", "vulkan_admission.cpp",
                                                    "model_integrity.cpp", "direct_integrity.cpp", "direct_metadata.cpp", "shader_assets.cpp", "shader_file.cpp", "shader_file_session.cpp", "shader_file_native.cpp", "model_mapping.cpp", "virtual_source.cpp", "mapped_source.cpp", "operator_admission.cpp", "moe_admission.cpp", "owned_mapped_probe.cpp", "owned_mapped_backend.cpp", "padded_bank_layout.cpp", "padded_bank_route.cpp", "padded_cache.cpp", "sha256_backend.cpp", "driver_lifecycle.cpp", "native_gpu.cpp", "native_import_pool.cpp")]
+    files += [ROOT / "native/app/driver_tables.cpp"]
+    driver_tables=None
+    if a.driver_table_manifest:
+        from driver_table_storage import validate as validate_driver_tables
+        driver_tables=validate_driver_tables(a.driver_table_manifest,Path((native_platform or selected)["archive_path"]))
+        files += [Path(driver_tables[k]["path"])for k in ("registry","assembly")]
     files += [source / "common/jinja" / name for name in ("lexer.cpp", "parser.cpp", "runtime.cpp", "value.cpp", "string.cpp")]
     files += [source / "common/json.cpp", source / "common/unicode.cpp", source / "src/unicode.cpp",
               source / "src/unicode-data.cpp", source / "vendor/cpp-httplib/httplib.cpp"]
@@ -172,6 +181,7 @@ def main():
     # Keep deterministic source/link order and all static constructor sections.
     elf = out / "qwen-native.pie.elf"
     driver_archive = Path((native_platform or selected)["archive_path"])
+    if driver_tables:driver_archive=Path(driver_tables["archive"]["path"])
     engine_archives = [Path(row["path"]) for row in built["artifacts"]]
     static_runtime = [library / name for name in ("libc++.a", "libc++abi.a", "libunwind.a", "libps5platform.a", "libc.a")]
     native_libc, native_libc_proof = title_libc(library / "libc.a", out, llvm / "llvm-ar.exe")
@@ -219,6 +229,7 @@ def main():
     # Discard unreachable payload-only SDK routines and their private imports.
     command += ["--gc-sections"]
     command += [str(obj) for obj, _ in compiled]
+    if driver_tables:command += ["-T",driver_tables["linker_script"]["path"]]
     command += list(map(str, model_io_objects))
     # Match the admitted client's static C++/ABI runtime ordering. Allowing the
     # native libc DSO to satisfy C++ symbols can mix incompatible STL/RTTI ABIs.
@@ -234,10 +245,14 @@ def main():
               ROOT / "cmake/native-unwind.ld", ROOT / "cmake/native-symbols.map",
               a.driver_root / "tooling/native/ps5-pie.ld", receipt_path, *backend_abi_paths]
     if a.shader_storage_manifest:inputs.append(a.shader_storage_manifest)
+    if driver_tables:
+        inputs += [a.driver_table_manifest,*[Path(driver_tables[k]["path"])for k in
+                   ("source_archive","cold_member","pool","linker_script")]]
     if device_state_fixture:
         inputs += [a.device_state_fixture_manifest,Path(device_state_fixture["generated"]["path"])]
         inputs += [Path(row["path"])for row in device_state_fixture["inputs"]]
     command.append("--threads=" + str(a.link_threads))
+    if a.icf_safe:command.append("--icf=safe")
     before = [record(path) for path in inputs]
     receipt = {"schema": "ps5-qwen-native-link-v1", "driver": selected, "engine_receipt": record(receipt_path),
                "native_libc": native_libc_proof,
@@ -248,6 +263,8 @@ def main():
                "engine_build_provenance": built,
                "bounded_model_source_overrides": model_io,
                "lossless_shader_storage":shader_storage,
+               "lossless_driver_tables":driver_tables,
+               "driver_table_manifest":record(a.driver_table_manifest) if a.driver_table_manifest else None,
                "shader_resource_manifest":record(a.shader_storage_manifest) if a.shader_storage_manifest else None,
                "isolated_device_state_fixture":device_state_fixture,
                "bounded_model_source_manifest": record(a.model_io_manifest),
@@ -259,6 +276,7 @@ def main():
                "SELF_packaged": False, "CI": False, "compile_commands": [cmd for _, cmd in compiled],
                "link_command": command, "inputs_before": before,
                "host_link_threads": a.link_threads, "host_link_timeout_seconds": a.link_timeout_seconds}
+    receipt["safe_identical_code_folding"]=a.icf_safe
     try:
         result = subprocess.run(command, env=env, capture_output=True, timeout=a.link_timeout_seconds)
     except subprocess.TimeoutExpired as error:
@@ -276,6 +294,7 @@ def main():
         raise ValueError("A native link input changed during the build")
     validate_overrides(a.model_io_manifest, receipt_path)
     if a.shader_storage_manifest:validate_storage(a.shader_storage_manifest,a.model_io_manifest,receipt_path)
+    if driver_tables:validate_driver_tables(a.driver_table_manifest,Path((native_platform or selected)["archive_path"]))
     link_map = (out / "native-link.private.map").read_text().replace("\\", "/")
     for row in model_io["objects"]:
         original_member = Path(row["archive"]["path"]).name + "(" + row["member"] + ")"
@@ -290,6 +309,13 @@ def main():
             if Path(row['path']).as_posix()not in link_map:raise ValueError("A lossless shader resource object was omitted")
         receipt['lossless_shader_storage_link_map_passed']=True
     symbols = subprocess.check_output([str(llvm / "llvm-nm.exe"), "--defined-only", str(elf)], text=True)
+    if driver_tables:
+        for name in ('qwen_driver_table_storage','__qwen_driver_tables_start','__qwen_driver_tables_end',
+                     *[row['symbol']for row in driver_tables['tables']]):
+            if not re.search(r'\b'+re.escape(name)+r'$',symbols,re.M):raise ValueError('Cold driver table was omitted: '+name)
+        receipt['lossless_driver_tables_link_map_passed']=True
+        from driver_table_storage import audit_linked_storage
+        receipt['lossless_driver_table_geometry']=audit_linked_storage(elf,driver_tables)
     if re.search(r"\b[Tt]\s+mmap$", symbols, re.M):
         raise ValueError("A native title must not define the SDK payload mmap routine")
     public_imports_output = subprocess.check_output([str(llvm / "llvm-nm.exe"), "-D", "--undefined-only", "--format=posix", str(elf)], text=True)
