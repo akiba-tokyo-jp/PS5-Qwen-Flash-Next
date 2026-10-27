@@ -23,6 +23,14 @@ inline void require_split_bank_policy(const nlohmann::json &policy,bool mode,boo
     check(pack.is_object()&&pack.size()==3&&pack.at("path")==split_bank_pack_path&&
         pack.at("bytes").is_number_unsigned()&&pack.at("bytes")==split_bank_pack_bytes&&pack.at("sha256")==split_bank_pack_sha256);
     const bool ready=policy.contains("native_ready_expert_numerical");
+    const bool original=policy.contains("native_ready_expert_original");
+    if(original) {
+        check(ready);const auto &o=policy.at("native_ready_expert_original");
+        check(o.is_object()&&o.size()==7&&o.at("schema")=="ps5-qwen-ready-original-policy-v1"&&o.at("enabled")==true&&
+            o.at("same_title_numerical_gate_required")==true&&o.at("unique_original_experts").is_number_unsigned()&&o.at("unique_original_experts")==10u&&
+            o.at("source_IO_depth").is_number_unsigned()&&o.at("source_IO_depth")==2u&&o.at("cohort_runs").is_number_unsigned()&&o.at("cohort_runs")==6u);
+        const auto sha=o.at("source_plan_sha256").get<std::string>();check(sha.size()==64&&sha.find_first_not_of("0123456789abcdef")==std::string::npos);
+    }
     if(ready)check(policy.at("native_ready_expert_numerical")==Json{{"schema","ps5-qwen-ready-numerical-policy-v1"},{"enabled",true},
         {"unique_original_experts",2u},{"original_contributions",10u},{"cohort_runs",6u},
         {"source_IO_depth",1u},{"representative_speed_test",false}});
@@ -30,7 +38,7 @@ inline void require_split_bank_policy(const nlohmann::json &policy,bool mode,boo
         check(policy.at("native_ready_expert_numerical").at(key).is_number_unsigned());
     const auto &binding=policy.at("native_isolated_split_bank_title");
     check(binding.is_object()&&binding.size()==6&&binding.at("schema")=="ps5-qwen-isolated-split-bank-title-v1"&&
-        binding.at("model_loading_enabled")==false&&binding.at("source_workers").is_number_unsigned()&&binding.at("source_workers")==unsigned(ready)&&
+        binding.at("model_loading_enabled")==false&&binding.at("source_workers").is_number_unsigned()&&binding.at("source_workers")==unsigned(original?2:ready?1:0)&&
         binding.at("candidate_SELF_bytes").is_number_unsigned()&&binding.at("candidate_SELF_bytes")>0u&&binding.at("candidate_SELF_bytes")<=(32u<<20));
     const auto hash=binding.at("candidate_SELF_sha256").get<std::string>(),run=binding.at("run_id").get<std::string>();
     check(hash.size()==64&&hash.find_first_not_of("0123456789abcdef")==std::string::npos&&

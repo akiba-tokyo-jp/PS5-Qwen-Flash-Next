@@ -12,7 +12,16 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for key in('workspace','cache','qualified-native','driver-root','out'):p.add_argument('--'+key,type=Path,required=True)
     p.add_argument('--split-bank',action='store_true',help='Link only the independent BF16 bank fixture, preserving the shared startup admission')
+    p.add_argument('--ready-source-plan',type=Path,help='Explicitly embed an original-byte ten-Expert plan; requires --split-bank')
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
+    if a.ready_source_plan and not a.split_bank:raise ValueError('Original-source plan requires the isolated split-bank title')
+    if a.ready_source_plan:
+        raw=a.ready_source_plan.read_bytes();plan=json.loads(raw)
+        if len(raw)>65536 or plan.get('schema')!='ps5-qwen-ready-original-plan-v1' or len(plan.get('matrices',[]))!=30 or len(set(plan.get('experts',[])))!=10:
+            raise ValueError('One bounded original ten-Expert plan required')
+        sha=record(a.ready_source_plan)['sha256']
+        (a.out/'ready_original_plan.inc').write_text('static constexpr char ready_original_manifest[]='+json.dumps(raw.decode('ascii'))+';\n'
+            +'static constexpr char ready_original_manifest_sha256[]="'+sha+'";\n',newline='\n')
     prior=json.loads(a.qualified_native.read_text());source=(ROOT/'native/app/native_main.cpp').read_text()
     if prior['linked_driver']['archive_sha256']!='b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925':
         raise ValueError('Exact qualified native driver required')
@@ -46,9 +55,10 @@ def main():
     fixture_cmd[fixture_cmd.index('-c')+1]=str(fixture);fixture_cmd[fixture_cmd.index('-o')+1]=str(fixture_obj)
     additions=[]
     if a.split_bank:
-        for name in('split_bank_allocation.cpp','ready_expert_fixture.cpp','ready_expert_native.cpp','padded_bank_route.cpp'):
+        for name in('split_bank_allocation.cpp','ready_expert_fixture.cpp','ready_expert_native.cpp','ready_original_source.cpp','padded_bank_route.cpp'):
             src=ROOT/'native/app'/name;target=a.out/(src.stem+'.o');c=fixture_cmd.copy()
             c[c.index('-c')+1]=str(src);c[c.index('-o')+1]=str(target);additions.append(c)
+            if name=='ready_original_source.cpp'and a.ready_source_plan:c+=['-DQWEN_READY_ORIGINAL_PLAN=1','-I',str(a.out)]
             # Replace an older qualified route object explicitly. No other
             # qualified runtime/driver member is silently substituted.
             if name=='padded_bank_route.cpp':
@@ -62,6 +72,7 @@ def main():
     fixed_paths={Path(__file__),main,fixture,ROOT/'native/app/native_main.cpp',a.qualified_native,
         a.out/'isolated_PLE_boundaries.inc',a.out/'isolated_PLE_admission.inc'}
     if a.split_bank:fixed_paths|={*[Path(c[c.index('-c')+1])for c in additions],ROOT/'native/app/isolated_ple_main.cpp',a.out/'isolated_split_startup.inc'}
+    if a.ready_source_plan:fixed_paths|={a.ready_source_plan,a.out/'ready_original_plan.inc'}
     fixed_paths|={Path(x)for x in command if Path(x).is_file()and Path(x).suffix in('.o','.a','.so','.exe','.ld','.map')}
     fixed_paths-=new_objects;fixed_paths|=set((ROOT/'native/app').glob('*.h'))
     fixed=[record(f)for f in sorted(fixed_paths)]
@@ -77,6 +88,7 @@ def main():
     for path in(Path(__file__),main,fixture,ROOT/'native/app/native_main.cpp',*sorted((ROOT/'native/app').glob('*.h'))):(snapshot/path.name).write_bytes(path.read_bytes())
     if a.split_bank:
         for path in(*[Path(c[c.index('-c')+1])for c in additions],ROOT/'native/app/isolated_ple_main.cpp',a.out/'isolated_split_startup.inc'):(snapshot/path.name).write_bytes(path.read_bytes())
+    if a.ready_source_plan:(snapshot/'ready_original_plan.inc').write_bytes((a.out/'ready_original_plan.inc').read_bytes())
     for i,c in enumerate(commands):
         r=subprocess.run(c,cwd=ROOT,capture_output=True,timeout=240,env=env);(a.out/f'build-{i}.private.log').write_bytes(r.stdout+r.stderr)
         if r.returncode:raise RuntimeError(r.stderr.decode(errors='replace')[-5500:])
@@ -97,6 +109,7 @@ def main():
         commands=commands,qualified_native=record(a.qualified_native),link_returncode=0,input_hashes_stable=True,
         shared_shader_and_CPU_guards_extracted_verbatim=True,model_loading_entry_points_absent=True,
         model_or_chat_service_executed=False,PS5_operations=0,CI_runs=0)
+    if a.ready_source_plan:receipt['compiled_ready_source_plan']=record(a.ready_source_plan)
     (a.out/'receipt.private.json').write_text(json.dumps(receipt,indent=2)+'\n')
     imported=audit(a.workspace,a.cache,a.out)
     if imported['missing']:raise ValueError('Actual native module imports missing: '+str(imported['missing']))

@@ -25,7 +25,10 @@ priorities. Use only the current queue in
 one active native comparison, common startup prerequisite, then cache 53/128
 and width two before new ready-expert integration, subject to actual per-candidate
 admission. A parked case permits one already specified independent host
-deliverable, not another console attempt with the same blocker. Preserve completed proofs and immutable
+deliverable at a time, not another console attempt with the same blocker.
+Native numerical/timing gates constrain execution and adoption; they do not
+block writing and host-checking the next default-off dependent implementation.
+Keep physical acceptance pending. Preserve completed proofs and immutable
 consumed cases; historical "next test" paragraphs do not create extra tasks.
 The owner also requires eliminating unnecessary investigation. Reuse existing
 research/results first. A new investigation must name an unanswered active

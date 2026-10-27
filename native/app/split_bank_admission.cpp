@@ -3,6 +3,7 @@
 #include "split_bank_allocation.h"
 #include "split_bank_route.h"
 #include "ready_expert_fixture.h"
+#include "ready_original_source.h"
 #include "padded_bank_layout.h"
 #include "indexed_vector.h"
 #include "device_buffer_budget.h"
@@ -54,7 +55,7 @@ struct Fixture {
     ggml_backend_t backend=nullptr;int fd=-1;Identity source{};
     SplitBankAllocation allocation;unsigned reads=0,graphs=0;std::uint64_t non_exact=0;
     double maximum_error=0,maximum_normalized_error=0;Json cases=Json::array();
-    bool ready_requested=false;Json ready_result;
+    bool ready_requested=false;Json ready_result,original_result;const ReadyOriginalPlan *original=nullptr;
     const std::chrono::steady_clock::time_point deadline=std::chrono::steady_clock::now()+std::chrono::seconds(120);
     void bounded(){check(std::chrono::steady_clock::now()<deadline,"Split backing finite deadline exceeded; owners retained");(void)admit_native_system_memory();}
     static int use(const SplitBankBackings &banks,const SplitBankRoots &roots,void *opaque) {
@@ -142,6 +143,10 @@ struct Fixture {
         }
         ggml_backend_synchronize(backend);qwen_native_driver_checkpoint();ggml_backend_buffer_free(buffer);ggml_free(ctx);qwen_native_driver_checkpoint();
         if(ready_requested)ready_result=run_ready_expert_fixture(backend,fd,banks,roots,matrices,graphs);
+        if(original) {
+            check(ready_result.at("final_positive_graph_epoch")==26&&ready_result.at("GPU_graphs")==14,"Original source requires the same-title numerical gate");
+            original_result=run_ready_original_fixture(backend,fd,banks,roots,matrices,*original,26);
+        }
         set_bf16_indexed_vector_scope(false);configure_bf16_indexed_vector(false);configure_split_index_layout(false);
     }
 };
@@ -154,6 +159,10 @@ Json admit_split_bank_backing(const Json &policy,const std::string &journal,bool
     verify_native_startup_file_direct(split_bank_pack_path,split_bank_pack_bytes,split_bank_pack_sha256,30);
     auto *f=new Fixture;f->ready_requested=policy.contains("native_ready_expert_numerical");
     if(f->ready_requested)require_ready_fixture_policy(policy);
+    if(policy.contains("native_ready_expert_original")) {
+        f->original=compiled_ready_original_plan();
+        check(f->original&&f->original->sha256==policy.at("native_ready_expert_original").at("source_plan_sha256"),"Exact compiled original-source plan is not admitted");
+    }
     f->fd=open(split_bank_pack_path,O_RDONLY|O_NOFOLLOW|O_DIRECT);
     check(f->fd>=0&&(fcntl(f->fd,F_GETFL)&O_DIRECT),"Split original Direct descriptor refused");f->source=identity(f->fd);
     start_native_model_sources({{split_bank_pack_path,split_bank_pack_bytes,f->source}});
@@ -172,10 +181,11 @@ Json admit_split_bank_backing(const Json &policy,const std::string &journal,bool
         {"maximum_normalized_error",f->maximum_normalized_error},
         {"non_BF16_exact_F32_input_values",f->non_exact},{"original_pack_SHA256_checked",true},{"source_pack_sha256",split_bank_pack_sha256},
         {"all_original_raw_and_envelope_SHA256_checked",true},{"positive_resource_retirement",true},{"all_started_IO_closed",true},
-        {"source_workers",f->ready_requested?1:0},{"model_loaded",false},{"GPU_IO_overlap_tested",false},{"generation_speed_measured",false},
+        {"source_workers",f->original?2:f->ready_requested?1:0},{"model_loaded",false},{"GPU_IO_overlap_tested",false},{"generation_speed_measured",false},
         {"device_ledger_peak_bytes",ledger.peak},{"device_ledger_live_bytes",ledger.live},
         {"kernel_free_after_CPU_source_before_GPU",before_GPU.kernel_free},{"kernel_startup_target_pages",before_GPU.kernel_target}};
     if(f->ready_requested)result["ready_numerical"]=f->ready_result;
+    if(f->original)result["ready_original"]=f->original_result;
     delete f;return result;
 }
 }

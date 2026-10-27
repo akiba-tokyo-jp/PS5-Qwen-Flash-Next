@@ -56,5 +56,13 @@ int main() {
         }
     }
     {auto p=ready;p["native_ready_expert_numerical"]["extra"]=true;refuse(p);}
+    auto original=ready;original["native_ready_expert_original"]={{"schema","ps5-qwen-ready-original-policy-v1"},{"enabled",true},
+        {"same_title_numerical_gate_required",true},{"unique_original_experts",10u},{"source_IO_depth",2u},{"cohort_runs",6u},{"source_plan_sha256",std::string(64,'c')}};
+    refuse(original);original["native_isolated_split_bank_title"]["source_workers"]=2u;qwen_app::require_split_bank_policy(original,true,false,false);
+    {auto p=original;p.erase("native_ready_expert_numerical");refuse(p);}
+    for(auto it=original.at("native_ready_expert_original").begin();it!=original.at("native_ready_expert_original").end();++it) {
+        auto p=original;p["native_ready_expert_original"].erase(it.key());refuse(p);p=original;p["native_ready_expert_original"][it.key()]=nullptr;refuse(p);
+        if(it->is_number_unsigned())for(const auto &v:Json::array({true,double(it->get<unsigned>()),-1})){p=original;p["native_ready_expert_original"][it.key()]=v;refuse(p);}
+    }
     std::cout<<Json{{"exact_scope_passed",true},{"refusal_controls",refusals},{"PS5_operations",0},{"GPU_calls",0}}.dump()<<'\n';
 }

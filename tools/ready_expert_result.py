@@ -60,14 +60,16 @@ def validate_ready(r):
     return dict(native_numerical_scope_passed=True,cohort_runs=6,additional_GPU_graphs=14,unique_original_experts=2,
         representative_ten_unique_expert_test_required=True,physical_GPU_timestamp_overlap_qualified=False,
         full_model_integration_qualified=False,model_speed_qualified=False,production_adopted=False)
-def validate_stages(text,ready):
+def validate_stages(text,ready,*,additional_ready_cases=0):
     require(type(text)is str and 0<len(text.encode())<=8<<20,'Bounded complete native stage journal required')
     lines=text.splitlines()
     require(lines[-1]=='split_bank_validation_completed_waiting_for_ordinary_close','Positive final native phase required')
+    require(type(additional_ready_cases)is int and additional_ready_cases in(0,6),'Only the exact additional original-source cohort is supported')
+    factor=1+additional_ready_cases//6
     for phase,count in dict(split_bank_graph_before_submission=12,split_bank_graph_positive_idle_and_epoch_returned=12,
-        ready_numerical_Direct_read_returned=36,ready_expert_before_complete_serial_graph=2,ready_expert_before_first_group_graph=4,
-        ready_expert_before_second_group_graph=4,ready_expert_before_original_reduction_graph=4,
-        ready_expert_graph_synchronized_driver_completion_returned=14).items():
+        ready_numerical_Direct_read_returned=36,ready_expert_before_complete_serial_graph=2*factor,ready_expert_before_first_group_graph=4*factor,
+        ready_expert_before_second_group_graph=4*factor,ready_expert_before_original_reduction_graph=4*factor,
+        ready_expert_graph_synchronized_driver_completion_returned=14*factor).items():
         require(lines.count(phase)==count,'Finite native stage count differs: '+phase)
     reads=[line for line in lines if line.startswith('ready_numerical_read_before ')]
     dispatch=[line for line in lines if line.startswith('ready_numerical_dispatch_before ')]

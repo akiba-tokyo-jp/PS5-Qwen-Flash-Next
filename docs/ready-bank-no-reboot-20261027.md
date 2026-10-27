@@ -128,3 +128,15 @@ final native link/SELF integrity passed. One changed-scope screen observed 6630
 pages against the staged CPU estimate 8159; no title or GPU ran. Backing/numerics,
 representative timing and model adoption remain incomplete, with no reboot
 dependency or unchanged retry.
+
+## Subsequent original-source implementation
+
+The [3048-3062 source/build record](finite-execution-dispositions-20261027.md#ten-original-expertdepth-two-implementation-cases-3048-3062)
+supersedes the missing representative-runner statement above. Ten distinct sealed
+original BF16 experts now feed the actual two-call reader and GGML serial/split/
+reverse adapter. Manifest/identity/hash checks, bounded descriptor caching,
+failure retention and independent review are host/build-qualified, default-off.
+The extra fourteen graphs require all twelve backing and fourteen numerical
+completions in the same title. None of the forty total graphs ran this continuation.
+Native gates constrain execution/adoption, not writing disabled code. No new
+PS5 operation/poll, kernel saving, tok/s result or production adoption exists.

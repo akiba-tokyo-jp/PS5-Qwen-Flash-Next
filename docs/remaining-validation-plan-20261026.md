@@ -625,3 +625,10 @@ validation request remains incomplete while any required package is unimplemente
 unvalidated, blocked or deferred. A terminal decision for one tested variant does
 not complete the other proposals. Every selected winner must finish production
 placement before its adoption is complete.
+
+The later [ten-original-Expert/depth-two record](finite-execution-dispositions-20261027.md#ten-original-expertdepth-two-implementation-cases-3048-3062)
+supersedes missing-source statements for that runner. It is implemented and
+host/native-build-qualified; physical acceptance is pending. Numerical/timing
+prerequisites constrain native execution/adoption, not writing and host-checking
+the next default-off dependent implementation. No memory, ownership or completion
+guard is lowered, and no unchanged refused launch/poll is authorized by this rule.
