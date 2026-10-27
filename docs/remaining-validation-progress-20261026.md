@@ -1156,3 +1156,13 @@ a finite decision/failure branch before each cohort. General new surveys,
 repeated CPU diagnostics and searches for unavailable allocator nodes are
 excluded unless a specific unanswered active decision requires them. A merge
 does not qualify model speed, adoption or completion of the entire request.
+
+The owner's subsequent critical review found further execution gaps. Step zero
+now has a one-pass, four-part deliverable and cannot be repeated on unchanged
+inputs. Cache-first is conditional on actual resource eligibility: its 708 MiB
+rounded GPU-bank increment is distinct from kernel free pages, and width two's
+own checkpoint/workspace must also be priced. Native comparisons remain serial,
+while a parked case may permit one pre-existing independent host deliverable.
+Primary metrics are explicit per mechanism. Correctness/resource refusals close
+the remaining arms; valid speed adoption still requires reverse confirmation.
+These are plan corrections only, with no app, hardware, runtime-guard or CI work.

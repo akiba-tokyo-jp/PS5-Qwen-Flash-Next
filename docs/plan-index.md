@@ -16,8 +16,11 @@ in [AGENTS.md](../AGENTS.md).
 The [current execution queue](remaining-validation-plan-20261026.md#current-execution-queue-after-plan-review)
 is the sole priority list: resolve the common startup prerequisite, compare
 cache 53/128, qualify/measure width two, close PLE/prefix, then resume ready-expert
-integration and the remaining measured backlog. One candidate is active at a
-time. Completed geometry, checkpoint and CPU attribution scopes are reused;
+integration and the remaining measured backlog. Native comparisons are serial;
+a parked case permits only one already specified independent host deliverable.
+Cache-first is conditional on its own Direct/GPU reserves; a common startup
+blocker does not justify trying another equally blocked console configuration.
+Completed geometry, checkpoint and CPU attribution scopes are reused;
 older prospective "next test" paragraphs are historical, not additional work.
 The review itself performs no implementation, console operation or CI.
 New investigation is allowed only to resolve a stated active decision that

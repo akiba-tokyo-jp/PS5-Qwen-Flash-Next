@@ -70,9 +70,13 @@ changes no runtime margin, model, driver, precision or production selection.
 
 ### Current execution queue after plan review
 
-**One active acceleration candidate at a time.** Reboot is unavailable and is
-neither a dependency nor a pending user action. Preserve all proposals in the
-backlog; deferral is not rejection, completion or physical impossibility.
+**One active native comparison at a time.** Keep one implementation deliverable
+active, with no general research in parallel. A blocked native case may be
+parked with its exact prerequisite while one already specified, independent
+host deliverable proceeds. Do not switch to another console candidate that
+shares the unresolved startup failure. Reboot is unavailable and is neither a
+dependency nor a pending user action. Preserve all proposals in the backlog;
+deferral is not rejection, completion or physical impossibility.
 
 | Step | Work to perform | Evidence to reuse | Exit decision |
 | --- | --- | --- | --- |
@@ -84,13 +88,32 @@ backlog; deferral is not rejection, completion or physical impossibility.
 | 5. Follow measured evidence for the remaining backlog | Actual router observation/forecasting, further cache sizes, workload extensions and specialized kernels retain their package definitions | Existing traces, prototypes and eligibility screens | A measured profile must identify the target cost; keep each unimplemented/unrun item explicitly open until its own decision |
 
 Cache 128 is first because implementation and native geometry are already
-available, not because its speed is known. Saved routes predict 4.8993% fewer
+available, subject to current admission and the remaining work, not because
+past implementation effort guarantees value or its speed is known. Its rounded
+bank allocation increases from 510 to 1218 MiB, a 708 MiB increase. Price that
+increment and all retained owners in the GPU/Direct ledger separately from
+kernel free pages. Width two is not automatically cheaper: price its checkpoint
+and width-two workspace from the existing evidence too. If cache capacity alone
+cannot retain its required reserves and width two demonstrably can, width two
+may move first with that reason recorded. A shared pre-GPU startup refusal is
+not solved by changing candidates. Saved routes predict 4.8993% fewer
 uploads across the recorded external requests and 6.9263% in one-token
 processes; those are traffic estimates. Width two has only host causal proposal
 matches, not measured native acceptance or speed. Ready-expert work requires
 more missing integration, while the old 92.435% source-wait profile gives only
 a conditional 1.082x ideal process-time ceiling for hiding unchanged compute.
 These facts support the order; none promises a tokens/s gain.
+
+For cache and speculation, the primary metric is decode tokens/s with identical
+clock boundaries in control and candidate. Include all decode-side verification,
+checkpoint, restore and I/O overhead. Also retain whole-request elapsed time,
+TTFT and memory regressions so setup/first-capture costs cannot be hidden by
+moving them outside the decode interval. Prefix reuse's
+primary metric is TTFT/prefill cost and must not be reported as a decode speedup.
+PLE and overlap fixtures first measure their complete read-to-consumer path;
+production adoption still needs the relevant full-model metric. Historical
+traffic reductions and the overlap ceiling are screening evidence, not speed
+results. Later backlog order remains provisional where these costs are unpriced.
 
 #### Step 0 boundaries and failure branch
 
@@ -102,12 +125,20 @@ Later metadata/reservation and quiet-start controls specifically prevent treatin
 the parser, journal or reservation API as a proven cause. New GPU-bank code cannot
 by itself fix a refusal that occurs before GPU initialization.
 
-The offline review must produce a concrete source/scope delta, its charged live
-owners and its admission rationale. Then perform the changed checks and one
-candidate build, reusing unchanged input proofs. Avoid a new diagnostic program
+Make one offline pass over the six named completed evidence sets and their
+corresponding startup code. Its required output is: (1) the exact phase and
+source/configuration to change, (2) the owned bytes/pages or policy margin being
+changed with its evidence and uncertainty, (3) every retained reserve and owner,
+and (4) the next finite admission's pass/fail action. A smaller executable or a
+new page count alone is not this deliverable. Do not repeat that pass against
+unchanged inputs. Then perform the changed checks and one candidate build,
+reusing unchanged input proofs. Avoid a new diagnostic program
 whose result would not select that delta. If no supported delta is identified,
 record this common prerequisite as unresolved; do not fill the gap with another
 unrelated fixture, assume recovery, or invent a physical limit.
+Give the parked prerequisite a concrete required change and retain its status;
+only a pre-existing independent host deliverable may proceed. This is not
+completion of the shared prerequisite or permission for another blocked launch.
 
 Before preparing a native cohort, take the required fresh cheap screen once.
 A known refusal closes that attempt: record the phase, actual counters, chosen
@@ -220,6 +251,13 @@ with a frozen switch where feasible;
 otherwise record each relink and isolate the intended source change. Reuse a
 fresh A/A baseline pair only when the existing measurements cannot characterize
 the new workload or observation overhead.
+
+Do not run the remaining arms after a correctness, ownership, allocation or
+known startup refusal invalidates the comparison. Record those arms as not run
+and close that cohort under its failure branch. Conversely, a small or noisy
+first A/B difference is not sufficient to claim a win or loss: retain reverse
+confirmation for a valid adoption comparison. Avoid extra control cohorts and
+administrative transfers before removing that necessary confirmation.
 
 Before execution, declare the primary metric, workload and tolerance from control
 variability. Require exactness, complete lifecycle, a repeatable primary-metric

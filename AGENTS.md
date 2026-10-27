@@ -22,8 +22,10 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 The owner's subsequent plan-review request supersedes the earlier execution
 priorities. Use only the current queue in
 `docs/remaining-validation-plan-20261026.md#current-execution-queue-after-plan-review`:
-one active candidate, common startup prerequisite, then cache 53/128 and width
-two before new ready-expert integration. Preserve completed proofs and immutable
+one active native comparison, common startup prerequisite, then cache 53/128
+and width two before new ready-expert integration, subject to actual per-candidate
+admission. A parked case permits one already specified independent host
+deliverable, not another console attempt with the same blocker. Preserve completed proofs and immutable
 consumed cases; historical "next test" paragraphs do not create extra tasks.
 The owner also requires eliminating unnecessary investigation. Reuse existing
 research/results first. A new investigation must name an unanswered active
