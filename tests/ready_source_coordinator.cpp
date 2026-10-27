@@ -51,6 +51,7 @@ struct Source {
         reader.stop_completed();
     }
 };
+#ifndef QWEN_READY_SOURCE_NO_MAIN
 int main(int argc,char **argv) {
     check(argc==2);const std::string scenario=argv[1];
     std::array<std::int32_t,10> experts{};std::array<unsigned,10> slots{};
@@ -134,3 +135,4 @@ int main(int argc,char **argv) {
         <<",\"peak_two_call_depth\":"<<source.peak<<",\"callbacks_during_GPU_lease\":"<<source.overlap_calls
         <<",\"PS5_operations\":0,\"file_reads\":0,\"GPU_calls\":0}\n";
 }
+#endif

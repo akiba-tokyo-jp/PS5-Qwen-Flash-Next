@@ -33,6 +33,15 @@ decision, explain how its outcomes change the next action, and have a bounded
 scope and stopping condition. Do not repeat completed probes, unavailable nodes
 or broad literature surveys without that concrete need.
 
+The owner's later 2026-10-27 instruction requires finite decisions: implement a
+supported reduction; otherwise mark that reduction unavailable in the current
+environment and proceed to the next independent item. Do not let one unresolved
+attribution halt every package. Record native validation unavailable separately
+from missing implementation, dependency-gated integration and physical
+impossibility. Current-round unavailability is not a successful test or an
+adopted optimization. Do not repeat an unchanged refused case or fabricate a
+native proof to advance a dependent stage.
+
 The owner's 2026-10-27 standing constraint is that console reboot is not
 available. Plan and execute without requesting or depending on a reboot.
 Price each changed native scope from current observations, reduce owned live

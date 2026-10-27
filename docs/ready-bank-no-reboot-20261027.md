@@ -99,6 +99,13 @@ passed. Earlier metadata/reservation/quiet-start results remain preserved.
 5. Integrate only a fixture winner into the model, then require same-model
    A/B and B/A, exact continuation, TTFT/decode and production-placement checks.
 
+The later [connected dispatch and finite-disposition record](finite-execution-dispositions-20261027.md)
+supersedes the host-runner pending statement above: the execution owner and real
+GGML workspace/dispatch adapter now pass 40 host controls and native SDK
+compilation. The complete physical fixture entry, backing/numerical acceptance
+and model integration still remain unqualified/incomplete. No raw ready-bank
+byte extent or smaller file is treated as current native admission.
+
 No new generation tokens/s result or adopted acceleration follows from this
 continuation. The wider cache, exact speculation, PLE, prefix, router and other
 work packages remain individually tracked in the plan index. CI stayed disabled.

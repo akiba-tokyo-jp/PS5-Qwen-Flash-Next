@@ -78,6 +78,16 @@ shares the unresolved startup failure. Reboot is unavailable and is neither a
 dependency nor a pending user action. Preserve all proposals in the backlog;
 deferral is not rejection, completion or physical impossibility.
 
+**Later owner instruction:** process each item to a finite decision. When a
+supported reduction cannot be implemented or a stage cannot execute in the
+current environment, record that exact unavailability and proceed to the next
+independent item. Do not keep every package waiting on kernel-owner attribution.
+The [current-round disposition table](plan-index.md#finite-current-round-dispositions-2026-10-27)
+records those decisions. Unavailable implementation, unavailable native
+validation and dependency-gated integration are separate outcomes; none is a
+passing test or a declaration of permanent physical impossibility. The ordering
+below remains a preference among executable items, not a global stop condition.
+
 | Step | Work to perform | Evidence to reuse | Exit decision |
 | --- | --- | --- | --- |
 | 0. Make the existing model comparison executable | Review the completed production/control and refused startup traces offline. Map launch, SELF/receipt integrity, metadata and virtual-source phases to `native/app/native_main.cpp`, `direct_integrity.cpp` and `model_mapping.cpp`. Identify a concrete removable owned cost or a justified scope-specific admission change before editing/rebuilding | Production 2240; refusal 2860/restore 2865; metadata 2920; reservation 2950; quiet-start 2970; current-boot shader 2812 | One exact candidate executable/configuration, one complete memory ledger, and one finite admission decision for the model cohort. The 23.1 MB fixture's file size does not prove its kernel cost or make it an inference runner |

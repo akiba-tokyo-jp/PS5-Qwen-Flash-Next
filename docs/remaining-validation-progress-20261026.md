@@ -1242,3 +1242,47 @@ expanded-cache native-result groups and eleven performance groups. These are
 synthetic metadata tests, not GPU arithmetic or measured model acceleration.
 No native app/driver change or new speed adoption follows. The full cache,
 width-two, PLE/prefix and later native work remain incomplete.
+
+## Finite dispositions and connected ready-expert dispatch, 2026-10-27
+
+The owner's latest instruction changes the handling of an unavailable item:
+make its finite implementation/execution decision and proceed to the next
+independent work package. The [complete current-round table](finite-execution-dispositions-20261027.md)
+distinguishes implementation unavailable, native validation unavailable,
+dependency-gated integration and existing completed/inconclusive scopes. These
+labels do not qualify unrun tests or erase missing implementation.
+
+The bounded formatter question is closed. The actual original converted ELF
+2831 was SHA-verified unchanged and its process/libc relative relocations were
+resolved offline: heap-size `0xffffffffffffffff`, extension `1`. Formatter
+`sce_module_writer.cpp::build_parameter_blocks` has source SHA256
+`7d218781ec1bc077476bcf49685a9c230e5ade1b032d909ae7f883ad80c99ab5`.
+No established evidence makes those libc fields a kernel-reclamation interface.
+Changing them would be a different unqualified allocation experiment, so no
+package/driver/OS setting was changed and no kernel reduction is claimed.
+
+The next independent implementation connects the actual ready source coordinator
+to real GGML serial/split graphs through `ReadyExpertExecution` and
+`ReadyExpertNativeGraphs`. It adds a correct joint lease for one physical serial
+graph, original-ordinal masks, scoped prepriced workspace, positive native
+sync/checkpoint boundaries and completed-only release. The source coordinator
+owns the mutable backpressure gate; GPU dispatch uses a pure fresh predicate.
+Forty execution/native-adapter host controls and PS5 SDK compilation passed
+(3029). Nineteen coordinator regressions (3024), the original role-retention and
+120-view/3180-envelope controls (3025) passed. These execute metadata/mock-device
+calls, not learned host inference or real GPU arithmetic. The complete native
+fixture entry and production model integration are still unqualified/incomplete.
+
+The PLE decision was evaluated independently of the full-model gate. Reusing
+closed primary cases 2738/2741 reproduces 7701 CPU-phase and 8190 GPU-continuation
+pages (3028). The CPU maximum is `6291 + 1154 + 256`, so removing the selected
+GPU target alone cannot cover the earlier CPU interval. One finite next-item
+screen (3031) observed 6709 -> 6709 against 8190, with matching boot, zero
+ELF/title/GPU operations and no retry/reboot. That closes current-round native
+PLE eligibility as unavailable; it does not prove permanent physical failure.
+No further identical polling or already completed diagnostic follows. The exact
+fastest production artifact/settings remain unchanged; CI stays disabled.
+
+Remaining full-model and dependency-gated native stages are explicitly
+unavailable in the present environment, with their actual implementation states
+preserved in the table. No new tok/s result or production candidate was adopted.

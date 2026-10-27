@@ -9,7 +9,7 @@ struct ReadyWaveSnapshot {
     bool failed=false,retired=false,IO_pending=false,IO_call_returned=false,GPU_pending=false,reduction_complete=false;
     unsigned unique_experts=0,ready_experts=0,role_reads=0,role_returns=0,read_leases=0,waves=0;
     std::uint64_t IO_operation=0,GPU_epoch=0;
-    std::uint64_t request_epoch=0,plan_epoch=0;
+    std::uint64_t request_epoch=0,plan_epoch=0,prior_completed_GPU_epoch=0;
     unsigned layer=0;
     std::array<bool,10> contributions{};
 };
@@ -33,7 +33,7 @@ private:
     unsigned count_=0;
     std::array<bool,2> group_done_{};
     ReadyWaveSnapshot state_;
-    bool started_=false,reader_bound_=false,reduction_pending_=false;
+    bool started_=false,reader_bound_=false,reduction_pending_=false,serial_pending_=false;
     std::array<unsigned,2> IO_entries_{};
     unsigned IO_count_=0,IO_role_=0,GPU_group_=0;
     std::uint64_t last_IO_=0,last_GPU_=0;
@@ -69,7 +69,7 @@ private:
             indices[i]=entry(slots[i]);const auto &e=entries_[indices[i]];
             if(group_done_[e.group]||(e.roles&(1u<<role))||(i&&(indices[0]==indices[1]||entries_[indices[0]].group!=e.group)))
                 throw std::invalid_argument("A source pair must fill distinct unfinished roles in one owned bank group");
-            if(state_.GPU_pending&&(reduction_pending_||overlap(e.group,GPU_group_)))
+            if(state_.GPU_pending&&(serial_pending_||reduction_pending_||overlap(e.group,GPU_group_)))
                 throw std::invalid_argument("CPU fill cannot touch backing pinned by the GPU");
         }
         started_=true;IO_entries_=indices;IO_count_=count;IO_role_=role;last_IO_=operation;
@@ -101,6 +101,7 @@ public:
         }
         state_.unique_experts=count_;
         state_.request_epoch=request_epoch_;state_.plan_epoch=plan_epoch_;state_.layer=layer_;
+        state_.prior_completed_GPU_epoch=base_GPU_epoch_;
     }
     void bind_reader(std::thread::id reader) {
         std::lock_guard<std::mutex> lock(mutex_);producer();healthy();
@@ -141,10 +142,29 @@ public:
     }
     void complete_wave(std::uint64_t plan_epoch,std::uint64_t epoch,bool positive_completion) {
         std::lock_guard<std::mutex> lock(mutex_);producer();healthy();
-        if(plan_epoch!=plan_epoch_||!state_.GPU_pending||reduction_pending_||epoch!=state_.GPU_epoch||!positive_completion)
+        if(plan_epoch!=plan_epoch_||!state_.GPU_pending||reduction_pending_||serial_pending_||epoch!=state_.GPU_epoch||!positive_completion)
             quarantine("Unknown ready-wave GPU completion retains every contribution and bank");
         for(unsigned i=0;i<10;++i)if(entries_[original_[i]].group==GPU_group_)state_.contributions[i]=true;
         group_done_[GPU_group_]=true;last_GPU_=epoch;state_.GPU_pending=false;++state_.waves;
+    }
+    // One physical control graph reads both completed groups and performs the
+    // original reduction. It requires one joint lease and one real completion;
+    // do not fabricate two wave epochs from a single returned graph.
+    void begin_serial_graph(std::uint64_t epoch) {
+        std::lock_guard<std::mutex> lock(mutex_);producer();healthy();
+        if(!reader_bound_||state_.IO_pending||state_.GPU_pending||state_.waves||state_.reduction_complete||
+           epoch<=last_GPU_||!ready(0)||!ready(1))
+            throw std::invalid_argument("Serial control requires both complete original groups before its joint GPU lease");
+        started_=true;serial_pending_=true;state_.GPU_pending=true;state_.GPU_epoch=epoch;
+    }
+    void complete_serial_graph(std::uint64_t plan_epoch,std::uint64_t epoch,bool positive_completion) {
+        std::lock_guard<std::mutex> lock(mutex_);producer();healthy();
+        if(plan_epoch!=plan_epoch_||!serial_pending_||!state_.GPU_pending||state_.IO_pending||
+           epoch!=state_.GPU_epoch||!positive_completion)
+            quarantine("Serial graph completion is unknown; both bank groups and output are retained");
+        for(auto &present:state_.contributions)present=true;
+        group_done_={{true,true}};last_GPU_=epoch;state_.GPU_pending=false;state_.reduction_complete=true;
+        serial_pending_=false;++state_.waves;
     }
     std::array<unsigned,10> begin_original_reduction(std::uint64_t epoch) {
         std::lock_guard<std::mutex> lock(mutex_);producer();healthy();
