@@ -1,5 +1,13 @@
 # PS5 Flash Next plan status
 
+The latest selected scopes are [OS I/O, predictive cache and expert-aware
+verification](three-path-validation-20261027.md). Their bounded decisions now
+include a physical AIO regression, no causal cache traffic winner and a
+conditional 3.2258% verification-traffic opportunity. Full-model speed remains
+unqualified and currently execution unavailable. Production is unchanged. The
+previous 22-stage closure below is historical and does not include these new
+experiments.
+
 All current remaining-plan stages have a final decision under the owner's latest
 instruction: execute what can run, record what cannot as execution unavailable.
 The [22-stage closing ledger](final-current-environment-dispositions-20261027.md)
