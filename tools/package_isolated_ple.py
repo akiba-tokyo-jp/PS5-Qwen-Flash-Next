@@ -10,8 +10,10 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for key in('workspace','cache','native','format-control','out'):p.add_argument('--'+key,type=Path,required=True)
+    p.add_argument('--split-bank',action='store_true',help='Package the explicitly audited independent BF16 bank fixture')
     a=p.parse_args();m=json.loads(a.native.read_text());control=json.loads(a.format_control.read_text())
-    if m.get('schema')!='ps5-qwen-isolated-PLE-build-v1'or m.get('link_returncode')!=0 or m.get('input_hashes_stable')is not True or m.get('model_loading_entry_points_absent')is not True or m.get('shared_shader_and_CPU_guards_extracted_verbatim')is not True:
+    expected='ps5-qwen-isolated-split-bank-build-v1'if a.split_bank else 'ps5-qwen-isolated-PLE-build-v1'
+    if m.get('schema')!=expected or m.get('link_returncode')!=0 or m.get('input_hashes_stable')is not True or m.get('model_loading_entry_points_absent')is not True or m.get('shared_shader_and_CPU_guards_extracted_verbatim')is not True:
         raise ValueError('Qualified independent PLE link required')
     if m['linked_driver']['archive_sha256']!='b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925':
         raise ValueError('The unchanged qualified driver archive is required')
@@ -50,12 +52,12 @@ def main():
     if segments!=6 or SELF.stat().st_size>32<<20:raise ValueError('Exact six-segment bounded PLE SELF required')
     for row in fixed:
         if record(row['path'])!=row:raise ValueError('A frozen PLE packaging input changed')
-    receipt=dict(schema='ps5-qwen-isolated-PLE-self-v1',SELF=record(SELF),native_pie=m['artifact'],converted_elf=record(converted),
+    receipt=dict(schema='ps5-qwen-isolated-split-bank-self-v1'if a.split_bank else 'ps5-qwen-isolated-PLE-self-v1',SELF=record(SELF),native_pie=m['artifact'],converted_elf=record(converted),
         extracted_elf=record(extracted),native_link_receipt=record(a.native),format_tool=control['format_tool'],
         inputs=fixed,commands=commands,integrity_verified=True,roundtrip_segments_verified=segments,real_module_import_audit=imported,
         linked_driver=m['linked_driver'],native_dispatch_audit=dispatch,driver=m['driver'],model_loading_entry_points_absent=True,
         external_shader_file=control['external_shader_file'],PS5_operations=0,CI_runs=0,release_qualified=False,installed=False)
     (a.out/'receipt.private.json').write_text(json.dumps(receipt,indent=2)+'\n')
-    print(json.dumps(dict(isolated_PLE_SELF_packaged=True,bytes=SELF.stat().st_size,sha256=receipt['SELF']['sha256'],
+    print(json.dumps(dict(isolated_title_SELF_packaged=True,isolated_PLE_SELF_packaged=not a.split_bank,split_bank_scope=a.split_bank,bytes=SELF.stat().st_size,sha256=receipt['SELF']['sha256'],
         roundtrip_segments=segments,model_entry_points_absent=True,PS5_operations=0)),flush=True)
 if __name__=='__main__':main()

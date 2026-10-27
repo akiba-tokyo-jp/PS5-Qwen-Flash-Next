@@ -65,4 +65,31 @@ inline ggml_cgraph *build_ready_expert_reduction(ggml_context *ctx,ggml_tensor *
     for(unsigned i=1;i<10;++i){sum=ggml_add(ctx,sum,ordered[i]);ggml_build_forward_expand(graph,sum);}
     ggml_build_forward_expand(graph,ggml_cpy(ctx,sum,output));return graph;
 }
+// A complete serial control for measuring the added split-graph overhead.
+// Both groups must be fully read before this one graph is submitted. Preserve
+// all ten contribution copies and the exact original left-fold reduction.
+inline ggml_cgraph *build_serial_ready_expert_graph(ggml_context *ctx,
+        const std::array<ReadyExpertGraphInputs,2>&groups,ggml_tensor *output) {
+    if(!ctx||groups[0].activation!=groups[1].activation||
+       groups[0].contributions!=groups[1].contributions)
+        throw std::invalid_argument("Serial ready control requires shared original activation and contributions");
+    std::array<bool,10> selected{};
+    for(const auto &group:groups) {
+        if(!group.count||group.count>10)throw std::invalid_argument("Every serial group requires original contributions");
+        for(unsigned i=0;i<group.count;++i) {
+            const auto ordinal=group.original_ordinals[i];
+            if(ordinal>=10||selected[ordinal])throw std::invalid_argument("Serial groups cannot duplicate original contribution ordinals");
+            selected[ordinal]=true;
+        }
+    }
+    for(const auto present:selected)if(!present)throw std::invalid_argument("Serial control requires all ten original contributions");
+    auto *result=ggml_new_graph_custom(ctx,256,false);
+    for(const auto &group:groups) {
+        auto *partial=build_ready_expert_graph(ctx,group);
+        for(int i=0;i<ggml_graph_n_nodes(partial);++i)ggml_build_forward_expand(result,ggml_graph_node(partial,i));
+    }
+    auto *reduction=build_ready_expert_reduction(ctx,groups[0].contributions,output);
+    for(int i=0;i<ggml_graph_n_nodes(reduction);++i)ggml_build_forward_expand(result,ggml_graph_node(reduction,i));
+    return result;
+}
 }

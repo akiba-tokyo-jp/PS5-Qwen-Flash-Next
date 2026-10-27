@@ -9,7 +9,7 @@
 #include <vector>
 namespace {void check(bool ok){if(!ok)throw std::runtime_error("Ready-expert graph qualification differs");}}
 int main() {
-    unsigned graphs=0,refused=0,values=0;
+    unsigned graphs=0,refused=0,values=0,serial_graphs=0;
     for(unsigned count=1;count<=10;++count)for(unsigned group=0;group<2;++group) {
         auto *ctx=ggml_init({2u<<20,nullptr,true});check(ctx);
         const auto root_bytes=qwen_app::split_bank_planes[group]*qwen_app::padded_bank_stride;
@@ -47,6 +47,43 @@ int main() {
         a.weights->ne[1]=11;bad();a.weights->ne[1]=count;
         ggml_free(ctx);
     }
+    for(unsigned split=1;split<10;++split) {
+        auto *ctx=ggml_init({2u<<20,nullptr,true});check(ctx);
+        auto *activation=ggml_new_tensor_3d(ctx,GGML_TYPE_F32,2560,1,1);
+        auto *contributions=ggml_new_tensor_2d(ctx,GGML_TYPE_F32,2560,10);
+        auto *output=ggml_new_tensor_2d(ctx,GGML_TYPE_F32,2560,1);
+        std::array<qwen_app::ReadyExpertGraphInputs,2> groups{};
+        for(unsigned g=0;g<2;++g) {
+            auto &a=groups[g];a.activation=activation;a.contributions=contributions;a.count=g?10-split:split;
+            const auto bytes=qwen_app::split_bank_planes[g]*qwen_app::padded_bank_stride;
+            std::array<ggml_tensor *,3> roots{};for(auto &r:roots)r=ggml_new_tensor_1d(ctx,GGML_TYPE_BF16,bytes/2);
+            a.gate=ggml_view_3d(ctx,roots[0],2560,640,qwen_app::split_bank_active[g],5120,qwen_app::padded_bank_stride,32);
+            a.up=ggml_view_3d(ctx,roots[1],2560,640,qwen_app::split_bank_active[g],5120,qwen_app::padded_bank_stride,32);
+            a.down=ggml_view_3d(ctx,roots[2],640,2560,qwen_app::split_bank_active[g],1280,qwen_app::padded_bank_stride,32);
+            a.slots=ggml_new_tensor_2d(ctx,GGML_TYPE_I32,a.count,1);a.weights=ggml_new_tensor_3d(ctx,GGML_TYPE_F32,1,a.count,1);
+            for(unsigned i=0;i<a.count;++i)a.original_ordinals[i]=(g?split:0)+i;
+        }
+        auto *graph=qwen_app::build_serial_ready_expert_graph(ctx,groups,output);
+        unsigned mm=0,copies=0,adds=0;std::array<bool,10> written{};
+        for(int i=0;i<ggml_graph_n_nodes(graph);++i) {
+            const auto *t=ggml_graph_node(graph,i);mm+=t->op==GGML_OP_MUL_MAT_ID;
+            if(t->op==GGML_OP_CPY) {
+                ++copies;
+                if(t->view_src==contributions) {
+                    const auto ordinal=t->view_offs/(2560*4);check(ordinal<10&&!written[ordinal]);written[ordinal]=true;
+                }
+            }
+            if(t->op==GGML_OP_ADD){for(auto present:written)check(present);++adds;}
+        }
+        check(mm==6&&copies==11&&adds==9);++serial_graphs;
+        const auto bad=[&](){bool caught=false;try{qwen_app::build_serial_ready_expert_graph(ctx,groups,output);}
+            catch(const std::invalid_argument&){caught=true;}check(caught);++refused;};
+        groups[1].original_ordinals[0]=0;bad();groups[1].original_ordinals[0]=split;
+        --groups[1].count;bad();++groups[1].count;
+        groups[1].activation=output;bad();groups[1].activation=activation;
+        groups[1].contributions=output;bad();groups[1].contributions=contributions;
+        ggml_free(ctx);
+    }
     // Execute actual GGML reduction metadata with cancellation-sensitive F32
     // values. A bank-grouped or tree sum must not replace the original order.
     auto *ctx=ggml_init({2u<<20,nullptr,true});check(ctx);
@@ -76,5 +113,6 @@ int main() {
     for(unsigned i=0;i<16;++i)check(output[i]==123.25f&&output[output.size()-1-i]==123.25f);
     ggml_free(ctx);
     std::cout<<"{\"actual_GGML_partial_expert_graphs\":"<<graphs<<",\"partial_widths\":10,\"refusals\":"<<refused
-        <<",\"original_order_F32_reduction_values\":"<<values<<",\"BF16_matrix_arithmetic_executed\":false,\"GPU_execution\":false}"<<std::endl;
+        <<",\"serial_control_graphs\":"<<serial_graphs<<",\"original_order_F32_reduction_values\":"<<values
+        <<",\"BF16_matrix_arithmetic_executed\":false,\"GPU_execution\":false}"<<std::endl;
 }
