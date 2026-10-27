@@ -1,5 +1,13 @@
 # PS5 Flash Next plan status
 
+The [GPU phase continuation](gpu-phase-calibration-20261028.md) and
+[evidence ledger](gpu-phase-calibration-20261028.json) add native case 3593:
+one empty backend synchronized/retired, 2778 -> 2770 sampled free pages, and
+ordinary close plus exact fastest/five-setting restoration. It does not price
+resident model loading or complete C2/C3. A separate up-to-8.75-GB buffer
+experiment was rejected by automatic approval review before any source change
+or execution; its explicit risk decision is pending. No speedup is adopted.
+
 Latest measured results are the [VM revalidation report](vm-revalidation-results-20261028.md)
 and [16-family / 22-item ledger](vm-revalidation-results-20261028.json).
 All 27 Direct lifetimes, two exact 673-table restorations, four actual worker

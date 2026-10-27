@@ -20,7 +20,7 @@ FORBIDDEN=('native_CPU_phase_control','native_SELF_read_control','native_cache_l
     'native_shader_startup_memory_diagnostic','native_source_contention_probe',
     'native_source_stage_memory_diagnostic','native_direct_frame_evidence')
 
-def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False,measure_worker_memory=False,incremental_tables=False,delegate_shader=False):
+def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False,measure_worker_memory=False,incremental_tables=False,delegate_shader=False,gpu_initializer_calibration=False):
     at=source.index('int main(int argc, char ** argv)');end=source.index('        const auto * chat_template',at)
     prefix=source[:at];body=source[at:end]
     flags=('native_display','monitor_validation','display_validation','runtime_validation','memory_validation',
@@ -88,6 +88,20 @@ def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False
         qwen_native_stage("resident_measured_GPU_phase_admitted_starting_GPU");
 '''
     body=body[:GPU_at]+priced_GPU+body[GPU_at:]
+    if gpu_initializer_calibration:
+        if measure_worker_memory or receipt_diagnostic:
+            raise ValueError('GPU initializer scope must not repeat worker or receipt-only calibration')
+        needle='        if(false)\n            isolated_large_cache_layout(startup,policy,native_resources_started);'
+        if body.count(needle)!=1:raise ValueError('Unique completed static GPU-resource frontier required')
+        body=body.replace(needle,'#include "resident_gpu_calibration.inc"\n'+needle)
+        prefix='#include "resident_gpu_calibration_policy.h"\n#include "ggml-vulkan.h"\n'+prefix
+        old_checkpoint='''        const auto &checkpoint_proof=policy.at("native_resident_checkpoint");
+        qwen_app::require_model_free_checkpoint_report(read_completed_native_report(checkpoint_proof),checkpoint_proof);'''
+        if body.count(old_checkpoint)!=1:raise ValueError('Unique model-only checkpoint prerequisite required')
+        body=body.replace(old_checkpoint,'''        if(policy.contains("native_resident_GPU_initialization_calibration"))
+            qwen_app::require_resident_gpu_calibration_policy(policy);
+        else {
+'''+old_checkpoint+'\n        }')
     if measure_worker_memory:
         needle='''        {
             const auto memory=qwen_app::admit_native_system_memory();
@@ -210,6 +224,7 @@ def main():
     p.add_argument('--measure-worker-memory',action='store_true',help='Measure four actual native worker lifetimes and matched idle instead of provisional allowances')
     p.add_argument('--incremental-driver-tables',action='store_true',help='Use page-bounded original-table restoration with per-operation measured accounting')
     p.add_argument('--delegate-shader-launch-integrity',action='store_true',help='Reuse fresh native whole shader-file integrity; keep original per-use frame hashes')
+    p.add_argument('--GPU-initializer-calibration',action='store_true',help='Measure one model-free backend lifetime with distinct ordinary-reserve and prior-fixture components')
     a=p.parse_args();prior=json.loads(a.qualified_native.read_text())
     if a.reuse_qwen_factory_from and not a.qwen_only_factory:raise ValueError('Factory reuse requires the exact Qwen-only factory')
     if not prior.get('lossless_driver_tables_link_map_passed'):raise ValueError('Qualified cold-driver native link required')
@@ -217,7 +232,7 @@ def main():
         if record(row['path'])!=row:raise ValueError('Qualified input changed: '+str(row['path']))
     a.out.mkdir(parents=True,exist_ok=False);(a.out/'tmp').mkdir()
     source=ROOT/'native/app/native_main.cpp';tail=ROOT/'native/app/resident_comparison_tail.inc'
-    generated=a.out/'resident-comparison.private.cpp';generated.write_text(specialize(source.read_text(),tail.read_text(),a.reuse_launch_SELF_integrity,a.receipt_only_diagnostic,a.measure_worker_memory,a.incremental_driver_tables,a.delegate_shader_launch_integrity),newline='\n')
+    generated=a.out/'resident-comparison.private.cpp';generated.write_text(specialize(source.read_text(),tail.read_text(),a.reuse_launch_SELF_integrity,a.receipt_only_diagnostic,a.measure_worker_memory,a.incremental_driver_tables,a.delegate_shader_launch_integrity,a.GPU_initializer_calibration),newline='\n')
     c=next(c.copy()for c in prior['compile_commands']if '-c'in c and Path(c[c.index('-c')+1]).name=='native_main.cpp')
     old=c[c.index('-o')+1];obj=a.out/'resident-comparison.o';c[c.index('-c')+1]=str(generated);c[c.index('-o')+1]=str(obj)
     c=[x for x in c if x not in ('-O1','-O2','-O3')]+['-Oz','-ffunction-sections','-fdata-sections','-Wno-unused-variable']
@@ -254,14 +269,21 @@ def main():
             for key in ('original','generated','original_compile_recipe'):
                 if record(proof[key]['path'])!=proof[key]:raise ValueError('Qualified factory input changed')
             if proof['generated']['sha256']!=factory['generated']['sha256']:raise ValueError('Generated factory content changed')
-            old_command=next(c for c in old['compile_commands']if '-c'in c and Path(c[c.index('-c')+1]).name=='llama-model-qwen-only.private.cpp')
+            old_command=proof.get('original_object_compile_command')
+            if old_command is None:
+                old_command=next(c for c in old['compile_commands']if '-c'in c and Path(c[c.index('-c')+1]).name=='llama-model-qwen-only.private.cpp')
+            actual_source=proof.get('actual_object_source',proof['generated'])
+            if record(actual_source['path'])!=actual_source or actual_source['sha256']!=factory['generated']['sha256']:
+                raise ValueError('Reused factory actual compiled source changed')
+            if '-c'not in old_command or Path(old_command[old_command.index('-c')+1])!=Path(actual_source['path']):
+                raise ValueError('Reused factory original compile source differs from its recorded object provenance')
             def normalized(c):
                 c=c.copy();c[c.index('-c')+1]='SOURCE';c[c.index('-o')+1]='OBJECT';return c
             if normalized(old_command)!=normalized(args):raise ValueError('Factory compile options changed')
             object_row=next(r for r in old['inputs_before']if r['path']==old_command[old_command.index('-o')+1])
             if record(object_row['path'])!=object_row:raise ValueError('Qualified factory object changed')
             factory_obj=Path(object_row['path']);factory.update(reused_object=object_row,reused_from=record(a.reuse_qwen_factory_from),
-                original_object_compile_command=old_command,actual_object_source=proof['generated'])
+                original_object_compile_command=old_command,actual_object_source=actual_source)
         else:extra.append((args,Path(entry['directory'])))
         command.insert(command.index('--start-group'),str(factory_obj))
     paths=[Path(__file__),a.qualified_native,source,tail,ROOT/'native/app/resident_comparison_policy.h',
@@ -269,6 +291,7 @@ def main():
     if a.reuse_launch_SELF_integrity:paths += [ROOT/'native/app/resident_launch_integrity.h',ROOT/'native/app/resident_shader_integrity.h']
     if a.measure_worker_memory:paths.append(ROOT/'native/app/resident_worker_memory.h')
     if a.incremental_driver_tables:paths.append(ROOT/'native/app/resident_incremental_tables.h')
+    if a.GPU_initializer_calibration:paths += [ROOT/'native/app/resident_gpu_calibration.inc',ROOT/'native/app/resident_gpu_calibration_policy.h']
     if factory:paths+=[Path(factory[k]['path'])for k in ('original','generated','original_compile_recipe')]
     if factory and factory.get('reused_from'):paths+=[a.reuse_qwen_factory_from,factory_obj,Path(factory['actual_object_source']['path'])]
     frozen=[record(x)for x in paths]+prior['inputs_before']
@@ -284,6 +307,7 @@ def main():
     receipt=copy.deepcopy(prior);receipt.update(artifact=record(image),inputs_before=frozen+[record(obj)],
         source_parent=record(a.qualified_native),link_command=command,compile_commands=[c]+[x[0]for x in extra],
         resident_comparison_entry=True,resident_factory=factory,resident_same_launch_integrity=a.reuse_launch_SELF_integrity,resident_receipt_only_diagnostic=a.receipt_only_diagnostic,resident_worker_memory_measured=a.measure_worker_memory,resident_incremental_driver_tables=a.incremental_driver_tables,resident_shader_integrity_handoff=shader_handoff,console_access=False,PS5_operations=0,CI_runs=0,
+        resident_GPU_initializer_calibration=a.GPU_initializer_calibration,
         application_sources=prior['application_sources']+[record(tail)],
         application_headers=prior['application_headers']+[record(ROOT/'native/app/resident_comparison_policy.h'),
             record(ROOT/'native/app/resident_startup_trace.h')])
