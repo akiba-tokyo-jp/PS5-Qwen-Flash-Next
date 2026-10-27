@@ -14,15 +14,15 @@ int main(int argc,char **argv) {
     try {
         qwen_native_stage("isolated_split_bank_main_entered_GPU_not_started");observe("main_entered");
         const auto startup=qwen_app::read_startup(argc,argv);report=startup.admission_report;qwen_native_set_fault_report((report+".fatal").c_str());
+        llama_log_set(native_log,nullptr);ggml_log_set(native_log,nullptr);qwen_app::enable_native_memory_backpressure();require_model_CPU_budget();
         std::ifstream file(startup.development_policy);const auto policy=Json::parse(file);
         qwen_app::require_split_bank_policy(policy,startup.first_generation_validation,startup.native_display,bool(startup.clock_calibration));
         const auto &binding=policy.at("native_isolated_split_bank_title");const auto run=binding.at("run_id").get<std::string>();
         if(report!="/app0/qwen-runtime/plan-"+run+".json")throw std::runtime_error("Split backing requires the exact fresh report binding");
-        llama_log_set(native_log,nullptr);ggml_log_set(native_log,nullptr);qwen_app::enable_native_memory_backpressure();require_model_CPU_budget();
         qwen_app::verify_native_startup_file_direct("/app0/eboot.bin",binding.at("candidate_SELF_bytes").get<std::uint64_t>(),binding.at("candidate_SELF_sha256").get<std::string>(),30);
         observe("SELF_integrity_completed");qwen_app::admit_cpu_runtime(qwen_native_stage);qwen_app::inspect_vulkan_globals();
         admit_shader_storage_CPU(policy,report,true,Json(run));observe("CPU_shader_completed");
-        (void)qwen_app::admit_native_startup_memory();
+        (void)qwen_app::admit_split_bank_GPU_memory(policy);
         std::int64_t physical=0;std::size_t available=0,flexible=0;const auto pool=sceKernelGetDirectMemorySize();
         if(pool<=0||sceKernelAvailableDirectMemorySize(0,pool,65536,&physical,&available)<0||sceKernelAvailableFlexibleMemorySize(&flexible)<0||
            available<(1ull<<30)||flexible<(64u<<20))throw std::runtime_error("Split backing requires the unchanged Direct/Flexible setup headroom");

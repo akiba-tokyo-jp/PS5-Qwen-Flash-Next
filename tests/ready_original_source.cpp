@@ -31,7 +31,7 @@ struct Ops final:SourceReadOps {
     bool close_file(int fd)override {std::lock_guard<std::mutex> lock(mutex);check(descriptors.erase(fd)==1);++closes;return scenario!="close";}
     std::int64_t read_at(int fd,void *,std::size_t bytes,std::uint64_t offset)override {
         std::unique_lock<std::mutex> lock(mutex);const auto &f=plan.files.at(descriptors.at(fd));check(offset%16384==0&&bytes==padded_bank_stride&&offset+bytes<=f.bytes);
-        ++reads;++active;++arrived;peak=std::max(peak,active);if(wave->snapshot().GPU_pending)++lease_reads;changed.notify_all();
+        ++reads;++active;++arrived;peak=std::max(peak,active);if(wave&&wave->snapshot().GPU_pending)++lease_reads;changed.notify_all();
         check(changed.wait_for(lock,std::chrono::seconds(3),[&]{return arrived==expected;}));--active;
         if(scenario=="read-exception")throw std::runtime_error("Known metadata read exception");
         return scenario=="short"?bytes-16384:bytes;
@@ -39,7 +39,7 @@ struct Ops final:SourceReadOps {
     std::uint64_t system_headroom()override{return scenario=="memory"?0:256u<<20;}
     static Ops *current;
     static void stage(const char *text) {
-        if(std::string(text).find("ready_original_batch_before ")==0){std::lock_guard<std::mutex> lock(current->mutex);current->expected=std::string(text).find("calls=2")!=std::string::npos?2:1;current->arrived=0;}
+        if(std::string(text).find("ready_original_batch_before ")==0||std::string(text).find("ready_original_CPU_batch_before ")==0){std::lock_guard<std::mutex> lock(current->mutex);current->expected=std::string(text).find("calls=2")!=std::string::npos?2:1;current->arrived=0;}
     }
     static bool verify(const ReadyOriginalMatrix &,const void *,void *opaque){auto &o=*static_cast<Ops *>(opaque);++o.verified;return o.scenario!="byte-proof";}
 };
@@ -82,6 +82,33 @@ int main(int argc,char **argv) {try {
     for(unsigned group=0;group<2;++group)for(unsigned role=0;role<3;++role)banks[group][role]={
         reinterpret_cast<void *>((group?0x20000000000ull:0x10000000000ull)+role*split_bank_planes[group]*padded_bank_stride),
         split_bank_planes[group]*padded_bank_stride,32,7,group?22u:11u};
+    if(scenario=="CPU-one"||scenario=="CPU-two"||scenario=="CPU-scope"||scenario=="CPU-short"||scenario=="CPU-close") {
+        auto *ops=new Ops(plan,scenario=="CPU-short"?"short":scenario=="CPU-close"?"close":scenario);Ops::current=ops;const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        ReadyOriginalCPUScratch scratch{reinterpret_cast<void *>(0x10000000000ull),2*padded_bank_stride};
+        auto *source=new ReadyOriginalSource(plan,scratch,scenario=="CPU-one"?1:2,*ops,Ops::verify,ops,Ops::stage,deadline);
+        auto *wave=new ReadyExpertWave(plan.experts,plan.slots,validate_split_bank_backings(banks),plan.layer,1,7,26);
+        try{ReadyOriginalSource::fill(*wave,0,source);throw std::logic_error("CPU owner admitted a GPU wave");}catch(const std::runtime_error &){++refused;}
+        if(scenario=="CPU-scope") {
+            for(unsigned bad=0;bad<3;++bad) {
+                auto s=scratch;if(!bad)s.bytes-=16384;if(bad==1)s.data=nullptr;
+                try{ReadyOriginalSource invalid(plan,s,bad==2?3:2,*ops,Ops::verify,ops,Ops::stage,deadline);throw std::logic_error("Invalid CPU scratch admitted");}
+                catch(const std::runtime_error &){++refused;}
+            }
+            auto *GPU_source=new ReadyOriginalSource(plan,banks,*ops,Ops::verify,ops,Ops::stage,deadline);
+            try{GPU_source->fill_CPU_group(0);throw std::logic_error("GPU owner admitted CPU fixture");}catch(const std::runtime_error &){++refused;}
+            check(ops->reads==0);
+        }else if(scenario=="CPU-short"||scenario=="CPU-close") {
+            try{source->fill_CPU_group(0);source->fill_CPU_group(1);throw std::logic_error("Failed CPU source operation admitted");}catch(const std::runtime_error &){++refused;}
+            if(scenario=="CPU-short")check(source->close_returned_CPU_failure()&&ops->descriptors.empty()&&ops->opens==ops->closes);
+            else {const auto prior=ops->closes;check(!source->close_returned_CPU_failure()&&ops->closes==prior&&prior==1);}
+        }else {
+            source->fill_CPU_group(0);source->fill_CPU_group(1);const auto report=source->completed_report();
+            check(report.at("CPU_only_source_fixture")==true&&report.at("Direct_read_calls")==30&&ops->reads==30&&ops->verified==30&&
+                ops->peak==(scenario=="CPU-one"?1u:2u)&&ops->descriptors.empty()&&ops->opens==ops->closes);
+            delete source;
+        }
+        std::cout<<Json{{"passed",true},{"refusals",refused},{"metadata_reads",ops->reads},{"PS5_operations",0},{"file_reads",0},{"GPU_calls",0}}.dump()<<'\n';return 0;
+    }
     auto *wave=new ReadyExpertWave(plan.experts,plan.slots,validate_split_bank_backings(banks),plan.layer,1,7,26);
     auto *ops=new Ops(plan,scenario);ops->wave=wave;Ops::current=ops;const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
     auto *source=new ReadyOriginalSource(plan,banks,*ops,Ops::verify,ops,Ops::stage,deadline);auto *execution=new ReadyExpertExecution;

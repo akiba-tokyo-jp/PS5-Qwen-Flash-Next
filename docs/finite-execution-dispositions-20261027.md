@@ -7,17 +7,23 @@ implementation, unavailable validation and conditional integration. **It does
 not declare every proposal implemented or physically verified.** There is no new
 model-speed winner or production adoption.
 
+The [later physical source and GPU comparison](#physical-original-source-and-ready-comparison-cases-3067-3106)
+supersedes the earlier ready-fixture unavailability: the complete forty-graph
+cohort passed numerics and retirement, but overlap lost both reverse comparisons.
+The source-only two-call result is separate from model throughput. After ordinary
+close, a changed-state screen admitted the existing PLE comparison for execution.
+
 ## Current-round decisions
 
 | Item | Implementation / existing evidence | Current-round decision |
 | --- | --- | --- |
 | Reclaim the unresolved startup kernel consumption | No supported removable owned cost or callable owner/reclaim interface was established. Metadata, reservation and quiet controls are already complete | A validated kernel-consumption reduction is **not implementable through the currently established interfaces**. Close this reduction investigation; do not repeat the same diagnostics or alter unknown OS ownership |
 | Bound the formatter's libc heap | The actual qualified converted ELF contains heap-size `0xffffffffffffffff` and extension flag `1`; the corresponding formatter writes these fields | Editing the values is possible, but this is not proof of reclaimable kernel pages. No supported kernel-reduction implementation follows, so do not introduce a different unqualified libc-allocation experiment |
-| Cache 53/128 full-model A/B/B/A | Candidate, 360 native layout graphs, per-arm review and full-cohort reviewer available | **Native comparison unavailable under current startup conditions.** The 6749-page observed full-title decline exceeds the latest free count before retaining even the operational reserve. The 10142-page price remains revisable policy, not a hardware minimum |
+| Cache 53/128 full-model A/B/B/A | Exact existing full SELF and 360-graph layout proof reused. Later A53 case 3130 completed warmup plus both original-model 22-token requests, all required reviews, ordinary close and exact restoration | **Cohort incomplete; B128/B128/A53 unrun and unavailable now.** Next-arm screen 3174 observed 6583 pages versus staged CPU price 8159. The earlier initial CPU decline alone was 6749 pages. The regular 10142-page rule and native 2974-page GPU guard remain unchanged; none is a physical minimum claim |
 | Exact width-two arithmetic, rejection/restore and speed | Complete checkpoint physically qualified; causal controller, native policy and independent reviews implemented | **Native validation unavailable:** it requires the full-model startup path. Do not repeat checkpoint correctness tests. Width-four/adaptive verification integration is **unavailable at this stage** because the required native width-two correctness/cost decision is absent |
-| PLE 208-graph comparison | Four physical smoke graphs passed. Closed CPU/GPU records reproduce CPU price 7701 and GPU-continuation price 8190 | **Native comparison unavailable**, independently of the full-model rule. One next-item screen (3031) observed 6709 -> 6709 against the exact PLE price 8190; no title/ELF/GPU operation followed |
+| PLE 208-graph comparison | Later case 3115 completed all 208 original/candidate graphs at widths 1–4, eight alternating pairs per mode, exact F32/F64 checks and positive retirement under the existing 8190-page price | **Comparison complete; no repeatable gain.** Mixed pair wins and median effects -0.092% to +0.046% do not qualify a model integration/adoption candidate. The earlier 3031 screen is historical |
 | Prefix reuse comparison | Default-off consumer implemented, complete checkpoint qualified, old returned refusal closed/restored | **Native validation unavailable** under the shared full-model startup condition. The completed attribution work is not another pending prerequisite investigation |
-| Ready-expert execution | Backing/numerical entry and the subsequent ten-distinct-original-Expert/depth-two source comparison are implemented and native-build-qualified; independent host/reference/policy/report checks passed | **Native execution remains unavailable** under the last established startup conditions (3046). Representative timing is implemented but **unrun**; model integration is **unimplemented / conditional on the actual fixture decision**. Host checks do not qualify performance |
+| Ready-expert execution | Later case 3099 completed all 40 physical backing/numerical/original-source graphs, 180 ten-expert reads, exact F32 results, F64 references and positive retirement | **Measured fixture loser.** Split overlap lost both reverse comparisons by approximately 0.9–1.4%. Close this variant without model integration or production adoption. The earlier 3046 startup refusal is historical |
 | Actual hidden-state router observation and forecasts | Existing host-qualified shadow prototype; no actual hidden-state capture | **Validated model integration unavailable in this environment.** Recorded selected IDs cannot replace the missing hidden-state/cost measurements. Do not implement speculative transfers from that surrogate |
 | Broader workloads | Four original-template/tokenizer metadata cases completed; no new console generation | **Native quality/performance validation unavailable** under the full-model condition. Host metadata is not answer-quality evidence |
 | Further cache sizes and graph/Radiance tuning | Fifteen cache capacities replayed; original-shape audits and prior PLE numerics exist. Donor HIP/WMMA kernels do not directly match this Vulkan stack | **Further validated integration unavailable at the required native stage.** No native capacity winner, added cost profile or portable-kernel numerical comparison exists. Unimplemented portable candidates remain explicitly unimplemented, not benchmark failures |
@@ -246,3 +252,245 @@ the exact new SELF's startup cost is not established. Do not call 8159 a physica
 minimum or infer a gain from a build. Model integration, matched model A/B/B/A
 and production placement remain incomplete. Overall requested implementation
 and validation is not complete.
+
+## Physical original-source and ready comparison, cases 3067-3106
+
+The CPU-only fixture executed the actual `ReadyOriginalSource` and
+`VectoredSourceBatch`, reading the same thirty original BF16 matrix envelopes
+per run. Its eight serial/parallel cases used order `1,2,2,1,1,2,2,1`, two owned
+scratch envelopes plus canaries (6,619,136 Direct bytes), an eight-entry descriptor
+cache and exactly one inner reader. All 240 matrix deliveries, original raw and
+envelope hashes, source identities, descriptor closes, joined workers and scratch
+retirement passed. The credential-preserving payload performed no title launch,
+Vulkan call, model arithmetic or production mutation.
+
+Serial mean was 1.40439684725 s; parallel mean was 1.315784079 s: a 1.06734598x
+source-fixture throughput ratio, or approximately 6.31% less elapsed time.
+All four reverse-paired gains exceeded the observed 1.307% drift bound. API read
+intervals intersected in all four parallel cases. This establishes neither NAND
+concurrency nor model tokens/s, and does not qualify an additional production
+change. The production control already has a selected paired source schedule.
+The exact executed source was preserved before tightening the failure-only
+unknown-close guard; that later guard has host/native-SDK controls, not a second
+physical CPU-payload run.
+
+The application fixture adds an explicit, default-off model-free GPU phase
+policy. Its requirement is `898 + max(206,256) + 1024 = 2178` pages. It shares the
+existing bounded admission controller and total wait budget. The regular
+2974-page GPU startup target, 10142-page model prelaunch rule, 1154-page
+operational predicate and Direct/Flexible/device limits remain unchanged.
+The prelaunch estimate 5411 used current-boot model-free CPU evidence from 2840;
+it was an estimate, not a hardware minimum or proof of every transient peak.
+In successful case 3099, entry observed 1103 pages and the post-SELF observation
+4456. The early CPU guard waits before further preparation when the operational
+predicate is temporarily unavailable; it does not reclaim unknown OS memory.
+
+Two returned failures were preserved and normally closed before the successful
+case. Case 3078 rejected an inappropriate monitor clock field before any GPU or
+source work. Case 3088 completed 26 prior graphs, then returned at the first
+original descriptor admission before any original batch or graph. The isolated
+reader lacked the production application namespace binding. The correction
+reuses `ModelIdentityNamespace`: bind the sealed model directory and receipt,
+verify the original receipt SHA256, translate only the exact canonical prefix to
+the application model directory and the one proven filesystem device pair, and
+retain all nine other identity fields. Each matrix still passes its original raw
+and envelope hashes before GPU use. Thirty altered-namespace controls, sixteen
+reader scenarios, native SDK compilation and the actual emitted startup/policy
+parser passed before the corrected launch.
+
+Case 3099 completed twelve independent-backing graphs, fourteen two-expert
+numerical graphs and fourteen ten-original-expert graphs. The latter six cases
+used one-graph serial, split serial, split overlap, split overlap, split serial,
+one-graph serial, each with thirty original reads and twelve two-call batches.
+All F32 outputs/contributions matched exactly; the largest F64 reference error
+was `9.566949107919775e-9`. The device ledger peaked at 807,403,520 bytes and
+returned to zero. Workers, actual Vulkan backing leases and graph epochs retired
+positively. Source/GPU API intervals overlapped in both candidate cases; physical
+GPU timestamps were not collected.
+
+| Mode in execution order | Source-to-output time (s) |
+| --- | ---: |
+| One-graph serial | 1.122524285 |
+| Split serial | 1.145391724 |
+| Split overlap | 1.138151942 |
+| Split overlap | 1.135357881 |
+| Split serial | 1.144559960 |
+| One-graph serial | 1.125474708 |
+
+Overlap speed ratios versus their corresponding serial arms were
+`0.9862692700` and `0.9912951034`; both losses exceeded the observed 0.26284%
+two-arm spread. The predeclared reviewer returned `fixture_loser`. This closes
+this ready-overlap variant without model integration. Do not reinterpret the
+source-only gain as a model-speed winner or remove integrity/monitoring work
+to change this completed decision. Other execution designs remain separate
+unimplemented candidates, not failed copies of this test.
+
+The title was normally closed. Complete native SHA256, stable identity and EOF
+readback verified the exact fastest SELF and all five original configuration
+files after restoration. A fresh idle session returned the reservation with no
+model/gateway/native owner or unknown completion. No reboot, force-close, GPU
+reset, manual failed-resource release, driver change or CI run occurred.
+
+A single next-queue screen after this changed, completed native resource lifetime
+observed 9160 pages twice. It did not grant a full-model launch under 10142;
+it did admit preparation of the existing 8190-page PLE comparison. The later
+208-graph result below completes that fixture, with no repeatable speed gain.
+The observed recovery does not identify the OS consumer or establish a callable
+kernel reclamation mechanism.
+
+Application relink uses driver revision
+`872cc1264ad8ba5d6b888b092968fa5858a38c58`, profile `cumulative-idle`, native
+archive `b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925`
+and unchanged compiler donor
+`67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9`.
+The build explicitly replaces the route and memory-controller application
+objects; it does not silently replace a driver member. Persistent caches remain
+disabled. The successful fixture SELF is
+`3563470da05b8327da2fbbe4b0505e94e44ec54d0a54a675146f05f0a263a576`.
+The restored production SELF remains
+`ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`;
+its prior 0.391093/0.398430 tok/s measurements have not been replaced.
+
+| Private evidence | Receipt SHA256 |
+| --- | --- |
+| Physical CPU source cohort 3067 | `0e02b99e28a2563f19ac20bd9d1b65ddbbcbf308438d34c2787cb551ddbcdc15` |
+| Reader/native SDK/namespace controls 3096 | `51ffd00e6b79dca40645245ab8fcb414e6dd61a9f8cbd16f60fd6ac2656ff7d4` |
+| Independent 40-graph review 3099 | `39066c9f9c9a93b550a18fc188792ea58ac04017aec118ecb46c3dc337eb7534` |
+| Complete restoration 3099/3103 | `c17869c18957258a7acfa3ba79609d6339d2eba0a27fe87602196bcc4567b85f` |
+| Next-queue screen 3106 | `99ee8be305379e6c8dfd8a7e494319ac8cd5be899a44771fea78dc0cccf52dbe` |
+
+Raw source paths, endpoints, console evidence, binaries and original weights
+remain outside commits.
+
+## Physical PLE paired comparison, case 3115
+
+All 208 graphs completed: widths one through four, four warmups per width and
+eight alternating original/candidate pairs for each of three candidate modes.
+The independent reviewer confirmed exact F32 outputs, F64 references, unchanged
+BF16-to-F32 casts, canaries, single-Vulkan placement, original-source preflight,
+per-use shader integrity and positive graph/resource retirement. The original
+8190-page prelaunch and 2974-page native GPU guards were retained.
+
+| Tokens | Mode 1 median ratio (faster pairs) | Mode 2 median ratio (faster pairs) | Mode 3 median ratio (faster pairs) |
+| ---: | ---: | ---: | ---: |
+| 1 | 0.999947 (3/8) | 1.000270 (5/8) | 0.999946 (3/8) |
+| 2 | 0.999882 (3/8) | 1.000457 (6/8) | 0.999971 (4/8) |
+| 3 | 0.999997 (4/8) | 1.000308 (5/8) | 1.000281 (6/8) |
+| 4 | 1.000449 (5/8) | 0.999080 (3/8) | 0.999502 (2/8) |
+
+Ratios are original complete-graph time divided by candidate time. Every mode
+has mixed wins and losses across its eight pairs; median effects range from
+approximately -0.092% to +0.046%. No repeatable fixture speed winner was
+established. Close these PLE graph variants without model integration or
+production adoption. This does not establish that every possible PLE kernel
+design is ineffective, or measure model TTFT/decode.
+
+The application was normally closed; complete native SHA256/identity/EOF checks
+restored the exact fastest SELF and five original settings. A fresh idle session
+returned the reservation, with no unknown completion. Candidate SELF:
+`461ad94452868ee8ad41715dd2ee102cbd085f376fe0e4d4cda7003f01786264`.
+Its manual application relink retained the exact driver/profile/archive above;
+persistent caches and CI remained disabled. Earlier host-only preparation 3111
+failed at a CLI mode choice before publication/launch; it was preserved and a
+distinct corrected case 3115 used the established PLE-mode emitter and actual
+startup/policy parser check. No failed case was replayed.
+
+After this changed native resource lifetime, one next-model screen observed
+8874 pages twice. It does not meet the regular 10142-page prelaunch policy.
+A separately predeclared CPU-staged entry price is 8159 pages:
+`6749 maximum observed exact full-title CPU decline + 1154 operational floor +
+256 variation`. This uses full candidate case 2860, not the small GPU fixture.
+Only CPU preparation is admitted by that price; the native 2974-page GPU gate,
+operational predicate and pool/device limits remain mandatory before continuation.
+A returned CPU refusal closes the new cohort without retries. This is a
+revisable experimental entry policy, not a measured reduction of kernel use or
+proof that the forthcoming model preparation/GPU allocation will succeed.
+
+## Original-model control and remaining current-environment limit, cases 3130-3175
+
+The staged CPU entry executed the exact already qualified full candidate SELF
+`b9c8584b8f2e60f70b768941e61c40808312b06e961cde0f14f41a9cc0ace3a8`.
+Its complete immutable native link inputs still matched, so no full-engine or
+360-graph layout requalification rebuild was introduced. The new A53 policy
+matched the prior full-model control apart from its fresh run/clock binding and
+CPU-staged entry declaration. Ten prelaunch observations met 8159 pages; the
+native operational, 2974-page GPU, original-source, Direct/Flexible and device
+limits were retained.
+
+The model completed its warmup and both fixed external requests on the PS5.
+All required original model/source/shader checks, exact counting output/token
+validation, performance/route sidecars, request resets, stopped source worker
+and positive GPU/model resource retirement passed independent review. This is
+actual full-model inference, not a fixture or host simulation. Its 53-slot
+control used context 256, prefill 4 and the complete original BF16/F32 model.
+
+| External request | Cache condition | Prompt/output tokens | TTFT (s) | Decode (tok/s) |
+| ---: | --- | --- | ---: | ---: |
+| 1 | Empty expert cache | 30 / 22 | 50.056118 | 0.355716 |
+| 2 | Retained expert cache | 30 / 22 | 49.220898 | 0.398618 |
+
+The postload device ledger peaked at 947,912,704 bytes and returned to zero.
+These counting requests do not establish broader answer quality or a new
+acceleration winner. The frozen A53/B128/B128/A53 cohort remains incomplete;
+no historical result substitutes for its missing arms.
+
+During warmup, the generic launch observer refused its extra active-title SELF
+scan at its unchanged headroom predicate, before the first SELF payload read.
+The model itself had no failure/fatal report and had already verified its
+complete SELF/receipt before GPU initialization. The established small metadata
+owner observer reused the same-launch full integrity plus that exact native
+startup evidence. Its original boot/service/parent/title/AppInfo/claim/owner
+functions and operational floor stayed unchanged, and it positively verified
+the exact PID/start identity before any benchmark POST. The old observer refusal
+was preserved. The first host close helper referenced that old failed observer
+and refused locally before any close request. A distinct helper bound the
+successful metadata-owner proof and unchanged normal-close implementation;
+exactly one ordinary close then completed. No forced close or failed-resource
+release occurred.
+
+Complete native SHA256/identity/EOF verification restored the fastest SELF and
+all five prior settings. A fresh idle session returned the reservation, with no
+native/gateway/model owner or unknown completion. The next B128 screen observed
+6583 pages twice, below the 8159-page CPU entry. No B title, generation request,
+ELF or GPU operation was issued by that screen. B128/B128/A53 remain **unrun and
+unavailable in the current environment**, not failed benchmarks, implementation
+impossibilities or a physical claim that PS5 cannot run the model.
+
+The bounded source review targeted `model_mapping.cpp` and its startup caller.
+The rehearsal already positively releases its owned reservations. Removing or
+retaining that later rehearsal cannot repair the earlier observed 6749-page
+interval before startup SELF integrity. That observed initial decline alone
+exceeds the current 6583 free pages, before any operational reserve. No supported
+material reduction of that initial interval or callable OS/kernel reclaim owner
+was established. Do not repeat the same refused scope, remove owner/integrity
+checks, release uncertain memory or depend on reboot. The observed change after
+normal close is not exclusive attribution of OS consumption to this application.
+
+Exact width-two acceptance/rejection/restore and speed, prefix reuse and broader
+model workloads still require another admitted full-model lifetime. Their
+native validation is unavailable under this current shared prerequisite.
+Width-four/adaptive verification and hidden-state forecast integration retain
+their missing native dependencies; they are not passed or rejected performance
+experiments. Ready-overlap and the tested PLE variants have actual finite
+negative/no-gain decisions and need no model integration. No new model-speed
+winner was qualified or deployed. The exact installed fastest control remains
+`ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`.
+The overall implementation/validation objective is **not complete**.
+
+The final CPU-only reader tool was also rebuilt after the later header and
+failure-path fixes: 751,816 bytes, zero missing strong native imports, actual
+reader linked, zero console operations. That compile does not claim another
+physical CPU cohort. Existing 16 reader scenarios, 30 namespace refusals,
+shared-budget admission controls, eight original-result review groups and
+strict native compilation support the code changes; the physical evidence
+above remains bound to each exact executed artifact. CI stayed disabled.
+
+| Private evidence | Receipt SHA256 |
+| --- | --- |
+| PLE 208-graph review 3115 | `44564be00a8c228336f014c49338f465dfcda27e5b4a4a8eccc685bed091aa1e` |
+| PLE complete restoration 3115/3120 | `8b368f92e39df85d923c12225283acd0b34437643be301aa7aeff8941a7f5846` |
+| Independent A53 model review 3130 | `9a87d77de6a3e088825cfe66cf9c70c19599ba5b129def6d73518aceeb4af4d2` |
+| Native A53 request/resource completion 3130 | `dd7e4e6f7834437b4c99c9d920470ddb5e724de13a5fa0e268035fe361b0f8ca` |
+| A53 complete restoration 3130/3170 | `f35654e6fde3b7ca82e73b936e4c06fdbd5e47d41aec070791afac8b4f200d3f` |
+| B128 next-arm screen 3174 | `96f0b8285eab39812c68a7242e75e42d9ded3691e50daa127c9ceaa9528bc792` |
+| Final CPU-only tool compile 3175 | `724d780ce7e137a6fbc5ad662821a1f624eed5979a978e569e60f4041b88c0a0` |

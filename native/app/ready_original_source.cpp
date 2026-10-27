@@ -21,6 +21,7 @@ ReadyOriginalPlan parse_ready_original_plan(const std::string &text,const std::s
         origin.at("native_route_record").is_number_unsigned()&&origin.at("native_route_record")<4096u&&origin.at("actual_recorded_selection")==true&&
         origin.at("fixture_activation_and_weights_are_deterministic")==true&&origin.at("model_hidden_state_not_captured")==true&&
         hash(origin.at("native_routes_sha256")),"Exact original lineage and completed route provenance required");
+    out.original_receipt_sha256=lineage.at("original_receipt_sha256");
     check(files.is_array()&&!files.empty()&&files.size()<=30&&experts.is_array()&&experts.size()==10&&
         slots.is_array()&&slots.size()==10&&matrices.is_array()&&matrices.size()==30,"Exact ten-expert source geometry required");
     for(unsigned i=0;i<10;++i) {
@@ -71,14 +72,27 @@ ReadyOriginalSource::ReadyOriginalSource(const ReadyOriginalPlan &p,const SplitB
     check(verify_&&stage_&&deadline_>std::chrono::steady_clock::now(),"Original source requires bounded exact-byte and durable-plan callbacks");
     (void)validate_split_bank_backings(banks_);
 }
+ReadyOriginalSource::ReadyOriginalSource(const ReadyOriginalPlan &p,ReadyOriginalCPUScratch scratch,unsigned width,
+        SourceReadOps &ops,Verify verify,void *opaque,Stage stage,std::chrono::steady_clock::time_point deadline):
+    plan_(p),ops_(ops),CPU_scratch_(scratch),width_(width),verify_(verify),opaque_(opaque),stage_(stage),deadline_(deadline) {
+    const auto at=reinterpret_cast<std::uintptr_t>(scratch.data);
+    check(verify_&&stage_&&deadline_>std::chrono::steady_clock::now()&&(width==1||width==2)&&at&&
+        at%bank_read_alignment==0&&scratch.bytes==2*padded_bank_stride&&scratch.bytes<=UINTPTR_MAX-at,
+        "CPU source fixture requires exactly two owned aligned scratch envelopes and no GPU lease");
+}
+bool ReadyOriginalSource::close_descriptor(int fd) {
+    try {if(ops_.close_file(fd))return true;}catch(...){descriptor_close_unknown_=true;throw;}
+    descriptor_close_unknown_=true;return false;
+}
 int ReadyOriginalSource::descriptor(unsigned source,int excluded) {
     for(auto &h:handles_)if(h.fd>=0&&h.source==source){h.use=++clock_;return h.fd;}
     Handle *chosen=nullptr;
     for(auto &h:handles_)if((h.fd<0||h.fd!=excluded)&&(!chosen||h.fd<0||(chosen->fd>=0&&h.use<chosen->use))){chosen=&h;if(h.fd<0)break;}
     check(chosen,"Original source has no unpinned descriptor slot");
-    if(chosen->fd>=0){check(ops_.close_file(chosen->fd),"Original source descriptor close is unknown");chosen->fd=-1;--live_handles_;++closes_;}
+    if(chosen->fd>=0){check(close_descriptor(chosen->fd),"Original source descriptor close is unknown");chosen->fd=-1;--live_handles_;++closes_;}
     const auto &file=plan_.files.at(source);chosen->fd=ops_.open_direct(file.path);
-    check(chosen->fd>=0&&ops_.identity(chosen->fd)==file.identity,"Original physical part changed before read");
+    check(chosen->fd>=0,"Original physical part could not be opened read-only Direct");
+    check(ops_.identity(chosen->fd)==file.identity,"Original physical part changed before read");
     ++live_handles_;++opens_;peak_handles_=std::max(peak_handles_,live_handles_);
     chosen->source=source;chosen->use=++clock_;return chosen->fd;
 }
@@ -90,16 +104,30 @@ std::int64_t ReadyOriginalSource::read(void *opaque,const VectoredRead &r) {
 }
 void ReadyOriginalSource::fill(ReadyExpertWave &wave,unsigned group,void *opaque) {
     check(opaque,"Original source callback owner required");auto &s=*static_cast<ReadyOriginalSource *>(opaque);
-    try{s.fill_group(wave,group);}catch(...){s.failed_=true;throw;}
+    check(!s.CPU_scratch_.data,"CPU-only source fixture cannot fill a GPU wave");
+    try{s.fill_group(&wave,group);}catch(...){s.failed_=true;throw;}
 }
-void ReadyOriginalSource::fill_group(ReadyExpertWave &wave,unsigned group) {
+void ReadyOriginalSource::fill_CPU_group(unsigned group) {
+    check(CPU_scratch_.data,"GPU source owner cannot enter CPU-only qualification");
+    try{fill_group(nullptr,group);}catch(...){failed_=true;throw;}
+}
+bool ReadyOriginalSource::close_returned_CPU_failure() {
+    check(CPU_scratch_.data,"Only a CPU-only source owner can use returned-failure retirement");
+    failed_=true;
+    if(descriptor_close_unknown_)return false;
+    if(closed_)return true;
+    if(reader_){if(!reader_->completion_known())return false;reader_->stop_completed();}
+    for(auto &h:handles_)if(h.fd>=0){if(!close_descriptor(h.fd))return false;h.fd=-1;}
+    closed_=true;return true;
+}
+void ReadyOriginalSource::fill_group(ReadyExpertWave *wave,unsigned group) {
     check(!failed_&&!closed_&&!cancelled_.load(std::memory_order_acquire)&&group==next_group_&&group<2,"Original source group order or ownership differs");
     if(!group){journal_=new BatchIOJournal;reader_=new VectoredSourceBatch(read,this);reader_->start();}
     for(unsigned role=0;role<3;++role)for(unsigned first=0;first<5;) {
         check(!cancelled_.load(std::memory_order_acquire)&&std::chrono::steady_clock::now()<deadline_&&ops_.system_headroom()>=(256u<<20),"Original source cannot retain stop/deadline/memory admission");
         const auto ordinal=first*2+group;unsigned count=1;
         const auto &m=plan_.matrices[role*10+ordinal];
-        if(first<4) {
+        if(width_==2&&first<4) {
             const auto &next=plan_.matrices[role*10+ordinal+2];
             if(source_schedule_parallel(plan_.files[m.source].identity,m.offset,padded_bank_stride,
                 plan_.files[next.source].identity,next.offset,padded_bank_stride))count=2;
@@ -107,16 +135,23 @@ void ReadyOriginalSource::fill_group(ReadyExpertWave &wave,unsigned group) {
         std::array<VectoredRead,2> requests{};std::array<BatchIOPlan,2> plans{};
         for(unsigned j=0;j<count;++j) {
             const auto at=ordinal+j*2;const auto &matrix=plan_.matrices[role*10+at];const auto &file=plan_.files[matrix.source];
-            const auto slot=split_padded_slot(plan_.slots[at],matrix.residue,banks_[group][role].descriptor_alignment);
             auto &r=requests[j];r.fd=descriptor(matrix.source,j?requests[0].fd:-1);r.device=file.identity[0];r.inode=file.identity[1];
             r.file_bytes=file.bytes;r.offset=matrix.offset;r.id=++id_;r.count=1;
-            r.destinations[0]={static_cast<unsigned char *>(banks_[group][role].destination)+slot.envelope.aligned_write_offset,std::uint32_t(padded_bank_stride)};
+            void *destination=nullptr;
+            if(wave) {
+                const auto slot=split_padded_slot(plan_.slots[at],matrix.residue,banks_[group][role].descriptor_alignment);
+                destination=static_cast<unsigned char *>(banks_[group][role].destination)+slot.envelope.aligned_write_offset;
+            }else destination=static_cast<unsigned char *>(CPU_scratch_.data)+j*padded_bank_stride;
+            r.destinations[0]={destination,std::uint32_t(padded_bank_stride)};
             plans[j]={r.id,r.offset,r.bytes()};
         }
-        ++operation_;if(count==2)wave.begin_role_read_pair(plan_.slots[ordinal],plan_.slots[ordinal+2],role,operation_);
-        else wave.begin_role_read(plan_.slots[ordinal],role,operation_);
+        ++operation_;if(wave) {
+            if(count==2)wave->begin_role_read_pair(plan_.slots[ordinal],plan_.slots[ordinal+2],role,operation_);
+            else wave->begin_role_read(plan_.slots[ordinal],role,operation_);
+        }
         journal_->prepare(plans.data(),count);
-        std::string text="ready_original_batch_before plan="+std::to_string(wave.snapshot().plan_epoch)+" operation="+std::to_string(operation_)+" group="+std::to_string(group)+" role="+std::to_string(role)+" calls="+std::to_string(count)+" events=";
+        std::string text=wave?"ready_original_batch_before plan="+std::to_string(wave->snapshot().plan_epoch):"ready_original_CPU_batch_before GPU_calls=0";
+        text+=" operation="+std::to_string(operation_)+" group="+std::to_string(group)+" role="+std::to_string(role)+" calls="+std::to_string(count)+" events=";
         for(unsigned j=0;j<count;++j)text+=std::to_string(plans[j].id)+":"+std::to_string(plans[j].offset)+":"+std::to_string(plans[j].bytes)+",";
         stage_(text.c_str());journal_->admit_durable();reader_->read(requests.data(),count);
         const auto events=journal_->snapshot();check(events.all_returned()&&reader_->completion_known(),"Original source pair completion is unknown");
@@ -128,13 +163,13 @@ void ReadyOriginalSource::fill_group(ReadyExpertWave &wave,unsigned group) {
                 {"bytes",padded_bank_stride},{"begin_ns",event.begin_ns},{"end_ns",event.end_ns},{"batch",operation_},{"batch_calls",count},
                 {"original_raw_sha256",matrix.raw},{"original_envelope_sha256",matrix.envelope}});
         }
-        stage_("ready_original_batch_all_calls_and_byte_proofs_returned");journal_->finish_after_durable_return();
-        wave.complete_role_read(wave.snapshot().plan_epoch,operation_,count*bank_expert_bytes,true,true);
+        stage_(wave?"ready_original_batch_all_calls_and_byte_proofs_returned":"ready_original_CPU_batch_all_calls_and_byte_proofs_returned");journal_->finish_after_durable_return();
+        if(wave)wave->complete_role_read(wave->snapshot().plan_epoch,operation_,count*bank_expert_bytes,true,true);
         calls_+=count;pairs_+=count==2;first+=count;
     }
     if(group) {
         reader_->stop_completed();
-        for(auto &h:handles_)if(h.fd>=0){check(ops_.identity(h.fd)==plan_.files[h.source].identity&&ops_.close_file(h.fd),"Original source final identity or close differs");h.fd=-1;--live_handles_;++closes_;}
+        for(auto &h:handles_)if(h.fd>=0){check(ops_.identity(h.fd)==plan_.files[h.source].identity&&close_descriptor(h.fd),"Original source final identity or close differs");h.fd=-1;--live_handles_;++closes_;}
         closed_=true;
     }
     ++next_group_;
@@ -143,6 +178,7 @@ nlohmann::json ReadyOriginalSource::completed_report()const {
     check(closed_&&!failed_&&!cancelled_.load(std::memory_order_acquire)&&next_group_==2&&calls_==30&&reads_.size()==30&&!live_handles_&&opens_==closes_,"Original source lacks complete reads and joined inner worker");
     return {{"reads",reads_},{"Direct_read_calls",calls_},{"two_call_batches",pairs_},{"maximum_descriptor_cache",8},
         {"peak_open_descriptors",peak_handles_},{"descriptor_opens",opens_},{"descriptor_closes",closes_},
-        {"inner_reader_joined",true},{"all_descriptors_closed",true},{"model_source_plan_sha256",plan_.sha256}};
+        {"inner_reader_joined",true},{"all_descriptors_closed",true},{"model_source_plan_sha256",plan_.sha256},
+        {"CPU_only_source_fixture",CPU_scratch_.data!=nullptr},{"source_IO_depth",width_}};
 }
 }

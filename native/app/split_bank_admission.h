@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include "system_memory.h"
+#include "ready_original_namespace.h"
 namespace qwen_app {
 // One existing original-BF16 pack, no model load or new converted corpus.
 inline constexpr const char *split_bank_pack_path="/app0/qwen-runtime/vector-bank-0.pack";
@@ -24,12 +26,22 @@ inline void require_split_bank_policy(const nlohmann::json &policy,bool mode,boo
         pack.at("bytes").is_number_unsigned()&&pack.at("bytes")==split_bank_pack_bytes&&pack.at("sha256")==split_bank_pack_sha256);
     const bool ready=policy.contains("native_ready_expert_numerical");
     const bool original=policy.contains("native_ready_expert_original");
+    if(policy.contains("native_split_bank_phase_memory")) {
+        const auto &m=policy.at("native_split_bank_phase_memory");
+        check(ready&&m.is_object()&&m.size()==6&&m.at("schema")=="ps5-qwen-split-bank-phase-memory-v1"&&
+            m.at("enabled")==true&&m.at("GPU_extra_operational_pages").is_number_unsigned()&&m.at("GPU_extra_operational_pages")==1024u&&
+            m.at("model_loads").is_number_unsigned()&&m.at("model_loads")==0u&&m.at("regular_model_startup_target_unchanged")==true&&
+            m.at("operational_floor_unchanged")==true);
+    }
     if(original) {
         check(ready);const auto &o=policy.at("native_ready_expert_original");
         check(o.is_object()&&o.size()==7&&o.at("schema")=="ps5-qwen-ready-original-policy-v1"&&o.at("enabled")==true&&
             o.at("same_title_numerical_gate_required")==true&&o.at("unique_original_experts").is_number_unsigned()&&o.at("unique_original_experts")==10u&&
             o.at("source_IO_depth").is_number_unsigned()&&o.at("source_IO_depth")==2u&&o.at("cohort_runs").is_number_unsigned()&&o.at("cohort_runs")==6u);
         const auto sha=o.at("source_plan_sha256").get<std::string>();check(sha.size()==64&&sha.find_first_not_of("0123456789abcdef")==std::string::npos);
+    }
+    if(policy.contains("native_ready_expert_original_namespace")) {
+        check(original);require_ready_original_namespace(policy.at("native_ready_expert_original_namespace"));
     }
     if(ready)check(policy.at("native_ready_expert_numerical")==Json{{"schema","ps5-qwen-ready-numerical-policy-v1"},{"enabled",true},
         {"unique_original_experts",2u},{"original_contributions",10u},{"cohort_runs",6u},
@@ -46,6 +58,19 @@ inline void require_split_bank_policy(const nlohmann::json &policy,bool mode,boo
     const auto &storage=policy.at("native_shader_storage");
     check(storage.at("persistent_caches_enabled")==false&&storage.at("model_and_shader_precision_unchanged")==true&&
         storage.at("verify_all_original_assets_before_Vulkan")==false&&storage.contains("prior_native_CPU"));
+}
+inline std::uint64_t split_bank_GPU_requirement(const nlohmann::json &policy,const SystemMemoryObservation &s) {
+    (void)qualified_system_headroom(s);
+    if(!policy.contains("native_split_bank_phase_memory"))return s.kernel_target;
+    require_split_bank_policy(policy,true,false,false);
+    return std::uint64_t(s.kernel_minimum)+std::max<std::uint64_t>(s.kernel_reserved,256)+1024;
+}
+inline SystemMemoryObservation admit_split_bank_GPU_memory(const nlohmann::json &policy) {
+    if(!policy.contains("native_split_bank_phase_memory"))return admit_native_startup_memory();
+    require_split_bank_policy(policy,true,false,false);
+    const auto s=admit_native_fixture_memory(1024);
+    if(s.kernel_free<split_bank_GPU_requirement(policy,s))throw KernelMemoryPressure();
+    return s;
 }
 nlohmann::json admit_split_bank_backing(const nlohmann::json &,const std::string &journal,bool &GPU_started);
 }
