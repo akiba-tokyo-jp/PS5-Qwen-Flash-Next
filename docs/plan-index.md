@@ -81,7 +81,7 @@ counts prove that the pending title can or cannot run. See the exact formulas in
 | Memory attribution, peak-live audit, source integration and offline model/graph controls | CPU shader bootstrap, original metadata, representative reservation and quiet-start attribution scope-qualified; complete kernel-owner attribution remains unresolved | Quiet-start loss occurred without journal/allocation/virtual calls. Completed new-controller residency/integrity found 319 pages; later free was 6942. Continue distinct allocation/integration work; do not repeat consumed attribution scopes |
 | PLE current-boot shader bootstrap and 208-graph timing | Current-boot 1527-shader bootstrap scope-qualified (2812); prior four-graph numerics scope-qualified; 208-graph timing not run | Later queue item. The last saved allocator snapshot (3009) was 6927 free pages; historical PLE phase prices belong to their exact scopes, are revisable, and do not prove impossibility or current admission |
 | Prefix A/B then B/A | Consumer host-qualified; A1 returned before backend work | Native comparison policy-blocked, not a completed speed comparison or a physical allocation-failure result |
-| Ready-expert source/GPU overlap | Allocation owner, coordinator, partial/serial graphs and isolated backing fixture are host/build-qualified. The execution owner and real GGML dispatch/workspace adapter now pass 40 host controls and PS5 SDK compilation | Physical independent backing is not qualified. The complete physical two-wave fixture entry and model integration remain unfinished/dependency-gated; no speed comparison or production adoption follows |
+| Ready-expert source/GPU overlap | Allocation/dispatch owners and graphs are host/build-qualified. The native entry now connects the backing matrix gate to the repeated-ID numerical cohort, with exact reads, real graph dispatch and independent report/journal review | Native gate unavailable after changed-scope case 3046 observed 6630 pages against staged CPU estimate 8159. Physical backing/numerics remain unqualified. Representative ten-unique-expert/depth-two timing and model integration remain unimplemented/dependency-gated |
 | Real hidden-state observation and forecasting | Shadow prototype host-qualified | Actual model observation/forecast integration is missing; native stage additionally policy-blocked. No physical impossibility demonstrated |
 | Width-two speculation, conditional width four/adaptive control | Causal width-two controller/native policy and result review implemented; 30 adapter controls passed | Actual native width-two arithmetic/rollback and speed not qualified; width four/adaptive implementation missing. Separate prefix timing does not block it |
 | Additional workload quality/performance and other GPU kernels | Host metadata prepared; native work not run; some kernels not implemented | Distinguish missing implementation from policy-blocked native execution; no physical-impossibility result |
@@ -118,8 +118,12 @@ impossibility, a passing test, or permission to mark missing code implemented.
 
 The next independent ready-expert execution owner/native adapter was implemented
 and passed 40 host scenarios plus native SDK compilation. Existing coordinator
-and role/geometry regressions passed. Physical backing/numerics, the complete
-two-wave native entry and model integration remain unqualified/incomplete.
+and role/geometry regressions passed. The subsequent [connected native numerical
+entry](finite-execution-dispositions-20261027.md#connected-native-numerical-entry-and-finite-decision-case-3046)
+passed source/reference/policy/reviewer checks, native link and SELF packaging.
+Its one changed-scope screen observed 6630 -> 6630 against the staged CPU estimate
+8159. No upload/title/ELF/GPU followed. Actual backing/numerics remain unqualified;
+representative performance and model integration remain unimplemented/conditional.
 The required native dependency cannot be qualified in the present environment;
 later forecast/width-four/kernel integrations therefore remain unavailable at
 their respective acceptance stages. No new speed or adoption is claimed.
@@ -129,6 +133,14 @@ The latest next-item PLE screen 3031 used its own 8190-page price, not 10142:
 reproduce the independent CPU-phase requirement of 7701. Lowering only the GPU
 startup target would not cover that earlier CPU interval. No repeated general
 diagnostic, kernel modification or reboot followed.
+
+The final numerical entry includes only the two original experts available in
+the existing pack, repeated across all ten original contributions. It explicitly
+claims neither depth-two source delivery, representative speed, physical GPU
+timestamp overlap nor model adoption. Its three execution modes and reverse
+controls are implemented; their actual PS5 comparison is not completed. The
+full requested plan therefore remains incomplete despite the added source/build
+deliverable. Preserve this distinction when reporting completion.
 
 ## Current production baseline
 

@@ -21,19 +21,19 @@ def require(good,message):
 def integer(value,low,high):return type(value)is int and low<=value<=high
 def finite(value,high):return type(value)in(int,float)and math.isfinite(value)and 0<=value<=high
 
-def validate_report(report,binding,expected_pid):
+def validate_report(report,binding,expected_pid,*,ready_numerical=False):
     r=report;b=binding
     require(type(r)is dict and type(b)is dict and integer(expected_pid,1,0x7fffffff),'Bound report, title and expected owner required')
     require(b.get('schema')=='ps5-qwen-isolated-split-bank-title-v1'and
         isinstance(b.get('run_id'),str)and re.fullmatch('[0-9a-f]{32}',b['run_id'])and
         isinstance(b.get('candidate_SELF_sha256'),str)and re.fullmatch('[0-9a-f]{64}',b['candidate_SELF_sha256'])and
-        integer(b.get('candidate_SELF_bytes'),1,32<<20)and b.get('model_loading_enabled')is False and type(b.get('source_workers'))is int and b['source_workers']==0,
+        integer(b.get('candidate_SELF_bytes'),1,32<<20)and b.get('model_loading_enabled')is False and type(b.get('source_workers'))is int and b['source_workers']==int(ready_numerical),
         'Exact original predeclared isolated title binding required')
     require(r.get('schema')=='ps5-qwen-split-bank-result-v1'and type(r.get('pid'))is int and r['pid']==expected_pid and
         r.get('run_id')==b['run_id']and r.get('candidate_SELF_sha256')==b['candidate_SELF_sha256'],'Native owner/run/SELF identity differs')
     for key,value in dict(mapped_Direct_read_calls=6,GPU_graphs=12,independent_actual_VkDeviceMemory_groups=2,
         contiguous_roles_per_actual_group=3,nested_strong_backing_leases=6,conservative_cache_charge_bytes=512<<20,
-        device_ledger_live_bytes=0,source_workers=0,automatic_retries=0).items():
+        device_ledger_live_bytes=0,source_workers=int(ready_numerical),automatic_retries=0).items():
         require(type(r.get(key))is int and r[key]==value,'Finite split-backing count differs: '+key)
     for key in('original_pack_SHA256_checked','all_original_raw_and_envelope_SHA256_checked','positive_resource_retirement',
         'all_started_IO_closed','positive_device_idle_and_epoch_retirement','current_complete_shader_file_SHA256_checked',
