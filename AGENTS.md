@@ -19,6 +19,18 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner's subsequent plan-review request supersedes the earlier execution
+priorities. Use only the current queue in
+`docs/remaining-validation-plan-20261026.md#current-execution-queue-after-plan-review`:
+one active candidate, common startup prerequisite, then cache 53/128 and width
+two before new ready-expert integration. Preserve completed proofs and immutable
+consumed cases; historical "next test" paragraphs do not create extra tasks.
+The owner also requires eliminating unnecessary investigation. Reuse existing
+research/results first. A new investigation must name an unanswered active
+decision, explain how its outcomes change the next action, and have a bounded
+scope and stopping condition. Do not repeat completed probes, unavailable nodes
+or broad literature surveys without that concrete need.
+
 The owner's 2026-10-27 standing constraint is that console reboot is not
 available. Plan and execute without requesting or depending on a reboot.
 Price each changed native scope from current observations, reduce owned live

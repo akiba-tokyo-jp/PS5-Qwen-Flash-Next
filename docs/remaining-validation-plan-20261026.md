@@ -2,12 +2,14 @@
 
 Plan date: 2026-10-26. **This plan itself does not implement or validate proposals.**
 Execution outcomes are tracked in the [progress record](remaining-validation-progress-20261026.md).
-The earlier [memory-first PLE sequence](PLE-memory-first-plan-20261026.md)
-continues to govern PLE comparisons. The owner-approved 2026-10-27 execution
-order below governs the broader acceleration work; PLE timing does not block
-independent cache, speculation or ready-expert implementation.
+The owner's latest request is to review and replace the inefficient execution
+sequence. The [current execution queue](#current-execution-queue-after-plan-review)
+below supersedes earlier priority lists and prospective "next test" paragraphs.
+The technical work packages and consumed cases retain their original scope and
+results. The [memory-first PLE sequence](PLE-memory-first-plan-20261026.md)
+remains a reference for that later comparison, not a prerequisite for all work.
 The regular prelaunch margin is not an established PLE hardware minimum.
-It defines their work and terminal decisions. Current dispositions
+Current dispositions
 and historical results are in the [plan index](plan-index.md). Planning does not
 start a console session or change the installed application.
 The [status and constraint-origin classification](plan-index.md#verification-status-and-origin-of-execution-constraints)
@@ -53,41 +55,123 @@ still marks strict cross-mode output equivalence unpassed.
 
 ## Work order and dependencies
 
-### Owner-approved execution order, 2026-10-27
+### Review findings, 2026-10-27
 
-Reboot is unavailable under the owner's standing instruction. No remaining
-stage may depend on a restart or another reboot request. Use a smaller,
-separately linked native scope and actual current memory admission to qualify
-independent backing before returning to full-model comparisons. Keep already
-completed evidence; do not repeat recovery probes to obtain a preferred count.
+Reviewed against main `5887b1f39325502468ebb7b762a3367a43aa7315`. This revision
+changes planning only: it executes no application, hardware test or CI and
+changes no runtime margin, model, driver, precision or production selection.
 
-1. Price CPU-only, backend initialization, small graph and model stages separately.
-   Attribute current consumption using completed observations. A historical
-   cross-executable margin is provisional policy, not measured cost of a new SELF.
-2. Replay saved actual routes at larger capacities. Price rounded allocations
-   without double-counting shared Direct/CPU owners, then implement the useful
-   affordable candidate. The first target is 128 active slots / 129 physical
-   planes. The 160-slot allowance gap remains a lifetime-accounting question.
-3. Implement native exact width-two verification using the already qualified
-   complete-state checkpoint. Prefix speed comparison is not its prerequisite.
-   Keep the 53-slot cache as its independent control.
-4. Establish actual independent backing and two-wave ready-expert GPU/source
-   overlap. Integrate only a fixture winner into the model.
-5. Close PLE timing and prefix reuse comparisons when separately priced native
-   stages admit them. Continue the router, workload and profiled specialization
-   packages with their individual dependency and adoption checks.
+| Planning failure | Evidence | Correction |
+| --- | --- | --- |
+| Work moved away from the nearest model comparison | Cache 128 already has native 120-case/360-graph geometry proof and a model-result reviewer. Work then expanded to independent buffers and a coordinator whose complete native/model runner is still unfinished | Finish the common startup prerequisite and cache comparison first; freeze new ready-expert implementation until its queue position |
+| Diagnosis acquired new subprojects without an end condition | Metadata, reservation, quiet-start and controller-residency scopes completed; the proprietary kernel owner remains unresolved and allocator-zone nodes are unavailable | Reuse those results. A further diagnostic must name a specific code change or candidate decision it can resolve; full kernel-owner attribution is not a prerequisite for every candidate |
+| Admission rules contradict each other in prose | A universal 10142-page sentence coexisted with separately scoped prefix/cache/PLE cases | Keep regular defaults and immutable case records, but give each future experiment one authoritative admission record, with phase, formula, evidence and failure action |
+| More builds, checks and merges were treated as progress endpoints | PR 28 contains build-qualified components but no new physical overlap or model-speed result | Measure progress by the next model comparison or an evidence-based terminal decision; a build/merge alone does not close an execution package |
 
-For each surviving candidate, require same-model A/B then B/A, original-token
-and lifecycle regression, exact production placement and post-placement checks.
-Offline traffic reduction does not qualify generation speed or adoption.
-The work packages below retain stable reference IDs; independent work need not
-wait for every earlier speed comparison.
+### Current execution queue after plan review
 
-Perform cheap feasibility work before native implementations. Share the allocation
-ledger, workload traces and complete-state checkpoint work across proposals;
-do not build a separate framework for each. Native cases run sequentially.
+**One active acceleration candidate at a time.** Reboot is unavailable and is
+neither a dependency nor a pending user action. Preserve all proposals in the
+backlog; deferral is not rejection, completion or physical impossibility.
 
-| Order | Work package | Dependency and first useful result |
+| Step | Work to perform | Evidence to reuse | Exit decision |
+| --- | --- | --- | --- |
+| 0. Make the existing model comparison executable | Review the completed production/control and refused startup traces offline. Map launch, SELF/receipt integrity, metadata and virtual-source phases to `native/app/native_main.cpp`, `direct_integrity.cpp` and `model_mapping.cpp`. Identify a concrete removable owned cost or a justified scope-specific admission change before editing/rebuilding | Production 2240; refusal 2860/restore 2865; metadata 2920; reservation 2950; quiet-start 2970; current-boot shader 2812 | One exact candidate executable/configuration, one complete memory ledger, and one finite admission decision for the model cohort. The 23.1 MB fixture's file size does not prove its kernel cost or make it an inference runner |
+| 1. Compare 53 versus 128 cache slots | Use the implemented cache switch and reviewer; keep the same original model, context, precision, workload and other optimizations. Run A53/B128 then B128/A53 with complete output, route, resource and latency evidence | Native geometry 2840, 15-capacity route replay, allocation ledger and strict cache-128 reviewer | Adopt only a repeatable full-model winner after production placement/checks; otherwise record rejected or inconclusive and retain the fastest control |
+| 2. Qualify and measure exact width two | Use the existing causal controller and complete-state checkpoint. First establish actual acceptance and forced rejection/restore correctness. Then run a separate same-model speed cohort with the 53-slot control, keeping cache-capacity changes separate | Native checkpoint continuation, 30 adapter controls, existing causal history screen and result reviewers | Native correctness, then speed/adoption decision. Width four/adaptive depth stays deferred until width two supplies a measured reason |
+| 3. Close existing PLE/prefix comparisons | Complete their already specified finite comparisons after the shared model-startup path is established; retain their own metrics and exact configurations | Existing PLE numerical evidence, current-boot shader proof, complete checkpoint and implemented prefix consumer | A result for each tested scope; a PLE fixture win still needs model TTFT/decode verification |
+| 4. Resume ready-expert overlap | Finish the missing native two-wave and model connections only at this point. Compare one-graph serial, split serial and split overlap, preserving whole-expert readiness and original-order reduction | PR 28 allocation owner, coordinator, serial graph and backing fixture; existing original packs | Physical backing/numerics and overlap benefit before model integration; reject a losing variant without further integration |
+| 5. Follow measured evidence for the remaining backlog | Actual router observation/forecasting, further cache sizes, workload extensions and specialized kernels retain their package definitions | Existing traces, prototypes and eligibility screens | A measured profile must identify the target cost; keep each unimplemented/unrun item explicitly open until its own decision |
+
+Cache 128 is first because implementation and native geometry are already
+available, not because its speed is known. Saved routes predict 4.8993% fewer
+uploads across the recorded external requests and 6.9263% in one-token
+processes; those are traffic estimates. Width two has only host causal proposal
+matches, not measured native acceptance or speed. Ready-expert work requires
+more missing integration, while the old 92.435% source-wait profile gives only
+a conditional 1.082x ideal process-time ceiling for hiding unchanged compute.
+These facts support the order; none promises a tokens/s gain.
+
+#### Step 0 boundaries and failure branch
+
+Use the existing logs first, without another CPU diagnostic title or speculative
+sysctl search. Case 2860 began at 8272 pages, observed 1544 before SELF integrity,
+3285 afterward, 3259 before metadata and 1523 after the returned virtual rehearsal.
+Those global observations do not assign the loss to the intervening operation.
+Later metadata/reservation and quiet-start controls specifically prevent treating
+the parser, journal or reservation API as a proven cause. New GPU-bank code cannot
+by itself fix a refusal that occurs before GPU initialization.
+
+The offline review must produce a concrete source/scope delta, its charged live
+owners and its admission rationale. Then perform the changed checks and one
+candidate build, reusing unchanged input proofs. Avoid a new diagnostic program
+whose result would not select that delta. If no supported delta is identified,
+record this common prerequisite as unresolved; do not fill the gap with another
+unrelated fixture, assume recovery, or invent a physical limit.
+
+Before preparing a native cohort, take the required fresh cheap screen once.
+A known refusal closes that attempt: record the phase, actual counters, chosen
+rule and required change, perform ordinary close/restoration where applicable,
+and do not retry the unchanged artifact/condition. A new attempt needs a material
+source/scope/resource change and a reviewed rationale. Unknown completion keeps
+all owners retained and prevents dependent work, with no forced reset or reboot.
+This plan does not claim that a smaller SELF, a revised margin or one restart
+would provide enough capacity.
+
+#### Avoid repeating preparation and administration
+
+- Reuse the exact original model/512 MiB parts, native shader proof within its
+  valid boot/source scope, layout evidence, checkpoint proof, workload and route
+  manifests. Do not reconvert, retransfer or rerun unchanged correctness fixtures.
+- Check changed paths and dependencies only. Fresh owner, current memory/source
+  identity and positive completion remain mandatory at native execution; they
+  cannot be replaced by old host receipts.
+- Prepare the full finite A/B/B/A cohort and adoption criteria before its first
+  launch. Prefer the existing same-SELF switch. Reuse immutable package/rollback
+  artifacts; do not create a framework or branch for every subcheck.
+- Consider publishing one immutable candidate package for a whole bounded cohort
+  only if existing ownership/restoration rules can be preserved. This transport
+  consolidation is not implemented. Establish compatibility with those rules
+  before using it. Preserve per-arm admission and never change a live title or
+  assume that all arms can share a model context or one process.
+- Expand to additional workload regressions only for a surviving speed candidate.
+  Do not open another candidate while the active comparison lacks its decision.
+- GitHub saving/merging is part of delivery, not the completion criterion. The
+  active candidate ends with a measured decision and any required placement;
+  the entire request stays incomplete while required backlog items remain open.
+
+#### Research must resolve an active decision
+
+The owner additionally requires removing unnecessary investigation. Before any
+new investigation, state the exact unresolved question for the active step,
+why existing evidence cannot answer it, and how either result changes the next
+implementation or execution decision. Name a bounded set of sources/observations
+and a stopping condition. If both outcomes lead to the same action, omit it.
+Read the relevant existing source/receipt first. Consult an external source
+only for a specific missing fact that blocks that decision; a general interest
+in newer research is not sufficient.
+
+| Remove from the current work queue | Retain or reopen only when |
+| --- | --- |
+| Broad new Strata/Maya/Radiance/PS5LM or SSD literature surveys | A concrete current implementation/API question is unanswered by the existing research and pinned sources |
+| Repeated metadata, virtual-region, journal, quiet-start or closed-controller probes | A material change invalidates the exact earlier result or creates a different, stated decision; a desire for another memory count is insufficient |
+| Repeating the three unavailable allocator sysctl names, guessing other names, or creating another general kernel census | A documented usable interface can resolve a named active blocker. Proprietary kernel-owner attribution stays unresolved, not silently completed or required before every model comparison |
+| New standalone test titles or generic harnesses | Existing fixtures cannot check a required changed behavior, and the added test has a direct acceptance/failure decision |
+| Further cache-capacity sweeps, model repacks, driver variants and extra workloads before the current comparison | The active result identifies their need. Existing model parts, profile and completed screens are reused |
+
+Necessary numerical, ownership, current admission, monitoring and completion
+checks stay in place. This restriction removes speculative/repeated work, not
+the user's required validation. Research, documentation and GitHub updates are
+batched into the active work package; do not make each small check a new project
+or use its merge as an endpoint for the overall task.
+
+### Reference work packages
+
+The stable IDs below identify technical scope, not a competing execution order.
+The current queue above governs actual work. Completed feasibility evidence is
+reused; the package descriptions do not instruct repeating it.
+
+| ID | Work package | Dependency and first useful result |
 | --- | --- | --- |
 | 1 | Bounded workload, CPU metadata and measurement contract | Reuse fixed-request evidence; define short workloads, baseline variability and any recurring native metadata cost before caching it |
 | 2 | Allocation lifetimes and cache capacity | Existing ledgers and route replay; identify a concrete removable live allocation or close an impossible capacity variant before console allocation |
@@ -98,11 +182,9 @@ do not build a separate framework for each. Native cases run sequentially.
 | 7 | Exact speculative verification | Qualified checkpoint from order 6; start width two and prompt lookup without a learned draft model |
 | 8 | Additional graph and shader specialization | Screen Radiance-inspired GDN/dual-output/small-GEMM applicability offline; implement only if a completed profile identifies material cost |
 
-Orders 2 and 3 begin with existing host metadata, not fresh full-model runs.
-Reorder later native candidates only when those feasibility results supply a
-better supported critical-path opportunity. Keep one independent change per
-comparison. A blocked checkpoint does not prevent unrelated ready-expert or
-router-observation work.
+Use one independent change per comparison. Later queue changes require an
+explicit reason tied to a measured cost, implementation readiness or a concrete
+blocker; they must not silently expand several active work packages.
 
 ## Shared benchmark and adoption contract
 
@@ -148,7 +230,12 @@ initial finite comparison cannot separate a small effect from drift, mark it
 inconclusive and retain production; justify any additional bounded cohort with
 the unresolved question before running it.
 
-Only a fixture winner proceeds to full-model integration. A full-model winner
+New source/GPU overlap and kernel mechanisms need their meaningful numerical
+and performance fixture gates before model integration. Cache capacity, prefix
+reuse and speculation can require full-model execution to measure their actual
+benefit: reuse their qualified allocation/correctness gates, then perform the
+model comparison without inventing a separate microbenchmark-speed prerequisite.
+A full-model winner
 then requires explicit profile selection, exact production placement, post-placement
 inference/frame/lifecycle verification and full SELF/settings readback. Merge of
 source alone does not establish adoption. Do not add gains from different controls.
@@ -416,9 +503,13 @@ establish benefit at the current four-token prefill. No PS5 gain is yet measured
 ## Case safety and completion records
 
 Each native case needs fresh owner, source identity, kernel/Flexible/Direct and
-completion admission. Title/GPU cases keep the 10142-page prelaunch requirement
-and 2974-page startup target. CPU-only fixtures retain their original allocation
-formula and independent guards. Keep the operational floor
+completion admission. The regular full-model policy remains 10142 prelaunch
+pages and the adopted native startup target remains 2974. These are not universal
+hardware minima or automatic conditions for every fixture: separately scoped
+experiments retain their exact recorded formulas and eligibility. A future
+revision needs a stated scope, phase cost, retained reserves and failure branch;
+this planning review changes no runtime predicate. CPU-only fixtures retain
+their own allocation formulas and independent guards. Keep the operational floor
 `minimum + max(reserved, 256)` unchanged. Old point
 observations never authorize a new launch. Reuse the qualified driver, sealed
 model lineage, shader evidence and returned integrity receipts only within their

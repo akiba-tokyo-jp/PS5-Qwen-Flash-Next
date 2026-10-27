@@ -1135,3 +1135,24 @@ closes that bounded observation without assigning a proprietary owner or
 claiming recovery. Four parser/scope test groups passed. No ELF, title, GPU,
 pressure allocation, advice, setter or reboot occurred. Native stage budgets
 and current production selection were not changed, and no speed was adopted.
+
+## Execution-plan review at the owner's request, 2026-10-27
+
+The owner interrupted implementation and requested an efficient plan review,
+including removal of unnecessary investigation. This entry records planning
+only: no application source, binary, runtime guard, console state or CI changed.
+The revised current queue in the existing plan is authoritative: resolve the
+common startup prerequisite from saved evidence, compare cache 53/128, qualify
+and measure exact width two, then close PLE/prefix before new ready-expert
+integration and the remaining measured backlog. One candidate is active at a
+time. Earlier prospective "next test" paragraphs are historical.
+
+The review identified premature branching away from the prepared cache test,
+open-ended attribution, contradictory universal/individual admission prose,
+and build/merge milestones being treated as stopping points. The revised plan
+reuses completed geometry, checkpoint and CPU proofs, removes an artificial
+microbenchmark-speed prerequisite for model-dependent mechanisms, and requires
+a finite decision/failure branch before each cohort. General new surveys,
+repeated CPU diagnostics and searches for unavailable allocator nodes are
+excluded unless a specific unanswered active decision requires them. A merge
+does not qualify model speed, adoption or completion of the entire request.
