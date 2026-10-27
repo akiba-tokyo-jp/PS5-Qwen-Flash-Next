@@ -2,6 +2,7 @@
 // A separate model-free frontier; no inference, graph or tensor payload.
         if(policy.contains("native_resident_GPU_initialization_calibration")) {
             qwen_app::require_resident_gpu_calibration_policy(policy);
+            if(policy.contains("native_resident_GPU_buffer_capacity"))qwen_app::require_resident_gpu_buffers(policy);
             const auto &prior=policy.at("native_resident_GPU_fixture_qualification");
             if(prior.at("report_sha256")!="d596ba7c1c149b9b8819f095826063bf972f6ef2f612cad2a019641b05861411")
                 throw std::runtime_error("Exact earlier complete GPU fixture evidence required");
@@ -29,10 +30,20 @@
             qwen_native_driver_begin();
             resident_sample("GPU_initializer_frontend_returned");
             phase_boundary();
+#if defined(QWEN_RESIDENT_COMPACT_GPU)
+            // CPU clock/context admission already initialized ggml. This raw
+            // buffer fixture needs neither a model factory nor CPU registry.
+            (void)ggml_backend_vk_reg();
+#else
             llama_backend_init();
+#endif
             resident_sample("GPU_initializer_registry_returned");
+#if defined(QWEN_RESIDENT_COMPACT_GPU)
+            auto calibration_device=ggml_backend_reg_dev_get(ggml_backend_vk_reg(),0);
+#else
             auto calibration_device=ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU);
             if(!calibration_device)calibration_device=ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_IGPU);
+#endif
             if(!calibration_device)throw std::runtime_error("GPU initializer device is unavailable");
             std::size_t calibration_free=0,calibration_total=0;
             ggml_backend_dev_memory(calibration_device,&calibration_free,&calibration_total);
@@ -45,6 +56,7 @@
             auto *calibration_backend=ggml_backend_vk_init(0);
             if(!calibration_backend)throw std::runtime_error("GPU initializer backend is unavailable");
             resident_sample("GPU_initializer_backend_returned");
+#include "resident_gpu_buffers.inc"
             ggml_backend_synchronize(calibration_backend);qwen_native_driver_checkpoint();
             resident_sample("GPU_initializer_empty_queue_completed");
             ggml_backend_free(calibration_backend);qwen_native_driver_complete();
@@ -63,6 +75,7 @@
                 {"source_chunks",0},{"source_completed_windows",0},{"source_workers_started",0},
                 {"whole_model_metadata_files",0},{"whole_model_CPU_preflight_repeated",false},
                 {"postload_model_device_ledger_enabled",false},{"model_tensor_API_calls",0},
+                {"buffer_capacity_measurement",buffer_measurement},
                 {"global_device_lifetime_retained_until_ordinary_OS_close",true},
                 {"unknown_completion",false},{"ordinary_OS_close_required",true}});
             qwen_native_stage("resident_GPU_initializer_calibration_completed_waiting_for_ordinary_close");

@@ -34,6 +34,8 @@
         for(unsigned ordinal=0;ordinal<arms.size();++ordinal) {
             require_model_CPU_budget();require_unchanged_model();
             qwen_app_complete_predictive_expert();
+            const auto previous_cache=engine->expert_cache_metrics();
+            if(!previous_cache)throw std::runtime_error("Actual process-global expert counters required");
             qwen_native_driver_begin();engine.reset();llama_free(context);context=nullptr;
             qwen_native_driver_complete();
             qwen_app_configure_predictive_cache(std::string(arms[ordinal])=="predictive");
@@ -96,8 +98,7 @@
             const auto perf=performance_snapshot(*engine);const auto cache=engine->expert_cache_metrics();
             const auto predicted=predictive_cache_bytes();
             if(!cache)throw std::runtime_error("Actual initial expert counters required");
-            if(cache->hits||cache->misses||cache->uploaded_bytes||cache->prefetch_advice_bytes)
-                throw std::runtime_error("Each matched arm requires fresh zero expert-cache counters");
+            qwen_app::require_resident_context_counter_baseline(*previous_cache,*cache);
             qwen_app::begin_completed_expert_routes();
             const auto prefix=startup.admission_report+".arm"+std::to_string(ordinal);
             const qwen_app::Request request{run+"-"+std::to_string(ordinal),

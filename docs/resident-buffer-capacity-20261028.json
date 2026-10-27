@@ -1,0 +1,174 @@
+{
+  "schema": "ps5-qwen-resident-buffer-capacity-continuation-v1",
+  "date": "2026-10-28",
+  "owner_explicitly_accepted_disclosed_freeze_risk": true,
+  "Direct_available_bytes": 12245254144,
+  "Direct_available_GiB": 11.404281616210938,
+  "Direct_device_total_bytes": 12280922112,
+  "requested_raw_buffer_bytes": 8755105280,
+  "raw_buffers": 5,
+  "raw_buffer_sizes": [
+    2147483648,
+    2147483648,
+    2147483648,
+    2147483648,
+    165170688
+  ],
+  "sampled_buffer_allocation_free_pages": [
+    [
+      2500,
+      2500
+    ],
+    [
+      2500,
+      2500
+    ],
+    [
+      2500,
+      2500
+    ],
+    [
+      2500,
+      2500
+    ],
+    [
+      2500,
+      2500
+    ]
+  ],
+  "driver_owned_bytes_before": 16793600,
+  "driver_owned_bytes_at_peak": 8771911680,
+  "physical_backing_retained_until_ordinary_OS_close": true,
+  "payload_first_touch_tested": false,
+  "exact_model_BO_layout_tested": false,
+  "universal_VM_peak_bound_established": false,
+  "case3678": {
+    "original_model_warmup_completed": true,
+    "generated_tokens": 22,
+    "decode_tokens_per_second": 0.3905692470391938,
+    "matched_speedup_qualified": false,
+    "failure": "Incorrect zero test for process-global expert counters",
+    "counter_baseline_fix_host_qualified": true
+  },
+  "case3700": {
+    "model_requests": 0,
+    "GPU_initializations": 0,
+    "free_kernel_pages": 1109,
+    "operational_floor_pages": 1154,
+    "disposition": "CPU operational policy refusal",
+    "physical_impossibility_established": false
+  },
+  "cases": [
+    {
+      "case": 3611,
+      "disposition": "CPU floor refusal before GPU",
+      "ordinary_close_passed": true,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "66ca201786ce994b1b7bb162b80a0bf2059b99c5546791541b1b02949526533b"
+      },
+      "terminal": {
+        "bytes": 815,
+        "sha256": "4ebe6383b1c1628c2d8985289ea055816c629a7f6346c075d69cbeb77ecaf468"
+      },
+      "startup_trace": {
+        "bytes": 641,
+        "sha256": "9e3a250f3ed648c40ab4f2b3c61c5fb01f037200357c1ae685ce6cc625994e73"
+      }
+    },
+    {
+      "case": 3627,
+      "disposition": "Pre-main exclusive PID-journal collision",
+      "ordinary_close_passed": true,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1210,
+        "sha256": "cd36092736d4b70300b99eb8646dfe1e59f691d8d3ecc42210a7b9288f5b17fd"
+      }
+    },
+    {
+      "case": 3643,
+      "disposition": "Five original-size raw buffers allocated",
+      "ordinary_close_passed": true,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "5fe6f25025afb86bd3e4772a41ef29d3c1521e5e3d1c1b2c4e366fcf478c00d9"
+      },
+      "terminal": {
+        "bytes": 3178,
+        "sha256": "66ad9bbcb2e4fa45ecffee0e4f29a9367d934049759932970f49d85bcc30c94d"
+      },
+      "startup_trace": {
+        "bytes": 5468,
+        "sha256": "4d1a09b59038918c653097250f05068c13956fc748d3aa3c425eb6496ce64fa6"
+      }
+    },
+    {
+      "case": 3678,
+      "disposition": "One exact original-model warmup; returned test-counter assertion",
+      "ordinary_close_passed": true,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1210,
+        "sha256": "2a1b721fdff36c20c68e29ee6c816197d1a41c78ef4c34d7439681c1b69be610"
+      },
+      "terminal": {
+        "bytes": 801,
+        "sha256": "775d10835441d37f3f3faa79e9a09c8a2189e4442661891b90517798ca1d6120"
+      },
+      "startup_trace": {
+        "bytes": 4117,
+        "sha256": "0d9cd66f9716662366eb5d1951e387a5fce866e05148080f6503e9d4c2c20119"
+      }
+    },
+    {
+      "case": 3700,
+      "disposition": "Corrected test; CPU operational-floor refusal before GPU",
+      "ordinary_close_passed": true,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "667cdbd5111da0bf976f043b0df432aaa495108a23ad851a94a4b8c881dbb1b6"
+      },
+      "terminal": {
+        "bytes": 827,
+        "sha256": "1a286d02a3f560770e1a936650268a6fdeb7214c1d96cb2667ef2b27c193434e"
+      },
+      "startup_trace": {
+        "bytes": 1669,
+        "sha256": "dab080584086057ce6d8f9e0df2fe2feea7f642b4ad4d97a0e39967c488d76c6"
+      }
+    }
+  ],
+  "all_requested_native_comparisons_completed": false,
+  "C2": {
+    "complete": false,
+    "verification": "one completed warmup; corrected full cohort refused before GPU",
+    "constraint": "Current native CPU operational floor; not Direct resident capacity"
+  },
+  "C3": {
+    "complete": false,
+    "verification": "strict independent cache/prefix integrations and host controls; native unexecuted",
+    "constraint": "Same current model-startup prerequisite; no duplicate refused native title"
+  },
+  "historical_families": 16,
+  "historical_items": 22,
+  "historical_ledger": "docs/vm-revalidation-results-20261028.json",
+  "production": {
+    "SELF_sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d",
+    "new_speed_adoption": false,
+    "native_running": false,
+    "gateway_running": false,
+    "model_loaded": false
+  },
+  "driver": {
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "native_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_caches": false
+  },
+  "CI_runs": 0,
+  "reboots": 0
+}

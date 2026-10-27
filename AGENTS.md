@@ -19,6 +19,22 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The latest continuation is `docs/resident-buffer-capacity-20261028.md` / `.json`.
+The owner explicitly accepted the disclosed freeze risk. Case 3643 allocated
+all five raw buffers totaling 8,755,105,280 bytes with available Direct capacity
+12,245,254,144 bytes; allocation samples stayed at 2,500 kernel free pages.
+This is not a payload-touch/model-layout or universal VM bound. Case 3678 then
+loaded the original model and completed one exact warmup at 0.3905692470 decode
+tokens/s, before the test incorrectly required zero process-global counters.
+The corrected baseline preserves cumulative accounting. Case 3700 returned a
+known CPU refusal at 1,109 versus 1,154 pages before GPU/model work and was
+normally closed and restored. Do not replay that unchanged startup, infer
+physical impossibility, or call C2/C3 complete. The cross-boot PID-journal
+collision in case 3627 was proved by native stat and fixed only in opt-in
+boot-qualified comparison builds. No reboot, CI or speed adoption occurred.
+The older pending risk-decision and unexecuted-buffer descriptions below are
+historical; they are superseded by this explicit authorization and evidence.
+
 The latest continuation is `docs/gpu-phase-calibration-20261028.md` / `.json`.
 Case 3593 completed one empty native Vulkan backend lifetime, sampled global
 free pages 2778 -> 2770 (8-page maximum decline), no model/source work, positive

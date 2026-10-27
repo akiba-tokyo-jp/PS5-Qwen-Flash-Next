@@ -30,7 +30,8 @@ class GPUResultTests(unittest.TestCase):
         controls = []
         for key, value in (('unknown_completion', True), ('model_loads', 1), ('tensor_payload_allocations', 1),
                            ('backend_instance_positively_synchronized_and_retired', False), ('source_workers_started', 1),
-                           ('run_id', 'b' * 32), ('pid', True), ('selected_required_pages', 1154)):
+                           ('run_id', 'b' * 32), ('pid', True), ('selected_required_pages', 1154),
+                           ('buffer_capacity_measurement', {'allocated_buffers': 1})):
             changed = dict(report); changed[key] = value; controls.append((changed, trace))
         for change in ('missing', 'duplicate', 'reordered', 'below-floor', 'backwards'):
             changed = copy.deepcopy(trace)

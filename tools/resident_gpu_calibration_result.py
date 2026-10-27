@@ -18,6 +18,7 @@ def review(report, trace, binding):
             raise ValueError(message)
 
     require(report.get('schema') == 'ps5-qwen-resident-GPU-initialization-calibration-result-v1', 'Wrong terminal schema')
+    require(report.get('buffer_capacity_measurement') is None, 'An allocation fixture is not an empty-backend measurement')
     require(type(binding.get('pid')) is int and binding['pid'] > 0 and
             isinstance(binding.get('run_id'), str) and re.fullmatch('[0-9a-f]{32}', binding['run_id']), 'Exact owner binding required')
     require(type(report.get('pid')) is int and report['pid'] == binding['pid'] and
