@@ -166,6 +166,51 @@ def audit_linked_storage(image,manifest):
         all_actual_relocated_targets_and_hashes_verified=True,actual_linked_pool_SHA256=manifest['pool']['sha256'],
         original_code_and_relocations_unchanged=True,image_SHA256=record(image)['sha256'])
 
+def audit_converted_storage(image,converted,manifest):
+    """Check loader-visible data and every critical relative relocation.
+
+    The pinned converter normalizes executable flags and moves generic dynamic
+    metadata. Compare the actual cold-data contract rather than requiring those
+    unrelated load segments to keep their original geometry.
+    """
+    from native_dispatch import ELF
+    geometry=audit_linked_storage(image,manifest);elf=ELF(Path(image));raw=Path(converted).read_bytes()
+    if len(raw)<64 or raw[:6]!=b'\x7fELF\x02\x01':raise ValueError('A complete converted ELF64 module is required')
+    off=struct.unpack_from('<Q',raw,32)[0];stride,count=struct.unpack_from('<HH',raw,54)
+    if stride!=56 or not 0<count<=4096 or off+stride*count>len(raw):raise ValueError('Invalid converted program table')
+    programs=[struct.unpack_from('<IIQQQQQQ',raw,off+i*stride)for i in range(count)]
+    loads=[p for p in programs if p[0]==1]
+    def read(at,n):
+        for t,f,o,v,pa,fs,ms,al in loads:
+            if v<=at and at+n<=v+fs and o+at-v+n<=len(raw):return raw[o+at-v:o+at-v+n]
+        raise ValueError('Required converted table metadata is not file backed')
+    dynamic=[p for p in programs if p[0]==2]
+    if len(dynamic)!=1 or dynamic[0][5]%16 or dynamic[0][2]+dynamic[0][5]>len(raw):raise ValueError('One bounded converted dynamic table is required')
+    d=dynamic[0];entries=[struct.unpack_from('<qQ',raw,d[2]+i)for i in range(0,d[5],16)]
+    if any(sum(k==key for k,v in entries)!=1 for key in(7,8,9)):raise ValueError('The pinned ordinary RELA metadata is required')
+    tags=dict(entries)
+    if tags[9]!=24 or tags[8]%24 or tags[8]>16<<20:raise ValueError('Converted relative relocations exceed their bounded ABI')
+    relas=[struct.unpack('<QQq',read(tags[7]+i,24))for i in range(0,tags[8],24)]
+    relative={at:add for at,info,add in relas if info==8}
+    begin=elf.symbols['__qwen_driver_tables_start']['value'];end=elf.symbols['__qwen_driver_tables_end']['value']
+    cover=[p for p in loads if p[3]<=begin<end<=p[3]+p[6]]
+    if len(cover)!=1 or cover[0][1]&7!=6 or cover[0][3]+cover[0][5]>begin:
+        raise ValueError('Conversion changed exclusive writable NOBITS table coverage')
+    plan=elf.symbols['qwen_driver_table_storage']['value'];tables=elf.pointer(plan);packed=elf.pointer(plan+16)
+    if hashlib.sha256(read(packed,manifest['packed_bytes'])).hexdigest()!=manifest['pool']['sha256']:
+        raise ValueError('Conversion changed exact embedded compressed bytes')
+    critical=[plan+i for i in(0,16,32,40)]+[tables+64*i for i in range(len(manifest['tables']))]
+    if any(at not in relative or relative[at]!=elf.pointer(at)for at in critical):raise ValueError('A converted relative table pointer changed')
+    if(struct.unpack('<Q',read(plan+8,8))[0]!=len(manifest['tables'])or
+       struct.unpack('<Q',read(plan+24,8))[0]!=manifest['packed_bytes']):raise ValueError('Converted plan counters changed')
+    for i,row in enumerate(manifest['tables']):
+        data=read(tables+64*i+8,56)
+        if struct.unpack('<QQQ',data[:24])!=(row['bytes'],row['offset'],row['packed_bytes'])or data[24:].hex()!=row['sha256']:
+            raise ValueError('A converted table size, offset or original hash changed')
+    return dict(passed=True,critical_relative_pointers=len(critical),table_count=len(manifest['tables']),
+        exclusive_NOBITS_bytes=geometry['exclusive_NOBITS_bytes'],all_converted_scalars_hashes_and_pool_exact=True,
+        image_SHA256=record(image)['sha256'],converted_SHA256=record(converted)['sha256'])
+
 if __name__=='__main__':
     import argparse
     p=argparse.ArgumentParser(description=__doc__)

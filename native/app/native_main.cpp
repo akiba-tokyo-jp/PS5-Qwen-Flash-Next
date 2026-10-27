@@ -755,7 +755,6 @@ int main(int argc, char ** argv) {
     bool native_resources_started = false;
     std::string validation_report;
     try {
-        qwen_app::restore_native_driver_tables();
         const auto startup = qwen_app::read_startup(argc, argv);
         qwen_native_stage("configuration_read GPU_not_started=1 model_loaded=0");
         validation_report = startup.admission_report;
@@ -770,6 +769,9 @@ int main(int argc, char ** argv) {
         // A frozen fixture policy does not replace the launcher's fresh console
         // guards. Full-model inference remains independently rejected here.
         qwen_app::require_native_validation_policy(policy, mode, startup.native_display);
+        // Preserve a validated report path for any returned restoration failure.
+        // No Vulkan entry point has been called at this boundary.
+        qwen_app::restore_native_driver_tables();
         if(startup.PLE_slice_validation&&qwen_app::PLE_slice_CPU_bootstrap(policy))
             throw std::runtime_error("CPU-only PLE shader bootstrap requires the isolated CPU entry point");
         std::uint32_t prefill_tokens = 1;

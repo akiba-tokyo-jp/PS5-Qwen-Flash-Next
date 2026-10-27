@@ -67,6 +67,8 @@ def main():
         receipt.update(schema='ps5-qwen-driver-table-fixture-self-v1',CPU_only=False,driver_code_linked=True,
             model_engine_linked=True,full_model_execution=False,linked_driver=m['linked_driver'],
             lossless_driver_tables=m['lossless_driver_tables'],native_dispatch_audit=m['native_dispatch_audit'])
+        from driver_table_storage import audit_converted_storage
+        receipt['converted_driver_table_audit']=audit_converted_storage(m['artifact']['path'],converted,m['lossless_driver_tables'])
     (a.out/'receipt.private.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(dict(CPU_SELF_packaged=True,bytes=receipt['SELF']['bytes'],sha256=receipt['SELF']['sha256'],roundtrip_segments=segments,PS5_operations=0)),flush=True)
 if __name__=='__main__':main()

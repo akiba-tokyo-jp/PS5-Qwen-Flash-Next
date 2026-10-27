@@ -2,8 +2,10 @@
 
 The selected OS I/O, predictive cache and expert-aware verification instruction
 remains active. This record adds actual PS5 CPU evidence and a smaller driver
-qualification artifact. It does not claim full-model validation or a new decode
-speed winner. The installed fastest SELF remains `ed4b360b...`; neither feature
+qualification artifact. The later [full-model result](native-model-cold-start-20261027.md)
+records one accepted native width-two verification and three completed model
+requests; it does not complete rejection or matched-speed qualification. No new
+decode speed winner is established. The installed fastest SELF remains `ed4b360b...`; neither feature
 is enabled in production. No CI, reboot, GPU reset or forced termination is used.
 
 ## Actual PS5 persistent-worker result
@@ -93,9 +95,8 @@ bound. It never grants the subsequent GPU/model gate. Screens 3243/3247 refused
 with zero launches. Their shortages were 63/33 pages; neither price was reduced
 to fit. Subsequent artifacts reduce immutable storage and fixture code instead.
 
-Qualification and final restoration outcomes will be appended after their actual
-receipts exist. Missing physical acceptance must remain distinct from completed
-host implementation. A default-off merge is not production adoption.
+Qualification and restoration outcomes below supersede this experiment's earlier
+pending status. A default-off merge is not production adoption.
 
 ### Preserved pre-GPU integration failures
 
@@ -145,3 +146,51 @@ Predictive cache and width-two model acceptance still require actual target
 arithmetic, rejected-batch state restoration and continuation, all extra I/O
 accounting, matched model timings and exact fastest restoration. No standalone
 CPU result substitutes for those steps.
+
+## Corrected native GPU qualification and full-model continuation
+
+Corrected fixture 3280 completed all 673 original constant reconstructions and
+readonly protection, then the existing 32 x 16 BF16/F32 GPU graph. All 16 outputs
+matched exactly (maximum absolute error zero), with positive device idle and
+epoch retirement. Model loads were zero. Ordinary OS close, complete native
+SHA256/identity/EOF preservation, exact fastest SELF and five-setting restoration,
+and a fresh idle session all passed. The original object instruction sections and
+relocation records are preserved; final linked addresses naturally change.
+
+The corrected SELF was 12,914,042 bytes, SHA256
+`a2ebd8636bf2c00d7dde60fc5548b1a3deaf7e847bb110cfd054e57089a76835`.
+Prelaunch free pages were 6,596; main entry 2,957; after reconstruction 2,948;
+after integrity 3,749. These global observations qualify this small lifetime,
+not exclusive attribution or a full-model startup saving. The 2,974-page GPU
+target was unchanged. No reboot, reset or global reclaim was used.
+
+Packaging now additionally audits loader-visible converted ELF metadata:
+677 critical relative pointers, all table sizes/offsets/original hashes, exact
+embedded compressed bytes, and exclusive writable non-executable NOBITS
+coverage. Host control 3311 passed and rejected the preserved empty-range ELF.
+This complements, rather than replaces, the actual linked ELF geometry audit.
+
+Independent full-model case 3291 used the original unmodified driver archive and
+returned before GPU initialization: 1,911 free pages versus the unchanged 2,974
+startup target. All 76 source reservations were positively released. It loaded
+no model and submitted no generation request. Ordinary close and exact fastest
+restoration passed. Its observed global CPU decline was at most 6,312 pages;
+repeating that unchanged artifact would require the separately repriced 9,542
+pages. This is a resource-policy refusal, not a failed model-speed benchmark.
+
+Complete changed-artifact build 3287 / package 3288 passed native link/imports,
+SELF integrity, six segment roundtrips and both cold-table geometry audits.
+Its SELF is 19,236,759 bytes, SHA256
+`c128f48038939b83893c7a6c7b335489158bfc4416adfb7e28d6ac98bb8313a2`.
+The old candidate was 28,419,239 bytes. Summed page-rounded PT_LOAD memory
+increases by 19 pages; file size alone is not counted as recovered kernel memory.
+
+New case 3314 uses CPU-staged entry priced at the largest prior full-title CPU
+decline, 6,749 + 19 additional image-memory pages + 1,154 operational + 256
+variation = 8,178 pages. Screen 3313 observed 8,408 and passed. This is a distinct
+smaller artifact with minimally qualified driver storage, not a replay of 3291.
+The staging price grants no GPU admission: the original 2,974-page GPU target,
+all pool predicates, numerical checks and positive completion remain mandatory.
+Case 3314 subsequently completed model arithmetic and one accepted width-two
+verification. See [actual model results and remaining constraints](native-model-cold-start-20261027.md).
+Prediction overlap, speculative rejection and matched speed remain unverified.

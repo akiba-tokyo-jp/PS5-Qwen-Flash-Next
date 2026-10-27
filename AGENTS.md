@@ -19,6 +19,30 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+Latest actual results are `docs/native-model-cold-start-20261027.md` / `.json`.
+Case 3314 completed original-model warmup and two exact 22-token requests,
+including one accepted expert-aware width-two verification. Model/source/device
+owners retired, one normal OS close passed, and exact fastest/settings plus
+fresh idle ownership were restored. The host owner-save collision after accepted
+close was resumed without another close call; preserve both receipts. Zero
+rejections occurred and cache conditions differ, so no speed adoption is qualified.
+Prediction screen 3329 refused; subsequent actual-phase pricing 3340 observed
+6891 versus 8805 pages. Prediction model overlap, speculative rejection/restore
+and matched speed remain unverified / execution unavailable under the current
+policy, not physical impossibility or absent integration. Do not replay these
+scopes without material resource/startup change. No reboot is available.
+
+Corrected cold-data GPU fixture 3280 now passed all 673 constant restorations,
+16 exact BF16/F32 outputs, device idle/epoch retirement and ordinary close with
+exact fastest/settings restoration. Both linked and converted ELF geometry
+audits are mandatory. Original-driver model case 3291 returned a known CPU
+memory refusal and was closed/restored; do not replay it. The distinct full-model
+cold-data package 3288 is selected for case 3314 with an 8178-page CPU-only entry
+price (6749 prior maximum decline + 19 image-memory pages + 1154 operational +
+256 variation). No file-size savings are counted as recovered memory; GPU start
+still requires 2974 pages and all original predicates. Read the later outcomes
+in `docs/native-worker-and-cold-start-20261027.md` before using older pending text.
+
 The continuing native worker/startup investigation is tracked in
 `docs/native-worker-and-cold-start-20261027.md`. The actual persistent worker
 completed four original-role jobs in CPU case 3225; all 640 NIR constants also

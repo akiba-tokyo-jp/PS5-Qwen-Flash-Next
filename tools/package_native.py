@@ -197,6 +197,9 @@ def main():
     receipt.update(converted_elf=record(converted), SELF=record(executable), extracted_elf=record(extracted),
                    integrity_verified=True, real_module_import_audit=imported,
                    roundtrip_segments_verified=checked_segments)
+    if driver_tables:
+        from driver_table_storage import audit_converted_storage
+        receipt['converted_driver_table_audit']=audit_converted_storage(image,converted,driver_tables)
     (a.out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"local_SELF_created": True, "sha256": sha(executable), "console_access": False}))
 

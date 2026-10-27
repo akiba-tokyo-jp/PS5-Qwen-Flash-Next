@@ -1,10 +1,25 @@
 # PS5 Flash Next plan status
 
+The latest [actual model continuation](native-model-cold-start-20261027.md)
+completed three original-model requests in case 3314, including one accepted
+expert-aware width-two verification and exact control tokens/bytes. Positive
+retirement, ordinary close and exact fastest/settings restoration passed.
+No rejection occurred; differing cache conditions do not qualify speed. Prediction
+model overlap, rejection/restore and matched speed are currently execution
+unavailable: the new actual-phase screen observed 6891 versus 8805 pages. Keep
+these explicitly unverified and both optional features off in production.
+
 The continuing [native worker and startup investigation](native-worker-and-cold-start-20261027.md)
 adds a completed real PS5 persistent-worker test and exact CPU NIR restoration.
 Two changed titles exposed known pre-GPU integration refusals and were normally
 closed with exact fastest/settings restoration. A unique cold-data section
 namespace and real final-ELF geometry audit address the identified link error.
+The corrected small GPU case 3280 now passed all original constants, 16 exact
+BF16/F32 outputs and positive retirement, then restored the exact fastest app.
+The loader-visible converted metadata audit also passed. Original-driver model
+case 3291 returned a known pre-GPU memory refusal and was closed/restored.
+The distinct reduced-file full-model candidate is now entering case 3314 under
+a separately priced CPU stage; its GPU target remains unchanged.
 This active follow-up does not complete predictive GPU overlap, speculative
 model arithmetic or matched model-speed validation. Keep those pending instead
 of applying the older finite-queue closure below to this reopened work.
