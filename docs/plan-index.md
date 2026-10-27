@@ -13,6 +13,14 @@ old pending statements do not create a second work queue. This index changes
 neither execution authorization nor the admission and preservation requirements
 in [AGENTS.md](../AGENTS.md).
 
+The owner's standing 2026-10-27 constraint makes reboot unavailable. The
+[independent-backing continuation](ready-bank-no-reboot-20261027.md) records
+the actual allocation owner, nineteen-case source coordinator, serial control
+and separately linked native fixture. These are host/build results; physical
+backing, the complete native overlap runner and model integration remain open.
+Read-only case 3009 observed 6,927 free pages and unavailable allocator-zone
+nodes; it launched no title/GPU and established no recovery or new admission.
+
 ## Verification status and origin of execution constraints
 
 Classification clarified on 2026-10-27 at the owner's request. Verification
@@ -59,7 +67,7 @@ counts prove that the pending title can or cannot run. See the exact formulas in
 | Memory attribution, peak-live audit, source integration and offline model/graph controls | CPU shader bootstrap, original metadata, representative reservation and quiet-start attribution scope-qualified; complete kernel-owner attribution remains unresolved | Quiet-start loss occurred without journal/allocation/virtual calls. Completed new-controller residency/integrity found 319 pages; later free was 6942. Continue distinct allocation/integration work; do not repeat consumed attribution scopes |
 | PLE current-boot shader bootstrap and 208-graph timing | Current-boot 1527-shader bootstrap scope-qualified (2812); prior four-graph numerics scope-qualified; 208-graph timing not run | Latest passive free 6942 is below the existing same-SELF price 8108. That policy remains revisable; no physical allocation failure proves impossibility |
 | Prefix A/B then B/A | Consumer host-qualified; A1 returned before backend work | Native comparison policy-blocked, not a completed speed comparison or a physical allocation-failure result |
-| Ready-expert source/GPU overlap | Partial graphs and ownership prototypes host-qualified | Actual backing/controller integration is not implemented/qualified; native stage is additionally policy-blocked. Host implementation can proceed |
+| Ready-expert source/GPU overlap | Actual allocation-owner code, two-call coordinator, partial/serial graphs and isolated backing fixture are host/build-qualified | Physical independent backing is not qualified. The native overlap runner and model integration remain unfinished; no speed comparison or production adoption follows |
 | Real hidden-state observation and forecasting | Shadow prototype host-qualified | Actual model observation/forecast integration is missing; native stage additionally policy-blocked. No physical impossibility demonstrated |
 | Width-two speculation, conditional width four/adaptive control | Causal width-two controller/native policy and result review implemented; 30 adapter controls passed | Actual native width-two arithmetic/rollback and speed not qualified; width four/adaptive implementation missing. Separate prefix timing does not block it |
 | Additional workload quality/performance and other GPU kernels | Host metadata prepared; native work not run; some kernels not implemented | Distinguish missing implementation from policy-blocked native execution; no physical-impossibility result |

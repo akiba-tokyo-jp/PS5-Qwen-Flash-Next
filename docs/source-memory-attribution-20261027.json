@@ -198,5 +198,24 @@
     "selected_PLE_policy_pages": 8108,
     "PLE_native_admission_granted": false,
     "exclusive_recovery_amount_established": false
+  },
+  "standing_constraint_and_allocator_snapshot": {
+    "reboot_available": false,
+    "reboot_is_not_a_dependency": true,
+    "case": 3009,
+    "boot_matched_before_and_after": true,
+    "free_pages_before_and_after": [6927, 6927],
+    "wired_pages_before_and_after": [30279, 30279],
+    "unavailable_sysctl_nodes": ["vm.zone", "vm.uma_zones", "kern.ipc.nmbclusters"],
+    "returned_error": "No such file or directory",
+    "ELF_requests": 0,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "sysctl_writes": 0,
+    "allocator_pressure_calls": 0,
+    "memory_recovery_claimed": false,
+    "native_admission_granted": false,
+    "proprietary_kernel_owner_identified": false,
+    "scope": "Only the fixed read-only nodes exposed through the current existing shell; not an exhaustive kernel API limitation"
   }
 }

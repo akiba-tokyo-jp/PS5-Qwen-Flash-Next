@@ -1097,3 +1097,41 @@ established. Do not repeat this cohort, claim inactive pages as free or use a
 policy refusal as proof of physical impossibility. The console remains idle on
 the exact fastest SELF and prior five settings while independent implementation
 continues; there is no pending native completion.
+
+## Standing no-reboot constraint and independent backing, 2026-10-27
+
+The owner made reboot unavailable for future planning. Workspace and repository
+instructions now retain that constraint. No new launch, GPU work or native
+comparison ran in this continuation. The exact fastest executable remains
+inactive. Current work is summarized in
+[the independent-backing report](ready-bank-no-reboot-20261027.md).
+
+The actual allocation owner now prices two buffers with three contiguous roles
+each before either allocation. It preserves 512 MiB conservative charging and
+rejects shared actual VkDeviceMemory across groups. Fourteen planner/owner
+controls and native SDK compilation passed (3001). Complete serial controls
+retain every original contribution and the original left-fold reduction: twenty
+partial graphs, nine serial controls, 174 refusals and 2,560 F32 reduction values
+passed with native SDK compilation (3003). No matrix arithmetic ran on the host.
+
+The source coordinator preserves two I/O calls while the original GPU producer
+owns wave zero. Nineteen actual scheduler/controller controls passed, including
+both deadline paths, wrong-wave release, exceptions and retention, with native
+SDK compilation (3013). This does not qualify physical I/O/GPU interval overlap.
+
+The default-off backing fixture uses six original matrices from the already
+qualified existing pack. Its 57 scope controls passed; the final native link,
+module imports, dispatch and six-segment SELF checks passed (3010/3011/3012).
+Candidate SELF: 23,086,730 bytes, SHA256
+`7ef8ab1a3d5d14f7823a11058d7881645bd347156fdff02ca7eb6e79a319b4b2`.
+The changed CPU/GPU boundary is accurately reported. Seven independent report
+fault-injection groups passed. Actual backing/numerical execution remains not
+run; the full overlap runner and model integration remain unfinished.
+
+Read-only allocator snapshot 3009 used the existing shell, matching the same
+boot before and after. Free was 6,927 -> 6,927 pages and wired 30,279 -> 30,279.
+The three requested allocator nodes returned No such file or directory. This
+closes that bounded observation without assigning a proprietary owner or
+claiming recovery. Four parser/scope test groups passed. No ELF, title, GPU,
+pressure allocation, advice, setter or reboot occurred. Native stage budgets
+and current production selection were not changed, and no speed was adopted.

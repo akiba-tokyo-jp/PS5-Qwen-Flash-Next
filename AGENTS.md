@@ -19,6 +19,13 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner's 2026-10-27 standing constraint is that console reboot is not
+available. Plan and execute without requesting or depending on a reboot.
+Price each changed native scope from current observations, reduce owned live
+allocations and startup work, and preserve known completion and ordinary close.
+Do not repeat a consumed recovery probe or unchanged refused title to seek
+headroom. A selected margin remains revisable policy, not a physical limit.
+
 Read [docs/plan-index.md](docs/plan-index.md) for current proposal dispositions and
 links to terminal results. Earlier dated blocks below preserve historical guards,
 refusals and intermediate pending states; later explicit completion evidence

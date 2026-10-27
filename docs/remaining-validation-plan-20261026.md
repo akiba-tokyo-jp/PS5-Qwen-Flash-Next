@@ -55,6 +55,12 @@ still marks strict cross-mode output equivalence unpassed.
 
 ### Owner-approved execution order, 2026-10-27
 
+Reboot is unavailable under the owner's standing instruction. No remaining
+stage may depend on a restart or another reboot request. Use a smaller,
+separately linked native scope and actual current memory admission to qualify
+independent backing before returning to full-model comparisons. Keep already
+completed evidence; do not repeat recovery probes to obtain a preferred count.
+
 1. Price CPU-only, backend initialization, small graph and model stages separately.
    Attribute current consumption using completed observations. A historical
    cross-executable margin is provisional policy, not measured cost of a new SELF.
