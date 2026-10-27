@@ -19,6 +19,18 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner's latest execution instruction closes the current queue by executing
+available stages and explicitly recording execution-unavailable stages. Use
+`docs/final-current-environment-dispositions-20261027.md` and its JSON as the
+authoritative 22-stage decision ledger. There are no unclassified or currently
+executable stages left under the established conditions. This is finite queue
+closure with unavailable outcomes, not all-proposal implementation/native-test
+completion or achievement of the original speed objective. Missing integration
+remains unimplemented. Older queue/pending/next-test wording below is historical.
+Reopen only after the item's stated material input/resource/dependency change;
+do not repeat unchanged refused cases or depend on reboot. Preserve all original
+ownership, precision, admission and positive-completion requirements.
+
 The owner's subsequent plan-review request supersedes the earlier execution
 priorities. Use only the current queue in
 `docs/remaining-validation-plan-20261026.md#current-execution-queue-after-plan-review`:

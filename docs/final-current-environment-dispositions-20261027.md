@@ -1,0 +1,59 @@
+# Final current-environment execution decisions
+
+The owner instructed: execute what can run; record what cannot run as execution unavailable; finish every item. All 22 listed stages now have a finite decision. There are no unclassified items or executable items left under the established conditions. This closes the current execution queue, including explicit unavailable outcomes. It does **not** assert that every proposal was implemented, every native test ran, or the original speed objective was achieved.
+
+This record supersedes current-status/pending/next-step wording in earlier plans and progress records. Immutable consumed cases and their original evidence remain unchanged. No user action or reboot is pending. The [machine-readable ledger](final-current-environment-dispositions-20261027.json) separates implementation from execution and adoption.
+
+## Execution-unavailable basis
+
+The last measured next-arm screen (3174) observed 6583 free kernel pages twice against the staged full-model CPU entry estimate of 8159. The earlier same-full-title initial CPU interval declined by 6749 pages, before startup SELF integrity. Even removing the entire 256-page variation allowance would not cover that observed interval plus the retained operational floor. These are global historical observations and revisable application estimates, not fresh launch admission, exclusive attribution to the application, or proof of permanent hardware impossibility.
+
+The bounded attribution/source review completed. Rehearsal reservations already retire; no supported removable initial owned cost or callable OS reclaim owner was identified. The original full-model path is therefore execution unavailable under the established conditions. Dependent stages retain their missing implementation and input prerequisites. Writing arbitrary host code would not qualify their actual hidden-state, arithmetic, kernel-cost or performance assumptions. No repeated unchanged screen, title launch, speculative kernel edit, unsafe release or reboot was performed to turn these decisions into apparent progress.
+
+## All remaining stages
+
+| Stage | Implementation/evidence | Final decision in this environment | Reason |
+| --- | --- | --- | --- |
+| Reduce unresolved startup kernel consumption | Bounded source, metadata, reservation, quiet-start and controller audits completed; no supported reclaim implementation | **execution_unavailable** | No removable owned cause or callable OS reclaim owner was established. This is unavailable through established interfaces, not proof that all possible code changes are impossible. |
+| Invariant batch metadata reuse | Native CPU prototype qualified; not linked into production | **closed_small_target** | Specific-loop generous saving is only 0.1334 ms per fixed request; no full-model replay is justified solely for it. |
+| Allocation lifetime and constant-reuse audit | Existing owner/alias ledger and original tensor audit completed | **closed_audit** | Rehearsal reservations are already released; fixed GDN parameters are already F32. No supported additional saving repairs the earlier initial CPU decline. |
+| Additional full-model peak-live characterization | Additional native instrumentation/coverage is not completed | **execution_unavailable** | Requires another admitted model lifetime. Existing global page deltas do not identify an exclusive proprietary owner. |
+| 53/128-slot A/B/B/A | 128-slot implementation, 360 layout graphs and independent reviewers qualified; A53 completed three requests | **execution_unavailable** | B128/B128/A53 did not run: screen 3174 observed 6583 pages against staged CPU entry 8159. The cohort is not a completed benchmark. |
+| Further cache capacities | Fifteen capacities replayed; additional native capacity integrations are not implemented | **execution_unavailable** | No completed native capacity winner or admitted model cost profile supports another capacity integration. |
+| Complete model checkpoint | Complete-model continuation physically qualified | **completed** | Correctness prerequisite passed; prefix/speculative speed benefits are separate and unproven. |
+| Exact-prefix reuse TTFT | Default-off consumer and reviewers host-qualified | **execution_unavailable** | Requires the same full-model startup path; no native prefix speed comparison completed. |
+| Width-two exact verification and speed | Causal native policy/controller, complete checkpoint and 30 adapter controls exist | **execution_unavailable** | Actual acceptance, forced rejection/restore, continuation/routes and speed require another admitted model lifetime. |
+| Width-four verification | Dependent model integration is not implemented | **execution_unavailable** | Native width-two arithmetic, rollback and cost prerequisites are missing. Host code could be written, but validated integration cannot be completed now. |
+| Radiance-inspired adaptive draft depth | Dependent adaptive model integration is not implemented | **execution_unavailable** | No native fixed-width acceptance/cost result exists to select or validate the controller. |
+| Original-file versus expert-major delivery | Actual original-byte bank/source comparison executed | **inconclusive** | Eight rounds, seven faster; about 1.040x source and 1.037x total did not meet the original screen. No full repack/integration follows. |
+| Original-source CPU two-call reader | Actual shared reader completed eight cases and 240 matrix deliveries | **completed** | Source-only ratio 1.06735x. Production already uses qualified paired reads; this is not a new model-speed or adoption proof. |
+| Ready-expert split overlap | All 40 original-source/backing/numerical GPU graphs completed | **rejected_no_gain** | Both reverse comparisons were about 0.9-1.4% slower; stop this variant before model integration. |
+| Actual hidden-state router observation | Shadow prototype host-qualified; actual model capture integration is not implemented | **execution_unavailable** | Needs actual FFN hidden states and an admitted tap off/on model cost comparison. Recorded selected IDs cannot substitute. |
+| Hidden-state forecast and speculative transfers | Dependent actual model forecast/transfer integration is not implemented | **execution_unavailable** | Actual hidden-state usefulness, ready-before-demand and added-cost measurements are missing; no justified transfer candidate exists. |
+| Broader workload quality and performance | Four original-template/tokenizer metadata cases completed | **execution_unavailable** | Native token equality, answer quality and matched metrics require additional admitted model requests. Host metadata is not quality evidence. |
+| PLE copy-elision modes at widths one through four | All 208 alternating physical graphs, numerical and retirement checks completed | **rejected_no_gain** | Median effects -0.092% to +0.046% with mixed wins; no repeatable speed winner. No model integration follows. |
+| Radiance shared-input projections | Actual tensor/shape audit completed; portable Vulkan kernel is not implemented | **execution_unavailable** | Donor MXFP4 merging does not implement original BF16/F32. Native material per-kernel cost and numerical comparison are absent; the 80 MiB weight pair remains. |
+| Radiance GDN and gated-normalization fusion | Original F32 and sigmoid semantics audited; portable additional fusion is not implemented | **execution_unavailable** | RDNA4 HIP/WMMA and device-wide barrier assumptions do not directly transfer. No measured eligible native target justifies a validated integration. |
+| Radiance small dense projection dispatch | Actual one/two/four-token type/shape eligibility reviewed; additional kernel is not implemented | **execution_unavailable** | Donor BF16-only M>=6 path does not match the F32/current widths. Native target profile and portable numerical/performance comparison are missing. |
+| Further vector/workgroup specialization | Qualified indexed-vector route retained; further tuning is not implemented | **execution_unavailable** | Existing non-source time includes CPU/guards/transfer/completion, not isolated shader cost. No material kernel target has been established. |
+
+`execution_unavailable` means that the named execution/qualified-integration stage cannot presently be completed through the established inputs, interfaces and admission/dependency conditions. It is not a failed benchmark or proof that future implementation is impossible. Source status remains explicit. The JSON records one material reopening condition per item; elapsed time or an identical poll is not such a change.
+
+## Reused physical results and production outcome
+
+- Original-source CPU: eight cases, 240 original matrix deliveries, 1.06735x source-only ratio; joined readers and Direct retirement passed. This supplies no new model-speed claim.
+- Ready overlap: 40 complete GPU graphs; exact/F64 numerics and retirement passed; both reverse comparisons lost. The tested variant is closed without model integration.
+- PLE: 208 complete GPU graphs at widths one through four; no repeatable gain. The tested variants are closed without model integration.
+- A53 full-model control: warmup plus two external 30-prompt/22-output-token requests completed. Decode was 0.355716 / 0.398618 tok/s; TTFT was 50.056118 / 49.220898 s. The missing B/B/A arms prevent a cache-capacity speed decision.
+
+No new model-speed winner was established, so no experimental variant was promoted. The previously qualified fastest production SELF remains `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d` (28,017,271 bytes), with 53 slots, 512 MiB cache, original BF16/F32 and F32 KV. Previously measured beneficial changes remain selected in the [qualified production profile](../config/qualified-performance.json). Source-only ratios are not additional unintegrated model winners.
+
+The last completed native restoration verified the complete fastest SELF and all five prior settings by SHA256, stable identity and EOF; source/GPU owners positively retired, normal OS close completed, and a fresh idle session returned the reservation with no native/gateway/model owner or unknown completion. This host-only disposition pass rechecked the immutable receipts and local artifact/profile identity. It did not claim a new live console observation or perform another console operation.
+
+Driver: PS5-Vulkan-Inference `872cc1264ad8ba5d6b888b092968fa5858a38c58`, profile `cumulative-idle`, linked archive `b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925`. Persistent shader/pipeline caches remain disabled. No runtime/source-weight/driver change, build, CI or production mutation was needed for this closing pass.
+
+## Evidence and coverage
+
+The 22 stages cover startup, CPU metadata, allocation/lifetimes, cache capacities, complete state, prefix reuse, fixed/adaptive speculation, original-byte delivery, ready execution, hidden-state routing, broader workloads and all three Radiance kernel subcandidates plus further workgroup tuning. Earlier adopted/rejected finite plans retain the [historical lifecycle and technique tables](plan-index.md#historical-plan-lifecycle); they do not create duplicate work. All current remaining-plan stages have an explicit terminal decision here.
+
+The [detailed physical record](finite-execution-dispositions-20261027.md#original-model-control-and-remaining-current-environment-limit-cases-3130-3175), [execution progress](remaining-validation-progress-20261026.md), [actual tensor/cost audit](remaining-feasibility-20261026.md), and [defined validation scopes](remaining-validation-plan-20261026.md) preserve numerical limits, timings, consumed refusals, source targets and original requirements. Evidence SHA256 values are retained in the JSON; private logs, sessions, endpoints, SDKs, binaries and weights remain outside Git.

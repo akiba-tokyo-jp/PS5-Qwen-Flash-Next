@@ -1,203 +1,42 @@
 # PS5 Flash Next plan status
 
-Execution order reviewed on 2026-10-27 against main
-`5887b1f39325502468ebb7b762a3367a43aa7315`. **Implementation and validation of
-all proposed techniques are not complete.** The physically tested ready-overlap
-and PLE graph variants now close without a repeatable speed winner. Hidden-state
-router forecasting, speculative verification and other proposals below remain
-incomplete; several now have default-off host prototypes. Individual finite plans have completed within their recorded
-scope; the latest delivery screens produced no new production winner.
+All current remaining-plan stages have a final decision under the owner's latest
+instruction: execute what can run, record what cannot as execution unavailable.
+The [22-stage closing ledger](final-current-environment-dispositions-20261027.md)
+is authoritative. **No unclassified or presently executable stage remains in
+this queue.** Closure includes unavailable outcomes; it does not claim every
+proposal implemented, every native validation passed, or the speed objective achieved.
 
-Latest physical outcomes: the 40-graph ready-overlap variant lost both reverse
-comparisons; all 208 PLE graphs passed but supplied no repeatable speed winner.
-A real 53-slot full-model control completed warmup plus both fixed requests;
-the remaining matched cache arms were not launched after the next CPU-entry
-screen refused at 6583/8159 pages. Exact fastest SELF/settings restoration and
-fresh idle ownership are complete. See the
-[latest native result and remaining limit](finite-execution-dispositions-20261027.md#original-model-control-and-remaining-current-environment-limit-cases-3130-3175).
-No new model-speed winner or production adoption follows.
+Ready overlap completed 40 graphs and lost both reverse comparisons. PLE completed
+208 graphs without repeatable gain. One A53 original-model arm completed warmup
+and both 22-token requests; B128/B128/A53 were not run after screen 3174 observed
+6583 pages against the 8159-page CPU entry. Its earlier observed initial decline
+was 6749 pages. These are revisable estimates and historical measurements, not
+permanent physical-impossibility claims. No unchanged refused case is repeated.
 
-Use this index for current dispositions. Dated plans and intermediate reports
-retain their original measurements and refusals as historical evidence. Their
-old pending statements do not create a second work queue. This index changes
-neither execution authorization nor the admission and preservation requirements
-in [AGENTS.md](../AGENTS.md).
+The previously qualified fastest production SELF and all five settings are exactly
+restored. No new model-speed winner was found or promoted. See the
+[production profile](../config/qualified-performance.json),
+[physical results](finite-execution-dispositions-20261027.md), and
+[machine-readable closing decisions](final-current-environment-dispositions-20261027.json).
+No user action or reboot is pending. CI remains disabled. A source-only fixture
+win does not establish an unadopted full-model speed win.
 
-The [current execution queue](remaining-validation-plan-20261026.md#current-execution-queue-after-plan-review)
-is the sole priority list: resolve the common startup prerequisite, compare
-cache 53/128, qualify/measure width two, close PLE/prefix, then resume ready-expert
-integration and the remaining measured backlog. Native comparisons are serial;
-a parked case permits only one already specified independent host deliverable.
-Cache-first is conditional on its own Direct/GPU reserves; a common startup
-blocker does not justify trying another equally blocked console configuration.
-Completed geometry, checkpoint and CPU attribution scopes are reused;
-older prospective "next test" paragraphs are historical, not additional work.
-The review itself performs no implementation, console operation or CI.
-New investigation is allowed only to resolve a stated active decision that
-existing evidence cannot answer. General literature refreshes, repeated CPU
-diagnostics and unavailable allocator-node searches are removed from this queue.
-
-The owner's standing 2026-10-27 constraint makes reboot unavailable. The
-[independent-backing continuation](ready-bank-no-reboot-20261027.md) records
-the actual allocation owner, nineteen-case source coordinator, serial control
-and separately linked native fixture. These are host/build results; physical
-backing, the complete native overlap runner and model integration remain open.
-Read-only case 3009 observed 6,927 free pages and unavailable allocator-zone
-nodes; it launched no title/GPU and established no recovery or new admission.
-
-## Verification status and origin of execution constraints
-
-Classification clarified on 2026-10-27 at the owner's request. Verification
-status and execution availability are separate fields. A refusal by our own
-guard does **not** establish physical impossibility. The earlier 1012-page
-observation is superseded by completed CPU case 2780's 2939-page observation;
-both are historical snapshots, not fresh launch admission.
-
-| Term | Meaning |
-| --- | --- |
-| Scope-qualified | The stated test actually completed and passed; broader model/performance acceptance is separate |
-| Measured, inconclusive or rejected | A comparison ran; the evidence failed to establish a repeatable gain or failed its declared adoption gate |
-| Not run | The target test has not executed; report its actual preparation and blocking conditions separately |
-| Not implemented | Source, integration or controller work is still missing; this is not a hardware limitation |
-| Policy-blocked, revisable | A chosen application budget, margin, sequence or scope prevents execution; physical feasibility remains unresolved |
-| Confirmed resource/API limit | A concrete required allocation, reported device/API bound or capability is established for the stated configuration; name the evidence and the change needed |
-| Incomplete | Overall aggregate only; never substitute it for an individual test's actual result or blocker |
-
-The previously reported PLE/prefix/native comparisons are **policy-blocked**,
-not demonstrated physically impossible. Their early memory guards returned
-before the relevant model/GPU work. No new physical-impossibility result is
-created by this classification correction.
-
-| Condition | Origin | Can the application rule be revised? |
-| --- | --- | --- |
-| Operational guard 1154 pages | Application formula `898 + max(206,256)`; 898/206 are observed OS counters and 256 is our 4 MiB margin | Yes, subject to workload-specific characterization. The addition/comparison is our rule, not a hardware-reported allocation minimum. A safe replacement has not been established |
-| Startup guard 2974 pages | Observed `v_free_target` adopted by `MemoryBackpressure` as a startup predicate | Yes, the decision to require this value is application policy. It is not proof of a universal PS5 startup minimum; OS internals are not thereby authorized for modification |
-| Regular prelaunch 10142 pages | Adopted startup target 2974 plus our additional 7168 pages / 112 MiB | Yes. Completed isolated PLE case 2741 used a lower prelaunch cohort beginning at 8137 pages. That does not qualify a new SELF or lower current-memory experiment automatically |
-| Historical PLE phase price 8190 pages | Completed old-SELF decline 4960 plus adopted startup target 2974 and our variation allowance 256 | Revisable estimate for its exact measured scope; not a physical minimum or transferable proof for the new SELF |
-| Expert cache 512 MiB | Selected application/profile budget | Revisable after complete resource/ownership qualification. Exceeding this selected cap is not proof that the PS5 cannot physically hold a larger cache |
-| Actual device allocation/buffer bounds and Direct/Flexible quota | Returned device/OS APIs for the actual native context | A client threshold change cannot create capacity or a missing capability. Record the exact returned limit/failure separately; do not substitute a policy refusal |
-
-The 1012-to-1154 difference is only 142 pages / 2.21875 MiB. It does not price
-title startup: earlier isolated/full-title intervals observed about 77.5 /
-102.796875 MiB of free-page decline. Those are sequential global observations,
-not proven irreducible costs. Neither the small guard gap nor inactive-page
-counts prove that the pending title can or cannot run. See the exact formulas in
-[`system_memory.h`](../native/app/system_memory.h),
-[`memory_backpressure.h`](../native/app/memory_backpressure.h) and the
-[measured PLE phases](PLE-postboot-continuation-20261026.md).
-
-| Work item / next stage | Verification status | Execution constraint and remaining work |
-| --- | --- | --- |
-| Memory attribution, peak-live audit, source integration and offline model/graph controls | CPU shader bootstrap, original metadata, representative reservation and quiet-start attribution scope-qualified; complete kernel-owner attribution remains unresolved | Quiet-start loss occurred without journal/allocation/virtual calls. Completed new-controller residency/integrity found 319 pages; later free was 6942. Continue distinct allocation/integration work; do not repeat consumed attribution scopes |
-| PLE current-boot shader bootstrap and 208-graph timing | Current-boot 1527-shader bootstrap scope-qualified (2812); prior four-graph numerics scope-qualified; 208-graph timing not run | Later queue item. The last saved allocator snapshot (3009) was 6927 free pages; historical PLE phase prices belong to their exact scopes, are revisable, and do not prove impossibility or current admission |
-| Prefix A/B then B/A | Consumer host-qualified; A1 returned before backend work | Native comparison policy-blocked, not a completed speed comparison or a physical allocation-failure result |
-| Ready-expert source/GPU overlap | Backing/numerical entry and ten-distinct-original-Expert/depth-two source/cohort implementation are host/native-build-qualified; source/reference/policy/report controls passed | Native gate remains unavailable under last established conditions (3046); physical backing/numerics and representative timing are unrun. Model integration is unimplemented/conditional; no new speed or adoption |
-| Real hidden-state observation and forecasting | Shadow prototype host-qualified | Actual model observation/forecast integration is missing; native stage additionally policy-blocked. No physical impossibility demonstrated |
-| Width-two speculation, conditional width four/adaptive control | Causal width-two controller/native policy and result review implemented; 30 adapter controls passed | Actual native width-two arithmetic/rollback and speed not qualified; width four/adaptive implementation missing. Separate prefix timing does not block it |
-| Additional workload quality/performance and other GPU kernels | Host metadata prepared; native work not run; some kernels not implemented | Distinguish missing implementation from policy-blocked native execution; no physical-impossibility result |
-| Original-file versus expert-major delivery | Comparison actually ran, 7/8 rounds faster; inconclusive and unadopted | This is measured evidence, not an unexecuted or physically unavailable test |
-| Complete state checkpoint | Actual model continuation scope-qualified | No pending correctness rerun. Prefix/speculative speed acceptance is separate |
-| Expanded caches beyond selected 512 MiB | Fifteen capacities replayed; 128-slot implementation, host controls and all 360 physical layout graphs passed | The first model A returned a CPU preparation refusal; B arms were not run. Per-arm and full raw-evidence A/B/B/A reviewers are implemented. Bounded review 3014 repriced the full startup scope and screened 6708 pages against 10142; no launch followed. A new matched cohort remains policy-blocked, not physically impossible. The 512 MiB single-buffer and 1792 MiB aggregate ledger caps remain; no cache speedup is adopted |
-
-Classification changes do not lower any runtime guard or launch another case.
-Any engineering revision must declare its changed margin/scope, measured basis
-and failure handling before execution, under the owner's existing experiment
-authorization. Exact owner/source identity, numerical checks and positive
-completion are distinct correctness requirements, not tunable free-page margins.
-
-The latest [source-memory attribution](source-memory-attribution-20261027.json)
-records completed CPU cases 2920 (all 76 original metadata containers), 2950
-(representative eight-region A/B/B/A), and 2970 (five-second no-log/no-allocation
-control), each normally closed and restored. Metadata and warm reservation API
-intervals did not reproduce the large decline; the quiet interval did. This
-supports pricing asynchronous title/runtime/OS consumption, not blaming the
-parser or reservation API. The individual proprietary owner remains unresolved.
-The representative shared arena showed no repeatable speed benefit and was not
-adopted. These completed scopes do not complete the model-speed queue.
-
-## Finite current-round dispositions, 2026-10-27
-
-The owner requires unavailable items to receive an explicit decision and not
-halt every independent package. The [finite disposition table and dispatch
-record](finite-execution-dispositions-20261027.md) covers every remaining work
-package. Kernel reduction is unavailable through the established interfaces;
-the libc formatter fields are not proven kernel consumption. Full-model native
-comparisons and the independently priced PLE comparison are unavailable under
-the current conditions. This is not a declaration of permanent physical
-impossibility, a passing test, or permission to mark missing code implemented.
-
-The next independent ready-expert execution owner/native adapter was implemented
-and passed 40 host scenarios plus native SDK compilation. Existing coordinator
-and role/geometry regressions passed. The subsequent [connected native numerical
-entry](finite-execution-dispositions-20261027.md#connected-native-numerical-entry-and-finite-decision-case-3046)
-passed source/reference/policy/reviewer checks, native link and SELF packaging.
-Its one changed-scope screen observed 6630 -> 6630 against the staged CPU estimate
-8159. No upload/title/ELF/GPU followed. Actual backing/numerics remain unqualified;
-representative performance was then unimplemented. The later continuation below
-supersedes that source status; model integration remains conditional.
-The required native dependency cannot be qualified in the present environment;
-later forecast/width-four/kernel integrations therefore remain unavailable at
-their respective acceptance stages. No new speed or adoption is claimed.
-
-The latest next-item PLE screen 3031 used its own 8190-page price, not 10142:
-6709 -> 6709 pages, zero ELF/title/GPU operations. Closed primary CPU/GPU cases
-reproduce the independent CPU-phase requirement of 7701. Lowering only the GPU
-startup target would not cover that earlier CPU interval. No repeated general
-diagnostic, kernel modification or reboot followed.
-
-The final numerical entry includes only the two original experts available in
-the existing pack, repeated across all ten original contributions. It explicitly
-claims neither depth-two source delivery, representative speed, physical GPU
-timestamp overlap nor model adoption. Its three execution modes and reverse
-controls are implemented; their actual PS5 comparison is not completed. The
-full requested plan therefore remains incomplete despite the added source/build
-deliverable. Preserve this distinction when reporting completion.
-
-The subsequent [ten-original-Expert/depth-two continuation](finite-execution-dispositions-20261027.md#ten-original-expertdepth-two-implementation-cases-3048-3062)
-implements the missing representative runner, preserving native acceptance gates.
-Eleven controller host scenarios, 110 policy refusals, 21 result-review groups,
-original-byte reference, strict SDK compile, native link 3060 and SELF 3061 passed.
-All forty graphs are connected in prerequisite order; none ran this continuation.
-The eight-descriptor cap is per new reader, not whole-title. Native timing, model
-integration and adoption remain incomplete. No PS5 operation or repeated startup/
-memory poll followed; the exact fastest production selection is unchanged.
+Execution unavailable names the current failed admission/interface/dependency
+condition. Missing implementation remains explicitly missing; a native guard
+refusal is not a benchmark failure. Reopening requires the specific material
+change recorded per item. Older pending statements and prospective next-test
+paragraphs retain historical context and do not create additional queues.
 
 ## Current production baseline
-
-The subsequent [PLE four-graph implementation and startup result](PLE-smoke-startup-20261026.md)
-records exact fastest/settings restoration, the separately linked weightless
-title and four exact physical GPU graphs with positive retirement. The paired
-208-graph case subsequently refused before launch at 7858 and, after measured
-controller-file integrity, 7883 pages against 8108. Exact restoration completed.
-No new PLE speed or adoption result
-exists; the overall remaining plan is still in progress.
-
-The [subsequent phase/backing/postboot record](PLE-postboot-continuation-20261026.md)
-prices future same-SELF admission from both completed physical cases and records
-an actual-allocation borrower prototype. The owner then restarted the PS5.
-The [current runtime/memory continuation](postboot-runtime-memory-20261027.md)
-records the subsequent instruction and successful one-entry restoration of the
-same runtime. New-boot discovery/full CPU admission passed. A process helper
-refused before inventory at 1060 free pages; a boot-bound passive screen observed
-1017 -> 1012, below operational floor 1154. These were earlier checkpoints.
-Subsequent CPU case 2812 fully verified all 1,527 shaders / 382 lookups on this
-boot and normally closed with exact fastest/settings restoration. Expanded-cache
-case 2820 then returned a known CPU startup-policy refusal at 2,293 versus 2,974
-pages, before model metadata or any GPU work, and restored exactly. No hang or
-new model speed was observed. The default-off single-slice layout revision removes
-unneeded whole-model preparation and prices its GPU phase independently; its
-111 host refusal controls and all 360 physical GPU layout graphs passed. Normal
-close/restoration and both native C++/independent Python reviews passed; model
-speed qualification and adoption remain pending.
-See the [current evidence and exact experimental budget](remaining-validation-progress-20261026.md#current-boot-cpu-bootstrap-and-restored-title-alias-2026-10-27).
 
 The installed finite application is the qualified original-precision engine,
 SELF `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`
 (28,017,271 bytes). Original MOSS remains preserved as rollback. The latest
 completed restoration retained this Qwen executable and its settings; it did
 not replace it with MOSS. See [production placement](production-installation-20261025.md),
-the [selected profile](../config/qualified-performance.json) and
-[final restoration](memory-plan-completion-20261026.md#completion-and-provenance).
+the [selected profile](../config/qualified-performance.json) and the
+[latest exact restoration](finite-execution-dispositions-20261027.md#original-model-control-and-remaining-current-environment-limit-cases-3130-3175).
 
 | Setting | Qualified value |
 | --- | --- |
@@ -236,7 +75,7 @@ proposed technique was implemented or adopted.
 | [SSD validation plan](ssd-io-validation-plan-20261025.md) | Initial delivery and capacity screens complete; no production candidate admitted | [SSD results](ssd-io-validation-results-20261025.md) |
 | [BF16 system research](bf16-system-optimization-research-20261025.md) | Research complete; its broader implementation proposals are not all complete | [Remaining proposals below](#remaining-proposals-and-prerequisites) |
 | [Initial BF16 validation](bf16-system-validation-20261025.md), [kernel-memory investigation](kernel-memory-cause-20261026.md), [palette follow-up](memory-palette-followup-20261026.md) | Historical partial checkpoints; the finite demand, memory-recovery and GPU screens subsequently completed | [Memory-plan completion](memory-plan-completion-20261026.md) |
-| [Remaining proposal validation](remaining-validation-plan-20261026.md) | In progress; metadata, vector ABI and bank/source fixtures executed. Actual production-source screen remains inconclusive; other packages remain open | [Execution progress](remaining-validation-progress-20261026.md) |
+| [Remaining proposal validation](remaining-validation-plan-20261026.md) | Current queue closed with finite decisions for all 22 stages, including execution-unavailable outcomes; all-proposal implementation/native validation is not achieved | [Final disposition ledger](final-current-environment-dispositions-20261027.md) |
 
 The [Strata source review](strata-update-review-20261024.md),
 [PS5-specific I/O research](ps5-source-io-workarounds-20261024.md) and
@@ -297,66 +136,13 @@ it is not a universal 5% requirement for every future improvement.
 
 ## Remaining proposals and prerequisites
 
-The owner now prioritizes [memory attribution before PLE](PLE-memory-first-plan-20261026.md).
-Later closed-file controls reduced a measured retained-file component. An
-independently linked small CPU title completed actual shader initialization:
-registry/decoder change was zero pages and the complete interval lost 22 pages,
-with no Vulkan/model code linked. Exact fastest restoration and post-close
-observations passed at 9,079–9,080 free pages. The native-title wired component
-must still be priced separately; no proprietary allocator or new speed result
-is claimed. See the [aggregate evidence](CPU-shader-memory-controls-20261026.json).
-The four-graph PLE smoke subsequently completed on the physical GPU; its earlier
-8425-page provisional full-application allowance is historical. The current
-timing stage and policy-blocked prerequisites are classified above. Neither the
-smoke nor a failed admission completes the overall optimization plan.
-
-These proposals have no qualified production speed result. They are a research
-backlog, not unfinished steps of the completed finite memory plan. The pinned
-upstream source targets refer to llama.cpp
-`0a1ef309cdbb9f2024f58a38fb4c42352c5db569`; maintained changes belong in this
-repository's overlays, not immutable qualified build products.
-
-The [execution progress](remaining-validation-progress-20261026.md) records
-native CPU metadata, original-byte vector-delivery and device-copy fixtures.
-GPU-bank exactness passed, but the actual original-file layout comparison was
-inconclusive at 1.040x source / 1.037x total, with only seven of eight rounds
-faster. No production-layout migration or model speed gain follows. The 136 MiB
-device-copy prerequisite and subsequent complete-model continuation both passed
-their stated correctness scopes; prefix/speculative speed acceptance is separate.
-
-The [remaining-proposal validation plan](remaining-validation-plan-20261026.md)
-defines the implementation targets, dependency order, bounded tests, stop/adoption
-conditions and full-model/production gates for every row below. It is a plan,
-not evidence that these proposals have been implemented or run.
-The [Radiance reference mapping](remaining-validation-plan-20261026.md#radiance-references-and-applicability)
-adds CPU metadata reuse, temporary lifetimes, graph fusion, small-GEMM dispatch
-and adaptive verification depth to those existing packages. The rows below
-distinguish implemented host prototypes from remaining physical and graph work;
-original BF16/F32 is preserved.
-
-| Proposal | Implementation status and source targets | Prerequisite before a new comparison |
-| --- | --- | --- |
-| Broader workload characterization | Four execution-disabled prompts rendered through the actual C++ template and original tokenizer metadata: 20/21/27/17 tokens; native control counts matched. [Host scope](remaining-validation-progress-20261026.md#bounded-workload-metadata) | Native token-ID equality, quality and matched metrics remain open. Expand surviving mechanisms beyond the fixed regression; existing two counting traces are insufficient to rank workload-dependent ideas |
-| CPU metadata reuse | Native-fixture-qualified prototype; [measured scope](remaining-validation-progress-20261026.md#cpu-batch-metadata). The specific loop's generous saved-work estimate is only 0.1334 ms per fixed request; not linked into `LlamaEngine` | [Audit 2644](remaining-feasibility-20261026.md#scope-the-small-cpu-metadata-candidate) does not justify a new full-model comparison solely for this loop. Other context/backend metadata costs are not bounded by this result |
-| Execute ready experts while actual-demand reads continue | Whole-expert/actual-backing metadata and same-53-slot split-root prototypes passed host controls. Saved-route serial-pair opportunities occur in 18.37% / 17.33% of external decode layer steps. [Scope](remaining-feasibility-20261026.md#ready-expert-ownership-and-backing) | Qualify independent backing, partial indexed widths, multi-owner source leases and original-order two-wave graph; measure actual overlap and total cost. Preserve existing parallel/coalesced packets |
-| One-layer hidden-state router forecast with at most two reserved slots | Capacity/source review plus host-qualified shadow graph/observer/callback prototype; no actual hidden-state capture or speculative transfer. Upstream `qwen4exp.cpp::build_hc_mix/build_hc_combine`, `build_layer_ffn`; `native/app/expert_policy.h` and cache overlay | Integrate actual model observation, then measure useful missing experts, readiness, graph cost and wasted bytes before speculative I/O. Reuse original F32 routers without an extra cast/copy |
-| Exact speculative verification or model-free drafts | Complete-model checkpoint qualified. Past-only draft, default-off native policy/controller and width-two adapter controls exist, including rollback/bonus/EOG/unknown-completion cases. [Scope](remaining-validation-progress-20261026.md#model-free-draft-and-width-two-adapter-prototypes) | Native two-target arithmetic, continuation/routes, discarded I/O and matched speed remain unqualified and currently unavailable. Width-four/adaptive integration cannot pass its native width-two dependency; it is not counted as implemented |
-| Repeated-prefix state reuse | Default-off consumer implemented and host-qualified; same-SELF A1 case 2601 returned a known pre-backend memory refusal, with zero GPU/model execution. [Consumer and refusal evidence](remaining-validation-progress-20261026.md#exact-prefix-consumer-and-reduced-headroom-experiment) | The finite attribution scopes are closed; do not reopen them unchanged. Native comparison is unavailable under current full-model startup conditions. Restore 2608/preserve 2609 passed. No prefix speed result exists |
-| Zero-copy expert-major layout or vectored Direct I/O | Native bank numerics/retirement passed. Compact-record bank screen: 1.252x source / 1.183x total. Actual original-file comparison: 1.040x / 1.037x, only 7/8 rounds faster; inconclusive and unadopted. [Results and scope](remaining-validation-progress-20261026.md#compact-records-and-actual-production-source-layout) | No migration or integration from the failed production-shaped screen. Coalescing/fallback, partial-pack coverage and whole-model results remain unqualified; do not infer tokens/s from same-file fixtures |
-| Larger useful cache or shorter allocation lifetimes | Default-off 128-slot candidate passed all 120 physical cases / 360 graphs, exact original residues, F32/canary and retirement checks. Historical replay predicts 4.899% less upload, not model speed. [Physical result](cache128-layout-20261027.json) | The old model cohort closed after A's known CPU refusal; its B arms cannot be resumed as a matched cohort. Full-cohort offline review is implemented. [Startup review 3014](cache128-startup-review-20261027.json) leaves a new A53/B128/B128/A53 cohort policy-blocked. Wider lifetime work remains incomplete; production stays 53 slots / 512 MiB |
-| Additional graph/vector/workgroup tuning | Actual shapes audited. Independent headless PLE title passed four physical width-one graphs: original and three modes, exact F32/F64 checks, single Vulkan placement and positive retirement. [Physical record](PLE-smoke-startup-20261026.md#four-graph-physical-gpu-completion) | Paired 208-graph case 2748 refused before launch at 7858/7883 against 8108 pages; exact fastest/settings restored. Timing comparison, widths two through four and actual-model acceptance remain open. Broader dual-output/GDN/small-GEMM tuning requires material cost evidence |
-
-Start future selection with workload evidence and source-wait reduction. Ready
-execution and router observation have distinct ownership and numerical gates;
-neither is justified by the losing refill screen. State-based batching follows
-checkpoint admission. Extra shader tuning follows evidence of a kernel bottleneck.
-No new experiment is started by this consolidation.
-
-The earlier 0.435–0.733 tok/s sensitivity table is conditional arithmetic for
-assumed source-wait reductions, not a prediction or measured improvement. The
-tested palette variants supplied no production gain. Larger gains still require
-less critical-path traffic, better effective I/O service, or more accepted tokens
-per verification cycle without changing the original model.
+All 22 stages are resolved in the [final current-environment ledger](final-current-environment-dispositions-20261027.md).
+The JSON preserves implementation, execution, evidence and reopening conditions
+separately. Ready/PLE variants are measured no-gain decisions; full-model and
+dependent native stages are execution unavailable. No item is an unclassified
+pending test. Missing integrations remain unimplemented, and the original
+all-proposals speed objective remains unachieved. Native validation can reopen
+only for a material input/resource/dependency change, without depending on reboot.
 
 ## Exclusions and maintenance
 

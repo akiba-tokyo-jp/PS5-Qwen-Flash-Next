@@ -1,5 +1,16 @@
 # Validation plan for remaining Flash Next proposals
 
+## Final current-environment disposition
+
+The owner's latest instruction is to execute available work and classify the rest
+as execution unavailable. The [final 22-stage ledger](final-current-environment-dispositions-20261027.md)
+now supersedes all current-status and prospective next-step wording below.
+Every stage has a finite decision; no item is waiting for user action or reboot.
+This current queue is closed with explicit execution-unavailable outcomes.
+Missing code remains unimplemented and unrun native tests remain unrun; the
+original all-implementation/native-validation speed objective is not achieved.
+Earlier case records remain historical and must not be replayed unchanged.
+
 Plan date: 2026-10-26. **This plan itself does not implement or validate proposals.**
 Execution outcomes are tracked in the [progress record](remaining-validation-progress-20261026.md).
 The owner's latest request is to review and replace the inefficient execution
