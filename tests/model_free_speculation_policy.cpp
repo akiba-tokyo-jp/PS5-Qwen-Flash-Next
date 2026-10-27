@@ -19,6 +19,11 @@ int main(){
     J policy={{"native_model_free_speculation",scope},{"native_prefill",{{"tokens",4}}},
         {"native_padded_expert_cache",J::object()}};
     qwen_app::require_model_free_speculation_policy(policy);
+    auto online=policy;online["native_model_free_speculation"]["verification_policy"]="expert-union-online-v1";
+    refused([&]{qwen_app::require_model_free_speculation_policy(online);});
+    online["native_expert_routes"]=J::object();qwen_app::require_model_free_speculation_policy(online);
+    auto wrong_online=online;wrong_online["native_model_free_speculation"]["verification_policy"]="future-reference";
+    refused([&]{qwen_app::require_model_free_speculation_policy(wrong_online);});
     for(auto it=scope.begin();it!=scope.end();++it){auto bad=policy;bad["native_model_free_speculation"].erase(it.key());
         refused([&]{qwen_app::require_model_free_speculation_policy(bad);});}
     for(auto it=proof.begin();it!=proof.end();++it){auto bad=policy;bad["native_model_free_speculation"]["complete_checkpoint_qualification"][it.key()]=nullptr;

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #pragma once
+#include "predictive_cache_policy.h"
 #include <stdexcept>
 #include <string>
 #include <nlohmann/json.hpp>
@@ -37,6 +38,7 @@ inline void require_native_validation_policy(const nlohmann::json & policy,
         require_first_generation_policy(policy, native_display);
         if(policy.contains("native_model_checkpoint_validation"))require_model_checkpoint_policy(policy);
         if(policy.contains("native_model_free_speculation"))require_model_free_speculation_policy(policy);
+        if(policy.contains("native_predictive_cache"))require_predictive_cache_policy(policy);
         if(policy.contains("native_large_cache_scope"))require_large_cache_scope(policy,true,native_display,
             policy.contains("native_prefill")?policy.at("native_prefill").at("tokens").get<unsigned>():1u);
         if(policy.contains("native_cache_layout_phase_memory"))require_large_cache_layout_phase_scope(policy,true,native_display,

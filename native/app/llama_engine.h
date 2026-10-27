@@ -3,6 +3,7 @@
 #include "session.h"
 #include "llama.h"
 #include "profile_clock.h"
+#include "online_expert_verification.h"
 
 #include <vector>
 #include <array>
@@ -25,8 +26,10 @@ struct PrefixReuseStats {
 };
 struct SpeculativeStepStats {
     bool enabled=false,controller_enabled=false;
+    bool expert_cost_enabled=false;
     std::uint32_t attempts=0,accepted=0,rejected=0,queued_bonus_samples=0;
     std::uint32_t proposal_checks=0,no_draft=0,prompt_proposals=0,generated_proposals=0;
+    std::uint32_t cost_checks=0,cost_ordinary=0,cost_width_two=0;
 };
 struct LlamaTimingStats {
     std::uint64_t process_calls = 0, process_ns = 0, synchronize_ns = 0;
@@ -62,6 +65,7 @@ public:
     // require their own finite qualification; host checks do not establish them.
     void enable_speculative_step_prototype(std::function<void(std::uint64_t)> admit);
     void enable_model_free_speculation(std::function<void(std::uint64_t)> admit);
+    void enable_expert_aware_speculation(std::function<void(std::uint64_t)> admit,ExpertVerificationHooks hooks);
     Token next_with_one_draft(llama_token draft);
     SpeculativeStepStats speculative_step_stats()const{return speculative_stats_;}
     // Called before work and after synchronized decode/checkpoint boundaries.
@@ -104,6 +108,7 @@ private:
     CheckpointValidationStats checkpoint_stats_;
     PrefixReuseStats prefix_stats_;
     SpeculativeStepStats speculative_stats_;
+    ExpertVerificationHooks expert_hooks_;
     bool speculative_bonus_ready_=false;
     std::vector<float> speculative_bonus_logits_;
     std::vector<llama_token> speculative_committed_tokens_;

@@ -8,6 +8,7 @@
 #include "padded_bank_layout.h"
 #include "padded_bank.h"
 #include "padded_cache_bridge.h"
+#include "predictive_cache_bridge.h"
 #include "large_cache_policy.h"
 #include "mapped_copy.h"
 #include "expert_policy.h"
@@ -265,11 +266,17 @@ struct CompletedRouteEvidence {
     std::vector<qwen_app::CompletedExpertRoute> rows;
     std::uint64_t calls=0,unique=0,selected=0,hits=0,misses=0,uploaded=0,advice=0;
     bool complete=false;
+    bool predictive=false;
+    std::uint64_t predictive_bytes=0;
     std::string error;
 };
 
+static std::uint64_t predictive_cache_bytes() {
+    qwen_predictive_cache_stats p{};qwen_app_predictive_cache_counters(&p);return p.logical_bytes;
+}
+
 static CompletedRouteEvidence completed_route_evidence(const qwen_app::LlamaEngine & engine,
-        std::uint64_t before_calls,const qwen_app::ExpertCacheMetrics & before) {
+        std::uint64_t before_calls,const qwen_app::ExpertCacheMetrics & before,std::uint64_t before_predictive) {
     CompletedRouteEvidence result;
     try {
     const auto calls=engine.timing_stats().process_calls;
@@ -286,7 +293,10 @@ static CompletedRouteEvidence completed_route_evidence(const qwen_app::LlamaEngi
     }
     const auto hits=after->hits-before.hits,misses=after->misses-before.misses;
     const auto uploaded=after->uploaded_bytes-before.uploaded_bytes;
-    if(hits+misses!=result.unique||uploaded!=misses*9830400ull)
+    const auto predictive_after=predictive_cache_bytes();
+    if(predictive_after<before_predictive)throw qwen_app::ExpertRouteCaptureError("Predictive transfer counter moved backwards");
+    result.predictive=qwen_app_predictive_cache_enabled();result.predictive_bytes=predictive_after-before_predictive;
+    if(hits+misses!=result.unique||uploaded!=misses*9830400ull+result.predictive_bytes)
         throw qwen_app::ExpertRouteCaptureError("Complete expert routes disagree with actual cache transfers");
     result.calls=calls-before_calls;result.hits=hits;result.misses=misses;result.uploaded=uploaded;
     result.advice=after->prefetch_advice_bytes-before.prefetch_advice_bytes;result.complete=true;
@@ -305,7 +315,7 @@ static Json completed_route_report(const CompletedRouteEvidence & result) {
         std::vector<std::uint16_t> ids(row.ids.begin(),row.ids.begin()+10*row.tokens);
         events.push_back({{"layer",row.layer},{"tokens",row.tokens},{"ids",ids}});
     }
-    return {{"schema","ps5-qwen-completed-expert-routes-v1"},{"process_calls",result.calls},
+    Json report={{"schema","ps5-qwen-completed-expert-routes-v1"},{"process_calls",result.calls},
         {"complete",true},{"capture_failed",false},
         {"layers_per_process",48},{"experts",512},{"experts_per_token",10},
         {"cache_slots",qwen_app::selected_padded_cache_geometry().active_slots},
@@ -314,6 +324,11 @@ static Json completed_route_report(const CompletedRouteEvidence & result) {
         {"prefetch_advice_bytes",result.advice},
         {"all_existing_downloads_and_synchronizations_returned",true},{"additional_GPU_downloads",0},
         {"routing_and_cache_policy_unchanged",true},{"records",std::move(events)}};
+    if(result.predictive)report.update({{"schema","ps5-qwen-completed-expert-routes-v2"},
+        {"routing_and_cache_policy_unchanged",false},{"original_routing_unchanged",true},
+        {"predictive_cache_enabled",true},{"predictive_uploaded_bytes",result.predictive_bytes},
+        {"demand_uploaded_bytes",result.uploaded-result.predictive_bytes}});
+    return report;
 }
 
 static std::string model_file(const std::string & receipt, const std::string & name) {
@@ -1653,6 +1668,7 @@ int main(int argc, char ** argv) {
             qwen_native_stage("source_pipeline_CPU_preflight_passed_before_Vulkan GPU_not_started=1");
         }
         const bool large_cache_candidate=policy.contains("native_large_cache_scope");
+        const bool predictive_cache_candidate=policy.contains("native_predictive_cache");
         const bool speculative_model_candidate=policy.contains("native_model_free_speculation");
         if(speculative_model_candidate) {
             const auto &proof=policy.at("native_model_free_speculation").at("complete_checkpoint_qualification");
@@ -1964,6 +1980,7 @@ int main(int argc, char ** argv) {
             if(cache_bytes!=cache_geometry.cache_bytes())
                 throw std::runtime_error("Padded cache requires its complete selected request");
             qwen_app::configure_native_padded_cache(true,memory_observation.device_buffer_alignment);
+            if(predictive_cache_candidate)qwen_app_configure_predictive_cache(true);
             qwen_native_stage("owned_padded_cache_admitted_before_context_creation");
         }
         screen.state = "admitting inference context";
@@ -2060,6 +2077,7 @@ int main(int argc, char ** argv) {
             }
             const auto first_performance = performance_snapshot(*engine);
             const auto first_cache=engine->expert_cache_metrics();
+            const auto first_predictive=predictive_cache_bytes();
             if(expert_routes){
                 if(!first_cache)throw std::runtime_error("Actual expert cache counters are required before route capture");
                 if(!qwen_app::completed_expert_routes_pending())qwen_app::begin_completed_expert_routes();
@@ -2087,7 +2105,7 @@ int main(int argc, char ** argv) {
                 performance_difference(first_performance, *engine));
             if(expert_routes){
                 completed_expert_reports[0]=completed_route_evidence(*engine,
-                    first_performance.at("process_calls").get<std::uint64_t>(),*first_cache);
+                    first_performance.at("process_calls").get<std::uint64_t>(),*first_cache,first_predictive);
             }
             Json metrics{{"prompt_tokens", result.metrics.prompt_tokens}, {"generated_tokens", result.metrics.generated_tokens},
                 {"prefill_ms", result.metrics.prefill_ms}, {"total_ms", result.metrics.total_ms},
@@ -2170,8 +2188,32 @@ int main(int argc, char ** argv) {
                     };
                     const auto external_performance = performance_snapshot(*engine);
                     const auto external_cache=engine->expert_cache_metrics();
-                    if(speculative_model_candidate&&ordinal==2)
-                        engine->enable_model_free_speculation(admit_complete_checkpoint);
+                    const auto external_predictive=predictive_cache_bytes();
+                    if(speculative_model_candidate&&ordinal==2) {
+                        if(policy.at("native_model_free_speculation").contains("verification_policy")) {
+                            struct OnlineCostState {
+                                qwen_app::OnlineExpertVerification planner;
+                                std::uint64_t source_before=0;
+                            };
+                            auto online=std::make_shared<OnlineCostState>();
+                            qwen_app::ExpertVerificationHooks hooks;
+                            hooks.before_process=[online] {
+                                online->source_before=qwen_app::native_model_source_stats().read_ns;
+                            };
+                            hooks.completed_ordinary=[online](int token,std::uint64_t elapsed) {
+                                const auto after=qwen_app::native_model_source_stats().read_ns;
+                                if(after<online->source_before||!elapsed)
+                                    throw std::runtime_error("Completed online source timing is inconsistent");
+                                online->planner.observe(token,qwen_app::last_completed_single_token_routes(),
+                                    double(elapsed)/1e9,double(std::min(after-online->source_before,elapsed))/1e9);
+                            };
+                            hooks.choose=[online](int pending,int draft){return online->planner.choose(pending,draft);};
+                            hooks.verified=[online](bool accepted,double capture,double restore) {
+                                online->planner.verified(accepted,capture,restore);
+                            };
+                            engine->enable_expert_aware_speculation(admit_complete_checkpoint,std::move(hooks));
+                        }else engine->enable_model_free_speculation(admit_complete_checkpoint);
+                    }
                     if(checkpoint_model_candidate&&ordinal==2) {
                         engine->enable_checkpoint_validation(admit_complete_checkpoint,
                             qwen_app::completed_expert_route_cursor,qwen_app::compare_completed_expert_route_ranges);
@@ -2226,6 +2268,8 @@ int main(int argc, char ** argv) {
                             {"attempts",s.attempts},{"accepted",s.accepted},{"rejected",s.rejected},
                             {"queued_bonus_samples",s.queued_bonus_samples},{"proposal_checks",s.proposal_checks},
                             {"no_draft",s.no_draft},{"prompt_proposals",s.prompt_proposals},{"generated_proposals",s.generated_proposals},
+                            {"expert_cost_enabled",s.expert_cost_enabled},{"cost_checks",s.cost_checks},
+                            {"cost_ordinary",s.cost_ordinary},{"cost_width_two",s.cost_width_two},
                             {"request_reset_completed",generated.request_reset_completed}});
                     }
                     if(prefix_model_validation) {
@@ -2245,7 +2289,7 @@ int main(int argc, char ** argv) {
                     }
                     if(expert_routes){
                         completed_expert_reports.at(ordinal)=completed_route_evidence(*engine,
-                            external_performance.at("process_calls").get<std::uint64_t>(),*external_cache);
+                            external_performance.at("process_calls").get<std::uint64_t>(),*external_cache,external_predictive);
                     }
                     write_fresh_report(prefix + ".performance",
                         performance_difference(external_performance, *engine));
@@ -2306,6 +2350,7 @@ int main(int argc, char ** argv) {
             require_model_CPU_budget();
             if (display->failed()) throw std::runtime_error("Native presentation failed before model retirement");
             // All requests and the listener completed before model retirement.
+            if(predictive_cache_candidate)qwen_app_complete_predictive_expert();
             qwen_native_driver_begin();
             engine.reset(); llama_free(context); context = nullptr; llama_model_free(model); model = nullptr;
             qwen_native_driver_complete();
@@ -2363,9 +2408,23 @@ int main(int argc, char ** argv) {
                     {"schema","ps5-qwen-causal-width-two-result-v1"},{"pid",getpid()},{"run_id",request.id},
                     {"requests",completed_speculative_requests},{"all_control_token_IDs_and_bytes_exact",true},
                     {"target_width_two_exercised",completed_speculative_requests.at(1).at("attempts").get<std::uint32_t>()>0},
+                    {"expert_cost_policy",policy.at("native_model_free_speculation").value("verification_policy","fixed-width-two")},
                     {"all_model_source_and_checkpoint_owners_retired",true},{"device_ledger_live_bytes",device_stats.live},
                     {"cache_condition_comparison_is_not_speed_qualification",true},{"speedup_qualified",false},
                     {"complete_checkpoint_qualification_SHA256","e9d0db6bfb5b2d090e021c972cf14728f3a7d96b956c03b08946a60d6fdb50d7"}});
+            }
+            if(predictive_cache_candidate) {
+                qwen_predictive_cache_stats p{};qwen_app_predictive_cache_counters(&p);
+                if(p.loads!=p.useful+p.unused||p.loads!=source_stats.predictive_experts||device_stats.live)
+                    throw std::runtime_error("Predictive cache evidence lacks completed original reads or retired owners");
+                write_fresh_report(startup.admission_report+".predictive-cache",{
+                    {"schema","ps5-qwen-predictive-cache-result-v1"},{"pid",getpid()},{"run_id",request.id},
+                    {"proposals",p.proposals},{"loads",p.loads},{"useful_next_layer",p.useful},
+                    {"unused_next_layer",p.unused},{"ineligible",p.ineligible},{"logical_bytes",p.logical_bytes},
+                    {"foreground_wait_ns",source_stats.predictive_wait_ns},{"worker_read_ns",source_stats.predictive_read_ns},
+                    {"all_read_jobs_completed",true},{"actual_bank_leases_retired",true},
+                    {"all_model_owners_retired",true},{"device_ledger_live_bytes",device_stats.live},
+                    {"speedup_qualified",false}});
             }
             if(expert_routes){
                 const std::array<const char *,3> suffixes{{".first",".demo1",".demo2"}};

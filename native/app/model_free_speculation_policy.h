@@ -7,15 +7,20 @@ inline void require_model_free_speculation_policy(const nlohmann::json &policy) 
     using J=nlohmann::json;
     const auto &p=policy.at("native_model_free_speculation");
     const auto &proof=p.at("complete_checkpoint_qualification");
-    const J expected={{"schema","ps5-qwen-causal-width-two-v1"},{"enabled",true},{"target_batch_tokens",2},
+    J expected={{"schema","ps5-qwen-causal-width-two-v1"},{"enabled",true},{"target_batch_tokens",2},
         {"candidate_request_ordinal",2},
         {"draft_evidence","two_consistent_past_matches"},{"maximum_attempts_per_process",32},
         {"maximum_generated_tokens_per_request",32},{"context_tokens",256},{"prefill_tokens",4},
         {"active_cache_slots",53},{"learned_draft_model",false},{"greedy_target_verification",true},
         {"complete_state_restore_on_rejection",true},{"automatic_retries",0},
         {"complete_checkpoint_qualification",proof},{"performance_adoption_enabled",false}};
+    if(p.contains("verification_policy")) {
+        expected["verification_policy"]="expert-union-online-v1";
+        if(!policy.contains("native_expert_routes"))
+            throw std::runtime_error("Online expert costs require the completed original route observer");
+    }
     if(p!=expected||policy.contains("native_large_cache_scope")||policy.contains("native_prefix_validation")||
-       policy.contains("native_model_checkpoint_validation")||!policy.contains("native_padded_expert_cache")||
+       policy.contains("native_model_checkpoint_validation")||policy.contains("native_predictive_cache")||!policy.contains("native_padded_expert_cache")||
        policy.at("native_prefill").at("tokens")!=4)
         throw std::runtime_error("The independent original-precision causal width-two experimental scope is required");
     const auto run=proof.at("run_id").get<std::string>();

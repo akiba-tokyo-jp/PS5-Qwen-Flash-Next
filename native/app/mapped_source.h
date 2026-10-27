@@ -4,6 +4,7 @@
 #include "source_read_schedule.h"
 #include "padded_bank.h"
 #include "padded_cache_geometry.h"
+#include "expert_prefetch_io.h"
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -37,6 +38,7 @@ struct SourceReadStats {
     std::uint64_t coalesced_batches = 0, selected_serial_batches = 0;
     std::uint64_t direct_bank_bytes = 0, direct_bank_reads = 0, padded_scatter_bytes = 0;
     bool schedule_enabled = false;
+    std::uint64_t predictive_experts=0,predictive_wait_ns=0,predictive_read_ns=0;
 };
 struct SourceReadRequest { int fd = -1; void * target = nullptr; std::size_t bytes = 0; std::uint64_t offset = 0; };
 struct SourcePipelineTimes { std::uint64_t producer_wait_ns = 0, worker_read_ns = 0, worker_dispatch_ns = 0; };
@@ -66,6 +68,8 @@ struct SourceReadOps {
     // Native providers return Flexible availability only after the separate
     // kernel free/minimum/reserved predicate passes. CPU buffers use Direct.
     virtual std::uint64_t system_headroom() = 0;
+    // A worker must not mutate the producer's passive-admission controller.
+    virtual std::uint64_t prefetch_system_headroom(){return system_headroom();}
 };
 
 // Owns metadata and at most eight descriptors. The caller owns the aligned
@@ -303,6 +307,60 @@ public:
     void record_padded_scatter(std::size_t bytes) {
         require_completed_window();stats_.padded_scatter_bytes+=bytes;
     }
+    // Resolve all three original roles on the producer before starting one
+    // read-only job. The ordinary descriptor cache cannot change until healthy()
+    // observes completion. Cross-part/EOF envelopes simply decline prediction.
+    bool begin_expert_prefetch(const std::array<std::uintptr_t,3> &addresses,
+            const std::array<ExpertPrefetchDestination,3> &banks,int slot,
+            const std::array<std::size_t,3> &residues) {
+        require_completed_window();const auto geometry=selected_padded_cache_geometry();
+        if(!schedule_enabled_||geometry.active_slots!=53||slot<0||slot>=53)
+            fail("Predictive reads require the original admitted 53-slot schedule");
+        std::array<SourceReadRequest,3> requests{};
+        std::array<std::size_t,3> files{};std::array<SourceIdentity,3> identities{};
+        for(unsigned i=0;i<3;++i) {
+            const auto &b=banks[i];
+            if(!b.data||!b.backing||b.backing.get()!=b.data||b.bytes!=geometry.tensor_bytes()||
+               reinterpret_cast<std::uintptr_t>(b.data)%model_read_alignment||
+               b.bytes>UINTPTR_MAX-reinterpret_cast<std::uintptr_t>(b.data)||
+               !contains(addresses[i],bank_expert_bytes))fail("Predictive bank lease or original source is unowned");
+            const auto target=geometry.slot(std::size_t(slot),residues[i],b.bytes,b.alignment);
+            const auto range=std::find_if(ranges_.begin(),ranges_.end(),[&](const auto &r){
+                return addresses[i]>=r.at&&addresses[i]<r.at+r.bytes;});
+            files[i]=range->file;identities[i]=files_[files[i]].identity;
+            const auto offset=range->offset+addresses[i]-range->at;
+            if(offset%model_read_alignment!=residues[i])fail("Predictive bank/source residues differ");
+            std::uint64_t aligned=0;std::size_t bytes=0;
+            if(!padded_source_envelope(offset,files_[files[i]].bytes,aligned,bytes))return false;
+            if(bytes!=target.requested_bytes)fail("Predictive source envelope changed");
+            requests[i]={-1,static_cast<unsigned char *>(b.data)+target.aligned_write_offset,bytes,aligned};
+            for(unsigned j=0;j<i;++j) {
+                const auto a=reinterpret_cast<std::uintptr_t>(requests[i].target);
+                const auto c=reinterpret_cast<std::uintptr_t>(requests[j].target);
+                if(a<c+requests[j].bytes&&c<a+requests[i].bytes)fail("Predictive role destinations overlap");
+            }
+        }
+        for(unsigned i=0;i<3;++i)requests[i].fd=handle(files[i]);
+        if(!prefetch_)prefetch_=std::make_unique<ExpertPrefetchIO>();
+        auto result=std::make_shared<std::uint64_t>(0);auto *ops=&ops_;
+        try {
+            prefetch_->submit([ops,requests,identities,banks,result] {
+                const auto start=ProfileClock::now();
+                for(unsigned i=0;i<3;++i) {
+                    if(ops->prefetch_system_headroom()<model_read_system_reserve+model_read_flexible_metadata_margin||
+                       ops->identity(requests[i].fd)!=identities[i])
+                        throw std::runtime_error("Predictive source identity or memory reserve failed; leases retained");
+                    const auto &r=requests[i];
+                    if(ops->read_at(r.fd,r.target,r.bytes,r.offset)!=std::int64_t(r.bytes)||
+                       ops->identity(r.fd)!=identities[i])
+                        throw std::runtime_error("Predictive original read is incomplete; no retry or fallback");
+                }
+                *result=profile_elapsed_ns(start);
+            });
+        }catch(...){failed_=true;throw;}
+        prefetch_result_=std::move(result);prefetch_pending_=true;return true;
+    }
+    void complete_expert_prefetch() {healthy();}
     bool try_owned_bank_reads(const std::array<std::uintptr_t,2> &addresses,unsigned count,
             const int *slots,std::size_t residue,void *bank,std::size_t capacity,std::size_t alignment) {
         require_completed_window();
@@ -498,9 +556,25 @@ private:
     std::uint64_t trace_seen_ = 0;
     bool trace_enabled_ = false, trace_replayed_ = false;
     bool schedule_enabled_ = false;
+    std::unique_ptr<ExpertPrefetchIO> prefetch_;
+    std::shared_ptr<std::uint64_t> prefetch_result_;
+    bool prefetch_pending_=false;
     [[noreturn]] void fail(const char * message) { failed_ = true; throw std::runtime_error(message); }
     void healthy() {
         if (failed_ || owner_ != std::this_thread::get_id()) fail("The bounded source reader is quarantined or has another producer");
+        if(prefetch_pending_) {
+            const auto start=ProfileClock::now();
+            try{prefetch_->complete();}catch(...){failed_=true;throw;}
+            const auto wait=profile_elapsed_ns(start);
+            stats_.predictive_wait_ns+=wait;stats_.read_ns+=wait;
+            stats_.worker_read_ns+=*prefetch_result_;
+            stats_.predictive_read_ns+=*prefetch_result_;++stats_.predictive_experts;
+            stats_.physical_read_calls+=3;stats_.physical_read_bytes+=3*padded_bank_stride;
+            stats_.bytes+=3*bank_expert_bytes;stats_.chunks+=3;stats_.completed_windows+=3;
+            stats_.direct_bank_reads+=3;stats_.direct_bank_bytes+=3*bank_expert_bytes;
+            stats_.maximum_chunk=std::max<std::uint64_t>(stats_.maximum_chunk,padded_bank_stride);
+            prefetch_pending_=false;prefetch_result_.reset();
+        }
     }
     std::uint64_t rounded(std::uint64_t bytes) {
         if (bytes > (512ull << 30)) fail("Source mapping size exceeds its bound");

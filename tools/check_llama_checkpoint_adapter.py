@@ -14,6 +14,7 @@ def main():
     sources=[ROOT/'native/app/llama_engine.cpp',ROOT/'native/app/model_checkpoint.cpp',ROOT/'tests/llama_checkpoint_adapter.cpp']
     inputs=sources+[ROOT/'native/app/llama_engine.h',ROOT/'native/app/model_checkpoint.h',ROOT/'native/app/model_free_draft.h',
         ROOT/'native/app/padded_cache_geometry.h',ROOT/'native/app/model_free_speculation_policy.h',
+        ROOT/'native/app/online_expert_verification.h',ROOT/'native/app/expert_verification_cost.h',
         ROOT/'tests/model_free_speculation_policy.cpp',sampler,inc,Path(__file__)];fixed=[record(p)for p in inputs]
     exe=a.out/'checkpoint-adapter-tests.exe';command=[str(host/'clang++.exe'),'-std=c++17','-O2','-Wall','-Wextra','-Werror','-I',str(ROOT/'native/app'),'-I',str(up/'include'),'-I',str(up/'ggml/include'),'-I',str(a.out),*map(str,sources),'-o',str(exe)]
     env=dict(os.environ,PATH=str(host)+os.pathsep+os.environ.get('PATH',''));results=[]
@@ -21,7 +22,7 @@ def main():
         'prefix-positive','prefix-miss','prefix-short-restore','prefix-missing-PLE','prefix-no-budget','prefix-wrong-model','prefix-observer-failure',
         'spec-accepted','spec-rejected','spec-discard','spec-target-EOG','spec-invalid','spec-short-restore','spec-missing-PLE',
         'spec-missing-row','spec-unknown-sync','spec-process-failure','spec-wrong-model','spec-no-budget',
-        'auto-accepted','auto-rejected','auto-no-draft','auto-repeat','auto-limit')]:
+        'auto-accepted','auto-rejected','auto-no-draft','auto-repeat','auto-limit','auto-expert-ordinary','auto-expert-accepted')]:
         r=subprocess.run(c,capture_output=True,timeout=120,env=env);(a.out/(name+'.private.log')).write_bytes(r.stdout+r.stderr)
         if r.returncode:raise RuntimeError(name+': '+r.stderr.decode(errors='replace')[-3000:])
         if name!='compile':results.append(json.loads(r.stdout))

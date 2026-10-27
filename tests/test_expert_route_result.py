@@ -21,6 +21,31 @@ class RouteResultTests(unittest.TestCase):
 
     def validate(self,r,result,width=4):return validate_routes(r,result,width=width,pid=123,run_id='a'*32,cold=True)
 
+    def test_predictive_transfer_is_additional_not_hidden_in_demand(self):
+        record,result=self.fixture();extra=3*9830400
+        record.update(schema='ps5-qwen-completed-expert-routes-v2',routing_and_cache_policy_unchanged=False,
+            original_routing_unchanged=True,predictive_cache_enabled=True,predictive_uploaded_bytes=extra,
+            demand_uploaded_bytes=record['uploaded_bytes'],uploaded_bytes=record['uploaded_bytes']+extra)
+        args=dict(width=4,pid=123,run_id='a'*32,cold=True,predictive_cache=True)
+        self.assertEqual(validate_routes(record,result,**args)['uploaded_bytes'],record['uploaded_bytes'])
+        with self.assertRaises(ValueError):self.validate(record,result)
+        for key in ('uploaded_bytes','demand_uploaded_bytes','predictive_uploaded_bytes'):
+            bad=copy.deepcopy(record);bad[key]+=1
+            with self.assertRaises(ValueError):validate_routes(bad,result,**args)
+
+    def test_speculative_rows_count_rejected_branch_and_accepted_union(self):
+        record,result=self.fixture();result['metrics']['generated_tokens']=4
+        tokens=[4,3,1,2,2,1]  # Two verification batches: one accepted, one rejected.
+        rows=[dict(layer=l,tokens=t,ids=list(range(10))*t)for t in tokens for l in range(48)]
+        record.update(records=rows,process_calls=len(tokens),selected_indices=sum(10*r['tokens']for r in rows),
+            unique_selected_experts=10*len(rows),cache_hits=0,cache_misses=10*len(rows),uploaded_bytes=9830400*10*len(rows))
+        count=dict(attempts=2,accepted=1,rejected=1,queued_bonus_samples=1)
+        args=dict(width=4,pid=123,run_id='a'*32,cold=True,speculative_validation=count)
+        self.assertEqual(validate_routes(record,result,**args)['process_calls'],6)
+        bad=copy.deepcopy(record)
+        for row in bad['records'][3*48:4*48]:row['tokens']=1;row['ids']=list(range(10))
+        with self.assertRaises(ValueError):validate_routes(bad,result,**args)
+
     def test_partial_batches_single_token_generation_and_output_limit(self):
         for width in (1,2,4):
             for reason in ('end_of_generation','output_token_limit'):

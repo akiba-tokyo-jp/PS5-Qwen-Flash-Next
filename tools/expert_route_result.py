@@ -3,13 +3,20 @@
 """Validate completed selected-ID metadata; never execute learned inference."""
 
 
-def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=None,prefix_validation=None,expected_slots=53):
+def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=None,prefix_validation=None,expected_slots=53,
+                    predictive_cache=False,speculative_validation=None):
+    if type(predictive_cache)is not bool:raise ValueError('Predictive route scope must be explicitly bound')
     if type(expected_slots)is not int or expected_slots not in (53,128):raise ValueError('Unsupported independently bound cache capacity')
     expected=dict(schema='ps5-qwen-completed-expert-routes-v1',complete=True,capture_failed=False,
         pid=pid,run_id=run_id,cache_reset_before_request=cold,layers_per_process=48,experts=512,
         experts_per_token=10,cache_slots=expected_slots,maximum_records=4608,
         all_existing_downloads_and_synchronizations_returned=True,additional_GPU_downloads=0,
         routing_and_cache_policy_unchanged=True)
+    if predictive_cache:
+        if expected_slots!=53 or checkpoint_validation is not None or prefix_validation is not None or speculative_validation is not None:
+            raise ValueError('Predictive caching requires its independent 53-slot scope')
+        expected.update(schema='ps5-qwen-completed-expert-routes-v2',routing_and_cache_policy_unchanged=False,
+            original_routing_unchanged=True,predictive_cache_enabled=True)
     if type(width)is not int or width not in (1,2,4):raise ValueError('Unsupported route capture width')
     if any(type(record.get(k))is not type(v)or record[k]!=v for k,v in expected.items()):
         raise ValueError('Completed expert-route scope differs')
@@ -28,6 +35,22 @@ def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=
         if checkpoint_validation is not None or width!=4:raise ValueError('Prefix routes require an independent four-token comparison')
         if prefix_validation.get('pid')!=pid or prefix_validation.get('run_id')!=run_id:raise ValueError('Prefix route owner differs')
         tokens=prefix_process_geometry(result,prefix_validation)
+    if speculative_validation is not None:
+        from model_free_speculation_result import counters
+        if width!=4 or checkpoint_validation is not None or prefix_validation is not None:
+            raise ValueError('Speculative routes require their independent original prefill-four scope')
+        count=counters(speculative_validation)
+        rows=record.get('records')
+        if type(rows)is not list or len(rows)%48:
+            raise ValueError('Speculative route groups must cover complete model layers')
+        actual=[r.get('tokens')if isinstance(r,dict)else None for r in rows[::48]]
+        prefill=[min(width,prompt-n)for n in range(0,prompt,width)]
+        decode=actual[len(prefill):]
+        ordinary=generated-(reason=='output_token_limit')-2*count['accepted']
+        if (ordinary<0 or actual[:len(prefill)]!=prefill or any(type(n)is not int or n not in(1,2)for n in decode)or
+            decode.count(1)!=ordinary or decode.count(2)!=count['attempts']):
+            raise ValueError('Speculative routes omit accepted work or rejected target batches')
+        tokens=actual
     calls=len(tokens);rows=record.get('records')
     if type(record.get('process_calls'))is not int or record['process_calls']!=calls or type(rows)is not list or len(rows)!=48*calls:
         raise ValueError('Expert routes do not cover the complete request')
@@ -45,8 +68,15 @@ def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=
         unique+=len(set(ids));selected+=len(ids)
     for name in ('selected_indices','unique_selected_experts','cache_hits','cache_misses','uploaded_bytes','prefetch_advice_bytes'):
         if type(record.get(name))is not int or not 0<=record[name]<2**63:raise ValueError('Invalid expert-route counters')
+    predictive_bytes=0
+    if predictive_cache:
+        predictive_bytes=record.get('predictive_uploaded_bytes')
+        demand=record.get('demand_uploaded_bytes')
+        if (type(predictive_bytes)is not int or not 0<=predictive_bytes<2**63 or predictive_bytes%9830400 or
+            type(demand)is not int or demand!=record['cache_misses']*9830400):
+            raise ValueError('Predictive and demand transfers must be counted separately and in full')
     if (record['selected_indices']!=selected or record['unique_selected_experts']!=unique or
-        record['cache_hits']+record['cache_misses']!=unique or record['uploaded_bytes']!=record['cache_misses']*9830400 or
+        record['cache_hits']+record['cache_misses']!=unique or record['uploaded_bytes']!=record['cache_misses']*9830400+predictive_bytes or
         record['prefetch_advice_bytes']!=0):raise ValueError('Selected IDs disagree with the actual bounded cache transfers')
     return dict(process_calls=calls,layer_records=len(rows),selected_indices=selected,
         unique_selected_experts=unique,cache_hits=record['cache_hits'],cache_misses=record['cache_misses'],
