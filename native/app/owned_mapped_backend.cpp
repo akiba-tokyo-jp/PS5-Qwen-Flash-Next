@@ -4,9 +4,16 @@
 #include "padded_bank.h"
 #include "padded_cache_geometry.h"
 #include "split_bank_bridge.h"
+#include "expert_prefetch_io.h"
+#include "predictive_cache_bridge.h"
 #include "ggml-backend-impl.h"
 #include "ggml-vulkan-common.h"
 #include <type_traits>
+
+namespace qwen_app {
+bool start_native_expert_prefetch(const std::array<std::uintptr_t,3>&,
+    const std::array<ExpertPrefetchDestination,3>&,int,const std::array<std::size_t,3>&);
+}
 
 namespace {
 template<class Handle> std::uint64_t split_allocation_identity(Handle handle) {
@@ -66,6 +73,29 @@ extern "C" int ggml_app_vk_probe_owned_bank(ggml_tensor *tensor,
     if(tensor->buffer->context!=owner||owner->dev_buffer!=lease||(result!=0&&result!=1))
         throw std::runtime_error("Padded-bank lease changed; backing retained");
     return result;
+}
+
+extern "C" bool qwen_app_begin_predictive_expert(ggml_tensor *const *banks,
+        const void *const *sources,int slot,const std::size_t *residues) {
+    if(!banks||!sources||!residues||!qwen_app_predictive_cache_enabled())
+        throw std::invalid_argument("The explicit predictive bank owner is required");
+    std::array<qwen_app::ExpertPrefetchDestination,3> destinations{};
+    std::array<std::uintptr_t,3> addresses{};std::array<std::size_t,3> offsets{};
+    for(unsigned i=0;i<3;++i) {
+        struct Capture {ggml_tensor *tensor;qwen_app::ExpertPrefetchDestination *destination;};
+        Capture capture{banks[i],&destinations[i]};
+        const auto result=ggml_app_vk_probe_owned_bank(banks[i],
+            [](void *data,std::size_t bytes,std::uint64_t,std::size_t alignment,void *opaque) {
+                const auto &c=*static_cast<Capture *>(opaque);
+                auto *owner=static_cast<ggml_backend_vk_buffer_context *>(c.tensor->buffer->context);
+                const auto allocation=owner->dev_buffer;
+                *c.destination={data,bytes,alignment,std::shared_ptr<void>(allocation,data)};
+                return 0;
+            },&capture);
+        if(result)return false;
+        addresses[i]=reinterpret_cast<std::uintptr_t>(sources[i]);offsets[i]=residues[i];
+    }
+    return qwen_app::start_native_expert_prefetch(addresses,destinations,slot,offsets);
 }
 
 extern "C" int ggml_app_vk_probe_owned_split_bank(ggml_tensor *tensor,unsigned group,

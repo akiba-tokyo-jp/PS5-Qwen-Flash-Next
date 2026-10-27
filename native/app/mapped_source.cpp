@@ -9,6 +9,7 @@
 #include "source_contention.h"
 #include "direct_metadata.h"
 #include "logical_source_bridge.h"
+#include "predictive_cache_bridge.h"
 #include <ps5platform/kernel.h>
 #include <ps5platform/heap.h>
 #include <atomic>
@@ -89,6 +90,9 @@ public:
     std::uint64_t system_headroom() override {
         return qwen_app::qualified_system_headroom(qwen_app::admit_native_system_memory());
     }
+    std::uint64_t prefetch_system_headroom() override {
+        return qwen_app::qualified_system_headroom(qwen_app::observe_native_system_memory());
+    }
 };
 NativeReads ops;
 std::unique_ptr<qwen_app::MappedSourceReader> reader;
@@ -119,9 +123,19 @@ void start_native_model_sources(std::vector<SourceFile> files, std::vector<Logic
     active.store(true, std::memory_order_release);
 }
 SourceReadStats native_model_source_stats() { return required().stats(); }
+bool start_native_expert_prefetch(const std::array<std::uintptr_t,3> &sources,
+        const std::array<ExpertPrefetchDestination,3> &banks,int slot,
+        const std::array<std::size_t,3> &residues) {
+    if(!qwen_app_predictive_cache_enabled()||!compute_limits.load()||!parallel_ready.load())
+        throw std::runtime_error("Predictive reads require the explicit native cache and compute admission");
+    return required().begin_expert_prefetch(sources,banks,slot,residues);
+}
 SourceReadRequest begin_native_metadata_window(const std::string & path) {
     required().require_completed_window();ops.require_metadata_idle();
     return required().begin_metadata_window(path);
+}
+extern "C" void qwen_app_complete_predictive_expert() {
+    if(qwen_app_predictive_cache_enabled())required().complete_expert_prefetch();
 }
 void end_native_metadata_window(){required().end_metadata_window();}
 void enable_native_source_schedule() {

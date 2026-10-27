@@ -190,9 +190,18 @@ int prefix_case() {
 int automatic_case() {
     llama_model model;llama_context context{&model,{},{},{}};
     const unsigned requests=scenario=="auto-repeat"?2:scenario=="auto-limit"?3:1;
+    unsigned online_before=0,online_ordinary=0,online_choices=0,online_verified=0;
     {
         qwen_app::LlamaEngine engine(&model,&context,4);engine.set_gpu_boundaries(begin,complete,retain,checkpoint);
-        engine.enable_model_free_speculation([](std::uint64_t bytes){check(bytes==16);});
+        if(scenario.rfind("auto-expert-",0)==0) {
+            qwen_app::ExpertVerificationHooks hooks;
+            hooks.before_process=[&]{++online_before;};
+            hooks.completed_ordinary=[&](int token,std::uint64_t elapsed){check(token>=0&&elapsed>0);++online_ordinary;};
+            hooks.choose=[&](int pending,int draft){check(pending>=0&&draft>=0);++online_choices;
+                return scenario=="auto-expert-ordinary"?1u:2u;};
+            hooks.verified=[&](bool accepted,double capture,double restore){check(accepted&&capture>=0&&restore==0);++online_verified;};
+            engine.enable_expert_aware_speculation([](std::uint64_t bytes){check(bytes==16);},std::move(hooks));
+        }else engine.enable_model_free_speculation([](std::uint64_t bytes){check(bytes==16);});
         for(unsigned request=0;request<requests;++request) {
             engine.tokenize("past tokens only");engine.prefill(256);std::vector<int> emitted;
             for(unsigned i=0;i<32;++i){const auto token=engine.next();if(token.end_of_generation)break;emitted.push_back(token.id);}
@@ -206,7 +215,11 @@ int automatic_case() {
             engine.finish();check(context.memory.position==0);
         }
         const auto stats=engine.speculative_step_stats();check(stats.enabled&&stats.controller_enabled&&stats.attempts<=32);
-        if(scenario=="auto-limit")check(stats.attempts==32&&stats.accepted==32&&captures==32&&restores==0);
+        if(scenario=="auto-expert-ordinary")check(stats.attempts==0&&captures==0&&processes==16&&
+            stats.expert_cost_enabled&&online_choices>0&&online_verified==0&&online_ordinary==8&&online_before==processes&&stats.cost_ordinary==online_choices);
+        else if(scenario=="auto-expert-accepted")check(stats.attempts==1&&stats.accepted==1&&captures==1&&restores==0&&
+            stats.expert_cost_enabled&&online_choices==1&&online_verified==1&&online_ordinary==6&&online_before==processes&&stats.cost_width_two==1);
+        else if(scenario=="auto-limit")check(stats.attempts==32&&stats.accepted==32&&captures==32&&restores==0);
         else if(scenario=="auto-no-draft")check(stats.attempts==0&&captures==0&&processes==10);
         else if(scenario=="auto-rejected")check(stats.attempts==1&&stats.rejected==1&&restores==1&&processes==17);
         else check(stats.attempts==requests&&stats.accepted==requests&&restores==0&&processes==15*requests);

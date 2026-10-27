@@ -196,6 +196,8 @@ void LlamaEngine::process_batch_once(const llama_token * tokens, std::uint32_t c
             throw std::runtime_error("Batch setup failed");
     }
     stage("inference_before_decode_call");
+    if(expert_hooks_.before_process)expert_hooks_.before_process();
+    const auto online_started=expert_hooks_.completed_ordinary?ProfileClock::now():ProfileClock::time_point{};
     {
         ProfileScope timing(timing_.process_ns);
         if (llama_process(context_, LLAMA_PROCESS_TYPE_DECODE, batch_) != 0)
@@ -206,6 +208,8 @@ void LlamaEngine::process_batch_once(const llama_token * tokens, std::uint32_t c
     { ProfileScope timing(timing_.synchronize_ns); llama_synchronize(context_); }
     stage("inference_decode_synchronization_completed");
     if(gpu_checkpoint_) { ProfileScope timing(timing_.checkpoint_ns); gpu_checkpoint_(); }
+    if(expert_hooks_.completed_ordinary&&count==1)
+        expert_hooks_.completed_ordinary(tokens[0],profile_elapsed_ns(online_started));
     guard();
 }
 
@@ -280,7 +284,13 @@ Token LlamaEngine::next() {
             if(draft.found&&!llama_vocab_is_eog(vocabulary_,draft.token)) {
                 if(draft.origin==DraftOrigin::prompt)++speculative_stats_.prompt_proposals;
                 else ++speculative_stats_.generated_proposals;
-                result=next_with_one_draft(draft.token);
+                unsigned width=2;
+                if(expert_hooks_.choose) {
+                    ++speculative_stats_.cost_checks;width=expert_hooks_.choose(pending_,draft.token);
+                    if(width!=1&&width!=2)throw std::runtime_error("The native expert-aware scope permits only width one or two");
+                    if(width==1)++speculative_stats_.cost_ordinary;else ++speculative_stats_.cost_width_two;
+                }
+                result=width==2?next_with_one_draft(draft.token):next_once();
             } else {++speculative_stats_.no_draft;result=next_once();}
         }else result=next_once();
         if(!result.end_of_generation)speculative_committed_tokens_.push_back(result.id);
@@ -300,7 +310,10 @@ Token LlamaEngine::next_with_one_draft(llama_token draft) {
         guard();
         {
             GpuBoundary boundary(gpu_begin_,gpu_complete_,gpu_retain_);
-            ++speculative_stats_.attempts;capture_checkpoint_in_active_epoch();
+            ++speculative_stats_.attempts;
+            auto cost_start=ProfileClock::now();capture_checkpoint_in_active_epoch();
+            const auto capture_seconds=double(profile_elapsed_ns(cost_start))/1e9;
+            double restore_seconds=0;bool draft_accepted=false;
             const llama_token pair[]={pending_,draft};
             // Two original causal target tokens, not two draft tokens. The
             // existing matrix route remains selected, independently of prefill.
@@ -324,14 +337,17 @@ Token LlamaEngine::next_with_one_draft(llama_token draft) {
                 restored_logits_.assign(first,first+count);speculative_bonus_logits_.assign(second,second+count);
                 restored_logits_active_=true;speculative_bonus_ready_=true;pending_=LLAMA_TOKEN_NULL;
                 position_+=2;++speculative_stats_.accepted;
+                draft_accepted=true;
                 stage("speculative_width_two_target_completed_draft_accepted_bonus_pinned");
             }else {
                 // The batched row is never emitted on rejection. Restore every
                 // original state owner, then evaluate the pending token normally.
-                restore_checkpoint_in_active_epoch();++speculative_stats_.rejected;
+                cost_start=ProfileClock::now();restore_checkpoint_in_active_epoch();++speculative_stats_.rejected;
+                restore_seconds=double(profile_elapsed_ns(cost_start))/1e9;
                 stage("speculative_width_two_rejected_complete_state_restored");
             }
             boundary.complete();
+            if(expert_hooks_.verified)expert_hooks_.verified(draft_accepted,capture_seconds,restore_seconds);
         }
         return next_once();
     }catch(...){failed_=true;throw;}
@@ -442,6 +458,12 @@ void LlamaEngine::enable_model_free_speculation(std::function<void(std::uint64_t
         throw std::invalid_argument("Initial causal width-two qualification retains the 53-slot control");
     enable_speculative_step_prototype(std::move(admit));
     speculative_committed_tokens_.reserve(32);speculative_stats_.controller_enabled=true;
+}
+void LlamaEngine::enable_expert_aware_speculation(std::function<void(std::uint64_t)> admit,ExpertVerificationHooks hooks) {
+    if(!hooks.before_process||!hooks.completed_ordinary||!hooks.choose||!hooks.verified)
+        throw std::invalid_argument("Expert-aware speculation requires complete causal measurement hooks");
+    enable_model_free_speculation(std::move(admit));expert_hooks_=std::move(hooks);
+    speculative_stats_.expert_cost_enabled=true;
 }
 void LlamaEngine::capture_checkpoint_in_active_epoch() {
     guard();

@@ -1,13 +1,15 @@
 --- a/src/llama-moe-cache.cpp
 +++ b/src/llama-moe-cache.cpp
-@@ -1,3 +1,6 @@
+@@ -1,3 +1,8 @@
 +#include "mapped_source_bridge.h"
 +#include "padded_cache_bridge.h"
 +#include "padded_cache_geometry.h"
++#include "predictive_cache_bridge.h"
++#include "cross_layer_forecast.h"
  #include "llama-moe-cache.h"
  
  #include "llama-impl.h"
-@@ -27,6 +30,8 @@
+@@ -27,6 +32,8 @@
  }
  
  static size_t app_advise_expert(const void * source, size_t bytes, size_t & budget) {
@@ -16,7 +18,24 @@
  #if defined(__unix__) || defined(__APPLE__)
      const long page = sysconf(_SC_PAGESIZE);
      if (page <= 0) return 0;
-@@ -258,6 +263,8 @@
+@@ -48,6 +55,16 @@
+ namespace {
+ 
+ // SLRU of the experts of a group of layers, the slot of each expert is kept in the slot map of its layer
++static std::atomic<bool> predictive_enabled{false};
++static qwen_predictive_cache_stats predictive_stats;
++extern "C" bool qwen_app_predictive_cache_enabled(){return predictive_enabled.load();}
++extern "C" void qwen_app_configure_predictive_cache(bool enabled){
++    predictive_stats={};predictive_enabled.store(enabled);
++}
++extern "C" void qwen_app_predictive_cache_counters(qwen_predictive_cache_stats *out){
++    if(out)*out=predictive_stats;
++}
++
+ struct moe_cache_slru {
+     int32_t n_expert = 0;
+     int32_t n_slots  = 0;
+@@ -258,6 +275,8 @@
          int32_t ig = -1;                    // -1 if the layer is not cached
          ggml_tensor * slot_map = nullptr;   // I32 [1, n_expert] in host memory
          std::vector<ggml_tensor *> experts; // host expert tensors, in the order of the banks
@@ -25,7 +44,30 @@
      };
  
      struct binding {
-@@ -351,7 +358,12 @@
+@@ -288,6 +307,9 @@
+ 
+     std::vector<int32_t> ids;
+     std::vector<moe_cache_slru::fill> fills;
++
++    std::unique_ptr<qwen_app::CrossLayerForecast> forecast;
++    int predicted_layer=-1,predicted_expert=-1;
+ 
+     // slot maps in host memory
+     ggml_context_ptr ctx_host;
+@@ -307,6 +329,12 @@
+                 d.buft    = bufts[i];
+             }
+         }
++        if(qwen_app_predictive_cache_enabled()) {
++            if(!qwen_app_padded_cache_enabled()||qwen_app::selected_padded_cache_geometry().active_slots!=53||
++               model.layers.size()!=48||n_expert_used!=10)
++                throw std::runtime_error("Predictive caching requires the exact original 53-slot model");
++            forecast=std::make_unique<qwen_app::CrossLayerForecast>();
++        }
+         if (devices.empty()) {
+             throw std::runtime_error("MoE cache requires a GPU backend");
+         }
+@@ -351,7 +379,12 @@
              const size_t alignment = ggml_backend_buft_get_alignment(devices[g.id].buft);
              size_t res = 0;
              for (const ggml_tensor * t : g.ref) {
@@ -39,7 +81,7 @@
              }
              return res;
          };
-@@ -402,6 +414,8 @@
+@@ -402,6 +435,8 @@
                  g.n_slots = 0;
                  continue;
              }
@@ -48,7 +90,7 @@
              g.slru.init(model.layers.size(), n_expert, g.n_slots, g.layers.size());
              n_tensors[g.id] += g.ref.size()*(1 + g.layers.size());
              n_tensors_host  += g.layers.size();
-@@ -442,6 +456,10 @@
+@@ -442,6 +477,10 @@
              for (const ggml_tensor * t : g.ref) {
                  ggml_tensor * bank = ggml_new_tensor_3d(ctx, t->type, t->ne[0], t->ne[1], g.n_slots + 1);
                  GGML_ASSERT(bank->nb[2] == t->nb[2]);
@@ -59,7 +101,7 @@
                  ggml_format_name(bank, "moe_cache.%zu.%s", ig, t->name);
                  g.banks.push_back(bank);
              }
-@@ -451,7 +469,9 @@
+@@ -451,7 +490,9 @@
                  l.experts = llama_moe_cache_layer_experts(model.layers[il]);
                  for (size_t ip = 0; ip < l.experts.size(); ++ip) {
                      ggml_tensor * bank   = g.banks[ip];
@@ -70,7 +112,7 @@
                      ggml_format_name(cached, "moe_cache.%s", l.experts[ip]->name);
                      bindings[l.experts[ip]] = { il, (int32_t) ip, cached };
                  }
-@@ -531,7 +551,12 @@
+@@ -531,7 +572,12 @@
      }
  
      ggml_backend_t backend(int32_t il) const {
@@ -84,7 +126,7 @@
      }
  
      ~impl() {
-@@ -543,6 +568,11 @@
+@@ -543,6 +589,11 @@
              return nullptr;
          }
          const layer & l = layers[il];
@@ -96,7 +138,7 @@
  
          // large batches use most experts of a layer, so they gain little from the cache and would evict the experts used in generation
          if (n_tokens == 0 || n_tokens > max_batch || std::min(n_tokens*n_expert_used, l.slot_map->ne[1]) > groups[l.ig].n_slots) {
-@@ -553,7 +583,9 @@
+@@ -553,7 +604,9 @@
  
      ggml_tensor * get_experts(const ggml_tensor * w) const {
          const auto it = bindings.find(w);
@@ -107,7 +149,7 @@
      }
  
      int64_t copy_experts(ggml_backend_t backend, const ggml_tensor * w, ggml_tensor * dst, int64_t e, int64_t last) {
-@@ -573,13 +605,13 @@
+@@ -573,13 +626,13 @@
              return 0;
          }
          int64_t n = 1;
@@ -123,12 +165,10 @@
          ggml_tensor * dst_view = ggml_view_3d(ctx_views.get(), dst,  dst->ne[0],  dst->ne[1],  n, dst->nb[1],  dst->nb[2],  e*dst->nb[2]);
          ggml_backend_view_init(src_view);
          ggml_backend_view_init(dst_view);
-@@ -589,6 +621,28 @@
-         stats_copy.bytes += ggml_nbytes(src_view);
- 
+@@ -591,11 +644,75 @@
          return n;
-+    }
-+
+     }
+ 
 +    static void scatter_padded(ggml_tensor *bank,const void *source,size_t first_slot,size_t count,size_t residue) {
 +        const size_t total=count*qwen_app::bank_expert_bytes;
 +        if(!count||first_slot>=qwen_app::selected_padded_cache_geometry().active_slots||count>qwen_app::selected_padded_cache_geometry().active_slots-first_slot||!qwen_app_model_source_range(source,total))
@@ -149,10 +189,59 @@
 +            }
 +            qwen_app_model_source_chunk_completed();done+=part;
 +        }
-     }
- 
++    }
++
++    void predict_next_expert(int32_t il,group &g) {
++        if(!forecast)return;
++        if(predicted_layer>=0) {
++            if(predicted_layer==il&&std::find(ids.begin(),ids.end(),predicted_expert)!=ids.end())++predictive_stats.useful;
++            else ++predictive_stats.unused;
++            predicted_layer=predicted_expert=-1;
++        }
++        forecast->observe(unsigned(il),unsigned(ids.size()/10),ids.data(),ids.size());
++        if(ids.size()!=10||il>=47||layers[il+1].ig!=layers[il].ig)return;
++        const auto expert=forecast->predict(unsigned(il+1),g.slru.key_of);
++        if(expert<0)return;
++        ++predictive_stats.proposals;
++        if(!g.slru.adaptive||g.banks.size()!=3||layers[il+1].experts.size()!=3)
++            throw std::runtime_error("Predictive caching requires the actual three original BF16 banks and LFU policy");
++        // policy.victim protects every Expert in the just-selected current
++        // route. The predicted slot is never used by the overlapping graph.
++        const auto slot=g.slru.policy.victim(g.slru.key_of,il,g.slru.uniq);
++        if(slot<0){++predictive_stats.ineligible;return;}
++        const auto &next=layers[il+1];
++        const void *sources[3];std::size_t residues[3];
++        for(unsigned role=0;role<3;++role) {
++            const auto *w=next.experts[role];
++            if(w->type!=GGML_TYPE_BF16||w->nb[2]!=qwen_app::bank_expert_bytes||w->ne[2]!=512)
++                throw std::runtime_error("Predicted Expert precision or layout differs");
++            sources[role]=static_cast<const uint8_t *>(w->data)+expert*w->nb[2];
++            residues[role]=bindings.at(w).cached->view_offs;
++        }
++        if(!qwen_app_begin_predictive_expert(g.banks.data(),sources,slot,residues)) {
++            ++predictive_stats.ineligible;return;
++        }
++        // All source/destination eligibility is decided before this metadata
++        // publication. The next copy must observe positive read completion.
++        const auto old=g.slru.key_of[slot];
++        if(old>=0)g.slru.slot_map[old/512][old%512]=-1;
++        g.slru.key_of[slot]=(il+1)*512+expert;
++        g.slru.slot_map[il+1][expert]=slot;g.slru.move(slot,false);
++        predicted_layer=il+1;predicted_expert=expert;
++        ++predictive_stats.loads;predictive_stats.logical_bytes+=3*qwen_app::bank_expert_bytes;
++        app_upload.fetch_add(3*qwen_app::bank_expert_bytes,std::memory_order_relaxed);
++    }
++
      bool copy(ggml_backend_t backend, const ggml_tensor * src, ggml_tensor * dst, ggml_cgraph * graph) {
-@@ -656,6 +710,50 @@
+         const auto it = layer_of.find(src);
+         if (it == layer_of.end()) {
+             return false;
+         }
++        if(forecast)qwen_app_complete_predictive_expert();
+         const int32_t il = it->second;
+         const layer & l = layers[il];
+         group & g = groups[l.ig];
+@@ -656,6 +773,50 @@
                  while (i + n < fills.size() && fills[i + n].expert == fills[i].expert + (int32_t) n && fills[i + n].slot == fills[i].slot + (int32_t) n) {
                      n++;
                  }
@@ -203,7 +292,18 @@
                  ggml_backend_tensor_set_async(backend, bank, (const uint8_t *) w->data + fills[i].expert*expert_size, fills[i].slot*expert_size, n*expert_size);
                  bytes += n*expert_size;
                  i += n;
-@@ -734,3 +832,5 @@
+@@ -673,6 +834,10 @@
+             app_advice.fetch_add(advice, std::memory_order_relaxed);
+         }
+ 
++        // Start at a completed upload boundary, before publishing this slot
++        // map. The worker overlaps the following GPU split; any ordinary source
++        // operation drains it before touching descriptors or shared I/O state.
++        predict_next_expert(il,g);
+         // the next copy synchronizes the backend before it changes the slot map again
+         ggml_backend_tensor_set_async(backend, dst, src->data, 0, ggml_nbytes(src));
+ 
+@@ -734,3 +899,5 @@
      }
      return res;
  }

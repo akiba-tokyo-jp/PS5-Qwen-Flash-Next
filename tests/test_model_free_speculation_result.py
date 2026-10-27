@@ -32,6 +32,15 @@ class SpeculativeResultTests(unittest.TestCase):
         r=validate_speculation(self.report,self.result)
         self.assertTrue(r['native_width_two_exercised']);self.assertTrue(r['native_rejection_exercised'])
         self.assertFalse(r['speedup_qualified'])
+    def test_online_cost_ordinary_choices_are_not_missing_attempts(self):
+        self.report['expert_cost_policy']='expert-union-online-v1'
+        for i,row in enumerate(self.rows):
+            row.update(expert_cost_enabled=bool(i),cost_checks=4*i,cost_ordinary=i,cost_width_two=3*i,
+                generated_proposals=4*i,proposal_checks=5*i)
+        self.assertTrue(validate_speculation(self.report,self.result)['native_width_two_exercised'])
+        for key in ('cost_checks','cost_ordinary','cost_width_two'):
+            bad=copy.deepcopy(self.report);bad['requests'][1][key]+=1
+            with self.assertRaises(ValueError):validate_speculation(bad,self.result)
     def test_missing_bonus_reset_identity_and_output_are_rejected(self):
         for key,value in (('device_ledger_live_bytes',1),('pid',124),('target_width_two_exercised',False),('speedup_qualified',True)):
             bad=copy.deepcopy(self.report);bad[key]=value

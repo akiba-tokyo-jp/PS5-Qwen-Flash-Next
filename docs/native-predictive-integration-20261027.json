@@ -1,0 +1,61 @@
+{
+  "schema": "ps5-qwen-native-predictive-integration-v1",
+  "date": "2026-10-27",
+  "selected_three_path_native_validation_complete": false,
+  "native_integrations_implemented_default_off": true,
+  "predictive_cache": {
+    "actual_cache_function_host_deliveries": 94,
+    "current_route_pins_preserved": true,
+    "worker_and_source_coordinator_host_checks": true,
+    "native_overlap_and_speed_qualified": false
+  },
+  "expert_verification": {
+    "native_widths": [
+      1,
+      2
+    ],
+    "width_four_available": false,
+    "actual_adapter_cases": 32,
+    "actual_route_observer_cases": 29,
+    "online_route_and_timing_hooks_connected": true,
+    "native_arithmetic_rejection_and_speed_qualified": false
+  },
+  "manual_checks": {
+    "predictive_policy_refusals": 23,
+    "speculative_policy_and_prerequisite_refusals": 44,
+    "result_reviewer_test_groups": 11,
+    "isolated_native_IO_objects": 7,
+    "SELF_roundtrip_segments": 6
+  },
+  "SELF": {
+    "bytes": 28419239,
+    "sha256": "fb5687036fc72bb419b4395b8e0f7e76d3e8c1b65f5dfea224efb814e4a4c56b"
+  },
+  "driver": {
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_caches": false
+  },
+  "original_shaders_preserved": 1527,
+  "production_adopted": false,
+  "production_profile_unchanged": true,
+  "prior_admission_observation": {
+    "case": 3194,
+    "free_pages": 5799,
+    "staged_CPU_reference_pages": 8159,
+    "new_candidate_startup_savings_measured": false,
+    "permanent_physical_impossibility": false
+  },
+  "PS5_operations": 0,
+  "title_launches": 0,
+  "GPU_calls": 0,
+  "CI_runs": 0,
+  "private_evidence_SHA256": {
+    "final_build": "9653933c67f74266970c8854c8163e996c2ccbf8ceb4377326d6abc3c86379c3",
+    "final_package": "673d212befbab8d8ee4d8d18f9b047218b53f8a7f1ce9f0e8081c180874dfc7b",
+    "cache_and_source_checks": "c4b997c43eab61886026175e9947ef4830a263ff47de42df8c9d85adcee4a823",
+    "adapter_checks": "1f0b085d8c78fb2db3762bacac490e2290a23489f9794344adf7a1666706b12a",
+    "route_checks": "652bc71f8aa61d93caaa9c54f60c08e13775d489bda501ce6c04fa6b20a14025"
+  }
+}

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <vector>
+#include "online_expert_verification.h"
 
 namespace qwen_app {
 inline constexpr std::uint32_t expert_route_layers=48;
@@ -27,4 +28,5 @@ bool completed_expert_routes_pending();
 std::uint32_t completed_expert_route_cursor();
 void compare_completed_expert_route_ranges(std::uint32_t first,std::uint32_t second,std::uint32_t count);
 void quarantine_completed_expert_routes();
+SingleTokenExpertRoutes last_completed_single_token_routes();
 } // namespace qwen_app

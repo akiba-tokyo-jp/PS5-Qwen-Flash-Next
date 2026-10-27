@@ -34,7 +34,7 @@ int main(int argc,char ** argv) {
     check(argc==2);scenario=argv[1];
     auto backend=ggml_backend_cpu_init();check(backend);ggml_backend_cpu_set_n_threads(backend,1);
     auto other=ggml_backend_cpu_init();check(other);ggml_backend_cpu_set_n_threads(other,1);
-    const int width=scenario=="width8"?8:scenario=="width4"?4:scenario=="width3"?3:2;
+    const int width=scenario=="online_complete"?1:scenario=="width8"?8:scenario=="width4"?4:scenario=="width3"?3:2;
     auto context=ggml_init({16*ggml_tensor_overhead(),nullptr,true});check(context);
     auto logits=ggml_new_tensor_2d(context,GGML_TYPE_F32,512,width);check(logits);
     auto selected=ggml_argsort_top_k(context,logits,10);check(selected);
@@ -52,7 +52,22 @@ int main(int argc,char ** argv) {
     __wrap_ggml_backend_synchronize(backend);check(get_calls==1&&syncs==1);get_calls=0;syncs=0;
     qwen_app::begin_completed_expert_routes();
     exercise=true;
-    if(scenario.rfind("range_",0)==0) {
+    if(scenario.rfind("online_",0)==0) {
+        if(scenario=="online_incomplete")rejected([]{qwen_app::last_completed_single_token_routes();});
+        else {
+            for(unsigned l=0;l<48;++l) {
+                ggml_format_name(tensor,"ffn_moe_topk-%u (cont) (reshaped)",l);
+                __wrap_ggml_backend_tensor_get_async(backend,tensor,target.data(),0,ggml_nbytes(tensor));
+                __wrap_ggml_backend_synchronize(backend);
+            }
+            if(scenario=="online_complete") {
+                const auto routes=qwen_app::last_completed_single_token_routes();
+                for(unsigned l=0;l<48;++l)for(unsigned i=0;i<10;++i)check(routes[l*10+i]==input[i]);
+                check(qwen_app::finish_completed_expert_routes(1).size()==48);
+            }else if(scenario=="online_batched")rejected([]{qwen_app::last_completed_single_token_routes();});
+            else throw std::runtime_error("Unknown online route control");
+        }
+    }else if(scenario.rfind("range_",0)==0) {
         check(qwen_app::completed_expert_route_cursor()==0);
         for(unsigned row=0;row<96;++row) {
             if(row==48&&scenario=="range_mismatch"){++input[0];ggml_backend_tensor_set(tensor,input.data(),0,ggml_nbytes(tensor));}

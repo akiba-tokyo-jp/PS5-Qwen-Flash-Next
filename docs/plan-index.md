@@ -1,5 +1,13 @@
 # PS5 Flash Next plan status
 
+The [native predictive integration](native-predictive-integration-20261027.md)
+supersedes the two replay-only implementation statuses below: the cache worker
+and expert-aware width-one/two connections are now implemented and host checked,
+with actual PS5-target build provenance. New native overlap/arithmetic/speed
+acceptance remains unavailable under the established admission conditions.
+This does not complete the original three-path validation instruction. Both new
+features remain default off and the fastest production app is unchanged.
+
 The latest selected scopes are [OS I/O, predictive cache and expert-aware
 verification](three-path-validation-20261027.md). Their bounded decisions now
 include a physical AIO regression, no causal cache traffic winner and a

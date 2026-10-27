@@ -16,6 +16,9 @@ def validate_speculation(record,result):
     if any(type(record.get(k))is not type(v)or record[k]!=v for k,v in expected.items()):
         raise ValueError('Finite width-two binding or positive retirement differs')
     rows=record.get('requests');actual=result.get('demonstration',{}).get('requests')
+    policy=record.get('expert_cost_policy','fixed-width-two')
+    if policy not in ('fixed-width-two','expert-union-online-v1'):
+        raise ValueError('Unknown native verification cost policy')
     if not isinstance(rows,list)or len(rows)!=2 or not isinstance(actual,list)or len(actual)!=2:
         raise ValueError('Original single-token and candidate requests are required')
     for i,request in enumerate(actual):
@@ -38,9 +41,18 @@ def validate_speculation(record,result):
         if i==0 and any(count.values()):raise ValueError('The original target control contains speculative work')
         for key in ('proposal_checks','no_draft','prompt_proposals','generated_proposals'):
             if type(row.get(key))is not int or not 0<=row[key]<=32:raise ValueError('Invalid causal proposal counter')
-        if (row['no_draft']+row['prompt_proposals']+row['generated_proposals']!=row['proposal_checks']or
-            row['prompt_proposals']+row['generated_proposals']!=row['attempts']):
+        proposals=row['prompt_proposals']+row['generated_proposals']
+        if row['no_draft']+proposals!=row['proposal_checks']:
             raise ValueError('Causal draft and actual verification counts differ')
+        if policy=='expert-union-online-v1':
+            keys=('cost_checks','cost_ordinary','cost_width_two')
+            if (row.get('expert_cost_enabled')is not bool(i)or
+                any(type(row.get(k))is not int or not 0<=row[k]<=32 for k in keys)or
+                row['cost_checks']!=row['cost_ordinary']+row['cost_width_two']or
+                proposals!=row['cost_checks']or row['attempts']!=row['cost_width_two']):
+                raise ValueError('Every online expert-cost decision must retain its actual ordinary or width-two outcome')
+        elif proposals!=row['attempts']:
+            raise ValueError('Fixed-width draft and actual verification counts differ')
     if record.get('target_width_two_exercised')is not(rows[1]['attempts']>0):
         raise ValueError('A zero-attempt run cannot qualify target width-two arithmetic')
     return dict(native_width_two_exercised=rows[1]['attempts']>0,

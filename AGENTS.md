@@ -19,6 +19,17 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner's continuation now implements the previously missing native prediction
+and expert-cost connections. See `docs/native-predictive-integration-20261027.md`
+for the actual source paths, host/native-build evidence and remaining physical
+acceptance. Both features remain independent and default off. Predictive reads
+retain actual shared bank leases and drain before source/cache mutation; every
+extra transfer and speculative rejected batch must remain in accounting. Do not
+use the older replay-only status below to describe these connections as absent.
+The full three-path native validation/speed instruction is still incomplete.
+No new model execution, production adoption or headroom recovery follows from
+the host integration, and no unchanged refused model scope is repeated.
+
 The owner subsequently selected a new three-path validation: OS I/O,
 predictive caching and expert-aware verification. Its authoritative scope and
 results are `docs/three-path-validation-20261027.md` / `.json`. This specifically

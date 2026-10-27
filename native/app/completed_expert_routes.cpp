@@ -80,6 +80,17 @@ void quarantine_completed_expert_routes() {
     std::lock_guard<std::mutex> lock(observer_mutex);
     capture_quarantined=true;if(observer)observer->failed=true;
 }
+SingleTokenExpertRoutes last_completed_single_token_routes() {
+    std::lock_guard<std::mutex> lock(observer_mutex);healthy();
+    if(observer->ids||observer->used<48||observer->used%48)fail("Online cost requires a completed whole-token route");
+    SingleTokenExpertRoutes result{};
+    for(unsigned l=0;l<48;++l) {
+        const auto &row=observer->rows[observer->used-48+l];
+        if(row.layer!=l||row.tokens!=1)fail("Online cost cannot substitute batched routes for ordinary observations");
+        std::copy_n(row.ids.begin(),10,result.begin()+l*10);
+    }
+    return result;
+}
 std::vector<CompletedExpertRoute> finish_completed_expert_routes(std::uint64_t calls) {
     std::lock_guard<std::mutex> lock(observer_mutex);
     healthy();
