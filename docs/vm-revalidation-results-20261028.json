@@ -1,0 +1,718 @@
+{
+  "schema": "ps5-qwen-measured-VM-revalidation-result-v1",
+  "date": "2026-10-28",
+  "all_requested_native_comparisons_completed": false,
+  "all_candidates_retained_in_comparison": true,
+  "candidate_families_reviewed": 16,
+  "previous_items_reviewed": 22,
+  "unclassified_items": 0,
+  "current_execution_disposition_complete": true,
+  "global_physical_impossibility_claimed": false,
+  "stages": [
+    {
+      "id": "C0",
+      "measurement_completed": true,
+      "evidence": "docs/direct-vm-calibration-20261027.json",
+      "native_cycles": 27,
+      "new_GPU_calls": 0
+    },
+    {
+      "id": "C1",
+      "measurement_completed": true,
+      "scope": "CPU startup phases, exact tables, receipt/shader handoff and worker lifecycles; future GPU load is not newly calibrated",
+      "evidence": "docs/resident-startup-calibration-20261028.json"
+    },
+    {
+      "id": "C2",
+      "measurement_completed": false,
+      "verification": "native_model_comparison_unexecuted",
+      "constraint": "shared_startup_policy_refused_before_GPU",
+      "rejected_case": 3538,
+      "physical_allocation_failure_observed": false
+    },
+    {
+      "id": "C3",
+      "measurement_completed": false,
+      "verification": "native_model_comparisons_unexecuted",
+      "constraint": "same_shared_startup_prerequisite_as_C2",
+      "unchanged_refused_startup_repeated": false,
+      "geometry_evidence": "docs/cache128-layout-20261027.json"
+    },
+    {
+      "id": "C4",
+      "measurement_completed": true,
+      "native_case": 3419,
+      "batches": 60,
+      "exact_reads": 360,
+      "median_source_ratio": 1.0319375546,
+      "faster_rounds": 9,
+      "rounds": 10,
+      "model_speed_qualified": false,
+      "production_six_demand_integration_missing": true
+    },
+    {
+      "id": "C5",
+      "measurement_completed": true,
+      "scope": "Evidence and dependency reconciliation; not a claim that unimplemented/native-unrun items passed",
+      "families": 16,
+      "previous_items": 22
+    }
+  ],
+  "admission_components": {
+    "page_bytes": 16384,
+    "Direct_payload_domain": "Direct allocator capacity, separately queried and checked by actual returned allocation",
+    "sampled_Direct_VM_peak_pages": 17,
+    "selected_Direct_idle_margin_pages": 2,
+    "selected_Direct_VM_extra_pages": 19,
+    "incremental_table_per_operation_extra_pages": 20,
+    "table_maximum_sampled_decline_pages_across_two_titles": 8,
+    "sampled_worker_peak_pages": 2,
+    "sampled_worker_matched_idle_peak_pages": 0,
+    "operational_floor_pages": 1154,
+    "operational_floor_origin": "898 kernel minimum plus max(206 reserved, 256 selected extra)",
+    "GPU_target_pages": 2974,
+    "GPU_target_origin": "kernel target used as an application startup policy, not a physical GPU minimum",
+    "prior_remaining_GPU_load_global_interval_pages": 1958,
+    "prior_interval_exclusive_application_cost_established": false,
+    "selected_current_GPU_start_pages": 3114,
+    "selected_formula": "max(2974, 1154 + 1958 + 2 + 0)",
+    "written_before_GPU_observation_pages": 2847,
+    "last_operational_observation_pages": 2843,
+    "written_observation_policy_deficit_pages": 267,
+    "last_observation_policy_deficit_pages": 271,
+    "actual_GPU_allocation_failure_observed": false,
+    "universal_safe_threshold_established": false
+  },
+  "candidate_families": [
+    {
+      "id": "known-demand-and-source-schedule",
+      "historical_stop": "live_and_startup_predicates",
+      "later_result": "later_model_qualified_and_adopted",
+      "sources": [
+        "docs/source-pipeline-refusal-20261024.json",
+        "docs/source-concurrency-refusal-20261024.json",
+        "docs/pre-worker-memory-refusal-20261024.json",
+        "docs/bounded-memory-refusal-20261024.json",
+        "docs/source-pipeline-success-20261024.json",
+        "docs/native-source-schedule-success-20261025.json"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "prior_model_qualified_and_adopted",
+      "current_execution_constraint": "none_for_existing_production",
+      "current_evidence": "Reuse its complete native speed and numerical evidence.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "shader-storage-and-driver-cold-tables",
+      "historical_stop": "CPU_startup_predicates",
+      "later_result": "later_CPU_GPU_and_model_paths_completed",
+      "sources": [
+        "docs/native-shader-storage-CPU-20261024.json",
+        "docs/native-shader-ordering-CPU-20261024.json",
+        "docs/native-shader-JIT-CPU-20261024.json",
+        "docs/native-external-shader-startup-20261024.json",
+        "docs/native-external-shader-CPU-20261024.json",
+        "docs/native-external-shader-bytes-20261024.json",
+        "docs/native-shader-columns-CPU-20261024.json",
+        "docs/native-worker-and-cold-start-20261027.md",
+        "docs/native-model-cold-start-20261027.json"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "new_same_launch_integrity_and_incremental_tables_native_CPU_passed",
+      "current_execution_constraint": "later_model_coverage_policy_blocked",
+      "current_evidence": "Cases 3521/3538: 673 exact tables; 3538 shader handoff reached all CPU preflight stages.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "one-worker-refill",
+      "historical_stop": "before_allocation_predicate",
+      "later_result": "later_positive_fixture_median_below_historical_adoption_rule",
+      "sources": [
+        "docs/bf16-system-validation-20261025.json",
+        "docs/kernel-memory-cause-20261026.json",
+        "docs/kernel-memory-cause-20261026.md"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "current_reader_fixture_positive",
+      "current_execution_constraint": "six_demand_model_bank_and_readiness_integration_missing",
+      "current_evidence": "3419: median 1.0319375546x, 9/10 positive; not model tok/s.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "GPU-lossless-and-fused-GEMV",
+      "historical_stop": "outer_screen_before_launch",
+      "later_result": "later_both_measured_slower",
+      "sources": [
+        "docs/kernel-memory-cause-20261026.json",
+        "docs/memory-palette-followup-20261026.json",
+        "docs/memory-plan-completion-20261026.json"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "prior_native_regressions_reused",
+      "current_execution_constraint": "none_for_rejection",
+      "current_evidence": "Palette 0.561503x; fused 0.980634x. No repeated arithmetic.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "PLE-copy-elision",
+      "historical_stop": "outer_screen_and_CPU_startup",
+      "later_result": "later_208_graphs_no_repeatable_gain",
+      "sources": [
+        "docs/PLE-smoke-startup-20261026.json",
+        "docs/finite-execution-dispositions-20261027.md"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "prior_208_graph_result_reused",
+      "current_execution_constraint": "none_for_no_repeatable_gain",
+      "current_evidence": "All widths and modes retained; no repeat justified by VM accounting change.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "ready-expert-overlap",
+      "historical_stop": "CPU_startup_predicate",
+      "later_result": "later_40_graphs_measured_regression",
+      "sources": [
+        "docs/finite-execution-dispositions-20261027.md"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "prior_40_graph_regression_reused",
+      "current_execution_constraint": "none_for_rejection",
+      "current_evidence": "Both reverse comparisons slower; no repeat of the same scheduling mechanism.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "cache53-128",
+      "historical_stop": "CPU_startup_and_outer_screen",
+      "later_result": "layout_and_A53_pass_B128_model_unrun",
+      "sources": [
+        "docs/cache128-layout-20261027.json",
+        "docs/cache128-startup-review-20261027.json",
+        "docs/finite-execution-dispositions-20261027.md"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "360_graph_geometry_pass_model_speed_unverified",
+      "current_execution_constraint": "shared_model_startup_policy_blocked",
+      "current_evidence": "Different process lifetimes required; cannot flip immutable cache geometry in a loaded model.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "exact-prefix",
+      "historical_stop": "CPU_startup_predicate",
+      "later_result": "checkpoint_pass_prefix_speed_unrun",
+      "sources": [
+        "docs/remaining-validation-progress-20261026.md"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "complete_checkpoint_pass_prefix_speed_unverified",
+      "current_execution_constraint": "shared_model_startup_policy_blocked",
+      "current_evidence": "Checkpoint correctness reused; TTFT comparison remains unexecuted.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "expert-aware-width2",
+      "historical_stop": "CPU_startup_and_outer_screen",
+      "later_result": "one_acceptance_pass_rejection_and_matched_speed_unrun",
+      "sources": [
+        "docs/native-model-cold-start-20261027.json",
+        "docs/native-predictive-integration-20261027.json"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "one_prior_native_acceptance_pass_rejection_and_matched_speed_unverified",
+      "current_execution_constraint": "shared_model_startup_policy_blocked",
+      "current_evidence": "Ten-request cohort implemented; 3538 returned before GPU.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "predictive-cache",
+      "historical_stop": "outer_screen_before_model",
+      "later_result": "actual_worker_pass_model_overlap_unrun",
+      "sources": [
+        "docs/native-worker-and-cold-start-20261027.md",
+        "docs/native-predictive-integration-20261027.json",
+        "docs/native-model-cold-start-20261027.json"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "actual_worker_and_native_source_pass_model_overlap_unverified",
+      "current_execution_constraint": "shared_model_startup_policy_blocked",
+      "current_evidence": "Four new complete worker lifetimes; 2-page sampled peak, 0-page matched idle.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "metadata-peak-live-and-quiet-variation",
+      "historical_stop": "CPU_guard_before_target_loop",
+      "later_result": "later_metadata_pass_and_conflicting_quiet_interval",
+      "sources": [
+        "docs/source-memory-attribution-20261027.json",
+        "docs/remaining-validation-progress-20261026.md"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "prior_metadata_and_quiet_controls_plus_new_stage_trace_complete",
+      "current_execution_constraint": "whole_model_peak_coverage_policy_blocked",
+      "current_evidence": "Seven actual startup traces; global variation remains non-exclusive attribution.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "inventory-and-owner-observer",
+      "historical_stop": "metadata_or_duplicate_SELF_scan_predicate",
+      "later_result": "later_small_observers_pass_and_3130_model_completed",
+      "sources": [
+        "docs/postboot-runtime-memory-20261027.md",
+        "docs/finite-execution-dispositions-20261027.md"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "native_observers_passed",
+      "current_execution_constraint": "none_for_existing_observers",
+      "current_evidence": "3538 prelaunch process-state refusal preserved; enriched reporting passed unchanged predicates.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "regular-file-mmap",
+      "historical_stop": "unknown_mapping_completion_and_confirmed_freeze",
+      "later_result": "exact_VM_cause_unresolved_reserved_source_replacement_passed",
+      "sources": [
+        "docs/freeze-forensics-20261024.json",
+        "docs/native-memory-qualification-20261024.json",
+        "docs/source-memory-causal-controls-20261024.json"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "confirmed_historical_freeze_reused",
+      "current_execution_constraint": "unsafe_unknown_mapping_completion_no_qualified_reentry",
+      "current_evidence": "No repeated file mmap. Protected-reservation/source replacement already passed; exact freeze cause unresolved.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "Direct-helper-context-and-retained-file-census",
+      "historical_stop": "context_API_result_or_unlogged_predicate",
+      "later_result": "later_context_corrected_and_finite_continuation_completed",
+      "sources": [
+        "docs/CPU-shader-memory-controls-20261026.json",
+        "docs/PLE-memory-first-plan-20261026.md"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "27_cycle_calibration_and_seven_native_ABI_builds_complete",
+      "current_execution_constraint": "none_for_measured_CPU_scope",
+      "current_evidence": "Direct payload separated from VM metadata; opt-in 19 pages, actual allocation return remains authoritative.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "OS-internal-IO",
+      "historical_stop": "interface_availability_separate_from_VM",
+      "later_result": "AIO_measured_regression_raw_path_interface_missing",
+      "sources": [
+        "docs/three-path-validation-20261027.json"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "native_AIO_regression_and_interface_review_reused",
+      "current_execution_constraint": "raw_storage_path_interface_missing",
+      "current_evidence": "AIO 46.88% slower; current interfaces do not implement the proposed lower raw path.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    },
+    {
+      "id": "dependent-router-adaptive-and-portable-kernels",
+      "historical_stop": "mixed_missing_integration_dependencies_and_model_coverage",
+      "later_result": "all_items_retained_with_separate_blockers",
+      "sources": [
+        "docs/final-current-environment-dispositions-20261027.json",
+        "docs/remaining-feasibility-20261026.md"
+      ],
+      "retained_in_comparison": true,
+      "current_verification": "all_previous_items_retained",
+      "current_execution_constraint": "missing_implementation_or_native_prerequisites",
+      "current_evidence": "Missing integration is not a hardware limit; separate each of the 22 old items below.",
+      "physically_impossible_established": false,
+      "unchanged_completed_mechanism_repeated": false
+    }
+  ],
+  "previous_items": [
+    {
+      "id": "startup-reduction",
+      "label": "Reduce unresolved startup kernel consumption",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "unresolved_attribution_and_policy",
+      "comparison_question": "owned-file residency partly identified; remaining owner and reclaim interface unresolved",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "new_native_CPU_measurements_complete",
+      "current_execution_constraint": "remaining_whole_model_startup_policy_not_fully_calibrated",
+      "current_evidence": "Direct 17+2 pages; tables 8-page sampled maximum; workers 2 pages; duplicate active SELF/shader scans removed with native integrity.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "cpu-metadata",
+      "label": "Invariant batch metadata reuse",
+      "historical_disposition": "closed_small_target",
+      "reassessment": "native_prototype_completed_small_measured_cost",
+      "comparison_question": "0.1334 ms generous request saving remains a measured small target",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "prior_native_comparison_complete",
+      "current_execution_constraint": "none",
+      "current_evidence": "Measured request saving only 0.1334 ms; reuse.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "lifetimes",
+      "label": "Allocation lifetime and constant-reuse audit",
+      "historical_disposition": "closed_audit",
+      "reassessment": "audit_completed",
+      "comparison_question": "rehearsal ranges already retire and fixed GDN values already use F32",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "prior_audit_complete",
+      "current_execution_constraint": "none",
+      "current_evidence": "All rehearsal owners retire; original fixed GDN F32 semantics preserved.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "peak-live",
+      "label": "Additional full-model peak-live characterization",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "additional_instrumentation_and_model_coverage_needed",
+      "comparison_question": "separate observation cost, asynchronous VM change and actual app-owned allocations",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "CPU_phase_trace_complete_full_model_trace_unverified",
+      "current_execution_constraint": "shared_model_startup_policy_blocked",
+      "current_evidence": "3538 CPU preparation completed; no GPU/model peak sampled.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "cache128",
+      "label": "53/128-slot A/B/B/A",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "model_cohort_unrun_after_policy_refusal",
+      "comparison_question": "360 layout graphs and A53 pass; fresh matched B128 model comparison still needed",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "geometry_complete_matched_model_comparison_unverified",
+      "current_execution_constraint": "shared_model_startup_policy_blocked",
+      "current_evidence": "Existing 360 graphs retained; no false speed claim from A53 alone.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "other-cache",
+      "label": "Further cache capacities",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "integration_and_capacity_dependencies",
+      "comparison_question": "15 trace replays exist; further native capacity scopes still need implementation/pricing",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "trace_replays_complete_native_variants_unimplemented",
+      "current_execution_constraint": "additional_capacity_integration_missing",
+      "current_evidence": "No invented native capacity speed result.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "checkpoint",
+      "label": "Complete model checkpoint",
+      "historical_disposition": "completed",
+      "reassessment": "native_correctness_completed",
+      "comparison_question": "reuse completed state-capture/restore proof",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "native_correctness_complete",
+      "current_execution_constraint": "none",
+      "current_evidence": "Existing full F32 state and canary qualification reused.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "prefix",
+      "label": "Exact-prefix reuse TTFT",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "model_cohort_unrun_after_startup_predicate",
+      "comparison_question": "A1 stopped before backend; no measured prefix speed comparison",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "checkpoint_complete_TTFT_comparison_unverified",
+      "current_execution_constraint": "shared_model_startup_policy_blocked",
+      "current_evidence": "No prefix inference newly executed.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "width2",
+      "label": "Width-two exact verification and speed",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "partly_native_qualified_remaining_policy_gated",
+      "comparison_question": "3314 accepted one width-two attempt; forced rejection and matched speed still needed",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "one_acceptance_complete_rejection_and_speed_unverified",
+      "current_execution_constraint": "shared_model_startup_policy_blocked",
+      "current_evidence": "Forced rejection observer implemented with full F32 continuation; 3538 did not enter GPU.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "width4",
+      "label": "Width-four verification",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_dependent_integration",
+      "comparison_question": "include fixed-width-two rejection/cost prerequisites and larger checkpoint/workspace",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "unimplemented_dependent_variant",
+      "current_execution_constraint": "width2_rejection_speed_and_larger_workspace_prerequisites",
+      "current_evidence": "No width-four model result exists.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "adaptive",
+      "label": "Radiance-inspired adaptive draft depth",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_dependent_integration",
+      "comparison_question": "include native acceptance, rejection and source-cost prerequisites",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "unimplemented_dependent_variant",
+      "current_execution_constraint": "width2_cost_acceptance_rejection_prerequisites",
+      "current_evidence": "No adaptive model result exists.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "expert-major",
+      "label": "Original-file versus expert-major delivery",
+      "historical_disposition": "inconclusive",
+      "reassessment": "measured_positive_but_variable",
+      "comparison_question": "7/8 rounds faster; about 1.040x source and 1.037x total; historical adoption screen unmet",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "prior_positive_variable_source_comparison_complete",
+      "current_execution_constraint": "model_integration_and_matched_cost_missing",
+      "current_evidence": "Prior 7/8 faster, about 1.040x source and 1.037x total; not an adopted model gain.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "source-cpu",
+      "label": "Original-source CPU two-call reader",
+      "historical_disposition": "completed",
+      "reassessment": "native_source_comparison_completed",
+      "comparison_question": "1.06735x source-only ratio; compare any new delta with already-adopted paired reads",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "prior_native_source_comparison_complete",
+      "current_execution_constraint": "none_for_existing_adopted_pairs",
+      "current_evidence": "3419 compares with the actual PairedSourceIO, not an obsolete sequential control.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "ready",
+      "label": "Ready-expert split overlap",
+      "historical_disposition": "rejected_no_gain",
+      "reassessment": "later_native_measured_regression",
+      "comparison_question": "40 graphs complete; both reverse comparisons slower",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "native_regression_complete",
+      "current_execution_constraint": "none_for_rejection",
+      "current_evidence": "40 graphs and both reverse comparisons reused.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "router-observe",
+      "label": "Actual hidden-state router observation",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_model_tap_integration_and_cost_measurement",
+      "comparison_question": "host shadow proof exists; actual hidden-state capture remains to implement",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "host_shadow_complete_native_tap_unimplemented",
+      "current_execution_constraint": "actual_hidden_state_tap_and_cost_integration_missing",
+      "current_evidence": "The implemented route-ID predictor is not a hidden-state tap.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "router-forecast",
+      "label": "Hidden-state forecast and speculative transfers",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_dependent_integration",
+      "comparison_question": "needs actual tap usefulness and added I/O/eviction/compute accounting",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "unimplemented_dependent_variant",
+      "current_execution_constraint": "native_hidden_state_tap_usefulness_and_cost_prerequisites",
+      "current_evidence": "Do not relabel token-route prediction as hidden-state forecast.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "workloads",
+      "label": "Broader workload quality and performance",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "additional_native_model_coverage_needed",
+      "comparison_question": "four tokenizer metadata cases exist; actual quality/performance still unmeasured",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "tokenizer_metadata_complete_broader_native_model_coverage_unverified",
+      "current_execution_constraint": "shared_model_startup_policy_blocked",
+      "current_evidence": "No actual new reasoning/quality corpus result exists.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "ple",
+      "label": "PLE copy-elision modes at widths one through four",
+      "historical_disposition": "rejected_no_gain",
+      "reassessment": "later_native_no_repeatable_gain",
+      "comparison_question": "208 graphs complete; four widths and all three modes remain in comparison",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "native_no_repeatable_gain_complete",
+      "current_execution_constraint": "none_for_rejection",
+      "current_evidence": "208 graphs at all four widths and three modes reused.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "dual-output",
+      "label": "Radiance shared-input projections",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_portable_kernel_and_cost_profile",
+      "comparison_question": "original BF16/F32 design needs implementation; donor MXFP4 layout differs",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "unimplemented_portable_variant",
+      "current_execution_constraint": "original_BF16_F32_kernel_and_cost_profile_missing",
+      "current_evidence": "Donor MXFP4 arithmetic is not original-precision numerical evidence.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "gdn-fusion",
+      "label": "Radiance GDN and gated-normalization fusion",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_portable_kernel_and_cost_profile",
+      "comparison_question": "preserve original F32/sigmoid semantics and compare a Vulkan implementation",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "unimplemented_portable_variant",
+      "current_execution_constraint": "original_F32_sigmoid_kernel_and_cost_profile_missing",
+      "current_evidence": "No native fusion speed result exists.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "small-gemm",
+      "label": "Radiance small dense projection dispatch",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_eligible_portable_kernel_and_cost_profile",
+      "comparison_question": "compare actual F32 one/two/four-token shapes",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "unimplemented_portable_variant",
+      "current_execution_constraint": "eligible_F32_shape_kernel_and_cost_profile_missing",
+      "current_evidence": "No one/two/four-token native replacement result exists.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    },
+    {
+      "id": "workgroup",
+      "label": "Further vector/workgroup specialization",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "additional_material_cost_profile_and_implementation_needed",
+      "comparison_question": "source/CPU/guard/completion time is not isolated shader cost",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false,
+      "current_verification": "additional_specialization_unimplemented",
+      "current_execution_constraint": "isolated_shader_cost_profile_and_new_implementation_missing",
+      "current_evidence": "Source/CPU/completion wall time is not isolated shader cost.",
+      "physically_impossible_established": false,
+      "adopted_by_this_revalidation": false
+    }
+  ],
+  "production": {
+    "new_speed_winner": false,
+    "new_acceleration_adopted": false,
+    "fastest_SELF_sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d",
+    "exact_fastest_and_five_settings_restored": true,
+    "restoration_evidence": {
+      "bytes": 1211,
+      "sha256": "cbdbcd4e281cadbb65a66d0eb6d07c246ed4f9030c9066c3de1635b73d7168ae"
+    },
+    "fresh_idle_verified": true,
+    "active_title": false,
+    "model_loaded": false,
+    "unknown_completion": false,
+    "CI_runs": 0,
+    "reboot_performed": false
+  },
+  "host_checks": {
+    "Direct_VM_boundary_and_wrong_profile_controls": "host case 3429",
+    "seven_helpers_native_ABI": "build 3430 and executed demand 3419",
+    "exact_shader_handoff_overlay": "host case 3535: seven modes, all 1527 original assets and 382 lookups",
+    "receipt_binding_negative_controls": 47,
+    "SELF_package": "3536: six segment roundtrips, imports and all 677 converted table pointers"
+  },
+  "selected_private_evidence_digests": {
+    "shader_host": {
+      "bytes": 1950,
+      "sha256": "f6abd823590c05ba833fe04a612cc5d718400f9dab84a4bc7780365e6e7ea7ba"
+    },
+    "worker_report": {
+      "bytes": 223,
+      "sha256": "17e3f65b643209240bbcd83435e48bf91a45bfec9ba8eec641546cb94e5bbf6b"
+    },
+    "before_GPU": {
+      "bytes": 348,
+      "sha256": "2b51c666a87dc803ad1ea7e7f99ea7fa7881b70199faad43fbff2e7091946813"
+    },
+    "owner_diagnostic": {
+      "bytes": 376,
+      "sha256": "3f5e30e6ddfb8222d5385c30ddff661aaa11f3f3fa90b291d8a37564797dcd1d"
+    },
+    "shader_handoff_package": {
+      "bytes": 295592,
+      "sha256": "2d7ca0310f5aa59ca00489e80f59b8e3a103ac4e5b17cd78d8965f6d0fb103d2"
+    }
+  }
+}

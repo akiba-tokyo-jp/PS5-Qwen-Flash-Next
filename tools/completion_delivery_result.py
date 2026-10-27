@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 """Require complete native read leases and original bytes before timing admission."""
 import re,statistics
+from direct_vm_policy import additional_pages
 
 def fields(line):return {k:int(v)for k,v in re.findall(r'(\w+)=(-?\d+)',line)}
 
@@ -22,8 +23,9 @@ def parse_preallocation_refusal(raw,manifest):
     if any(x.startswith(('DIRECT_ALLOC_','DIRECT_MAP_','VERIFY_','IO_','BATCH_','RETAIN '))for x in lines):
         raise ValueError('The refused case started allocation or payload work')
     total=manifest.get('io_bytes',8<<20)+manifest['destination_bytes']
-    required=observation['minimum']+max(observation['reserved'],256)+total//16384
-    if (total%16384 or start['total_Direct_bytes']!=total or observation['additional_pages']!=total//16384 or
+    extra=additional_pages(lines,manifest,total)
+    required=observation['minimum']+max(observation['reserved'],256)+extra
+    if (total%16384 or start['total_Direct_bytes']!=total or observation['additional_pages']!=extra or
         observation['required']!=required or min(observation['free_first'],observation['free_last'])>=required or
         observation['rc']!=0 or observation['flexible_bytes']<(264<<20)):
         raise ValueError('The observed preallocation refusal does not match its unchanged floor')
@@ -44,6 +46,7 @@ def parse(raw,manifest):
     io_bytes=manifest.get('io_bytes',8<<20)
     if io_bytes not in (0,8<<20):raise ValueError('Unsupported source window budget')
     destination=manifest.get('destination_bytes',32<<20);total=io_bytes+destination
+    additional_pages(lines,manifest,total)
     count=manifest.get('samples',9);groups=manifest.get('groups',1);modes=len(manifest['variants'])
     if (begin['io_bytes'],begin['destination_bytes'],begin['total_Direct_bytes'],begin['maximum_outstanding_reads'])!=(io_bytes,destination,total,2):
         raise ValueError('Separate buffer budgets differ')

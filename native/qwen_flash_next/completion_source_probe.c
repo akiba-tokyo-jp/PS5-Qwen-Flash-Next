@@ -2,6 +2,7 @@
  * Bounded CPU-only comparison of pair waves and completion-driven delivery.
  */
 #include "qualified_context_guard.c"
+#include "direct_vm_policy.h"
 #include "completion_probe_context.h"
 #include "completion_probe_io.h"
 #include "bf16_lossless.h"
@@ -57,7 +58,7 @@ int main(int argc,char **argv) {
     if(output_fd<0)return 2;
     if(!report("BEGIN nonce=%s io_bytes=%u destination_bytes=%u total_Direct_bytes=%u samples=%u groups=%u modes=%u rounds=%u maximum_outstanding_reads=2 GPU_calls=0 title_launches=0",CLOSE_NONCE,IO_BYTES,DESTINATION_BYTES,WINDOW,COMPLETION_SAMPLES,COMPLETION_GROUPS,COMPLETION_MODES,COMPLETION_ROUNDS))return 2;
     if((argc!=0&&argc!=1)||constructors!=1||getuid()!=1||geteuid()!=0||!context(1)||!context(2)||
-       !headroom(WINDOW/ALIGNMENT)||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;
+       !headroom(qwen_direct_vm_pages(WINDOW,ALIGNMENT))||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;
     if(!report("DIRECT_ALLOC_BEFORE bytes=%u",WINDOW))goto done;
     rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,ALIGNMENT,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);
     if(!report("DIRECT_ALLOC_RETURNED rc=%d",rc))retain();
