@@ -1,0 +1,970 @@
+{
+  "schema": "ps5-qwen-resident-startup-calibration-public-v2",
+  "date": "2026-10-28",
+  "page_bytes": 16384,
+  "global_snapshots_not_exclusive_attribution": true,
+  "universal_safe_threshold_established": false,
+  "cases": [
+    {
+      "case": 3373,
+      "prelaunch_free_pages_range": [
+        3094,
+        3095
+      ],
+      "main_entry_free_pages": 2914,
+      "minimum_sampled_CPU_free_pages": 1203,
+      "phase_samples": [
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2914,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90779836591021,
+          "phase": "stage_0"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2914,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90779838709039,
+          "phase": "stage_1"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2909,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90779907233014,
+          "phase": "stage_2"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2905,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90779916464440,
+          "phase": "stage_3"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2905,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90779917896552,
+          "phase": "stage_4"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2514,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90780775768535,
+          "phase": "stage_5"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1241,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90781167167526,
+          "phase": "stage_7"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1231,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90782931214548,
+          "phase": "stage_8"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1207,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90782993246792,
+          "phase": "stage_9"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1203,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90783007485638,
+          "phase": "stage_10"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1203,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 90783014635531,
+          "phase": "CPU_preflight_complete"
+        }
+      ],
+      "terminal": {
+        "message": "The post-load device ledger has no healthy admitted producer",
+        "model_loaded": false
+      },
+      "GPU_initializations": 0,
+      "model_requests": 0,
+      "unknown_completion": false,
+      "exact_fastest_and_settings_restored": true,
+      "whole_native_integrity_required": true,
+      "evidence": {
+        "trace": {
+          "bytes": 2959,
+          "sha256": "1fbe6806a38045783fede69eb6316f6ae1a5ed5d91962e962bda25ae21fe05e5"
+        },
+        "terminal": {
+          "bytes": 760,
+          "sha256": "6330927881c4e79438db861c6e521ea84bf9b990dbe4d06eca7a027214e9bb5d"
+        },
+        "restoration": {
+          "bytes": 1212,
+          "sha256": "83fdf77853bcbf7c068d65e84dac425f3f3b6443ca2ab909b0ef6076825d666e"
+        }
+      }
+    },
+    {
+      "case": 3384,
+      "prelaunch_free_pages_range": [
+        5563,
+        5564
+      ],
+      "main_entry_free_pages": 1097,
+      "minimum_sampled_CPU_free_pages": 1089,
+      "phase_samples": [
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1097,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 92177010211860,
+          "phase": "stage_0"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1089,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 92177012343750,
+          "phase": "stage_1"
+        }
+      ],
+      "terminal": {
+        "message": "Native kernel free pages do not retain their minimum and extra reserve",
+        "model_loaded": false
+      },
+      "GPU_initializations": 0,
+      "model_requests": 0,
+      "unknown_completion": false,
+      "exact_fastest_and_settings_restored": true,
+      "whole_native_integrity_required": true,
+      "evidence": {
+        "trace": {
+          "bytes": 639,
+          "sha256": "c12d99f680544b8e3f0a67f907f8fd9117d536d033de8dabd2a12f80f6126444"
+        },
+        "terminal": {
+          "bytes": 771,
+          "sha256": "dacbc4853a8b3173ea1baed359c389c5bfcf18d81b78c16bd1ca4bead396631c"
+        },
+        "restoration": {
+          "bytes": 1211,
+          "sha256": "4b2ba7e09e12216888e7620a8aab78beff7271d494e6e01fa900df925f476a42"
+        }
+      }
+    },
+    {
+      "case": 3407,
+      "prelaunch_free_pages_range": [
+        7298,
+        7299
+      ],
+      "main_entry_free_pages": 2796,
+      "minimum_sampled_CPU_free_pages": 2353,
+      "phase_samples": [
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2796,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93689936241530,
+          "phase": "stage_0"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2796,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93689939079774,
+          "phase": "stage_1"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2799,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93690006733015,
+          "phase": "stage_2"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2795,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93690015294893,
+          "phase": "stage_3"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2795,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93690016688195,
+          "phase": "stage_4"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2415,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93690860558280,
+          "phase": "stage_5"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2390,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93691241008353,
+          "phase": "stage_7"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2382,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93693004579074,
+          "phase": "stage_8"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2358,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93693066556471,
+          "phase": "stage_9"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2353,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93693080755464,
+          "phase": "stage_10"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2353,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93693087906320,
+          "phase": "CPU_preflight_complete"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2353,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 93693087996689,
+          "phase": "CPU_sources_retired"
+        }
+      ],
+      "terminal": {
+        "model_loaded": false
+      },
+      "GPU_initializations": 0,
+      "model_requests": 0,
+      "unknown_completion": false,
+      "exact_fastest_and_settings_restored": true,
+      "whole_native_integrity_required": true,
+      "evidence": {
+        "trace": {
+          "bytes": 3227,
+          "sha256": "8cbf962c9337e18a7484a7c9cdd0c6f9b05562c6be194960ba84ac1ad8b2f9e0"
+        },
+        "terminal": {
+          "bytes": 481,
+          "sha256": "cd6e52309a7752d44821eb261c57b801acb73e57cc2e930be8326c562799464b"
+        },
+        "restoration": {
+          "bytes": 1211,
+          "sha256": "2db00d3c556a0d7a745f9dd792754c8f536ffdea32ab214c508a6a2e3fb3cbda"
+        }
+      }
+    },
+    {
+      "case": 3421,
+      "prelaunch_free_pages_range": [
+        6724,
+        6725
+      ],
+      "main_entry_free_pages": 2183,
+      "minimum_sampled_CPU_free_pages": 2181,
+      "phase_samples": [
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2183,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 94281968884934,
+          "phase": "stage_0"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2183,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 94281971018909,
+          "phase": "stage_1"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2185,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 94282038738143,
+          "phase": "stage_2"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2181,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 94282047259528,
+          "phase": "stage_3"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2181,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 94282048681616,
+          "phase": "stage_4"
+        }
+      ],
+      "terminal": {
+        "message": "Native kernel free pages do not retain their minimum and extra reserve",
+        "model_loaded": false
+      },
+      "GPU_initializations": 0,
+      "model_requests": 0,
+      "unknown_completion": false,
+      "exact_fastest_and_settings_restored": true,
+      "whole_native_integrity_required": true,
+      "evidence": {
+        "trace": {
+          "bytes": 1407,
+          "sha256": "b5354eca0364e3a3b0f2d5d1fdb247bfed993b5e1679234075a59d2579e4f5ec"
+        },
+        "terminal": {
+          "bytes": 784,
+          "sha256": "2eb752b944d323a47fcd630ffaa99f6fa5447e2ff5adbf74e16fc079c4aed8c7"
+        },
+        "restoration": {
+          "bytes": 1211,
+          "sha256": "dfc4905723d642de0cf12e7a291867cce06b48459d00454c78540cd4b992b138"
+        }
+      }
+    },
+    {
+      "case": 3505,
+      "prelaunch_free_pages_range": [
+        7393,
+        7394
+      ],
+      "main_entry_free_pages": 1517,
+      "minimum_sampled_CPU_free_pages": 1517,
+      "phase_samples": [
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1517,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 97439773680982,
+          "phase": "stage_0"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1517,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 97439776510325,
+          "phase": "stage_1"
+        }
+      ],
+      "terminal": {
+        "message": "Native kernel free pages do not retain their minimum and extra reserve",
+        "model_loaded": false,
+        "CPU_worker_completion_unknown": false
+      },
+      "GPU_initializations": 0,
+      "model_requests": 0,
+      "unknown_completion": false,
+      "exact_fastest_and_settings_restored": true,
+      "whole_native_integrity_required": true,
+      "evidence": {
+        "trace": {
+          "bytes": 639,
+          "sha256": "99f1c29698e2d0b15c9d79aeafeca3cf88a03fdd258915554487f40b77bc6fe9"
+        },
+        "terminal": {
+          "bytes": 812,
+          "sha256": "c57c9bb1b162176f1240082c0d6950c53990ee1f48b9e10a6ede173e4866582f"
+        },
+        "restoration": {
+          "bytes": 1211,
+          "sha256": "6599c13ab187fd42aed44010d9d34a8ffabcd4b1efe8f8fc3fc92b4a91ce9a53"
+        }
+      }
+    },
+    {
+      "case": 3521,
+      "prelaunch_free_pages_range": [
+        7173,
+        7174
+      ],
+      "main_entry_free_pages": 2681,
+      "minimum_sampled_CPU_free_pages": 1166,
+      "phase_samples": [
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2681,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 98382460823931,
+          "phase": "stage_0"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2681,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 98382462905304,
+          "phase": "stage_1"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2679,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 98382566571582,
+          "phase": "stage_2"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2670,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 98382575094169,
+          "phase": "stage_3"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2670,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 98382576511366,
+          "phase": "stage_4"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 1166,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 98383331148870,
+          "phase": "stage_5"
+        }
+      ],
+      "terminal": {
+        "message": "Native kernel free pages do not retain their minimum and extra reserve",
+        "model_loaded": false,
+        "CPU_worker_completion_unknown": false
+      },
+      "GPU_initializations": 0,
+      "model_requests": 0,
+      "unknown_completion": false,
+      "exact_fastest_and_settings_restored": true,
+      "whole_native_integrity_required": true,
+      "evidence": {
+        "trace": {
+          "bytes": 1663,
+          "sha256": "b3220dd6e2d050f2d6b29d1d7d903cd410d818db3c2df695760e915c62d66848"
+        },
+        "terminal": {
+          "bytes": 827,
+          "sha256": "8e02adbccc0e1d1b87047bd89db4f329aea41d75b1c2abf844d9da119e31b71d"
+        },
+        "restoration": {
+          "bytes": 1211,
+          "sha256": "6b6eafbe958152eb0e154f79af098344047ae7509a0bd0a2b157919bab81bdfe"
+        }
+      },
+      "tables": {
+        "GPU_calls": 0,
+        "completed": true,
+        "fault": false,
+        "free_after": 2684,
+        "free_before": 2681,
+        "maximum_new_output_pages": 1,
+        "memory_refused": false,
+        "minimum_sampled_free": 2677,
+        "original_aggregate_extra_pages": 512,
+        "output_bytes": 9471408,
+        "page_bounded_output_calls": 1250,
+        "sampled_Direct_allocator_metadata_pages": 17,
+        "sampled_idle_allowance_pages": 2,
+        "scratch_live_bytes": 0,
+        "selected_per_operation_extra_pages": 20,
+        "tables": 673
+      }
+    },
+    {
+      "case": 3538,
+      "prelaunch_free_pages_range": [
+        6731,
+        6735
+      ],
+      "main_entry_free_pages": 2965,
+      "minimum_sampled_CPU_free_pages": 2851,
+      "phase_samples": [
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2965,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100551171253045,
+          "phase": "stage_0"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2965,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100551173389105,
+          "phase": "stage_1"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2955,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100551282300712,
+          "phase": "stage_2"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2955,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100551300087843,
+          "phase": "stage_3"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2955,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100551301501432,
+          "phase": "stage_4"
+        },
+        {
+          "CPU_Direct_heap_bytes": 16777216,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2947,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100551352036850,
+          "phase": "stage_5"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2929,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100551729818592,
+          "phase": "stage_7"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2884,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553493344169,
+          "phase": "stage_8"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 437256192,
+          "kernel_free_pages": 2860,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553555295505,
+          "phase": "stage_9"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2856,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553569486240,
+          "phase": "stage_10"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2856,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553576634690,
+          "phase": "CPU_preflight_complete"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2856,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553576688173,
+          "phase": "worker_matched_idle_before"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2856,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553626808552,
+          "phase": "worker_matched_idle_after"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2856,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553626858187,
+          "phase": "worker_lifecycle_before"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2854,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553626966597,
+          "phase": "worker_constructed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2854,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553627013666,
+          "phase": "worker_CPU_job_completed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2854,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553627055844,
+          "phase": "worker_joined_and_closed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2854,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553627100828,
+          "phase": "worker_matched_idle_before"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2854,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553677230668,
+          "phase": "worker_matched_idle_after"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2854,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553677279822,
+          "phase": "worker_lifecycle_before"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2853,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553677369148,
+          "phase": "worker_constructed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2853,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553677413250,
+          "phase": "worker_CPU_job_completed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2853,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553677456470,
+          "phase": "worker_joined_and_closed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2853,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553677501775,
+          "phase": "worker_matched_idle_before"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2853,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553727631775,
+          "phase": "worker_matched_idle_after"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2853,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553727684137,
+          "phase": "worker_lifecycle_before"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2852,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553727768010,
+          "phase": "worker_constructed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2852,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553727817886,
+          "phase": "worker_CPU_job_completed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2852,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553727855814,
+          "phase": "worker_joined_and_closed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2852,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553727904085,
+          "phase": "worker_matched_idle_before"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2852,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553778038336,
+          "phase": "worker_matched_idle_after"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2852,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553778087730,
+          "phase": "worker_lifecycle_before"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2851,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553778170481,
+          "phase": "worker_constructed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2851,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553778214583,
+          "phase": "worker_CPU_job_completed"
+        },
+        {
+          "CPU_Direct_heap_bytes": 33554432,
+          "Flexible_available_bytes": 436207616,
+          "kernel_free_pages": 2851,
+          "kernel_minimum_pages": 898,
+          "kernel_reserved_pages": 206,
+          "ns": 100553778255077,
+          "phase": "worker_joined_and_closed"
+        }
+      ],
+      "terminal": {
+        "message": "Native kernel free pages do not retain their minimum and extra reserve",
+        "model_loaded": false,
+        "CPU_worker_completion_unknown": false
+      },
+      "GPU_initializations": 0,
+      "model_requests": 0,
+      "unknown_completion": false,
+      "exact_fastest_and_settings_restored": true,
+      "whole_native_integrity_required": true,
+      "evidence": {
+        "trace": {
+          "bytes": 9530,
+          "sha256": "279a9cb62f9844d6f8d706dc80a3fa22dbab1c7e6bb3ed59edba4073187ac5ac"
+        },
+        "terminal": {
+          "bytes": 813,
+          "sha256": "6a2e1fc46a560dadb4143fc24f01222a406d0774d113a30706fa06ca403d3595"
+        },
+        "restoration": {
+          "bytes": 1211,
+          "sha256": "cbdbcd4e281cadbb65a66d0eb6d07c246ed4f9030c9066c3de1635b73d7168ae"
+        }
+      },
+      "tables": {
+        "GPU_calls": 0,
+        "completed": true,
+        "fault": false,
+        "free_after": 2964,
+        "free_before": 2964,
+        "maximum_new_output_pages": 1,
+        "memory_refused": false,
+        "minimum_sampled_free": 2956,
+        "original_aggregate_extra_pages": 512,
+        "output_bytes": 9471408,
+        "page_bounded_output_calls": 1250,
+        "sampled_Direct_allocator_metadata_pages": 17,
+        "sampled_idle_allowance_pages": 2,
+        "scratch_live_bytes": 0,
+        "selected_per_operation_extra_pages": 20,
+        "tables": 673
+      },
+      "workers": {
+        "GPU_calls": 0,
+        "IO_payload_reads": 0,
+        "completed": true,
+        "lifetimes": 4,
+        "maximum_matched_idle_decline_pages": 0,
+        "maximum_sampled_worker_VM_decline_pages": 2,
+        "sampled_maxima_not_universal_minima": true
+      },
+      "before_GPU": {
+        "GPU_calls": 0,
+        "free_pages": 2847,
+        "interval_includes_final_CPU_source_setup": true,
+        "measured_worker_pages": 2,
+        "observed_prior_remaining_GPU_load_interval": 1958,
+        "prior_after_context_pages": 1415,
+        "prior_before_interval_pages": 3373,
+        "provisional_allowances_replaced": true,
+        "required_pages": 3114,
+        "variation_pages": 0
+      }
+    }
+  ],
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "persistent_caches": false,
+  "original_precision": "BF16/F32 weights and F32 KV",
+  "new_GPU_initializations": 0,
+  "new_model_requests": 0,
+  "CI_runs": 0
+}

@@ -1,5 +1,18 @@
 # PS5 Flash Next plan status
 
+Latest measured results are the [VM revalidation report](vm-revalidation-results-20261028.md)
+and [16-family / 22-item ledger](vm-revalidation-results-20261028.json).
+All 27 Direct lifetimes, two exact 673-table restorations, four actual worker
+lifetimes and the current-reader/refill comparison have terminal evidence.
+Direct payload is no longer priced as kernel VM in the explicit calibrated
+CPU-helper scope. The last whole CPU cohort reached its before-GPU predicate:
+2,843 pages versus the selected 3,114-page future-phase price. This is a policy
+refusal with no physical GPU allocation failure, not proof of impossibility.
+C2/C3 native model comparisons remain unexecuted; the report does not call all
+native validation complete. The exact fastest SELF/settings and fresh idle
+ownership are restored. No new speed improvement was adopted. Older plan
+paragraphs below are historical context; use the new per-item ledger for status.
+
 The [VM admission comparison](vm-admission-review-20261027.md) reviews all 16
 documented VM-stopped candidate families and all 22 previous closing-ledger items.
 Every candidate remains in the comparison, including historical rejections.

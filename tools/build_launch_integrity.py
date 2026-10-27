@@ -9,12 +9,20 @@ def record(path):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for key in ('workspace','launch-plan','active-context','out'):p.add_argument('--'+key,type=Path,required=True)
+    p.add_argument('--resident-launch-integrity',type=Path,help='Exact same-launch receipt scope from the resident policy')
     a=p.parse_args();load=lambda path:json.loads(path.read_text())
     plan=load(a.launch_plan);state=load(a.active_context)
     assert state['original_restored']and not state['native_running']and not state['model_loaded']
     original=Path(plan['source_controller']['path']);assert record(original)==plan['source_controller']
     source=original.read_text();start=source.index('static int digest_matches(');end=source.index('static int exact_text(',start)
     replacement='#include "launch_integrity_native.h"\nstatic int digest_matches(const char *p,size_t n,const char *h){return qwen_launch_digest_matches(p,n,h);}\n'
+    resident=None
+    if a.resident_launch_integrity:
+        resident=load(a.resident_launch_integrity)
+        run=resident['run_id'];nonce=resident['nonce']
+        if not re.fullmatch('[0-9a-f]{32}',run)or not re.fullmatch('[0-9a-f]{32}',nonce):raise ValueError('Fresh exact resident launch binding required')
+        if resident['receipt_path']!='/app0/qwen-runtime/resident-launch-'+run+'.json':raise ValueError('Owned exact receipt path required')
+        replacement='#include "launch_integrity_native.h"\n#include "resident_launch_integrity_writer.h"\nstatic int digest_matches(const char *p,size_t n,const char *h){return resident_launch_digest_matches(p,n,h);}\n'
     modified=source[:start]+replacement+source[end:]
     assert modified.replace(replacement,source[start:end],1)==source
     a.out.mkdir(parents=True,exist_ok=False);(a.out/'tmp').mkdir()
@@ -22,9 +30,34 @@ def main():
     plan_snapshot=a.out/'preparation-plan.private.json';context_snapshot=a.out/'preparation-context.private.json'
     plan_snapshot.write_bytes(a.launch_plan.read_bytes());context_snapshot.write_bytes(a.active_context.read_bytes())
     headers=[ROOT/'native/qwen_flash_next/launch_integrity.h',ROOT/'native/qwen_flash_next/launch_integrity_native.h']
+    if resident:headers.append(ROOT/'native/qwen_flash_next/resident_launch_integrity_writer.h')
     inputs=[Path(__file__),plan_snapshot,context_snapshot,original,*headers,ROOT/'tests/launch_integrity.c']
     inputs += [Path(row['path'])for row in plan['header_inputs']]
+    if resident:inputs.append(a.resident_launch_integrity)
+    if resident and resident.get('external_shader_at_ordinary_launch'):
+        inputs.append(a.launch_plan.parent/'private-policy/development.json')
     before=[record(path)for path in inputs]
+    if resident:
+        # The complete candidate binding comes from the same prepared launch.
+        binding=load(a.launch_plan.parent/'case-inputs.private.json')['binding']
+        if binding['run_id']!=resident['run_id']:raise ValueError('Receipt run differs from the exact SELF launch')
+        context={'RESIDENT_RUN_ID':run,'RESIDENT_RECEIPT_NONCE':resident['nonce'],
+            'RESIDENT_RECEIPT_PATH':'/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/resident-launch-'+run+'.json',
+            'RESIDENT_SELF_PATH':'/data/ai/native-moss-image-sft/PPSA99190/eboot.bin','RESIDENT_SELF_SHA256':binding['candidate_SELF_sha256']}
+        text=''.join('#define '+k+' '+json.dumps(v)+'\n'for k,v in context.items())
+        text+='#define RESIDENT_SELF_BYTES '+str(binding['candidate_SELF_bytes'])+'ULL\n'
+        if resident.get('external_shader_at_ordinary_launch'):
+            policy=load(a.launch_plan.parent/'private-policy/development.json')
+            resource=policy['native_shader_storage']['external_file'];digest=resource['sha256']
+            filename='shader-storage-'+digest+'.bin'
+            if (not re.fullmatch('[0-9a-f]{64}',digest)or resource['path']!='/app0/qwen-runtime/'+filename or
+                type(resource['bytes'])is not int or not 0<resource['bytes']<=512<<20):
+                raise ValueError('Exact immutable external shader file required')
+            values=dict(RESIDENT_SHADER_SOURCE_PATH='/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/'+filename,
+                RESIDENT_SHADER_APP_PATH=resource['path'],RESIDENT_SHADER_FILENAME=filename,RESIDENT_SHADER_SHA256=digest)
+            text+=''.join('#define '+k+' '+json.dumps(v)+'\n'for k,v in values.items())
+            text+='#define RESIDENT_SHADER_BYTES '+str(resource['bytes'])+'ULL\n'
+        (a.out/'resident_launch_integrity_context.h').write_text(text,newline='\n')
     host=a.workspace/'toolchain/msys-clang64/clang64/bin';env=dict(os.environ,PATH=str(host)+os.pathsep+os.environ.get('PATH',''),TMP=str(a.out/'tmp'),TEMP=str(a.out/'tmp'))
     steps=[]
     def run(label,cmd):
@@ -114,12 +147,16 @@ done:
         inputs=before+[record(path)for path in sorted(set(extra))],steps=steps,commands=commands,
         controller=record(controller),CPU_probe=record(probe_elf),generated_controller=record(generated),
         CPU_probe_commands=[compile_probe,link_probe],
-        owner_service_title_session_guards_unchanged=True,only_controller_change='digest_matches input adapter',
+        owner_service_title_session_guards_unchanged=True,only_controller_change=(
+            'digest_matches input adapter and explicit same-launch integrity receipt'if resident else'digest_matches input adapter'),
         observed_preparation_inputs=observed,controller_journal_prefix=remote,
         byte_count_SHA256_stable_identity_and_EOF_required=True,original_SELF=original_SELF,
         input_window_bytes=1<<20,automatic_retries=0,title_launches=0,GPU_calls=0,console_requests=0,
         nonce=nonce,remote_probe=remote+'-CPU.elf',remote_log=remote+'-CPU.log',
         actual_CPU_probe_imports={name:providers[name].name for name in names})
+    if resident:receipt['resident_same_launch_integrity']=dict(scope=resident,scope_input=record(a.resident_launch_integrity),
+        generated_context=record(a.out/'resident_launch_integrity_context.h'),original_owner_guards_preserved=True,
+        complete_original_SHA256_identity_EOF_still_required=True,root_owned_readonly_receipt=True)
     (a.out/'manifest.private.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print('Direct integrity controller and CPU-only probe built; no console requests or title/GPU execution.')
 if __name__=='__main__':main()

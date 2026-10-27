@@ -2,6 +2,7 @@
  * Bounded CPU-only Direct I/O / exact BF16 delivery comparison. No model or GPU.
  */
 #include "qualified_context_guard.c"
+#include "direct_vm_policy.h"
 #include "bf16_lossless_context.h"
 #include "bf16_palette.h"
 #define QWEN_BF16_MATRIX_MAX 3276800u
@@ -57,7 +58,7 @@ int main(int argc,char **argv){
     output_fd=open(CODEC_LOG,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);output_selected=1;
     if(output_fd<0)return 2;
     if(!report("BEGIN nonce=%s scratch_bytes=%u samples=%u modes=%u rounds=%u maximum_outstanding_reads=1 GPU_calls=0 title_launches=0",CLOSE_NONCE,WINDOW,CODEC_SAMPLES,CODEC_MODES,CODEC_ROUNDS))return 2;
-    if((argc!=0&&argc!=1)||constructors!=1||getuid()!=1||geteuid()!=0||!context(1)||!context(2)||!headroom(WINDOW/ALIGNMENT)||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;
+    if((argc!=0&&argc!=1)||constructors!=1||getuid()!=1||geteuid()!=0||!context(1)||!context(2)||!headroom(qwen_direct_vm_pages(WINDOW,ALIGNMENT))||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;
     if(!report("DIRECT_ALLOC_BEFORE bytes=%u",WINDOW))goto done;
     int rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,ALIGNMENT,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);
     if(!report("DIRECT_ALLOC_RETURNED rc=%d",rc))retain();

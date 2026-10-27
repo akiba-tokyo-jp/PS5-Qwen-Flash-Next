@@ -31,12 +31,20 @@ def main():
     p.add_argument("--native-build", type=Path,
                    help="Native build directory; defaults to cache/build/application-native")
     p.add_argument("--out", type=Path, required=True, help="Fresh local package directory")
+    p.add_argument("--experimental-libc-heap-bytes", type=int,
+                   help="CPU-only resident experiment: bound private libc heap and disable extension")
+    p.add_argument("--libc-control-ELF", type=Path,
+                   help="Exact default converted ELF of the same native link")
     a = p.parse_args()
     lock = json.loads((ROOT / "native/qwen_flash_next/dependencies.lock.json").read_text(encoding="utf-8"))
     selected = validate_driver(a.driver_root, a.driver_manifest, lock["ps5_vulkan_inference"])
     native_build = a.native_build.resolve() if a.native_build else a.cache / "build/application-native"
     link_receipt = native_build / "receipt.private.json"
     linked = json.loads(link_receipt.read_text(encoding="utf-8"))
+    if bool(a.experimental_libc_heap_bytes) != bool(a.libc_control_ELF):
+        raise ValueError('Experimental libc parameters require the exact control converted ELF')
+    if a.experimental_libc_heap_bytes and not linked.get('resident_comparison_entry'):
+        raise ValueError('Experimental libc parameters require the dedicated resident test entry')
     if linked.get("link_returncode") != 0 or not linked.get("input_hashes_stable") or linked["driver"] != selected:
         raise ValueError("A successful matching native link receipt is required")
     if linked.get("bounded_model_source_link_map_passed") is not True:
@@ -89,12 +97,30 @@ def main():
     native = a.driver_root / "tooling/native"
     sources = [native / name for name in ("native_app_builder.cpp", "elf_object.cpp", "sce_module_writer.cpp", "self_container.cpp")]
     headers = list(sorted(native.glob("*.hpp")))
+    original_formatter_sources = [record(path) for path in sources + headers]
+    libc_experiment = None
+    if a.experimental_libc_heap_bytes:
+        from native_libc_parameters import specialize
+        original = native / 'sce_module_writer.cpp'
+        generated = specialize(original.read_text(), a.experimental_libc_heap_bytes)
+        overlay = a.cache / 'build/native-format-parameter-overlay' / hashlib.sha256(generated.encode()).hexdigest()[:20]
+        overlay.mkdir(parents=True, exist_ok=True)
+        writer = overlay / original.name
+        if writer.exists() and writer.read_text() != generated:
+            raise ValueError('Formatter overlay changed')
+        writer.write_text(generated, newline='\n')
+        sources = [writer if path == original else path for path in sources]
+        libc_experiment = dict(CPU_only_experiment=True, heap_bytes=a.experimental_libc_heap_bytes,
+            extended_allocation=False, original_formatter_sources=original_formatter_sources,
+            generated_parameter_constructor=record(writer), control_converted_ELF=record(a.libc_control_ELF),
+            source_driver_checkout_and_archive_unchanged=True, production_qualified=False)
     tool_identity = hashlib.sha256(b"".join(path.read_bytes() for path in sources + headers)).hexdigest()
     tool_dir = a.cache / "build/native-format-tool" / tool_identity[:20]
     tool_dir.mkdir(parents=True, exist_ok=True)
     tool = tool_dir / "ps5-native-tool.exe"
     env = os.environ.copy(); env["PATH"] = str(host) + os.pathsep + env.get("PATH", "")
     compile_command = [str(host / "clang++.exe"), "-std=c++20", "-O2", *map(str, sources), "-lz", "-o", str(tool)]
+    if libc_experiment: compile_command += ['-I', str(native)]
     if not tool.exists():
         result = subprocess.run(compile_command, env=env, capture_output=True)
         (tool_dir / "compile.private.log").write_bytes(result.stdout + result.stderr)
@@ -165,6 +191,7 @@ def main():
                "model_loaded": False, "release_qualified": False, "steps": []}
     if native_platform_snapshot:receipt['native_platform_build_receipt']=record(native_platform_snapshot)
     if external_shader_file:receipt['external_shader_file']=external_shader_file
+    if libc_experiment:receipt['experimental_libc_parameters']=libc_experiment
     for name, command in commands:
         result = subprocess.run(command, env=env, capture_output=True)
         (a.out / (name + ".private.log")).write_bytes(result.stdout + result.stderr)
@@ -200,6 +227,10 @@ def main():
     if driver_tables:
         from driver_table_storage import audit_converted_storage
         receipt['converted_driver_table_audit']=audit_converted_storage(image,converted,driver_tables)
+    if libc_experiment:
+        from native_libc_parameters import verify_data_only
+        receipt['experimental_libc_parameters'].update(verify_data_only(
+            a.libc_control_ELF.read_bytes(), converted.read_bytes(), a.experimental_libc_heap_bytes))
     (a.out / "receipt.private.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"local_SELF_created": True, "sha256": sha(executable), "console_access": False}))
 

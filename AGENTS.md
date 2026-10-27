@@ -19,6 +19,23 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+Latest measured VM results are `docs/vm-revalidation-results-20261028.md` /
+`.json` and `docs/resident-startup-calibration-20261028.json`. All 16 families
+and 22 prior items remain classified separately. Case 3538 completed the
+same-launch SELF/shader integrity handoff, all 673 original table restorations,
+complete CPU preflight and four actual worker lifetimes (sampled peak 2 pages,
+matched idle 0), then returned before GPU at 2843 versus selected 3114 pages.
+The remaining 1958-page GPU/load interval is historical global observation,
+not proven exclusive cost or a physical minimum. No GPU allocation failure or
+new model-speed result follows. C2/C3 remain unexecuted; do not call all native
+validation complete or classify missing integration as physical impossibility.
+Exact fastest/settings, native whole SHA256/identity/EOF and fresh idle were
+positively restored. Do not repeat completed losers or unchanged refused model
+lifetimes. The calibrated CPU-helper scope separates Direct payload from sampled
+VM metadata (17 + 2 pages, 27 cycles); retain actual allocation return checks,
+original precision, ownership, completion and the production default. Reuse the
+completed four-worker measurement rather than another worker-only title.
+
 The owner's latest VM-feasibility comparison is
 `docs/vm-admission-review-20261027.md` / `.json`: all 16 documented VM-stopped
 candidate families and all 22 previous ledger items remain in scope. Include

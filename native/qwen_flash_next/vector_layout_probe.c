@@ -2,6 +2,7 @@
  * Read-only comparison against actual sealed role-major physical model parts.
  */
 #include "qualified_context_guard.c"
+#include "direct_vm_policy.h"
 #include "vector_layout_context.h"
 #include "vector_layout_delivery.h"
 #include "hash/sha256/sha256.h"
@@ -72,7 +73,7 @@ int main(int argc,char **argv) {
     if(output_fd<0)return 2;
     if(!report("BEGIN nonce=%s Direct_bytes=%u samples=18 groups=3 modes=2 rounds=8 original_BF16=1 copies=0 GPU_calls=0 title_launches=0",CLOSE_NONCE,WINDOW))return 2;
     if((argc!=0&&argc!=1)||constructors!=1||getuid()!=1||geteuid()!=0||!context(1)||!context(2)||
-        !headroom(WINDOW/PAGE)||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;
+        !headroom(qwen_direct_vm_pages(WINDOW,PAGE))||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;
     if(!report("DIRECT_ALLOC_BEFORE"))goto done;
     rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,PAGE,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);
     if(!report("DIRECT_ALLOC_RETURNED rc=%d",rc))retain();if(rc<0){if(physical>=0)retain();goto done;}if(physical<0)retain();
