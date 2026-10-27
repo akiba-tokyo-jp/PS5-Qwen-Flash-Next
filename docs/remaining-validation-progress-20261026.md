@@ -756,3 +756,344 @@ test groups, actual completed-evidence authentication and two real native ABI
 compilations. They preserve all native admission and production requirements.
 No current-boot shader bootstrap, PLE timing, model comparison or adoption ran.
 All outstanding packages retain their incomplete status; CI remains disabled.
+
+## Expanded cache and causal controller implementation, 2026-10-27
+
+The owner approved the revised execution order in the existing plan. PLE timing
+and the separate prefix speed comparison no longer block independent cache or
+width-two implementation. The earlier 512 MiB / 1792 MiB choices are policy
+budgets; their refusals are not universal physical limits.
+
+Saved-route screen 2777 independently matched the actual `ExpertPolicy` and a
+Python replay at 15 capacities, 53 through 1024. The 53-slot counters match the
+completed native control. These are logical upload estimates on the saved
+30-prompt/22-output-token routes, not new SSD timings or native speed results.
+
+| Active slots | Rounded three-bank allocation, MiB | Full external-request upload reduction | One-token-process upload reduction | Historical after-load allowance slack, MiB |
+| --- | ---: | ---: | ---: | ---: |
+| 53 | 510 | 0% | 0% | 995.859375 |
+| 96 | 918 | 3.2000% | 4.3164% | 587.859375 |
+| 128 | 1218 | 4.8993% | 6.9263% | 287.859375 |
+| 160 | 1518 | 6.7404% | 8.9089% | -12.140625 |
+| 192 | 1824 | 8.4887% | 11.0671% | -318.140625 |
+| 256 | 2424 | 11.3561% | 14.8063% | -918.140625 |
+| 384 | 3630 | 16.5442% | 20.3272% | -2124.140625 |
+
+The envelope uses completed production control 2240, retrieved read-only in
+2778. Its native pool was 12,280,922,112 bytes and after-load availability
+3,401,433,088 bytes. The 904 MiB device peak already contains context/workspace;
+the 96 MiB CPU heap is already absent from the available query. The calculator
+replaces only the rounded baseline bank allocation and separately retains CPU
+growth to 512 MiB, staging 128 MiB, Direct reserve 512 MiB, platform 256 MiB and
+display 32 MiB. Four focused test groups cover rounding, double accounting,
+identity/completion and policy-gap versus pool arithmetic. No current admission
+follows from historical headroom.
+
+128 slots is the first implementation target. Its raw cache request is
+1,274,462,208 bytes; each bank rounds to 406 MiB. The historical peak substitution
+is 1612 MiB, below the retained 1792 MiB ledger cap. The 160-slot shortfall is a
+revisable allowance gap. At 384 slots, banks plus unchanged already-owned memory
+alone exceed the recorded native pool: that arithmetic excludes this historical
+resident layout, not every alternative PS5 residency design.
+
+The default remains the qualified 53-slot path. `padded_cache_geometry.h`, the
+MoE overlay, mapped source reader, actual backend lease and vector eligibility
+support a separately selected 128-slot scope. The one-way process binding is
+selected before backend/model initialization. The original 53-slot geometry and contiguous-vector
+predicate remain unchanged. Direct reads, coalescing, split/EOF fallback,
+descriptor checks and unknown-completion retention remain required.
+
+Source review identified a necessary allocation correction: upstream could group
+all three expanded banks into one allocation above the selected 512 MiB limit.
+The experimental post-load batching hook splits them at that unchanged limit;
+resident pre-load tensors retain their actual device limit. The verbatim pinned
+upstream planner now passes both the original one-buffer and expanded three-buffer
+host controls, including view ownership. No increased single-buffer cap is used.
+The isolated layout fixture prices one bank and its working reserves (2070 MiB),
+not an unloaded complete model. Model execution separately retains full-footprint
+admission, a scoped context-256 allowance, CPU cap and original device ledger.
+
+Host 2795 passed both geometries, all 30 source residues, final-slot canaries,
+pre-I/O fallback/quarantine, actual planner checks and 71 policy/resource/
+identity/numerical refusals. The expanded native fixture must still execute all
+360 graphs / 120 shape-residue cases. Its complete hashed v2 report is mandatory
+before the expanded model path. Host checks are not native geometry qualification.
+
+The causal width-two controller is also implemented, default off and independent
+of the cache experiment. It uses two consistent matches in committed past tokens,
+the original pending token plus one draft, complete-state restore on rejection,
+one emitted token per caller step and a bounded queued bonus. It retains the
+53-slot control, context 256, prefill four, original BF16/F32/F32 KV and at most
+32 verification attempts. A separate policy binds the already completed full
+checkpoint proof; prefix speed qualification is not required again.
+
+The first native controller cohort keeps external request one single-token and
+enables the candidate only for request two. It checks exact token IDs and output
+bytes against its own original target control. Different cache conditions mean
+this is not speed adoption. Performance v6 explicitly includes extra operations
+and records rejected verification calls and saved bonus steps; ordinary v1-v5
+validation is preserved. A zero-attempt cohort cannot establish width-two math,
+and native rejection coverage remains a separate reported result.
+
+Host 2793 passed 30 actual-adapter/greedy tests, including automatic acceptance,
+rejection, no proposal, request reset and attempt saturation, plus 42 policy/
+native-proof refusals. Eleven existing performance-review groups and three new
+controller/result groups passed. These use API/state stubs, not learned host
+inference or native arithmetic. GPU validation, native speed, A/B then B/A,
+production adoption and the other remaining work packages are still outstanding.
+
+The corrected seven native I/O objects (2787), original 1527 shader resources
+(2791) and external-location objects (2794) compiled manually. All retain driver
+`872cc1264ad8ba5d6b888b092968fa5858a38c58`, `cumulative-idle`, native archive
+`b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925` and disabled
+persistent caches. No console publication or production replacement occurred.
+
+CPU-only case 2780 positively completed two inventories of 89 processes with
+no native owner or stopped/zombie accumulation, unchanged boot/services and zero
+explicit allocations/payload reads/GPU calls. Free pages were 2939, active 18627,
+inactive 87211 and wired 29962. RSS remains non-additive shared-memory evidence.
+The separately priced CPU bootstrap screen 2779 observed 2929 -> 2929 against
+provisional 7989; it refused before staging. Neither count proves physical
+impossibility or future recovery. A title, current-boot complete shader proof,
+expanded geometry, PLE timing and new model generations had not run at that checkpoint.
+
+## Current-boot CPU bootstrap and restored title alias (2026-10-27)
+
+Full native application build 2796 and package 2797 passed the native module,
+dispatch, input-hash, link and six-segment SELF roundtrip checks. Candidate SELF
+`3e96076034170a38dfd0f1fa0e92168f72a56896b2384f72d27fccd50f320cb8`
+is 28,324,551 bytes. Its default remains the qualified 53-slot path; experimental
+128-slot cache and causal speculation require independent exact policies.
+The matching source inputs were preserved before physical candidate work.
+
+The first small CPU attempt (2804) returned an explicit launcher refusal with
+zero native title-launch calls because the post-restart title nullfs alias was
+absent. The host's initial requested-call counter is not the actual native count.
+No GPU or model work started. A separately guarded helper restored the existing
+alias once, checking the exact source executable, idle registered title, boot,
+services and empty underlying mount directory. There were no unmount, system
+volume remount, registration or title-launch calls. The native SDK wrapper uses
+static syscall 378; an earlier host-only dynamic-symbol audit refusal was retained.
+The refused case was not replayed.
+
+Fresh CPU-only case 2812 then launched normally once (PID 278), fully verified
+all 1,527 original shaders and all 382 lookup entries, and positively completed
+with GPU calls and model loads both zero. Its CPU-only SELF was
+`b2945e3aee2251db8be392104d2498ca9e13a2b1a206f22b5a64198ecac412b3`
+(1,178,694 bytes), with a 16 MiB CPU cap and no linked driver or inference engine.
+The current-run native shader v3 report is 1,144 bytes, SHA256
+`e4b465cc6d8249c2df54ff65e24cb2d2a4a4b31678fa0059553a8b37f62eea22`.
+Whole encoded-file verification and each decoded module's original SHA256 remain
+required when a later candidate reuses this current-boot CPU proof.
+
+The selected CPU prelaunch margin was 1,410 pages (unchanged operational formula
+1,154 plus 256 variation); ten native observations passed. This succeeded below
+the previous provisional 7,989 and full-model 10,142 prelaunch policies. It does
+not establish the startup cost of a different executable or waive the native GPU
+startup target of 2,974 pages. Inactive pages were never credited as free.
+During the complete shader-verification interval, free pages were 2,996 -> 1,409
+and wired pages 33,414 -> 34,836. These interval changes do not isolate one
+proprietary kernel consumer or establish a universal leak rate.
+
+The CPU app was normally closed. Restoration 2816 verified the exact production
+SELF, all five prior settings and retained candidate through native complete
+byte-count/SHA256/stable-identity/EOF checks. A fresh idle observer passed, and
+the reservation returned to the existing production context. No extra raw large
+SELF transport copy was claimed. No new model throughput or production adoption
+was established by this CPU prerequisite.
+
+Fresh passive screen 2821 observed 4,832 -> 4,831 free pages. Independent layout
+case 2820 retains the existing native GPU startup and inner allocation guards,
+the 512 MiB CPU/single-buffer caps and 1,792 MiB device ledger. It prices its
+one-bank fixture plus reserves at 2,070 MiB; the retained 128 MiB I/O allowance
+also covers graph inputs/outputs and allocation rounding, without charging an
+unloaded full model. Its required 120 cases / 360 graphs, final slot 127,
+non-dyadic F32 inputs, F64 reference and positive retirement are a prerequisite
+to an expanded-cache model run. Preparation/publication alone are not a pass.
+
+Case 2820 returned a known CPU refusal after complete SELF/receipt integrity and
+current-boot shader-proof binding, before the whole-model metadata loop, source
+workers, driver initialization or GPU work. Free pages were 2,190 at the first
+CPU boundary and 2,293 after the bounded 20-second wait, below the selected
+2,974 startup target. All shader reads returned; the terminal was explicit.
+The app normally closed, and restoration 2825 returned the exact fastest SELF,
+five settings and fresh idle reservation. GPU/model calls were zero, with no
+hang or unknown completion. This is a policy refusal, not failed 128-slot math
+or evidence of physical inability to allocate its bank.
+
+### Independent single-slice layout path
+
+The revised default-off layout path enters after unchanged SELF, receipt and
+current-boot shader admission. It validates the pinned receipt, owns only the
+selected first physical part, reads the original authenticated slice and starts
+no whole-model GGUF loop, protected virtual-source rehearsal or source worker.
+This removes unrelated model preparation from a model-free numerical fixture.
+The actual expanded bank, all 30 residues / four shapes / 360 graphs, F64
+reference, non-dyadic F32 inputs, final-plane canaries, original heap/device caps,
+Direct/Flexible reserves and positive completion remain required.
+
+Its exact `native_cache_layout_phase_memory` policy retains the operational
+formula and adds 512 kernel pages (8 MiB) immediately before GPU initialization;
+with the recorded 898 minimum / 206 reserved / 256 selected extra pages this is
+1,666 pages. The completed small-GPU case 2741 observed a 32-page free decline
+and 32-page wired increase across GPU initialization/work/retirement. That
+different fixture does not bound this larger allocation; the 512-page addition
+is an explicitly provisional experimental allowance, not a physical minimum or
+a measured sufficient margin for 128 slots. Fresh pool/allocation admission and
+operational checks before each shape and graph still apply. Full-model startup
+continues to require its original target; no model execution can reach this path.
+
+Manual host case 2828 passed both geometries, original source/fallback/planner
+controls and 111 scope/resource/identity/numerical refusals, including the exact
+single-slice scope, denied model-stage combinations and invalid kernel counters.
+The new native build and its physical result are recorded below.
+
+Native link 2830 and SELF 2831 passed imports/dispatch and six-segment roundtrip.
+Fresh physical case 2840 then passed all 120 cases / 360 GPU graphs, including
+slot 127, every original residue, both matrix/vector paths, non-dyadic F32 inputs
+and padding canaries. Maximum absolute error was `1.7171259969472885e-9` against
+the F64 reference and `1e-6` limit. The device ledger peaked at 666 MiB and returned
+to zero. Native C++ qualification and independent Python stage/numeric/ownership
+reviews both passed. No model, protected source probe, worker or display started.
+
+GPU-interval free pages were 3,736 -> 3,633 and wired pages 34,719 -> 34,911.
+The original 2,974 startup target was also satisfied: this run does not demonstrate
+that the lower 1,666 threshold would suffice. Population samples classify the
+whole interval and do not isolate one kernel allocation's cost. Ordinary close,
+exact fastest SELF/five-setting restoration and fresh idle observation completed
+(2845); there is no unknown completion. See the [public bounded result](cache128-layout-20261027.json).
+
+The next native gate is the predeclared same-SELF original-model order A53 ->
+B128 -> B128 -> A53. Each arm retains context 256, prefill four, one internal
+warmup and two fixed external requests. The selected prelaunch policy is 6,207
+pages: current-SELF observed CPU-prefix decline 2,977 + unchanged model startup
+target 2,974 + variation 256. A small fixture does not price all model preparation;
+the full path still independently applies both startup targets and every original
+operational/heap/Direct/Flexible/device guard. Initial passive observation was
+8,396 -> 8,396 pages, with no title launch. Exact outputs, both orderings and a
+gain above control variation are required before adoption. No new model speed or
+production winner is yet established.
+
+### Full-model preparation refusal and small CPU attribution
+
+First control A (2860) passed ten native observations beginning at 8,272 pages,
+then returned a known CPU startup refusal after all 76 protected source ranges
+had positively reserved, checked and unmapped. Free pages were 1,544 before
+SELF integrity, 3,285 afterward, 3,259 before metadata and 1,523 after the
+completed virtual rehearsal; the bounded wait ended at 1,540 versus the selected
+2,974 startup target. GPU/model loads and external generation POSTs were zero.
+Normal close and exact fastest/settings restoration passed (2865). The A/B/B/A
+comparison is interrupted; it is not an unsuccessful cache-speed measurement.
+The observed initial decline of 6,728 pages supersedes the earlier 2,977-page
+prefix estimate for pricing a future full-application cohort. A CPU-only
+8,138-page passive policy refused at 6,226 without a title launch; that selected
+cross-executable price did not establish CPU metadata's physical impossibility.
+
+The separate 1,082,438-byte CPU metadata SELF (2913) links the original GGUF
+metadata utility, not a driver, Vulkan backend or learned inference engine.
+Its inspector and 380-sample collector are extracted verbatim from native main;
+the original source seal, exact receipt, all physical identities before/after,
+BF16/F32 tensor spans, 48-layer/512-expert dimensions and PLE checks remain.
+Thirty-four host scope refusals, actual strong imports and six-segment SELF
+roundtrip passed. The first host-only footprint constant was corrected against
+the existing native control before physical execution; the corrected final build
+and package are separately preserved.
+
+Physical case 2920 then passed all 76 containers / 380 observations, 86 returned
+Direct reads / 90,177,536 bytes and the complete original footprint. Tracked CPU
+heap peaked at 32 MiB under its 64 MiB observational allowance. Metadata-interval
+free pages increased 2,582 -> 2,595; wired pages changed 33,966 -> 33,970. Size
+queries showed zero free-page decline, parser intervals -8, tensor scans +1,
+container retirement -4, between-file intervals -2, and the surrounding complete
+identity checks zero. Negative declines mean more free pages. These whole-interval
+observations are not exclusive kernel-owner attribution. Earlier files may have
+warmed filesystem state; this does not disprove cold metadata cost. It does show
+that metadata alone has not explained the earlier 1,736-page preparation decline.
+
+Two additional ELF owner observers positively refused before their metadata read;
+the smaller one reported 981 pages versus the selected 1,154 floor. A subsequent
+resident shell observation reported 2,807. Different observation times do not
+isolate the observer's exact cost. No CPU application was rerun. Normal shutdown
+instead consolidated live owner-start admission in the exact recorded OS launch
+window with the original two native boot/service/parent/UID/no-tracer/AppInfo/title
+checks. Every original native guard remained; one ordinary OS close returned zero
+and owner absence was verified. Exact fastest/five-setting restoration and fresh
+idle/full native readback then passed (2931). No forced signal, kernel change,
+GPU call or unknown completion occurred.
+
+See the [bounded public measurements](source-memory-attribution-20261027.json).
+The next default-off CPU fixture compares eight original-size protected source
+regions with one equal-size arena, in A/B then B/A order, capped at 32 GiB of
+virtual address space and zero model payload/GPU work. Both paths emit 72 native
+or matched journal markers per round; VM snapshots separate native reservation,
+matched log writes, logical protection queries and positive retirement. The
+existing address allocator is already compact; the proposed difference is OS
+reservation count. This representative fixture cannot qualify whole-model
+virtual capacity, inference speed or production adoption.
+
+
+### Representative virtual source comparison and quiet-start control
+
+CPU case 2950 completed A/B/B/A for eight original-sized logical regions
+(27,624,914,944 virtual bytes). All 18 native reservation/protection/release
+sets and 32 additional logical protection checks returned; every range retired.
+Both modes emitted 72 actual or matched journal markers per round. Reservation
+API intervals declined by only 2, 0, 0 and 0 free pages. A 1,409-page decline
+occurred after reservation, during a matched journal interval in the second
+arena round. This does not identify logging as the cause: asynchronous title
+startup is still confounded with that interval. Round times were 197.941,
+103.976, 106.176 and 103.423 ms. Warm per-file was as fast as the arena rounds;
+there is no qualified speed benefit and no shared-arena production adoption.
+Normal close, exact fastest/five-setting restoration, complete native readback
+and fresh idle admission passed (2955). GPU calls/model payload reads were zero.
+
+The next bounded CPU case adds five seconds with no journal writes, allocations,
+virtual calls or payload reads between VM snapshots before the same comparison.
+Its purpose is startup attribution, not another cache-speed or capacity claim.
+No global kernel pool, operational reserve or model GPU gate changes.
+
+
+CPU quiet-start case 2970 then completed on SELF `e98327d1c436e5814b89c1b1375bbae6513fb8f7c2fbc605be02902bcc1e6336`
+(847,942 bytes). During 5.000481353 seconds with no application journal writes,
+allocations, virtual-source calls or payload reads, free pages fell 3,455 ->
+2,048 and wired rose 34,147 -> 35,568. The later four complete reserve/query/
+release rounds each declined by zero pages, including matched journal intervals;
+times were 102.747, 102.776, 102.786 and 102.844 ms. All 18 ranges retired. Normal
+close and exact fastest/five-setting restoration with complete native readback
+and fresh idle observation passed (2975). This isolates the large decline from
+the suspected application operations, but does not identify a proprietary kernel
+allocator or exclude unrelated OS activity. No shared-arena winner was adopted.
+
+### Independent model-capacity review and causal workload screen
+
+`tools/cache128_result.py` binds the exact 128/129 geometry and prior complete
+native layout report by SHA256. Full-model review now requires all 120 layout
+cases, the actual 1,274,462,208-byte model cache request, retained after-load
+Direct reserves and all three complete 128-slot route sidecars. The scoped
+resident allowance is 12,042,833,408 bytes; the original 53-slot predicate stays
+12,110,548,480. A native claim alone cannot select the smaller allowance. Five
+new fault-injection groups passed; 21 affected first-generation, routes,
+checkpoint, prefix and speculative-result regression tests passed. No new native
+model comparison or production speed follows from these host checks.
+
+The actual current C++ causal draft function was also replayed against the two
+completed production 22-token outputs using committed generated history only.
+Each produced five proposals; all five matched the subsequently recorded token.
+No future target was passed to the proposer, no prompt lookup was required and
+no learned host inference ran. This supports using the original counting request
+for the first width-two test; it does not qualify target arithmetic, rejection,
+checkpoint overhead or a speed gain on the console.
+
+
+The subsequent current-boot controller cohort (2990) inspected 46 positively
+completed owned ELF uploads, excluding old zero-residency model/SELF resources.
+PROT_NONE/mincore reported 319 resident pages / 4.984375 MiB and zero modified
+pages; all windows positively unmapped. Complete original SHA256/identity/EOF
+verification of those 46 originals then passed (2991), with all reads returned
+and no cache advice, pressure, deletion, title or GPU work. The separate passive
+screen after this material state change observed 6,942 -> 6,942 pages, below the
+existing same-SELF PLE price of 8,108 (2992). No exclusive amount of recovery is
+established. Do not repeat this cohort, claim inactive pages as free or use a
+policy refusal as proof of physical impossibility. The console remains idle on
+the exact fastest SELF and prior five settings while independent implementation
+continues; there is no pending native completion.

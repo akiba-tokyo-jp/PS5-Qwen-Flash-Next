@@ -59,6 +59,8 @@ def validate_overrides(path, base_receipt):
         raise ValueError("The owned padded-layout dispatch bridge changed")
     if data.get("padded_cache_policy") != record(ROOT / "native/app/padded_cache_bridge.h") or data.get("padded_bank_layout") != record(ROOT / "native/app/padded_bank.h"):
         raise ValueError("The qualified padded-cache ABI or layout changed")
+    if data.get("padded_cache_geometry") != record(ROOT / "native/app/padded_cache_geometry.h"):
+        raise ValueError("The selected padded-cache geometry changed")
     patches = [record(p) for p in sorted((ROOT / "patches/native-model-io").glob("*.patch"))]
     if data["patches"] != patches or len(patches) != 7 or set(data["sources"]) != set(BASELINES):
         raise ValueError("The exact seven model-I/O overrides are required")
@@ -103,6 +105,7 @@ def main():
         padded_bank_bridge=record(ROOT / "native/app/padded_bank_bridge.h"),
         padded_cache_policy=record(ROOT / "native/app/padded_cache_bridge.h"),
         padded_bank_layout=record(ROOT / "native/app/padded_bank.h"),
+        padded_cache_geometry=record(ROOT / "native/app/padded_cache_geometry.h"),
         patches=[record(p) for p in sorted((ROOT / "patches/native-model-io").glob("*.patch"))],
         sources={}, objects=[], steps=[], console_access=False, model_loaded=False, learned_host_inference=False)
     if len(receipt["patches"]) != 7:

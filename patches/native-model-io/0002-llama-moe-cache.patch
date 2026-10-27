@@ -3,7 +3,7 @@
 @@ -1,3 +1,6 @@
 +#include "mapped_source_bridge.h"
 +#include "padded_cache_bridge.h"
-+#include "padded_bank.h"
++#include "padded_cache_geometry.h"
  #include "llama-moe-cache.h"
  
  #include "llama-impl.h"
@@ -43,8 +43,8 @@
                  g.n_slots = 0;
                  continue;
              }
-+            if(qwen_app_padded_cache_enabled()&&g.n_slots!=53)
-+                throw std::runtime_error("Padded cache must retain exactly 53 active slots");
++            if(qwen_app_padded_cache_enabled()&&g.n_slots!=static_cast<int32_t>(qwen_app::selected_padded_cache_geometry().active_slots))
++                throw std::runtime_error("Padded cache must retain exactly the selected active slots");
              g.slru.init(model.layers.size(), n_expert, g.n_slots, g.layers.size());
              n_tensors[g.id] += g.ref.size()*(1 + g.layers.size());
              n_tensors_host  += g.layers.size();
@@ -131,7 +131,7 @@
 +
 +    static void scatter_padded(ggml_tensor *bank,const void *source,size_t first_slot,size_t count,size_t residue) {
 +        const size_t total=count*qwen_app::bank_expert_bytes;
-+        if(!count||first_slot>=53||count>53-first_slot||!qwen_app_model_source_range(source,total))
++        if(!count||first_slot>=qwen_app::selected_padded_cache_geometry().active_slots||count>qwen_app::selected_padded_cache_geometry().active_slots-first_slot||!qwen_app_model_source_range(source,total))
 +            throw std::runtime_error("Padded scatter requires complete owned original expert bytes");
 +        qwen_app_record_padded_scatter(total);
 +        for(size_t done=0;done<total;) {

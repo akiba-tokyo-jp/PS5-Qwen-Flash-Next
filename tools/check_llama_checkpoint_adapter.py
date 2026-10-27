@@ -12,17 +12,26 @@ def main():
     sampler=up/'src/llama-sampler.cpp';s=sampler.read_text();start=s.index('static void llama_sampler_greedy_apply(');end=s.index('static bool llama_sampler_greedy_backend_init(',start)
     inc=a.out/'actual_checkpoint_greedy.inc';inc.write_text(s[start:end],newline='\n')
     sources=[ROOT/'native/app/llama_engine.cpp',ROOT/'native/app/model_checkpoint.cpp',ROOT/'tests/llama_checkpoint_adapter.cpp']
-    inputs=sources+[ROOT/'native/app/llama_engine.h',ROOT/'native/app/model_checkpoint.h',sampler,inc,Path(__file__)];fixed=[record(p)for p in inputs]
+    inputs=sources+[ROOT/'native/app/llama_engine.h',ROOT/'native/app/model_checkpoint.h',ROOT/'native/app/model_free_draft.h',
+        ROOT/'native/app/padded_cache_geometry.h',ROOT/'native/app/model_free_speculation_policy.h',
+        ROOT/'tests/model_free_speculation_policy.cpp',sampler,inc,Path(__file__)];fixed=[record(p)for p in inputs]
     exe=a.out/'checkpoint-adapter-tests.exe';command=[str(host/'clang++.exe'),'-std=c++17','-O2','-Wall','-Wextra','-Werror','-I',str(ROOT/'native/app'),'-I',str(up/'include'),'-I',str(up/'ggml/include'),'-I',str(a.out),*map(str,sources),'-o',str(exe)]
     env=dict(os.environ,PATH=str(host)+os.pathsep+os.environ.get('PATH',''));results=[]
     for name,c in [('compile',command)]+[(n,[str(exe),n])for n in ('positive','short_capture','short_restore','missing_PLE','wrong_routes','no_budget',
         'prefix-positive','prefix-miss','prefix-short-restore','prefix-missing-PLE','prefix-no-budget','prefix-wrong-model','prefix-observer-failure',
         'spec-accepted','spec-rejected','spec-discard','spec-target-EOG','spec-invalid','spec-short-restore','spec-missing-PLE',
-        'spec-missing-row','spec-unknown-sync','spec-process-failure','spec-wrong-model','spec-no-budget')]:
+        'spec-missing-row','spec-unknown-sync','spec-process-failure','spec-wrong-model','spec-no-budget',
+        'auto-accepted','auto-rejected','auto-no-draft','auto-repeat','auto-limit')]:
         r=subprocess.run(c,capture_output=True,timeout=120,env=env);(a.out/(name+'.private.log')).write_bytes(r.stdout+r.stderr)
         if r.returncode:raise RuntimeError(name+': '+r.stderr.decode(errors='replace')[-3000:])
         if name!='compile':results.append(json.loads(r.stdout))
+    policy_command=[str(host/'clang++.exe'),'-std=c++17','-O2','-Wall','-Wextra','-Werror','-I',str(ROOT/'native/app'),
+        '-I',str(up/'vendor'),str(ROOT/'tests/model_free_speculation_policy.cpp'),'-o',str(a.out/'causal-policy.exe')]
+    for name,c in [('policy-compile',policy_command),('policy-refusals',[str(a.out/'causal-policy.exe')])]:
+        r=subprocess.run(c,capture_output=True,timeout=120,env=env);(a.out/(name+'.private.log')).write_bytes(r.stdout+r.stderr)
+        if r.returncode:raise RuntimeError(name+': '+r.stderr.decode(errors='replace')[-3000:])
     assert fixed==[record(p)for p in inputs]
-    result=dict(controls=results,inputs=fixed,command=command,API_stubs_only=True,native_model_qualification=False,PS5_operations=0)
+    result=dict(controls=results,inputs=fixed,command=command,policy_command=policy_command,
+        API_stubs_only=True,native_model_qualification=False,PS5_operations=0)
     (a.out/'receipt.private.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(dict(host_cases=len(results),actual_adapter_and_greedy_source=True,all_passed=True,PS5_operations=0)),flush=True)
 if __name__=='__main__':main()

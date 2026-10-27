@@ -79,6 +79,15 @@
      return ggml_backend_buffer_init(buft, ggml_backend_vk_buffer_interface, bufctx, size);
  }
  
+@@ -13211,7 +13234,7 @@
+ 
+ size_t ggml_backend_vk_buffer_type_get_max_size(ggml_backend_buffer_type_t buft) {
+     ggml_backend_vk_buffer_type_context * ctx = (ggml_backend_vk_buffer_type_context *) buft->context;
+-    return ctx->device->suballocation_block_size;
++    return qwen_app_padded_buffer_batch_limit(ctx->device->suballocation_block_size);
+ }
+ 
+ size_t ggml_backend_vk_buffer_type_get_alloc_size(ggml_backend_buffer_type_t buft, const ggml_tensor * tensor) {
 @@ -13328,6 +13351,29 @@
          return;
      }

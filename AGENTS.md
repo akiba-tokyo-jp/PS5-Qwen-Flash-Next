@@ -1806,3 +1806,80 @@ again solely because a historical file recorded our old chosen margin. Preserve
 identity, original precision, numerical checks, positive completion and failure
 handling as distinct correctness requirements. Label confirmed resource/API
 limits only with the exact reported bound/failure and affected configuration.
+
+## Scoped cache and causal controller follow-up (2026-10-27)
+
+The owner approved the revised execution order in the remaining validation plan.
+The 128-slot implementation is an isolated experiment, default off; ordinary
+policies remain at 53 slots. Preserve original precision, actual owned bank
+leases, coalesced/split/EOF paths and the 512 MiB single-buffer / 1792 MiB ledger
+caps. The new post-load batching hook splits expanded banks within those caps.
+The unloaded expanded-layout fixture prices its own graph/work/reserves rather
+than resident-model weights. Its complete native v2 geometry proof must precede
+expanded-cache model execution. Historical traffic/headroom estimates do not
+qualify a current allocation, speedup or production adoption.
+
+The width-two causal controller is independently default off, retaining 53 slots
+and the already qualified complete-state checkpoint. Its first native scope
+compares request two against request one's original target token IDs/bytes;
+different cache conditions do not qualify speed. Require actual verification,
+rejection/restore coverage and later matched A/B then B/A before adoption. Prefix
+speed comparison is not an implementation prerequisite. No native width-two or
+128-slot execution is established by the host controls.
+
+Current-boot CPU case 2780 positively completed two 89-process inventories at
+2939 free pages; no owner/stopped/zombie accumulation or unknown completion was
+found. This supersedes the earlier 1012-page snapshot as the latest observation,
+not as launch admission. The subsequent CPU-only case 2812 qualified all 1527
+original shaders / 382 lookups under the separately priced 1410-page CPU
+prelaunch policy, normally closed and restored the exact fastest SELF/settings.
+The current-boot v3 shader report is 1144 bytes, SHA256
+`e4b465cc6d8249c2df54ff65e24cb2d2a4a4b31678fa0059553a8b37f62eea22`.
+Case 2820 then returned a known 2293-versus-2974 CPU startup-policy refusal,
+before model metadata or GPU work; exact restoration 2825 passed with no unknown
+completion. Never replay either consumed case.
+
+The separately selected `native_cache_layout_phase_memory` path is exclusive
+to the unloaded 128-slot single-slice / 360-graph fixture. It skips unrelated
+whole-model metadata and protected source rehearsals, retains all original
+Direct/Flexible/heap/device caps and the operational formula, and adds a
+provisional 512 kernel pages before GPU setup. This chosen experimental allowance
+is not a measured bound for the larger bank; the different completed small-GPU
+case's 32-page decline is supporting context only. Require exact scope controls,
+fresh admission, every original numerical/canary/completion gate and ordinary
+close/restoration. Model startup keeps its original target. Host 2828 passed 111
+refusal controls; native geometry, model speed and adoption remain unqualified.
+Production SELF, settings, driver/profile, persistent-cache policy and CI are
+unchanged. See the existing progress record for subsequent terminal evidence.
+
+Subsequent physical case 2840 qualified the single-slice 128-slot layout on SELF
+`b9c8584b8f2e60f70b768941e61c40808312b06e961cde0f14f41a9cc0ace3a8`:
+all 120 cases / 360 graphs, original residues, slot 127, F32 inputs and canaries
+passed, with maximum error `1.7171259969472885e-9`, positive idle/retirement and
+zero live device ledger bytes. The complete v2 report is 40718 bytes, SHA256
+`d596ba7c1c149b9b8819f095826063bf972f6ef2f612cad2a019641b05861411`.
+Free pages were 3736 -> 3633 across GPU work, above the regular 2974 target;
+the lower threshold was not physically exercised. Normal close, exact fastest
+SELF/settings restoration and fresh idle observation passed. See
+`docs/cache128-layout-20261027.json`. This qualifies geometry, not model speed.
+The same-SELF A53/B128 then B128/A53 comparison retains every model-internal
+startup and operational guard, using separately priced prelaunch 6207 (observed
+current prefix decline 2977 + model startup 2974 + variation 256). Its first
+passive screen passed at 8396 pages. No production adoption is established.
+
+
+The later first full-model control (2860) returned before GPU/model work after
+all 76 protected virtual reservations had positively retired: free 1523/1540
+versus the selected 2974 startup target. It is not a measured cache speed result.
+CPU metadata case 2920 completed all 76 containers/380 observations with free
+2582 -> 2595. Representative virtual-source case 2950 completed all 18 native
+reserve/protect/release sets; the large 1409-page decline followed reservation.
+Quiet-start case 2970 instead lost 1407 pages during five seconds with no app
+journal/allocation/virtual/payload operation, then zero in each measured round.
+Both virtual cases normally closed and restored the exact fastest/settings,
+with complete native readback and fresh idle guards (2955/2975). No shared-arena
+speed win or proprietary allocator attribution is established. See
+`docs/source-memory-attribution-20261027.json`. Do not repeat these consumed
+cases. The independent 128-slot model reviewer requires its exact bound layout,
+actual cache request, postload reserves and complete routes; the 53-slot review
+remains unchanged. Neither host validation nor geometry qualifies adoption.

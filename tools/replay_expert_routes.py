@@ -17,7 +17,7 @@ class RouteCache:
     follow the linked planner. Hits precede sorted misses; the whole current
     selected set stays protected throughout every fill.
     """
-    def __init__(self, decay=4096, recency_only=False, slots=53, eviction_mode='lfu'):
+    def __init__(self, decay=4096, recency_only=False, slots=53, eviction_mode='lfu', research_max_slots=160):
         if type(decay) is not int or decay <= 0:
             raise ValueError('A positive layer-route decay interval is required')
         self.decay = decay
@@ -25,7 +25,9 @@ class RouteCache:
         if eviction_mode not in('lfu','layer_distance','frequency_over_distance')or(eviction_mode!='lfu'and(slots!=53 or recency_only or decay!=4096)):
             raise ValueError('Cyclic research policies retain the original 53-slot observation scope')
         self.eviction_mode=eviction_mode
-        if type(slots)is not int or not 40<=slots<=160:
+        if type(research_max_slots)is not int or research_max_slots not in(160,1024):
+            raise ValueError('An explicit bounded metadata research scope is required')
+        if type(slots)is not int or not 40<=slots<=research_max_slots:
             raise ValueError('Bounded metadata-only cache capacity required')
         self.keys = [-1] * slots
         self.mapping = {}

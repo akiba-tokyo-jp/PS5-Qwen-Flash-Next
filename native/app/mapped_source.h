@@ -3,6 +3,7 @@
 #include "profile_clock.h"
 #include "source_read_schedule.h"
 #include "padded_bank.h"
+#include "padded_cache_geometry.h"
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -305,7 +306,8 @@ public:
     bool try_owned_bank_reads(const std::array<std::uintptr_t,2> &addresses,unsigned count,
             const int *slots,std::size_t residue,void *bank,std::size_t capacity,std::size_t alignment) {
         require_completed_window();
-        if(!schedule_enabled_||!slots||!bank||(count!=1&&count!=2)||capacity!=padded_bank_tensor_bytes||
+        const auto geometry=selected_padded_cache_geometry();
+        if(!schedule_enabled_||!slots||!bank||(count!=1&&count!=2)||capacity!=geometry.tensor_bytes()||
            reinterpret_cast<std::uintptr_t>(bank)%model_read_alignment||
            capacity>UINTPTR_MAX-reinterpret_cast<std::uintptr_t>(bank))
             fail("Direct bank reads require the qualified source schedule and actual owned extent");
@@ -317,7 +319,7 @@ public:
         for(unsigned i=0;i<count;++i) {
             if(slots[i]<0||!contains(addresses[i],bank_expert_bytes))fail("Direct bank source or slot is unowned");
             PaddedBankSlot slot;
-            try{slot=padded_bank_slot(std::size_t(slots[i]),residue,capacity,alignment);}
+            try{slot=geometry.slot(std::size_t(slots[i]),residue,capacity,alignment);}
             catch(...){failed_=true;throw;}
             const auto range=std::find_if(ranges_.begin(),ranges_.end(),[&](const auto &r){
                 return addresses[i]>=r.at&&addresses[i]<r.at+r.bytes;});

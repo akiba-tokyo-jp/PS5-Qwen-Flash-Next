@@ -2,8 +2,10 @@
 
 Plan date: 2026-10-26. **This plan itself does not implement or validate proposals.**
 Execution outcomes are tracked in the [progress record](remaining-validation-progress-20261026.md).
-The owner's subsequent priority is the [memory-first PLE sequence](PLE-memory-first-plan-20261026.md):
-finish attribution and any measured fix before another PLE GPU comparison.
+The earlier [memory-first PLE sequence](PLE-memory-first-plan-20261026.md)
+continues to govern PLE comparisons. The owner-approved 2026-10-27 execution
+order below governs the broader acceleration work; PLE timing does not block
+independent cache, speculation or ready-expert implementation.
 The regular prelaunch margin is not an established PLE hardware minimum.
 It defines their work and terminal decisions. Current dispositions
 and historical results are in the [plan index](plan-index.md). Planning does not
@@ -17,7 +19,9 @@ with independently reported TTFT, generated tokens/s and resource safety. Preser
 the exact [production artifact and rollback](production-installation-20261025.md),
 [qualified profile](../config/qualified-performance.json), original BF16/F32,
 F32 KV, every expert/PLE, driver `872cc126` / `cumulative-idle`, disabled persistent
-caches and all current budgets. No second Flash-Next machine is required.
+caches. Preserve production budgets; explicitly scoped experimental budget
+changes require actual accounting and fresh native admission. The old selected
+caps are not hardware maxima. No second Flash-Next machine is required.
 
 ## Radiance references and applicability
 
@@ -48,6 +52,30 @@ the donor's speculative exactness claims: its current
 still marks strict cross-mode output equivalence unpassed.
 
 ## Work order and dependencies
+
+### Owner-approved execution order, 2026-10-27
+
+1. Price CPU-only, backend initialization, small graph and model stages separately.
+   Attribute current consumption using completed observations. A historical
+   cross-executable margin is provisional policy, not measured cost of a new SELF.
+2. Replay saved actual routes at larger capacities. Price rounded allocations
+   without double-counting shared Direct/CPU owners, then implement the useful
+   affordable candidate. The first target is 128 active slots / 129 physical
+   planes. The 160-slot allowance gap remains a lifetime-accounting question.
+3. Implement native exact width-two verification using the already qualified
+   complete-state checkpoint. Prefix speed comparison is not its prerequisite.
+   Keep the 53-slot cache as its independent control.
+4. Establish actual independent backing and two-wave ready-expert GPU/source
+   overlap. Integrate only a fixture winner into the model.
+5. Close PLE timing and prefix reuse comparisons when separately priced native
+   stages admit them. Continue the router, workload and profiled specialization
+   packages with their individual dependency and adoption checks.
+
+For each surviving candidate, require same-model A/B then B/A, original-token
+and lifecycle regression, exact production placement and post-placement checks.
+Offline traffic reduction does not qualify generation speed or adoption.
+The work packages below retain stable reference IDs; independent work need not
+wait for every earlier speed comparison.
 
 Perform cheap feasibility work before native implementations. Share the allocation
 ledger, workload traces and complete-state checkpoint work across proposals;
@@ -155,20 +183,22 @@ domain's independent guard. A budget ledger alone is not physical admission.
 
 Current padded banks use `3 * 54 * 3293184 = 533495808` bytes against the
 536870912-byte cache cap. The remaining 3375104 bytes cannot hold another expert's
-three 3293184-byte planes. Thus adding a slot with unchanged geometry already
-fails the current cap; do not launch an allocation probe for that configuration.
-Replay different capacities with `tools/replay_expert_routes.py` only after
-checking the native layer-floor rule and identifying a concrete admissible layout.
+three 3293184-byte planes. Adding a slot fails the selected production cap;
+this is a policy result, not a physical capacity limit. The larger-capacity
+screen uses `tools/check_cache_capacity.py --large-capacity-sweep` and
+`tools/price_cache_capacity.py`, preserving the native layer-floor rule,
+actual routes and separately rounded bank/CPU/platform allowances.
 Keep the tested 53-slot LFU policy as control.
 
 For any shorter lifetime, prove the last CPU and GPU consumer has positively
 completed before release. Test alias retention, failure/unknown-completion
 retention, peak-live accounting and unchanged shutdown. Compare recovered usable
 headroom and actual payload saved, then source wait and decode if meaningful.
-Do not resize kernel pools, count inactive pages as free, increase caps or remove
-monitoring. If no admissible extra capacity or transient release exists, record
-that variant as ruled out under current limits; the ledger remains useful to
-the checkpoint and graph proposals.
+Do not resize kernel pools, count inactive pages as free or remove monitoring.
+An experimental cap change is isolated from production and names its exact
+geometry, context, lifetime assumptions, retained reserves and fresh allocator
+checks. Record policy gaps separately from confirmed pool/API bounds. The ledger
+remains useful to checkpoint and graph proposals.
 
 Include the Radiance `_gate_params` and `forward_core_fused` lifetime patterns
 in this audit: identify constants prepared repeatedly and layer-local temporary

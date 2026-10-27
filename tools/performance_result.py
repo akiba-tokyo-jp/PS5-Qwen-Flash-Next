@@ -44,24 +44,30 @@ def validate_backpressure(record):
     return record
 
 
-def validate_performance(record, result, *, split_sources=False, checkpoint_validation=None, prefix_validation=None):
+def validate_performance(record, result, *, split_sources=False, checkpoint_validation=None, prefix_validation=None,
+                         speculative_validation=None):
     schema = record.get('schema')
+    speculative=schema=='ps5-qwen-completed-performance-v6'
+    if speculative and (speculative_validation is None or checkpoint_validation is not None or prefix_validation is not None):
+        raise ValueError('Width-two timing requires its independent completed native request proof')
+    if not speculative and speculative_validation is not None:
+        raise ValueError('A speculative request cannot use a single-token performance schema')
     if type(split_sources) is not bool or (split_sources and schema not in (
-            'ps5-qwen-completed-performance-v4', 'ps5-qwen-completed-performance-v5')):
+            'ps5-qwen-completed-performance-v4', 'ps5-qwen-completed-performance-v5', 'ps5-qwen-completed-performance-v6')):
         raise ValueError('Split source accounting requires an admitted selected schedule')
-    if (schema not in tuple('ps5-qwen-completed-performance-v'+str(v) for v in range(1,6)) or
+    if (schema not in tuple('ps5-qwen-completed-performance-v'+str(v) for v in range(1,7)) or
         record.get('process_includes_source_and_backend_work') is not True or
         record.get('GPU_timestamp_queries') is not False or
-        record.get('hot_path_logs_added') is not False or record.get('GPU_operations_added') is not False):
+        record.get('hot_path_logs_added') is not speculative or record.get('GPU_operations_added') is not speculative):
         raise ValueError('Performance measurement scope differs')
     delta = record.get('delta', {})
     fields = FIELDS | ({'source_parallel_batches'} if schema.endswith('v2') else
-        {'source_pipeline_batches', 'source_worker_read_ns', 'source_worker_dispatch_ns'} if schema.endswith(('v3','v4','v5')) else set())
-    if schema.endswith(('v4','v5')):
+        {'source_pipeline_batches', 'source_worker_read_ns', 'source_worker_dispatch_ns'} if schema.endswith(('v3','v4','v5','v6')) else set())
+    if schema.endswith(('v4','v5','v6')):
         fields |= {'source_parallel_batches','source_coalesced_batches','source_selected_serial_batches',
                    'source_physical_read_bytes','source_physical_read_calls'}
     padded=record.get('owned_padded_bank_IO',False)
-    if type(padded) is not bool or (padded and not schema.endswith(('v4','v5'))):
+    if type(padded) is not bool or (padded and not schema.endswith(('v4','v5','v6'))):
         raise ValueError('Owned bank I/O requires selected source accounting')
     if padded:
         fields |= {'source_direct_bank_bytes','source_direct_bank_reads','source_padded_scatter_bytes'}
@@ -80,13 +86,13 @@ def validate_performance(record, result, *, split_sources=False, checkpoint_vali
         record.get('maximum_parallel_source_reads') != 1 or record.get('worker_times_overlap_consumers') is not True or
         not 0 < delta['source_pipeline_batches'] <= delta['source_chunks'] // 2 or delta['source_worker_read_ns'] <= 0):
         raise ValueError('Source pipelining lacks single-read completion evidence')
-    if schema.endswith(('v4','v5')) and (record.get('source_read_ns_is_producer_wait_time') is not True or
+    if schema.endswith(('v4','v5','v6')) and (record.get('source_read_ns_is_producer_wait_time') is not True or
         record.get('maximum_parallel_source_reads') != 2 or record.get('file_range_schedule_enabled') is not True or
         record.get('physical_read_bytes_include_alignment') is not True or
         delta['source_physical_read_bytes'] < delta['source_bytes'] or
         delta['source_parallel_batches']+delta['source_coalesced_batches']+delta['source_selected_serial_batches'] > delta['source_chunks']//2):
         raise ValueError('Selected source scheduling lacks exact bounded completion evidence')
-    if schema.endswith(('v4','v5')):
+    if schema.endswith(('v4','v5','v6')):
         joined = delta['source_selected_serial_batches'] - delta['source_pipeline_batches']
         extra = delta['source_physical_read_calls'] - (delta['source_chunks'] - delta['source_coalesced_batches'])
         # A split fallback pair completes two logical windows without the worker.
@@ -103,14 +109,21 @@ def validate_performance(record, result, *, split_sources=False, checkpoint_vali
     if reason not in ('end_of_generation', 'output_token_limit'):
         raise ValueError('Performance requires completed generation')
     width = 1
-    if schema.endswith('v5'):
+    if schema.endswith(('v5','v6')):
         width = record.get('prefill_batch_tokens')
         if (type(width) is not int or width not in (2,4) or
             type(result.get('prefill_batch_tokens')) is not int or result['prefill_batch_tokens'] != width or
-            type(record.get('generated_token_batch_tokens')) is not int or record['generated_token_batch_tokens'] != 1 or
+            (not speculative and(type(record.get('generated_token_batch_tokens')) is not int or record['generated_token_batch_tokens'] != 1))or
             record.get('all_prompt_outputs_requested') is not True):
             raise ValueError('Batched prefill scope differs')
     expected = (metrics['prompt_tokens'] + width - 1)//width + metrics['generated_tokens'] - (reason == 'output_token_limit')
+    if speculative:
+        from model_free_speculation_result import counters
+        count=counters(speculative_validation)
+        if (record.get('ordinary_generated_token_batch_tokens')!=1 or record.get('target_verification_batch_tokens')!=2 or
+            record.get('speculation')!=count or result.get('ordinal')!=2 or width!=4):
+            raise ValueError('Completed width-two counters differ from their native request proof')
+        expected+=count['rejected']-count['queued_bonus_samples']
     if checkpoint_validation is not None:
         from model_checkpoint_result import checkpoint_process_geometry
         if width!=4:raise ValueError('Checkpoint replay accounting requires the qualified four-token path')
@@ -131,4 +144,5 @@ def validate_performance(record, result, *, split_sources=False, checkpoint_vali
     return dict(delta=delta, measured_source_wall_fraction=source_ns / decode_ns,
                 GPU_compute_time_qualified=False,
                 deliberate_state_validation_replays_included=checkpoint_validation is not None,
+                speculative_verification_included=speculative,
                 prefix_reused_prompt_tokens=30 if prefix_validation is not None and prefix_validation['prefix_reuse_enabled']and result.get('ordinal')==2 else 0)

@@ -3,10 +3,11 @@
 """Validate completed selected-ID metadata; never execute learned inference."""
 
 
-def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=None,prefix_validation=None):
+def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=None,prefix_validation=None,expected_slots=53):
+    if type(expected_slots)is not int or expected_slots not in (53,128):raise ValueError('Unsupported independently bound cache capacity')
     expected=dict(schema='ps5-qwen-completed-expert-routes-v1',complete=True,capture_failed=False,
         pid=pid,run_id=run_id,cache_reset_before_request=cold,layers_per_process=48,experts=512,
-        experts_per_token=10,cache_slots=53,maximum_records=4608,
+        experts_per_token=10,cache_slots=expected_slots,maximum_records=4608,
         all_existing_downloads_and_synchronizations_returned=True,additional_GPU_downloads=0,
         routing_and_cache_policy_unchanged=True)
     if type(width)is not int or width not in (1,2,4):raise ValueError('Unsupported route capture width')

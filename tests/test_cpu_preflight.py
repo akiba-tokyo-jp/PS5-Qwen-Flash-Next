@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from kernel_vm_preflight import decode_dump, review, session_boot, load_qualified_session
-from rebind_cpu_context import headers, current_processes, ROLES
+from rebind_cpu_context import headers, current_processes, launcher_header, ROLES
 
 
 def dump(data):
@@ -125,6 +125,19 @@ class CPUPreflightTests(unittest.TestCase):
                 headers(session, runtime, 'a'*32)
         with self.assertRaises(ValueError):
             headers(*context(), 'stale')
+
+    def test_ordinary_launcher_rebind_changes_only_actual_identity_data(self):
+        template='\n'.join('#define '+key+' 1'for key in ('BOOT_SEC','BOOT_USEC','COMPATIBILITY_PID',
+            'COMPATIBILITY_START_SEC','COMPATIBILITY_START_USEC'))+'\n#define MOSS_CONFIG_SHA "unchanged"\n'
+        template+='static const struct expected_service expected_services[]={\n'
+        template+='\n'.join('{"'+name+'",1,1,0U,1LL,1LL},'for _,name in ROLES)+'\n};\n'
+        session,runtime=context();out=launcher_header(session,runtime,template)
+        self.assertIn('#define BOOT_SEC 100LL',out);self.assertIn('#define COMPATIBILITY_PID 27',out)
+        self.assertIn('#define MOSS_CONFIG_SHA "unchanged"',out)
+        self.assertIn('{"payload",27,24,0U,107LL,20LL},',out)
+        for bad in (template+'#define BOOT_SEC 9\n',template.replace('"payload"','"foreign"'),
+                    template.replace('COMPATIBILITY_START_SEC','MISSING'),template+'\0'):
+            with self.subTest(template=bad),self.assertRaises(ValueError):launcher_header(session,runtime,bad)
 
     def test_completed_evidence_cannot_be_substituted_or_edited(self):
         test_root = Path(__file__).resolve().parents[1]/'.test-tmp'

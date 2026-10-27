@@ -11,6 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for k in ('workspace','cache','qualified-native','out'):p.add_argument('--'+k,type=Path,required=True)
+    p.add_argument('--all-assets-bootstrap',action='store_true',help='Build the separate bounded current-run CPU bootstrap entry')
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
     prior=json.loads(a.qualified_native.read_text());main_source=ROOT/'native/app/native_main.cpp';source=main_source.read_text()
     def function(signature):
@@ -33,6 +34,22 @@ def main():
     inputs_by_path={r['path']:r for r in prior['inputs_before']}
     for obj in chosen.values():
         if record(obj)!=inputs_by_path.get(str(obj)):raise ValueError('Qualified CPU object changed: '+obj.name)
+    # Reused CPU objects must retain their actual application ABI. Unrelated
+    # inference headers may evolve without forcing another CPU/driver rebuild.
+    prior_sources={Path(r['path']).resolve():r for r in prior['application_sources']}
+    prior_headers={Path(r['path']).resolve():r for r in prior['application_headers']}
+    CPU_dependencies=set()
+    def dependencies(path):
+        path=path.resolve()
+        if path in CPU_dependencies:return
+        CPU_dependencies.add(path)
+        expected=prior_sources.get(path)or prior_headers.get(path)
+        if expected is None or record(path)!=expected:raise ValueError('Reused CPU source/header ABI changed: '+str(path))
+        for name in re.findall(r'^\s*#include\s+"([^"]+)"',path.read_text(),re.M):
+            candidates=(path.parent/name,ROOT/'native/app'/name)
+            for target in candidates:
+                if target.is_file()and target.resolve().is_relative_to(ROOT):dependencies(target);break
+    for name in sorted(needed):dependencies(ROOT/'native/app'/name)
     selected_objects=set(map(str,chosen.values()))
     selected_objects|={x for x in prior['link_command']if Path(x).name in ('shader-locations.o','shader-registry.o')}
     for obj in selected_objects:
@@ -72,13 +89,25 @@ def main():
         command.append(x)
     image=a.out/'mini-shader.pie.elf';command[command.index('-o')+1]=str(image)
     main_cmd=next(c.copy()for c in commands if '-c'in c and Path(c[c.index('-c')+1]).name=='native_main.cpp')
-    mini=ROOT/'native/app/mini_shader_memory.cpp';obj=a.out/'mini_shader_memory.o'
+    mini=ROOT/'native/app'/('mini_shader_bootstrap.cpp'if a.all_assets_bootstrap else'mini_shader_memory.cpp');obj=a.out/'mini_shader_memory.o'
     main_cmd[main_cmd.index('-c')+1]=str(mini);main_cmd[main_cmd.index('-o')+1]=str(obj);main_cmd+=['-I',str(a.out)]
     at=command.index('--start-group');command[at:at]=[str(obj),*map(str,codec)]
-    fixed_files=[Path(__file__),mini,main_source,a.qualified_native,donor,a.out/'mini_shader_boundaries.inc',a.out/'mini_shader_admission.inc']
+    fixed_files=[Path(__file__),mini,ROOT/'native/app/mini_shader_memory.cpp',main_source,a.qualified_native,donor,a.out/'mini_shader_boundaries.inc',a.out/'mini_shader_admission.inc',*CPU_dependencies]
     fixed_files+=[Path(x)for x in command if Path(x).is_file()and Path(x).suffix in ('.o','.a','.so','.exe','.ld')]
     fixed_files+=list((ROOT/'native/app').glob('*.h'));fixed=[record(f)for f in sorted(set(fixed_files))]
     env=dict(os.environ,PATH=str(a.workspace/'toolchain/msys-clang64/clang64/bin')+os.pathsep+os.environ.get('PATH',''))
+    policy_controls=None
+    if a.all_assets_bootstrap:
+        test=ROOT/'tests/mini_shader_bootstrap_policy.cpp';fixed_files.append(test)
+        fixed=[record(f)for f in sorted(set(fixed_files))]
+        up=a.cache/'upstream/llama.cpp-0a1ef309cdbb9f2024f58a38fb4c42352c5db569'
+        host=a.workspace/'toolchain/msys-clang64/clang64/bin';exe=a.out/'bootstrap-policy.exe'
+        commands=[[str(host/'clang++.exe'),'-std=c++17','-O2','-Wall','-Wextra','-Werror','-I',str(ROOT/'native/app'),
+            '-I',str(up/'vendor'),str(test),'-o',str(exe)],[str(exe)]]
+        for i,c in enumerate(commands):
+            r=subprocess.run(c,cwd=ROOT,capture_output=True,timeout=120,env=env);(a.out/f'policy-{i}.private.log').write_bytes(r.stdout+r.stderr)
+            if r.returncode:raise RuntimeError('CPU bootstrap policy: '+r.stderr.decode(errors='replace')[-2400:])
+        policy_controls=json.loads(r.stdout)
     for i,c in enumerate((main_cmd,command)):
         r=subprocess.run(c,cwd=ROOT,capture_output=True,timeout=180,env=env);(a.out/f'build-{i}.private.log').write_bytes(r.stdout+r.stderr)
         if r.returncode:raise RuntimeError(r.stderr.decode(errors='replace')[-4000:])
@@ -99,6 +128,9 @@ def main():
         driver_code_linked=False,model_engine_linked=False,CPU_codec_members=codec_members,CPU_codec_donor=donor_record,
         driver_source_revision='872cc1264ad8ba5d6b888b092968fa5858a38c58',driver_source_profile='cumulative-idle',
         GPU_calls=0,source_workers=0,PS5_operations=0,CI_runs=0)
+    receipt['current_run_all_asset_bootstrap']=a.all_assets_bootstrap
+    receipt['CPU_bootstrap_policy_controls']=policy_controls
+    receipt['reused_CPU_source_and_transitive_header_ABI']=[record(f)for f in sorted(CPU_dependencies)]
     (a.out/'receipt.private.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(dict(CPU_only_link_passed=True,bytes=receipt['artifact']['bytes'],missing_imports=0,driver_code_linked=False,PS5_operations=0)),flush=True)
 if __name__=='__main__':main()

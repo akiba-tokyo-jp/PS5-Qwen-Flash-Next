@@ -55,17 +55,31 @@ def main():
     original_SELF=state['original_SELF'];canonical='/data/ai/native-moss-image-sft/PPSA99190/eboot.bin'
     probe=a.out/'CPU-probe.c'
     probe.write_text('#define MOSS_RUNTIME_PREP 1\n#include "direct-controller.c"\n'+r'''
+static int own_title_mount_current(void) {
+    struct stat source,alias;struct statfs fs;
+    memset(&source,0,sizeof(source));memset(&alias,0,sizeof(alias));memset(&fs,0,sizeof(fs));
+    int source_rc=lstat(NEW_STAGE "/eboot.bin",&source),alias_rc=lstat(MOUNT "/eboot.bin",&alias),fs_rc=statfs(MOUNT,&fs);
+    int strings=!fs_rc&&memchr(fs.f_fstypename,0,sizeof(fs.f_fstypename))&&
+        memchr(fs.f_mntonname,0,sizeof(fs.f_mntonname))&&memchr(fs.f_mntfromname,0,sizeof(fs.f_mntfromname));
+    int current=!source_rc&&!alias_rc&&strings&&S_ISREG(source.st_mode)&&S_ISREG(alias.st_mode)&&
+        !strcmp(fs.f_fstypename,"nullfs")&&!strcmp(fs.f_mntonname,MOUNT)&&!strcmp(fs.f_mntfromname,NEW_STAGE)&&
+        source.st_ino==alias.st_ino&&source.st_size==alias.st_size&&
+        source.st_mtim.tv_sec==alias.st_mtim.tv_sec&&source.st_mtim.tv_nsec==alias.st_mtim.tv_nsec&&
+        source.st_ctim.tv_sec==alias.st_ctim.tv_sec&&source.st_ctim.tv_nsec==alias.st_ctim.tv_nsec;
+    return report("TITLE_MOUNT_CURRENT source_rc=%d alias_rc=%d statfs_rc=%d strings_valid=%d exact_owned_nullfs_inode=%d",
+        source_rc,alias_rc,fs_rc,strings,current)&&current;
+}
 int main(int argc,char**argv){
     (void)argv;if(argc!=0&&argc!=1)return 2;
     journal=open(LAUNCH_LOG_PREFIX "-CPU.log",O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);if(journal<0)return 3;
     int ok=0;
-    if(!report("BEGIN nonce=@NONCE@ CPU_only=1 title_launches=0 GPU_calls=0")||constructors!=1||getuid()!=1||geteuid()!=0||!live_context()||!idle()||!no_native_owner())goto done;
+    if(!report("BEGIN nonce=@NONCE@ CPU_only=1 title_launches=0 GPU_calls=0")||constructors!=1||getuid()!=1||geteuid()!=0||!live_context()||!idle()||!no_native_owner()||!own_title_mount_current())goto done;
     uint32_t free_before=0,free_after=0;size_t count=4;uint64_t begun=qwen_launch_now(NULL);
     if(!begun||sysctlbyname("vm.stats.vm0.v_free_count",&free_before,&count,NULL,0)||count!=4)goto done;
     if(!report("HASH_BEFORE canonical_original_SELF=1")||!qwen_launch_digest_matches(@PATH@,@BYTES@ULL,@SHA@))goto done;
     count=4;uint64_t ended=qwen_launch_now(NULL);
     if(ended<begun||sysctlbyname("vm.stats.vm0.v_free_count",&free_after,&count,NULL,0)||count!=4)goto done;
-    if(!report("HASH_COMPLETE canonical_original_SELF=1 kernel_free_before=%u kernel_free_after=%u elapsed_ns=%llu",free_before,free_after,(unsigned long long)(ended-begun))||!live_context()||!idle()||!no_native_owner())goto done;
+    if(!report("HASH_COMPLETE canonical_original_SELF=1 kernel_free_before=%u kernel_free_after=%u elapsed_ns=%llu",free_before,free_after,(unsigned long long)(ended-begun))||!own_title_mount_current()||!live_context()||!idle()||!no_native_owner())goto done;
     ok=1;
 done:
     if(!report("END success=%d nonce=@NONCE@ title_launches=0 GPU_calls=0 input_window_bytes=%u no_retry=1",ok,QWEN_LAUNCH_WINDOW))ok=0;

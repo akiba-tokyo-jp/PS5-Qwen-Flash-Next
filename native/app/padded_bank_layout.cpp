@@ -2,6 +2,7 @@
 #include "padded_bank_layout.h"
 #include "padded_bank_bridge.h"
 #include "padded_bank.h"
+#include "padded_cache_geometry.h"
 #include "indexed_vector.h"
 #include "indexed_vector_admission.h"
 #include "system_memory.h"
@@ -23,7 +24,11 @@ extern "C" {
 }
 namespace qwen_app {
 namespace {
-constexpr std::array<std::int32_t,10> selected{{52,0,26,0,51,1,52,13,25,42}};
+std::array<std::int32_t,10> selected_ids() {
+    if(selected_padded_cache_geometry().active_slots==128)
+        return {{127,0,64,0,126,1,127,53,96,111}};
+    return {{52,0,26,0,51,1,52,13,25,42}};
+}
 using Identity=std::array<std::uint64_t,10>;
 Identity identity(int fd) {
     struct stat st{};
@@ -86,18 +91,19 @@ struct Session {
 };
 int fill_and_check(void *target,std::size_t bytes,std::uint64_t flags,std::size_t alignment,void *opaque) {
     auto &s=*static_cast<Session *>(opaque);auto &r=s.result;RouteReset reset;
-    if(bytes!=padded_bank_tensor_bytes||reinterpret_cast<std::uintptr_t>(target)%bank_read_alignment)
+    const auto geometry=selected_padded_cache_geometry();const auto selected=selected_ids();
+    if(bytes!=geometry.tensor_bytes()||reinterpret_cast<std::uintptr_t>(target)%bank_read_alignment)
         throw std::invalid_argument("Padded layout exact owned mapping refused");
     configure_padded_index_layout(true,alignment);
     for(const auto residue:original_bank_residues)
-        (void)padded_bank_slot(52,residue,bytes,alignment);
+        (void)geometry.slot(geometry.active_slots-1,residue,bytes,alignment);
     r.memory_flags=flags;r.descriptor_alignment=alignment;s.read_once(target);
     auto *bank=static_cast<std::uint8_t *>(target);
-    // Each aligned read may write one extra alignment block. The unused 54th
+    // Each aligned read may write one extra alignment block. The unused final
     // plane separates the last active slot from any neighbouring allocation.
-    for(unsigned slot=0;slot<padded_bank_active_slots;++slot)
+    for(unsigned slot=0;slot<geometry.active_slots;++slot)
         std::memcpy(bank+slot*padded_bank_stride,(slot%2?s.negative:s.positive).data(),padded_bank_stride);
-    std::memset(bank+padded_bank_active_slots*padded_bank_stride,0x5a,bank_read_alignment);
+    std::memset(bank+geometry.active_slots*padded_bank_stride,0x5a,bank_read_alignment);
     std::vector<float> inputs(std::size_t(s.columns)*s.vectors),actual(std::size_t(s.rows)*10);
     std::vector<double> grouped(std::size_t(s.rows)*13),expected(actual.size());
     for(unsigned layout=0;layout<original_bank_residues.size();++layout) {
@@ -131,6 +137,7 @@ int fill_and_check(void *target,std::size_t bytes,std::uint64_t flags,std::size_
             configure_bf16_indexed_vector(vector);set_bf16_indexed_vector_scope(true);
             if(!ggml_backend_dev_supports_op(ggml_backend_get_device(s.backend),output))
                 throw std::runtime_error("Padded layout GPU operation unsupported");
+            (void)admit_native_system_memory();
             ggml_backend_tensor_set(s.input,inputs.data(),0,inputs.size()*4);
             const auto before=gpu_path_stats();s.stage("padded_layout_before_finite_graph");
             if(ggml_backend_graph_compute(s.backend,s.graphs[layout])!=GGML_STATUS_SUCCESS)
@@ -154,8 +161,8 @@ int fill_and_check(void *target,std::size_t bytes,std::uint64_t flags,std::size_
         }
         report.padding_intact=true;
         for(std::size_t i=0;i<bank_read_alignment;++i)
-            if(bank[padded_bank_active_slots*padded_bank_stride+i]!=0x5a)report.padding_intact=false;
-        for(unsigned slot=0;slot<padded_bank_active_slots;++slot)
+            if(bank[geometry.active_slots*padded_bank_stride+i]!=0x5a)report.padding_intact=false;
+        for(unsigned slot=0;slot<geometry.active_slots;++slot)
             if(std::memcmp(bank+slot*padded_bank_stride,(slot%2?s.negative:s.positive).data(),padded_bank_stride))
                 report.padding_intact=false;
         if(!report.padding_intact||!report.non_dyadic_vector_passed)
@@ -169,21 +176,23 @@ PaddedLayoutResult admit_padded_bank_layout(const std::string &path,const std::s
     if(!checkpoint||!stage||path.empty()||hash.size()!=64||hash.find_first_not_of("0123456789abcdef")!=std::string::npos)
         throw std::invalid_argument("Padded layout requires immutable source and completion hooks");
     PaddedLayoutResult result;std::vector<std::uint16_t> positive,negative;
+    const auto geometry=selected_padded_cache_geometry();const auto selected=selected_ids();
     const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(120);
     for(unsigned shape=0;shape<4;++shape) {
+        (void)admit_native_system_memory();
         const unsigned k=shape<2?2560:640,n=shape<2?640:2560,v=shape%2?10:1;
         auto *backend=ggml_backend_vk_init(0);if(!backend)throw std::runtime_error("Padded layout backend unavailable");
         ggml_init_params p{};p.no_alloc=true;
         p.mem_size=ggml_tensor_overhead()*70+30*ggml_graph_overhead_custom(16,false);
         auto *ctx=ggml_init(p);if(!ctx)throw std::runtime_error("Padded layout metadata unavailable");
-        auto *a=ggml_new_tensor_3d(ctx,GGML_TYPE_BF16,k,n,padded_bank_physical_slots);
-        a->nb[2]=padded_bank_stride;a->nb[3]=padded_bank_stride*padded_bank_physical_slots;
+        auto *a=ggml_new_tensor_3d(ctx,GGML_TYPE_BF16,k,n,geometry.physical_slots());
+        a->nb[2]=padded_bank_stride;a->nb[3]=padded_bank_stride*geometry.physical_slots();
         auto *b=ggml_new_tensor_3d(ctx,GGML_TYPE_F32,k,v,1);
         auto *ids=ggml_new_tensor_2d(ctx,GGML_TYPE_I32,10,1);
         ggml_set_input(a);ggml_set_input(b);ggml_set_input(ids);
         std::array<ggml_tensor *,30> outputs{};std::array<ggml_cgraph *,30> graphs{};
         for(unsigned i=0;i<original_bank_residues.size();++i) {
-            auto *view=ggml_view_3d(ctx,a,k,n,padded_bank_active_slots,k*2,padded_bank_stride,original_bank_residues[i]);
+            auto *view=ggml_view_3d(ctx,a,k,n,geometry.active_slots,k*2,padded_bank_stride,original_bank_residues[i]);
             outputs[i]=ggml_mul_mat_id(ctx,view,b,ids);ggml_set_output(outputs[i]);
             graphs[i]=ggml_new_graph_custom(ctx,16,false);ggml_build_forward_expand(graphs[i],outputs[i]);
         }

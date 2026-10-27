@@ -50,6 +50,8 @@ def main():
         extracted_elf=record(extracted),native_link_receipt=record(a.native),format_tool=control['format_tool'],
         inputs=fixed,commands=commands,integrity_verified=True,roundtrip_segments_verified=segments,real_module_import_audit=imported,
         CPU_only=True,driver_code_linked=False,model_engine_linked=False,external_shader_file=control['external_shader_file'],
+        current_run_all_asset_bootstrap=m.get('current_run_all_asset_bootstrap',False),
+        CPU_bootstrap_policy_controls=m.get('CPU_bootstrap_policy_controls'),
         GPU_calls=0,PS5_operations=0,CI_runs=0,release_qualified=False,installed=False)
     (a.out/'receipt.private.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(dict(CPU_SELF_packaged=True,bytes=receipt['SELF']['bytes'],sha256=receipt['SELF']['sha256'],roundtrip_segments=segments,PS5_operations=0)),flush=True)

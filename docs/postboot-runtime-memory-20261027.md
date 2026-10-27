@@ -118,3 +118,24 @@ their incomplete dispositions. No automatic recovery or scheduled retry exists.
 Original BF16/F32, F32 KV, every expert/PLE, driver `872cc126` / `cumulative-idle`,
 disabled persistent caches, production limits and disabled CI remain unchanged.
 The latest production measurements remain historical 0.391093 / 0.398430 tok/s.
+## Subsequent scoped CPU observation
+
+Cases 2779/2780 supersede the earlier free-page snapshot above. The CPU-only
+bootstrap's provisional prelaunch allowance was separately priced at 7989 pages
+(largest prior cross-executable decline 6579 + operational policy 1154 + variation
+256). The passive screen observed 2929 -> 2929 and refused before staging; this
+is a revisable policy result, not a demonstrated hardware minimum.
+
+The smaller CPU-only inventory was independently admissible and positively
+completed two 89-process snapshots: free 2939, active 18627, inactive 87211,
+wired 29962. There was no native owner or stopped/zombie accumulation. RSS is
+non-additive; inactive pages are not counted as free. No title/GPU/model started,
+no recovery is assumed, and no unknown completion remains. The owner-approved
+cache/controller work and its outstanding native gates are recorded in the
+[existing progress record](remaining-validation-progress-20261026.md#expanded-cache-and-causal-controller-implementation-2026-10-27).
+
+Later CPU case 2812 positively completed all 1,527 shader and 382 lookup checks
+on this boot under the separately priced 1,410-page CPU prelaunch policy. Normal
+close, exact fastest-SELF/settings restoration and fresh idle observation passed.
+This supersedes the earlier pending CPU prerequisite, without qualifying a GPU
+allocation or model run. See the [subsequent native evidence](remaining-validation-progress-20261026.md#current-boot-cpu-bootstrap-and-restored-title-alias-2026-10-27).

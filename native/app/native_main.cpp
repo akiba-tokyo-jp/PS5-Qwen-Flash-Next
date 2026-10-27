@@ -8,6 +8,7 @@
 #include "padded_bank_layout.h"
 #include "padded_bank.h"
 #include "padded_cache_bridge.h"
+#include "large_cache_policy.h"
 #include "mapped_copy.h"
 #include "expert_policy.h"
 #include "completed_expert_routes.h"
@@ -248,6 +249,15 @@ static Json performance_difference(const Json & before, const qwen_app::LlamaEng
             {"generated_token_batch_tokens", 1}, {"all_prompt_outputs_requested", true}});
     }
     if(qwen_app_padded_cache_enabled())report["owned_padded_bank_IO"]=true;
+    const auto speculation=engine.speculative_step_stats();
+    if(speculation.controller_enabled) {
+        report.erase("generated_token_batch_tokens");
+        report.update({{"schema","ps5-qwen-completed-performance-v6"},
+            {"ordinary_generated_token_batch_tokens",1},{"target_verification_batch_tokens",2},
+            {"hot_path_logs_added",true},{"GPU_operations_added",true},
+            {"speculation",{{"attempts",speculation.attempts},{"accepted",speculation.accepted},
+                {"rejected",speculation.rejected},{"queued_bonus_samples",speculation.queued_bonus_samples}}}});
+    }
     return report;
 }
 
@@ -297,7 +307,8 @@ static Json completed_route_report(const CompletedRouteEvidence & result) {
     }
     return {{"schema","ps5-qwen-completed-expert-routes-v1"},{"process_calls",result.calls},
         {"complete",true},{"capture_failed",false},
-        {"layers_per_process",48},{"experts",512},{"experts_per_token",10},{"cache_slots",53},
+        {"layers_per_process",48},{"experts",512},{"experts_per_token",10},
+        {"cache_slots",qwen_app::selected_padded_cache_geometry().active_slots},
         {"maximum_records",qwen_app::expert_route_capacity},{"selected_indices",result.selected},{"unique_selected_experts",result.unique},
         {"cache_hits",result.hits},{"cache_misses",result.misses},{"uploaded_bytes",result.uploaded},
         {"prefetch_advice_bytes",result.advice},
@@ -364,6 +375,19 @@ static Json read_prior_shader_CPU(const Json & prior,const qwen_app::ShaderAsset
        file.bad()||qwen_app::sha256_metadata_bytes(raw)!=prior.at("report_sha256")||model_file_identity(path,bytes)!=before)
         throw std::runtime_error("Prior shader evidence changed or failed its complete SHA256");
     const auto report=Json::parse(raw);validate_prior_shader_CPU(report,prior,assets);return report;
+}
+
+// Scope-specific callers validate the path and byte bound before this read.
+static Json read_completed_native_report(const Json &proof) {
+    const auto path=proof.at("report_path").get<std::string>();
+    const auto bytes=proof.at("report_bytes").get<std::uint64_t>();
+    const auto before=model_file_identity(path,bytes);
+    std::ifstream file(path,std::ios::binary);std::string raw(static_cast<std::size_t>(bytes),'\0');
+    file.read(raw.data(),static_cast<std::streamsize>(bytes));
+    if(file.gcount()!=static_cast<std::streamsize>(bytes)||file.peek()!=std::char_traits<char>::eof()||
+       file.bad()||qwen_app::sha256_metadata_bytes(raw)!=proof.at("report_sha256")||model_file_identity(path,bytes)!=before)
+        throw std::runtime_error("Completed native evidence changed or failed complete SHA256");
+    return Json::parse(raw);
 }
 
 static ModelFileIdentity model_directory_identity(const std::string & path) {
@@ -611,6 +635,98 @@ static void admit_shader_storage_CPU(const Json &policy,const std::string &repor
             "prior_all_original_shader_CPU_bytes_bound_current_module_SHA256_required_before_Vulkan");
     }
     sample_boundary_memory("shader_CPU_admission_returned");
+}
+
+static Json padded_layout_result(const qwen_app::PaddedLayoutResult &probe,const Json &policy,bool display) {
+    const auto geometry=qwen_app::selected_padded_cache_geometry();
+    const auto ledger=qwen_app::native_model_device_stats();
+    if(ledger.live)throw std::runtime_error("Padded layout device buffers remain live after retirement");
+    Json cases=Json::array();
+    for(const auto &row:probe.cases)cases.push_back({{"columns",row.columns},{"rows",row.rows},
+        {"input_vectors",row.input_vectors},{"residue",row.residue},
+        {"maximum_absolute_error",row.maximum_absolute_error},
+        {"non_BF16_exact_F32_inputs",row.non_BF16_exact_F32_inputs},
+        {"matrix_passed",row.matrix_passed},{"vector_passed",row.vector_passed},
+        {"non_dyadic_vector_passed",row.non_dyadic_vector_passed},{"padding_intact",row.padding_intact}});
+    const auto &owner=policy.at("native_first_generation_validation");
+    Json report={{"schema","ps5-qwen-padded-bank-layout-result-v1"},{"pid",getpid()},
+        {"run_id",owner.at("run_id")},{"eligible",probe.eligible},{"all_started_IO_closed",probe.all_IO_closed},
+        {"Direct_reads",probe.Direct_reads},{"GPU_graphs",probe.GPU_graphs},
+        {"descriptor_alignment",probe.descriptor_alignment},{"memory_flags",probe.memory_flags},
+        {"cases",cases},{"maximum_absolute_error_limit",1e-6},{"reference_accumulation","F64"},
+        {"device_ledger_peak_bytes",ledger.peak},{"device_ledger_allocations",ledger.allocations},
+        {"device_ledger_live_bytes",ledger.live},{"positive_resource_retirement",probe.positive_retirement},
+        {"source_workers_stopped",false},{"model_loaded",false},{"VideoOut_started",display},
+        {"automatic_retries",0},{"active_slots",geometry.active_slots},{"physical_planes",geometry.physical_slots()},
+        {"bank_stride",qwen_app::padded_bank_stride},
+        {"source_SHA256",policy.at("native_padded_bank_layout_probe").at("source_SHA256")}};
+    if(policy.contains("native_large_cache_scope"))report.update({{"schema","ps5-qwen-padded-bank-layout-result-v2"},
+        {"candidate_SELF_sha256",owner.at("candidate_SELF_sha256")},{"driver_revision",owner.at("driver_revision")},
+        {"profile",owner.at("profile")},{"native_archive_sha256",owner.at("native_archive_sha256")}});
+    return report;
+}
+
+static void isolated_large_cache_layout(const qwen_app::Startup &startup,const Json &policy,bool &resources_started) {
+    qwen_app::require_large_cache_layout_phase_scope(policy,startup.first_generation_validation,false,1);
+    const auto receipt=qwen_app::read_model_receipt(startup.model_receipt);
+    (void)qwen_app::validate_model_receipt(receipt);
+    const auto path=model_file(startup.model_receipt,receipt.at("files").at(7).at("path").get<std::string>());
+    const auto identity=model_file_identity(path,512ull<<20);
+    require_model_CPU_budget();
+    qwen_app::select_experimental_padded_cache_128();
+    // Only the one positively owned first part is needed for the fixed slice.
+    // No whole-model GGUF parser, protected source mapping or worker is started.
+    qwen_app::start_native_model_sources({{path,512ull<<20,identity}});
+    const auto CPU=qwen_app::admit_native_system_memory();
+    const auto required=qwen_app::large_cache_layout_kernel_requirement(CPU);
+    const auto VM_before_GPU=diagnostic_VM_population();
+    write_fresh_report(startup.admission_report+".layout-phase-memory",{
+        {"schema","ps5-qwen-cache-layout-phase-memory-result-v1"},{"pid",getpid()},
+        {"run_id",policy.at("native_first_generation_validation").at("run_id")},
+        {"CPU_completed",system_memory_report(CPU)},{"CPU_VM",VM_before_GPU},
+        {"GPU_required_free_pages",required},{"additional_operational_pages",512},
+        {"regular_startup_target_pages",CPU.kernel_target},{"whole_model_metadata_files",0},
+        {"virtual_source_probes",0},{"source_workers",0},{"model_loaded",false},{"GPU_started",false}});
+    if(CPU.kernel_free<required)throw std::runtime_error("The isolated layout cannot retain its operational reserve and 512 extra kernel pages");
+    qwen_native_stage("isolated_layout_CPU_slice_owner_completed_scoped_GPU_headroom_admitted");
+    qwen_app::inspect_vulkan_globals();
+    if(!qwen_native_gpu_frontend_linked()||setenv("GGML_VK_SUBALLOCATION_BLOCK_SIZE","2147483648",1))
+        throw std::runtime_error("The original native Vulkan frontend and batching policy are required");
+    resources_started=true;
+    qwen_native_gpu_initialize((startup.admission_report+".driver.log").c_str());
+    qwen_native_driver_begin();llama_backend_init();
+    auto device=ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU);
+    if(!device)device=ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_IGPU);
+    if(!device)throw std::runtime_error("A qualified native Vulkan device is required for layout");
+    std::size_t estimated=0,total=0;ggml_backend_dev_memory(device,&estimated,&total);
+    const auto native=qwen_native_allocator_budget(total);
+    std::int64_t physical=0;std::size_t direct=0;const auto pool=sceKernelGetDirectMemorySize();
+    if(pool<=0||sceKernelAvailableDirectMemorySize(0,pool,65536,&physical,&direct)<0)
+        throw std::runtime_error("A fresh isolated-layout Direct observation is required");
+    const auto type=ggml_backend_dev_buffer_type(device);
+    qwen_app::MemoryBudget budget;budget.cpu_working=512ull<<20;budget.workspace=256ull<<20;
+    const auto memory=qwen_app::admit_native_system_memory();
+    qwen_app::admit_large_cache_layout_memory(budget,{native.available,direct,qwen_app::qualified_system_headroom(memory),
+        ggml_backend_buft_get_max_size(type),ggml_backend_buft_get_alignment(type)});
+    qwen_app::enforce_native_model_compute_limits();
+    if(qwen_app::native_model_device_stats().live)throw std::runtime_error("An empty isolated layout ledger is required");
+    qwen_native_stage("padded_layout_empty_device_ledger_admitted_before_allocation");
+    const auto probe=qwen_app::admit_padded_bank_layout(path,
+        policy.at("native_padded_bank_layout_probe").at("source_SHA256").get<std::string>(),
+        qwen_native_driver_checkpoint,qwen_native_stage);
+    if(model_file_identity(path,512ull<<20)!=identity)
+        throw std::runtime_error("The completed original layout source changed");
+    require_model_CPU_budget();
+    auto report=padded_layout_result(probe,policy,false);
+    report["scoped_GPU_phase_memory"]=true;
+    report["VM_before_GPU"]=VM_before_GPU;
+    write_fresh_report(startup.admission_report+".padded-layout.preliminary",report);
+    qwen_native_driver_complete();qwen_app::stop_native_model_sources();
+    report["source_workers_stopped"]=true;
+    report["VM_after_GPU_and_retirement"]=diagnostic_VM_population();
+    write_fresh_report(startup.admission_report+".padded-layout",report);
+    qwen_native_stage("padded_layout_completed_model_not_loaded_waiting_for_ordinary_close");
+    for(;;)(void)usleep(1000000);
 }
 
 int main(int argc, char ** argv) {
@@ -1101,6 +1217,8 @@ int main(int argc, char ** argv) {
         }
         admit_shader_storage_CPU(policy,startup.admission_report,startup.first_generation_validation,
             policy.contains("native_first_generation_validation")?policy.at("native_first_generation_validation").at("run_id"):Json(nullptr));
+        if(policy.contains("native_cache_layout_phase_memory"))
+            isolated_large_cache_layout(startup,policy,native_resources_started);
         if(shader_startup_memory_diagnostic) {
             const bool complete=qwen_app::end_native_stage_memory_probe();
             if(!complete)throw std::runtime_error("Shader startup stage observations did not completely return");
@@ -1534,16 +1652,40 @@ int main(int argc, char ** argv) {
             write_fresh_report(startup.admission_report + ".source.pipeline", source_admission);
             qwen_native_stage("source_pipeline_CPU_preflight_passed_before_Vulkan GPU_not_started=1");
         }
+        const bool large_cache_candidate=policy.contains("native_large_cache_scope");
+        const bool speculative_model_candidate=policy.contains("native_model_free_speculation");
+        if(speculative_model_candidate) {
+            const auto &proof=policy.at("native_model_free_speculation").at("complete_checkpoint_qualification");
+            qwen_app::require_model_free_checkpoint_report(read_completed_native_report(proof),proof);
+        }
+        if(large_cache_candidate) {
+            const bool layout=qwen_app::require_large_cache_scope(policy,startup.first_generation_validation,
+                bool(display),prefill_tokens);
+            if(!layout) {
+                const auto &proof=policy.at("native_large_cache_scope").at("layout_qualification");
+                qwen_app::require_large_cache_layout_report(read_completed_native_report(proof),proof);
+            }
+            qwen_app::select_experimental_padded_cache_128();
+            qwen_native_stage("experimental_128_slot_geometry_selected_before_backend_initialization");
+        }
+        const auto cache_geometry=qwen_app::selected_padded_cache_geometry();
         qwen_app::inspect_vulkan_globals();
         const bool indexed_candidate=policy.contains("native_bf16_indexed_vector");
         const bool padded_cache_candidate=policy.contains("native_padded_expert_cache");
         if(padded_cache_candidate) {
-            const Json expected={{"schema","ps5-qwen-owned-padded-expert-cache-v1"},{"enabled",true},
+            Json expected={{"schema","ps5-qwen-owned-padded-expert-cache-v1"},{"enabled",true},
                 {"active_slots",53},{"physical_planes",54},{"bank_stride",3293184},{"cache_cap_bytes",536870912},
                 {"preserve_coalesced_source_reads",true},{"pre_IO_split_EOF_fallback",true},
                 {"require_owned_synchronous_bank_lease",true},{"automatic_retries",0},{"precision_unchanged",true},
                 {"layout_qualification_SELF_SHA256","5bb22cdf4603b038d8247597caafe8b08479c2e9bcc1fda44982b777ae2018db"},
                 {"layout_qualification_result_SHA256","d277b1d03fcabe981408b8027a559e16134eb8b7e746bef366bb20ea63703cb5"}};
+            if(large_cache_candidate) {
+                const auto &proof=policy.at("native_large_cache_scope").at("layout_qualification");
+                expected.update({{"schema","ps5-qwen-owned-padded-expert-cache-v2"},
+                    {"active_slots",128},{"physical_planes",129},{"cache_cap_bytes",cache_geometry.cache_bytes()},
+                    {"layout_qualification_SELF_SHA256",proof.at("SELF_sha256")},
+                    {"layout_qualification_result_SHA256",proof.at("report_sha256")}});
+            }
             if(!startup.first_generation_validation||policy.at("native_padded_expert_cache")!=expected||
                !indexed_candidate||!policy.contains("native_indexed_vector_fixture")||
                policy.contains("native_padded_bank_layout_probe")||policy.contains("native_owned_mapped_probe")||
@@ -1560,12 +1702,14 @@ int main(int argc, char ** argv) {
         }
         const bool padded_layout_candidate=policy.contains("native_padded_bank_layout_probe");
         if(padded_layout_candidate) {
-            const Json expected={{"schema","ps5-qwen-padded-bank-layout-v1"},{"enabled",true},
+            Json expected={{"schema","ps5-qwen-padded-bank-layout-v1"},{"enabled",true},
                 {"model_member_index",7},{"source_offset",131072},{"envelope_bytes",3293184},
                 {"source_SHA256","16fffd6b293d7d218adff19ba8a4f2d5176341b43b15fda3c9d63aa3f0677b1a"},
                 {"maximum_Direct_reads",1},{"maximum_GPU_graphs",360},{"CPU_deadline_seconds",120},
                 {"actual_residues",30},{"layouts",4},{"active_slots",53},{"physical_planes",54},
                 {"model_loads",0},{"VideoOut_starts",0},{"automatic_retries",0}};
+            if(large_cache_candidate)expected.update({{"schema","ps5-qwen-padded-bank-layout-v2"},
+                {"active_slots",128},{"physical_planes",129}});
             if(!startup.first_generation_validation||policy.at("native_padded_bank_layout_probe")!=expected||
                indexed_candidate||policy.contains("native_indexed_vector_fixture")||
                policy.contains("native_owned_mapped_probe")||policy.contains("native_mapped_streaming_copy")||display)
@@ -1630,16 +1774,28 @@ int main(int argc, char ** argv) {
             memory_budget.cpu_working = qwen_app::model_CPU_budget_bytes;
             memory_budget.workspace = 256ull << 20;
         }
+        if(large_cache_candidate) {
+            // This distinct context-256 scope retains the CPU cap, device
+            // ledger, staging, platform and Direct reserves. The 256 MiB
+            // context allowance exceeds the completed control's non-bank /
+            // non-workspace device peak; checkpoint/prefix scopes are excluded.
+            memory_budget.expert_cache=cache_geometry.cache_bytes();
+            memory_budget.context=256ull<<20;
+        }
         const auto buffer_type=ggml_backend_dev_buffer_type(device);
         const auto system_memory=qwen_app::admit_native_system_memory();
         const qwen_app::MemoryObservation memory_observation{driver_free,direct,qwen_app::qualified_system_headroom(system_memory),
             ggml_backend_buft_get_max_size(buffer_type),ggml_backend_buft_get_alignment(buffer_type)};
-        memory_budget.admit(footprint,memory_observation);
+        const bool isolated_large_layout=large_cache_candidate&&padded_layout_candidate;
+        if(isolated_large_layout)qwen_app::admit_large_cache_layout_memory(memory_budget,memory_observation);
+        else memory_budget.admit(footprint,memory_observation);
         write_fresh_report(startup.admission_report+".memory",{{"schema","ps5-qwen-memory-admission-v1"},
             {"pid",getpid()},{"model_loaded",false},{"device_weights_bytes",footprint.device_weights},
             {"mapped_experts_bytes",footprint.mapped_experts},{"required_lazy_PLE_bytes",footprint.lazy_ple},
             {"mapped_embedding_bytes",footprint.mapped_embeddings},{"mapped_file_bytes",footprint.mapped_files},
-            {"planned_resident_headroom_bytes",memory_budget.device_requirement(footprint)},
+            {"planned_resident_headroom_bytes",isolated_large_layout?
+                qwen_app::large_cache_layout_requirement(memory_budget):memory_budget.device_requirement(footprint)},
+            {"full_resident_model_charged",!isolated_large_layout},
             {"CPU_budget_bytes",memory_budget.cpu_working},
             {"maximum_explicitly_addressed_CPU_model_page_bytes",qwen_app::maximum_addressed_model_CPU_bytes},
             {"maximum_resident_CPU_model_source_bytes",qwen_app::maximum_resident_model_CPU_source_bytes},
@@ -1689,8 +1845,16 @@ int main(int argc, char ** argv) {
                 {"device_ledger_peak_bytes",ledger.peak},{"device_ledger_allocations",ledger.allocations},
                 {"device_ledger_live_bytes",ledger.live},{"positive_resource_retirement",probe.positive_retirement},
                 {"source_workers_stopped",false},{"model_loaded",false},{"VideoOut_started",bool(display)},
-                {"automatic_retries",0},{"active_slots",53},{"physical_planes",54},
+                {"automatic_retries",0},{"active_slots",cache_geometry.active_slots},
+                {"physical_planes",cache_geometry.physical_slots()},
                 {"bank_stride",qwen_app::padded_bank_stride},{"source_SHA256",gate.at("source_SHA256")}};
+            if(large_cache_candidate) {
+                const auto &owner=policy.at("native_first_generation_validation");
+                report.update({{"schema","ps5-qwen-padded-bank-layout-result-v2"},
+                    {"candidate_SELF_sha256",owner.at("candidate_SELF_sha256")},
+                    {"driver_revision",owner.at("driver_revision")},{"profile",owner.at("profile")},
+                    {"native_archive_sha256",owner.at("native_archive_sha256")}});
+            }
             write_fresh_report(startup.admission_report+".padded-layout.preliminary",report);
             qwen_native_driver_complete();qwen_app::stop_native_model_sources();
             report["source_workers_stopped"]=true;
@@ -1797,7 +1961,8 @@ int main(int argc, char ** argv) {
             observed_system_headroom(), memory_budget.flexible_reserve);
         if (cache_bytes < (128u << 20)) throw std::runtime_error("Insufficient observed UMA cache headroom");
         if(padded_cache_candidate) {
-            if(cache_bytes!=(512u<<20))throw std::runtime_error("Padded cache requires the unchanged 512 MiB cap");
+            if(cache_bytes!=cache_geometry.cache_bytes())
+                throw std::runtime_error("Padded cache requires its complete selected request");
             qwen_app::configure_native_padded_cache(true,memory_observation.device_buffer_alignment);
             qwen_native_stage("owned_padded_cache_admitted_before_context_creation");
         }
@@ -1840,6 +2005,10 @@ int main(int argc, char ** argv) {
             // requests. Existing token/performance/monitoring records remain.
             std::array<CompletedRouteEvidence,3> completed_expert_reports;
             qwen_app::CheckpointValidationStats completed_checkpoint_validation;
+            Json completed_speculative_requests=Json::array();
+            std::vector<std::int32_t> speculative_reference_ids;
+            std::vector<unsigned char> speculative_reference_bytes;
+            bool speculative_tokens_exact=false;
             const bool checkpoint_model_candidate=policy.contains("native_model_checkpoint_validation");
             const bool prefix_model_validation=policy.contains("native_prefix_validation");
             const bool prefix_reuse_enabled=prefix_model_validation&&policy.at("native_prefix_validation").at("prefix_reuse_enabled").get<bool>();
@@ -2001,6 +2170,8 @@ int main(int argc, char ** argv) {
                     };
                     const auto external_performance = performance_snapshot(*engine);
                     const auto external_cache=engine->expert_cache_metrics();
+                    if(speculative_model_candidate&&ordinal==2)
+                        engine->enable_model_free_speculation(admit_complete_checkpoint);
                     if(checkpoint_model_candidate&&ordinal==2) {
                         engine->enable_checkpoint_validation(admit_complete_checkpoint,
                             qwen_app::completed_expert_route_cursor,qwen_app::compare_completed_expert_route_ranges);
@@ -2041,6 +2212,22 @@ int main(int argc, char ** argv) {
                         sample_boundary_memory("external_token_after_publish");
                     }, observed_inference_stage);
                     engine->set_work_guard({});
+                    if(speculative_model_candidate) {
+                        if(ordinal==1) {
+                            speculative_reference_ids=generated.token_ids;
+                            speculative_reference_bytes=generated.output_bytes;
+                        }else {
+                            if(generated.token_ids!=speculative_reference_ids||generated.output_bytes!=speculative_reference_bytes)
+                                throw std::runtime_error("Causal width-two output token IDs or bytes differ from this case's original target control");
+                            speculative_tokens_exact=true;
+                        }
+                        const auto s=engine->speculative_step_stats();
+                        completed_speculative_requests.push_back({{"ordinal",ordinal},{"controller_enabled",s.controller_enabled},
+                            {"attempts",s.attempts},{"accepted",s.accepted},{"rejected",s.rejected},
+                            {"queued_bonus_samples",s.queued_bonus_samples},{"proposal_checks",s.proposal_checks},
+                            {"no_draft",s.no_draft},{"prompt_proposals",s.prompt_proposals},{"generated_proposals",s.generated_proposals},
+                            {"request_reset_completed",generated.request_reset_completed}});
+                    }
                     if(prefix_model_validation) {
                         engine->set_logits_observer({});
                         if(generated.stop_reason!="end_of_generation"||generated.metrics.prompt_tokens!=30||
@@ -2168,6 +2355,17 @@ int main(int argc, char ** argv) {
                     {"device_ledger_peak_bytes",device_stats.peak},{"device_ledger_live_bytes",device_stats.live},
                     {"all_model_source_and_checkpoint_owners_retired",true},{"performance_adoption_enabled",false},
                     {"prefix_reuse_qualified",false},{"speculative_verification_qualified",false}});
+            }
+            if(speculative_model_candidate) {
+                if(!speculative_tokens_exact||completed_speculative_requests.size()!=2||device_stats.live)
+                    throw std::runtime_error("The finite causal width-two control or positive owner retirement is incomplete");
+                write_fresh_report(startup.admission_report+".model-free-speculation",{
+                    {"schema","ps5-qwen-causal-width-two-result-v1"},{"pid",getpid()},{"run_id",request.id},
+                    {"requests",completed_speculative_requests},{"all_control_token_IDs_and_bytes_exact",true},
+                    {"target_width_two_exercised",completed_speculative_requests.at(1).at("attempts").get<std::uint32_t>()>0},
+                    {"all_model_source_and_checkpoint_owners_retired",true},{"device_ledger_live_bytes",device_stats.live},
+                    {"cache_condition_comparison_is_not_speed_qualification",true},{"speedup_qualified",false},
+                    {"complete_checkpoint_qualification_SHA256","e9d0db6bfb5b2d090e021c972cf14728f3a7d96b956c03b08946a60d6fdb50d7"}});
             }
             if(expert_routes){
                 const std::array<const char *,3> suffixes{{".first",".demo1",".demo2"}};
