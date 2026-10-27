@@ -19,6 +19,24 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner's latest VM-feasibility comparison is
+`docs/vm-admission-review-20261027.md` / `.json`: all 16 documented VM-stopped
+candidate families and all 22 previous ledger items remain in scope. Include
+historical unavailable/rejected items in the comparison before prioritizing
+execution. Distinguish outer estimates, native stage predicates, live-work
+pressure, returned allocation errors, unknown completion, later measured timing
+and missing implementation. The regular 10142-page rule and newer 6396-page
+resident screen are scoped policies, with successful model counterexamples to
+the former universal interpretation. This offline review changes no guard,
+grants no native admission and does not replay consumed cases. Retain the
+original ordinary-close, ownership, numerical and precision requirements.
+The review also identifies seven CPU helpers charging Direct payload pages
+one-for-one to VM before allocation; `tools/completion_delivery_result.py`
+requires that same equation. Cases 2285/2288 document the resulting preallocation
+refusals. This coefficient is not a measured mapping-overhead bound. Price actual
+Direct capacity and VM metadata separately in a changed scope, with the helper
+and result verifier interpreted together. The full model uses different accounting.
+
 Latest actual results are `docs/native-model-cold-start-20261027.md` / `.json`.
 Case 3314 completed original-model warmup and two exact 22-token requests,
 including one accepted expert-aware width-two verification. Model/source/device

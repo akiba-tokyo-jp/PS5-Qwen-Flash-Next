@@ -1,5 +1,19 @@
 # PS5 Flash Next plan status
 
+The [VM admission comparison](vm-admission-review-20261027.md) reviews all 16
+documented VM-stopped candidate families and all 22 previous closing-ledger items.
+Every candidate remains in the comparison, including historical rejections.
+Actual model cases 3130/3314 completed below the regular prelaunch estimate;
+other rows distinguish an outer screen, a native stage predicate, a real freeze,
+later timing results and missing implementation. Use this review when interpreting
+older unavailable labels. The review changes no runtime guard or production
+binary and records no new native measurement.
+The review identifies a concrete accounting issue: seven CPU helpers add the
+whole Direct payload as extra VM pages, and the completion verifier requires
+that same equation. Original cases 2285/2288 stopped before allocation under
+this unmeasured charge. Review pool accounting and the stage-specific admission
+model together; preserve the existing source and numerical/completion evidence.
+
 The latest [actual model continuation](native-model-cold-start-20261027.md)
 completed three original-model requests in case 3314, including one accepted
 expert-aware width-two verification and exact control tokens/bytes. Positive

@@ -1,0 +1,988 @@
+{
+  "schema": "ps5-qwen-VM-admission-comparative-review-v1",
+  "date": "2026-10-27",
+  "basis_commit": "f858d74427616aa96cced08d401e1a1e001617b7",
+  "scope": "All documented VM-stopped candidate families, all 22 previous closing-ledger items, and selected original receipts",
+  "coverage": {
+    "candidate_families": 16,
+    "previous_stage_items": 22,
+    "previous_items_removed": 0,
+    "public_source_files": 42,
+    "original_private_receipts": 13
+  },
+  "review_completed": true,
+  "all_native_validations_complete": false,
+  "new_console_observations": 0,
+  "PS5_operations": 0,
+  "title_launches": 0,
+  "GPU_calls": 0,
+  "CI_runs": 0,
+  "runtime_guards_changed": false,
+  "production_changed": false,
+  "new_speed_adoption": false,
+  "reboot_dependency": false,
+  "units": {
+    "page_bytes": 16384,
+    "pages_per_MiB": 64,
+    "VM_domain_is_not_all_console_RAM": true,
+    "inactive_counted_as_free": false,
+    "Direct_Flexible_VM_and_virtual_bytes_kept_separate": true
+  },
+  "policy_values": {
+    "operational_formula": "minimum + max(reserved, 256)",
+    "operational_pages": 1154,
+    "native_startup_pages": 2974,
+    "regular_prelaunch_pages": 10142,
+    "resident_CPU_entry_pages": 6396,
+    "physical_minimum_proven_for_any_of_these_policies": false
+  },
+  "actual_observations": [
+    {
+      "case": 3130,
+      "phase": "prelaunch",
+      "samples": 10,
+      "free_pages_range": [
+        8781,
+        8782
+      ],
+      "chosen_CPU_entry_pages": 8159,
+      "native_GPU_admission_granted_by_outer_gate": false,
+      "later_original_model_requests_completed": 3,
+      "later_normal_close_and_exact_restoration": true
+    },
+    {
+      "case": 3314,
+      "phase": "prelaunch",
+      "samples": 10,
+      "free_pages_range": [
+        8297,
+        8298
+      ],
+      "chosen_CPU_entry_pages": 8178,
+      "native_GPU_admission_granted_by_outer_gate": false,
+      "later_original_model_requests_completed": 3,
+      "later_normal_close_and_exact_restoration": true
+    },
+    {
+      "evidence": "cache128_next_arm_3174",
+      "phase": "outer_screen",
+      "free_pages": 6583,
+      "chosen_required_pages": 8159,
+      "deficit_pages": 1576,
+      "allocation_failure_proven": false,
+      "title_launches": 0,
+      "GPU_calls": 0
+    },
+    {
+      "evidence": "three_path_screen_3194",
+      "phase": "outer_screen",
+      "free_pages": 5799,
+      "chosen_required_pages": 8159,
+      "deficit_pages": 2360,
+      "allocation_failure_proven": false,
+      "title_launches": 0,
+      "GPU_calls": 0
+    },
+    {
+      "evidence": "prediction_screen_3340",
+      "phase": "outer_screen",
+      "free_pages": 6891,
+      "chosen_required_pages": 8805,
+      "deficit_pages": 1914,
+      "allocation_failure_proven": false,
+      "title_launches": 0,
+      "GPU_calls": 0
+    },
+    {
+      "evidence": "resident_screen_3350",
+      "phase": "outer_screen",
+      "free_pages": 5049,
+      "chosen_required_pages": 6396,
+      "deficit_pages": 1347,
+      "allocation_failure_proven": false,
+      "title_launches": 0,
+      "GPU_calls": 0
+    },
+    {
+      "case": 3291,
+      "phase": "native_CPU_before_GPU",
+      "free_pages": 1911,
+      "chosen_startup_target_pages": 2974,
+      "model_loaded": false,
+      "refusal": "native_VM_predicate",
+      "allocation_failure_proven": false
+    }
+  ],
+  "current_last_recorded_VM": {
+    "case": 3360,
+    "free_pages": 3402,
+    "free_MiB": 53.15625,
+    "observation_is_historical_not_fresh": true,
+    "inactive_pages": 74189,
+    "wired_pages": 30673,
+    "stopped_processes": 0,
+    "zombies": 0
+  },
+  "model_3314_global_phases": {
+    "free_pages": {
+      "after-context": 1415,
+      "after-indexed-fixture": 3312,
+      "after-load": 1456,
+      "after-virtual-probe-before-admission": 3377,
+      "after-virtual-sources": 3373,
+      "before-integrity": 3421,
+      "before-virtual-sources": 3337
+    },
+    "observed_CPU_decline": 4986,
+    "observed_GPU_load_decline": 1897,
+    "exclusive_application_attribution": false,
+    "continuous_peak_measured": false,
+    "new_resident_title_cost_measured": false
+  },
+  "Direct_payload_VM_charges": {
+    "original_refused_cases": [
+      {
+        "case": 2285,
+        "Direct_payload_bytes": 20971520,
+        "Direct_payload_pages": 1280,
+        "observed_VM_free_pages": 2008,
+        "additional_VM_pages_from_Direct_payload": 1280,
+        "chosen_VM_required_pages": 2434,
+        "operational_formula_pages": 1154,
+        "allocation_API_called": false,
+        "measured_kernel_mapping_cost_bound": false,
+        "actual_Direct_allocation_failure_proven": false
+      },
+      {
+        "case": 2288,
+        "Direct_payload_bytes": 10485760,
+        "Direct_payload_pages": 640,
+        "observed_VM_free_pages": 1761,
+        "additional_VM_pages_from_Direct_payload": 640,
+        "chosen_VM_required_pages": 1794,
+        "operational_formula_pages": 1154,
+        "allocation_API_called": false,
+        "measured_kernel_mapping_cost_bound": false,
+        "actual_Direct_allocation_failure_proven": false
+      }
+    ],
+    "current_helper_source_sites": [
+      {
+        "path": "native/qwen_flash_next/demand_batch_probe.c",
+        "bytes": 8735,
+        "sha256": "ebdb27875b5b48749639f71e74a406f638cc4d274a24d0d3045e6d12051aa1c6",
+        "sites": [
+          {
+            "line": 61,
+            "text": "!headroom(WINDOW/ALIGNMENT)||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;"
+          },
+          {
+            "line": 63,
+            "text": "rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,ALIGNMENT,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);"
+          }
+        ]
+      },
+      {
+        "path": "native/qwen_flash_next/bf16_palette_probe.c",
+        "bytes": 8536,
+        "sha256": "e2bc6c1a012f635ec5982b6f1d630c2046e0428a67ba7059cfc0985e09e2d2ec",
+        "sites": [
+          {
+            "line": 60,
+            "text": "if((argc!=0&&argc!=1)||constructors!=1||getuid()!=1||geteuid()!=0||!context(1)||!context(2)||!headroom(WINDOW/ALIGNMENT)||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;"
+          },
+          {
+            "line": 62,
+            "text": "int rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,ALIGNMENT,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);"
+          }
+        ]
+      },
+      {
+        "path": "native/qwen_flash_next/completion_source_probe.c",
+        "bytes": 8787,
+        "sha256": "e700dbc3c07e46e1200c8ea3225c1fe8b17e7c7162ba9b3f5bb837325deef9af",
+        "sites": [
+          {
+            "line": 60,
+            "text": "!headroom(WINDOW/ALIGNMENT)||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;"
+          },
+          {
+            "line": 62,
+            "text": "rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,ALIGNMENT,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);"
+          }
+        ]
+      },
+      {
+        "path": "native/qwen_flash_next/vector_delivery_probe.c",
+        "bytes": 9083,
+        "sha256": "d911c30c08797c0db8684888ce680b552d889790f1849f456c31800f6130a8c6",
+        "sites": [
+          {
+            "line": 77,
+            "text": "!headroom(WINDOW/PAGE)||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;"
+          },
+          {
+            "line": 79,
+            "text": "rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,PAGE,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);"
+          }
+        ]
+      },
+      {
+        "path": "native/qwen_flash_next/vector_io_small_probe.c",
+        "bytes": 5352,
+        "sha256": "6368276df0c210a2bcc1a0161de2d13dcf2ecc17219e995c93123ec48f300b02",
+        "sites": [
+          {
+            "line": 23,
+            "text": "const uint64_t required=(uint64_t)minimum+(reserved>256?reserved:256)+WINDOW/PAGE;"
+          },
+          {
+            "line": 52,
+            "text": "int rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,PAGE,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);"
+          }
+        ]
+      },
+      {
+        "path": "native/qwen_flash_next/vector_pair_delivery_probe.c",
+        "bytes": 8243,
+        "sha256": "824cf97ad8964c84817b554102a18e966de0b91c0ba8b708f5e574a1875c3dd0",
+        "sites": [
+          {
+            "line": 64,
+            "text": "!headroom(WINDOW/PAGE)||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;"
+          },
+          {
+            "line": 66,
+            "text": "rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,PAGE,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);"
+          }
+        ]
+      },
+      {
+        "path": "native/qwen_flash_next/vector_layout_probe.c",
+        "bytes": 10466,
+        "sha256": "ea8b7c76207988bb9ddab2bf9553ee6aa52d695ad5b571b2a6af361d07773355",
+        "sites": [
+          {
+            "line": 75,
+            "text": "!headroom(WINDOW/PAGE)||sceSystemServiceGetAppIdOfRunningBigApp()!=-1)goto done;"
+          },
+          {
+            "line": 77,
+            "text": "rc=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),WINDOW,PAGE,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);"
+          }
+        ]
+      }
+    ],
+    "result_verifier_source": {
+      "path": "tools/completion_delivery_result.py",
+      "bytes": 9841,
+      "sha256": "7e11dfb70758c27a9b76a76e06a58d230b7996f5f14e1fbba7a5778374af58e8"
+    },
+    "conclusion": "Direct payload pages were added one-for-one to VM requirements before allocation; mapping overhead exists but this coefficient is unmeasured",
+    "inference_engine_and_100MiB_screen_use_the_same_formula": false,
+    "recommended_review": "Separate actual Direct capacity and VM mapping overhead, including the result verifier, before any revised native scope"
+  },
+  "candidate_families": [
+    {
+      "id": "known-demand-and-source-schedule",
+      "historical_stop": "live_and_startup_predicates",
+      "later_result": "later_model_qualified_and_adopted",
+      "sources": [
+        "docs/source-pipeline-refusal-20261024.json",
+        "docs/source-concurrency-refusal-20261024.json",
+        "docs/pre-worker-memory-refusal-20261024.json",
+        "docs/bounded-memory-refusal-20261024.json",
+        "docs/source-pipeline-success-20261024.json",
+        "docs/native-source-schedule-success-20261025.json"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "shader-storage-and-driver-cold-tables",
+      "historical_stop": "CPU_startup_predicates",
+      "later_result": "later_CPU_GPU_and_model_paths_completed",
+      "sources": [
+        "docs/native-shader-storage-CPU-20261024.json",
+        "docs/native-shader-ordering-CPU-20261024.json",
+        "docs/native-shader-JIT-CPU-20261024.json",
+        "docs/native-external-shader-startup-20261024.json",
+        "docs/native-external-shader-CPU-20261024.json",
+        "docs/native-external-shader-bytes-20261024.json",
+        "docs/native-shader-columns-CPU-20261024.json",
+        "docs/native-worker-and-cold-start-20261027.md",
+        "docs/native-model-cold-start-20261027.json"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "one-worker-refill",
+      "historical_stop": "before_allocation_predicate",
+      "later_result": "later_positive_fixture_median_below_historical_adoption_rule",
+      "sources": [
+        "docs/bf16-system-validation-20261025.json",
+        "docs/kernel-memory-cause-20261026.json",
+        "docs/kernel-memory-cause-20261026.md"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "GPU-lossless-and-fused-GEMV",
+      "historical_stop": "outer_screen_before_launch",
+      "later_result": "later_both_measured_slower",
+      "sources": [
+        "docs/kernel-memory-cause-20261026.json",
+        "docs/memory-palette-followup-20261026.json",
+        "docs/memory-plan-completion-20261026.json"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "PLE-copy-elision",
+      "historical_stop": "outer_screen_and_CPU_startup",
+      "later_result": "later_208_graphs_no_repeatable_gain",
+      "sources": [
+        "docs/PLE-smoke-startup-20261026.json",
+        "docs/finite-execution-dispositions-20261027.md"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "ready-expert-overlap",
+      "historical_stop": "CPU_startup_predicate",
+      "later_result": "later_40_graphs_measured_regression",
+      "sources": [
+        "docs/finite-execution-dispositions-20261027.md"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "cache53-128",
+      "historical_stop": "CPU_startup_and_outer_screen",
+      "later_result": "layout_and_A53_pass_B128_model_unrun",
+      "sources": [
+        "docs/cache128-layout-20261027.json",
+        "docs/cache128-startup-review-20261027.json",
+        "docs/finite-execution-dispositions-20261027.md"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "exact-prefix",
+      "historical_stop": "CPU_startup_predicate",
+      "later_result": "checkpoint_pass_prefix_speed_unrun",
+      "sources": [
+        "docs/remaining-validation-progress-20261026.md"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "expert-aware-width2",
+      "historical_stop": "CPU_startup_and_outer_screen",
+      "later_result": "one_acceptance_pass_rejection_and_matched_speed_unrun",
+      "sources": [
+        "docs/native-model-cold-start-20261027.json",
+        "docs/native-predictive-integration-20261027.json"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "predictive-cache",
+      "historical_stop": "outer_screen_before_model",
+      "later_result": "actual_worker_pass_model_overlap_unrun",
+      "sources": [
+        "docs/native-worker-and-cold-start-20261027.md",
+        "docs/native-predictive-integration-20261027.json",
+        "docs/native-model-cold-start-20261027.json"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "metadata-peak-live-and-quiet-variation",
+      "historical_stop": "CPU_guard_before_target_loop",
+      "later_result": "later_metadata_pass_and_conflicting_quiet_interval",
+      "sources": [
+        "docs/source-memory-attribution-20261027.json",
+        "docs/remaining-validation-progress-20261026.md"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "inventory-and-owner-observer",
+      "historical_stop": "metadata_or_duplicate_SELF_scan_predicate",
+      "later_result": "later_small_observers_pass_and_3130_model_completed",
+      "sources": [
+        "docs/postboot-runtime-memory-20261027.md",
+        "docs/finite-execution-dispositions-20261027.md"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "regular-file-mmap",
+      "historical_stop": "unknown_mapping_completion_and_confirmed_freeze",
+      "later_result": "exact_VM_cause_unresolved_reserved_source_replacement_passed",
+      "sources": [
+        "docs/freeze-forensics-20261024.json",
+        "docs/native-memory-qualification-20261024.json",
+        "docs/source-memory-causal-controls-20261024.json"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "Direct-helper-context-and-retained-file-census",
+      "historical_stop": "context_API_result_or_unlogged_predicate",
+      "later_result": "later_context_corrected_and_finite_continuation_completed",
+      "sources": [
+        "docs/CPU-shader-memory-controls-20261026.json",
+        "docs/PLE-memory-first-plan-20261026.md"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "OS-internal-IO",
+      "historical_stop": "interface_availability_separate_from_VM",
+      "later_result": "AIO_measured_regression_raw_path_interface_missing",
+      "sources": [
+        "docs/three-path-validation-20261027.json"
+      ],
+      "retained_in_comparison": true
+    },
+    {
+      "id": "dependent-router-adaptive-and-portable-kernels",
+      "historical_stop": "mixed_missing_integration_dependencies_and_model_coverage",
+      "later_result": "all_items_retained_with_separate_blockers",
+      "sources": [
+        "docs/final-current-environment-dispositions-20261027.json",
+        "docs/remaining-feasibility-20261026.md"
+      ],
+      "retained_in_comparison": true
+    }
+  ],
+  "previous_stage_reassessment": [
+    {
+      "id": "startup-reduction",
+      "label": "Reduce unresolved startup kernel consumption",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "unresolved_attribution_and_policy",
+      "comparison_question": "owned-file residency partly identified; remaining owner and reclaim interface unresolved",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "cpu-metadata",
+      "label": "Invariant batch metadata reuse",
+      "historical_disposition": "closed_small_target",
+      "reassessment": "native_prototype_completed_small_measured_cost",
+      "comparison_question": "0.1334 ms generous request saving remains a measured small target",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "lifetimes",
+      "label": "Allocation lifetime and constant-reuse audit",
+      "historical_disposition": "closed_audit",
+      "reassessment": "audit_completed",
+      "comparison_question": "rehearsal ranges already retire and fixed GDN values already use F32",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "peak-live",
+      "label": "Additional full-model peak-live characterization",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "additional_instrumentation_and_model_coverage_needed",
+      "comparison_question": "separate observation cost, asynchronous VM change and actual app-owned allocations",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "cache128",
+      "label": "53/128-slot A/B/B/A",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "model_cohort_unrun_after_policy_refusal",
+      "comparison_question": "360 layout graphs and A53 pass; fresh matched B128 model comparison still needed",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "other-cache",
+      "label": "Further cache capacities",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "integration_and_capacity_dependencies",
+      "comparison_question": "15 trace replays exist; further native capacity scopes still need implementation/pricing",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "checkpoint",
+      "label": "Complete model checkpoint",
+      "historical_disposition": "completed",
+      "reassessment": "native_correctness_completed",
+      "comparison_question": "reuse completed state-capture/restore proof",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "prefix",
+      "label": "Exact-prefix reuse TTFT",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "model_cohort_unrun_after_startup_predicate",
+      "comparison_question": "A1 stopped before backend; no measured prefix speed comparison",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "width2",
+      "label": "Width-two exact verification and speed",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "partly_native_qualified_remaining_policy_gated",
+      "comparison_question": "3314 accepted one width-two attempt; forced rejection and matched speed still needed",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "width4",
+      "label": "Width-four verification",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_dependent_integration",
+      "comparison_question": "include fixed-width-two rejection/cost prerequisites and larger checkpoint/workspace",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "adaptive",
+      "label": "Radiance-inspired adaptive draft depth",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_dependent_integration",
+      "comparison_question": "include native acceptance, rejection and source-cost prerequisites",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "expert-major",
+      "label": "Original-file versus expert-major delivery",
+      "historical_disposition": "inconclusive",
+      "reassessment": "measured_positive_but_variable",
+      "comparison_question": "7/8 rounds faster; about 1.040x source and 1.037x total; historical adoption screen unmet",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "source-cpu",
+      "label": "Original-source CPU two-call reader",
+      "historical_disposition": "completed",
+      "reassessment": "native_source_comparison_completed",
+      "comparison_question": "1.06735x source-only ratio; compare any new delta with already-adopted paired reads",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "ready",
+      "label": "Ready-expert split overlap",
+      "historical_disposition": "rejected_no_gain",
+      "reassessment": "later_native_measured_regression",
+      "comparison_question": "40 graphs complete; both reverse comparisons slower",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "router-observe",
+      "label": "Actual hidden-state router observation",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_model_tap_integration_and_cost_measurement",
+      "comparison_question": "host shadow proof exists; actual hidden-state capture remains to implement",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "router-forecast",
+      "label": "Hidden-state forecast and speculative transfers",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_dependent_integration",
+      "comparison_question": "needs actual tap usefulness and added I/O/eviction/compute accounting",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "workloads",
+      "label": "Broader workload quality and performance",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "additional_native_model_coverage_needed",
+      "comparison_question": "four tokenizer metadata cases exist; actual quality/performance still unmeasured",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "ple",
+      "label": "PLE copy-elision modes at widths one through four",
+      "historical_disposition": "rejected_no_gain",
+      "reassessment": "later_native_no_repeatable_gain",
+      "comparison_question": "208 graphs complete; four widths and all three modes remain in comparison",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "dual-output",
+      "label": "Radiance shared-input projections",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_portable_kernel_and_cost_profile",
+      "comparison_question": "original BF16/F32 design needs implementation; donor MXFP4 layout differs",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "gdn-fusion",
+      "label": "Radiance GDN and gated-normalization fusion",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_portable_kernel_and_cost_profile",
+      "comparison_question": "preserve original F32/sigmoid semantics and compare a Vulkan implementation",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "small-gemm",
+      "label": "Radiance small dense projection dispatch",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "missing_eligible_portable_kernel_and_cost_profile",
+      "comparison_question": "compare actual F32 one/two/four-token shapes",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    },
+    {
+      "id": "workgroup",
+      "label": "Further vector/workgroup specialization",
+      "historical_disposition": "execution_unavailable",
+      "reassessment": "additional_material_cost_profile_and_implementation_needed",
+      "comparison_question": "source/CPU/guard/completion time is not isolated shader cost",
+      "retained_in_comparison": true,
+      "removed_because_of_old_disposition": false,
+      "physical_impossibility_established": false
+    }
+  ],
+  "comparison_priorities": [
+    {
+      "order": 1,
+      "subject": "Direct versus VM accounting and scoped startup/admission cost",
+      "question": "Review the seven helper one-for-one payload charges and result verifier; distinguish fixed outer estimates from actual native stage requirements"
+    },
+    {
+      "order": 2,
+      "subject": "width-two rejection and predictive off/on",
+      "question": "Use the prepared original-model single-load scope to measure rollback, foreground wait, added traffic and complete wall time"
+    },
+    {
+      "order": 3,
+      "subject": "53/128 slots and exact-prefix reuse",
+      "question": "Complete fresh matched cohorts with actual pool, checkpoint and source costs"
+    },
+    {
+      "order": 4,
+      "subject": "refill, PLE, ready-overlap and palette",
+      "question": "Compare recorded timing distributions and chosen adoption rules; price any new confirmation by an unanswered production-path question"
+    },
+    {
+      "order": 5,
+      "subject": "router, adaptive and portable kernels",
+      "question": "Track actual missing implementation and prerequisites separately while retaining every proposal"
+    }
+  ],
+  "sources": [
+    {
+      "path": "docs/bf16-system-validation-20261025.json",
+      "bytes": 6471,
+      "sha256": "65bbdc75cac58d2ab2dcd814975792018026bb5ab7abc59d7205ce090f0d57ab"
+    },
+    {
+      "path": "docs/bounded-memory-refusal-20261024.json",
+      "bytes": 4505,
+      "sha256": "e51eb60dce9f34243dcac16f9133f72c903cda0a529a23c39871449565c7757c"
+    },
+    {
+      "path": "docs/cache128-startup-review-20261027.json",
+      "bytes": 2317,
+      "sha256": "d715259fcad39118466407514be5c34b59b340dd250a1d15c64aff86b6fa150a"
+    },
+    {
+      "path": "docs/cache128-layout-20261027.json",
+      "bytes": 2761,
+      "sha256": "e69e283977ab85f49c65de7689cd75b32a83fc4aeb02bea98e44b9aac3176e82"
+    },
+    {
+      "path": "docs/CPU-shader-memory-controls-20261026.json",
+      "bytes": 9243,
+      "sha256": "e01fac415e5bb29555d183ba92b3e65b111f6ee348b9af6789f052097f30b6e1"
+    },
+    {
+      "path": "docs/freeze-forensics-20261024.json",
+      "bytes": 3028,
+      "sha256": "fc4a2ff2c946b5059ad1cf585cc56486c229e91e03b538bef9e936bfc232f46c"
+    },
+    {
+      "path": "docs/kernel-memory-cause-20261026.json",
+      "bytes": 12403,
+      "sha256": "33213d1a28b5bde050f9f582ddfd47dd02fca8788939dc92f9891def94b0404b"
+    },
+    {
+      "path": "docs/memory-palette-followup-20261026.json",
+      "bytes": 16505,
+      "sha256": "84324f3cb67eb80e719d503b8b2b7c659cceb1c14c58928428eb052d0fe301ed"
+    },
+    {
+      "path": "docs/memory-plan-completion-20261026.json",
+      "bytes": 8786,
+      "sha256": "8cfb86d401a99edb9312cd2bd8896dae5355239cb09467c533de7b963ad95785"
+    },
+    {
+      "path": "docs/native-external-shader-startup-20261024.json",
+      "bytes": 1588,
+      "sha256": "38db7253db9dfc72ce6685e15154e17142a40ed5b8339b32ce2fecfe09c96c9f"
+    },
+    {
+      "path": "docs/native-external-shader-CPU-20261024.json",
+      "bytes": 1373,
+      "sha256": "098ab29d733735e90530489657e3599a835e6f5d7f869d89376f947f9301c122"
+    },
+    {
+      "path": "docs/native-external-shader-bytes-20261024.json",
+      "bytes": 1473,
+      "sha256": "ad211e4d27582f971324795f420dc30bf65a4750199e10b601fab2311d9b04a9"
+    },
+    {
+      "path": "docs/native-shader-columns-CPU-20261024.json",
+      "bytes": 2109,
+      "sha256": "e3774061640e2fafdfccaf4cc8654122b2bce02f97fe62f5835ac53a643e4713"
+    },
+    {
+      "path": "docs/native-shader-storage-CPU-20261024.json",
+      "bytes": 1492,
+      "sha256": "b61da16dae021f3c640f08fe4ba1d40bdb60513833bd9d6e0877a8b5c78d19a0"
+    },
+    {
+      "path": "docs/native-shader-ordering-CPU-20261024.json",
+      "bytes": 1459,
+      "sha256": "541974b596b2efc5db2b1f81c137b472f117a03ad0ce1e90a2ec841773230163"
+    },
+    {
+      "path": "docs/native-shader-JIT-CPU-20261024.json",
+      "bytes": 1398,
+      "sha256": "2dd6c088d4878cc32fa6a8418488c7098dd27210c31bc3197bfe7b33b6313598"
+    },
+    {
+      "path": "docs/native-memory-qualification-20261024.json",
+      "bytes": 2895,
+      "sha256": "71843fb6d953f2335170a1b407d5518ad043de57621696ea458bcff968a33798"
+    },
+    {
+      "path": "docs/native-model-cold-start-20261027.json",
+      "bytes": 5923,
+      "sha256": "8c4d661646131c49553e59211e39d4bcf6835de401fe28b1db8d6de754bab6b1"
+    },
+    {
+      "path": "docs/pre-worker-memory-refusal-20261024.json",
+      "bytes": 2126,
+      "sha256": "a1bece328ed4e630c9c6681f1cd45c7e943cb86718becf2c68bd47532cf7d8c9"
+    },
+    {
+      "path": "docs/source-concurrency-refusal-20261024.json",
+      "bytes": 2447,
+      "sha256": "f58f0ea106122c5a8f3aa741e6b80b9738b009667b7b73ad9f662003d3a372e5"
+    },
+    {
+      "path": "docs/source-pipeline-refusal-20261024.json",
+      "bytes": 1199,
+      "sha256": "906df2fb6b0b4b9dbfd65f714cc476ae552a0664503d79f75537091555bfc3eb"
+    },
+    {
+      "path": "docs/source-pipeline-success-20261024.json",
+      "bytes": 8966,
+      "sha256": "b2341908a59d1b626c6473d7271b33df963c214cdeb07af809d27a75065bc56b"
+    },
+    {
+      "path": "docs/source-schedule-startup-refusal-20261024.json",
+      "bytes": 1959,
+      "sha256": "4e3d8fefde2d8f7f75be90202b8f657005488fb9b62ac5547c936405c1fdd156"
+    },
+    {
+      "path": "docs/source-schedule-startup-refusals-20261024.json",
+      "bytes": 1622,
+      "sha256": "fe59d976b648399755bea755aff0a3fcef9d821e524ef0274aeceb424f6093a0"
+    },
+    {
+      "path": "docs/source-schedule-load-refusal-20261024.json",
+      "bytes": 2039,
+      "sha256": "7c19e9ccbd6f055da25c3923c7d5d528838849d2e9eccd3894a86c4c6732207c"
+    },
+    {
+      "path": "docs/source-memory-causal-controls-20261024.json",
+      "bytes": 2547,
+      "sha256": "346f5f2feb4c8706a42306924a56d9fce662a53a20ed30d9391a8cba203ca76f"
+    },
+    {
+      "path": "docs/source-memory-attribution-20261027.json",
+      "bytes": 7563,
+      "sha256": "ee50571254c863e0b11d6793473ca95992811e415b67352df4454089224e61fe"
+    },
+    {
+      "path": "docs/native-source-schedule-success-20261025.json",
+      "bytes": 13614,
+      "sha256": "861ca30bc63138fa66441e15969cd29de8f103157b5f5f877086c24a643c06eb"
+    },
+    {
+      "path": "docs/PLE-smoke-startup-20261026.json",
+      "bytes": 1539,
+      "sha256": "17e47a43a4f370bb78330b7d2a8a404714e6628301d5e4b00bbfad42e4631e61"
+    },
+    {
+      "path": "docs/three-path-validation-20261027.json",
+      "bytes": 10844,
+      "sha256": "569c57491064908fdceed499e770a98ed79c0ed1a0b2a341872e145ef1523110"
+    },
+    {
+      "path": "docs/native-predictive-integration-20261027.json",
+      "bytes": 2202,
+      "sha256": "70835dca649c752b26c208026586eebfa5fa4fa461794dc94383cdc2802dfaac"
+    },
+    {
+      "path": "docs/final-current-environment-dispositions-20261027.json",
+      "bytes": 18620,
+      "sha256": "20acaae1801d4d4dda293f6e660025c7d794da78b7bb088784c4195d99d67e15"
+    },
+    {
+      "path": "docs/finite-execution-dispositions-20261027.md",
+      "bytes": 39608,
+      "sha256": "988c5108c41c6f699b5ecca6363c8821bb927d5fa5141955c6f07fac12a5dc8d"
+    },
+    {
+      "path": "docs/remaining-validation-progress-20261026.md",
+      "bytes": 91858,
+      "sha256": "37cb9c2103a604f210bdf1236f6c3a95e6ac5554537eb7a90aca0ccd341e9567"
+    },
+    {
+      "path": "docs/remaining-feasibility-20261026.md",
+      "bytes": 11906,
+      "sha256": "68a690e275328522b80d4f73c5b68fc3ee81c3088f5d8078844969a8d1384698"
+    },
+    {
+      "path": "docs/native-worker-and-cold-start-20261027.md",
+      "bytes": 12227,
+      "sha256": "83c8048a52225c30068d0831f432f82e857f8db9e460f84140d347046b15ee3e"
+    },
+    {
+      "path": "docs/native-model-cold-start-20261027.md",
+      "bytes": 8570,
+      "sha256": "da450ef4bae62011c19ce34e9fb9f744f0efc3770ee149422ae22874553ab599"
+    },
+    {
+      "path": "docs/PLE-memory-first-plan-20261026.md",
+      "bytes": 16667,
+      "sha256": "a3e338abbd593ddb2a42c4b32f7378878803ec3adcfbb9c55e022ed1544d5ebf"
+    },
+    {
+      "path": "docs/performance-results-20261025.md",
+      "bytes": 6489,
+      "sha256": "8f08c588dc37e78e761406da13bb4c9169e5107b6b572755dbe5d276df826e3d"
+    },
+    {
+      "path": "docs/postboot-runtime-memory-20261027.md",
+      "bytes": 8923,
+      "sha256": "64fb3320be4935cd8e20300399ab2ec38003ef7d6177f8a58fb0619d1d11c352"
+    },
+    {
+      "path": "docs/kernel-memory-cause-20261026.md",
+      "bytes": 11390,
+      "sha256": "23fee7537650b77c478667eb365244ff0347de4085bb7d5f2614fd55fd70b393"
+    },
+    {
+      "path": "docs/memory-plan-completion-20261026.md",
+      "bytes": 9618,
+      "sha256": "10848a174230fffd7b05ca369281631af6b0ac7767b5e0ab92ab2cea4c00a437"
+    }
+  ],
+  "selected_original_receipts": [
+    {
+      "id": "refill_2285_raw",
+      "bytes": 2709,
+      "sha256": "bb271e8f4d0152a519d7b4e6f0db516ced6620a9dd7ab3ff1db7dc106eb5d840"
+    },
+    {
+      "id": "refill_2288_raw",
+      "bytes": 2708,
+      "sha256": "5ec3175da0e3fb09543dd90067948baba5c9d2c0352704c4b76a49d88a824825"
+    },
+    {
+      "id": "model_3130_prelaunch",
+      "bytes": 3205,
+      "sha256": "a2ab452540fa7b66ca664eb5e42ac0222c994fb5ae147e519697485d228e9a85"
+    },
+    {
+      "id": "model_3130_restored",
+      "bytes": 1423,
+      "sha256": "f35654e6fde3b7ca82e73b936e4c06fdbd5e47d41aec070791afac8b4f200d3f"
+    },
+    {
+      "id": "model_3314_prelaunch",
+      "bytes": 3205,
+      "sha256": "0dfb4d6ecafc5bc7140915e04f4f576ceeb4a5e72085de286da6afeb08f900e1"
+    },
+    {
+      "id": "model_3314_restored",
+      "bytes": 1227,
+      "sha256": "2631b2dccb500251ff41ca7672fc22f047b95e68f66e065cdf92bc6cd7f5a17c"
+    },
+    {
+      "id": "cache128_next_arm_3174",
+      "bytes": 901,
+      "sha256": "96f0b8285eab39812c68a7242e75e42d9ded3691e50daa127c9ceaa9528bc792"
+    },
+    {
+      "id": "three_path_screen_3194",
+      "bytes": 624,
+      "sha256": "41f1484b9290b30544541b6279cc18374a33a00c6cfc6040419016d96b95bd9f"
+    },
+    {
+      "id": "prediction_screen_3340",
+      "bytes": 1485,
+      "sha256": "e2fc3a7682b0be72a5208558724c84505fce5e2fc43ee572ddc538906c79a85b"
+    },
+    {
+      "id": "resident_screen_3350",
+      "bytes": 1514,
+      "sha256": "095a96c17345909d62ba5182091cf35243437b0a8c230093b315fe0bdc97023b"
+    },
+    {
+      "id": "original_driver_refusal_3291",
+      "bytes": 21368,
+      "sha256": "888b7c1ce20335c69777fa42275e61b6c0d59974dc29d9e892c78794b9bab184"
+    },
+    {
+      "id": "process_census_3360",
+      "bytes": 52882,
+      "sha256": "205bcf6060ea9b7b3c12061e13a750496380eb56088abffb570fba179d8341a1"
+    },
+    {
+      "id": "completed_model_phases_3339",
+      "bytes": 4949,
+      "sha256": "f044cf601c84af1dda80cd073a8333dd8a19b78e7b3e4c9dced93bca9626eddd"
+    }
+  ]
+}
