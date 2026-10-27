@@ -109,3 +109,22 @@ byte extent or smaller file is treated as current native admission.
 No new generation tokens/s result or adopted acceleration follows from this
 continuation. The wider cache, exact speculation, PLE, prefix, router and other
 work packages remain individually tracked in the plan index. CI stayed disabled.
+
+## Subsequent native numerical connection
+
+The [connected native numerical entry and case 3046](finite-execution-dispositions-20261027.md#connected-native-numerical-entry-and-finite-decision-case-3046)
+supersedes the missing numerical-entry statement above. It connects the existing
+strong bank callbacks and twelve backing graphs to six serial/split/reverse
+controls, real Direct reads, actual graph dispatch, F64 full-FFN references,
+exact original contribution/output bytes and joined-source retirement. A separate
+default-off route now admits the actual byte roots and partial Expert count to
+the existing BF16/F32 vector shader; the production predicate is preserved.
+
+The available pack provides only two unique original experts, so this gate uses
+one distinct expert per group and I/O depth one. The representative ten-unique-
+expert/two-call performance runner remains a later missing implementation,
+dependent on this physical numerical prerequisite. Host/reference checks and
+final native link/SELF integrity passed. One changed-scope screen observed 6630
+pages against the staged CPU estimate 8159; no title or GPU ran. Backing/numerics,
+representative timing and model adoption remain incomplete, with no reboot
+dependency or unchanged retry.

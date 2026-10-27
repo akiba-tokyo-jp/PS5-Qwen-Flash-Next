@@ -1286,3 +1286,43 @@ fastest production artifact/settings remain unchanged; CI stays disabled.
 Remaining full-model and dependency-gated native stages are explicitly
 unavailable in the present environment, with their actual implementation states
 preserved in the table. No new tok/s result or production candidate was adopted.
+
+## Connected ready-expert numerical entry, 2026-10-27
+
+The owner again required continuing through the complete plan. The independent
+native-entry work proceeded, rather than repeating completed CPU diagnostics.
+`ready_expert_fixture.cpp` now connects the original backing fixture, Direct
+source callbacks, ready-wave owner and real native graph adapter. It preserves
+the six strong leases through the serial/split/overlap/reverse numerical cohort.
+The source and GPU paths record exact read plans and positive graph epochs;
+all ten original contribution positions and output bytes must match the serial
+control and the fixed F64 full-FFN reference. Failed/unknown work retains owners.
+
+Source inspection found a concrete missing dispatch connection: the old
+production padded predicate rejects the independent byte roots and partial
+top-k widths. `split_bank_route.h` adds a separate default-off eligibility path
+to the existing parameterized BF16/F32 shader. Eighty actual GGML shapes, 1600
+layout refusals, 80 default-off refusals and unchanged production routing passed.
+Eighty-five policy refusals, fourteen independent result-review groups and strict
+native SDK compilation passed. Offline original-byte matrix verification found
+maximum F32/F64 error 4.389794464043639e-8 with the fixed limits; this is not host
+model generation or native shader proof. Native link 3042 and SELF 3044 passed
+actual imports/dispatch, integrity and all six segment comparisons. The preferred
+driver/profile is unchanged; no persistent caches were enabled.
+
+The numerical pack has only the two original layer-zero experts 0/257. This
+entry uses those repeated IDs, all ten interleaved contributions, source depth
+one, six runs and 14 additional graphs after the twelve backing graphs. It does
+not implement or qualify representative ten-unique-expert/depth-two timing.
+The [finite decision record](finite-execution-dispositions-20261027.md#connected-native-numerical-entry-and-finite-decision-case-3046)
+binds the exact source, binary and checks and keeps representative/model work
+unimplemented and dependent on physical backing/numerical acceptance.
+
+Changed-scope case 3046 retained a staged CPU estimate `6749 + 1154 + 256 = 8159`
+pages, followed by the unchanged actual 2974-page GPU-startup predicate. This
+different-SELF estimate is expressly revisable and is not a hardware minimum
+or measured new-SELF cost. The single existing-shell screen observed 6630 ->
+6630 with matching boot. No package upload, ELF/title/GPU execution or retry
+followed. The new native numerical stage is unavailable under present conditions;
+it is not passed or physically impossible. No production files/settings were
+changed. Overall implementation/native validation remains incomplete.

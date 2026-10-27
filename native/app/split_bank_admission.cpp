@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 #include "split_bank_admission.h"
 #include "split_bank_allocation.h"
+#include "split_bank_route.h"
+#include "ready_expert_fixture.h"
 #include "padded_bank_layout.h"
 #include "indexed_vector.h"
 #include "device_buffer_budget.h"
@@ -37,7 +39,7 @@ std::string digest(const void *data,std::size_t bytes) {
     unsigned char raw[32];sha256_final(&h,raw);std::string text;
     for(const auto b:raw){text+="0123456789abcdef"[b>>4];text+="0123456789abcdef"[b&15];}return text;
 }
-struct Matrix {std::uint64_t offset;unsigned residue;const char *raw,*envelope;};
+using Matrix=ReadyFixtureMatrix;
 // Original vector-bank group zero: layer zero, experts 0 and 257. The paired
 // roles are gate, up, down, matching the existing qualified pack's byte hashes.
 constexpr std::array<Matrix,6> matrices{{
@@ -52,6 +54,7 @@ struct Fixture {
     ggml_backend_t backend=nullptr;int fd=-1;Identity source{};
     SplitBankAllocation allocation;unsigned reads=0,graphs=0;std::uint64_t non_exact=0;
     double maximum_error=0,maximum_normalized_error=0;Json cases=Json::array();
+    bool ready_requested=false;Json ready_result;
     const std::chrono::steady_clock::time_point deadline=std::chrono::steady_clock::now()+std::chrono::seconds(120);
     void bounded(){check(std::chrono::steady_clock::now()<deadline,"Split backing finite deadline exceeded; owners retained");(void)admit_native_system_memory();}
     static int use(const SplitBankBackings &banks,const SplitBankRoots &roots,void *opaque) {
@@ -64,7 +67,7 @@ struct Fixture {
         const auto owners=validate_split_bank_backings(banks);check(owners[0][0]!=owners[1][0],"Split actual group owners alias");
         const auto alignment=banks[0][0].descriptor_alignment;
         for(const auto &group:banks)for(const auto &bank:group)check(bank.descriptor_alignment==alignment,"Split descriptor alignments differ");
-        configure_padded_index_layout(true,alignment);configure_bf16_indexed_vector(true);set_bf16_indexed_vector_scope(true);
+        configure_split_index_layout(true,alignment);configure_bf16_indexed_vector(true);set_bf16_indexed_vector_scope(true);
         ggml_init_params params{};params.no_alloc=true;params.mem_size=ggml_tensor_overhead()*90+6*ggml_graph_overhead_custom(16,false);
         auto *ctx=ggml_init(params);check(ctx,"Split graph metadata allocation refused");
         std::array<std::array<ggml_tensor *,3>,2> inputs{},ids{},outputs{};
@@ -137,8 +140,9 @@ struct Fixture {
                 {"reference_absolute_tolerance",1e-5},{"reference_relative_tolerance",1e-5},{"same_F32_outputs_bit_exact",true},
                 {"preceding_canary_checked",before},{"following_canary_checked",after},{"whole_envelope_unchanged_after_GPU",true}});
         }
-        set_bf16_indexed_vector_scope(false);configure_bf16_indexed_vector(false);configure_padded_index_layout(false);
         ggml_backend_synchronize(backend);qwen_native_driver_checkpoint();ggml_backend_buffer_free(buffer);ggml_free(ctx);qwen_native_driver_checkpoint();
+        if(ready_requested)ready_result=run_ready_expert_fixture(backend,fd,banks,roots,matrices,graphs);
+        set_bf16_indexed_vector_scope(false);configure_bf16_indexed_vector(false);configure_split_index_layout(false);
     }
 };
 } // namespace
@@ -148,7 +152,9 @@ Json admit_split_bank_backing(const Json &policy,const std::string &journal,bool
     for(const auto *key:{"GGML_VK_BOUNDED_STAGING","GGML_VK_DISABLE_ASYNC","GGML_VK_SERIALIZE_SUBMISSIONS","GGML_VK_MAX_NODES_PER_SUBMIT"})
         check(!setenv(key,"1",1),"Split backing requires the original serialized Vulkan policy");
     verify_native_startup_file_direct(split_bank_pack_path,split_bank_pack_bytes,split_bank_pack_sha256,30);
-    auto *f=new Fixture;f->fd=open(split_bank_pack_path,O_RDONLY|O_NOFOLLOW|O_DIRECT);
+    auto *f=new Fixture;f->ready_requested=policy.contains("native_ready_expert_numerical");
+    if(f->ready_requested)require_ready_fixture_policy(policy);
+    f->fd=open(split_bank_pack_path,O_RDONLY|O_NOFOLLOW|O_DIRECT);
     check(f->fd>=0&&(fcntl(f->fd,F_GETFL)&O_DIRECT),"Split original Direct descriptor refused");f->source=identity(f->fd);
     start_native_model_sources({{split_bank_pack_path,split_bank_pack_bytes,f->source}});
     const auto before_GPU=admit_native_startup_memory();GPU_started=true;
@@ -166,9 +172,10 @@ Json admit_split_bank_backing(const Json &policy,const std::string &journal,bool
         {"maximum_normalized_error",f->maximum_normalized_error},
         {"non_BF16_exact_F32_input_values",f->non_exact},{"original_pack_SHA256_checked",true},{"source_pack_sha256",split_bank_pack_sha256},
         {"all_original_raw_and_envelope_SHA256_checked",true},{"positive_resource_retirement",true},{"all_started_IO_closed",true},
-        {"source_workers",0},{"model_loaded",false},{"GPU_IO_overlap_tested",false},{"generation_speed_measured",false},
+        {"source_workers",f->ready_requested?1:0},{"model_loaded",false},{"GPU_IO_overlap_tested",false},{"generation_speed_measured",false},
         {"device_ledger_peak_bytes",ledger.peak},{"device_ledger_live_bytes",ledger.live},
         {"kernel_free_after_CPU_source_before_GPU",before_GPU.kernel_free},{"kernel_startup_target_pages",before_GPU.kernel_target}};
+    if(f->ready_requested)result["ready_numerical"]=f->ready_result;
     delete f;return result;
 }
 }

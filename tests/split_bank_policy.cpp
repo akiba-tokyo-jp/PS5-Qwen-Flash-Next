@@ -44,5 +44,17 @@ int main() {
     for(const auto &mode:Json::array({Json::array({"inference"}),Json::array({"first-generation-validation","inference"})})) {
         auto p=good;p["allowed_modes"]=mode;refuse(p);
     }
+    auto ready=good;ready["native_ready_expert_numerical"]={{"schema","ps5-qwen-ready-numerical-policy-v1"},{"enabled",true},
+        {"unique_original_experts",2u},{"original_contributions",10u},{"cohort_runs",6u},{"source_IO_depth",1u},{"representative_speed_test",false}};
+    refuse(ready);ready["native_isolated_split_bank_title"]["source_workers"]=1u;
+    qwen_app::require_split_bank_policy(ready,true,false,false);
+    for(auto it=ready.at("native_ready_expert_numerical").begin();it!=ready.at("native_ready_expert_numerical").end();++it) {
+        auto p=ready;p["native_ready_expert_numerical"].erase(it.key());refuse(p);
+        p=ready;p["native_ready_expert_numerical"][it.key()]=nullptr;refuse(p);
+        if(it->is_number_unsigned())for(const auto &v:Json::array({true,double(it->get<unsigned>()),-1})) {
+            p=ready;p["native_ready_expert_numerical"][it.key()]=v;refuse(p);
+        }
+    }
+    {auto p=ready;p["native_ready_expert_numerical"]["extra"]=true;refuse(p);}
     std::cout<<Json{{"exact_scope_passed",true},{"refusal_controls",refusals},{"PS5_operations",0},{"GPU_calls",0}}.dump()<<'\n';
 }

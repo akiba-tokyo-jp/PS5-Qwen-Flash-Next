@@ -46,16 +46,22 @@ def main():
     fixture_cmd[fixture_cmd.index('-c')+1]=str(fixture);fixture_cmd[fixture_cmd.index('-o')+1]=str(fixture_obj)
     additions=[]
     if a.split_bank:
-        allocation=ROOT/'native/app/split_bank_allocation.cpp';allocation_obj=a.out/'split_bank_allocation.o'
-        allocation_cmd=fixture_cmd.copy();allocation_cmd[allocation_cmd.index('-c')+1]=str(allocation);allocation_cmd[allocation_cmd.index('-o')+1]=str(allocation_obj)
-        additions=[allocation_cmd];command.insert(command.index('--start-group'),str(allocation_obj))
+        for name in('split_bank_allocation.cpp','ready_expert_fixture.cpp','ready_expert_native.cpp','padded_bank_route.cpp'):
+            src=ROOT/'native/app'/name;target=a.out/(src.stem+'.o');c=fixture_cmd.copy()
+            c[c.index('-c')+1]=str(src);c[c.index('-o')+1]=str(target);additions.append(c)
+            # Replace an older qualified route object explicitly. No other
+            # qualified runtime/driver member is silently substituted.
+            if name=='padded_bank_route.cpp':
+                old=next(c for c in prior['compile_commands']if '-c'in c and Path(c[c.index('-c')+1]).name==name)
+                command.remove(old[old.index('-o')+1])
+            command.insert(command.index('--start-group'),str(target))
     command.insert(command.index('--start-group'),str(obj))
     command.insert(command.index('--start-group'),str(fixture_obj))
     new_objects={obj,fixture_obj}
-    if a.split_bank:new_objects.add(allocation_obj)
+    if a.split_bank:new_objects|={Path(c[c.index('-o')+1])for c in additions}
     fixed_paths={Path(__file__),main,fixture,ROOT/'native/app/native_main.cpp',a.qualified_native,
         a.out/'isolated_PLE_boundaries.inc',a.out/'isolated_PLE_admission.inc'}
-    if a.split_bank:fixed_paths|={allocation,ROOT/'native/app/isolated_ple_main.cpp',a.out/'isolated_split_startup.inc'}
+    if a.split_bank:fixed_paths|={*[Path(c[c.index('-c')+1])for c in additions],ROOT/'native/app/isolated_ple_main.cpp',a.out/'isolated_split_startup.inc'}
     fixed_paths|={Path(x)for x in command if Path(x).is_file()and Path(x).suffix in('.o','.a','.so','.exe','.ld','.map')}
     fixed_paths-=new_objects;fixed_paths|=set((ROOT/'native/app').glob('*.h'))
     fixed=[record(f)for f in sorted(fixed_paths)]
@@ -70,7 +76,7 @@ def main():
     snapshot=a.out/'source-at-execution';snapshot.mkdir()
     for path in(Path(__file__),main,fixture,ROOT/'native/app/native_main.cpp',*sorted((ROOT/'native/app').glob('*.h'))):(snapshot/path.name).write_bytes(path.read_bytes())
     if a.split_bank:
-        for path in(allocation,ROOT/'native/app/isolated_ple_main.cpp',a.out/'isolated_split_startup.inc'):(snapshot/path.name).write_bytes(path.read_bytes())
+        for path in(*[Path(c[c.index('-c')+1])for c in additions],ROOT/'native/app/isolated_ple_main.cpp',a.out/'isolated_split_startup.inc'):(snapshot/path.name).write_bytes(path.read_bytes())
     for i,c in enumerate(commands):
         r=subprocess.run(c,cwd=ROOT,capture_output=True,timeout=240,env=env);(a.out/f'build-{i}.private.log').write_bytes(r.stdout+r.stderr)
         if r.returncode:raise RuntimeError(r.stderr.decode(errors='replace')[-5500:])

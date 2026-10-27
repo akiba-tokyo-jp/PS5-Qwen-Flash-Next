@@ -22,9 +22,15 @@ inline void require_split_bank_policy(const nlohmann::json &policy,bool mode,boo
     const auto &pack=p.at("source_pack");
     check(pack.is_object()&&pack.size()==3&&pack.at("path")==split_bank_pack_path&&
         pack.at("bytes").is_number_unsigned()&&pack.at("bytes")==split_bank_pack_bytes&&pack.at("sha256")==split_bank_pack_sha256);
+    const bool ready=policy.contains("native_ready_expert_numerical");
+    if(ready)check(policy.at("native_ready_expert_numerical")==Json{{"schema","ps5-qwen-ready-numerical-policy-v1"},{"enabled",true},
+        {"unique_original_experts",2u},{"original_contributions",10u},{"cohort_runs",6u},
+        {"source_IO_depth",1u},{"representative_speed_test",false}});
+    if(ready)for(const auto *key:{"unique_original_experts","original_contributions","cohort_runs","source_IO_depth"})
+        check(policy.at("native_ready_expert_numerical").at(key).is_number_unsigned());
     const auto &binding=policy.at("native_isolated_split_bank_title");
     check(binding.is_object()&&binding.size()==6&&binding.at("schema")=="ps5-qwen-isolated-split-bank-title-v1"&&
-        binding.at("model_loading_enabled")==false&&binding.at("source_workers").is_number_unsigned()&&binding.at("source_workers")==0u&&
+        binding.at("model_loading_enabled")==false&&binding.at("source_workers").is_number_unsigned()&&binding.at("source_workers")==unsigned(ready)&&
         binding.at("candidate_SELF_bytes").is_number_unsigned()&&binding.at("candidate_SELF_bytes")>0u&&binding.at("candidate_SELF_bytes")<=(32u<<20));
     const auto hash=binding.at("candidate_SELF_sha256").get<std::string>(),run=binding.at("run_id").get<std::string>();
     check(hash.size()==64&&hash.find_first_not_of("0123456789abcdef")==std::string::npos&&
