@@ -1,5 +1,11 @@
 # Measured GPU initialization and remaining model comparisons
 
+The subsequent [capacity and original-model record](resident-buffer-capacity-20261028.md)
+supersedes this document's pending risk decision. Explicit owner approval was
+received, all five raw buffers were allocated, and one original-model warmup
+completed. The full matched comparisons remain incomplete. The empty-backend
+measurements below remain valid within their original scope.
+
 Native case **3593** completed one empty Vulkan backend lifetime. Its maximum
 sampled global free-page decline was **8 pages (128 KiB)**, from 2,778 to 2,770,
 across 90,490,531 ns. The backend synchronized and retired; the global device

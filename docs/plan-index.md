@@ -1,5 +1,17 @@
 # PS5 Flash Next plan status
 
+The [Direct capacity and original-model continuation](resident-buffer-capacity-20261028.md)
+supersedes the pending risk decision below. The owner accepted the disclosed
+risk; all five original-size raw buffers were allocated in case 3643. Available
+Direct capacity was 11.404 GiB. Case 3678 completed an original-model warmup,
+then returned a test-only cumulative-counter assertion. The assertion is fixed;
+case 3700 returned a known CPU operational-floor refusal before GPU/model work.
+Both ordinary closes and exact fastest/settings restorations passed. No
+unchanged refused startup will be replayed for each dependent benchmark.
+C2 remains incomplete, C3 has no new native result, and no speed adoption or
+physical-impossibility claim follows. See the new machine-readable companion
+for preserved proof hashes and individual dispositions.
+
 The [GPU phase continuation](gpu-phase-calibration-20261028.md) and
 [evidence ledger](gpu-phase-calibration-20261028.json) add native case 3593:
 one empty backend synchronized/retired, 2778 -> 2770 sampled free pages, and
