@@ -20,7 +20,7 @@ FORBIDDEN=('native_CPU_phase_control','native_SELF_read_control','native_cache_l
     'native_shader_startup_memory_diagnostic','native_source_contention_probe',
     'native_source_stage_memory_diagnostic','native_direct_frame_evidence')
 
-def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False,measure_worker_memory=False,incremental_tables=False,delegate_shader=False,gpu_initializer_calibration=False,gpu_capacity_only=False,phase_local_model=False,allow_large_cache=False):
+def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False,measure_worker_memory=False,incremental_tables=False,delegate_shader=False,gpu_initializer_calibration=False,gpu_capacity_only=False,phase_local_model=False,allow_large_cache=False,postloader_integrity=False):
     at=source.index('int main(int argc, char ** argv)');end=source.index('        const auto * chat_template',at)
     prefix=source[:at];body=source[at:end]
     flags=('native_display','monitor_validation','display_validation','runtime_validation','memory_validation',
@@ -275,6 +275,31 @@ def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False
         tail='\n        throw std::runtime_error("The compact GPU fixture cannot enter model execution");\n'+tail[tail.index('    }catch'):]
         tail=tail.replace('engine.release();','')
         prefix='#define QWEN_RESIDENT_COMPACT_GPU 1\n'+prefix
+    if postloader_integrity:
+        if not(reuse_launch_integrity and delegate_shader and phase_local_model) or gpu_initializer_calibration:
+            raise ValueError('Postloader SELF verification requires the qualified phase-local model and launch handoff')
+        anchor='        qwen_native_stage("complete_SELF_and_receipt_direct_SHA256_passed GPU_not_started=1");'
+        if body.count(anchor)!=1:raise ValueError('Unique completed startup integrity boundary required')
+        verification='''        qwen_app::require_resident_postloader_integrity(policy);
+                (void)qwen_app::admit_native_fixture_memory(19);
+                const auto before_postloader=qwen_app::observe_native_system_memory();
+                resident_sample("postloader_SELF_before");
+                const auto postloader_started=qwen_app::ProfileClock::now();
+                qwen_native_stage("postloader_current_SELF_Direct_full_SHA256_before_read_GPU_not_started");
+                qwen_app::verify_native_startup_file_direct("/app0/eboot.bin",gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                    gate.at("candidate_SELF_sha256").get<std::string>(),60);
+                const auto postloader_ns=qwen_app::profile_elapsed_ns(postloader_started);
+                const auto after_postloader=qwen_app::observe_native_system_memory();
+                resident_sample("postloader_SELF_completed");
+                write_fresh_report(startup.admission_report+".resident.postloader-SELF",{{"completed",true},
+                    {"pid",getpid()},{"run_id",gate.at("run_id")},{"full_current_SELF_SHA256_passed",true},
+                    {"SELF_bytes",gate.at("candidate_SELF_bytes")},{"SELF_sha256",gate.at("candidate_SELF_sha256")},
+                    {"free_before",before_postloader.kernel_free},{"free_after",after_postloader.kernel_free},
+                    {"elapsed_ns",postloader_ns},{"passes",1},{"maximum_read_window_bytes",1048576},
+                    {"GPU_calls",0},{"cache_recovery_assumed",false}});
+'''
+        body=body.replace(anchor,verification+anchor)
+        prefix='#include "resident_postloader_integrity.h"\n'+prefix
     return '#include "resident_comparison_policy.h"\n#include "resident_counter_baseline.h"\n'+extra+prefix+'\n#include "resident_startup_trace.h"\n'+post+body+'\n'+tail
 
 def main():
@@ -291,7 +316,8 @@ def main():
     p.add_argument('--GPU-capacity-only',action='store_true',help='Exclude the unused model path from the explicitly model-free capacity executable')
     p.add_argument('--boot-qualified-journals',action='store_true',help='Keep exclusive startup logs distinct when a PID recurs after reboot')
     p.add_argument('--phase-local-model-admission',action='store_true',help='Use qualified next-window/init/context components rather than a historical whole-interval sum')
-    p.add_argument('--comparison-kind',choices=('predictive','cache','prefix'),default='predictive',help='Independent bounded model comparison; each has its own exact policy and result')
+    p.add_argument('--postloader-SELF-integrity',action='store_true',help='Measure one full Direct SELF verification after loader reads, preserving exact original integrity and reserves')
+    p.add_argument('--comparison-kind',choices=('predictive','cache','prefix','combined'),default='predictive',help='Independent bounded model comparison; each has its own exact policy and result')
     a=p.parse_args();prior=json.loads(a.qualified_native.read_text())
     if a.reuse_qwen_factory_from and not a.qwen_only_factory:raise ValueError('Factory reuse requires the exact Qwen-only factory')
     if a.GPU_capacity_only and (not a.GPU_initializer_calibration or a.qwen_only_factory):raise ValueError('Compact GPU capacity admits no model factory')
@@ -304,11 +330,12 @@ def main():
     flags=dict(reuse_launch_integrity=a.reuse_launch_SELF_integrity,receipt_diagnostic=a.receipt_only_diagnostic,
         measure_worker_memory=a.measure_worker_memory,incremental_tables=a.incremental_driver_tables,
         delegate_shader=a.delegate_shader_launch_integrity,gpu_initializer_calibration=a.GPU_initializer_calibration,
-        gpu_capacity_only=a.GPU_capacity_only,phase_local_model=a.phase_local_model_admission)
+        gpu_capacity_only=a.GPU_capacity_only,phase_local_model=a.phase_local_model_admission,postloader_integrity=a.postloader_SELF_integrity)
     if a.comparison_kind!='predictive':
         if a.GPU_initializer_calibration or a.GPU_capacity_only or a.measure_worker_memory or a.receipt_only_diagnostic:
             raise ValueError('Additional model comparisons cannot combine calibration scopes')
-        from resident_additional_comparisons import generate
+        if a.comparison_kind=='combined':from resident_combined_comparison import generate
+        else:from resident_additional_comparisons import generate
         text,additional_inputs=generate(a.comparison_kind,source.read_text(),tail.read_text(),flags)
     else:text=specialize(source.read_text(),tail.read_text(),**flags)
     generated=a.out/'resident-comparison.private.cpp';generated.write_text(text,newline='\n')
@@ -405,6 +432,7 @@ def main():
     if a.GPU_initializer_calibration:paths += [ROOT/'native/app/resident_gpu_calibration.inc',ROOT/'native/app/resident_gpu_calibration_policy.h',ROOT/'native/app/resident_gpu_buffers.h',ROOT/'native/app/resident_gpu_buffers.inc']
     if bootstrap_namespace:paths += [Path(bootstrap_namespace[k]['path'])for k in ('original','generated','header')]
     if a.phase_local_model_admission:paths += [ROOT/'native/app/resident_phase_vm.h',ROOT/'native/app/resident_worker_qualification.h']
+    if a.postloader_SELF_integrity:paths.append(ROOT/'native/app/resident_postloader_integrity.h')
     paths+=additional_inputs
     if factory:paths+=[Path(factory[k]['path'])for k in ('original','generated','original_compile_recipe')]
     if factory and factory.get('reused_from'):paths+=[a.reuse_qwen_factory_from,factory_obj,Path(factory['actual_object_source']['path'])]
@@ -428,6 +456,7 @@ def main():
         resident_bootstrap_namespace=bootstrap_namespace,
         resident_phase_source=phase_source,
         resident_comparison_kind=a.comparison_kind,
+        resident_postloader_SELF_integrity=a.postloader_SELF_integrity,
         application_sources=prior['application_sources']+[record(tail)],
         application_headers=prior['application_headers']+[record(ROOT/'native/app/resident_comparison_policy.h'),
             record(ROOT/'native/app/resident_startup_trace.h')])
@@ -443,7 +472,7 @@ def main():
         if 'llama_model_load_from_file'in symbols or 'qwen_app::LlamaEngine::next_with_one_draft('in symbols:
             raise ValueError('Compact GPU capacity retained the unused model implementation')
         receipt.update(model_load_and_speculative_API_absence_passed=True,required_engine_and_driver_symbols_present=False)
-    elif 'llama_model_load_from_file'not in symbols or (a.comparison_kind=='predictive' and 'qwen_app::LlamaEngine::next_with_one_draft('not in symbols):
+    elif 'llama_model_load_from_file'not in symbols or (a.comparison_kind in ('predictive','combined') and 'qwen_app::LlamaEngine::next_with_one_draft('not in symbols):
         raise ValueError('Actual model or speculative arithmetic missing')
     linkmap=(a.out/'native-link.private.map').read_text().replace('\\','/')
     for row in prior['bounded_model_source_overrides']['objects']:
