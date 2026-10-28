@@ -1,0 +1,189 @@
+{
+  "schema": "ps5-qwen-read-latency-attribution-v1",
+  "date": "2026-10-29",
+  "method": "Reanalysis of completed physical measurements; no new console operation",
+  "new_console_operations": 0,
+  "production_changed": false,
+  "quantization": false,
+  "CI_runs": 0,
+  "selected_production_SELF_SHA256": "80c28a95e993458c54b5fbf73fe59accde17dd8302dd49a9aeecf367e617739c",
+  "evidence_cases": {
+    "size_and_request_controls": 436,
+    "normal_application": 7080,
+    "production_placement": 7420
+  },
+  "single_request_controls": [
+    {
+      "name": "sequential_4_MiB",
+      "observations": 48,
+      "bytes": 4194304,
+      "calls": 1,
+      "mean_ms": 5.575051791666667,
+      "round_mean_ms": [
+        5.5102016875,
+        5.692273,
+        5.5226806875
+      ]
+    },
+    {
+      "name": "single_coalesced_span",
+      "observations": 48,
+      "bytes": 6569984,
+      "calls": 1,
+      "mean_ms": 8.173273229166666,
+      "round_mean_ms": [
+        8.209498625,
+        8.2346016875,
+        8.075719375
+      ]
+    },
+    {
+      "name": "sequential_8_MiB",
+      "observations": 48,
+      "bytes": 8388608,
+      "calls": 1,
+      "mean_ms": 10.203111958333334,
+      "round_mean_ms": [
+        10.2095135,
+        10.130826375,
+        10.268996
+      ]
+    }
+  ],
+  "exact_extent_request_count_control": {
+    "identical_files_and_byte_ranges": true,
+    "rounds": [
+      {
+        "round": 0,
+        "identical_extent_pairs": 8,
+        "bytes_per_extent": 8388608,
+        "two_4_MiB_calls_ms": 11.020403375,
+        "one_8_MiB_call_ms": 10.218469375,
+        "elapsed_reduction_fraction": 0.07276811680225825,
+        "affine_per_request_ms": 0.801934000000001,
+        "affine_size_dependent_fraction_at_4_MiB": 0.8544637663954835,
+        "affine_size_dependent_fraction_at_8_MiB": 0.9215211231183045
+      },
+      {
+        "round": 1,
+        "identical_extent_pairs": 8,
+        "bytes_per_extent": 8388608,
+        "two_4_MiB_calls_ms": 11.384546,
+        "one_8_MiB_call_ms": 10.07560875,
+        "elapsed_reduction_fraction": 0.11497491863092302,
+        "affine_per_request_ms": 1.3089372499999996,
+        "affine_size_dependent_fraction_at_4_MiB": 0.7700501627381541,
+        "affine_size_dependent_fraction_at_8_MiB": 0.8700885194653871
+      },
+      {
+        "round": 2,
+        "identical_extent_pairs": 8,
+        "bytes_per_extent": 8388608,
+        "two_4_MiB_calls_ms": 11.045361375,
+        "one_8_MiB_call_ms": 10.2752705,
+        "elapsed_reduction_fraction": 0.06972074963006825,
+        "affine_per_request_ms": 0.7700908750000011,
+        "affine_size_dependent_fraction_at_4_MiB": 0.8605585007398635,
+        "affine_size_dependent_fraction_at_8_MiB": 0.9250539560004769
+      }
+    ],
+    "total_identical_extent_pairs": 24,
+    "comparison": "Two 4-MiB serial calls versus one 8-MiB call at exactly the same source range",
+    "affine_assumption": "T = N * fixed_request_cost + bytes * size_cost; descriptive, not device-only service time"
+  },
+  "auxiliary_different_extent_comparison": {
+    "two_calls": {
+      "name": "serial_two_3_MiB",
+      "observations": 48,
+      "bytes": 6586368,
+      "calls": 2,
+      "mean_ms": 8.763043645833333,
+      "round_mean_ms": [
+        8.7049794375,
+        8.7028344375,
+        8.8813170625
+      ]
+    },
+    "one_call": {
+      "name": "single_coalesced_span",
+      "observations": 48,
+      "bytes": 6569984,
+      "calls": 1,
+      "mean_ms": 8.173273229166666,
+      "round_mean_ms": [
+        8.209498625,
+        8.2346016875,
+        8.075719375
+      ]
+    },
+    "elapsed_reduction_fraction": 0.06730200607263803,
+    "byte_reduction_fraction": 0.0024875621890547706,
+    "identical_byte_ranges": false,
+    "pure_request_count_intervention": false
+  },
+  "descriptive_size_time_fit": {
+    "fixed_ms": 0.9423785428937173,
+    "ms_per_MiB": 1.156505805330259,
+    "r_squared": 0.9999670259595496,
+    "effective_size_dependent_GB_s": 0.9066759502349079,
+    "round_fixed_ms": [
+      0.8183808728098914,
+      1.2593620539165373,
+      0.7493927019547293
+    ],
+    "round_ms_per_MiB": [
+      1.1756548814546628,
+      1.1102612092797475,
+      1.183601325256366
+    ],
+    "estimated_size_dependent_fraction_at_4_MiB": 0.8309650603959695,
+    "estimated_size_dependent_fraction_at_8_MiB": 0.9076381258245397,
+    "scope": "Descriptive three-size serial CPU-helper fit; not a production latency decomposition"
+  },
+  "current_production_decode": [
+    {
+      "request": 1,
+      "accepted_decode_transitions": 21,
+      "causal_width_two_enabled": false,
+      "prefill_excluded": true,
+      "final_EOS_work_excluded": true,
+      "decode_tok_s": 0.41844299657395945,
+      "elapsed_s": 50.18604725599289,
+      "process_s": 49.189026142,
+      "source_wait_s": 45.297167772,
+      "source_wait_fraction_of_process": 0.9208795401078912,
+      "physical_read_bytes": 89075195200,
+      "physical_read_calls": 27218,
+      "physical_GB_per_accepted_token": 4.241675961904762,
+      "physical_calls_per_accepted_token": 1296.095238095238,
+      "mean_physical_request_MiB": 3.1210495220483976,
+      "effective_physical_GB_per_source_wait_s": 1.9664627962691512
+    },
+    {
+      "request": 2,
+      "accepted_decode_transitions": 21,
+      "causal_width_two_enabled": true,
+      "prefill_excluded": true,
+      "final_EOS_work_excluded": true,
+      "decode_tok_s": 0.4402437679585741,
+      "elapsed_s": 47.700845596015455,
+      "process_s": 46.483777405,
+      "source_wait_s": 42.676241035,
+      "source_wait_fraction_of_process": 0.9180889208545594,
+      "physical_read_bytes": 83671719232,
+      "physical_read_calls": 25599,
+      "physical_GB_per_accepted_token": 3.9843675824761906,
+      "physical_calls_per_accepted_token": 1219.0,
+      "mean_physical_request_MiB": 3.1171362022388873,
+      "effective_physical_GB_per_source_wait_s": 1.9606159587340048
+    }
+  ],
+  "conclusion": "Byte-volume-dependent source delivery is the dominant supported explanation; fixed per-request overhead is secondary",
+  "limitations": [
+    "No isolated SSD controller or NAND service time was measured",
+    "Byte-proportional filesystem, DMA and kernel work are included in the size-dependent term",
+    "Serial helper controls use preserved historical extents; their fixed term is not a current application percentage",
+    "Two application requests establish this fixed counting-workload scope, not all reasoning workloads",
+    "Worker times overlap; do not add them or divide producer wait by physical calls as device latency"
+  ]
+}
