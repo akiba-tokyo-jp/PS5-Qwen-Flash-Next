@@ -181,6 +181,7 @@
         qwen_native_stage("resident_comparison_exception_work_stopped");
         if(native_resources_started){qwen_native_driver_retain();engine.release();}
         if(!validation_report.empty())try{write_fresh_report(validation_report+".failure",{{"message",e.what()},
+            {"last_model_load_error",qwen_app::resident_last_model_error()},
             {"model_loaded",model!=nullptr},{"native_resources_started",native_resources_started},
             {"CPU_worker_completion_unknown",resident_worker_completion_unknown},
             {"memory_backpressure",memory_backpressure_report()}});}catch(...){}
