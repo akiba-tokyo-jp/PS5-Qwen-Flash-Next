@@ -1,0 +1,429 @@
+{
+  "schema": "ps5-qwen-remaining-validation-execution-v1",
+  "date": "2026-10-28",
+  "owner_instruction": "Complete the remaining finite proposal validations; never label a measured no-gain candidate untested",
+  "historical_ledger": "docs/vm-revalidation-results-20261028.json",
+  "all_required_validation_complete": false,
+  "production_changed_in_this_continuation": true,
+  "CI_runs": 0,
+  "reboot_dependency": false,
+  "classification_rules": {
+    "tested_no_gain": "Terminal for the measured implementation: it is tested, has no qualified gain and requires no model integration or automatic replay",
+    "tested_inconclusive": "A comparison occurred without a qualified winner: tested, terminal for unchanged implementation; not untested",
+    "missing_implementation": "Requires implementation, unless an explicit applicability or interface decision closes it",
+    "execution_unavailable": "Name the actual unavailable interface or resource; a policy refusal is not physical impossibility",
+    "adoption": "Requires numerical correctness, completed reverse-order timing, actual application integration and production verification",
+    "reopening": "Requires a concrete different implementation or new material evidence; a missing larger benchmark alone does not reopen a measured loser"
+  },
+  "closed_existing_evidence": [
+    {
+      "id": "ready",
+      "status": "tested_no_gain",
+      "evidence": "docs/finite-execution-dispositions-20261027.md",
+      "detail": "40 graphs; both reverse comparisons slower; model integration unnecessary",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "ple",
+      "status": "tested_no_gain",
+      "evidence": "docs/finite-execution-dispositions-20261027.md",
+      "detail": "208 graphs; no repeatable gain; model integration unnecessary",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "GPU-lossless-and-fused-GEMV",
+      "status": "tested_no_gain",
+      "evidence": "docs/memory-plan-completion-20261026.md",
+      "detail": "Measured native regressions retained; do not rerun",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "predictive-cache",
+      "status": "tested_no_gain",
+      "evidence": "docs/independent-validation-20261028.json",
+      "detail": "Existing route-based prediction slower; this does not test a different hidden-state predictor",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "OS-AIO",
+      "status": "tested_no_gain",
+      "evidence": "docs/three-path-validation-20261027.md",
+      "detail": "46.88 percent slower; do not require model integration",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "SSD-codec-and-packed-copy",
+      "status": "tested_no_gain",
+      "evidence": "docs/ssd-io-validation-results-20261025.md",
+      "detail": "Serial/parallel restoration and tested packed-copy variants lost; the later six-demand implementation has separate positive model evidence",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "expert-major",
+      "status": "tested_inconclusive",
+      "evidence": "docs/finite-execution-dispositions-20261027.md",
+      "detail": "Eight native delivery rounds completed; no qualified win; no full model repack or integration required",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "cpu-metadata",
+      "status": "tested_target_too_small",
+      "evidence": "docs/remaining-feasibility-20261026.md",
+      "detail": "Native comparison completed; generous fixed-request saving 0.1334 ms; no model rerun required",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "cache128",
+      "status": "tested_adopted",
+      "evidence": "docs/retained-context-results-20261028.json",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "six-demand",
+      "status": "tested_adopted",
+      "evidence": "docs/independent-validation-20261028.json",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "prefix",
+      "status": "tested_adopted",
+      "evidence": "docs/independent-validation-20261028.json",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "checkpoint",
+      "status": "tested_correctness_complete",
+      "evidence": "docs/speculative-qualification-20261028.json",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "width2",
+      "status": "tested_adopted_bounded",
+      "evidence": "docs/speculative-qualification-20261028.json",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    },
+    {
+      "id": "workloads",
+      "status": "eight_input_bounded_greedy_validation_complete",
+      "evidence": "docs/speculative-qualification-20261028.json",
+      "detail": "Eight native inputs include Japanese, reasoning, code, JSON and copying; general long-context or sampling claims are outside this finite test",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false
+    }
+  ],
+  "remaining_candidates": [
+    {
+      "id": "width4",
+      "status": "tested_bounded_gain_normal_application_execution_unavailable",
+      "implementation": "tools/build_wide_verification.py",
+      "next_decision": "No unchanged replay. Reopen only after a material measured startup/resource improvement; then require the normal same-SELF 26 full-row fingerprints, actual routes, retirement and ordinary close before promotion",
+      "native_cases": [
+        6040,
+        6130,
+        6260,
+        6540,
+        7280,
+        7320
+      ],
+      "accepted_full_width": true,
+      "rejected_suffix_positions": [
+        0,
+        1,
+        2
+      ],
+      "rejection_F32_maximum": 0,
+      "same_width_F32_and_active_state_bit_exact": true,
+      "causal_speed_scope": "Repeated-context input 7; 53 slots; fixed two/four ABBA; not general throughput",
+      "implementation_present": true,
+      "application_diagnostic_case": 7280,
+      "application_diagnostic_passed": true,
+      "normal_application_case": 7320,
+      "normal_application_completed": false,
+      "production_adopted": false,
+      "selected_disposition_terminal": true,
+      "execution_constraint": "The normal-mode application returned before GPU/model work at 1112 free kernel pages versus selected operational floor 1154; a policy refusal, not physical impossibility"
+    },
+    {
+      "id": "adaptive",
+      "status": "tested_bounded_gain_normal_application_execution_unavailable",
+      "next_decision": "No unchanged replay. Reopen only after a material measured startup/resource improvement; then require the normal same-SELF 26 full-row fingerprints, actual routes, retirement and ordinary close before promotion",
+      "native_cases": [
+        6130,
+        6260,
+        6540,
+        7280,
+        7320
+      ],
+      "implementation": "tools/build_adaptive_behavior.py",
+      "eight_fixed_inputs_output_exact": true,
+      "depths": [
+        1,
+        2,
+        4
+      ],
+      "reference_uses_future_tokens": false,
+      "implementation_present": true,
+      "application_diagnostic_case": 7280,
+      "application_diagnostic_passed": true,
+      "normal_application_case": 7320,
+      "normal_application_completed": false,
+      "production_adopted": false,
+      "selected_disposition_terminal": true,
+      "execution_constraint": "The normal-mode application returned before GPU/model work at 1112 free kernel pages versus selected operational floor 1154; a policy refusal, not physical impossibility"
+    },
+    {
+      "id": "other-cache",
+      "status": "tested_adopted",
+      "next_decision": "Closed: matched speed and actual normal application passed; installed with exact whole native readback and rollback preservation",
+      "implementation": "tools/build_additional_cache_variant.py",
+      "route_replay_complete": true,
+      "selected_active_slots": 134,
+      "replay_decode_payload_reduction_percent": 0.34857927537762756,
+      "native_cases": [
+        6360,
+        6460,
+        6480,
+        6760,
+        6780,
+        6820,
+        6840,
+        7080
+      ],
+      "decode_ratio": 1.0028888797343058,
+      "total_throughput_ratio": 1.0067167373367703,
+      "within_capacity_F32_rows": 184,
+      "verification_complete_for_tested_scope": true,
+      "production_adopted": true,
+      "selected_disposition_terminal": true,
+      "application_normal_case": 7080,
+      "cross_capacity_full_F32_rows_bit_exact": 46,
+      "normal_same_width_diagnostic": false,
+      "production_case": 7420
+    },
+    {
+      "id": "router-observe",
+      "status": "tested_diagnostic_only_no_standalone_speed_gain",
+      "next_decision": "Closed diagnostic. The dependent actual hidden-state prefetch was separately tested in 7040 and had no qualified gain",
+      "native_cases": [
+        6170
+      ],
+      "implementation": "tools/build_profiled_router_shadow.py",
+      "same_outputs": true,
+      "rank_one_decode_precision": 0.5,
+      "median_lead_ms": [
+        9.282,
+        9.285
+      ],
+      "verification_complete_for_tested_scope": true,
+      "selected_disposition_terminal": true
+    },
+    {
+      "id": "router-forecast",
+      "status": "tested_no_gain",
+      "next_decision": "Closed: actual same-graph ABBA completed without a speed winner; no production adoption or unchanged replay",
+      "native_cases": [
+        6600,
+        7040
+      ],
+      "implementation": "tools/build_hidden_expert_callback.py",
+      "actual_read_case": 7040,
+      "invalid_zero_read_case": 6600,
+      "predictions_per_candidate": 18,
+      "loads_per_candidate": 18,
+      "useful": 9,
+      "unused": 9,
+      "decode_ratio": 0.9990342317413422,
+      "total_throughput_ratio": 0.9993028081229834,
+      "maximum_F32_error": 0.0,
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false,
+      "selected_disposition_terminal": true
+    },
+    {
+      "id": "dual-output",
+      "status": "tested_no_reproducible_gain",
+      "next_decision": "Closed for the measured implementation: both reverse-order timing confidence conditions were not satisfied; no full-model rerun required",
+      "native_cases": [
+        6170,
+        6700
+      ],
+      "implementation": "native/app/portable_kernel_fixture.cpp",
+      "widths": [
+        1,
+        2,
+        4
+      ],
+      "numerical_and_canary_passed": true,
+      "model_integration_required": false,
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false,
+      "measurement_limitation": "The bounded graph lifecycle includes synchronization and durable driver checkpoints; this does not isolate tiny shader-only gains",
+      "selected_disposition_terminal": true
+    },
+    {
+      "id": "gdn-fusion",
+      "status": "tested_no_reproducible_gain",
+      "next_decision": "Closed for the measured implementation: both reverse-order timing confidence conditions were not satisfied; no full-model rerun required",
+      "native_cases": [
+        6170,
+        6700
+      ],
+      "implementation": "native/app/portable_kernel_fixture.cpp",
+      "widths": [
+        1,
+        2,
+        4
+      ],
+      "numerical_and_canary_passed": true,
+      "model_integration_required": false,
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false,
+      "measurement_limitation": "The bounded graph lifecycle includes synchronization and durable driver checkpoints; this does not isolate tiny shader-only gains",
+      "selected_disposition_terminal": true
+    },
+    {
+      "id": "small-gemm",
+      "status": "tested_existing_vector_route_already_enabled",
+      "next_decision": "Closed: actual native profile already selects MUL_MAT_VEC for the planned small dense projection shapes; no new speedup claimed",
+      "native_cases": [
+        6170
+      ],
+      "implementation_present": true,
+      "widths_verified": [
+        1,
+        2,
+        4
+      ],
+      "selected_disposition_terminal": true
+    },
+    {
+      "id": "workgroup",
+      "status": "tested_no_reproducible_gain",
+      "next_decision": "Closed for the measured implementation: both reverse-order timing confidence conditions were not satisfied; no full-model rerun required",
+      "native_cases": [
+        6170,
+        6700
+      ],
+      "implementation": "native/app/portable_kernel_fixture.cpp",
+      "widths": [
+        1,
+        2,
+        4
+      ],
+      "numerical_and_canary_passed": true,
+      "model_integration_required": false,
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false,
+      "measurement_limitation": "The bounded graph lifecycle includes synchronization and durable driver checkpoints; this does not isolate tiny shader-only gains",
+      "selected_disposition_terminal": true
+    }
+  ],
+  "last_reconciled": "2026-10-29",
+  "portable_kernel_fixture": {
+    "case": 6700,
+    "candidates": 9,
+    "graphs": 324,
+    "qualified_winners": 0,
+    "all_original_numerical_canary_and_retirement_checks_passed": true
+  },
+  "classification_updated": "2026-10-29",
+  "all_current_candidate_dispositions_terminal": true,
+  "unclassified_candidates": 0,
+  "measured_no_gain_candidates_left_untested": 0,
+  "remaining_execution_unavailable_stages": [
+    "adaptive normal-mode same-SELF application reproduction"
+  ],
+  "latest_report": "docs/remaining-validation-20261029.md",
+  "production": {
+    "active_slots": 134,
+    "physical_planes": 135,
+    "SELF_SHA256": "80c28a95e993458c54b5fbf73fe59accde17dd8302dd49a9aeecf367e617739c",
+    "normal_counting_profile": true,
+    "existing_causal_width_two": true,
+    "adaptive_selected": false,
+    "diagnostic_replays_enabled": false,
+    "qualification_case": 7080,
+    "placement_case": 7420,
+    "previous_SELF_SHA256": "75c7aabccc62a55408309d614d1db66c71d77b35cb342c16e05059d6eae975fa",
+    "native_title_active": false,
+    "model_loaded": false
+  },
+  "unavailable_normal_mode": {
+    "case": 7320,
+    "free_pages": 1112,
+    "selected_operational_floor": 1154,
+    "origin": "application policy; not demonstrated physical minimum",
+    "model_loaded": false,
+    "GPU_initializations": 0,
+    "generation_POSTs": 0,
+    "ordinary_OS_close_and_exact_restore": true,
+    "normal_output_not_claimed": true,
+    "diagnostic_case": 7280,
+    "same_width_F32_rows": 8,
+    "maximum_same_width_F32_error": 0,
+    "full_active_state_fingerprints_exact": 3,
+    "full_state_F32_tensor_sections": 109
+  },
+  "finite_resource_recovery": {
+    "newly_completed_frames": [
+      {
+        "case": 7180,
+        "free_before": 5866,
+        "free_after": 6882
+      },
+      {
+        "case": 7300,
+        "free_before": 5153,
+        "free_after": 6169
+      }
+    ],
+    "old_frames_case_7380": "tested_no_recovery",
+    "closed_route_case_7392": {
+      "files": 54,
+      "bytes": 20845994,
+      "status": "tested_no_recovery"
+    },
+    "closed_helper_images_7396_7397": {
+      "files": 120,
+      "bytes": 13280000,
+      "status": "tested_no_material_recovery"
+    },
+    "files_deleted": 0,
+    "VM_floor_lowered": false,
+    "no_universal_stability_bound_claimed": true
+  },
+  "failed_or_invalid_cases_preserved": {
+    "6340": "Missing fixture-only policy; corrected fresh 6360 passed",
+    "6440": "Inherited source geometry check still required 53 slots; relinked original production reader before 6540",
+    "6480": "Returned startup policy refusal; later material window admitted 6760/6780",
+    "6600": "Invalid zero-transfer callback include; corrected actual reads tested 7040",
+    "6840": "Snapshot bound to retired smoke context; corrected relink before 7080/7280",
+    "7120": "Returned 1130-versus-1154 policy refusal before model; normally closed/restored",
+    "7200": "Launch controller refused at final service check; actual OS launch calls zero; exact restoration",
+    "7320": "Returned 1112-versus-1154 CPU refusal before GPU/model; normally closed/restored"
+  },
+  "source_proof_digests": {
+    "6040": "d6bb9d3d563fca231485717694a0c25deac24c520540d19e3581746eccd574fd",
+    "6130": "87551a53e2e76a6f22d8fdf4f7a0fd59dd9afb3940c80104cf305199e85c73ad",
+    "6170": "a00eaaae66f683d7c3608e42080612f4a582c34fadb1567a23f2d73ea89d0755",
+    "6260": "bfd79052b27b3390c00186c9ca02035befa46e76dc1988c91660389cb10056ea",
+    "6540": "add333e8e869b52f7cfbae950c882d434ec866e2052ced20666373ab05c66c5f",
+    "6700": "6c9c28ed6e150d6f6faee6b1207ffe44d403518cd87b8178e97921c231f0b18b",
+    "7040": "524c0bf67695cae34f05fda62abbec3f219a1482bafb736ac8c5c8e9866daabc",
+    "7080": "808d352fdb54135c59e86275dd578b99081e3070bfcda30a26961b019c532f6d",
+    "7280": "8bcc478a6b9ef94f942540fdb7970a0289adeaa6bcf19465a83ed678e461f49a"
+  }
+}
