@@ -9,24 +9,34 @@ expert pruning, or PC/cloud model execution is part of this goal.
 
 The [plan status index](docs/plan-index.md) is the entry point for adopted
 techniques, rejected variants, remaining research and historical plan outcomes.
-The [latest independent native comparisons](docs/independent-validation-20261028.md)
-qualified six-demand delivery at 128 slots (**+2.27% decode**) and complete-prompt
-reuse (**1.31525x two-request throughput**, mainly reused prefill). All 92 / 184
-full-vocabulary F32 rows and original Expert routes matched exactly. Prediction
-was slower in the observed arms. Width-two verification exceeded the original
-logit tolerance, while forced rejection restored all 23 rows exactly; both
-optional features remain off. The failed original C2 cohort is preserved.
+The [width-two follow-up](docs/speculative-qualification-20261028.md) completed
+its same-width F32/state reference, eight-input greedy behavior, accepted and
+rejected branch coverage, causal-only speed comparison and actual application
+qualification. The matched 128-slot ABBA measured **+1.40% decode** and
+**1.00707x total-request throughput**. Same-width logits and active state match
+exactly; the separate width-one/two maximum near 1.993 is not used as a universal
+quality threshold. Actual branch counts and limited causal draft availability
+are reported explicitly.
 
-The [installed production application](config/production-installation.json)
-is the original passive VideoOut/API app with both qualified additions. Its
-two bounded requests measured **0.41843 / 0.43595 decode tokens/s**, with TTFT
-**48.300 / 0.060 seconds** and total time **100.890 / 50.613 seconds**. The
-second request reused the exact same 30-token prompt; this is not a claim of
-general prefill acceleration or a comparison between unrelated model runs.
-Each emitted 22 tokens. Complete F32/routes, actual native rasters, positive
-owner retirement, ordinary close and final whole-artifact/settings readback
-passed. The previous 128-slot production and older MOSS/Qwen rollbacks remain
-preserved. Broader reasoning quality and sustained service remain unqualified.
+The [installed passive VideoOut/API application](config/production-installation.json)
+preserves 128 slots, six-demand delivery and complete-prefix reuse, and enables
+one causal batch only after the final API request restores its exact prefix.
+Its normal mode reproduced **all 46 complete F32 row fingerprints** from the
+same-SELF application reference and matched the closed causal Expert routes.
+The two requests measured **0.41810 / 0.43759 decode tokens/s**, TTFT
+**48.293 / 0.078 seconds**, and total time **100.905 / 50.489 seconds**; each
+emitted 22 tokens. The second reused the same 30-token prompt. These application
+measurements are separate from the controlled headless speed comparison.
+Actual frames, positive model/source/device retirement, ordinary close, full
+native canonical/rollback/five-setting readback and fresh idle passed.
+Production is `75c7aabc...`; exact `e2821af3...` and older rollbacks are preserved.
+
+The [earlier independent comparisons](docs/independent-validation-20261028.md)
+retain the separate six-demand **+2.27% decode** and prefix **1.31525x pair
+throughput** qualifications. Prediction remains off after slower observations.
+The original C2 failure and the corrected application payload-guard failure
+remain preserved. Broader reasoning quality and sustained service remain
+unqualified.
 
 **Implementation and validation of all research proposals are not complete.**
 The selected independent candidate decisions and adoption are terminal; broader

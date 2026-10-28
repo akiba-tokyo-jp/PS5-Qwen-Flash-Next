@@ -1,5 +1,12 @@
 # Independent completion of the remaining native comparisons
 
+This report preserves its original finite dispositions. The subsequent
+[width-two qualification](speculative-qualification-20261028.md) completed the
+additional same-width/state, eight-input, causal speed and normal-application
+gates and adopted the bounded final-prefix handoff. Its current installation
+supersedes the width-two-off disposition below; the original failed tests and
+measurements remain unchanged.
+
 The selected independent validation decisions and production adoption are now
 terminal. Six-demand delivery and exact complete-prefix reuse passed their
 128-slot model comparisons and are installed in the original passive monitor/API

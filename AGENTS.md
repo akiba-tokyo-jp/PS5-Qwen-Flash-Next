@@ -19,27 +19,33 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-The latest terminal status is `docs/independent-validation-20261028.md` and
-its JSON. Independent 128-slot six-demand ABBA passed (+2.27% decode), and
-complete-prefix ABBA passed (1.31525x two-request throughput; the gain is mainly
-reused prefill). All 92 / 184 full F32 rows and original routes matched exactly.
-The actual passive monitor/API then passed smoke, both API requests, 23 full
-F32 comparisons, routes, native raster review, positive owner retirement,
-normal OS close, full canonical/rollback/five-setting readback and fresh idle.
-Production SELF is `e2821af3cbf7e3bf69ab4ab4c6af5b556a6b3d9b54449abaa13432b55cfd968f`;
-the exact previous `56763d37...` and older rollbacks remain preserved. The title
-is inactive with no model loaded. Prediction was slower in the observed arms;
-accepted width-two work exceeded the original logit tolerance. Its separate
-forced rejection restored all 23 rows exactly. Both features remain off. A
-maximum logit difference alone does not establish a model-quality regression;
-distribution and broader workload quality were not measured. The original
-failed ten-request C2 cohort remains failed, not relabeled complete.
-The owner's subsequent requested adoption conditions are in
-`docs/speculative-adoption-criteria-20261028.md`: same-width reference, eight
-fixed greedy inputs, at least eight actual accepted batches/four forced
-rejections, matched total/decode speed and complete physical lifecycle. This
-additional qualification is defined but not implemented or executed. Publishing
-criteria does not complete it or grant replay of old cases.
+The latest selected result is `docs/speculative-qualification-20261028.md`
+and its JSON. The additional width-two adoption qualification is complete:
+identical-width full F32/state reference, eight fixed greedy inputs, eight
+actual accepted branch executions (one causal and seven labeled diagnostic
+controls), four forced rejections, and matched causal-only 128-slot ABBA.
+Decode improved 1.39845% and total throughput 0.70746% in that finite cohort.
+Actual prefix/delivery integration then passed same-width/state observation
+in case 5940 and normal-mode reproduction of all 46 full F32 row fingerprints
+in case 5980, with exact ordered routes against the closed causal reference.
+The normal passive monitor/API, both native frames, positive retirement,
+ordinary close, complete canonical/rollback/five-setting native readback and
+fresh idle passed. Production SELF is
+`75c7aabccc62a55408309d614d1db66c71d77b35cb342c16e05059d6eae975fa`;
+the exact previous `e2821af3...` and older rollbacks remain preserved.
+Only the second/final fixed API request enables one causal speculative batch
+after its complete prefix restore. Diagnostic reference replays are off in
+normal mode. The title is inactive, gateway stopped and model unloaded.
+
+The original failed ten-request C2 cohort remains failed. Case 5880 also
+remains failed: its guard incorrectly required the post-batch active payload
+120,434,688 bytes instead of the measured pre-capture payload 120,311,808.
+It returned explicitly and normally closed/restored. The exact corrected
+guard was tested in fresh 5940/5980 cases; the three prior gates were retained.
+A cross-width maximum near 1.993 is recorded separately; same-width logits
+and active state match exactly in the tested scope. This is finite greedy
+qualification, not broad reasoning or sustained-service certification. The
+complete 16-family / 22-item ledger retains broader unimplemented integrations.
 
 Cache uses 128 active slots / 129 planes; BF16/F32, F32 KV, all Experts, pinned
 driver/profile and disabled persistent caches remain unchanged. CPU table

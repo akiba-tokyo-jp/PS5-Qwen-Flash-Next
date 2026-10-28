@@ -3,8 +3,8 @@
   "status": "adopted",
   "qualification_date": "2026-10-28",
   "application_SELF": {
-    "bytes": 17540407,
-    "sha256": "e2821af3cbf7e3bf69ab4ab4c6af5b556a6b3d9b54449abaa13432b55cfd968f"
+    "bytes": 17597111,
+    "sha256": "75c7aabccc62a55408309d614d1db66c71d77b35cb342c16e05059d6eae975fa"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -65,7 +65,7 @@
     "native_mapped_streaming_copy"
   ],
   "qualification": {
-    "report": "docs/independent-validation-20261028.json",
+    "report": "docs/speculative-qualification-20261028.json",
     "cache_cases": [
       4780,
       4880,
@@ -74,12 +74,17 @@
     ],
     "six_demand_case": 5480,
     "prefix_case": 5680,
-    "actual_passive_monitor_case": 5580,
+    "actual_passive_monitor_case": 5980,
     "full_UI_F32_rows": 23,
-    "maximum_UI_F32_error": 0,
-    "original_expert_routes_exact": true,
+    "maximum_UI_F32_error": 1.992569923400879,
+    "original_expert_routes_exact": false,
     "actual_native_frames_viewed": 2,
-    "normal_close_and_final_native_readback": true
+    "normal_close_and_final_native_readback": true,
+    "expert_route_reference": "Closed causal width-two case5800 after exact prompt reuse",
+    "same_batch_expert_routes_exact": true,
+    "full_UI_F32_rows_bit_exact_to_same_SELF_reference": 46,
+    "same_width_probe_case": 5940,
+    "matched_causal_speed_case": 5800
   },
   "usage": "Apply only to an independently prepared private case already carrying the matching large-cache layout and exact required runtime scopes. This fragment grants no execution or replay admission.",
   "required_runtime_scope": {
@@ -158,6 +163,29 @@
       "complete_F32_and_routes_required": true,
       "maximum_requests": 9,
       "automatic_retries": 0
-    }
+    },
+    "native_prefix_speculative_handoff": {
+      "schema": "ps5-qwen-prefix-speculative-handoff-v1",
+      "final_request_ordinal": 2,
+      "maximum_actual_attempts": 1,
+      "same_engine_class_layout": true,
+      "old_prefix_snapshot_bytes": 119881728,
+      "new_speculative_snapshot_bytes": 120311808,
+      "old_buffer_freed_before_new_allocation": true,
+      "allocator_caps_changed": false,
+      "speed_review_SHA256": "a127420b554e03271776b95ea90959531817ae461a76130a653852330ab39cd8",
+      "behavior_review_SHA256": "8fd9babdb5c985a69c9aff650067361e1b6062820b17ba82f47c833fba621dd6",
+      "probe_review_SHA256": "47136bb207670e44a9a78c92c23d5ad06bfdd49b1f7e18f87f045cc9c8a87579"
+    },
+    "native_speculative_same_width_diagnostic": false
+  },
+  "qualified_final_request_speculation": {
+    "enabled": true,
+    "final_API_request_ordinal": 2,
+    "maximum_actual_attempts": 1,
+    "context_tokens": 256,
+    "output_limit": 32,
+    "sampler": "greedy",
+    "broad_reasoning_quality_qualified": false
   }
 }

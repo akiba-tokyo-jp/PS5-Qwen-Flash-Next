@@ -26,7 +26,7 @@
       "id": "C2",
       "measurement_completed": false,
       "verification": "Original ten-request cohort failed; separate three-request numerical/rejection closure completed",
-      "constraint": "Additional same-batch/output/speed qualification is defined and not run; maximum logit error alone is not a quality verdict",
+      "constraint": "Original failed ten-request cohort preserved; separate additional width-two adoption qualification completed",
       "rejected_case": 4860,
       "physical_allocation_failure_observed": false,
       "free_kernel_pages": 1055,
@@ -37,12 +37,12 @@
       "earlier_common_model_source_device_retirement_passed": false,
       "implementation_present": true,
       "selected_validation_disposition_terminal": true,
-      "latest_evidence": "docs/independent-validation-20261028.json",
+      "latest_evidence": "docs/speculative-qualification-20261028.json",
       "prior_checkpoint_status": {
         "id": "C2",
         "measurement_completed": false,
         "verification": "partial_native_acceptance_and_forced_rejection_preserved_complete_cohort_execution_unavailable",
-        "constraint": "GPU_phase_operational_VM_predicate",
+        "constraint": "Original failed ten-request cohort preserved; separate additional width-two adoption qualification completed",
         "rejected_case": 4860,
         "physical_allocation_failure_observed": false,
         "free_kernel_pages": 1055,
@@ -53,7 +53,8 @@
         "earlier_common_model_source_device_retirement_passed": false,
         "implementation_present": true,
         "selected_validation_disposition_terminal": true,
-        "latest_evidence": "docs/independent-validation-20261028.json"
+        "latest_evidence": "docs/speculative-qualification-20261028.json",
+        "additional_width_two_adoption_completed": true
       },
       "current_VM_execution_refusal": false,
       "original_ten_request_cohort_completed": false,
@@ -61,7 +62,8 @@
       "separate_closure_case": 5620,
       "forced_rejection_F32_rows": 23,
       "forced_rejection_maximum_F32_error": 0,
-      "adopted": false
+      "adopted": false,
+      "additional_width_two_adoption_completed": true
     },
     {
       "id": "C3",
@@ -357,15 +359,17 @@
         "docs/native-predictive-integration-20261027.json"
       ],
       "retained_in_comparison": true,
-      "current_verification": "Finite original-tolerance and forced-rejection closure completed; additional adoption qualification defined but not run",
-      "current_execution_constraint": "Missing same-batch reference, eight-input accepted/rejected coverage and matched speed; not a physical or VM impossibility claim",
-      "current_evidence": "docs/independent-validation-20261028.json",
+      "current_verification": "Same-width state and eight-input behavior passed; causal ABBA and actual same-SELF normal monitor passed; bounded final-prefix handoff adopted",
+      "current_execution_constraint": "No remaining gate for this bounded candidate; broader widths, contexts and sampling require distinct qualification",
+      "current_evidence": "docs/speculative-qualification-20261028.json",
       "physically_impossible_established": false,
       "unchanged_completed_mechanism_repeated": false,
-      "latest_results": "docs/retained-context-results-20261028.md",
+      "latest_results": "docs/speculative-qualification-20261028.md",
       "implementation_present": true,
       "prior_current_verification": "native_acceptance_and_full_F32_forced_rejection_preserved_complete_speed_cohort_unavailable",
-      "adoption_conditions": "docs/speculative-adoption-criteria-20261028.md"
+      "adoption_conditions": "docs/speculative-adoption-criteria-20261028.md",
+      "adopted_by_this_revalidation": true,
+      "adoption_scope": "Final fixed API request after positive complete-prefix restore; one actual causal batch maximum"
     },
     {
       "id": "predictive-cache",
@@ -618,14 +622,15 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "Finite original-tolerance and forced-rejection closure completed; additional adoption qualification defined but not run",
-      "current_execution_constraint": "Missing same-batch reference, eight-input accepted/rejected coverage and matched speed; not a physical or VM impossibility claim",
-      "current_evidence": "docs/independent-validation-20261028.json",
+      "current_verification": "Same-width state and eight-input behavior passed; causal ABBA and actual same-SELF normal monitor passed; bounded final-prefix handoff adopted",
+      "current_execution_constraint": "No remaining gate for this bounded candidate; broader widths, contexts and sampling require distinct qualification",
+      "current_evidence": "docs/speculative-qualification-20261028.json",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false,
-      "latest_results": "docs/retained-context-results-20261028.md",
+      "adopted_by_this_revalidation": true,
+      "latest_results": "docs/speculative-qualification-20261028.md",
       "prior_current_verification": "native_acceptance_and_full_F32_forced_rejection_preserved_speed_unqualified",
-      "adoption_conditions": "docs/speculative-adoption-criteria-20261028.md"
+      "adoption_conditions": "docs/speculative-adoption-criteria-20261028.md",
+      "adoption_scope": "Final fixed API request after positive complete-prefix restore; one actual causal batch maximum"
     },
     {
       "id": "width4",
@@ -907,16 +912,23 @@
   },
   "latest_results": "docs/retained-context-results-20261028.md",
   "current_finite_queue_terminal": true,
-  "latest_selected_terminal_report": "docs/independent-validation-20261028.json",
+  "latest_selected_terminal_report": "docs/speculative-qualification-20261028.json",
   "selected_candidate_dispositions_terminal": true,
   "failed_original_cohorts_not_relabeled_successful": true,
   "additional_speculative_qualification": {
     "criteria": "docs/speculative-adoption-criteria-20261028.md",
-    "implementation_completed": false,
-    "native_execution_completed": false,
+    "results": "docs/speculative-qualification-20261028.json",
+    "implementation_completed": true,
+    "native_execution_completed": true,
+    "all_four_gates_completed": true,
+    "production_adopted": true,
     "fixed_inputs": 8,
-    "required_actual_accepted_batches": 8,
-    "required_forced_rejections": 4,
+    "actual_accepted_batches": 8,
+    "causal_accepted_batches_on_eight_inputs": 1,
+    "diagnostic_known_control_accepted_batches": 7,
+    "actual_forced_rejections": 4,
+    "matched_causal_speed_case": 5800,
+    "actual_normal_monitor_case": 5980,
     "maximum_logit_error_alone_is_not_an_adoption_gate": true
   }
 }

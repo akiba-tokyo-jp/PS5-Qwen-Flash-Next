@@ -1,25 +1,25 @@
 # PS5 Flash Next plan status
 
-The [independent native results](independent-validation-20261028.md) and
-[sanitized measurements](independent-validation-20261028.json) are the latest
-selected dispositions. Six-demand delivery passed actual 128-slot ABBA
-(+2.27% decode); complete-prefix reuse passed both request orders (1.31525x
-pair throughput, mainly reused prefill). All 92 / 184 full F32 rows and routes
-matched exactly. The original passive monitor/API application passed its
-combined physical validation and is installed, with prior production preserved
-as rollback. Normal close, full native artifact/settings readback and fresh
-idle passed. Prediction was slower in the observed arms; width-two work
-exceeded the original logit tolerance, while forced rejection restored all
-23 rows exactly. Both optional features remain off.
+The [width-two follow-up](speculative-qualification-20261028.md) and
+[sanitized evidence](speculative-qualification-20261028.json) are the latest
+selected dispositions. All four additional adoption gates are complete:
+same-width full F32/active state, eight fixed greedy inputs, accepted/rejected
+coverage, causal-only 128-slot ABBA and the actual normal passive application.
+The headless comparison measured +1.39845% decode and 1.00707x total throughput.
+Application cases 5940/5980 use one SELF; normal mode reproduces all 46 complete
+F32 row fingerprints and the correctly batched causal Expert reference.
+The final-prefix handoff is installed with six-demand delivery and prefix reuse.
+Normal close, full native artifact/settings readback and fresh idle passed.
 
-A maximum logit difference alone is not a functional or quality verdict.
-The [width-two adoption conditions](speculative-adoption-criteria-20261028.md)
-define the missing same-batch reference, eight-input greedy correctness,
-accepted/rejected coverage, matched total-time and complete-lifecycle gates.
-That additional qualification has not run. The failed original ten-request
-C2 cohort is not relabeled complete. The 16-family / 22-item ledger retains
-all broader missing integrations. Earlier dated continuations below are
-historical and do not override these outcomes. No reboot or CI occurred.
+The [prior independent results](independent-validation-20261028.md) retain the
+separate six-demand/prefix measurements. The original failed C2 cohort and the
+failed pre-capture guard in 5880 remain failed; the latter was corrected using
+the already measured capture payload and verified in fresh application cases.
+The [adoption conditions](speculative-adoption-criteria-20261028.md) retain
+the distinction between same-width exactness, cross-width arithmetic drift,
+diagnostic branch coverage and actual causal timing. All 16 families / 22 items
+remain in the ledger, including broader unimplemented integrations. Earlier
+dated continuations below are historical. No reboot or CI occurred.
 
 The [Direct capacity and original-model continuation](resident-buffer-capacity-20261028.md)
 supersedes the pending risk decision below. The owner accepted the disclosed
@@ -203,7 +203,7 @@ or added to estimate a combined gain.
 | --- | --- | --- |
 | Strata-style UMA admission and Maya aged LFU4096 | Implemented; preserve actual selections and memory floors. No tested replacement cache policy saved payload on the captured demand trace | [Expert policy](expert-policy.md), [cache replay](performance-results-20261025.md#actual-route-comparison) |
 | Known-demand overlap, file/range-aware reads and adjacent-expert coalescing | Adopted with qualified serial fallback. The source-schedule bundle measured +16.68% mean decode; that result also includes startup and shader-storage changes | [Source-schedule result](native-source-schedule-success-20261025.md) |
-| Bounded prefill width four | Adopted after separate widths two/four qualification; mean TTFT fell 35.30% against width one. Decode remains single-token | [Prefill comparison](native-bounded-prefill-20261025.md) |
+| Bounded prefill width four | Adopted after separate widths two/four qualification; mean TTFT fell 35.30% against width one. Ordinary decode remains width one; separately qualified final-request speculation may verify two tokens | [Prefill comparison](native-bounded-prefill-20261025.md) |
 | Physical model parts up to 512 MiB | Adopted in place; full-model mean decode +1.50% versus the matched unsplit control. Small short-request result, not proof of a global optimum | [Layout qualification](native-split512-success-20261025.md) |
 | Compact completed-route observer | Adopted; unchanged heap peak and zero memory-pressure events in its qualified sequence. No isolated speedup claimed | [Observer result](performance-results-20261025.md#compact-observer-and-complete-native-lifecycle) |
 | BF16 indexed-vector decode | Adopted with narrow shape/layout eligibility and F32 activation/accumulation; final same-SELF mean decode gain 1.36188% | [GPU dispositions](gpu-optimization-plan-20261025.md#candidate-dispositions-after-sequential-qualification) |
@@ -211,6 +211,7 @@ or added to estimate a combined gain.
 | 128-slot Expert cache | Adopted after full A53/B128/B128/A53; decode +4.185%, total-time throughput +3.294%, 92 exact F32 rows | [Cache comparison](retained-context-results-20261028.md) |
 | Six-demand refill at 128 slots | Adopted after actual model ABBA; +2.270% decode, 92 exact F32 rows and original routes; at most two outstanding reads | [Independent results](independent-validation-20261028.md) |
 | Complete-prefix snapshot reuse | Adopted for the qualified exact repeated prompt; 1.31525x pair throughput and 1.94137x repeated-request throughput, 184 exact F32 rows; complete capture/restore cost included | [Prefix comparison](independent-validation-20261028.md) |
+| Final-prefix causal width-two handoff | Adopted for the final fixed API request; +1.39845% matched headless decode and 1.00707x total throughput; actual normal mode matches all 46 same-SELF F32 row fingerprints | [Additional qualification](speculative-qualification-20261028.md) |
 | Scoped CPU/postload/checkpoint accounting | Applied with original OS counters and allocator caps; releases exclusive completed 8 MiB upload staging and avoids charging a context-owned snapshot twice; no universal VM/stability claim | [Accounting and source boundaries](independent-validation-20261028.md) |
 | Flash Attention and GPU recurrent state | Already present; not additional unimplemented GPU optimizations | [System baseline and priorities](bf16-system-optimization-research-20261025.md#whole-system-priorities-and-exclusions) |
 | Native Direct frame writing | Adopted while retaining monitoring. Four matched frame writes lost 508 free pages per buffered sample versus four per Direct sample; not a decode benchmark | [Frame qualification](gpu-optimization-plan-20261025.md) |
@@ -234,7 +235,7 @@ has been identified. These dispositions are not interchangeable.
 | 256 / 128 MiB parts instead of 512 MiB | Not adopted: representative parallel means 6.807 / 6.869 / 6.896 ms for 512 / 256 / 128 MiB across 576 exact-byte pairs; no material smaller-part benefit | [Size comparison](source-layout-size-comparison-20261025.md) |
 | Alternative cache policies and previous-token route prediction | Tested cache alternatives saved no payload; previous-route predictions missed 57.01% / 68.91% of nonresident predictions at limits one / ten. This does not test hidden-state forecasts | [Eight-proposal results](performance-results-20261025.md) |
 | Resident predictive cache | Observed 0.994589x decode in the partial case 5440; no winning common-retirement cohort claimed and no adoption | [Independent results](independent-validation-20261028.md) |
-| Expert-aware width-two verification | Emitted tokens matched but exceeded the original full-F32 tolerance; forced rejection restored all 23 rows exactly. No quality-defect claim follows from the maximum alone. Additional adoption conditions are explicit | [Numerical closure](independent-validation-20261028.md), [follow-up criteria](speculative-adoption-criteria-20261028.md) |
+| Historical cross-width numerical gate | The original tolerance failure remains preserved. Subsequent same-width/state, eight-input, causal speed and normal application gates passed; the bounded final-prefix handoff is now adopted | [Original closure](independent-validation-20261028.md), [completed follow-up](speculative-qualification-20261028.md) |
 | Four 2 MiB reads instead of two 4 MiB reads | Inconclusive approximately 1.03% fixture difference; do not widen production concurrency | [GPU plan dispositions](gpu-optimization-plan-20261025.md) |
 | Non-temporal mapped copies | Rejected after full-model mean decode regression of 3.55552%, despite a favorable warm copy microbenchmark | [Full-model comparison](gpu-optimization-results-20261025.md#complete-non-temporal-copy-comparison-rejected) |
 | CPU lossless zlib, exponent LZ4 and overlapped LZ4 | Rejected tested paths: zlib failed the host delivery-cost screen; native LZ4 variants measured 0.777x / 0.780x / 0.883x, and overlapped reconstruction 0.918x | [Initial screen](performance-results-20261025.md), [SSD results](ssd-io-validation-results-20261025.md) |
@@ -255,8 +256,8 @@ The [complete updated ledger](vm-revalidation-results-20261028.json) preserves
 all 16 families / 22 earlier items. Ready/PLE variants retain their measured
 no-gain decisions; cache, six-demand and exact-prefix now have actual model
 qualification and adoption. The original C2 failure remains a failed cohort,
-with separate numerical/rejection closure and explicit additional adoption
-criteria. Broader missing integrations remain unimplemented; the original
+with separate numerical/rejection closure and completed additional width-two
+adoption qualification. Broader missing integrations remain unimplemented; the original
 all-proposals objective is not claimed achieved. Missing code is not a physical
 impossibility. Historical refusals are retained without replaying them unchanged.
 
