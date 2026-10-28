@@ -8,6 +8,30 @@ from performance_result import FIELDS, validate_performance, validate_backpressu
 
 
 class PerformanceResultTests(unittest.TestCase):
+    def test_postload_price_requires_native_proof_and_preserves_old_default(self):
+        scope=dict(activated_after_model_and_upload_retirement=True,activated_after_original_context=False,
+            original_setup_GPU_floor=1154,selected_context_entry_pages=1005,context_allowance_pages=43,
+            selected_kernel_minimum_pages=898,observed_OS_reserved_pages=206,selected_operational_floor_pages=962,
+            original_wait_and_retirement_guards=True,OS_reserve_counter_unchanged=True,
+            universal_peak_bound_established=False,free_pages_at_activation=1200)
+        record=dict(schema='ps5-qwen-memory-backpressure-v2',enabled=True,
+            maximum_boundary_wait_ms=20000,maximum_total_wait_ms=60000,poll_interval_ms=100,
+            memory_reserves_unchanged=False,IO_or_GPU_operations_retried=False,last_qualified=True,
+            kernel_page_size=16384,kernel_extra_margin_bytes=64*16384,CPU_metadata_scope_active=False,
+            post_context_OS_reserve_scope_active=True,OS_reserve_counter_unchanged=True,kernel_minimum_threshold_preserved=True,
+            observations=40,pressure_events=0,recovered_admissions=0,cumulative_wait_ns=0,pause_calls=0,
+            kernel_free_pages=962,kernel_minimum_pages=898,kernel_reserved_pages=206)
+        validate_backpressure(record,postload_scope=scope)
+        with self.assertRaises(ValueError):validate_backpressure(record)
+        for key,value in (('kernel_free_pages',961),('kernel_minimum_pages',897),('memory_reserves_unchanged',True),
+                          ('OS_reserve_counter_unchanged',False),('kernel_extra_margin_bytes',63*16384)):
+            bad=dict(record);bad[key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):validate_backpressure(bad,postload_scope=scope)
+        for key,value in (('free_pages_at_activation',1004),('selected_context_entry_pages',962),
+                          ('original_wait_and_retirement_guards',False),('universal_peak_bound_established',True)):
+            bad=dict(scope);bad[key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):validate_backpressure(record,postload_scope=bad)
+
     def setUp(self):
         self.record = dict(schema='ps5-qwen-completed-performance-v1',
             process_includes_source_and_backend_work=True, GPU_timestamp_queries=False,

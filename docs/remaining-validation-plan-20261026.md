@@ -1,5 +1,12 @@
 # Validation plan for remaining Flash Next proposals
 
+Latest status: [independent results](independent-validation-20261028.md) supersede
+the older current-production and model-availability statements below. Six-demand
+and prefix passed their 128-slot model cohorts and actual application adoption.
+Width-two follow-up has [explicit adoption conditions](speculative-adoption-criteria-20261028.md);
+its additional qualification has not run. The complete ledger retains broader
+missing integrations without labeling them physical impossibilities.
+
 ## Final current-environment disposition
 
 The owner's latest instruction is to execute available work and classify the rest

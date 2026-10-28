@@ -1,15 +1,24 @@
 # PS5 Flash Next plan status
 
-The [terminal retained-context results](retained-context-results-20261028.md)
-and [sanitized measurements](retained-context-results-20261028.json) are the
-latest status. The full A53/B128/B128/A53 comparison passed: decode improved
-approximately 4.19%, total request time approximately 3.29%, and all 92 F32 rows
-matched exactly. The original passive monitor/API application passed native
-validation and is installed with 128 slots; exact prior production remains a
-rollback. It was normally closed, with final native artifact/settings readback
-and fresh idle verified. C2, dependent prefix and actual-model C4 have explicit
-current execution-unavailable outcomes; all native comparisons are not claimed
-complete. The 16-family/22-item ledger is updated. Earlier paragraphs below are
+The [independent native results](independent-validation-20261028.md) and
+[sanitized measurements](independent-validation-20261028.json) are the latest
+selected dispositions. Six-demand delivery passed actual 128-slot ABBA
+(+2.27% decode); complete-prefix reuse passed both request orders (1.31525x
+pair throughput, mainly reused prefill). All 92 / 184 full F32 rows and routes
+matched exactly. The original passive monitor/API application passed its
+combined physical validation and is installed, with prior production preserved
+as rollback. Normal close, full native artifact/settings readback and fresh
+idle passed. Prediction was slower in the observed arms; width-two work
+exceeded the original logit tolerance, while forced rejection restored all
+23 rows exactly. Both optional features remain off.
+
+A maximum logit difference alone is not a functional or quality verdict.
+The [width-two adoption conditions](speculative-adoption-criteria-20261028.md)
+define the missing same-batch reference, eight-input greedy correctness,
+accepted/rejected coverage, matched total-time and complete-lifecycle gates.
+That additional qualification has not run. The failed original ten-request
+C2 cohort is not relabeled complete. The 16-family / 22-item ledger retains
+all broader missing integrations. Earlier dated continuations below are
 historical and do not override these outcomes. No reboot or CI occurred.
 
 The [Direct capacity and original-model continuation](resident-buffer-capacity-20261028.md)
@@ -130,28 +139,29 @@ paragraphs retain historical context and do not create additional queues.
 ## Current production baseline
 
 The installed finite application is the qualified original-precision engine,
-SELF `ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d`
-(28,017,271 bytes). Original MOSS remains preserved as rollback. The latest
-completed restoration retained this Qwen executable and its settings; it did
-not replace it with MOSS. See [production placement](production-installation-20261025.md),
-the [selected profile](../config/qualified-performance.json) and the
-[latest exact restoration](finite-execution-dispositions-20261027.md#original-model-control-and-remaining-current-environment-limit-cases-3130-3175).
+SELF `e2821af3cbf7e3bf69ab4ab4c6af5b556a6b3d9b54449abaa13432b55cfd968f`
+(17,540,407 bytes). Exact previous `56763d37...`, older Qwen and original MOSS
+rollbacks remain preserved. See [latest placement and validation](independent-validation-20261028.md#production-placement-and-scope),
+the [installation identity](../config/production-installation.json) and
+[selected profile](../config/qualified-performance.json).
 
 | Setting | Qualified value |
 | --- | --- |
 | Model precision | Original BF16/F32, F32 KV, all experts and required PLE |
 | Physical layout | 76 logical files, 711 physical parts, at most 512 MiB each |
-| Cache and reads | 53 global active expert slots, 512 MiB cache, 8 MiB source window; qualified pairs use at most two reads |
+| Cache and reads | 128 global active Expert slots / 129 physical planes, 1,274,462,208-byte cache, 8 MiB source window; qualified six-demand batches retain at most two outstanding reads |
 | Token processing | Context 256; prefill up to four tokens; decode one token at a time |
+| Reuse | Exact completed 30-token prompt snapshot; the current bounded qualification does not establish arbitrary-prefix serving |
 | Driver | PS5-Vulkan-Inference `872cc1264ad8ba5d6b888b092968fa5858a38c58`, `cumulative-idle` |
 | Linked driver archive | `b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925` |
 | Persistent caches | Shader and pipeline caches disabled |
 
-The previous deployment check measured **0.391093 / 0.398430 tok/s** and TTFT
-**50.130 / 49.280 s**, for two 30-token prompts with 22 generated tokens each.
-These short, thinking-disabled results remain the latest production generation
-measurements. They do not establish broader reasoning quality or sustained
-service. Later matrix-delivery ratios are not tokens/s results.
+The latest deployment check measured **0.418432 / 0.435947 decode tok/s**,
+TTFT **48.300 / 0.060 s** and total **100.890 / 50.613 s**, for two identical
+30-token prompts with 22 generated tokens each. The second reused the entire
+completed prompt. These short, thinking-disabled results do not establish
+broader reasoning quality or sustained service. Source fixtures and different
+controls must not be combined into a purported model speedup.
 
 The last completed session ended with no native owner, gateway, loaded model or
 unknown completion. This is a recorded terminal state, not a fresh console
@@ -198,6 +208,10 @@ or added to estimate a combined gain.
 | Compact completed-route observer | Adopted; unchanged heap peak and zero memory-pressure events in its qualified sequence. No isolated speedup claimed | [Observer result](performance-results-20261025.md#compact-observer-and-complete-native-lifecycle) |
 | BF16 indexed-vector decode | Adopted with narrow shape/layout eligibility and F32 activation/accumulation; final same-SELF mean decode gain 1.36188% | [GPU dispositions](gpu-optimization-plan-20261025.md#candidate-dispositions-after-sequential-qualification) |
 | Owned mapped padded-bank reads | Adopted with coalesced/scatter/split/EOF fallback; mean decode +12.1829% in the matched same-SELF comparison. About 97% of payload delivered directly into banks | [Owned-bank comparison](gpu-optimization-results-20261025.md#final-same-self-full-model-comparison-selected) |
+| 128-slot Expert cache | Adopted after full A53/B128/B128/A53; decode +4.185%, total-time throughput +3.294%, 92 exact F32 rows | [Cache comparison](retained-context-results-20261028.md) |
+| Six-demand refill at 128 slots | Adopted after actual model ABBA; +2.270% decode, 92 exact F32 rows and original routes; at most two outstanding reads | [Independent results](independent-validation-20261028.md) |
+| Complete-prefix snapshot reuse | Adopted for the qualified exact repeated prompt; 1.31525x pair throughput and 1.94137x repeated-request throughput, 184 exact F32 rows; complete capture/restore cost included | [Prefix comparison](independent-validation-20261028.md) |
+| Scoped CPU/postload/checkpoint accounting | Applied with original OS counters and allocator caps; releases exclusive completed 8 MiB upload staging and avoids charging a context-owned snapshot twice; no universal VM/stability claim | [Accounting and source boundaries](independent-validation-20261028.md) |
 | Flash Attention and GPU recurrent state | Already present; not additional unimplemented GPU optimizations | [System baseline and priorities](bf16-system-optimization-research-20261025.md#whole-system-priorities-and-exclusions) |
 | Native Direct frame writing | Adopted while retaining monitoring. Four matched frame writes lost 508 free pages per buffered sample versus four per Direct sample; not a decode benchmark | [Frame qualification](gpu-optimization-plan-20261025.md) |
 | Preservation integrity after large readbacks | Applied to closed captured artifacts; two resident frames contributed about 15.875 MiB of recovered free-page headroom in the measured interval. Reusable bounded builder implemented and natively qualified | [Memory completion](memory-plan-completion-20261026.md), [builder](../tools/build_preservation_integrity.py) |
@@ -219,6 +233,8 @@ has been identified. These dispositions are not interchangeable.
 | Unrestricted same-file parallel reads or independent opens | Rejected schedule: approximately 49 ms per cross-region pair versus 10 ms serial and 7 ms across separate files. Proprietary internal lock/cache cause remains unproven | [Contention investigation](source-contention-investigation-20261024.md) |
 | 256 / 128 MiB parts instead of 512 MiB | Not adopted: representative parallel means 6.807 / 6.869 / 6.896 ms for 512 / 256 / 128 MiB across 576 exact-byte pairs; no material smaller-part benefit | [Size comparison](source-layout-size-comparison-20261025.md) |
 | Alternative cache policies and previous-token route prediction | Tested cache alternatives saved no payload; previous-route predictions missed 57.01% / 68.91% of nonresident predictions at limits one / ten. This does not test hidden-state forecasts | [Eight-proposal results](performance-results-20261025.md) |
+| Resident predictive cache | Observed 0.994589x decode in the partial case 5440; no winning common-retirement cohort claimed and no adoption | [Independent results](independent-validation-20261028.md) |
+| Expert-aware width-two verification | Emitted tokens matched but exceeded the original full-F32 tolerance; forced rejection restored all 23 rows exactly. No quality-defect claim follows from the maximum alone. Additional adoption conditions are explicit | [Numerical closure](independent-validation-20261028.md), [follow-up criteria](speculative-adoption-criteria-20261028.md) |
 | Four 2 MiB reads instead of two 4 MiB reads | Inconclusive approximately 1.03% fixture difference; do not widen production concurrency | [GPU plan dispositions](gpu-optimization-plan-20261025.md) |
 | Non-temporal mapped copies | Rejected after full-model mean decode regression of 3.55552%, despite a favorable warm copy microbenchmark | [Full-model comparison](gpu-optimization-results-20261025.md#complete-non-temporal-copy-comparison-rejected) |
 | CPU lossless zlib, exponent LZ4 and overlapped LZ4 | Rejected tested paths: zlib failed the host delivery-cost screen; native LZ4 variants measured 0.777x / 0.780x / 0.883x, and overlapped reconstruction 0.918x | [Initial screen](performance-results-20261025.md), [SSD results](ssd-io-validation-results-20261025.md) |
@@ -235,13 +251,14 @@ it is not a universal 5% requirement for every future improvement.
 
 ## Remaining proposals and prerequisites
 
-All 22 stages are resolved in the [final current-environment ledger](final-current-environment-dispositions-20261027.md).
-The JSON preserves implementation, execution, evidence and reopening conditions
-separately. Ready/PLE variants are measured no-gain decisions; full-model and
-dependent native stages are execution unavailable. No item is an unclassified
-pending test. Missing integrations remain unimplemented, and the original
-all-proposals speed objective remains unachieved. Native validation can reopen
-only for a material input/resource/dependency change, without depending on reboot.
+The [complete updated ledger](vm-revalidation-results-20261028.json) preserves
+all 16 families / 22 earlier items. Ready/PLE variants retain their measured
+no-gain decisions; cache, six-demand and exact-prefix now have actual model
+qualification and adoption. The original C2 failure remains a failed cohort,
+with separate numerical/rejection closure and explicit additional adoption
+criteria. Broader missing integrations remain unimplemented; the original
+all-proposals objective is not claimed achieved. Missing code is not a physical
+impossibility. Historical refusals are retained without replaying them unchanged.
 
 ## Exclusions and maintenance
 

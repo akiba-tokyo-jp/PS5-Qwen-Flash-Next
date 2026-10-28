@@ -33,6 +33,22 @@ def apply_profile(policy,profile,package):
             set(selected)&set(disabled)or set(selected)|set(disabled)!=FEATURE_KEYS or
             'native_mapped_streaming_copy'not in disabled):
         raise ValueError('Only the explicitly qualified performance switches may change')
+    if selected.get('native_padded_expert_cache',{}).get('active_slots')==128:
+        # A switch fragment cannot manufacture the complete layout, memory and
+        # matched-production qualification required by this application image.
+        required=profile.get('required_runtime_scope',{})
+        keys={'native_matched_cache_production','native_resident_OS_reserve',
+              'native_resident_CPU_table_pricing','native_prefix_delivery_combination'}
+        layout=policy.get('native_large_cache_scope',{})
+        proof=layout.get('layout_qualification',{})
+        cache=selected['native_padded_expert_cache']
+        exact=lambda v:json.dumps(v,sort_keys=True,separators=(',',':'))
+        if(set(required)!=keys or any(exact(policy.get(k))!=exact(required[k])for k in keys)or
+           layout.get('stage')!='model' or type(layout.get('active_slots'))is not int or layout['active_slots']!=128 or
+           layout.get('physical_planes')!=129 or layout.get('cache_request_bytes')!=1274462208 or
+           proof.get('SELF_sha256')!=cache.get('layout_qualification_SELF_SHA256')or
+           proof.get('report_sha256')!=cache.get('layout_qualification_result_SHA256')):
+            raise ValueError('Prepare the exact qualified 128-slot prefix/delivery runtime before applying its feature fragment')
     if (policy.get('allowed_modes')!=['first-generation-validation'] or
             policy.get('deployment_enabled')is not False or
             'native_first_generation_validation'not in policy or

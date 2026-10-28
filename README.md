@@ -9,42 +9,40 @@ expert pruning, or PC/cloud model execution is part of this goal.
 
 The [plan status index](docs/plan-index.md) is the entry point for adopted
 techniques, rejected variants, remaining research and historical plan outcomes.
-**Implementation and validation of all proposals are not complete.** Ready-expert
-execution and hidden-state router forecasting remain incomplete; exact width-two
-speculation has a default-off implementation but lacks native acceptance/speed
-qualification. Individual finite implementation, GPU optimization,
-production-placement and memory-recovery plans completed within their recorded
-scope; those completions do not close the remaining proposals.
+The [latest independent native comparisons](docs/independent-validation-20261028.md)
+qualified six-demand delivery at 128 slots (**+2.27% decode**) and complete-prompt
+reuse (**1.31525x two-request throughput**, mainly reused prefill). All 92 / 184
+full-vocabulary F32 rows and original Expert routes matched exactly. Prediction
+was slower in the observed arms. Width-two verification exceeded the original
+logit tolerance, while forced rejection restored all 23 rows exactly; both
+optional features remain off. The failed original C2 cohort is preserved.
+
+The [installed production application](config/production-installation.json)
+is the original passive VideoOut/API app with both qualified additions. Its
+two bounded requests measured **0.41843 / 0.43595 decode tokens/s**, with TTFT
+**48.300 / 0.060 seconds** and total time **100.890 / 50.613 seconds**. The
+second request reused the exact same 30-token prompt; this is not a claim of
+general prefill acceleration or a comparison between unrelated model runs.
+Each emitted 22 tokens. Complete F32/routes, actual native rasters, positive
+owner retirement, ordinary close and final whole-artifact/settings readback
+passed. The previous 128-slot production and older MOSS/Qwen rollbacks remain
+preserved. Broader reasoning quality and sustained service remain unqualified.
+
+**Implementation and validation of all research proposals are not complete.**
+The selected independent candidate decisions and adoption are terminal; broader
+missing integrations remain listed in the complete 16-family / 22-item ledger.
 The [remaining validation plan](docs/remaining-validation-plan-20261026.md)
-specifies their implementation targets, dependencies and adoption gates.
-Scoped experiments have run; several model comparisons remain incomplete.
-The [bounded startup review and cache-cohort reviewer](docs/remaining-validation-progress-20261026.md#bounded-startup-review-and-cache-cohort-reviewer-2026-10-27)
-record the latest policy refusal and offline comparison implementation, with no
-new model-speed result or production adoption.
+retains those dependencies without relabeling missing code as hardware limits.
 
-The [qualified profile](config/qualified-performance.json) selects BF16
-indexed-vector decode and owned padded-bank reads. Its matched same-SELF
-comparison measured **0.39068 / 0.39819 tokens/s** versus **0.34838 / 0.35483**,
-an observed mean **12.18% gain**, with identical outputs, token IDs, expert routes
-and physical read bytes. See [GPU results](docs/gpu-optimization-results-20261025.md).
-
-The [production placement](docs/production-installation-20261025.md) left that
-exact fastest Qwen SELF installed and the original MOSS preserved as rollback.
-The deployment check measured **0.39109 / 0.39843 tokens/s**, with TTFT
-**50.13 / 49.28 seconds**, for two 30-token prompts and 22 generated tokens each.
-These are short, thinking-disabled requests; broader reasoning quality and
-sustained service remain unqualified.
-
-The [latest finite memory/GPU plan](docs/memory-plan-completion-20261026.md)
-completed frame-residency attribution, required preservation integrity and the
-remaining fused GEMV comparison. Its **0.980634x** paired delivery result was
-rejected, as were the earlier standalone and CPU restoration variants. No new
-production candidate was adopted. These fixture ratios are not generation rates.
-The exact fastest SELF and settings were restored and fully read back.
-
-The current baseline retains original BF16/F32, F32 KV, all experts and required
-PLE, 711 physical parts up to 512 MiB, 53 global expert slots, bounded prefill four,
+The current [qualified profile](config/qualified-performance.json) retains
+original BF16/F32 weights, F32 activations/accumulation/KV, all experts and PLE,
+711 physical parts up to 512 MiB, 128 global expert slots / 129 physical planes,
+bounded prefill four, BF16 indexed-vector decode, owned padded-bank reads,
 known-demand overlap, qualified file/range reads and the compact route observer.
+F32 logit comparison does not mean the BF16 weights were converted to FP32.
+The explicit CPU/postload/context accounting corrections preserve OS counters,
+actual allocator caps and completion checks; they are finite experimental
+prices rather than a universal VM peak or stability bound.
 The [adoption table](docs/plan-index.md#adopted-techniques) links each result;
 the [remaining-proposal table](docs/plan-index.md#remaining-proposals-and-prerequisites)
 keeps future work separate from completed screens.

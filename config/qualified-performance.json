@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-qualified-performance-profile-v1",
   "status": "adopted",
-  "qualification_date": "2026-10-25",
+  "qualification_date": "2026-10-28",
   "application_SELF": {
-    "bytes": 28017271,
-    "sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d"
+    "bytes": 17540407,
+    "sha256": "e2821af3cbf7e3bf69ab4ab4c6af5b556a6b3d9b54449abaa13432b55cfd968f"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -22,10 +22,11 @@
   "unchanged_limits": {
     "context_tokens": 256,
     "prefill_tokens": 4,
-    "active_expert_slots": 53,
-    "expert_cache_bytes": 536870912,
+    "active_expert_slots": 128,
+    "expert_cache_bytes": 1274462208,
     "source_window_bytes": 8388608,
-    "physical_model_part_maximum_bytes": 536870912
+    "physical_model_part_maximum_bytes": 536870912,
+    "physical_cache_planes": 129
   },
   "selected_native_policy": {
     "native_bf16_indexed_vector": {
@@ -45,36 +46,118 @@
       "post_fixture_kernel_target_pages": 2974
     },
     "native_padded_expert_cache": {
-      "schema": "ps5-qwen-owned-padded-expert-cache-v1",
+      "schema": "ps5-qwen-owned-padded-expert-cache-v2",
       "enabled": true,
-      "active_slots": 53,
-      "physical_planes": 54,
+      "active_slots": 128,
+      "physical_planes": 129,
       "bank_stride": 3293184,
-      "cache_cap_bytes": 536870912,
+      "cache_cap_bytes": 1274462208,
       "preserve_coalesced_source_reads": true,
       "pre_IO_split_EOF_fallback": true,
       "require_owned_synchronous_bank_lease": true,
       "automatic_retries": 0,
       "precision_unchanged": true,
-      "layout_qualification_SELF_SHA256": "5bb22cdf4603b038d8247597caafe8b08479c2e9bcc1fda44982b777ae2018db",
-      "layout_qualification_result_SHA256": "d277b1d03fcabe981408b8027a559e16134eb8b7e746bef366bb20ea63703cb5"
+      "layout_qualification_SELF_SHA256": "b9c8584b8f2e60f70b768941e61c40808312b06e961cde0f14f41a9cc0ace3a8",
+      "layout_qualification_result_SHA256": "d596ba7c1c149b9b8819f095826063bf972f6ef2f612cad2a019641b05861411"
     }
   },
   "disabled_native_policy": [
     "native_mapped_streaming_copy"
   ],
   "qualification": {
-    "same_application_control": 2190,
-    "selected_case": 2210,
-    "external_prompt_tokens": 30,
-    "external_output_tokens": 22,
-    "requests_per_case": 2,
-    "thinking_enabled": false,
-    "outputs_and_token_IDs_equal": true,
-    "all_route_records_equal": true,
-    "physical_read_bytes_equal": true,
-    "complete_original_restoration_and_numerical_readmission": true,
-    "observed_mean_decode_gain_percent": 12.182906264173464
+    "report": "docs/independent-validation-20261028.json",
+    "cache_cases": [
+      4780,
+      4880,
+      4900,
+      4920
+    ],
+    "six_demand_case": 5480,
+    "prefix_case": 5680,
+    "actual_passive_monitor_case": 5580,
+    "full_UI_F32_rows": 23,
+    "maximum_UI_F32_error": 0,
+    "original_expert_routes_exact": true,
+    "actual_native_frames_viewed": 2,
+    "normal_close_and_final_native_readback": true
   },
-  "usage": "Apply with tools/qualified_performance.py to an independently prepared private case. This profile does not grant execution or replay any consumed case."
+  "usage": "Apply only to an independently prepared private case already carrying the matching large-cache layout and exact required runtime scopes. This fragment grants no execution or replay admission.",
+  "required_runtime_scope": {
+    "native_matched_cache_production": {
+      "schema": "ps5-qwen-matched-cache-production-v1",
+      "review_SHA256": "50fc2b0286202ee0698a10527e65f9eefd8632eea7e09b185f27ae22551977e3",
+      "cases": [
+        4780,
+        4880,
+        4900,
+        4920
+      ],
+      "active_cache_slots": 128,
+      "cross_cache_F32_rows": 92,
+      "original_precision_preserved": true,
+      "original_passive_monitor_and_two_API_requests": true,
+      "sustained_service_qualified": false,
+      "automatic_retries": 0,
+      "prefix_reuse_enabled": true,
+      "six_demand_enabled": true,
+      "combination_case": 5680,
+      "combination_review_SHA256": "b0c5192ed836deb7b13497a395a83a3dcbc26f18a4efab48f4103038a4701430"
+    },
+    "native_resident_OS_reserve": {
+      "schema": "ps5-qwen-postload-next-context-v3",
+      "enabled": true,
+      "activation_after_original_context_and_positive_completion": false,
+      "original_GPU_initialization_and_context_floors_unchanged": false,
+      "measured_component_screen_pages": 64,
+      "component_observations": {
+        "Direct_metadata": 17,
+        "idle": 2,
+        "context_interval": 41,
+        "context_margin": 2,
+        "selected_rounding": 2
+      },
+      "selected_extra_formula": "max(observed_kernel_minimum,observed_OS_reserved_pages)+64",
+      "current_boot_OS_reserved_pages": 206,
+      "current_boot_kernel_minimum_pages": 898,
+      "original_precision_and_full_F32_comparison_required": true,
+      "universal_peak_bound_established": false,
+      "original_wait_and_retirement_guards": true,
+      "automatic_retries": 0,
+      "OS_reserve_counter_unchanged": true,
+      "kernel_minimum_threshold_preserved": true,
+      "original_additive_application_reserve_replaced": true,
+      "observed_refused_prefix_free_pages": 1106,
+      "observed_refused_C2_free_pages": 1030,
+      "selected_post_context_free_pages": 962,
+      "original_GPU_initialization_and_model_load_floors_unchanged": true,
+      "activation_after_model_and_positive_upload_retirement": true,
+      "selected_context_entry_pages": 1005,
+      "measured_context_allowance_pages": 43,
+      "observed_before_context_refusal_pages": 1162,
+      "observed_original_context_entry_pages": 1197
+    },
+    "native_resident_CPU_table_pricing": {
+      "schema": "ps5-qwen-CPU-table-metadata-v1",
+      "enabled": true,
+      "CPU_base_extra_pages": 21,
+      "output_extra_pages": 20,
+      "new_scratch_extra_pages": 19,
+      "original_GPU_floor_changes": 0,
+      "all_original_tables_and_SHA256_required": true,
+      "original_readonly_protection_required": true,
+      "backing_retained_until_ordinary_OS_close": true,
+      "automatic_retries": 0
+    },
+    "native_prefix_delivery_combination": {
+      "schema": "ps5-qwen-prefix-cache128-delivery-v1",
+      "active_cache_slots": 128,
+      "physical_planes": 129,
+      "six_demand_enabled": true,
+      "prefix_review_SHA256": "2a930d6efd4cff330c9b3d4abd5e6e70a162581adec24648eaa3752c8c7d5944",
+      "refill_review_SHA256": "f1131ecbd41c8cfec3847dd9baef01bc2e282f1a837eb88ad0629dc0f5b5859c",
+      "complete_F32_and_routes_required": true,
+      "maximum_requests": 9,
+      "automatic_retries": 0
+    }
+  }
 }

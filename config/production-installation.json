@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
-  "date": "2026-10-25",
-  "application_source_revision": "db01f30df6a440a53604751b17cc93fe1cbcaa35",
+  "date": "2026-10-28",
+  "application_source_revision": "b6b54638a6b6dd90328e8fb513e4a6c6ad4af08a",
   "application_SELF": {
-    "bytes": 28017271,
-    "sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d"
+    "bytes": 17540407,
+    "sha256": "e2821af3cbf7e3bf69ab4ab4c6af5b556a6b3d9b54449abaa13432b55cfd968f"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -28,21 +28,21 @@
   "external_requests": [
     {
       "ordinal": 1,
-      "decode_tokens_per_second": 0.3910928034015616,
+      "decode_tokens_per_second": 0.4184315796708422,
       "generated_tokens": 22,
-      "prefill_ms": 50101.881190001965,
+      "prefill_ms": 48271.36927500367,
       "prompt_tokens": 30,
-      "total_ms": 106385.5282959938,
-      "ttft_ms": 50129.82276201248
+      "total_ms": 100890.3704919815,
+      "ttft_ms": 48299.571047991514
     },
     {
       "ordinal": 2,
-      "decode_tokens_per_second": 0.3984299623114718,
+      "decode_tokens_per_second": 0.43594744500610527,
       "generated_tokens": 22,
-      "prefill_ms": 49250.843170017004,
+      "prefill_ms": 31.346084982156754,
       "prompt_tokens": 30,
-      "total_ms": 104545.96649301052,
-      "ttft_ms": 49279.78168699145
+      "total_ms": 50613.457197993994,
+      "ttft_ms": 60.34417998790741
     }
   ],
   "outputs_and_token_ids_equal_to_qualified_selected_case": true,
@@ -61,18 +61,27 @@
   "CI_runs": 0,
   "private_repository": true,
   "GitHub_Actions_enabled": false,
-  "prior_refused_case": {
-    "stage": "prelaunch_headroom",
-    "GPU_calls": 0,
-    "title_launches": 0,
-    "executable_replaced": false,
-    "observed_free_pages_range": [
-      6266,
-      6270
-    ],
-    "required_free_pages": 10142,
-    "automatic_retries": 0
-  },
   "distinct_current_prelaunch_headroom_gate_passed": true,
-  "safety_thresholds_unchanged": true
+  "safety_thresholds_unchanged": false,
+  "active_expert_slots": 128,
+  "physical_cache_planes": 129,
+  "expert_cache_bytes": 1274462208,
+  "previous_production_SHA256": "56763d373c04e2e684d79b703e5baa1ee1ba26315754f85d97a6162bd1521596",
+  "qualification_report": "docs/independent-validation-20261028.json",
+  "original_rollback_scope": "Preserved historical MOSS plus the separately preserved previous Qwen production executable",
+  "GPU_operational_floor_unchanged": false,
+  "CPU_scope": "Once-only pre-GPU minimum plus 21; separately scoped postload/context price follows completed original upload retirement",
+  "all_requested_comparisons_complete": false,
+  "source_revision_recorded_after_successful_native_build": true,
+  "historical_installation": "config/production-installation-20261025.json",
+  "original_GPU_initialization_and_model_load_floors_unchanged": true,
+  "selected_context_entry_pages": 1005,
+  "selected_postload_operational_floor_pages": 962,
+  "selected_candidate_dispositions_terminal": true,
+  "prefix_reuse_enabled": true,
+  "six_demand_enabled": true,
+  "historical_installations": [
+    "config/production-installation-20261025.json",
+    "config/production-installation-cache128-20261028.json"
+  ]
 }

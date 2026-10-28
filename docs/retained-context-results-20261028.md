@@ -1,5 +1,9 @@
 # Matched cache improvement and terminal native dispositions
 
+Historical checkpoint: [the later independent results](independent-validation-20261028.md)
+supersede this report's current-production and C2/prefix/C4 availability wording.
+The cache measurements and consumed failures below retain their original scope.
+
 The 128-slot Expert cache is now installed in the original passive-monitor
 application. The exact SELF is
 `56763d373c04e2e684d79b703e5baa1ee1ba26315754f85d97a6162bd1521596`.

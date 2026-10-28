@@ -19,20 +19,39 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-The latest terminal status is `docs/retained-context-results-20261028.md` and
-its JSON. The complete A53/B128/B128/A53 native comparison qualified a 4.19%
-decode and 3.29% total-time improvement with 92 exact F32 rows. The original
-passive monitor/API application then completed smoke and both API requests,
-23 full F32 comparisons, complete routes, native frame review, normal OS close,
-exact canonical/rollback/five-setting readback and fresh idle. Production SELF
-is `56763d373c04e2e684d79b703e5baa1ee1ba26315754f85d97a6162bd1521596`;
-the previous `ed4b360b...` remains rollback. The title is inactive, with no model
-loaded. Cache uses 128 active slots and 129 physical planes. Preserve BF16/F32,
-the pinned driver/profile and disabled persistent caches. C2/Prefix/C4 current
-native comparisons are execution unavailable under their observed predicates,
-not passed or physically impossible. Do not replay consumed cases or require a
-reboot. All historical 16 families / 22 items remain in the updated ledger.
-Dated records below are historical and retain their original scope.
+The latest terminal status is `docs/independent-validation-20261028.md` and
+its JSON. Independent 128-slot six-demand ABBA passed (+2.27% decode), and
+complete-prefix ABBA passed (1.31525x two-request throughput; the gain is mainly
+reused prefill). All 92 / 184 full F32 rows and original routes matched exactly.
+The actual passive monitor/API then passed smoke, both API requests, 23 full
+F32 comparisons, routes, native raster review, positive owner retirement,
+normal OS close, full canonical/rollback/five-setting readback and fresh idle.
+Production SELF is `e2821af3cbf7e3bf69ab4ab4c6af5b556a6b3d9b54449abaa13432b55cfd968f`;
+the exact previous `56763d37...` and older rollbacks remain preserved. The title
+is inactive with no model loaded. Prediction was slower in the observed arms;
+accepted width-two work exceeded the original logit tolerance. Its separate
+forced rejection restored all 23 rows exactly. Both features remain off. A
+maximum logit difference alone does not establish a model-quality regression;
+distribution and broader workload quality were not measured. The original
+failed ten-request C2 cohort remains failed, not relabeled complete.
+The owner's subsequent requested adoption conditions are in
+`docs/speculative-adoption-criteria-20261028.md`: same-width reference, eight
+fixed greedy inputs, at least eight actual accepted batches/four forced
+rejections, matched total/decode speed and complete physical lifecycle. This
+additional qualification is defined but not implemented or executed. Publishing
+criteria does not complete it or grant replay of old cases.
+
+Cache uses 128 active slots / 129 planes; BF16/F32, F32 KV, all Experts, pinned
+driver/profile and disabled persistent caches remain unchanged. CPU table
+pricing uses the explicit once-only minimum-plus-21 scope. Original GPU setup
+and model-load floor remains 1154 pages; only after completed upload retirement
+the selected context/operational prices become 1005/962. OS minimum/reserved
+898/206 and allocator caps are unchanged. These finite observations do not
+establish a universal stability or exclusive VM peak bound. Keep the exact
+runtime scopes bound to the profile. Never replay consumed cases or require a
+reboot. All historical 16 families / 22 items remain in the ledger, including
+broader missing integrations. Dated records below are historical and do not
+override this latest selected disposition.
 
 The latest continuation is `docs/resident-model-window-results-20261028.md`.
 Case 3840 loaded the original model and completed warmup plus an ordinary

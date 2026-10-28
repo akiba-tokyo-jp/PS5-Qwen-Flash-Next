@@ -4,7 +4,7 @@
 
 
 def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=None,prefix_validation=None,expected_slots=53,
-                    predictive_cache=False,speculative_validation=None):
+                    predictive_cache=False,speculative_validation=None,reused_prompt_tokens=0):
     if type(predictive_cache)is not bool:raise ValueError('Predictive route scope must be explicitly bound')
     if type(expected_slots)is not int or expected_slots not in (53,128):raise ValueError('Unsupported independently bound cache capacity')
     expected=dict(schema='ps5-qwen-completed-expert-routes-v1',complete=True,capture_failed=False,
@@ -25,6 +25,13 @@ def validate_routes(record,result,*,width,pid,run_id,cold,checkpoint_validation=
         raise ValueError('Route request counts exceed their admitted bounds')
     if reason not in ('end_of_generation','output_token_limit'):raise ValueError('Route capture requires a completed request')
     tokens=[min(width,prompt-n)for n in range(0,prompt,width)]+[1]*(generated-(reason=='output_token_limit'))
+    if type(reused_prompt_tokens)is not int or reused_prompt_tokens not in(0,30):
+        raise ValueError('Exact independently bound prefix geometry required')
+    if reused_prompt_tokens:
+        if(expected_slots!=128 or width!=4 or cold or prompt!=30 or generated!=22 or reason!='end_of_generation' or
+           checkpoint_validation is not None or prefix_validation is not None or predictive_cache or speculative_validation is not None):
+            raise ValueError('Combined prefix routes require the exact qualified 128-slot continuation')
+        tokens=[1]*22
     if checkpoint_validation is not None:
         from model_checkpoint_result import checkpoint_process_geometry,validate_checkpoint
         if width!=4:raise ValueError('Checkpoint routes require the qualified four-token path')
