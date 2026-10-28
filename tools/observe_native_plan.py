@@ -259,6 +259,7 @@ def main():
             proof=validate_binding(expected['cache128'])
             for suffix in ('.memory.after-load','.first.expert-routes','.demo1.expert-routes','.demo2.expert-routes'):
                 download(suffix)
+            if 'prefix_reuse'in expected['cache128']:download('.cache128-monitor')
             proof_remote=MODEL_ROOT+Path(proof['report_path']).name
             raw=get(8080,'/fs'+quote(proof_remote,safe='/'),131072)
             require(raw is not None and len(raw)==proof['report_bytes']and
@@ -301,7 +302,8 @@ def main():
                     read_record(Path(str(result_path) + '.demo' + str(ordinal) + '.performance')), native_request,
                     split_sources=split_sources,checkpoint_validation=checkpoint_validation if ordinal==2 else None,
                     prefix_validation=prefix_validation,
-                    speculative_validation=speculative_validation['requests'][1]if speculative_validation is not None and ordinal==2 else None))
+                    speculative_validation=speculative_validation['requests'][1]if speculative_validation is not None and ordinal==2 else None,
+                    reused_prompt_tokens=30 if expected.get('cache128',{}).get('prefix_reuse')and ordinal==2 else 0))
             if binding.get('require_parallel_sources') is True:
                 download('.source.parallel')
                 admission = read_record(Path(str(result_path) + '.source.parallel'))
@@ -337,7 +339,11 @@ def main():
                     'Pipelined reads were unused or their worker was not positively stopped')
             if binding.get('require_memory_backpressure') is True:
                 download('.memory.backpressure')
-                validate_backpressure(read_record(Path(str(result_path)+'.memory.backpressure')))
+                postload=None
+                if binding.get('require_postload_phase_pricing')is True:
+                    download('.resident.OS-reserve')
+                    postload=read_record(Path(str(result_path)+'.resident.OS-reserve'))
+                validate_backpressure(read_record(Path(str(result_path)+'.memory.backpressure')),postload_scope=postload)
             exclusive(out / 'performance-review.private.json', dict(completed_requests=summaries,
                 baseline_comparison_required=True, speedup_qualified=False))
         exclusive(out / "native-review.private.json", review)

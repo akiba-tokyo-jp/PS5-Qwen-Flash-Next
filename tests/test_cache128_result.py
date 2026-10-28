@@ -15,6 +15,19 @@ import test_first_generation_result as baseline
 
 
 class Cache128Records(unittest.TestCase):
+    def test_prefix_scope_requires_explicit_matched_provenance(self):
+        self.expanded()
+        prefix=dict(enabled=True,prompt_tokens=30,full_F32_rows=23,combination_review_SHA256='f'*64,six_demand_enabled=True)
+        self.binding['cache128']['prefix_reuse']=prefix
+        validate_binding(self.binding['cache128'])
+        for key,value in (('enabled',False),('prompt_tokens',29),('full_F32_rows',22),
+                          ('combination_review_SHA256',''),('six_demand_enabled',1)):
+            bad=copy.deepcopy(self.binding['cache128']);bad['prefix_reuse'][key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):validate_binding(bad)
+        for key in prefix:
+            bad=copy.deepcopy(self.binding['cache128']);bad['prefix_reuse'].pop(key)
+            with self.subTest(missing=key),self.assertRaises(ValueError):validate_binding(bad)
+
     def setUp(self):
         baseline.FirstGenerationRecords.setUp(self)
         self.layout=dict(schema='ps5-qwen-padded-bank-layout-result-v2',pid=900,run_id='d'*32,

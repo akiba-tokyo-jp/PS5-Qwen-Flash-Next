@@ -19,7 +19,7 @@ def validate_first_performance(record, aggregate, first, *, split_sources=False)
     return validate_performance(record, first, split_sources=split_sources)
 
 
-def validate_backpressure(record):
+def validate_backpressure(record,*,postload_scope=None):
     schema=record.get('schema')
     limits={'ps5-qwen-memory-backpressure-v1':(2000,10000),'ps5-qwen-memory-backpressure-v2':(20000,60000)}
     if schema not in limits:raise ValueError('Unknown memory backpressure policy')
@@ -28,6 +28,19 @@ def validate_backpressure(record):
         maximum_boundary_wait_ms=boundary,maximum_total_wait_ms=total,poll_interval_ms=100,
         memory_reserves_unchanged=True,IO_or_GPU_operations_retried=False,last_qualified=True,
         kernel_page_size=16384,kernel_extra_margin_bytes=4 << 20)
+    scoped=postload_scope is not None
+    if scoped:
+        exact=dict(activated_after_model_and_upload_retirement=True,activated_after_original_context=False,
+            original_setup_GPU_floor=1154,selected_context_entry_pages=1005,context_allowance_pages=43,
+            selected_kernel_minimum_pages=898,observed_OS_reserved_pages=206,selected_operational_floor_pages=962,
+            original_wait_and_retirement_guards=True,OS_reserve_counter_unchanged=True,universal_peak_bound_established=False)
+        if(schema!='ps5-qwen-memory-backpressure-v2' or type(postload_scope)is not dict or any(type(postload_scope.get(k))is not type(v)or postload_scope[k]!=v for k,v in exact.items())or
+           type(postload_scope.get('free_pages_at_activation'))is not int or postload_scope['free_pages_at_activation']<1005):
+            raise ValueError('Explicit native postload/context pricing evidence required')
+        required.update(memory_reserves_unchanged=False,kernel_extra_margin_bytes=64*16384,
+            CPU_metadata_scope_active=False,post_context_OS_reserve_scope_active=True,
+            OS_reserve_counter_unchanged=True,kernel_minimum_threshold_preserved=True,
+            kernel_minimum_pages=898,kernel_reserved_pages=206)
     if any(type(record.get(k)) is not type(v) or record[k]!=v for k,v in required.items()):
         raise ValueError('Memory backpressure scope differs')
     counters=['observations','pressure_events','recovered_admissions','cumulative_wait_ns',
@@ -39,13 +52,13 @@ def validate_backpressure(record):
         record['pressure_events']>record['pause_calls'] or
         record['cumulative_wait_ns']>total*1_000_000 or record['pause_calls']>total//100 or
         (record['pause_calls']==0)!=(record['cumulative_wait_ns']==0) or
-        record['kernel_free_pages']<record['kernel_minimum_pages']+max(record['kernel_reserved_pages'],256)):
+        record['kernel_free_pages']<record['kernel_minimum_pages']+(64 if scoped else max(record['kernel_reserved_pages'],256))):
         raise ValueError('A pressure admission lacks bounded recovery')
     return record
 
 
 def validate_performance(record, result, *, split_sources=False, checkpoint_validation=None, prefix_validation=None,
-                         speculative_validation=None):
+                         speculative_validation=None,reused_prompt_tokens=0):
     schema = record.get('schema')
     speculative=schema=='ps5-qwen-completed-performance-v6'
     if speculative and (speculative_validation is None or checkpoint_validation is not None or prefix_validation is not None):
@@ -117,6 +130,13 @@ def validate_performance(record, result, *, split_sources=False, checkpoint_vali
             record.get('all_prompt_outputs_requested') is not True):
             raise ValueError('Batched prefill scope differs')
     expected = (metrics['prompt_tokens'] + width - 1)//width + metrics['generated_tokens'] - (reason == 'output_token_limit')
+    if type(reused_prompt_tokens)is not int or reused_prompt_tokens not in(0,30):
+        raise ValueError('Explicit complete-prompt reuse accounting required')
+    if reused_prompt_tokens:
+        if(width!=4 or metrics['prompt_tokens']!=30 or metrics['generated_tokens']!=22 or result.get('ordinal')!=2 or
+           reason!='end_of_generation' or speculative or checkpoint_validation is not None or prefix_validation is not None):
+            raise ValueError('Combined prefix timing requires the exact qualified second API request')
+        expected=22
     if speculative:
         from model_free_speculation_result import counters
         count=counters(speculative_validation)
@@ -145,4 +165,4 @@ def validate_performance(record, result, *, split_sources=False, checkpoint_vali
                 GPU_compute_time_qualified=False,
                 deliberate_state_validation_replays_included=checkpoint_validation is not None,
                 speculative_verification_included=speculative,
-                prefix_reused_prompt_tokens=30 if prefix_validation is not None and prefix_validation['prefix_reuse_enabled']and result.get('ordinal')==2 else 0)
+                prefix_reused_prompt_tokens=reused_prompt_tokens or (30 if prefix_validation is not None and prefix_validation['prefix_reuse_enabled']and result.get('ordinal')==2 else 0))

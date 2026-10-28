@@ -8,6 +8,24 @@ from expert_route_result import validate_routes
 
 
 class RouteResultTests(unittest.TestCase):
+    def test_bound_cache128_prefix_requires_all_decode_layers_and_exact_geometry(self):
+        record,result=self.fixture()
+        result['metrics'].update(prompt_tokens=30,generated_tokens=22)
+        rows=[dict(layer=layer,tokens=1,ids=list(range(10)))for _ in range(22)for layer in range(48)]
+        record.update(cache_slots=128,cache_reset_before_request=False,records=rows,process_calls=22,
+            selected_indices=10*len(rows),unique_selected_experts=10*len(rows),cache_hits=0,
+            cache_misses=10*len(rows),uploaded_bytes=9830400*10*len(rows))
+        args=dict(width=4,pid=123,run_id='a'*32,cold=False,expected_slots=128,reused_prompt_tokens=30)
+        self.assertEqual(validate_routes(record,result,**args)['process_calls'],22)
+        for key,value in (('cold',True),('width',2),('expected_slots',53),('reused_prompt_tokens',True),
+                          ('reused_prompt_tokens',29),('predictive_cache',True)):
+            bad=dict(args);bad[key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):validate_routes(record,result,**bad)
+        bad=copy.deepcopy(record);bad['records'].pop()
+        with self.assertRaises(ValueError):validate_routes(bad,result,**args)
+        bad=copy.deepcopy(result);bad['metrics']['prompt_tokens']=29
+        with self.assertRaises(ValueError):validate_routes(record,bad,**args)
+
     def fixture(self,width=4,reason='end_of_generation'):
         result=dict(metrics=dict(prompt_tokens=7,generated_tokens=2),stop_reason=reason)
         tokens=[min(width,7-n)for n in range(0,7,width)]+[1]*(2-(reason=='output_token_limit'))
