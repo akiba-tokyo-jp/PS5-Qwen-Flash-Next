@@ -55,12 +55,8 @@ def main():
   begin=text.index('        std::array<CompletedRouteEvidence,9> retained_prefix_routes;')
   end=text.index('        retained_prefix_routes=std::move(routes);',begin)
   prefix=text[begin:end]
-  needle='        qwen_native_driver_complete();resident_sample("original_model_context_completed");'
-  if prefix.count(needle)!=1:raise ValueError('Unique redundant combined producer completion required')
-  prefix=prefix.replace(needle,'        resident_sample("combined_prefix_start_after_positive_request_reset");')
-  needle='startup.admission_report+".resident.startup-memory",resident_startup_report()'
-  if prefix.count(needle)!=1:raise ValueError('Unique combined prefix startup report required')
-  prefix=prefix.replace(needle,'startup.admission_report+".resident.prefix-startup-memory",resident_startup_report()')
+  from resident_combined_comparison import qualify_prefix_entry
+  prefix=qualify_prefix_entry(prefix)
   text=text[:begin]+prefix+text[end:]
  needle='    qwen_native_stage("main_entered GPU_not_started=1 model_loaded=0");'
  if text.count(needle)!=1:raise ValueError('Unique original main entry required')

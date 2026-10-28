@@ -8,10 +8,14 @@ Restart and CI are not dependencies.
 
 Execution results are now in the [measured report](vm-revalidation-results-20261028.md)
 and its [complete candidate ledger](vm-revalidation-results-20261028.json).
-C0, CPU-startup C1, C4 and C5 have terminal evidence. C2/C3 remain unexecuted
-after the common changed startup returned before GPU; they are not counted as
-passed or as physically impossible. No identical blocked cohort is repeated
-for each dependent benchmark. This preserves the completion criterion below.
+C0, C1 observations, the C3 cache cohort, the C4 source fixture and C5 have
+evidence. The [latest terminal results](retained-context-results-20261028.md)
+include complete cache/model/UI qualification and 128-slot production adoption.
+C2, dependent prefix and actual-model C4 have specific current phase-predicate
+execution-unavailable outcomes, rather than passing comparisons or physical
+impossibility. No identical blocked cohort is repeated for each dependent
+benchmark. Queue closure and completion of every native comparison remain
+separate, preserving the completion criterion below.
 
 ## Finite execution order
 

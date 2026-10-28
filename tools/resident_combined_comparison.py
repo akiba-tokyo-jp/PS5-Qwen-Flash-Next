@@ -5,6 +5,19 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 
 
+def qualify_prefix_entry(prefix):
+    replacements=(
+        ('        qwen_native_driver_complete();resident_sample("original_model_context_completed");',
+         '        resident_sample("combined_prefix_start_after_positive_request_reset");'),
+        ('startup.admission_report+".resident.startup-memory",resident_startup_report()',
+         'startup.admission_report+".resident.prefix-startup-memory",resident_startup_report()'))
+    for old,new in replacements:
+        if prefix.count(old)==1 and not prefix.count(new):prefix=prefix.replace(old,new)
+        elif prefix.count(old) or prefix.count(new)!=1:
+            raise ValueError('Unique positively completed combined prefix entry and report required')
+    return prefix
+
+
 def generate(kind,source,tail,flags):
     if kind!='combined' or not flags.get('phase_local_model') or not flags.get('postloader_integrity'):
         raise ValueError('Exact combined and postloader model scope required')
@@ -15,6 +28,7 @@ def generate(kind,source,tail,flags):
     retirement='        qwen_app_complete_predictive_expert();qwen_native_driver_begin();'
     end=additional.index(retirement)
     prefix=additional[begin:end].replace('RESIDENT_PREFIX_COMPARISON','true')
+    prefix=qualify_prefix_entry(prefix)
     prefix=prefix.replace('startup.admission_report+".arm"','startup.admission_report+".prefix.arm"')
     prefix=prefix.replace('run+"-"+std::to_string(ordinal)','run+"-prefix-"+std::to_string(ordinal)')
     prefix+='        retained_prefix_routes=std::move(routes);retained_prefix_results=std::move(completed);\n'

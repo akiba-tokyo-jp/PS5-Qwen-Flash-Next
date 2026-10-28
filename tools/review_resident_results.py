@@ -8,6 +8,7 @@ import math
 import statistics
 import struct
 from pathlib import Path
+from resident_route_review import require_same_tokens
 
 
 def load(path):
@@ -77,6 +78,11 @@ def review_combined(cache, number):
     if report["total_requests"] != 19 or not report["forced_rejection_and_full_F32_restore_passed"]:
         raise ValueError("Complete combined cohort and forced rejection proof required")
     rows = report["requests"]
+    if any(row["full_F32_logit_rows_compared"] != 23 for row in rows[1:]):
+        raise ValueError("Every matched continuation requires all original F32 rows")
+    original_routes = load(case / "native-arm0.routes.private.json")
+    route_checks = [require_same_tokens(original_routes, load(case / f"native-arm{i}.routes.private.json"))
+                    for i in range(9)]
     rejection = rows[9]
     if not (rejection["speculation"]["attempts"] == rejection["speculation"]["rejected"] == 1 and
             rejection["speculation"]["accepted"] == 0 and rejection["full_F32_logit_rows_compared"] == 23):
@@ -90,6 +96,9 @@ def review_combined(cache, number):
         if (row["token_ids"] != rows[0]["token_ids"] or row["output_bytes"] != rows[0]["output_bytes"] or
                 not row["request_reset_completed"] or (ordinal and row["full_F32_logit_rows_compared"] != 23)):
             raise ValueError("Prefix original continuation differs")
+        reused = ordinal in (4, 6)
+        route_checks.append(require_same_tokens(original_routes,
+            load(case / f"native-prefix-arm{ordinal}.routes.private.json"), 30 if reused else 0))
     prefix_pair = paired([sum(metric(prefix[i], "total_ms") for i in pair) for pair in ((1, 2), (7, 8))],
                          [sum(metric(prefix[i], "total_ms") for i in pair) for pair in ((3, 4), (5, 6))], False)
     prefix_second = arms(prefix, (2, 8), (4, 6))
@@ -99,6 +108,7 @@ def review_combined(cache, number):
                 forced_rejection=rejection["speculation"],
                 forced_rejection_F32_rows=23,
                 maximum_rejection_F32_error=rejection["maximum_absolute_logit_error"],
+                original_route_checks=route_checks,
                 prefix_pair_total=prefix_pair, prefix_second=prefix_second,
                 native_evidence=capture(case / "native-model-terminal.private.json"))
 
@@ -147,13 +157,20 @@ def review_cache(cache, numbers):
 
 def review_refill(cache, number):
     case, report = closed_case(cache, number, 5)
+    original_routes = load(case / "native-arm0.routes.private.json")
+    route_checks = []
     for ordinal, row in enumerate(report["requests"]):
+        if ordinal and row["full_F32_logit_rows_compared"] != 23:
+            raise ValueError("Complete original F32 continuations required for delivery adoption")
+        route_checks.append(require_same_tokens(original_routes,
+            load(case / f"native-arm{ordinal}.routes.private.json")))
         stats = row["six_demand"]
         enabled = ordinal in (2, 3)
         if not (stats["enabled"] == enabled and (stats["batches"] > 0) == enabled and
                 stats["reads"] == 6 * stats["batches"] and stats["logical_bytes"] == stats["reads"] * 3276800):
             raise ValueError("Actual-model six-demand batch/read/byte conservation differs")
     return dict(case=number, native_requests=5, comparison=arms(report["requests"], (1, 4), (2, 3)),
+                original_route_checks=route_checks,
                 six_demand=[r["six_demand"] for r in report["requests"]],
                 native_evidence=capture(case / "native-model-terminal.private.json"))
 

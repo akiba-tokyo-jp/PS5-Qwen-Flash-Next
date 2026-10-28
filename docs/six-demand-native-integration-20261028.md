@@ -44,3 +44,11 @@ The earlier native source fixture's median ratio was 1.0319375546 across
 60 batches/360 reads, with nine of ten reverse pairs faster. Actual-model
 qualification and production selection require the five-request physical
 comparison. Source-fixture timing does not establish a model tokens/s gain.
+
+The subsequent retained-context entry is built and case 4940 was executed.
+The original model loaded, then the before-context predicate observed 1,182
+free kernel pages against the selected 1,197-page requirement. No request or
+six-demand model batch ran. Ordinary OS close and exact fastest/settings
+restoration passed. This is current execution unavailability, rather than
+missing integration, physical impossibility or a measured model regression.
+See `retained-context-results-20261028.md` for the complete terminal decisions.
