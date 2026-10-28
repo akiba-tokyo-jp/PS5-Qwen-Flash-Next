@@ -304,11 +304,18 @@
   "historical_ledger": "docs/vm-revalidation-results-20261028.json",
   "additional_speculative_qualification": {
     "criteria": "docs/speculative-adoption-criteria-20261028.md",
-    "implementation_completed": false,
-    "native_execution_completed": false,
+    "results": "docs/speculative-qualification-20261028.json",
+    "implementation_completed": true,
+    "native_execution_completed": true,
+    "all_four_gates_completed": true,
+    "production_adopted": true,
     "fixed_inputs": 8,
-    "required_actual_accepted_batches": 8,
-    "required_forced_rejections": 4,
+    "actual_accepted_batches": 8,
+    "causal_accepted_batches_on_eight_inputs": 1,
+    "diagnostic_known_control_accepted_batches": 7,
+    "actual_forced_rejections": 4,
+    "matched_causal_speed_case": 5800,
+    "actual_normal_monitor_case": 5980,
     "maximum_logit_error_alone_is_not_an_adoption_gate": true
   }
 }

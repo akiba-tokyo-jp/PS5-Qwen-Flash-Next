@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-10-28",
-  "application_source_revision": "b6b54638a6b6dd90328e8fb513e4a6c6ad4af08a",
+  "application_source_revision": "5ee168ff6b6c6ee5f3ecf59affcd9380709851dc",
   "application_SELF": {
-    "bytes": 17540407,
-    "sha256": "e2821af3cbf7e3bf69ab4ab4c6af5b556a6b3d9b54449abaa13432b55cfd968f"
+    "bytes": 17597111,
+    "sha256": "75c7aabccc62a55408309d614d1db66c71d77b35cb342c16e05059d6eae975fa"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -28,21 +28,21 @@
   "external_requests": [
     {
       "ordinal": 1,
-      "decode_tokens_per_second": 0.4184315796708422,
+      "decode_tokens_per_second": 0.4181022059323137,
       "generated_tokens": 22,
-      "prefill_ms": 48271.36927500367,
+      "prefill_ms": 48257.23458901048,
       "prompt_tokens": 30,
-      "total_ms": 100890.3704919815,
-      "ttft_ms": 48299.571047991514
+      "total_ms": 100905.31408801675,
+      "ttft_ms": 48293.02527201176
     },
     {
       "ordinal": 2,
-      "decode_tokens_per_second": 0.43594744500610527,
+      "decode_tokens_per_second": 0.43758653228098754,
       "generated_tokens": 22,
-      "prefill_ms": 31.346084982156754,
+      "prefill_ms": 31.349452018737793,
       "prompt_tokens": 30,
-      "total_ms": 50613.457197993994,
-      "ttft_ms": 60.34417998790741
+      "total_ms": 50489.10324200988,
+      "ttft_ms": 77.67802301049232
     }
   ],
   "outputs_and_token_ids_equal_to_qualified_selected_case": true,
@@ -66,8 +66,8 @@
   "active_expert_slots": 128,
   "physical_cache_planes": 129,
   "expert_cache_bytes": 1274462208,
-  "previous_production_SHA256": "56763d373c04e2e684d79b703e5baa1ee1ba26315754f85d97a6162bd1521596",
-  "qualification_report": "docs/independent-validation-20261028.json",
+  "previous_production_SHA256": "e2821af3cbf7e3bf69ab4ab4c6af5b556a6b3d9b54449abaa13432b55cfd968f",
+  "qualification_report": "docs/speculative-qualification-20261028.json",
   "original_rollback_scope": "Preserved historical MOSS plus the separately preserved previous Qwen production executable",
   "GPU_operational_floor_unchanged": false,
   "CPU_scope": "Once-only pre-GPU minimum plus 21; separately scoped postload/context price follows completed original upload retirement",
@@ -82,6 +82,17 @@
   "six_demand_enabled": true,
   "historical_installations": [
     "config/production-installation-20261025.json",
-    "config/production-installation-cache128-20261028.json"
-  ]
+    "config/production-installation-cache128-20261028.json",
+    "config/production-installation-prefix-six-demand-20261028.json"
+  ],
+  "selected_width_two_qualification_complete": true,
+  "all_four_additional_adoption_gates_completed": true,
+  "bounded_final_prefix_speculative_handoff": true,
+  "maximum_actual_speculative_attempts_per_final_request": 1,
+  "same_width_diagnostic_replays_enabled": false,
+  "full_F32_rows_exact_to_same_SELF_reference": 46,
+  "matched_speed_case": 5800,
+  "diagnostic_application_case": 5940,
+  "normal_application_case": 5980,
+  "previous_production_rollback_preserved": true
 }

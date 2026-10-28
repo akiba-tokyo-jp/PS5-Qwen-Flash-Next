@@ -1,9 +1,14 @@
 # Width-two adoption conditions
 
-Status: defined after the owner's numerical-review feedback; this additional
-qualification has not been implemented or executed. It is not covered by the
-completed three-request numerical/rejection closure. The installed production
-image keeps speculation disabled.
+Status: the selected additional qualification is complete and the bounded
+normal-mode winner is installed. See the [terminal result](speculative-qualification-20261028.md)
+and [sanitized evidence](speculative-qualification-20261028.json). All original
+failed cohorts remain preserved. The same-width reference is exact; all eight
+greedy outputs match; eight actual acceptance-branch executions include one
+causal and seven separately labeled diagnostic controls. Every timed candidate
+and the installed final-request path use actual causal drafts. Diagnostic
+controls do not establish predictor availability or speed. The normal passive
+application matches all 46 same-SELF F32 row fingerprints.
 
 ## What the existing evidence establishes
 
@@ -102,14 +107,14 @@ revise the mechanism as a separately identified candidate.
 
 ## Concrete implementation boundaries
 
-| File / function | Required work before this qualification can run |
+| File / function | Implementation delivered by the follow-up |
 | --- | --- |
-| `native/app/llama_engine.cpp::next_with_one_draft` | Add opt-in bounded observation of the two target rows, acceptance decision, pinned bonus and committed position; retain the original producer/completion owner |
-| `native/app/llama_engine.cpp::process_batch_once` | Expose a diagnostic-only ordinary width-two reference from the identical captured state; do not enable speculative control on this reference |
-| `native/app/llama_engine.cpp::capture_checkpoint_in_active_epoch` / `restore_checkpoint_in_active_epoch` | Bind the reference state, active recurrent/KV payload and position; verify both accepted state and forced-rejection continuation |
-| `tools/build_speculative_closure.py::generate` | Derive a new separately bound entry with the eight frozen prompts and complete row statistics; retain the consumed original diagnostic unchanged |
-| `tools/review_independent_resident.py` / `tools/resident_route_review.py` | Add an explicit same-width reference and per-position greedy review; do not silently relax the old width-one numerical validator or route geometry |
-| `tools/build_prefix_delivery_monitor.py` | Use only as the passive-application integration reference after a winner; prefix and speculative snapshots share an owner and must not be enabled together without separate combination qualification |
+| `native/app/llama_engine.cpp::next_with_one_draft` | Delivered through `tools/build_speculative_batch_probe.py::engine_source` in a generated engine copy, retaining class layout and the original producer/completion owner |
+| `native/app/llama_engine.cpp::process_batch_once` | Diagnostic ordinary width-two reference/repeat delivered from the identical captured state; both complete rows and all active F32 state are exact |
+| `native/app/llama_engine.cpp::capture_checkpoint_in_active_epoch` / `restore_checkpoint_in_active_epoch` | Complete active state/reference and four forced-rejection continuations passed; exact pre-capture size also qualifies the final-prefix snapshot handoff |
+| `tools/build_speculative_closure.py::generate` | Original closure retained unchanged; `tools/build_speculative_behavior.py` delivers the new eight-input/27-request cohort and complete row statistics |
+| `tools/review_independent_resident.py` / `tools/resident_route_review.py` | `tools/review_speculative_qualification.py` reviews closed same-width/behavior/speed evidence; isolated combined validators preserve legacy validator files |
+| `tools/build_prefix_delivery_monitor.py` | `tools/build_speculative_monitor.py` qualifies their exact final-consumer handoff in one SELF, including same-width active-state observation and normal-mode full-row fingerprints |
 
 If all four gates pass, adopt the exact qualified candidate and preserve its
 control as rollback. A correctness failure means the current candidate needs a
