@@ -1,0 +1,314 @@
+{
+  "schema": "ps5-qwen-independent-validation-terminal-v1",
+  "date": "2026-10-28",
+  "selected_candidate_dispositions_terminal": true,
+  "all_historical_failed_cases_preserved": true,
+  "original_ten_request_C2_cohort_status": "Failed at its first speculative F32 comparison; consumed and not relabeled successful",
+  "precision": {
+    "weights": "original BF16/F32",
+    "KV_cache": "F32",
+    "quantization": false,
+    "all_experts_retained": true
+  },
+  "six_demand": {
+    "case": 5480,
+    "native_requests": 5,
+    "full_F32_rows": 92,
+    "maximum_absolute_F32_error": 0,
+    "original_expert_routes_exact": true,
+    "comparison": {
+      "decode": {
+        "control": [
+          0.40863884086506974,
+          0.4086591440270513
+        ],
+        "candidate": [
+          0.4195313086168068,
+          0.416323260995781
+        ],
+        "reverse_pair_ratios": [
+          1.0266554880800813,
+          1.0187543019182324
+        ],
+        "mean_ratio": 1.0227047968592706,
+        "observed_control_range": 2.0303161981538587e-05,
+        "both_orders_faster": true,
+        "candidate_range_clear_of_observed_control_range": true,
+        "reproducible_in_this_finite_cohort": true
+      },
+      "total": {
+        "control": [
+          102215.71650198102,
+          102263.75101798773
+        ],
+        "candidate": [
+          100150.50771397352,
+          100679.13226500154
+        ],
+        "reverse_pair_ratios": [
+          1.0206210516067045,
+          1.0157392968864218
+        ],
+        "mean_ratio": 1.0181737493597847,
+        "observed_control_range": 48.034516006708145,
+        "both_orders_faster": true,
+        "candidate_range_clear_of_observed_control_range": true,
+        "reproducible_in_this_finite_cohort": true
+      },
+      "prefill": {
+        "control": [
+          48355.87765198946,
+          48410.32884401083
+        ],
+        "candidate": [
+          47680.25149399042,
+          47825.50810599327
+        ],
+        "reverse_pair_ratios": [
+          1.0141699369619348,
+          1.0122282179777673
+        ],
+        "mean_ratio": 1.0131976008703125,
+        "observed_control_range": 54.451192021369934,
+        "both_orders_faster": true,
+        "candidate_range_clear_of_observed_control_range": true,
+        "reproducible_in_this_finite_cohort": true
+      }
+    },
+    "adopted": true
+  },
+  "prefix": {
+    "case": 5680,
+    "native_requests": 9,
+    "full_F32_rows": 184,
+    "maximum_absolute_F32_error": 0,
+    "active_slots": 128,
+    "physical_planes": 129,
+    "original_expert_routes_exact": true,
+    "pair_total": {
+      "control": [
+        198234.90286898613,
+        198405.98351603746
+      ],
+      "candidate": [
+        150752.4920629859,
+        150818.4677439928
+      ],
+      "reverse_pair_ratios": [
+        1.3149693259210706,
+        1.3155284394801185
+      ],
+      "mean_ratio": 1.3152489438601602,
+      "observed_control_range": 171.08064705133438,
+      "both_orders_faster": true,
+      "candidate_range_clear_of_observed_control_range": true,
+      "reproducible_in_this_finite_cohort": true
+    },
+    "repeated_request": {
+      "decode": {
+        "control": [
+          0.4331752562491753,
+          0.43352681516940983
+        ],
+        "candidate": [
+          0.4367710119377292,
+          0.43632816493747645
+        ],
+        "reverse_pair_ratios": [
+          1.0083009258647164,
+          1.006461768153769
+        ],
+        "mean_ratio": 1.0073809740020006,
+        "observed_control_range": 0.0003515589202345293,
+        "both_orders_faster": true,
+        "candidate_range_clear_of_observed_control_range": true,
+        "reproducible_in_this_finite_cohort": true
+      },
+      "total": {
+        "control": [
+          98110.81608998775,
+          98123.59484001994
+        ],
+        "candidate": [
+          50517.16910198331,
+          50563.12408798933
+        ],
+        "reverse_pair_ratios": [
+          1.942128148390958,
+          1.9406157473431915
+        ],
+        "mean_ratio": 1.9413716040692541,
+        "observed_control_range": 12.778750032186508,
+        "both_orders_faster": true,
+        "candidate_range_clear_of_observed_control_range": true,
+        "reproducible_in_this_finite_cohort": true
+      },
+      "prefill": {
+        "control": [
+          47234.52728098631,
+          47284.07409200072
+        ],
+        "candidate": [
+          30.657050997018814,
+          31.334859013557434
+        ],
+        "reverse_pair_ratios": [
+          1540.7394300769354,
+          1508.9927186697298
+        ],
+        "mean_ratio": 1524.692518053751,
+        "observed_control_range": 49.546811014413834,
+        "both_orders_faster": true,
+        "candidate_range_clear_of_observed_control_range": true,
+        "reproducible_in_this_finite_cohort": true
+      }
+    },
+    "checkpoint_capacity_reuse": {
+      "first_completed_capture": {
+        "new_allocation_bytes": 121634816,
+        "original_device_Direct_and_Flexible_caps_unchanged": true,
+        "requested_payload_bytes": 119881728,
+        "same_context_qualified": true
+      },
+      "second_completed_capture": {
+        "new_allocation_bytes": 0,
+        "original_device_Direct_and_Flexible_caps_unchanged": true,
+        "requested_payload_bytes": 119881728,
+        "same_context_qualified": true
+      },
+      "same_original_context": true,
+      "restored_request_rows_retain_latest_capture_admission_not_new_transfer": true
+    },
+    "adopted": true
+  },
+  "prediction": {
+    "case": 5440,
+    "ordinary_decode": [
+      0.391152686824173,
+      0.3912116331158982
+    ],
+    "candidate_decode": [
+      0.3886292483868826,
+      0.38950188956646126
+    ],
+    "observed_decode_ratio": 0.9945892445771919,
+    "common_model_retirement_not_reached_in_original_cohort": true,
+    "normal_OS_close_and_exact_restore_passed": true,
+    "disposition": "Observed slower; not promoted from the failed common cohort",
+    "adopted": false
+  },
+  "speculation": {
+    "original_case": 5440,
+    "closure_case": 5620,
+    "closure_requests": 3,
+    "diagnostic": {
+      "callback_calls": 23,
+      "rows_observed": 23,
+      "reference_rows": 23,
+      "columns": 248320,
+      "geometry_error": false,
+      "nonfinite_error": false,
+      "value_error": true,
+      "maximum_absolute_error": 1.992569923400879,
+      "first_bad_row": 8,
+      "first_bad_column": 0,
+      "original_tolerance_unchanged": true
+    },
+    "F32_within_original_tolerance": false,
+    "forced_rejection": {
+      "accepted": 0,
+      "attempts": 1,
+      "cost_checks": 0,
+      "cost_ordinary": 0,
+      "cost_width_two": 0,
+      "rejected": 1
+    },
+    "forced_rejection_F32_rows": 23,
+    "maximum_forced_rejection_F32_error": 0,
+    "common_owner_retirement_normal_close_and_exact_restore_passed": true,
+    "adopted": false,
+    "accepted_path_counters": {
+      "accepted": 1,
+      "attempts": 1,
+      "cost_checks": 5,
+      "cost_ordinary": 4,
+      "cost_width_two": 1,
+      "rejected": 0
+    },
+    "emitted_greedy_tokens_and_bytes_match_control": true,
+    "maximum_error_alone_establishes_functional_or_quality_defect": false,
+    "full_candidate_reference_arrays_retained": false,
+    "error_distribution_top_k_margins_and_probability_divergence_measured": false,
+    "disposition": "Not adopted: the original tolerance failed; same-batch equivalence, broader greedy behavior and matched speed require the explicitly defined follow-up"
+  },
+  "production": {
+    "case": 5580,
+    "application_SELF": {
+      "bytes": 17540407,
+      "sha256": "e2821af3cbf7e3bf69ab4ab4c6af5b556a6b3d9b54449abaa13432b55cfd968f"
+    },
+    "previous_production_SELF": {
+      "bytes": 17515623,
+      "sha256": "56763d373c04e2e684d79b703e5baa1ee1ba26315754f85d97a6162bd1521596"
+    },
+    "source_revision": "b6b54638a6b6dd90328e8fb513e4a6c6ad4af08a",
+    "passive_monitor": true,
+    "API_requests": [
+      {
+        "ordinal": 1,
+        "decode_tokens_per_second": 0.4184315796708422,
+        "generated_tokens": 22,
+        "prefill_ms": 48271.36927500367,
+        "prompt_tokens": 30,
+        "total_ms": 100890.3704919815,
+        "ttft_ms": 48299.571047991514
+      },
+      {
+        "ordinal": 2,
+        "decode_tokens_per_second": 0.43594744500610527,
+        "generated_tokens": 22,
+        "prefill_ms": 31.346084982156754,
+        "prompt_tokens": 30,
+        "total_ms": 50613.457197993994,
+        "ttft_ms": 60.34417998790741
+      }
+    ],
+    "full_F32_rows_compared": 23,
+    "maximum_absolute_F32_error": 0,
+    "original_expert_routes_exact": true,
+    "actual_native_frames_viewed": 2,
+    "normal_OS_close": true,
+    "native_whole_SELF_rollback_and_five_setting_readback": true,
+    "fresh_idle_verified": true,
+    "active_title": false,
+    "model_loaded": false,
+    "sustained_service_qualified": false
+  },
+  "scoped_memory": {
+    "original_GPU_initialization_and_model_load_floor_pages": 1154,
+    "selected_context_entry_pages": 1005,
+    "selected_postload_operational_pages": 962,
+    "CPU_metadata_extra_pages": 21,
+    "OS_minimum_pages": 898,
+    "OS_reserved_pages": 206,
+    "OS_counters_changed": false,
+    "allocator_caps_changed": false,
+    "released_exclusive_upload_staging_bytes": 8388608,
+    "universal_peak_or_stability_bound_established": false
+  },
+  "CI_runs": 0,
+  "reboots": 0,
+  "private_raw_evidence_retained_outside_Git": true,
+  "historical_family_count": 16,
+  "historical_item_count": 22,
+  "historical_ledger": "docs/vm-revalidation-results-20261028.json",
+  "additional_speculative_qualification": {
+    "criteria": "docs/speculative-adoption-criteria-20261028.md",
+    "implementation_completed": false,
+    "native_execution_completed": false,
+    "fixed_inputs": 8,
+    "required_actual_accepted_batches": 8,
+    "required_forced_rejections": 4,
+    "maximum_logit_error_alone_is_not_an_adoption_gate": true
+  }
+}

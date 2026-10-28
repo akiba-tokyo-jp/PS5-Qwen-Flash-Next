@@ -14,7 +14,10 @@ from resident_OS_reserve_scope import entry, implementation, source_header, syst
 
 class OSReserve(unittest.TestCase):
     def test_actual_header_keeps_setup_and_complete_OS_reserve(self):
-        cache = Path('D:/PS5-AI/qwen-flash-next/build')
+        retained = os.environ.get('QWEN_FROZEN_BUILD_DIR')
+        if not retained:
+            self.skipTest('Set QWEN_FROZEN_BUILD_DIR to retained native build evidence')
+        cache = Path(retained)
         view = cache / 'resident-CPU-scope-4748/app-view'
         generated = system_header((view / 'system_memory.h').read_text())
         phase = implementation((view / 'system_memory.cpp').read_text())

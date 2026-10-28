@@ -15,6 +15,9 @@ from resident_postload_pricing import entry
 
 class CPUAdmission(unittest.TestCase):
     def test_actual_incremental_permit_and_postload_order(self):
+        retained=os.environ.get('QWEN_FROZEN_BUILD_DIR')
+        if not retained:
+            self.skipTest('Set QWEN_FROZEN_BUILD_DIR to retained native build evidence')
         original=(ROOT/'native/app/resident_incremental_tables.h').read_text()
         generated=incremental_header(original)
         start=generated.index('struct ResidentTableMemory {')
@@ -51,7 +54,7 @@ int main(){using namespace qwen_app;
             env=dict(os.environ,PATH=str(compiler.parent)+os.pathsep+os.environ.get('PATH',''),TMP=str(folder),TEMP=str(folder))
             subprocess.run([str(compiler),'-std=c++17','-O1',str(source),'-o',str(binary)],capture_output=True,check=True,env=env)
             subprocess.run([str(binary)],capture_output=True,check=True,env=env)
-        cache=Path('D:/PS5-AI/qwen-flash-next/build')
+        cache=Path(retained)
         for kind,number in (('prefix',5062),('predictive',5064)):
             text=entry((cache/f'independent-{kind}-{number}/resident-comparison-independent.private.cpp').read_text())
             self.assertLess(text.index('qwen_app_release_completed_upload_staging();'),text.index('qwen_app_activate_resident_GPU_OS_reserve();'))

@@ -14,7 +14,10 @@ from resident_kernel_min_scope import SCOPE, entry, implementation, system_heade
 
 class KernelMinimum(unittest.TestCase):
     def test_actual_guard_and_scope_activation(self):
-        cache=Path('D:/PS5-AI/qwen-flash-next/build')
+        retained=os.environ.get('QWEN_FROZEN_BUILD_DIR')
+        if not retained:
+            self.skipTest('Set QWEN_FROZEN_BUILD_DIR to retained native build evidence')
+        cache=Path(retained)
         original=cache/'resident-CPU-scope-4748/app-view'
         header=system_header((original/'system_memory.h').read_text())
         phase=implementation((original/'system_memory.cpp').read_text())

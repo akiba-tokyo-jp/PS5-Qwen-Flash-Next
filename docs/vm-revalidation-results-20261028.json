@@ -25,8 +25,8 @@
     {
       "id": "C2",
       "measurement_completed": false,
-      "verification": "partial_native_acceptance_and_forced_rejection_preserved_complete_cohort_execution_unavailable",
-      "constraint": "GPU_phase_operational_VM_predicate",
+      "verification": "Original ten-request cohort failed; separate three-request numerical/rejection closure completed",
+      "constraint": "Additional same-batch/output/speed qualification is defined and not run; maximum logit error alone is not a quality verdict",
       "rejected_case": 4860,
       "physical_allocation_failure_observed": false,
       "free_kernel_pages": 1055,
@@ -35,13 +35,39 @@
       "earlier_case": 4220,
       "earlier_full_F32_rejection_rows": 23,
       "earlier_common_model_source_device_retirement_passed": false,
-      "implementation_present": true
+      "implementation_present": true,
+      "selected_validation_disposition_terminal": true,
+      "latest_evidence": "docs/independent-validation-20261028.json",
+      "prior_checkpoint_status": {
+        "id": "C2",
+        "measurement_completed": false,
+        "verification": "partial_native_acceptance_and_forced_rejection_preserved_complete_cohort_execution_unavailable",
+        "constraint": "GPU_phase_operational_VM_predicate",
+        "rejected_case": 4860,
+        "physical_allocation_failure_observed": false,
+        "free_kernel_pages": 1055,
+        "selected_operational_floor_pages": 1154,
+        "earlier_completed_requests": 10,
+        "earlier_case": 4220,
+        "earlier_full_F32_rejection_rows": 23,
+        "earlier_common_model_source_device_retirement_passed": false,
+        "implementation_present": true,
+        "selected_validation_disposition_terminal": true,
+        "latest_evidence": "docs/independent-validation-20261028.json"
+      },
+      "current_VM_execution_refusal": false,
+      "original_ten_request_cohort_completed": false,
+      "separate_numerical_rejection_closure_completed": true,
+      "separate_closure_case": 5620,
+      "forced_rejection_F32_rows": 23,
+      "forced_rejection_maximum_F32_error": 0,
+      "adopted": false
     },
     {
       "id": "C3",
-      "measurement_completed": false,
-      "verification": "matched_cache_model_comparison_complete_prefix_execution_unavailable",
-      "constraint": "prefix_depends_on_unreached_C2_frontier",
+      "measurement_completed": true,
+      "verification": "Matched cache and independent 128-slot complete-prefix ABBA passed; actual passive application adopted",
+      "constraint": "none_for_bounded_same_prompt_reuse",
       "unchanged_refused_startup_repeated": false,
       "geometry_evidence": "docs/cache128-layout-20261027.json",
       "cache_model_comparison_complete": true,
@@ -52,8 +78,35 @@
         4920
       ],
       "cache_speed_adopted": true,
-      "prefix_model_comparison_complete": false,
-      "evidence": "docs/retained-context-results-20261028.md"
+      "prefix_model_comparison_complete": true,
+      "evidence": "docs/retained-context-results-20261028.md",
+      "selected_validation_disposition_terminal": true,
+      "latest_evidence": "docs/independent-validation-20261028.json",
+      "prior_checkpoint_status": {
+        "id": "C3",
+        "measurement_completed": false,
+        "verification": "matched_cache_model_comparison_complete_prefix_execution_unavailable",
+        "constraint": "prefix_depends_on_unreached_C2_frontier",
+        "unchanged_refused_startup_repeated": false,
+        "geometry_evidence": "docs/cache128-layout-20261027.json",
+        "cache_model_comparison_complete": true,
+        "cache_cases": [
+          4780,
+          4880,
+          4900,
+          4920
+        ],
+        "cache_speed_adopted": true,
+        "prefix_model_comparison_complete": false,
+        "evidence": "docs/retained-context-results-20261028.md",
+        "selected_validation_disposition_terminal": true,
+        "latest_evidence": "docs/independent-validation-20261028.json"
+      },
+      "prefix_case": 5680,
+      "prefix_full_F32_rows": 184,
+      "prefix_maximum_F32_error": 0,
+      "prefix_speed_adopted": true,
+      "production_case": 5580
     },
     {
       "id": "C4",
@@ -64,15 +117,42 @@
       "median_source_ratio": 1.0319375546,
       "faster_rounds": 9,
       "rounds": 10,
-      "model_speed_qualified": false,
+      "model_speed_qualified": true,
       "production_six_demand_integration_missing": false,
       "implementation_present": true,
-      "actual_model_comparison_complete": false,
-      "actual_model_case": 4940,
-      "model_requests_completed": 0,
+      "actual_model_comparison_complete": true,
+      "actual_model_case": 5480,
+      "model_requests_completed": 5,
       "selected_before_context_pages": 1197,
       "free_before_context_pages": 1182,
-      "execution_constraint": "selected_before_context_VM_predicate"
+      "execution_constraint": "none_for_bounded_adoption",
+      "selected_validation_disposition_terminal": true,
+      "latest_evidence": "docs/independent-validation-20261028.json",
+      "prior_checkpoint_status": {
+        "id": "C4",
+        "measurement_completed": true,
+        "native_case": 3419,
+        "batches": 60,
+        "exact_reads": 360,
+        "median_source_ratio": 1.0319375546,
+        "faster_rounds": 9,
+        "rounds": 10,
+        "model_speed_qualified": false,
+        "production_six_demand_integration_missing": false,
+        "implementation_present": true,
+        "actual_model_comparison_complete": false,
+        "actual_model_case": 4940,
+        "model_requests_completed": 0,
+        "selected_before_context_pages": 1197,
+        "free_before_context_pages": 1182,
+        "execution_constraint": "selected_before_context_VM_predicate",
+        "selected_validation_disposition_terminal": true,
+        "latest_evidence": "docs/independent-validation-20261028.json"
+      },
+      "actual_model_full_F32_rows": 92,
+      "actual_model_maximum_F32_error": 0,
+      "adopted": true,
+      "production_case": 5580
     },
     {
       "id": "C5",
@@ -109,7 +189,20 @@
     "selected_CPU_metadata_extra_pages": 21,
     "CPU_scope_ends_before_GPU": true,
     "GPU_ordinary_floor_unchanged": true,
-    "Direct_available_GiB": 11.404281616210938
+    "Direct_available_GiB": 11.404281616210938,
+    "latest_selected_phase_scope": {
+      "original_GPU_initialization_and_model_load_floor_pages": 1154,
+      "selected_context_entry_pages": 1005,
+      "selected_postload_operational_pages": 962,
+      "CPU_metadata_extra_pages": 21,
+      "OS_minimum_pages": 898,
+      "OS_reserved_pages": 206,
+      "OS_counters_changed": false,
+      "allocator_caps_changed": false,
+      "released_exclusive_upload_staging_bytes": 8388608,
+      "universal_peak_or_stability_bound_established": false
+    },
+    "earlier_formulas_above_are_historical_checkpoints": true
   },
   "candidate_families": [
     {
@@ -164,13 +257,15 @@
         "docs/kernel-memory-cause-20261026.md"
       ],
       "retained_in_comparison": true,
-      "current_verification": "implementation_and_native_build_present_fixture_positive_actual_model_unreached",
-      "current_execution_constraint": "selected_before_context_VM_predicate",
-      "current_evidence": "4940 loaded the model; 1182 versus selected 1197 pages prevented context/request execution. Not a measured regression.",
+      "current_verification": "complete_128slot_model_ABBA_and_production_adoption",
+      "current_execution_constraint": "none_for_bounded_adoption",
+      "current_evidence": "docs/independent-validation-20261028.json",
       "physically_impossible_established": false,
       "unchanged_completed_mechanism_repeated": false,
       "latest_results": "docs/retained-context-results-20261028.md",
-      "implementation_present": true
+      "implementation_present": true,
+      "prior_current_verification": "implementation_and_native_build_present_fixture_positive_actual_model_unreached",
+      "adopted_by_this_revalidation": true
     },
     {
       "id": "GPU-lossless-and-fused-GEMV",
@@ -243,13 +338,15 @@
         "docs/remaining-validation-progress-20261026.md"
       ],
       "retained_in_comparison": true,
-      "current_verification": "checkpoint_complete_prefix_integration_present_model_cohort_unreached",
-      "current_execution_constraint": "dependent_53slot_runtime_VM_predicate",
-      "current_evidence": "4860 stopped during its second C2 request, before the prefix frontier. No prefix speed qualification.",
+      "current_verification": "complete_128slot_prefix_ABBA_and_production_adoption",
+      "current_execution_constraint": "none_for_bounded_same_prompt_reuse",
+      "current_evidence": "docs/independent-validation-20261028.json",
       "physically_impossible_established": false,
       "unchanged_completed_mechanism_repeated": false,
       "latest_results": "docs/retained-context-results-20261028.md",
-      "implementation_present": true
+      "implementation_present": true,
+      "prior_current_verification": "checkpoint_complete_prefix_integration_present_model_cohort_unreached",
+      "adopted_by_this_revalidation": true
     },
     {
       "id": "expert-aware-width2",
@@ -260,13 +357,15 @@
         "docs/native-predictive-integration-20261027.json"
       ],
       "retained_in_comparison": true,
-      "current_verification": "native_acceptance_and_full_F32_forced_rejection_preserved_complete_speed_cohort_unavailable",
-      "current_execution_constraint": "53slot_operational_VM_predicate",
-      "current_evidence": "4220 forced rejection restored 23 rows exactly; its common retirement failed. 4860 did not complete the new cohort.",
+      "current_verification": "Finite original-tolerance and forced-rejection closure completed; additional adoption qualification defined but not run",
+      "current_execution_constraint": "Missing same-batch reference, eight-input accepted/rejected coverage and matched speed; not a physical or VM impossibility claim",
+      "current_evidence": "docs/independent-validation-20261028.json",
       "physically_impossible_established": false,
       "unchanged_completed_mechanism_repeated": false,
       "latest_results": "docs/retained-context-results-20261028.md",
-      "implementation_present": true
+      "implementation_present": true,
+      "prior_current_verification": "native_acceptance_and_full_F32_forced_rejection_preserved_complete_speed_cohort_unavailable",
+      "adoption_conditions": "docs/speculative-adoption-criteria-20261028.md"
     },
     {
       "id": "predictive-cache",
@@ -278,13 +377,14 @@
         "docs/native-model-cold-start-20261027.json"
       ],
       "retained_in_comparison": true,
-      "current_verification": "native_prediction_requests_completed_in_partial_cohort_no_speed_adoption",
-      "current_execution_constraint": "complete_retired_matched_cohort_unavailable",
-      "current_evidence": "4220 completed both predictive arms; both were slower than adjacent controls. Full completed-lifetime qualification remains absent.",
+      "current_verification": "matched_observations_slower_common_original_cohort_failed_unadopted",
+      "current_execution_constraint": "none_for_rejection; no winning cohort claimed",
+      "current_evidence": "docs/independent-validation-20261028.json",
       "physically_impossible_established": false,
       "unchanged_completed_mechanism_repeated": false,
       "latest_results": "docs/retained-context-results-20261028.md",
-      "implementation_present": true
+      "implementation_present": true,
+      "prior_current_verification": "native_prediction_requests_completed_in_partial_cohort_no_speed_adoption"
     },
     {
       "id": "metadata-peak-live-and-quiet-variation",
@@ -501,12 +601,13 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "implementation_present_complete_checkpoint_pass_prefix_cohort_unreached",
-      "current_execution_constraint": "dependent_53slot_runtime_VM_predicate",
-      "current_evidence": "The corrected combined join is built and host checked; native prefix requests did not run.",
+      "current_verification": "complete_128slot_prefix_ABBA_and_production_adoption",
+      "current_execution_constraint": "none_for_bounded_same_prompt_reuse",
+      "current_evidence": "docs/independent-validation-20261028.json",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false,
-      "latest_results": "docs/retained-context-results-20261028.md"
+      "adopted_by_this_revalidation": true,
+      "latest_results": "docs/retained-context-results-20261028.md",
+      "prior_current_verification": "implementation_present_complete_checkpoint_pass_prefix_cohort_unreached"
     },
     {
       "id": "width2",
@@ -517,12 +618,14 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "native_acceptance_and_full_F32_forced_rejection_preserved_speed_unqualified",
-      "current_execution_constraint": "53slot_runtime_VM_predicate",
-      "current_evidence": "4220 completed controlled rejection with zero F32 error; whole cohort retirement and later complete matched cohort remain absent.",
+      "current_verification": "Finite original-tolerance and forced-rejection closure completed; additional adoption qualification defined but not run",
+      "current_execution_constraint": "Missing same-batch reference, eight-input accepted/rejected coverage and matched speed; not a physical or VM impossibility claim",
+      "current_evidence": "docs/independent-validation-20261028.json",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
-      "latest_results": "docs/retained-context-results-20261028.md"
+      "latest_results": "docs/retained-context-results-20261028.md",
+      "prior_current_verification": "native_acceptance_and_full_F32_forced_rejection_preserved_speed_unqualified",
+      "adoption_conditions": "docs/speculative-adoption-criteria-20261028.md"
     },
     {
       "id": "width4",
@@ -655,7 +758,7 @@
       "current_evidence": "New production passed one arithmetic smoke and two original 22-token sequences; no general answer-quality claim.",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
-      "latest_results": "docs/retained-context-results-20261028.md"
+      "latest_results": "docs/independent-validation-20261028.md"
     },
     {
       "id": "ple",
@@ -803,5 +906,17 @@
     }
   },
   "latest_results": "docs/retained-context-results-20261028.md",
-  "current_finite_queue_terminal": true
+  "current_finite_queue_terminal": true,
+  "latest_selected_terminal_report": "docs/independent-validation-20261028.json",
+  "selected_candidate_dispositions_terminal": true,
+  "failed_original_cohorts_not_relabeled_successful": true,
+  "additional_speculative_qualification": {
+    "criteria": "docs/speculative-adoption-criteria-20261028.md",
+    "implementation_completed": false,
+    "native_execution_completed": false,
+    "fixed_inputs": 8,
+    "required_actual_accepted_batches": 8,
+    "required_forced_rejections": 4,
+    "maximum_logit_error_alone_is_not_an_adoption_gate": true
+  }
 }

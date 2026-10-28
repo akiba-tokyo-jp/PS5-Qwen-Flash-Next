@@ -1,5 +1,11 @@
 # Measured VM admission revalidation
 
+Latest continuation: [independent native validation and placement](independent-validation-20261028.md)
+qualified six-demand and prefix at 128 slots and completed the speculative
+numerical/rejection closure. The [JSON ledger](vm-revalidation-results-20261028.json)
+retains all 16 families / 22 items with current and historical outcomes separate.
+Availability statements in the original dated checkpoint below are historical.
+
 This continues the owner's finite C0-C5 plan. Results below distinguish a
 completed measurement, a returned refusal, model execution and production
 adoption. A sampled maximum is not a universal physical minimum. The original

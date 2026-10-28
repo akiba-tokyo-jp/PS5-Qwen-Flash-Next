@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Exercise independent entries and the actual staging retirement function."""
 from pathlib import Path
+import os
 import subprocess
 import sys
 import tempfile
@@ -14,7 +15,10 @@ from resident_independent_scopes import bound_reference, release_completed_uploa
 class IndependentScopes(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.cache = Path('D:/PS5-AI/qwen-flash-next/build')
+        retained = os.environ.get('QWEN_FROZEN_BUILD_DIR')
+        if not retained:
+            raise unittest.SkipTest('Set QWEN_FROZEN_BUILD_DIR to retained native build evidence')
+        cls.cache = Path(retained)
         cls.combined = (cls.cache / 'resident-combined-retained-CPU-4840/resident-comparison-retained-CPU.private.cpp').read_text()
         cls.upload = (cls.cache / 'resident-refill-GPU-upload-3990/vulkan-buffer-upload.private.cpp').read_text()
 
@@ -79,7 +83,6 @@ int main(){
 }
 '''
         compiler = ROOT.parents[1] / 'toolchain/msys-clang64/clang64/bin/clang++.exe'
-        import os
         temporary_root = ROOT / '.local/host-upload-retirement-tests'
         temporary_root.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=temporary_root) as temporary:

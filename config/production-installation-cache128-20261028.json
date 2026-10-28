@@ -1,0 +1,77 @@
+{
+  "schema": "ps5-qwen-production-installation-v1",
+  "date": "2026-10-28",
+  "application_source_revision": "45b30bec6ebfc61c1a5d8ba10de76b69ba908298",
+  "application_SELF": {
+    "bytes": 17515623,
+    "sha256": "56763d373c04e2e684d79b703e5baa1ee1ba26315754f85d97a6162bd1521596"
+  },
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "precision": {
+    "weights": "original BF16/F32",
+    "KV_cache": "F32",
+    "quantization": false
+  },
+  "canonical_startup_SELF_full_readback_verified": true,
+  "installed_configuration_full_readback_verified": true,
+  "original_rollback_full_readback_verified": true,
+  "original_restored_after_success": false,
+  "actual_PS5_launches": 1,
+  "arithmetic_smoke_passed": true,
+  "external_requests": [
+    {
+      "ordinal": 1,
+      "decode_tokens_per_second": 0.40752992438923147,
+      "generated_tokens": 22,
+      "prefill_ms": 48925.05557799339,
+      "prompt_tokens": 30,
+      "total_ms": 102921.61594498158,
+      "ttft_ms": 48953.535755991936
+    },
+    {
+      "ordinal": 2,
+      "decode_tokens_per_second": 0.42098304649546436,
+      "generated_tokens": 22,
+      "prefill_ms": 48061.05518397689,
+      "prompt_tokens": 30,
+      "total_ms": 100392.02499899268,
+      "ttft_ms": 48089.53030997515
+    }
+  ],
+  "outputs_and_token_ids_equal_to_qualified_selected_case": true,
+  "actual_native_frames_viewed": 2,
+  "passive_monitor_verified": true,
+  "CPU_GPU_utilization_available": false,
+  "source_GPU_model_resources_positively_retired": true,
+  "ordinary_OS_shutdown_verified": true,
+  "final_native_owners": 0,
+  "final_gateway_running": false,
+  "final_model_loaded": false,
+  "execution_mode": "first-generation-validation",
+  "run_binding_consumed": true,
+  "relaunch_requires_fresh_case": true,
+  "sustained_service_qualified": false,
+  "CI_runs": 0,
+  "private_repository": true,
+  "GitHub_Actions_enabled": false,
+  "distinct_current_prelaunch_headroom_gate_passed": true,
+  "safety_thresholds_unchanged": false,
+  "active_expert_slots": 128,
+  "physical_cache_planes": 129,
+  "expert_cache_bytes": 1274462208,
+  "previous_production_SHA256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d",
+  "qualification_report": "docs/retained-context-results-20261028.json",
+  "original_rollback_scope": "Preserved historical MOSS plus the separately preserved previous Qwen production executable",
+  "GPU_operational_floor_unchanged": true,
+  "CPU_scope": "Once-only pre-GPU minimum plus 21 observed/selected metadata pages; original GPU floor restored before initialization",
+  "all_requested_comparisons_complete": false,
+  "source_revision_recorded_after_successful_native_build": true,
+  "historical_installation": "config/production-installation-20261025.json"
+}

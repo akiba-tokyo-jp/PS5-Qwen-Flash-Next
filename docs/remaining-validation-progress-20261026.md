@@ -1,5 +1,11 @@
 # Remaining validation: execution progress
 
+Latest status: [independent results](independent-validation-20261028.md) supersede
+the older current-production and model-availability statements below. Six-demand
+and prefix passed their 128-slot cohorts and actual passive application adoption.
+The failed C2 cohort is preserved; separate finite numerical/rejection closure
+does not complete the [additional width-two qualification](speculative-adoption-criteria-20261028.md).
+
 ## Final current-environment disposition
 
 The owner's latest instruction is to execute available work and classify the rest
