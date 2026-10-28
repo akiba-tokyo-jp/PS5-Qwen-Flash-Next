@@ -6,14 +6,18 @@ adoption. A sampled maximum is not a universal physical minimum. The original
 BF16/F32 weights, F32 KV, complete experts/PLE and pinned cumulative-idle driver
 remain unchanged. Persistent compiled caches and CI remain disabled.
 
-The current measurement/disposition sweep is finished; **the requested native
-model comparisons are not all completed**. C0, the CPU part of C1, C4 and C5
-have terminal evidence. C2 and C3 are currently execution unavailable under
-the shared startup policy, rather than physically impossible or passed.
+The current finite queue is terminal; **the requested native model comparisons
+are not all completed**. C0, C1 observations, the C3 cache comparison, C4 source
+fixture and C5 have evidence. C2, dependent prefix and actual-model C4 have
+current phase-predicate execution-unavailable outcomes, rather than physical
+impossibility or a passing comparison. The [latest native results](retained-context-results-20261028.md)
+record a complete A53/B128/B128/A53 comparison and production adoption: decode
+improved 4.185% and total request time 3.294%, with 92 exact full F32 rows.
 The complete [16-family / 22-item ledger](vm-revalidation-results-20261028.json)
-retains missing implementations as missing implementations. No new speed
-winner was adopted. The exact fastest SELF and five settings are restored,
-with native full SHA256/identity/EOF and fresh idle ownership verified.
+retains missing dependent implementations as missing implementations. The
+qualified 128-slot passive monitor/API application is installed, with the old
+production preserved as rollback. Native full SHA256/identity/EOF of canonical,
+rollback and all five settings, normal close and fresh idle are verified.
 
 ## Direct payload and kernel metadata
 
@@ -57,10 +61,11 @@ one-sided sign test is 0.01074, and a 97.85% distribution-free interval for the
 median ratio is [1.01461, 1.08292]. These assumptions and one workload limit
 generalization; none of these numbers is model tokens/s.
 
-There is no new production adoption from this fixture. Production currently
-submits pairs; realizing six-demand refill needs an actual multi-bank request
-and readiness/lease integration, with its initialization, ownership and full
-model costs included. The implemented fixture does not supply that connection.
+There is no production adoption from this fixture alone. The actual multi-bank
+request/readiness/lease integration is now implemented and natively built.
+Case 4940 loaded the model but returned before context creation at 1,182 versus
+selected 1,197 kernel pages. No actual-model six-demand request ran. Its normal
+close and exact fastest/settings restoration passed.
 
 ## Startup phase findings
 
@@ -190,16 +195,16 @@ all phase samples and exact restorations, are in the
 | Family | Reused or new result | Current disposition |
 | --- | --- | --- |
 | Known-demand/source schedule | Prior complete model qualification and adoption | Retain production implementation |
-| Shader storage / driver cold tables | New receipt handoff and twice exact bounded table restoration | CPU qualified; later model coverage unavailable under current policy |
-| One-worker refill | New actual-reader fixture, median 1.03194x | Positive source result; six-demand production bank/readiness integration is missing |
+| Shader storage / driver cold tables | Exact bounded table restoration and complete model/UI lifetimes | Native CPU/model paths exercised |
+| One-worker refill | Positive source fixture; actual model integration built | 4940 returned at before-context predicate; model gain unavailable |
 | GPU lossless / fused GEMV | Prior 0.561503x / 0.980634x | Regressions; no duplicate arithmetic rerun |
 | PLE copy elision | Prior 208 graphs, no repeatable gain | No adoption; all modes retained in comparison |
 | Ready expert overlap | Prior 40 graphs, both reverse comparisons slower | No adoption |
-| Cache 53 / 128 | Prior 360 geometry graphs | Matched model speed unavailable under shared startup policy |
-| Exact prefix | Complete checkpoint correctness already qualified | Prefix TTFT unavailable under shared startup policy |
-| Expert-aware width two | One prior accepted native verification | Forced rejection and matched speed unavailable under shared startup policy |
-| Predictive cache | Actual source worker and new lifecycle measurements passed | Model overlap unavailable under shared startup policy |
-| Metadata / peak-live / quiet variation | Prior metadata and quiet controls plus seven new startup traces | CPU observations complete; full-model peak remains unmeasured |
+| Cache 53 / 128 | 360 geometry graphs, four complete native model lifetimes and exact F32/routes | +4.185% decode; qualified passive monitor/API installed |
+| Exact prefix | Complete checkpoint and implemented cohort | Prefix frontier not reached in 4860; speed unavailable |
+| Expert-aware width two | Acceptance and 23-row exact forced rejection in partial 4220 cohort | Common retirement and complete matched speed remain unqualified |
+| Predictive cache | Two native requests completed in partial 4220 cohort | Both slower; complete retired cohort unavailable; no adoption |
+| Metadata / peak-live / quiet variation | Actual startup/load/context/request VM observations | Finite global observations; no exclusive or universal peak bound |
 | Inventory / owner observers | Existing observers and enriched state diagnostic passed | Reuse; preserve the original returned refusal |
 | Regular-file mmap | Historical confirmed freeze; protected replacement later passed | No qualified reentry for unknown mapping completion; exact cause unresolved |
 | Direct helpers / retained file census | 27 cycles and seven native ABI builds | Corrected explicit CPU scope; do not count Direct payload as VM |
@@ -212,13 +217,14 @@ refused it. Width four, adaptive depth, actual hidden-state tap/forecast,
 additional capacities and portable dual-output/GDN/small-GEMM/workgroup kernels
 still lack their stated integrations or native prerequisite coverage.
 
-C2's ten-request prediction/speculation/rejection cohort and C3's fresh cache
-and prefix comparisons are **not executed to completion**. They share the
-same unqualified model-startup prerequisite, so additional identical title
-lifetimes would duplicate the known refusal. This is the current execution
-disposition, not successful closure of all native comparisons or the original
-speed objective. No new inference rate is reported and the fastest production
-executable remains `ed4b360b...`.
+C2's complete combined cohort and the dependent prefix requests remain
+execution unavailable after 4860's runtime observation of 1,055 versus selected
+1,154 pages. Actual-model C4 stopped before context at 1,182 versus selected
+1,197 pages. Neither is declared physically impossible or a measured loser.
+The complete cache comparison and original passive application qualification
+have separate positive evidence. Fastest production is now `56763d37...`;
+the previous `ed4b360b...` is preserved as rollback. See the latest report for
+precise conditions, source functions, adoption and the bounded-service limit.
 
 ## Reproducible manual checks
 

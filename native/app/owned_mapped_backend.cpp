@@ -6,11 +6,14 @@
 #include "split_bank_bridge.h"
 #include "expert_prefetch_io.h"
 #include "predictive_cache_bridge.h"
+#include "six_bank_refill.h"
 #include "ggml-backend-impl.h"
 #include "ggml-vulkan-common.h"
 #include <type_traits>
 
 namespace qwen_app {
+bool start_native_six_bank_refill(const std::array<std::uintptr_t,6>&,
+    const std::array<ExpertPrefetchDestination,3>&,const std::array<int,2>&,const std::array<std::size_t,3>&);
 bool start_native_expert_prefetch(const std::array<std::uintptr_t,3>&,
     const std::array<ExpertPrefetchDestination,3>&,int,const std::array<std::size_t,3>&);
 }
@@ -73,6 +76,31 @@ extern "C" int ggml_app_vk_probe_owned_bank(ggml_tensor *tensor,
     if(tensor->buffer->context!=owner||owner->dev_buffer!=lease||(result!=0&&result!=1))
         throw std::runtime_error("Padded-bank lease changed; backing retained");
     return result;
+}
+
+extern "C" bool qwen_app_try_six_bank_refill(ggml_tensor *const *banks,
+        const void *const *sources,const int *slots,const std::size_t *residues) {
+    if(!qwen_app_six_bank_refill_enabled())return false;
+    if(!banks||!sources||!slots||!residues||qwen_app_predictive_cache_enabled())
+        throw std::invalid_argument("Independent six-demand banks, original sources and slots are required");
+    std::array<qwen_app::ExpertPrefetchDestination,3> destinations{};
+    std::array<std::uintptr_t,6> addresses{};
+    for(unsigned role=0;role<3;++role) {
+        struct Capture {ggml_tensor *tensor;qwen_app::ExpertPrefetchDestination *destination;};
+        Capture capture{banks[role],&destinations[role]};
+        const int result=ggml_app_vk_probe_owned_bank(banks[role],
+            [](void *data,std::size_t bytes,std::uint64_t,std::size_t alignment,void *opaque){
+                const auto &c=*static_cast<Capture *>(opaque);
+                auto *owner=static_cast<ggml_backend_vk_buffer_context *>(c.tensor->buffer->context);
+                const auto allocation=owner->dev_buffer;
+                *c.destination={data,bytes,alignment,std::shared_ptr<void>(allocation,data)};
+                return 0;
+            },&capture);
+        if(result)return false;
+        for(unsigned j=0;j<2;++j)addresses[role*2+j]=reinterpret_cast<std::uintptr_t>(sources[role*2+j]);
+    }
+    return qwen_app::start_native_six_bank_refill(addresses,destinations,{slots[0],slots[1]},
+        {residues[0],residues[1],residues[2]});
 }
 
 extern "C" bool qwen_app_begin_predictive_expert(ggml_tensor *const *banks,

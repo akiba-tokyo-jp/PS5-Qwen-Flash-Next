@@ -20,7 +20,7 @@ FORBIDDEN=('native_CPU_phase_control','native_SELF_read_control','native_cache_l
     'native_shader_startup_memory_diagnostic','native_source_contention_probe',
     'native_source_stage_memory_diagnostic','native_direct_frame_evidence')
 
-def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False,measure_worker_memory=False,incremental_tables=False,delegate_shader=False,gpu_initializer_calibration=False,gpu_capacity_only=False,phase_local_model=False,allow_large_cache=False):
+def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False,measure_worker_memory=False,incremental_tables=False,delegate_shader=False,gpu_initializer_calibration=False,gpu_capacity_only=False,phase_local_model=False,allow_large_cache=False,postloader_integrity=False,model_load_window_bytes=8<<20,existing_window_pricing=False,direct_tables=False):
     at=source.index('int main(int argc, char ** argv)');end=source.index('        const auto * chat_template',at)
     prefix=source[:at];body=source[at:end]
     flags=('native_display','monitor_validation','display_validation','runtime_validation','memory_validation',
@@ -186,6 +186,35 @@ def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False
 '''
         if body.count(needle)!=1:raise ValueError('Unique original driver-table restoration boundary required')
         body=body.replace(needle,replacement)
+    if direct_tables:
+        if not incremental_tables or not phase_local_model or not postloader_integrity:
+            raise ValueError('Owned Direct tables require exact incremental restoration and phase-local integrity')
+        prefix='#include "resident_direct_tables.h"\n'+prefix
+        needle='        const auto restored=qwen_app::restore_resident_tables_incrementally();'
+        replacement='''        qwen_app::require_resident_direct_table_policy(policy);
+        resident_sample("before_owned_Direct_tables");
+        qwen_native_stage("resident_owned_table_Direct_map_before_CPU_call_GPU_not_started");
+        qwen_app::map_resident_driver_tables_to_Direct();
+        qwen_native_stage("resident_owned_table_Direct_map_returned_same_VA_GPU_not_started");
+        const auto restored=qwen_app::restore_resident_tables_incrementally();
+        const auto &table_owner=qwen_app::resident_direct_table_owner();
+        void *table_first=nullptr,*table_last=nullptr;std::uint32_t table_protection=0;
+        if(!restored.completed||!table_owner.allocated||!table_owner.mapped||!table_owner.zeroed||
+           sceKernelQueryMemoryProtection(qwen_driver_table_storage.begin,&table_first,&table_last,&table_protection)||
+           reinterpret_cast<std::uintptr_t>(table_first)>reinterpret_cast<std::uintptr_t>(qwen_driver_table_storage.begin)||
+           reinterpret_cast<std::uintptr_t>(table_last)<reinterpret_cast<std::uintptr_t>(qwen_driver_table_storage.end)||
+           !(table_protection&1)||(table_protection&2))
+            throw std::runtime_error("Exact original Direct tables failed restoration or readonly protection; backing retained");
+        resident_sample("owned_Direct_tables_complete");
+        write_fresh_report(startup.admission_report+".resident.tables-Direct",{{"completed",true},{"tables",restored.tables},
+            {"original_table_bytes",restored.bytes},{"mapped_bytes",table_owner.mapped_bytes},{"allocated_bytes",table_owner.allocated_bytes},
+            {"free_before_mapping",table_owner.free_before},{"free_after_mapping",table_owner.free_after},
+            {"available_Direct_before",table_owner.available_before},{"same_virtual_addresses",true},
+            {"all_original_SHA256_passed",true},{"readonly_protection_passed",true},{"GPU_calls",0},
+            {"physical_backing_retained_until_ordinary_OS_close",true}});
+'''
+        if body.count(needle)!=1:raise ValueError('Unique original incremental table frontier required')
+        body=body.replace(needle,replacement)
     if receipt_diagnostic:
         needle='        qwen_app::restore_native_driver_tables();'
         if body.count(needle)!=1 or not reuse_launch_integrity:raise ValueError('Exact pre-restoration receipt diagnostic boundary required')
@@ -275,7 +304,49 @@ def specialize(source,tail,reuse_launch_integrity=False,receipt_diagnostic=False
         tail='\n        throw std::runtime_error("The compact GPU fixture cannot enter model execution");\n'+tail[tail.index('    }catch'):]
         tail=tail.replace('engine.release();','')
         prefix='#define QWEN_RESIDENT_COMPACT_GPU 1\n'+prefix
-    return '#include "resident_comparison_policy.h"\n#include "resident_counter_baseline.h"\n'+extra+prefix+'\n#include "resident_startup_trace.h"\n'+post+body+'\n'+tail
+    if postloader_integrity:
+        if not(reuse_launch_integrity and delegate_shader and phase_local_model) or gpu_initializer_calibration:
+            raise ValueError('Postloader SELF verification requires the qualified phase-local model and launch handoff')
+        anchor='        qwen_native_stage("complete_SELF_and_receipt_direct_SHA256_passed GPU_not_started=1");'
+        if body.count(anchor)!=1:raise ValueError('Unique completed startup integrity boundary required')
+        verification='''        qwen_app::require_resident_postloader_integrity(policy);
+                qwen_app::require_resident_source_VM(qwen_app::admit_native_system_memory());
+                const auto before_postloader=qwen_app::observe_native_system_memory();
+                resident_sample("postloader_SELF_before");
+                const auto postloader_started=qwen_app::ProfileClock::now();
+                qwen_native_stage("postloader_current_SELF_Direct_full_SHA256_before_read_GPU_not_started");
+                qwen_app::verify_native_startup_file_direct("/app0/eboot.bin",gate.at("candidate_SELF_bytes").get<std::uint64_t>(),
+                    gate.at("candidate_SELF_sha256").get<std::string>(),60);
+                const auto postloader_ns=qwen_app::profile_elapsed_ns(postloader_started);
+                const auto after_postloader=qwen_app::observe_native_system_memory();
+                resident_sample("postloader_SELF_completed");
+                write_fresh_report(startup.admission_report+".resident.postloader-SELF",{{"completed",true},
+                    {"pid",getpid()},{"run_id",gate.at("run_id")},{"full_current_SELF_SHA256_passed",true},
+                    {"SELF_bytes",gate.at("candidate_SELF_bytes")},{"SELF_sha256",gate.at("candidate_SELF_sha256")},
+                    {"free_before",before_postloader.kernel_free},{"free_after",after_postloader.kernel_free},
+                    {"elapsed_ns",postloader_ns},{"passes",1},{"maximum_read_window_bytes",1048576},
+                    {"GPU_calls",0},{"cache_recovery_assumed",false}});
+'''
+        body=body.replace(anchor,verification+anchor)
+        prefix='#include "resident_postloader_integrity.h"\n'+prefix
+    if model_load_window_bytes not in (1<<20,8<<20):raise ValueError('Unsupported model-load window')
+    if existing_window_pricing:
+        if not phase_local_model:raise ValueError('Existing-window pricing requires the explicit phase-local scope')
+        old='qwen_app::require_resident_phase_VM(policy,read_completed_native_report(buffer_proof));'
+        if body.count(old)!=1:raise ValueError('Unique phase scope binding required')
+        body=body.replace(old,'qwen_app::require_resident_phase_VM(policy,read_completed_native_report(buffer_proof),true);')
+        body=body.replace('qwen_app::require_resident_source_VM(after_fixture);','qwen_app::require_resident_existing_source_VM(after_fixture);')
+        body=body.replace('context_floor+245','context_floor+43')
+        body=body.replace('{"source_window_extra_pages",19},{"reused_worker_pages",worker_price.worker_pages}',
+            '{"future_new_allocation_extra_pages",19},{"existing_source_window_extra_pages",0},{"reused_worker_pages",worker_price.worker_pages}')
+    if model_load_window_bytes==1<<20:
+        if not phase_local_model:raise ValueError('Load-only I/O requires the explicit phase-local model scope')
+        anchor='        qwen_app::enable_resident_source_VM();'
+        if body.count(anchor)!=1:raise ValueError('Unique completed CPU frontier for load-window activation required')
+        body=body.replace(anchor,'        qwen_app::require_resident_load_window(policy);\n'+anchor)
+        prefix='#include "resident_load_window.h"\n'+prefix
+    body=body.replace('llama_log_set(native_log, nullptr);','llama_log_set(qwen_app::resident_native_log, nullptr);')
+    return '#include "resident_comparison_policy.h"\n#include "resident_counter_baseline.h"\n'+extra+prefix+'\n#include "resident_startup_trace.h"\n#include "resident_load_error.h"\n'+post+body+'\n'+tail
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
@@ -291,7 +362,11 @@ def main():
     p.add_argument('--GPU-capacity-only',action='store_true',help='Exclude the unused model path from the explicitly model-free capacity executable')
     p.add_argument('--boot-qualified-journals',action='store_true',help='Keep exclusive startup logs distinct when a PID recurs after reboot')
     p.add_argument('--phase-local-model-admission',action='store_true',help='Use qualified next-window/init/context components rather than a historical whole-interval sum')
-    p.add_argument('--comparison-kind',choices=('predictive','cache','prefix'),default='predictive',help='Independent bounded model comparison; each has its own exact policy and result')
+    p.add_argument('--postloader-SELF-integrity',action='store_true',help='Measure one full Direct SELF verification after loader reads, preserving exact original integrity and reserves')
+    p.add_argument('--model-load-window-bytes',type=int,choices=(1<<20,8<<20),default=8<<20,help='Load-only source submission cap; postload source windows remain 8 MiB')
+    p.add_argument('--existing-source-window-pricing',action='store_true',help='Charge Direct allocation once; keep the original floor on reads of the already owned source window')
+    p.add_argument('--CPU-fixed-map-qualification',type=Path,help='Completed CPU-only fixed-map check; enables Direct backing of audited exclusive table NOBITS')
+    p.add_argument('--comparison-kind',choices=('predictive','cache','prefix','combined','refill'),default='predictive',help='Independent bounded model comparison; each has its own exact policy and result')
     a=p.parse_args();prior=json.loads(a.qualified_native.read_text())
     if a.reuse_qwen_factory_from and not a.qwen_only_factory:raise ValueError('Factory reuse requires the exact Qwen-only factory')
     if a.GPU_capacity_only and (not a.GPU_initializer_calibration or a.qwen_only_factory):raise ValueError('Compact GPU capacity admits no model factory')
@@ -304,11 +379,13 @@ def main():
     flags=dict(reuse_launch_integrity=a.reuse_launch_SELF_integrity,receipt_diagnostic=a.receipt_only_diagnostic,
         measure_worker_memory=a.measure_worker_memory,incremental_tables=a.incremental_driver_tables,
         delegate_shader=a.delegate_shader_launch_integrity,gpu_initializer_calibration=a.GPU_initializer_calibration,
-        gpu_capacity_only=a.GPU_capacity_only,phase_local_model=a.phase_local_model_admission)
+        gpu_capacity_only=a.GPU_capacity_only,phase_local_model=a.phase_local_model_admission,postloader_integrity=a.postloader_SELF_integrity,model_load_window_bytes=a.model_load_window_bytes,existing_window_pricing=a.existing_source_window_pricing,direct_tables=bool(a.CPU_fixed_map_qualification))
     if a.comparison_kind!='predictive':
         if a.GPU_initializer_calibration or a.GPU_capacity_only or a.measure_worker_memory or a.receipt_only_diagnostic:
             raise ValueError('Additional model comparisons cannot combine calibration scopes')
-        from resident_additional_comparisons import generate
+        if a.comparison_kind=='combined':from resident_combined_comparison import generate
+        elif a.comparison_kind=='refill':from resident_refill_comparison import generate
+        else:from resident_additional_comparisons import generate
         text,additional_inputs=generate(a.comparison_kind,source.read_text(),tail.read_text(),flags)
     else:text=specialize(source.read_text(),tail.read_text(),**flags)
     generated=a.out/'resident-comparison.private.cpp';generated.write_text(text,newline='\n')
@@ -322,7 +399,7 @@ def main():
     phase_source=None
     if a.phase_local_model_admission:
         from resident_phase_source import build as build_phase_source
-        phase_source=build_phase_source(prior,a.out/'phase-source')
+        phase_source=build_phase_source(prior,a.out/'phase-source',window_bytes=a.model_load_window_bytes,existing_window=a.existing_source_window_pricing)
         if command.count(phase_source['original_object'])!=1:raise ValueError('Unique original source-reader object required')
         command=[phase_source['object']['path']if x==phase_source['original_object']else x for x in command]
     bootstrap_namespace=None
@@ -353,7 +430,7 @@ def main():
             format='entry-b<boot_seconds>-<boot_microseconds>-<pid>')
     if a.delegate_shader_launch_integrity:
         from resident_shader_integrity import build as build_shader_handoff
-        shader_handoff=build_shader_handoff(prior,a.out/'shader-integrity-overlay')
+        shader_handoff=build_shader_handoff(prior,a.out/'shader-integrity-overlay',a.qualified_native)
         for replacement in shader_handoff['replacements']:
             old_shader=replacement['original_object']['path'];new_shader=replacement['object']['path']
             if command.count(old_shader)!=1:raise ValueError('The actual original shader object must be replaced exactly once')
@@ -398,13 +475,23 @@ def main():
         else:extra.append((args,Path(entry['directory'])))
         command.insert(command.index('--start-group'),str(factory_obj))
     paths=[Path(__file__),a.qualified_native,source,tail,ROOT/'native/app/resident_comparison_policy.h',
-           ROOT/'native/app/resident_startup_trace.h',ROOT/'native/app/resident_counter_baseline.h',generated]
+           ROOT/'native/app/resident_startup_trace.h',ROOT/'native/app/resident_counter_baseline.h',ROOT/'native/app/resident_load_error.h',generated]
     if a.reuse_launch_SELF_integrity:paths += [ROOT/'native/app/resident_launch_integrity.h',ROOT/'native/app/resident_shader_integrity.h']
     if a.measure_worker_memory:paths.append(ROOT/'native/app/resident_worker_memory.h')
     if a.incremental_driver_tables:paths.append(ROOT/'native/app/resident_incremental_tables.h')
     if a.GPU_initializer_calibration:paths += [ROOT/'native/app/resident_gpu_calibration.inc',ROOT/'native/app/resident_gpu_calibration_policy.h',ROOT/'native/app/resident_gpu_buffers.h',ROOT/'native/app/resident_gpu_buffers.inc']
     if bootstrap_namespace:paths += [Path(bootstrap_namespace[k]['path'])for k in ('original','generated','header')]
     if a.phase_local_model_admission:paths += [ROOT/'native/app/resident_phase_vm.h',ROOT/'native/app/resident_worker_qualification.h']
+    if a.postloader_SELF_integrity:paths.append(ROOT/'native/app/resident_postloader_integrity.h')
+    if a.model_load_window_bytes!=8<<20:paths.append(ROOT/'native/app/resident_load_window.h')
+    if a.CPU_fixed_map_qualification:
+        proof=json.loads(a.CPU_fixed_map_qualification.read_text());raw=proof['raw']
+        if proof.get('completed')is not True or proof.get('GPU_calls')!=0 or proof.get('title_launches')!=0 or record(raw['path'])!=raw:
+            raise ValueError('Positive original CPU-only fixed-map qualification required')
+        text=Path(raw['path']).read_text()
+        if 'CPU_FIXED_MAP_RETURNED rc=0 exact_address=1'not in text or 'all_neighbor_patterns_exact=1 readonly_exact=1'not in text or 'live_Direct_bytes=0'not in text:
+            raise ValueError('Actual fixed address, adjacent bytes, protection and complete CPU retirement required')
+        paths += [ROOT/'native/app/resident_direct_tables.h',a.CPU_fixed_map_qualification,Path(raw['path'])]
     paths+=additional_inputs
     if factory:paths+=[Path(factory[k]['path'])for k in ('original','generated','original_compile_recipe')]
     if factory and factory.get('reused_from'):paths+=[a.reuse_qwen_factory_from,factory_obj,Path(factory['actual_object_source']['path'])]
@@ -428,6 +515,8 @@ def main():
         resident_bootstrap_namespace=bootstrap_namespace,
         resident_phase_source=phase_source,
         resident_comparison_kind=a.comparison_kind,
+        resident_postloader_SELF_integrity=a.postloader_SELF_integrity,
+        resident_Direct_table_CPU_qualification=record(a.CPU_fixed_map_qualification)if a.CPU_fixed_map_qualification else None,
         application_sources=prior['application_sources']+[record(tail)],
         application_headers=prior['application_headers']+[record(ROOT/'native/app/resident_comparison_policy.h'),
             record(ROOT/'native/app/resident_startup_trace.h')])
@@ -443,7 +532,7 @@ def main():
         if 'llama_model_load_from_file'in symbols or 'qwen_app::LlamaEngine::next_with_one_draft('in symbols:
             raise ValueError('Compact GPU capacity retained the unused model implementation')
         receipt.update(model_load_and_speculative_API_absence_passed=True,required_engine_and_driver_symbols_present=False)
-    elif 'llama_model_load_from_file'not in symbols or (a.comparison_kind=='predictive' and 'qwen_app::LlamaEngine::next_with_one_draft('not in symbols):
+    elif 'llama_model_load_from_file'not in symbols or (a.comparison_kind in ('predictive','combined') and 'qwen_app::LlamaEngine::next_with_one_draft('not in symbols):
         raise ValueError('Actual model or speculative arithmetic missing')
     linkmap=(a.out/'native-link.private.map').read_text().replace('\\','/')
     for row in prior['bounded_model_source_overrides']['objects']:

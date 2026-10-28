@@ -1,5 +1,17 @@
 # PS5 Flash Next plan status
 
+The [terminal retained-context results](retained-context-results-20261028.md)
+and [sanitized measurements](retained-context-results-20261028.json) are the
+latest status. The full A53/B128/B128/A53 comparison passed: decode improved
+approximately 4.19%, total request time approximately 3.29%, and all 92 F32 rows
+matched exactly. The original passive monitor/API application passed native
+validation and is installed with 128 slots; exact prior production remains a
+rollback. It was normally closed, with final native artifact/settings readback
+and fresh idle verified. C2, dependent prefix and actual-model C4 have explicit
+current execution-unavailable outcomes; all native comparisons are not claimed
+complete. The 16-family/22-item ledger is updated. Earlier paragraphs below are
+historical and do not override these outcomes. No reboot or CI occurred.
+
 The [Direct capacity and original-model continuation](resident-buffer-capacity-20261028.md)
 supersedes the pending risk decision below. The owner accepted the disclosed
 risk; all five original-size raw buffers were allocated in case 3643. Available

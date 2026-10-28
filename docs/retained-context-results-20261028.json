@@ -1,0 +1,501 @@
+{
+  "schema": "ps5-qwen-retained-context-terminal-results-v1",
+  "date": "2026-10-28",
+  "current_finite_queue_terminal": true,
+  "all_requested_native_comparisons_completed": false,
+  "no_global_physical_impossibility_claimed": true,
+  "CI_runs": 0,
+  "reboots": 0,
+  "automatic_native_retries": 0,
+  "driver": {
+    "source_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "compiler_archive_SHA256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+    "linked_archive_SHA256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_caches_enabled": false
+  },
+  "unchanged_model": {
+    "weights": "original BF16",
+    "activations": "F32",
+    "accumulation": "F32",
+    "KV": "F32",
+    "all_experts_retained": true,
+    "model_file_parts_MiB": 512,
+    "context_tokens": 256,
+    "prefill_tokens": 4,
+    "quantization_enabled": false
+  },
+  "cache_comparison": {
+    "cases": [
+      4780,
+      4880,
+      4900,
+      4920
+    ],
+    "native_requests": 12,
+    "cross_cache_F32_rows": 92,
+    "maximum_absolute_F32_error": 0.0,
+    "all_expert_selections_exact": true,
+    "decode": {
+      "control": [
+        0.39137446048254076,
+        0.3915989898995952
+      ],
+      "candidate": [
+        0.4083355982765734,
+        0.4074063781715224
+      ],
+      "reverse_pair_ratios": [
+        1.043337364868215,
+        1.0403662641621731
+      ],
+      "mean_ratio": 1.0418513885112795,
+      "observed_control_range": 0.00022452941705441987,
+      "both_orders_faster": true,
+      "candidate_range_clear_of_observed_control_range": true,
+      "reproducible_in_this_finite_cohort": true
+    },
+    "total": {
+      "control": [
+        105819.48670099676,
+        105802.80083699524
+      ],
+      "candidate": [
+        102310.01339500397,
+        102564.57672699541
+      ],
+      "reverse_pair_ratios": [
+        1.0343023443115311,
+        1.0315725391098651
+      ],
+      "mean_ratio": 1.0329357457748882,
+      "observed_control_range": 16.685864001512527,
+      "both_orders_faster": true,
+      "candidate_range_clear_of_observed_control_range": true,
+      "reproducible_in_this_finite_cohort": true
+    }
+  },
+  "benchmark_conditions": {
+    "measured_requests_per_case": 2,
+    "warmup_requests_per_case": 1,
+    "prompt_tokens": 30,
+    "generated_tokens": 22,
+    "original_expert_cache_empty_before_each_measured_request": true,
+    "file_pages_cold_assumed": false,
+    "one_PS5": true
+  },
+  "production": {
+    "adopted": true,
+    "SELF_SHA256": "56763d373c04e2e684d79b703e5baa1ee1ba26315754f85d97a6162bd1521596",
+    "active_cache_slots": 128,
+    "physical_planes": 129,
+    "cache_request_bytes": 1274462208,
+    "previous_production_SHA256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d",
+    "native_API_requests": 2,
+    "native_total_requests": 3,
+    "original_passive_monitor_preserved": true,
+    "full_F32_rows_compared": 23,
+    "maximum_absolute_F32_error": 0.0,
+    "all_original_expert_selections_exact": true,
+    "API_metrics": [
+      {
+        "decode_tokens_per_second": 0.40752992438923147,
+        "generated_tokens": 22,
+        "prefill_ms": 48925.05557799339,
+        "prompt_tokens": 30,
+        "total_ms": 102921.61594498158,
+        "ttft_ms": 48953.535755991936
+      },
+      {
+        "decode_tokens_per_second": 0.42098304649546436,
+        "generated_tokens": 22,
+        "prefill_ms": 48061.05518397689,
+        "prompt_tokens": 30,
+        "total_ms": 100392.02499899268,
+        "ttft_ms": 48089.53030997515
+      }
+    ],
+    "visible_tokens_per_second": [
+      0.41,
+      0.42
+    ],
+    "native_normal_close_and_fresh_idle_verified": true,
+    "active_title": false,
+    "model_loaded": false,
+    "sustained_service_qualified": false,
+    "exact_installed_SELF_rollback_and_all_five_settings_verified": true,
+    "readback": {
+      "bytes": 1359,
+      "sha256": "44363967e8adc2d70e6ca2227ab1f55165d7973baa1d410b74b392a4ee7b3ef5"
+    }
+  },
+  "memory": {
+    "Direct_available_GiB": 11.404281616210938,
+    "raw_GPU_buffers_allocated_bytes": 8755105280,
+    "Direct_capacity_and_kernel_VM_are_separate": true,
+    "ordinary_GPU_floor_pages": 1154,
+    "selected_CPU_metadata_extra_pages": 21,
+    "CPU_rule_ends_before_GPU": true,
+    "measured_Direct_metadata_pages": 17,
+    "measured_idle_pages": 2,
+    "selected_additional_pages": 2,
+    "universal_safe_peak_bound_established": false,
+    "reset_VM_deltas_case4780": [
+      0,
+      0,
+      0
+    ]
+  },
+  "current_unavailable_comparisons": [
+    {
+      "stage": "C2",
+      "scope": "Complete 19-request prediction/speculation/rejection plus prefix cohort",
+      "case": 4860,
+      "reason": "Operational GPU-phase VM predicate: 1055 free versus selected 1154 pages during the second request",
+      "model_requests_completed": 1,
+      "changed_context_reuse_did_not_establish_stability": true,
+      "hardware_impossibility_proven": false
+    },
+    {
+      "stage": "C3-prefix",
+      "scope": "Nine matched prefix requests after C2",
+      "case": 4860,
+      "reason": "Dependent cohort was not reached; complete checkpoint support exists but prefix model speed is not established",
+      "hardware_impossibility_proven": false
+    },
+    {
+      "stage": "C4",
+      "scope": "Actual-model five-request six-demand delivery comparison",
+      "case": 4940,
+      "reason": "Before-context predicate: 1182 free versus selected 1197 pages (1154 plus 41 observed and 2 selected)",
+      "model_requests_completed": 0,
+      "implementation_present": true,
+      "source_fixture_ratio": 1.0319375546,
+      "model_speed_established": false,
+      "hardware_impossibility_proven": false
+    }
+  ],
+  "preserved_partial_C2": {
+    "case": 4220,
+    "complete_request_results": 10,
+    "complete_model_source_device_retirement_before_OS_close": false,
+    "ordinary_prediction_controls": [
+      0.3917128142240863,
+      0.39190353202806405
+    ],
+    "prediction_candidates": [
+      0.3896309359049994,
+      0.3873262992533577
+    ],
+    "ordinary_width2_controls": [
+      0.3009281925036528,
+      0.391785233497397
+    ],
+    "width2_candidates": [
+      0.3965875492206463,
+      0.39637775476113124
+    ],
+    "forced_rejection_F32_rows": 23,
+    "forced_rejection_maximum_error": 0.0,
+    "speed_adoption_qualified": false,
+    "reason": "Cohort join software failure; later guarded scope did not complete the matched cohort"
+  },
+  "host_checks": {
+    "fresh_actual_SLRU_behavior_comparisons": 768,
+    "CPU_GPU_predicate_controls": 15,
+    "route_review_positive_controls": 2,
+    "route_review_refusal_controls": 5,
+    "promotion_positive_controls": 1,
+    "promotion_refusal_controls": 12,
+    "native_context_reuse_no_added_GPU_calls": true,
+    "post_merge_entry_generator_tests": 4
+  },
+  "cases": [
+    {
+      "case": 4190,
+      "native_cohort_completed": false,
+      "completed_requests": 0,
+      "GPU_initializations": 0,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": "early_SELF_Direct_integrity_failed_before_CXX",
+      "terminal": {
+        "bytes": 122,
+        "sha256": "0e0d97ea1c77ec002767efbeea115213c108af10d354ce4e759b1067e631de72"
+      },
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "7d2bacc105456ec2badec2fa8b50e8ad37a8ec7d0d74ea9e97f674e68988cc31"
+      }
+    },
+    {
+      "case": 4220,
+      "native_cohort_completed": false,
+      "completed_requests": 10,
+      "GPU_initializations": 1,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": "native_driver_frontend_contract_failed",
+      "terminal": {
+        "bytes": 115,
+        "sha256": "0034d275f3d7b31f6a6fd4cde9a1cd1c6a15d353b13a0a718cd29ec883ca74ce"
+      },
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "4affcd6406fc3698e721cddb23cac0192c7ec6f443681a01c76254e56485ea90"
+      }
+    },
+    {
+      "case": 4260,
+      "native_cohort_completed": false,
+      "completed_requests": 0,
+      "GPU_initializations": 0,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": "Native kernel free pages do not retain their minimum and extra reserve",
+      "terminal": {
+        "bytes": 1033,
+        "sha256": "871f3561e57d33c17814d84cd09cc545f9b74d5301962c7904de73b2273e39b5"
+      },
+      "last_free_kernel_pages": 986,
+      "selected_operational_floor_pages": 1154,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "599f73ab8b82faa905d3fe0869e3253f39f0552a873ad08de36337e006e07d2f"
+      }
+    },
+    {
+      "case": 4340,
+      "native_cohort_completed": false,
+      "completed_requests": 0,
+      "GPU_initializations": 0,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": "Native kernel free pages do not retain their minimum and extra reserve",
+      "terminal": {
+        "bytes": 1048,
+        "sha256": "18e0c87febb84bb2de0bf78bd1ca431692ba59345994c54ca718cf55fe37d21c"
+      },
+      "last_free_kernel_pages": 1142,
+      "selected_operational_floor_pages": 1154,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "671b5faabb0f2064c73504bfeea76da1975d01bb1f6353a42684407f01df1787"
+      }
+    },
+    {
+      "case": 4440,
+      "native_cohort_completed": false,
+      "completed_requests": 4,
+      "GPU_initializations": 1,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": "Native kernel free pages do not retain their minimum and extra reserve",
+      "terminal": {
+        "bytes": 7504,
+        "sha256": "86cd03ef0a50c069f0e9b264fc7665364a0a02ccd831c02f9f69df77578fc81a"
+      },
+      "last_free_kernel_pages": 1035,
+      "selected_operational_floor_pages": 1154,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1210,
+        "sha256": "9139802717891e36535443befa61705ddd3e791198bea0c37f47ff3e6bbf89be"
+      }
+    },
+    {
+      "case": 4460,
+      "native_cohort_completed": false,
+      "completed_requests": 0,
+      "GPU_initializations": 0,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": "Native kernel free pages do not retain their minimum and extra reserve",
+      "terminal": {
+        "bytes": 1048,
+        "sha256": "6f6e35aa425f9c8e963d828af79d53f923926ac567ac07494dd529de1c868d83"
+      },
+      "last_free_kernel_pages": 1134,
+      "selected_operational_floor_pages": 1154,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "9d858a995e5a0896b2675053eb72cc9172913a252e7fe2c36a99fa35108224d9"
+      }
+    },
+    {
+      "case": 4600,
+      "native_cohort_completed": false,
+      "completed_requests": 0,
+      "GPU_initializations": 0,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": "Native kernel free pages do not retain their minimum and extra reserve",
+      "terminal": {
+        "bytes": 1236,
+        "sha256": "23d80c83de5c90cbd2cc36bdeac1aff144a43fd817e50733c090a10766743aed"
+      },
+      "last_free_kernel_pages": 1098,
+      "selected_operational_floor_pages": 1154,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "40ee658f78beed2e2f2823eb46eb887ef46a9852e484b53873f89a2445eb6226"
+      }
+    },
+    {
+      "case": 4760,
+      "title_launches": 0,
+      "GPU_initializations": 0,
+      "production_unchanged": true,
+      "disposition": "Service identity refusal before publication; consumed case closed without replay",
+      "evidence": {
+        "bytes": 812,
+        "sha256": "93489d0fc96bbd358f5e100ac3db5d995206143e56ffb2fa44aa43910fec0147"
+      }
+    },
+    {
+      "case": 4780,
+      "native_cohort_completed": true,
+      "completed_requests": 3,
+      "GPU_initializations": 1,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": null,
+      "terminal": {
+        "bytes": 10699,
+        "sha256": "46020c5d841d23de168c40246a43d6521c8ab90e5ecc1e9aa4774b33f3aa407b"
+      },
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "d87308b48d7bf872d72b097f603cc2fa1886cb039405b3cc0cda6a64d7c471b9"
+      }
+    },
+    {
+      "case": 4860,
+      "native_cohort_completed": false,
+      "completed_requests": 1,
+      "GPU_initializations": 1,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": "Native kernel free pages do not retain their minimum and extra reserve",
+      "terminal": {
+        "bytes": 10250,
+        "sha256": "3c38b02e823177e9095425ae750efffdb6ec97ec6250fd614c7121067d4a5329"
+      },
+      "last_free_kernel_pages": 1055,
+      "selected_operational_floor_pages": 1154,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1210,
+        "sha256": "e5b2dbbe28115734e74577d13ce04660ce2188b485ca6e352b44a55be26b53e9"
+      }
+    },
+    {
+      "case": 4880,
+      "native_cohort_completed": true,
+      "completed_requests": 3,
+      "GPU_initializations": 1,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": null,
+      "terminal": {
+        "bytes": 10706,
+        "sha256": "16603a79322d91a203ffd34989ed2e4da24aed95feda3e971cdadf8823494069"
+      },
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "682d97291ee757240d65e3f0c2edb35ffe6d92fe2e885fbb21dc0c702857e988"
+      }
+    },
+    {
+      "case": 4900,
+      "native_cohort_completed": true,
+      "completed_requests": 3,
+      "GPU_initializations": 1,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": null,
+      "terminal": {
+        "bytes": 10704,
+        "sha256": "f111ee51af56f73637aa48258f95980d3e3a0e27aa032fc53305ad183a4a4a21"
+      },
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "cd7ba1f54fd9b07fcc4566d9bdec443f7aa5d713b8e8b48f968d153de8fb0b2a"
+      }
+    },
+    {
+      "case": 4920,
+      "native_cohort_completed": true,
+      "completed_requests": 3,
+      "GPU_initializations": 1,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": null,
+      "terminal": {
+        "bytes": 10699,
+        "sha256": "5c67f74779cf1810d131963094116819a830ddb4af8b3bbc54c9fc8933a6ff08"
+      },
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1211,
+        "sha256": "25ace58a670391f6271de7b6f37f038d81bd6e4504514abeb7da0274df35e92e"
+      }
+    },
+    {
+      "case": 4940,
+      "native_cohort_completed": false,
+      "completed_requests": 0,
+      "GPU_initializations": 1,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": "Native kernel free pages do not retain their minimum and extra reserve",
+      "terminal": {
+        "bytes": 2395,
+        "sha256": "8765b149f84744158e02acc0347b573d354401da747903b00c7959e04becf04e"
+      },
+      "last_free_kernel_pages": 1182,
+      "selected_operational_floor_pages": 1154,
+      "exact_fastest_and_settings_restored": true,
+      "restoration": {
+        "bytes": 1210,
+        "sha256": "8d3b47ec4e60246f74847d89e43696301cc55e20695d97621507f9d60e1f76aa"
+      }
+    },
+    {
+      "case": 5000,
+      "native_cohort_completed": true,
+      "completed_requests": 3,
+      "GPU_initializations": 1,
+      "normal_OS_close_accepted": true,
+      "native_owner_absence_verified": true,
+      "current_failure": null,
+      "terminal": {
+        "bytes": 4957,
+        "sha256": "7d19b6a5101f08b53bb004b5aa096c4d7064246edb1dd1742a4b1d3cbed6af94"
+      },
+      "qualified_production_kept": true,
+      "production_readback": {
+        "bytes": 1359,
+        "sha256": "44363967e8adc2d70e6ca2227ab1f55165d7973baa1d410b74b392a4ee7b3ef5"
+      }
+    }
+  ],
+  "application_relink": {
+    "native_ELF_SHA256": "91f90eb97844089cc45b4559030b9c0abc14fc4f840ccef195509019d9bf2646",
+    "parent_native_receipt_SHA256": "041f41f00ac6ce94f0f93461a0d43b541b9b174e8d2d3614addac43af1130f0f",
+    "actual_MoE_source_SHA256": "7785cc1d714f271cc692de5e988b5450eaaaabba1d9740018eb19613a353769a",
+    "actual_MoE_object_SHA256": "359f0be90a1ecf084768a331bb0f7ae6c037a13263d4a74889f3d2c709bfc110",
+    "original_UI_API_tail_SHA256": "675f19b6119796cb4237f9822bae02bcac01213c5af2e740558a4e3e872e78d1",
+    "pinned_engine_revision": "0a1ef309cdbb9f2024f58a38fb4c42352c5db569",
+    "complete_actual_commands_and_input_hashes_in_private_receipts": true
+  }
+}

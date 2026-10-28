@@ -19,24 +19,41 @@
     {
       "id": "C1",
       "measurement_completed": true,
-      "scope": "CPU startup phases, exact tables, receipt/shader handoff and worker lifecycles; future GPU load is not newly calibrated",
+      "scope": "CPU startup and actual model/load/context/request VM observations; finite global samples are not exclusive or universal peak bounds",
       "evidence": "docs/resident-startup-calibration-20261028.json"
     },
     {
       "id": "C2",
       "measurement_completed": false,
-      "verification": "native_model_comparison_unexecuted",
-      "constraint": "shared_startup_policy_refused_before_GPU",
-      "rejected_case": 3538,
-      "physical_allocation_failure_observed": false
+      "verification": "partial_native_acceptance_and_forced_rejection_preserved_complete_cohort_execution_unavailable",
+      "constraint": "GPU_phase_operational_VM_predicate",
+      "rejected_case": 4860,
+      "physical_allocation_failure_observed": false,
+      "free_kernel_pages": 1055,
+      "selected_operational_floor_pages": 1154,
+      "earlier_completed_requests": 10,
+      "earlier_case": 4220,
+      "earlier_full_F32_rejection_rows": 23,
+      "earlier_common_model_source_device_retirement_passed": false,
+      "implementation_present": true
     },
     {
       "id": "C3",
       "measurement_completed": false,
-      "verification": "native_model_comparisons_unexecuted",
-      "constraint": "same_shared_startup_prerequisite_as_C2",
+      "verification": "matched_cache_model_comparison_complete_prefix_execution_unavailable",
+      "constraint": "prefix_depends_on_unreached_C2_frontier",
       "unchanged_refused_startup_repeated": false,
-      "geometry_evidence": "docs/cache128-layout-20261027.json"
+      "geometry_evidence": "docs/cache128-layout-20261027.json",
+      "cache_model_comparison_complete": true,
+      "cache_cases": [
+        4780,
+        4880,
+        4900,
+        4920
+      ],
+      "cache_speed_adopted": true,
+      "prefix_model_comparison_complete": false,
+      "evidence": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "C4",
@@ -48,7 +65,14 @@
       "faster_rounds": 9,
       "rounds": 10,
       "model_speed_qualified": false,
-      "production_six_demand_integration_missing": true
+      "production_six_demand_integration_missing": false,
+      "implementation_present": true,
+      "actual_model_comparison_complete": false,
+      "actual_model_case": 4940,
+      "model_requests_completed": 0,
+      "selected_before_context_pages": 1197,
+      "free_before_context_pages": 1182,
+      "execution_constraint": "selected_before_context_VM_predicate"
     },
     {
       "id": "C5",
@@ -81,7 +105,11 @@
     "written_observation_policy_deficit_pages": 267,
     "last_observation_policy_deficit_pages": 271,
     "actual_GPU_allocation_failure_observed": false,
-    "universal_safe_threshold_established": false
+    "universal_safe_threshold_established": false,
+    "selected_CPU_metadata_extra_pages": 21,
+    "CPU_scope_ends_before_GPU": true,
+    "GPU_ordinary_floor_unchanged": true,
+    "Direct_available_GiB": 11.404281616210938
   },
   "candidate_families": [
     {
@@ -119,11 +147,12 @@
         "docs/native-model-cold-start-20261027.json"
       ],
       "retained_in_comparison": true,
-      "current_verification": "new_same_launch_integrity_and_incremental_tables_native_CPU_passed",
-      "current_execution_constraint": "later_model_coverage_policy_blocked",
-      "current_evidence": "Cases 3521/3538: 673 exact tables; 3538 shader handoff reached all CPU preflight stages.",
+      "current_verification": "native_CPU_and_multiple_original_model_cohorts_passed",
+      "current_execution_constraint": "none_for_measured_scope",
+      "current_evidence": "Exact tables and SELF handoff exercised in completed cache/UI model cohorts.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "one-worker-refill",
@@ -135,11 +164,13 @@
         "docs/kernel-memory-cause-20261026.md"
       ],
       "retained_in_comparison": true,
-      "current_verification": "current_reader_fixture_positive",
-      "current_execution_constraint": "six_demand_model_bank_and_readiness_integration_missing",
-      "current_evidence": "3419: median 1.0319375546x, 9/10 positive; not model tok/s.",
+      "current_verification": "implementation_and_native_build_present_fixture_positive_actual_model_unreached",
+      "current_execution_constraint": "selected_before_context_VM_predicate",
+      "current_evidence": "4940 loaded the model; 1182 versus selected 1197 pages prevented context/request execution. Not a measured regression.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "latest_results": "docs/retained-context-results-20261028.md",
+      "implementation_present": true
     },
     {
       "id": "GPU-lossless-and-fused-GEMV",
@@ -196,11 +227,13 @@
         "docs/finite-execution-dispositions-20261027.md"
       ],
       "retained_in_comparison": true,
-      "current_verification": "360_graph_geometry_pass_model_speed_unverified",
-      "current_execution_constraint": "shared_model_startup_policy_blocked",
-      "current_evidence": "Different process lifetimes required; cannot flip immutable cache geometry in a loaded model.",
+      "current_verification": "complete_native_ABBA_F32_routes_speed_and_production_qualified",
+      "current_execution_constraint": "none_for_bounded_adoption",
+      "current_evidence": "12 cache requests, 92 exact F32 rows; decode +4.185%, total +3.294%; original passive UI/API then qualified and deployed.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "latest_results": "docs/retained-context-results-20261028.md",
+      "adopted_by_this_revalidation": true
     },
     {
       "id": "exact-prefix",
@@ -210,11 +243,13 @@
         "docs/remaining-validation-progress-20261026.md"
       ],
       "retained_in_comparison": true,
-      "current_verification": "complete_checkpoint_pass_prefix_speed_unverified",
-      "current_execution_constraint": "shared_model_startup_policy_blocked",
-      "current_evidence": "Checkpoint correctness reused; TTFT comparison remains unexecuted.",
+      "current_verification": "checkpoint_complete_prefix_integration_present_model_cohort_unreached",
+      "current_execution_constraint": "dependent_53slot_runtime_VM_predicate",
+      "current_evidence": "4860 stopped during its second C2 request, before the prefix frontier. No prefix speed qualification.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "latest_results": "docs/retained-context-results-20261028.md",
+      "implementation_present": true
     },
     {
       "id": "expert-aware-width2",
@@ -225,11 +260,13 @@
         "docs/native-predictive-integration-20261027.json"
       ],
       "retained_in_comparison": true,
-      "current_verification": "one_prior_native_acceptance_pass_rejection_and_matched_speed_unverified",
-      "current_execution_constraint": "shared_model_startup_policy_blocked",
-      "current_evidence": "Ten-request cohort implemented; 3538 returned before GPU.",
+      "current_verification": "native_acceptance_and_full_F32_forced_rejection_preserved_complete_speed_cohort_unavailable",
+      "current_execution_constraint": "53slot_operational_VM_predicate",
+      "current_evidence": "4220 forced rejection restored 23 rows exactly; its common retirement failed. 4860 did not complete the new cohort.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "latest_results": "docs/retained-context-results-20261028.md",
+      "implementation_present": true
     },
     {
       "id": "predictive-cache",
@@ -241,11 +278,13 @@
         "docs/native-model-cold-start-20261027.json"
       ],
       "retained_in_comparison": true,
-      "current_verification": "actual_worker_and_native_source_pass_model_overlap_unverified",
-      "current_execution_constraint": "shared_model_startup_policy_blocked",
-      "current_evidence": "Four new complete worker lifetimes; 2-page sampled peak, 0-page matched idle.",
+      "current_verification": "native_prediction_requests_completed_in_partial_cohort_no_speed_adoption",
+      "current_execution_constraint": "complete_retired_matched_cohort_unavailable",
+      "current_evidence": "4220 completed both predictive arms; both were slower than adjacent controls. Full completed-lifetime qualification remains absent.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "latest_results": "docs/retained-context-results-20261028.md",
+      "implementation_present": true
     },
     {
       "id": "metadata-peak-live-and-quiet-variation",
@@ -256,11 +295,12 @@
         "docs/remaining-validation-progress-20261026.md"
       ],
       "retained_in_comparison": true,
-      "current_verification": "prior_metadata_and_quiet_controls_plus_new_stage_trace_complete",
-      "current_execution_constraint": "whole_model_peak_coverage_policy_blocked",
-      "current_evidence": "Seven actual startup traces; global variation remains non-exclusive attribution.",
+      "current_verification": "full_model_startup_load_context_and_request_global_VM_samples_captured",
+      "current_execution_constraint": "exclusive_and_universal_peak_attribution_not_established",
+      "current_evidence": "Context metadata reset added zero sampled pages in 4780; other global VM changes persisted. No long-run stability claim.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "inventory-and-owner-observer",
@@ -302,11 +342,12 @@
         "docs/PLE-memory-first-plan-20261026.md"
       ],
       "retained_in_comparison": true,
-      "current_verification": "27_cycle_calibration_and_seven_native_ABI_builds_complete",
-      "current_execution_constraint": "none_for_measured_CPU_scope",
-      "current_evidence": "Direct payload separated from VM metadata; opt-in 19 pages, actual allocation return remains authoritative.",
+      "current_verification": "Direct_capacity_and_CPU_phase_scope_native_build_and_model_controls_present",
+      "current_execution_constraint": "finite_calibration_is_not_a_universal_bound",
+      "current_evidence": "27 prior cycles retained; raw 8.755 GB allocation and complete cache/UI model lifetimes preserved. GPU floor is unchanged.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "OS-internal-IO",
@@ -348,11 +389,12 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "new_native_CPU_measurements_complete",
-      "current_execution_constraint": "remaining_whole_model_startup_policy_not_fully_calibrated",
-      "current_evidence": "Direct 17+2 pages; tables 8-page sampled maximum; workers 2 pages; duplicate active SELF/shader scans removed with native integrity.",
+      "current_verification": "native_CPU_and_original_model_startup_controls_complete",
+      "current_execution_constraint": "finite_samples_not_universal",
+      "current_evidence": "Measured pre-GPU CPU scope and main-entry SELF path used by the installed cache monitor.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "cpu-metadata",
@@ -378,11 +420,12 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "prior_audit_complete",
-      "current_execution_constraint": "none",
-      "current_evidence": "All rehearsal owners retire; original fixed GDN F32 semantics preserved.",
+      "current_verification": "native_retained_context_control_and_original_monitor_retirement_passed",
+      "current_execution_constraint": "long_run_stability_not_established",
+      "current_evidence": "Metadata-only reset retained banks with zero sampled VM delta; production preserves its original one context recreation.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "peak-live",
@@ -393,11 +436,12 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "CPU_phase_trace_complete_full_model_trace_unverified",
-      "current_execution_constraint": "shared_model_startup_policy_blocked",
-      "current_evidence": "3538 CPU preparation completed; no GPU/model peak sampled.",
+      "current_verification": "actual_full_model_phase_VM_observations_captured",
+      "current_execution_constraint": "exclusive_universal_attribution_not_established",
+      "current_evidence": "Full cache/UI lifetimes and failed combined/refill phases have actual observations.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "cache128",
@@ -408,11 +452,12 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "geometry_complete_matched_model_comparison_unverified",
-      "current_execution_constraint": "shared_model_startup_policy_blocked",
-      "current_evidence": "Existing 360 graphs retained; no false speed claim from A53 alone.",
+      "current_verification": "complete_native_ABBA_and_production_adoption",
+      "current_execution_constraint": "none_for_bounded_adoption",
+      "current_evidence": "Four closed cache lifetimes, 92 exact F32 rows and native passive monitor/API qualification; +4.185% decode.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": true,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "other-cache",
@@ -424,10 +469,13 @@
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
       "current_verification": "trace_replays_complete_native_variants_unimplemented",
-      "current_execution_constraint": "additional_capacity_integration_missing",
+      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "No invented native capacity speed result.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "implementation_present": false,
+      "in_current_C0_C5_native_queue": false,
+      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
     },
     {
       "id": "checkpoint",
@@ -453,11 +501,12 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "checkpoint_complete_TTFT_comparison_unverified",
-      "current_execution_constraint": "shared_model_startup_policy_blocked",
-      "current_evidence": "No prefix inference newly executed.",
+      "current_verification": "implementation_present_complete_checkpoint_pass_prefix_cohort_unreached",
+      "current_execution_constraint": "dependent_53slot_runtime_VM_predicate",
+      "current_evidence": "The corrected combined join is built and host checked; native prefix requests did not run.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "width2",
@@ -468,11 +517,12 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "one_acceptance_complete_rejection_and_speed_unverified",
-      "current_execution_constraint": "shared_model_startup_policy_blocked",
-      "current_evidence": "Forced rejection observer implemented with full F32 continuation; 3538 did not enter GPU.",
+      "current_verification": "native_acceptance_and_full_F32_forced_rejection_preserved_speed_unqualified",
+      "current_execution_constraint": "53slot_runtime_VM_predicate",
+      "current_evidence": "4220 completed controlled rejection with zero F32 error; whole cohort retirement and later complete matched cohort remain absent.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "width4",
@@ -484,10 +534,13 @@
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
       "current_verification": "unimplemented_dependent_variant",
-      "current_execution_constraint": "width2_rejection_speed_and_larger_workspace_prerequisites",
+      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "No width-four model result exists.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "implementation_present": false,
+      "in_current_C0_C5_native_queue": false,
+      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
     },
     {
       "id": "adaptive",
@@ -499,10 +552,13 @@
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
       "current_verification": "unimplemented_dependent_variant",
-      "current_execution_constraint": "width2_cost_acceptance_rejection_prerequisites",
+      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "No adaptive model result exists.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "implementation_present": false,
+      "in_current_C0_C5_native_queue": false,
+      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
     },
     {
       "id": "expert-major",
@@ -559,10 +615,13 @@
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
       "current_verification": "host_shadow_complete_native_tap_unimplemented",
-      "current_execution_constraint": "actual_hidden_state_tap_and_cost_integration_missing",
+      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "The implemented route-ID predictor is not a hidden-state tap.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "implementation_present": false,
+      "in_current_C0_C5_native_queue": false,
+      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
     },
     {
       "id": "router-forecast",
@@ -574,10 +633,13 @@
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
       "current_verification": "unimplemented_dependent_variant",
-      "current_execution_constraint": "native_hidden_state_tap_usefulness_and_cost_prerequisites",
+      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "Do not relabel token-route prediction as hidden-state forecast.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "implementation_present": false,
+      "in_current_C0_C5_native_queue": false,
+      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
     },
     {
       "id": "workloads",
@@ -588,11 +650,12 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "tokenizer_metadata_complete_broader_native_model_coverage_unverified",
-      "current_execution_constraint": "shared_model_startup_policy_blocked",
-      "current_evidence": "No actual new reasoning/quality corpus result exists.",
+      "current_verification": "fixed_sequence_and_arithmetic_native_controls_complete",
+      "current_execution_constraint": "broader_native_workloads_not_qualified",
+      "current_evidence": "New production passed one arithmetic smoke and two original 22-token sequences; no general answer-quality claim.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "latest_results": "docs/retained-context-results-20261028.md"
     },
     {
       "id": "ple",
@@ -619,10 +682,13 @@
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
       "current_verification": "unimplemented_portable_variant",
-      "current_execution_constraint": "original_BF16_F32_kernel_and_cost_profile_missing",
+      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "Donor MXFP4 arithmetic is not original-precision numerical evidence.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "implementation_present": false,
+      "in_current_C0_C5_native_queue": false,
+      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
     },
     {
       "id": "gdn-fusion",
@@ -634,10 +700,13 @@
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
       "current_verification": "unimplemented_portable_variant",
-      "current_execution_constraint": "original_F32_sigmoid_kernel_and_cost_profile_missing",
+      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "No native fusion speed result exists.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "implementation_present": false,
+      "in_current_C0_C5_native_queue": false,
+      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
     },
     {
       "id": "small-gemm",
@@ -649,10 +718,13 @@
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
       "current_verification": "unimplemented_portable_variant",
-      "current_execution_constraint": "eligible_F32_shape_kernel_and_cost_profile_missing",
+      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "No one/two/four-token native replacement result exists.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "implementation_present": false,
+      "in_current_C0_C5_native_queue": false,
+      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
     },
     {
       "id": "workgroup",
@@ -664,34 +736,49 @@
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
       "current_verification": "additional_specialization_unimplemented",
-      "current_execution_constraint": "isolated_shader_cost_profile_and_new_implementation_missing",
+      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "Source/CPU/completion wall time is not isolated shader cost.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "implementation_present": false,
+      "in_current_C0_C5_native_queue": false,
+      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
     }
   ],
   "production": {
-    "new_speed_winner": false,
-    "new_acceleration_adopted": false,
-    "fastest_SELF_sha256": "ed4b360bbe88c691c02f1bc90cc5249c00d8e6ab75f8d89783a03d0699d1669d",
-    "exact_fastest_and_five_settings_restored": true,
-    "restoration_evidence": {
-      "bytes": 1211,
-      "sha256": "cbdbcd4e281cadbb65a66d0eb6d07c246ed4f9030c9066c3de1635b73d7168ae"
-    },
+    "new_speed_winner": true,
+    "new_acceleration_adopted": true,
+    "fastest_SELF_sha256": "56763d373c04e2e684d79b703e5baa1ee1ba26315754f85d97a6162bd1521596",
     "fresh_idle_verified": true,
     "active_title": false,
     "model_loaded": false,
     "unknown_completion": false,
     "CI_runs": 0,
-    "reboot_performed": false
+    "reboot_performed": false,
+    "active_cache_slots": 128,
+    "previous_fastest_rollback_preserved": true,
+    "canonical_rollback_and_current_settings_native_readback_verified": true,
+    "deployment_evidence": {
+      "bytes": 1359,
+      "sha256": "44363967e8adc2d70e6ca2227ab1f55165d7973baa1d410b74b392a4ee7b3ef5"
+    },
+    "sustained_service_qualified": false
   },
   "host_checks": {
     "Direct_VM_boundary_and_wrong_profile_controls": "host case 3429",
     "seven_helpers_native_ABI": "build 3430 and executed demand 3419",
     "exact_shader_handoff_overlay": "host case 3535: seven modes, all 1527 original assets and 382 lookups",
     "receipt_binding_negative_controls": 47,
-    "SELF_package": "3536: six segment roundtrips, imports and all 677 converted table pointers"
+    "SELF_package": "3536: six segment roundtrips, imports and all 677 converted table pointers",
+    "latest_retained_context_checks": {
+      "fresh_actual_SLRU_behavior_comparisons": 768,
+      "CPU_GPU_predicate_controls": 15,
+      "route_review_positive_controls": 2,
+      "route_review_refusal_controls": 5,
+      "promotion_positive_controls": 1,
+      "promotion_refusal_controls": 12,
+      "native_context_reuse_no_added_GPU_calls": true
+    }
   },
   "selected_private_evidence_digests": {
     "shader_host": {
@@ -714,5 +801,7 @@
       "bytes": 295592,
       "sha256": "2d7ca0310f5aa59ca00489e80f59b8e3a103ac4e5b17cd78d8965f6d0fb103d2"
     }
-  }
+  },
+  "latest_results": "docs/retained-context-results-20261028.md",
+  "current_finite_queue_terminal": true
 }

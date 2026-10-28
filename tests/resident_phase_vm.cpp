@@ -26,5 +26,18 @@ int main(int argc,char **argv) {
     memory.kernel_free=1172;bool refused=false;try{qwen_app::require_resident_source_VM(memory);}catch(...){refused=true;}
     if(!refused)throw std::runtime_error("The next-window margin was omitted");
     memory.kernel_free=1154;(void)qwen_app::qualified_system_headroom(memory);
+    auto existing=policy;existing["native_resident_phase_VM"].update({{"schema","ps5-qwen-resident-phase-VM-v2"},
+        {"source_window_extra_pages",0},{"new_Direct_allocation_extra_pages",19},{"source_buffer_owned_before_GPU",true},
+        {"per_read_Direct_allocation_and_mapping_calls",0},{"context_extra_pages",43},
+        {"context_observed_maximum_decline_pages",41},{"context_selected_margin_pages",2},{"universal_context_peak_bound_established",false}});
+    qwen_app::require_resident_phase_VM(existing,report,true);
+    for(auto it=existing["native_resident_phase_VM"].begin();it!=existing["native_resident_phase_VM"].end();++it){
+        auto invalid=existing;invalid["native_resident_phase_VM"][it.key()]=nullptr;bool failed=false;
+        try{qwen_app::require_resident_phase_VM(invalid,report,true);}catch(...){failed=true;}
+        if(!failed)throw std::runtime_error("Altered existing-window policy admitted");++rejected;}
+    memory.kernel_free=1169;qwen_app::require_resident_existing_source_VM(memory);
+    memory.kernel_free=1154;qwen_app::require_resident_existing_source_VM(memory);
+    memory.kernel_free=1153;refused=false;try{qwen_app::require_resident_existing_source_VM(memory);}catch(...){refused=true;}
+    if(!refused)throw std::runtime_error("Original operational floor was lowered");
     std::cout<<rejected<<" altered phase bindings rejected; ordinary floor and 19-page next-window margin remain distinct\n";
 }

@@ -10,6 +10,7 @@
 #include "direct_metadata.h"
 #include "logical_source_bridge.h"
 #include "predictive_cache_bridge.h"
+#include "six_bank_refill.h"
 #include <ps5platform/kernel.h>
 #include <ps5platform/heap.h>
 #include <atomic>
@@ -63,6 +64,11 @@ public:
             throw std::runtime_error("Concurrent native source reads are not qualified for these complete file ranges");
         return parallel_->read(requests);
     }
+    std::array<std::int64_t,6> read_batch(const std::array<qwen_app::SourceReadRequest,6> &requests) {
+        if(!selected_schedule_||!parallel_||probe_)
+            throw std::runtime_error("Six-demand delivery requires the admitted existing source worker");
+        return parallel_->read_batch(requests);
+    }
     qwen_app::SourcePipelineTimes pipeline_pair(const std::array<qwen_app::SourceReadRequest, 2> & requests,
             const std::array<std::uint64_t, 2> & expected, const std::function<void(unsigned)> & before_read,
             const std::function<void(unsigned, const void *)> & consume) override {
@@ -100,6 +106,8 @@ void * window = nullptr;
 std::atomic<bool> active{false};
 std::atomic<bool> compute_limits{false};
 std::atomic<bool> parallel_ready{false};
+std::atomic<bool> six_refill{false};
+std::atomic<std::uint64_t> six_batches{0},six_reads{0},six_logical_bytes{0};
 qwen_app::DeviceBufferBudget device_budget;
 qwen_app::MappedSourceReader & required() {
     if (!active.load(std::memory_order_acquire) || !reader)
@@ -109,6 +117,22 @@ qwen_app::MappedSourceReader & required() {
 }
 
 namespace qwen_app {
+void configure_native_six_bank_refill(bool enabled) {
+    required().require_completed_window();ops.require_metadata_idle();
+    if(enabled&&(!parallel_ready.load()||!qwen_app_padded_cache_enabled()||
+       qwen_app::selected_padded_cache_geometry().active_slots!=53||qwen_app_predictive_cache_enabled()))
+        throw std::runtime_error("Six-demand delivery is an independent original-cache experiment");
+    six_refill.store(enabled);
+}
+bool start_native_six_bank_refill(const std::array<std::uintptr_t,6> &addresses,
+        const std::array<ExpertPrefetchDestination,3> &banks,const std::array<int,2> &slots,
+        const std::array<std::size_t,3> &residues) {
+    if(!six_refill.load())return false;
+    const auto completed=required().try_owned_bank_batch(addresses,banks,slots,residues,
+        [](const auto &requests){return ops.read_batch(requests);});
+    if(completed){++six_batches;six_reads+=6;six_logical_bytes+=6*bank_expert_bytes;}
+    return completed;
+}
 void start_native_model_sources(std::vector<SourceFile> files, std::vector<LogicalSourceFile> logical) {
     if (reader || window || active.load() || sysconf(_SC_PAGESIZE) != long(model_read_alignment))
         throw std::runtime_error("A new native source reader and qualified page size are required");
@@ -168,6 +192,7 @@ void stop_native_model_sources() {
     if (parallel_ready.load(std::memory_order_acquire)) ops.stop_parallel_completed();
     if(qwen_app_padded_cache_enabled())configure_native_padded_cache(false,0);
     parallel_ready.store(false, std::memory_order_release);
+    six_refill.store(false);
     active.store(false, std::memory_order_release);
     compute_limits.store(false, std::memory_order_release);
     reader.reset(); free(window); window = nullptr;
@@ -175,6 +200,10 @@ void stop_native_model_sources() {
 DeviceBufferStats native_model_device_stats() { return device_budget.stats(); }
 }
 
+extern "C" bool qwen_app_six_bank_refill_enabled(){return six_refill.load();}
+extern "C" void qwen_app_six_bank_refill_counters(qwen_six_bank_refill_stats *out){
+    if(out)*out={six_batches.load(),six_reads.load(),six_logical_bytes.load()};
+}
 extern "C" bool qwen_app_model_reads_enabled() { return active.load(std::memory_order_acquire); }
 extern "C" bool qwen_app_try_streaming_model_window(void *destination,const void *source,std::size_t bytes) {
     if(!qwen_app::mapped_copy_configured.load()||!qwen_app::mapped_copy_scope.load()||

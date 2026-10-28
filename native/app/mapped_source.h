@@ -427,6 +427,64 @@ public:
         pending_windows_=0;busy_=false;return true;
     }
 
+    bool try_owned_bank_batch(const std::array<std::uintptr_t,6> &addresses,
+            const std::array<ExpertPrefetchDestination,3> &banks,const std::array<int,2> &slots,
+            const std::array<std::size_t,3> &residues,
+            const std::function<std::array<std::int64_t,6>(const std::array<SourceReadRequest,6>&)> &execute) {
+        require_completed_window();const auto geometry=selected_padded_cache_geometry();
+        if(!schedule_enabled_||geometry.active_slots!=53||!execute||slots[0]<0||slots[1]<0||slots[0]==slots[1])
+            fail("Six-demand delivery requires the original admitted schedule and distinct slots");
+        std::array<SourceReadRequest,6> requests{};std::array<std::size_t,6> files{};
+        std::array<std::uint64_t,6> offsets{};
+        bool eligible=true;
+        for(unsigned role=0;role<3;++role) {
+            const auto &bank=banks[role];
+            if(!bank.data||!bank.backing||bank.backing.get()!=bank.data||bank.bytes!=geometry.tensor_bytes()||
+               reinterpret_cast<std::uintptr_t>(bank.data)%model_read_alignment||
+               bank.bytes>UINTPTR_MAX-reinterpret_cast<std::uintptr_t>(bank.data))
+                fail("Six-demand banks require actual retained coherent allocation leases");
+            for(unsigned j=0;j<2;++j) {
+                const unsigned i=role*2+j;
+                if(!contains(addresses[i],bank_expert_bytes))fail("Six-demand source is outside the original owner");
+                const auto target=geometry.slot(std::size_t(slots[j]),residues[role],bank.bytes,bank.alignment);
+                const auto range=std::find_if(ranges_.begin(),ranges_.end(),[&](const auto &r){
+                    return addresses[i]>=r.at&&addresses[i]<r.at+r.bytes;});
+                files[i]=range->file;offsets[i]=range->offset+addresses[i]-range->at;
+                if(offsets[i]%model_read_alignment!=residues[role])fail("Six-demand original source residue changed");
+                std::uint64_t aligned=0;std::size_t bytes=0;
+                if(!padded_source_envelope(offsets[i],files_[files[i]].bytes,aligned,bytes))eligible=false;
+                if(eligible&&bytes!=target.requested_bytes)fail("Six-demand padded source envelope changed");
+                requests[i]={-1,static_cast<unsigned char *>(bank.data)+target.aligned_write_offset,target.requested_bytes,aligned};
+                for(unsigned k=0;k<i;++k){const auto a=reinterpret_cast<std::uintptr_t>(requests[i].target),
+                    b=reinterpret_cast<std::uintptr_t>(requests[k].target);
+                    if(a<b+requests[k].bytes&&b<a+requests[i].bytes)fail("Six-demand live destinations overlap");}
+            }
+            const unsigned a=role*2,b=a+1;
+            if(files[a]==files[b]&&offsets[b]>=offsets[a]&&offsets[b]-offsets[a]==bank_expert_bytes)eligible=false;
+        }
+        // Decline before any read/handle mutation. Original coalesced, split
+        // and EOF fallback paths keep their existing exact-byte behavior.
+        if(!eligible)return false;
+        for(unsigned i=0;i<6;++i){ProfileScope timing(stats_.handle_ns);requests[i].fd=handle(files[i]);}
+        busy_=true;pending_windows_=6;
+        try {
+            for(unsigned i=0;i<6;++i){ProfileScope timing(stats_.headroom_ns);
+                if(ops_.system_headroom()<model_read_system_reserve+model_read_flexible_metadata_margin||
+                   ops_.identity(requests[i].fd)!=files_[files[i]].identity)
+                    fail("Six-demand fresh memory or descriptor identity was refused");}
+            std::array<std::int64_t,6> got;
+            {ProfileScope timing(stats_.read_ns);got=execute(requests);}
+            for(unsigned i=0;i<6;++i)if(got[i]!=std::int64_t(requests[i].bytes)||
+                ops_.identity(requests[i].fd)!=files_[files[i]].identity)
+                    fail("Six-demand original reads did not complete with unchanged identity");
+        }catch(...){failed_=true;throw;}
+        for(const auto &r:requests){++stats_.physical_read_calls;stats_.physical_read_bytes+=r.bytes;
+            stats_.maximum_chunk=std::max<std::uint64_t>(stats_.maximum_chunk,r.bytes);}
+        stats_.bytes+=6*bank_expert_bytes;stats_.chunks+=6;stats_.completed_windows+=6;
+        stats_.direct_bank_bytes+=6*bank_expert_bytes;stats_.direct_bank_reads+=6;++stats_.parallel_batches;
+        pending_windows_=0;busy_=false;return true;
+    }
+
     std::array<const void *, 2> prepare_pair(const std::array<std::uintptr_t, 2> & addresses, std::size_t bytes) {
         healthy();
         if (busy_ || !bytes || bytes > model_read_window / 2 - model_read_alignment)

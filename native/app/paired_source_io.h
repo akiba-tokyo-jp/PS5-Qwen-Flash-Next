@@ -20,6 +20,25 @@ class PairedSourceIO {
     ProfileClock::time_point queued_at_{};
     std::uint64_t worker_read_ns_ = 0, worker_dispatch_ns_ = 0;
     bool ready_ = false, pending_ = false, completed_ = true, stop_ = false, failed_ = false, uncertain_ = false;
+    std::array<SourceReadRequest,6> batch_requests_{};
+    std::array<std::int64_t,6> batch_results_{};
+    std::array<std::exception_ptr,6> batch_errors_{};
+    unsigned batch_next_=0,batch_returned_=0;
+    bool batch_mode_=false;
+
+    void batch_lane() noexcept {
+        for(;;) {
+            std::unique_lock<std::mutex> lock(mutex_);
+            if(batch_next_==6||failed_)return;
+            const auto index=batch_next_++;const auto request=batch_requests_[index];lock.unlock();
+            std::int64_t result=-1;std::exception_ptr error;
+            try{result=ops_.read_at(request.fd,request.target,request.bytes,request.offset);}
+            catch(...){error=std::current_exception();}
+            lock.lock();batch_results_[index]=result;batch_errors_[index]=error;++batch_returned_;
+            if(error)uncertain_=true;
+            if(error||result!=std::int64_t(request.bytes))failed_=true;
+        }
+    }
 
     void run() noexcept {
         std::unique_lock<std::mutex> lock(mutex_);
@@ -27,6 +46,10 @@ class PairedSourceIO {
         for (;;) {
             changed_.wait(lock, [&] { return pending_ || stop_; });
             if (stop_) return;
+            if(batch_mode_) {
+                lock.unlock();batch_lane();lock.lock();
+                completed_=true;pending_=false;changed_.notify_all();continue;
+            }
             const auto request = request_;
             const auto queued_at = queued_at_;
             lock.unlock();
@@ -97,6 +120,36 @@ public:
             if (error_) std::rethrow_exception(error_);
         }
         return results;
+    }
+    // The same persistent worker and producer take six known destinations.
+    // Preserve the existing pair/pipeline paths when this explicit API is idle.
+    std::array<std::int64_t,6> read_batch(const std::array<SourceReadRequest,6> &requests) {
+        for(unsigned i=0;i<6;++i) {
+            const auto &r=requests[i];const auto at=reinterpret_cast<std::uintptr_t>(r.target);
+            if(r.fd<0||!at||!r.bytes||r.bytes>model_read_window/2||at%model_read_alignment||
+               r.bytes%model_read_alignment||r.offset%model_read_alignment||r.bytes>UINTPTR_MAX-at||
+               r.offset>std::uint64_t(INT64_MAX)-r.bytes)
+                throw std::invalid_argument("Six-demand reads require bounded aligned owned destinations");
+            for(unsigned j=0;j<i;++j){const auto other=reinterpret_cast<std::uintptr_t>(requests[j].target);
+                if(at<other+requests[j].bytes&&other<at+r.bytes)
+                    throw std::invalid_argument("Six-demand destination leases overlap");}
+        }
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            if(!ready_||stop_||failed_||pending_||!completed_||batch_mode_)
+                throw std::runtime_error("The retained source worker cannot enter six-demand delivery");
+            batch_requests_=requests;batch_results_.fill(-1);batch_errors_.fill(nullptr);
+            batch_next_=batch_returned_=0;batch_mode_=pending_=true;completed_=false;changed_.notify_all();
+        }
+        batch_lane();std::unique_lock<std::mutex> lock(mutex_);
+        if(!changed_.wait_for(lock,std::chrono::seconds(10),[&]{return completed_;})) {
+            failed_=uncertain_=true;throw std::runtime_error("Six-demand completion is uncertain; all backing retained");
+        }
+        if(failed_||batch_returned_!=6) {
+            for(const auto &error:batch_errors_)if(error)std::rethrow_exception(error);
+            throw std::runtime_error("The complete six-demand batch did not return exact bytes");
+        }
+        batch_mode_=false;return batch_results_;
     }
     // Exactly one read can be in flight. The second read overlaps only the
     // first synchronous consumer, which always runs on the original producer.

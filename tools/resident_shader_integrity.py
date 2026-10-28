@@ -8,7 +8,7 @@ from shader_storage import record
 ROOT=Path(__file__).resolve().parents[1]
 
 
-def build(parent,out):
+def build(parent,out,parent_receipt=None):
     out=Path(out);out.mkdir()
     names=('shader_file.h','shader_file_native.h','shader_file.cpp','shader_file_session.cpp')
     originals={name:ROOT/'native/app'/name for name in names}
@@ -63,11 +63,19 @@ extern "C" bool qwen_app_try_same_launch_shader_integrity(std::uint64_t bytes,
     frozen=[record(path)for path in [Path(__file__),*originals.values(),*[out/name for name in names]]]
     replacements=[]
     for name in ('shader_file.cpp','shader_file_session.cpp'):
-        prefix=name.removesuffix('.cpp')+'-'
-        candidates=[Path(x)for x in parent['link_command']if Path(x).name.startswith(prefix)and x.endswith('.o')]
-        if len(candidates)!=1:raise ValueError('One actual original shader object required: '+name)
-        old=candidates[0];origin=old.parent.parent/'receipt.private.json';recipes=json.loads(origin.read_text())
-        command=next(c.copy()for c in recipes['compile_commands']if '-c'in c and Path(c[c.index('-c')+1]).name==name)
+        actual=[c.copy()for c in parent['compile_commands']if '-c'in c and Path(c[c.index('-c')+1]).name==name and
+            parent['link_command'].count(c[c.index('-o')+1])==1]
+        if actual:
+            if len(actual)!=1 or parent_receipt is None:raise ValueError('One exact parent compile receipt required')
+            command=actual[0];old=Path(command[command.index('-o')+1]);origin=Path(parent_receipt)
+            if json.loads(origin.read_text())!=parent or record(old)not in parent['inputs_before']:
+                raise ValueError('Actual shader object is not frozen by the exact parent receipt')
+        else:
+            prefix=name.removesuffix('.cpp')+'-'
+            candidates=[Path(x)for x in parent['link_command']if Path(x).name.startswith(prefix)and x.endswith('.o')]
+            if len(candidates)!=1:raise ValueError('One actual original shader object required: '+name)
+            old=candidates[0];origin=old.parent.parent/'receipt.private.json';recipes=json.loads(origin.read_text())
+            command=next(c.copy()for c in recipes['compile_commands']if '-c'in c and Path(c[c.index('-c')+1]).name==name)
         compile_origin=Path(command[command.index('-o')+1])
         if record(compile_origin)['sha256']!=record(old)['sha256']:
             raise ValueError('Original compile recipe object is not the byte-identical linked object')
