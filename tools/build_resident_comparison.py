@@ -366,7 +366,7 @@ def main():
     p.add_argument('--model-load-window-bytes',type=int,choices=(1<<20,8<<20),default=8<<20,help='Load-only source submission cap; postload source windows remain 8 MiB')
     p.add_argument('--existing-source-window-pricing',action='store_true',help='Charge Direct allocation once; keep the original floor on reads of the already owned source window')
     p.add_argument('--CPU-fixed-map-qualification',type=Path,help='Completed CPU-only fixed-map check; enables Direct backing of audited exclusive table NOBITS')
-    p.add_argument('--comparison-kind',choices=('predictive','cache','prefix','combined'),default='predictive',help='Independent bounded model comparison; each has its own exact policy and result')
+    p.add_argument('--comparison-kind',choices=('predictive','cache','prefix','combined','refill'),default='predictive',help='Independent bounded model comparison; each has its own exact policy and result')
     a=p.parse_args();prior=json.loads(a.qualified_native.read_text())
     if a.reuse_qwen_factory_from and not a.qwen_only_factory:raise ValueError('Factory reuse requires the exact Qwen-only factory')
     if a.GPU_capacity_only and (not a.GPU_initializer_calibration or a.qwen_only_factory):raise ValueError('Compact GPU capacity admits no model factory')
@@ -384,6 +384,7 @@ def main():
         if a.GPU_initializer_calibration or a.GPU_capacity_only or a.measure_worker_memory or a.receipt_only_diagnostic:
             raise ValueError('Additional model comparisons cannot combine calibration scopes')
         if a.comparison_kind=='combined':from resident_combined_comparison import generate
+        elif a.comparison_kind=='refill':from resident_refill_comparison import generate
         else:from resident_additional_comparisons import generate
         text,additional_inputs=generate(a.comparison_kind,source.read_text(),tail.read_text(),flags)
     else:text=specialize(source.read_text(),tail.read_text(),**flags)
@@ -429,7 +430,7 @@ def main():
             format='entry-b<boot_seconds>-<boot_microseconds>-<pid>')
     if a.delegate_shader_launch_integrity:
         from resident_shader_integrity import build as build_shader_handoff
-        shader_handoff=build_shader_handoff(prior,a.out/'shader-integrity-overlay')
+        shader_handoff=build_shader_handoff(prior,a.out/'shader-integrity-overlay',a.qualified_native)
         for replacement in shader_handoff['replacements']:
             old_shader=replacement['original_object']['path'];new_shader=replacement['object']['path']
             if command.count(old_shader)!=1:raise ValueError('The actual original shader object must be replaced exactly once')
