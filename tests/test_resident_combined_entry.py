@@ -24,6 +24,8 @@ class CombinedTests(unittest.TestCase):
         self.assertIn('require_resident_source_VM(after_fixture)',main)
         self.assertIn('context_floor+245',main)
         self.assertEqual(main.count('postloader_current_SELF_Direct_full_SHA256_before_read_GPU_not_started'),1)
+        self.assertNotIn('admit_native_fixture_memory(',main)
+        self.assertIn('require_resident_source_VM(qwen_app::admit_native_system_memory())',main)
         self.assertLess(main.index('postloader_current_SELF_Direct_full_SHA256_before_read_GPU_not_started'),
                         main.index('resident_measured_GPU_phase_admitted_starting_GPU'))
         self.assertLess(main.index('retained_prefix_routes=std::move(routes)'),main.index('llama_model_free(model)'))

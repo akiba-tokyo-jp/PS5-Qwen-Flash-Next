@@ -19,6 +19,19 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The latest continuation is `docs/resident-model-window-results-20261028.md`.
+Case 3840 loaded the original model and completed warmup plus an ordinary
+request at 0.3914249099 decode tokens/s. Predictive context creation then
+returned a geometry error: the original retains 48 trunk layers plus one MTP
+layer. The corrected guard preserves all 49 layers and only forecasts the
+48 trunk layers. The opt-in source v2 guard also stops charging the already
+owned window's 19-page allocation allowance on every read; it preserves the
+ordinary operational floor. Case 3840 normally closed and exact fastest/five
+settings/native integrity/fresh idle were restored. Do not repeat the old
+unchanged failure, claim all comparisons complete or infer a speedup from this
+control. Continue the combined original-model comparisons, cache cohort and
+actual-model six-demand delivery before production selection. No reboot or CI.
+
 The latest continuation is `docs/resident-buffer-capacity-20261028.md` / `.json`.
 The owner explicitly accepted the disclosed freeze risk. Case 3643 allocated
 all five raw buffers totaling 8,755,105,280 bytes with available Direct capacity
