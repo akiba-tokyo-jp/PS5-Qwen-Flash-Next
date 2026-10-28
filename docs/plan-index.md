@@ -1,5 +1,12 @@
 # PS5 Flash Next plan status
 
+The read-only [I/O attribution](read-latency-attribution-20261029.md) reuses
+completed size/count controls and selected production application 7080.
+Byte-volume-dependent delivery is the supported dominant cost; halving serial
+read calls over identical byte ranges saves 7--11.5%. The current normal
+application's decode source-wait share is about 92%. This creates no new runtime
+candidate, changes no production configuration and reopens no tested loser.
+
 The [remaining proposal report](remaining-validation-20261029.md) and
 [execution ledger](remaining-validation-20261028.json) supersede earlier
 dispositions below. Measured no-gain candidates are closed as tested; no larger
