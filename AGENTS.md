@@ -19,6 +19,25 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The authoritative continuation is `docs/remaining-validation-20261029.md` and
+`docs/remaining-validation-20261028.json`. Every measured loser is a tested
+terminal result, never untested or awaiting unnecessary model integration.
+All nine concrete proposal dispositions are classified. Cache 134 passed
+matched ABBA and normal application 7080, and is installed by placement 7420
+on SELF `80c28a95e993458c54b5fbf73fe59accde17dd8302dd49a9aeecf367e617739c`.
+All five settings, exact previous and older rollbacks passed whole native
+readback; the final title/gateway/model are inactive. Counting and existing
+causal width two remain selected; adaptive selection and diagnostic replays
+are off. Adaptive diagnostic 7280 passed same-width F32 and complete-state
+checks, but normal application 7320 returned before GPU/model work at 1112
+versus selected 1154 pages. Classify that single gate execution unavailable
+under the current policy, not physical impossibility or missing implementation.
+Do not claim all native checks passed, lower a floor without new qualification,
+or repeat consumed/refused cases without material resource/startup evidence.
+The context-owner relink correction is mandatory for new passive builds.
+The earlier dated descriptions below are historical and do not supersede this
+selected production or these dispositions. No reboot, quantization or CI.
+
 The latest selected result is `docs/speculative-qualification-20261028.md`
 and its JSON. The additional width-two adoption qualification is complete:
 identical-width full F32/state reference, eight fixed greedy inputs, eight

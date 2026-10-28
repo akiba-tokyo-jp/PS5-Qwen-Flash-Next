@@ -283,7 +283,11 @@
       "current_execution_constraint": "none_for_rejection",
       "current_evidence": "Palette 0.561503x; fused 0.980634x. No repeated arithmetic.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "current_status": "tested_no_gain",
+      "selected_validation_disposition_terminal": true,
+      "retest_required": false,
+      "full_model_integration_required": false
     },
     {
       "id": "PLE-copy-elision",
@@ -298,7 +302,11 @@
       "current_execution_constraint": "none_for_no_repeatable_gain",
       "current_evidence": "All widths and modes retained; no repeat justified by VM accounting change.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "current_status": "tested_no_gain",
+      "selected_validation_disposition_terminal": true,
+      "retest_required": false,
+      "full_model_integration_required": false
     },
     {
       "id": "ready-expert-overlap",
@@ -312,7 +320,11 @@
       "current_execution_constraint": "none_for_rejection",
       "current_evidence": "Both reverse comparisons slower; no repeat of the same scheduling mechanism.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "current_status": "tested_no_gain",
+      "selected_validation_disposition_terminal": true,
+      "retest_required": false,
+      "full_model_integration_required": false
     },
     {
       "id": "cache53-128",
@@ -388,7 +400,11 @@
       "unchanged_completed_mechanism_repeated": false,
       "latest_results": "docs/retained-context-results-20261028.md",
       "implementation_present": true,
-      "prior_current_verification": "native_prediction_requests_completed_in_partial_cohort_no_speed_adoption"
+      "prior_current_verification": "native_prediction_requests_completed_in_partial_cohort_no_speed_adoption",
+      "current_status": "tested_no_gain",
+      "selected_validation_disposition_terminal": true,
+      "retest_required": false,
+      "full_model_integration_required": false
     },
     {
       "id": "metadata-peak-live-and-quiet-variation",
@@ -476,11 +492,13 @@
         "docs/remaining-feasibility-20261026.md"
       ],
       "retained_in_comparison": true,
-      "current_verification": "all_previous_items_retained",
+      "current_verification": "All concrete candidates implemented and physically tested; adaptive normal application execution unavailable under selected startup policy",
       "current_execution_constraint": "missing_implementation_or_native_prerequisites",
       "current_evidence": "Missing integration is not a hardware limit; separate each of the 22 old items below.",
       "physically_impossible_established": false,
-      "unchanged_completed_mechanism_repeated": false
+      "unchanged_completed_mechanism_repeated": false,
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "current_status": "tested_terminal_dispositions_with_one_application_execution_unavailable"
     }
   ],
   "previous_items": [
@@ -572,14 +590,19 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "trace_replays_complete_native_variants_unimplemented",
-      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
-      "current_evidence": "No invented native capacity speed result.",
+      "current_verification": "tested_adopted",
+      "current_execution_constraint": "One new unloaded 134-slot layout, then only a qualifying 128/134 matched comparison",
+      "current_evidence": "docs/remaining-validation-20261028.json",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
-      "implementation_present": false,
+      "implementation_present": true,
       "in_current_C0_C5_native_queue": false,
-      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
+      "implementation_status": "implemented_and_physically_compared",
+      "current_status": "tested_adopted",
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "selected_validation_disposition_terminal": true,
+      "adopted": true,
+      "verification_complete_for_tested_scope": true
     },
     {
       "id": "checkpoint",
@@ -641,14 +664,20 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "unimplemented_dependent_variant",
-      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
-      "current_evidence": "No width-four model result exists.",
+      "current_verification": "tested_bounded_gain_normal_application_execution_unavailable",
+      "current_execution_constraint": "Qualify integration with the retained 128-slot production profile; do not replay the completed 53-slot cohort",
+      "current_evidence": "docs/remaining-validation-20261028.json",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
-      "implementation_present": false,
+      "implementation_present": true,
       "in_current_C0_C5_native_queue": false,
-      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
+      "implementation_status": "implemented_and_physically_compared",
+      "current_status": "tested_bounded_gain_normal_application_execution_unavailable",
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "selected_validation_disposition_terminal": true,
+      "adopted": false,
+      "normal_application_execution_unavailable": true,
+      "physical_impossibility_claimed": false
     },
     {
       "id": "adaptive",
@@ -659,14 +688,20 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "unimplemented_dependent_variant",
-      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
-      "current_evidence": "No adaptive model result exists.",
+      "current_verification": "tested_bounded_gain_normal_application_execution_unavailable",
+      "current_execution_constraint": "Qualify actual retained-prefix snapshot replacement accounting and production integration",
+      "current_evidence": "docs/remaining-validation-20261028.json",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
-      "implementation_present": false,
+      "implementation_present": true,
       "in_current_C0_C5_native_queue": false,
-      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
+      "implementation_status": "implemented_and_physically_compared",
+      "current_status": "tested_bounded_gain_normal_application_execution_unavailable",
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "selected_validation_disposition_terminal": true,
+      "adopted": false,
+      "normal_application_execution_unavailable": true,
+      "physical_impossibility_claimed": false
     },
     {
       "id": "expert-major",
@@ -677,11 +712,16 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "prior_positive_variable_source_comparison_complete",
-      "current_execution_constraint": "model_integration_and_matched_cost_missing",
+      "current_verification": "Eight native delivery rounds completed; variable timings do not establish a winner",
+      "current_execution_constraint": "none_for_closing_the_tested_variant",
       "current_evidence": "Prior 7/8 faster, about 1.040x source and 1.037x total; not an adopted model gain.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "current_status": "tested_inconclusive_no_qualified_gain",
+      "selected_validation_disposition_terminal": true,
+      "retest_required": false,
+      "full_model_integration_required": false,
+      "implementation_present": true
     },
     {
       "id": "source-cpu",
@@ -711,7 +751,11 @@
       "current_execution_constraint": "none_for_rejection",
       "current_evidence": "40 graphs and both reverse comparisons reused.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "current_status": "tested_no_gain",
+      "selected_validation_disposition_terminal": true,
+      "retest_required": false,
+      "full_model_integration_required": false
     },
     {
       "id": "router-observe",
@@ -722,14 +766,17 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "host_shadow_complete_native_tap_unimplemented",
-      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
-      "current_evidence": "The implemented route-ID predictor is not a hidden-state tap.",
+      "current_verification": "tested_diagnostic_only_no_standalone_speed_gain",
+      "current_execution_constraint": "Do not repeat standalone observation; use actual observations to evaluate a separate one-expert hidden-state predictor",
+      "current_evidence": "docs/remaining-validation-20261028.json",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
-      "implementation_present": false,
+      "implementation_present": true,
       "in_current_C0_C5_native_queue": false,
-      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
+      "implementation_status": "implemented_and_physically_compared",
+      "current_status": "tested_diagnostic_only_no_standalone_speed_gain",
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "selected_validation_disposition_terminal": true
     },
     {
       "id": "router-forecast",
@@ -740,14 +787,19 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "unimplemented_dependent_variant",
+      "current_verification": "tested_no_gain",
       "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "Do not relabel token-route prediction as hidden-state forecast.",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
       "implementation_present": false,
       "in_current_C0_C5_native_queue": false,
-      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
+      "implementation_status": "implemented_and_physically_compared",
+      "current_status": "tested_no_gain",
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false,
+      "selected_validation_disposition_terminal": true
     },
     {
       "id": "workloads",
@@ -758,9 +810,9 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "fixed_sequence_and_arithmetic_native_controls_complete",
-      "current_execution_constraint": "broader_native_workloads_not_qualified",
-      "current_evidence": "New production passed one arithmetic smoke and two original 22-token sequences; no general answer-quality claim.",
+      "current_verification": "eight_input_native_greedy_validation_complete",
+      "current_execution_constraint": "none_for_fixed_eight_input_scope",
+      "current_evidence": "docs/speculative-qualification-20261028.json",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
       "latest_results": "docs/independent-validation-20261028.md"
@@ -778,7 +830,11 @@
       "current_execution_constraint": "none_for_rejection",
       "current_evidence": "208 graphs at all four widths and three modes reused.",
       "physically_impossible_established": false,
-      "adopted_by_this_revalidation": false
+      "adopted_by_this_revalidation": false,
+      "current_status": "tested_no_gain",
+      "selected_validation_disposition_terminal": true,
+      "retest_required": false,
+      "full_model_integration_required": false
     },
     {
       "id": "dual-output",
@@ -789,14 +845,20 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "unimplemented_portable_variant",
+      "current_verification": "tested_no_reproducible_gain",
       "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "Donor MXFP4 arithmetic is not original-precision numerical evidence.",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
       "implementation_present": false,
       "in_current_C0_C5_native_queue": false,
-      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
+      "implementation_status": "implemented_and_physically_compared",
+      "current_status": "tested_no_reproducible_gain",
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false,
+      "model_integration_required": false,
+      "selected_validation_disposition_terminal": true
     },
     {
       "id": "gdn-fusion",
@@ -807,14 +869,20 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "unimplemented_portable_variant",
+      "current_verification": "tested_no_reproducible_gain",
       "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "No native fusion speed result exists.",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
       "implementation_present": false,
       "in_current_C0_C5_native_queue": false,
-      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
+      "implementation_status": "implemented_and_physically_compared",
+      "current_status": "tested_no_reproducible_gain",
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false,
+      "model_integration_required": false,
+      "selected_validation_disposition_terminal": true
     },
     {
       "id": "small-gemm",
@@ -825,14 +893,17 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "unimplemented_portable_variant",
-      "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
-      "current_evidence": "No one/two/four-token native replacement result exists.",
+      "current_verification": "tested_existing_vector_route_already_enabled",
+      "current_execution_constraint": "Closed: actual native profile already selects MUL_MAT_VEC for the planned small dense projection shapes; no new speedup claimed",
+      "current_evidence": "docs/remaining-validation-20261028.json",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
-      "implementation_present": false,
+      "implementation_present": true,
       "in_current_C0_C5_native_queue": false,
-      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
+      "implementation_status": "implemented_and_physically_compared",
+      "current_status": "tested_existing_vector_route_already_enabled",
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "selected_validation_disposition_terminal": true
     },
     {
       "id": "workgroup",
@@ -843,14 +914,20 @@
       "retained_in_comparison": true,
       "removed_because_of_old_disposition": false,
       "physical_impossibility_established": false,
-      "current_verification": "additional_specialization_unimplemented",
+      "current_verification": "tested_no_reproducible_gain",
       "current_execution_constraint": "missing_dependent_implementation_or_prerequisite_outside_selected_finite_queue",
       "current_evidence": "Source/CPU/completion wall time is not isolated shader cost.",
       "physically_impossible_established": false,
       "adopted_by_this_revalidation": false,
       "implementation_present": false,
       "in_current_C0_C5_native_queue": false,
-      "implementation_status": "unimplemented_not_reclassified_as_physical_impossibility"
+      "implementation_status": "implemented_and_physically_compared",
+      "current_status": "tested_no_reproducible_gain",
+      "latest_evidence": "docs/remaining-validation-20261028.json",
+      "verification_complete_for_tested_scope": true,
+      "retest_required": false,
+      "model_integration_required": false,
+      "selected_validation_disposition_terminal": true
     }
   ],
   "production": {
@@ -870,7 +947,21 @@
       "bytes": 1359,
       "sha256": "44363967e8adc2d70e6ca2227ab1f55165d7973baa1d410b74b392a4ee7b3ef5"
     },
-    "sustained_service_qualified": false
+    "sustained_service_qualified": false,
+    "latest_continuation": {
+      "active_slots": 134,
+      "physical_planes": 135,
+      "SELF_SHA256": "80c28a95e993458c54b5fbf73fe59accde17dd8302dd49a9aeecf367e617739c",
+      "normal_counting_profile": true,
+      "existing_causal_width_two": true,
+      "adaptive_selected": false,
+      "diagnostic_replays_enabled": false,
+      "qualification_case": 7080,
+      "placement_case": 7420,
+      "previous_SELF_SHA256": "75c7aabccc62a55408309d614d1db66c71d77b35cb342c16e05059d6eae975fa",
+      "native_title_active": false,
+      "model_loaded": false
+    }
   },
   "host_checks": {
     "Direct_VM_boundary_and_wrong_profile_controls": "host case 3429",
@@ -912,7 +1003,7 @@
   },
   "latest_results": "docs/retained-context-results-20261028.md",
   "current_finite_queue_terminal": true,
-  "latest_selected_terminal_report": "docs/speculative-qualification-20261028.json",
+  "latest_selected_terminal_report": "docs/remaining-validation-20261029.md",
   "selected_candidate_dispositions_terminal": true,
   "failed_original_cohorts_not_relabeled_successful": true,
   "additional_speculative_qualification": {
@@ -930,5 +1021,9 @@
     "matched_causal_speed_case": 5800,
     "actual_normal_monitor_case": 5980,
     "maximum_logit_error_alone_is_not_an_adoption_gate": true
-  }
+  },
+  "latest_continuation": "docs/remaining-validation-20261028.json",
+  "measured_no_gain_candidates_are_terminal": true,
+  "all_current_finite_dispositions_terminal": true,
+  "all_native_adoption_checks_successful": false
 }

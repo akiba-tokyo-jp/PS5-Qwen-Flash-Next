@@ -1,5 +1,18 @@
 # PS5 Flash Next plan status
 
+The [remaining proposal report](remaining-validation-20261029.md) and
+[execution ledger](remaining-validation-20261028.json) supersede earlier
+dispositions below. Measured no-gain candidates are closed as tested; no larger
+model rerun is required for them. The nine concrete proposals are classified.
+The 134-slot cache passed matched ABBA and normal application 7080 and was
+installed in 7420, with complete native readback, preserved rollbacks and fresh
+idle. Its finite counting result is +0.28889% decode / +0.67167% total throughput.
+Adaptive diagnostic 7280 passed; normal application 7320 was execution
+unavailable at the selected startup policy before GPU/model work. It is not
+adopted, not physically impossible, and not relabeled a successful normal test.
+The ledger retains this single explicit unavailable adoption gate. Do not
+repeat unchanged refusals or return tested losers to the untested queue.
+
 The [width-two follow-up](speculative-qualification-20261028.md) and
 [sanitized evidence](speculative-qualification-20261028.json) are the latest
 selected dispositions. All four additional adoption gates are complete:
