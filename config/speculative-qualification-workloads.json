@@ -1,0 +1,22 @@
+{
+  "schema": "ps5-qwen-speculative-workloads-v1",
+  "context_tokens": 256,
+  "maximum_rendered_prompt_tokens": 64,
+  "maximum_output_tokens": 32,
+  "prefill_tokens": 4,
+  "thinking": false,
+  "sampler": "greedy",
+  "minimum_actual_accepted_batches": 8,
+  "minimum_forced_rejections": 4,
+  "console_execution_enabled": false,
+  "requests": [
+    {"name": "ja-arithmetic", "prompt": "Respond in Japanese. What is 17 plus 25? Give the number and one short sentence."},
+    {"name": "ja-summary", "prompt": "Respond in Japanese. Summarize in one sentence: A train left at noon, stopped for ten minutes, and arrived at one."},
+    {"name": "en-explanation", "prompt": "In one sentence, explain why a shadow moves when the light source moves."},
+    {"name": "en-contrast", "prompt": "Give one short sentence comparing a stack and a queue."},
+    {"name": "arithmetic-sequence", "prompt": "Continue the sequence 1, 2, 3, 4, 5, 6, 7, 8 with the next eight integers."},
+    {"name": "code-python", "prompt": "Write only a Python function add(a, b) that returns their sum."},
+    {"name": "structured-json", "prompt": "Return only JSON with keys count and label, values 3 and ready respectively."},
+    {"name": "repeated-context", "prompt": "Copy this sequence twice exactly: red blue red blue red blue."}
+  ]
+}
