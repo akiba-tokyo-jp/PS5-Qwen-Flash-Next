@@ -9,8 +9,8 @@
         const auto run=policy.at("native_first_generation_validation").at("run_id").get<std::string>();
         const auto columns=static_cast<std::size_t>(llama_vocab_n_tokens(llama_model_get_vocab(model)));
         if(!columns||columns>262144)throw std::runtime_error("Bounded original vocabulary required");
-        constexpr unsigned request_count=29;
-        constexpr unsigned counting_modes[]={0,0,1,1,0,2,2,0,3,3,0,4,4,0};
+        constexpr unsigned request_count=26;
+        constexpr unsigned counting_modes[]={0,0,2,2,0,3,3,0,4,4,0};
         const char*quality_prompts[]={
             "Translate to English. Output only the translation: おはようございます。",
             "Compute 17 + 26. Output only the integer.",
@@ -33,8 +33,8 @@
             last_payload=bytes;last_engine=engine.get();
         };
         for(unsigned ordinal=0;ordinal<request_count;++ordinal){
-            const bool counting=ordinal<14;const unsigned mode=counting?counting_modes[ordinal]:(ordinal-14)%5;
-            const unsigned task=counting?0:(ordinal-14)/5;
+            const bool counting=ordinal<11;const unsigned mode=counting?counting_modes[ordinal]:(ordinal-11)%5;
+            const unsigned task=counting?0:(ordinal-11)/5;
             require_model_CPU_budget();require_unchanged_model();qwen_app_complete_predictive_expert();
             const auto previous=engine->expert_cache_metrics();if(!previous)throw std::runtime_error("Actual cache counters required");
             qwen_native_driver_begin();engine.reset();qwen_native_driver_complete();

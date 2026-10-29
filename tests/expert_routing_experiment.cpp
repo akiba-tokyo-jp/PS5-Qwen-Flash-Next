@@ -10,6 +10,8 @@ int main(){
     qwen_app::cache_rank_scores(a.data(),b.data(),resident.data(),512,1);assert(a==b);
     for(unsigned m=0;m<5;++m){assert(qwen_app::experimental_expert_count(m,4)==10);assert(qwen_app::experimental_expert_count(m,2)==10);}
     assert(qwen_app::experimental_expert_count(2,1)==8&&qwen_app::experimental_expert_count(3,1)==6);
+    assert(qwen_app::bounded_expert_aggregate(10,8)==8&&qwen_app::bounded_expert_aggregate(10,6)==6);
+    assert(qwen_app::bounded_expert_aggregate(10,10)==10&&qwen_app::bounded_expert_aggregate(6,10)==6);
     a[42]=std::numeric_limits<float>::quiet_NaN();bool refused=false;
     try{qwen_app::cache_rank_scores(a.data(),b.data(),resident.data(),512,1.5f);}catch(const std::exception&){refused=true;}assert(refused);
 }

@@ -10,9 +10,9 @@ from driver_table_storage import audit_linked_storage
 from audit_native_imports import audit
 from native_dispatch import audit as dispatch
 ROOT=Path(__file__).resolve().parents[1]
-MODES=[0,0,1,1,0,2,2,0,3,3,0,4,4,0]+list(range(5))*3
-SCOPE=dict(schema='ps5-qwen-routing-sharing-comparison-v1',enabled=True,maximum_requests=29,
- order=MODES,counting_requests=14,quality_requests=15,quality_tasks=3,model_loads=1,
+MODES=[0,0,2,2,0,3,3,0,4,4,0]+list(range(5))*3
+SCOPE=dict(schema='ps5-qwen-routing-sharing-continuation-v1',enabled=True,maximum_requests=26,
+ order=MODES,counting_requests=11,quality_requests=15,quality_tasks=3,model_loads=1,
  active_cache_slots=867,cache_budget_bytes=1333739520,selected_IO_flags=5,
  cache_rank_multiplier=1.5,decode_Expert_counts=[10,10,8,6,10],prefill_Top10_preserved=True,
  maximum_causal_attempts=8,verification_width=2,causal_drafts_only=True,
@@ -22,6 +22,8 @@ SCOPE=dict(schema='ps5-qwen-routing-sharing-comparison-v1',enabled=True,maximum_
 
 def graph_source(text):
  text='#include "expert_routing_experiment.h"\n'+text
+ text=once(text,'    const uint32_t n_expert_used_il = hparams.n_expert_used(il);',
+  '    const uint32_t n_expert_used_il = qwen_app::bounded_expert_aggregate(hparams.n_expert_used(il),unsigned(n_expert_used));')
  marker='    const bool weight_before_ffn = arch == LLM_ARCH_LLAMA4;'
  text=once(text,marker,'''    if(n_expert==512&&n_expert_used==10&&n_tokens==1&&qwen_app_route_is_decode())
         n_expert_used=qwen_app::experimental_expert_count(qwen_app_route_mode(),1);
@@ -75,8 +77,8 @@ def main():
  for k in ('parent','headless','workspace','cache','out'):p.add_argument('--'+k,type=Path,required=True)
  a=p.parse_args();prior=json.loads(a.parent.read_text());old=json.loads(a.headless.read_text())
  require(prior['all_Q2_IO_normal']['flags']==5,'Exact selected normal I/O parent required')
- model_scope=dict(old['expert_q2_model']['scope'],schema='ps5-qwen-routing-sharing-model-v1',maximum_requests=29,timed_requests=13,selected_Experts='10_prefill_6_8_10_decode',full_same_Q2_F32_rows_and_routes_required=False,approximate_routing_owner_authorized=True)
- IO_scope=dict(old['all_Q2_IO_measurement']['scope'],schema='ps5-qwen-routing-sharing-IO-v1',maximum_requests=29)
+ model_scope=dict(old['expert_q2_model']['scope'],schema='ps5-qwen-routing-sharing-model-v1',maximum_requests=26,timed_requests=10,selected_Experts='10_prefill_6_8_10_decode',full_same_Q2_F32_rows_and_routes_required=False,approximate_routing_owner_authorized=True)
+ IO_scope=dict(old['all_Q2_IO_measurement']['scope'],schema='ps5-qwen-routing-sharing-IO-v1',maximum_requests=26)
  frozen=active_link_inputs(prior)+[r for r in prior['inputs_before']if Path(r['path']).suffix=='.so']+[record(a.parent),record(a.headless)]
  added_files=[ROOT/'tools/build_expert_routing_sharing.py',ROOT/'native/app/expert_routing_experiment.h',ROOT/'native/app/expert_routing_experiment.cpp',ROOT/'native/app/expert_routing_sharing_cohort.inc',ROOT/'native/app/expert_q2_speculative.h',ROOT/'native/app/resident_checkpoint_capacity.h',ROOT/'native/app/completed_expert_routes.h',ROOT/'native/app/completed_expert_routes.cpp']
  frozen +=[record(x)for x in added_files]

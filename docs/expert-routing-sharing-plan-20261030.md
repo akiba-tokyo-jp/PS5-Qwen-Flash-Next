@@ -44,3 +44,26 @@ executes is not a tested multi-token path.
 All cases need fresh run identities and once-only journals. Positive model,
 source and GPU retirement precedes ordinary close and exact production/settings
 restoration. Unknown completion retains owners; no retry or forced termination.
+
+## Corrected continuation after the first integration failure
+
+Case 9440 completed five requests (warmup and the cache-ranking ABBA). At the
+first Top-8 decode, the process exited during CPU graph construction: the
+upstream aggregation loop still used the configured ten Experts while the
+actual tensor had eight. The corrected graph bounds aggregation by the actual
+dimension; host regression checks cover six, eight and ten. No completed
+request is discarded or replayed.
+
+CPU-only observation confirms zero native owners, AppInfo idle, identical boot
+and unchanged management services. Restore the exact production/settings using
+that explicit self-exit proof; do not label this a normal native completion or
+invent a positive GPU-retirement terminal. Preserve the five durable native
+result and per-token source records separately from the aborted overall run.
+
+The fresh corrected continuation has 26 requests: warmup plus the remaining
+Top-8, Top-6 and repeated-verification ABBAs, followed by all 15 quality requests.
+Counting order is `0,0,2,2,0,3,3,0,4,4,0`. Cache-ranking quality is measured in
+the corrected run; its already completed speed comparison remains case 9440.
+All new runs still require the original GPU fixture and admission/completion
+guards. The collector now detects an unexpected owner exit at its 30-second
+observation interval instead of waiting for the generic no-progress deadline.

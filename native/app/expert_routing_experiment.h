@@ -20,6 +20,11 @@ inline unsigned experimental_expert_count(unsigned mode,unsigned width){
     if(mode>4||width<1||width>4)throw std::invalid_argument("Unknown bounded routing mode or width");
     return width==1&&mode==2?8:width==1&&mode==3?6:10;
 }
+inline unsigned bounded_expert_aggregate(unsigned configured,unsigned actual){
+    if(!configured||!actual||configured>512||actual>512)
+        throw std::invalid_argument("Positive bounded Expert aggregation geometry required");
+    return std::min(configured,actual);
+}
 }
 struct ggml_tensor;
 extern "C" unsigned qwen_app_route_mode();
