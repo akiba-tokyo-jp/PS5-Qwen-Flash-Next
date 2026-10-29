@@ -4,7 +4,7 @@ Write project documentation, diagrams, code comments and program messages in Eng
 Keep conversation in the owner's preferred language.
 
 The baseline is original-precision Qwen3.8-Flash-Next inference on one PS5.
-The explicitly authorized Expert-only Q4 production exception is described below.
+The authorized Expert-only Q4 and subsequent Q2 exceptions are described below.
 For the original-precision control, use the pinned original BF16 weights. Do not substitute a quantized checkpoint,
 prune experts, omit required model components, or use learned PC/cloud inference
 as a substitute for console inference. Host builds, metadata processing, format
@@ -20,29 +20,47 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-Latest selection: all routed Experts use Gate/Up Q2_K and fitted-scale Down
-Q2_0, with the measured two-touch-probation replacement policy. Case 8900's
-same-model ABBA improves decode 1.029182 -> 1.127026 tok/s (+9.507%); full F32
-rows and ordered routes match exactly. Final passive/API 8940 measures
-1.126481 and 1.125980 tok/s; both actual frames were viewed. Placement 8950
-completed whole native canonical/rollback/settings hashes and fresh idle on
-SELF `06e096630ce08b1a4b865798f7070295f74c9b5bb33fa7d0c32a5ad2bf729590`.
-All 867 slots, the 1,333,739,520-byte budget, non-Expert BF16/F32 and F32 KV/
-inputs remain. Mixed, Q4, BF16 and original MOSS rollbacks remain intact.
-The title/gateway/model are inactive; the finite execution binding is consumed.
+Latest selection: the optimized all-Q2 app is qualified in normal case 9290
+and placed in 9310. SELF is
+`bb61e2af568ac5fba907fea8c14704413f5ea17452772d865aa097834170de00`,
+implementation commit `af15450f61cbcc77d60f00a5295209dd06f07e5f`.
+It combines two-touch probation, 336 partial Expert bundles, the atomic range
+hint, complete exact-prefix reuse and one causal Expert-sharing attempt on the
+final prefix consumer. First independent API decode: 1.143314 tok/s; retained
+exact-repeat decode: 1.106472, TTFT 63.117 ms. Capture-charged pair throughput
+is 0.773582 generated tok/s. Do not pool unlike cache conditions or add the
+independent candidate percentages.
 
-The owner explicitly accepted freeze risk for these eight optimization
-comparisons and adoption of faster qualified versions. The previous review
-hold is resolved. Unstarted diagnostic 8880 is superseded by 8900's original-
-policy arms 1/4: 0.492914 GB/decode token, 944.429 calls/token and 1.418164 ms
-mean individual pread wall time. Do not rerun 8880 or normal case 8720.
-CPU-only actual-weight bundle comparison 8914 improves read-wall throughput
-44.298% at equal bytes; this does not establish whole-model bundle speed.
-The remaining seven candidate implementation/validation gates are open in
-`docs/expert-q2-plan-20261029.md`; do not call the eight-candidate task complete.
-Preserve the strict all-Q2 result (6/9 format, 9/9 content) and the owner's
-acceptance of expected loss. No additional quality veto, CI, reboot or caches.
-Earlier mixed-production and review-blocked descriptions below are historical.
+All eight current candidate dispositions are complete in
+`docs/expert-q2-optimization-results-20261030.md` / `.json`. Composite parallel
+reads, operative small streaming copies and genuine split-graph GPU/I/O overlap
+are tested losers; do not reopen unchanged candidates. Resident output Q8 host
+checks pass, but both FTP and native writes return ENOSPC under current storage
+allocation. It is execution unavailable, not GPU-tested, rejected for quality,
+or physically impossible. Its two new unadopted stage files were verified,
+retired and reclaimed; all original models and the Expert bundle remain.
+No Q8 output weights are selected in production.
+
+All 867 slots and 1,333,739,520 cache bytes, every Expert/layer, non-Expert
+BF16/F32 and F32 inputs/KV remain. Ordinary full F32/routes match exactly.
+The final unlike-width request has explicit finite/full-vocabulary/top1 and
+same-token checks; maximum difference 0.971474 is disclosed. Same-width causal
+F32 and forced rejection passed in 9160. Only the positively restored final
+prefix consumer may hand off the snapshot; do not reuse it for more requests.
+
+All 9 canonical/rollback programs and 5 settings passed native whole hashes,
+identities and EOF. Both actual frames were viewed; source/device owners retired,
+ordinary close and fresh idle passed. The native title/gateway/model are inactive.
+The finite binding is consumed; sustained service is not qualified. Preserve
+06e09663 probation-only, mixed, Q4, BF16 and original MOSS rollbacks, accepted
+Q2 strict-format 6/9 and answer-content 9/9, all original caps and positive
+completion. No CI, reboot, persistent caches, new quality veto or replay.
+The owner accepted the current freeze-risk comparison/adoption scope; no
+permission is pending. Unstarted 8880 is superseded by original-policy 8900
+arms 1/4. Earlier dated selections and review-blocked descriptions below are
+historical, including obsolete pending lists; they do not override this status.
+
+## Historical staged qualification records
 
 The selected production is now **Gate/Up Q2_K with Down Q4_0**, placed and
 verified in case 8580 on SELF

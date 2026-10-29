@@ -1,5 +1,14 @@
 # Staged Expert 2-bit comparison
 
+Current disposition (2026-10-30): **all eight proposed families have a final
+comparison or observed execution-unavailable classification**. Qualified winners
+are installed after normal case 9290 and verified placement 9310. See the
+[complete results and implementation references](expert-q2-optimization-results-20261030.md)
+and [sanitized evidence](expert-q2-optimization-results-20261030.json).
+The staged order below is historical; the owner's later acceptance of expected
+Q2 loss and the completed optimized installation supersede its earlier holds.
+
+
 The owner authorized Gate/Up at 2-bit while retaining Down at Q4 on 2026-10-29.
 Only after that candidate preserves measured quality may all routed Experts
 move to 2-bit. This supersedes the earlier 4-bit-only experiment limit.
@@ -93,16 +102,16 @@ of measured winners, and explicitly accepted the remaining console freeze risk.
 Preserve current memory, identity, ownership and positive-completion guards;
 reboot, CI and ambiguous-operation retries remain disabled.
 
-| Candidate | Current evidence | Required next gate |
+| Candidate | Final evidence | Disposition |
 | --- | --- | --- |
-| Expert replacement policy | Twelve closed all-Q2 traces replay exactly, including every control fill/slot. Two-touch probation reduces counting misses 7.250% and held-out quality misses 5.306%. Same-model case 8900 ABBA improves decode 1.029182 to 1.127026 tok/s (+9.507%), with zero full-F32 difference and identical ordered routes. Normal passive/API 8940 measures 1.126481/1.125980; both frames viewed. Placement 8950 verifies the canonical app, all five settings, every retained rollback and fresh idle. | Adopted in the finite qualified scope. |
-| Gate/Up/Down bundle reads | Compact geometry and 25,088 positions pass host checks. CPU-only actual-weight 8914 compares the same bytes: one request versus three improves read-wall throughput 44.298% (time reduction 30.699%). | Integrate a bounded immutable bundle source; compare actual model decode before adoption. |
-| I/O serialization and GPU overlap | Case 8900 records the existing two lanes and 540/553 selected serial batches in the control/candidate whole requests. | Distinguish composite-gather fallback from deliberate serial selection; qualify Q2 owner geometry before model comparison. |
-| Expert-sharing speculative decode | Earlier BF16 results and current quantized component widths are preserved. They do not qualify Q2 complete-state handling. | Port complete-state and causal verification to Q2, charging rejected work and snapshot costs. |
-| Resident non-Expert compression | Output projection Q8_0 would save 595,968,000 payload bytes. This is arithmetic, not a native memory/speed result. | Original-BF16 conversion, own-format arithmetic, complete memory accounting and bounded cache quota transfer. |
-| Intermediate-copy reduction | The helper excludes single transfers below 1 MiB; individual Q2 roles are smaller. | Compare GPU-visible destinations at compressed sizes, retaining visibility and completion. |
-| Prefix/full-state reuse | Exact-prefix implementation exists, but is disabled in Q2. | Q2 full-state restoration and a separate TTFT/prefill comparison; charge snapshot memory. |
-| CPU management overhead | Default behavior remains unchanged; new policy selection requires empty observation history and adds no heap arrays. | Prove unchanged fills/guards and measure actual process benefit for duplicated immutable work. |
+| Expert replacement | 8900 same-model ABBA +9.507%; normal 8940 and placement 8950. | Adopted; retained in 9290/9310. |
+| Gate/Up/Down bundle reads | Actual model 9180 +1.469%; exact F32/routes/misses; 336 immutable bundles, originals fallback. | Adopted after normal 9290 and placement 9310. |
+| I/O serialization and GPU overlap | Composite 9040 -0.0609%; genuine overlap 9250 is slower than unsplit (36.388 -> 57.442 ms), despite overlap intervals. | Tested losers for these implementations; retain unsplit scheduling. |
+| Expert-sharing speculative decode | 9160 +1.384%, same-width equality and forced rejection. Final normal consumer accepts once in 9290. | Adopted only on the final exact-prefix consumer. |
+| Resident non-Expert compression | Exact Q8 host/reference controls; FTP and native pwrite both fail ENOSPC. No GPU/model execution. | Execution unavailable under current filesystem allocation; unadopted, originals preserved. |
+| Intermediate-copy reduction | Operative 9080 streaming-copy comparison -0.530%, exact F32/routes/bytes. | Tested loser; threshold-only unexercised 8990 is superseded. |
+| Prefix/full-state reuse | 9100 capture-charged pair throughput +30.611%; final repeat TTFT 63.117 ms and exact emitted sequence in 9290. | Adopted after complete-state and final-consumer qualification. |
+| CPU management overhead | 9040 atomic immutable-range hint +0.164%; exact concurrent bytes/metadata controls. Actual counters positive in 9290. | Adopted in the qualified combination. |
 
 The single-load 8900 experiment also completes the requested exact Q2 decode
 I/O measurement. Original-policy arms 1 and 4 give 0.492914 GB/token, 944.429
@@ -112,7 +121,9 @@ exclude prefill and final EOS and reconcile with independent per-call counters.
 Never average different policies into one baseline. Unstarted diagnostic 8880
 is superseded, not replayed.
 
-Neither a bundle CPU comparison nor an offline miss reduction is a measured
-whole-model speedup. Production now uses the normally qualified all-Q2
-probation app. Open gates above remain open; this checkpoint does not
-close the owner's complete eight-candidate task.
+Independent component percentages are not added. The final normal first
+request measures 1.143314 decode tok/s; the retained exact repeat measures
+1.106472 tok/s with 63.117 ms TTFT. Capture-charged two-request throughput is
+0.773582 generated tok/s. All executable comparisons are complete; output Q8
+is explicitly execution unavailable. Qualified winners are verified in
+production, with all rollback/settings hashes and fresh idle passed.

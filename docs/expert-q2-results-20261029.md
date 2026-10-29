@@ -1,5 +1,11 @@
 # Staged Expert 2-bit qualification
 
+Latest disposition: the [eight optimization comparisons and production result](expert-q2-optimization-results-20261030.md)
+supersede the historical mixed-model hold below. The optimized all-Q2 app is
+qualified in 9290 and installed/verified in 9310; original BF16/Q4/mixed and
+probation-only rollbacks are retained. Expected Q2 format loss remains disclosed.
+
+
 The owner selected Gate/Up at 2-bit with Down retained at 4-bit, followed by
 all-Expert 2-bit only if mixed-model quality holds. The first candidate uses
 Q2_K Gate/Up and Q4_0 Down. All 49 layers, 512 Experts per layer, top-10 routing,

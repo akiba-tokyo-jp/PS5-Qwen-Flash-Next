@@ -1,67 +1,48 @@
 # PS5 Qwen Flash Next
 
-Experimental original-precision **Qwen3.8-Flash-Next on one PlayStation 5**.
-The goal is to execute the complete text model with its original BF16 weights,
-streaming weights from SSD into bounded shared memory. No quantized substitute,
-expert pruning, or PC/cloud model execution is part of this goal.
+Experimental **Qwen3.8-Flash-Next on one PlayStation 5**, streaming the complete
+text model from SSD into bounded shared memory. The original baseline is BF16;
+the owner subsequently authorized routed-Expert quantization. Every Expert and
+required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-The [plan status index](docs/plan-index.md) is the entry point for adopted
-techniques, rejected variants, remaining research and historical plan outcomes.
-The [width-two follow-up](docs/speculative-qualification-20261028.md) completed
-its same-width F32/state reference, eight-input greedy behavior, accepted and
-rejected branch coverage, causal-only speed comparison and actual application
-qualification. The matched 128-slot ABBA measured **+1.40% decode** and
-**1.00707x total-request throughput**. Same-width logits and active state match
-exactly; the separate width-one/two maximum near 1.993 is not used as a universal
-quality threshold. Actual branch counts and limited causal draft availability
-are reported explicitly.
+The [complete optimization report](docs/expert-q2-optimization-results-20261030.md)
+and [installation record](config/production-installation.json) describe the
+selected all-Q2 application. Gate/Up use Q2_K and Down uses fitted-scale Q2_0 MSE;
+other weights remain BF16/F32 with F32 activation input and KV. It combines
+867 cache slots, two-touch probation, partial Expert bundles, atomic range hints,
+complete exact-prefix reuse and one causal target verification on the final
+prefix consumer.
 
-The [installed passive VideoOut/API application](config/production-installation.json)
-preserves 128 slots, six-demand delivery and complete-prefix reuse, and enables
-one causal batch only after the final API request restores its exact prefix.
-Its normal mode reproduced **all 46 complete F32 row fingerprints** from the
-same-SELF application reference and matched the closed causal Expert routes.
-The two requests measured **0.41810 / 0.43759 decode tokens/s**, TTFT
-**48.293 / 0.078 seconds**, and total time **100.905 / 50.489 seconds**; each
-emitted 22 tokens. The second reused the same 30-token prompt. These application
-measurements are separate from the controlled headless speed comparison.
-Actual frames, positive model/source/device retirement, ordinary close, full
-native canonical/rollback/five-setting readback and fresh idle passed.
-Production is `75c7aabc...`; exact `e2821af3...` and older rollbacks are preserved.
+Normal physical-console case 9290 measures **1.143314 decode tokens/s** on the
+first independent request. Repeating its exact 30-token prompt gives **63.117 ms
+to the first token** and **1.106472 decode tokens/s**. These have different cache
+conditions and are reported separately. Including prefill, capture and restore,
+the two-request group gives 0.773582 generated tokens/s, 32.618% above its
+ordinary group control. Every emitted token matches; ordinary same-width F32
+and routes match exactly. The final unlike-width maximum difference 0.971474
+is disclosed alongside full-vocabulary finite/top1 checks and the earlier
+same-width/rejection qualification.
 
-The [earlier independent comparisons](docs/independent-validation-20261028.md)
-retain the separate six-demand **+2.27% decode** and prefix **1.31525x pair
-throughput** qualifications. Prediction remains off after slower observations.
-The original C2 failure and the corrected application payload-guard failure
-remain preserved. Broader reasoning quality and sustained service remain
-unqualified.
+All eight current optimization proposals have a final disposition. Slower
+composite reads, small streaming copies and split-graph overlap are closed as
+tested. Output-head Q8 cannot complete its additional asset allocation under
+current filesystem ENOSPC; it is not adopted or reported as GPU-tested. Original
+weights remain intact. Expected Expert-Q2 quality loss is accepted: three fixed
+prompts repeated three times give 6/9 strict-format and 9/9 answer-content passes,
+without output normalization. This is not a broad reasoning-quality claim.
 
-**Implementation and validation of all research proposals are not complete.**
-The selected independent candidate decisions and adoption are terminal; broader
-missing integrations remain listed in the complete 16-family / 22-item ledger.
-The [remaining validation plan](docs/remaining-validation-plan-20261026.md)
-retains those dependencies without relabeling missing code as hardware limits.
+Placement 9310 verifies SELF `bb61e2af...`, all 9 canonical/rollback programs and
+5 settings, ordinary shutdown and fresh idle. Both actual native frames were
+viewed with CPU/GPU information, synchronized time, token rate and no chat UI.
+Unknown utilization counters remain `--`. The title/gateway/model are inactive;
+the finite binding is consumed and sustained service is not qualified. Original
+MOSS, BF16, Q4, mixed and probation-only applications remain rollbacks.
 
-The current [qualified profile](config/qualified-performance.json) retains
-original BF16/F32 weights, F32 activations/accumulation/KV, all experts and PLE,
-711 physical parts up to 512 MiB, 128 global expert slots / 129 physical planes,
-bounded prefill four, BF16 indexed-vector decode, owned padded-bank reads,
-known-demand overlap, qualified file/range reads and the compact route observer.
-F32 logit comparison does not mean the BF16 weights were converted to FP32.
-The explicit CPU/postload/context accounting corrections preserve OS counters,
-actual allocator caps and completion checks; they are finite experimental
-prices rather than a universal VM peak or stability bound.
-The [adoption table](docs/plan-index.md#adopted-techniques) links each result;
-the [remaining-proposal table](docs/plan-index.md#remaining-proposals-and-prerequisites)
-keeps future work separate from completed screens.
-
-The last recorded session ended normally with no native owner, gateway or loaded
-model. Another finite launch requires fresh admission; committed general
-execution/deployment controls and CI remain disabled. CPU/GPU utilization remains
-unavailable and is displayed as `--`. Earlier failures and intermediate refusals
-remain in the [forensic record](docs/freeze-forensics-20261024.md) and dated reports.
+The [plan index](docs/plan-index.md) links current results and dated historical
+controls. CI, reboot, persistent shader/pipeline caches and ambiguous retries
+remain disabled.
 
 ## Native driver integration
 
