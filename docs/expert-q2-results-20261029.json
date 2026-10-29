@@ -1,0 +1,75 @@
+{
+  "schema": "ps5-qwen-expert-q2-results-v1",
+  "status": "component qualification complete; full-model conversion in progress",
+  "selected_mixed_format": "Gate_Up_Q2_K_Down_Q4_0",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "persistent_caches_enabled": false,
+  "components": [
+    {
+      "case": 8130,
+      "format": "Q2_0",
+      "sampled_original_matrices": 27,
+      "sampled_weight_NRMSE_min": 0.7170132209414115,
+      "sampled_weight_NRMSE_max": 0.7354346972136824,
+      "GPU_cases": 27,
+      "GPU_graphs": 324,
+      "indexed_widths": [
+        1,
+        2,
+        4
+      ],
+      "F32_activation_inputs": true,
+      "reference": "Independent F64 calculation for each decoded format",
+      "maximum_GPU_absolute_reference_error": 1.7657329487441586e-09,
+      "all_outputs_and_canaries_passed": true,
+      "positive_retirement": true,
+      "device_live_bytes": 0,
+      "model_quality_qualified": false
+    },
+    {
+      "case": 8160,
+      "format": "Q2_K",
+      "sampled_original_matrices": 27,
+      "sampled_weight_NRMSE_min": 0.29639500399190744,
+      "sampled_weight_NRMSE_max": 0.31130739013801684,
+      "GPU_cases": 18,
+      "GPU_graphs": 216,
+      "indexed_widths": [
+        1,
+        2,
+        4
+      ],
+      "F32_activation_inputs": true,
+      "reference": "Independent F64 calculation for each decoded format",
+      "maximum_GPU_absolute_reference_error": 3.5804204046030463e-09,
+      "all_outputs_and_canaries_passed": true,
+      "positive_retirement": true,
+      "device_live_bytes": 0,
+      "model_quality_qualified": false
+    }
+  ],
+  "model_geometry": {
+    "layers": 49,
+    "Experts_per_layer": 512,
+    "selected_Experts": 10,
+    "Expert_tensors": 147,
+    "Gate_Up_Q2_K_tensors": 98,
+    "Down_Q4_0_tensors": 49,
+    "total_tensor_bytes": 162706565632,
+    "Expert_payload_bytes": 50095718400,
+    "Expert_triplet_bytes": 1996800,
+    "cache_budget_bytes": 1333739520,
+    "active_cache_slots": 581,
+    "physical_planes": 582
+  },
+  "packed_storage": {
+    "planned_bytes": 26985651488,
+    "maximum_new_bytes": 27108835328,
+    "logical_replacement_bytes": 59045709600,
+    "part_bytes": 536870912,
+    "retained_Q4_Down_and_non_Expert_payloads": true,
+    "original_BF16_and_Q4_modified": false
+  },
+  "CI_runs": 0
+}

@@ -69,3 +69,7 @@ tests/sha256_acceleration.cpp -text whitespace=cr-at-eol
 tools/*expert_q4* -text whitespace=cr-at-eol
 tools/check_sha256_acceleration.py -text whitespace=cr-at-eol
 third_party/sha-intrinsics/* -text whitespace=cr-at-eol
+native/app/expert_q2* -text whitespace=cr-at-eol
+native/qwen_flash_next/expert_q2* -text whitespace=cr-at-eol
+tests/expert_q2* -text whitespace=cr-at-eol
+tools/*expert_q2* -text whitespace=cr-at-eol

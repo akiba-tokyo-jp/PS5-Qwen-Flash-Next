@@ -20,6 +20,16 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner authorized staged Expert 2-bit work on 2026-10-29: Gate/Up at
+Q2_K with Down retained at Q4_0 first; only if quality holds may the complete
+Expert set become 2-bit. This supersedes the earlier 4-bit-only limit for this
+isolated comparison. Follow `docs/expert-q2-plan-20261029.md`. Preserve all
+Experts/top-10, non-Expert precision, F32 input/KV, exact Q4/BF16 rollbacks and
+all completion/owner/memory controls. No 8-bit work or CI is authorized here.
+Q2_0 was qualified as a component control; its substantially larger sampled
+weight error makes Q2_K the selected Gate/Up candidate. Q2_K uses 256-value
+blocks, so the original Down row width of 640 is not compatible with Q2_K.
+
 The post-Q4 bottleneck measurement is complete in
 `docs/expert-q4-io-attribution-20261029.md` / `.json`. Fresh diagnostic case
 8010 completed warmup plus two API requests and all 66 token snapshots.
