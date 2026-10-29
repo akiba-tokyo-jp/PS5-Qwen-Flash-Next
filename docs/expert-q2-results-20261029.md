@@ -340,3 +340,11 @@ That mixed-stage condition was met. For the subsequent all-Q2 adoption, apply
 the owner's later acceptance of expected quality loss, retain the original
 strict results, and require passing source, arithmetic, completion, normal-app
 and measured-speed checks. The exact mixed, Q4 and BF16 controls are retained.
+
+## Measured cache policy and selected all-Q2 production
+
+Actual all-Q2 case 8900 compares aged-LFU/probation/probation/aged-LFU in one model lifetime at 867 slots and 1,333,739,520 cache bytes. Decode improves 1.029182 to 1.127026 tok/s (+9.507%). Complete F32 rows have zero difference and ordered routes match. All native owners retire; ordinary close and exact control restoration pass.
+
+Final normal passive/API case 8940 measures 1.126481 and 1.125980 tok/s, pooled **1.126230**. Both actual native frames were viewed with correct precision, UTC clock, CPU/GPU and 1.13 tokens/s information. Placement 8950 verifies the complete canonical app, every retained mixed/Q4/BF16/older rollback and all five settings, with fresh idle. Selected SELF is `06e096630ce08b1a4b865798f7070295f74c9b5bb33fa7d0c32a5ad2bf729590`. Expected Q2 loss remains disclosed: strict format 6/9, answer contents 9/9, no output normalization.
+
+CPU-only actual-weight case 8914 reduces three same-byte reads to one: read-wall throughput improves 44.298% (time decreases 30.699%). This component result is not whole-model acceleration; bundle model integration and the other six optimization gates remain open in the maintained plan. No CI, reboot or persistent cache was used.
