@@ -1,5 +1,11 @@
 # Native routing and multi-token Expert sharing comparison
 
+Status: the finite requested verification is complete. See the
+[physical results](expert-routing-sharing-results-20261030.md) and
+[sanitized evidence](expert-routing-sharing-results-20261030.json). The dated
+sequence and two corrected integration failures below are preserved as history;
+they do not reopen completed comparisons or leave pending cases in this scope.
+
 The owner requested physical verification of cache-aware routing, fewer active
 Experts and multi-token Expert reuse. Model-output equality is not an adoption
 gate for the approximate routing arms. No production replacement is authorized

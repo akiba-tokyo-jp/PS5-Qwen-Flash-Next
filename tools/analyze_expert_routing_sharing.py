@@ -41,11 +41,23 @@ def decode_interval(request,points):
 
 def aggregate(rows):
  total=lambda k:sum(r[k]for r in rows);n=total('accepted_transitions');s=total('decode_seconds')
- return dict(accepted_transitions=n,decode_tok_s=n/s,physical_GB_per_token=total('physical_bytes')/n/1e9,
+ result=dict(accepted_transitions=n,decode_tok_s=n/s,physical_GB_per_token=total('physical_bytes')/n/1e9,
   read_calls_per_token=total('read_calls')/n,producer_wait_ms_per_token=total('source_wait_ns')/n/1e6,
   effective_GB_per_producer_wait_second=total('physical_bytes')/total('source_wait_ns'),
   source_wait_fraction_of_model_process=total('source_wait_ns')/total('model_process_ns'),
   mean_individual_pread_ms=total('individual_pread_wall_ns')/total('read_calls')/1e6)
+ if all('whole_request'in r for r in rows):
+  w=[r['whole_request']for r in rows]
+  result['whole_request']=dict(physical_GB_per_request=sum(r['physical_bytes']for r in w)/len(w)/1e9,
+   read_calls_per_request=sum(r['read_calls']for r in w)/len(w),generated_tok_s=sum(r['generated_tokens']for r in w)/sum(r['total_seconds']for r in w),
+   includes_prefill_final_EOS_and_speculative_rejected_work=True)
+ return result
+
+def whole_request(request):
+ d=request['completed_performance']['delta'];m=request['metrics']
+ require(d['source_chunks']==d['source_completed_windows']and d['source_physical_read_bytes']==d['individual_read_bytes']and d['source_physical_read_calls']==d['individual_read_calls']and d['individual_read_errors']==0,'Whole-request returned reads must independently reconcile')
+ require(m['total_ms']>0 and m['generated_tokens']>0,'Whole-request wall interval required')
+ return dict(physical_bytes=d['source_physical_read_bytes'],read_calls=d['source_physical_read_calls'],source_wait_ns=d['source_read_ns'],generated_tokens=m['generated_tokens'],total_seconds=m['total_ms']/1000)
 
 def main():
  p=argparse.ArgumentParser(description=__doc__)
@@ -71,12 +83,12 @@ def main():
   if mode==1:require(request['cache_rank_calls']>0 and request['cache_rank_resident_scores']>0,'Cache-aware selection must actually execute')
   if request['counting']:
    points=[load(root/f'IO-token-snapshots/arm{i}-token-{j}.private.json')for j in range(1,request['metrics']['generated_tokens']+1)]
-   measured=decode_interval(request,points)
-   measured.update(mode=mode,counting_quality_passed=request['counting_quality_passed'],same_tokens_as_control=request['same_counting_tokens_as_control'],whole_request_misses=route['cache_misses'],actual_k_token_histogram=hist,speculation=request['speculation'],cache_rank_calls=request['cache_rank_calls'],cache_rank_CPU_ns=request['cache_rank_CPU_ns'])
+   measured=decode_interval(request,points);measured['whole_request']=whole_request(request)
+   measured.update(mode=mode,counting_quality_passed=request['counting_quality_passed'],same_tokens_as_control=request['same_counting_tokens_as_control'],maximum_absolute_logit_error=request['maximum_absolute_logit_error'],whole_request_misses=route['cache_misses'],actual_k_token_histogram=hist,speculation=request['speculation'],cache_rank_calls=request['cache_rank_calls'],cache_rank_CPU_ns=request['cache_rank_CPU_ns'])
    rows.append(measured)
   else:
    text=bytes(request['output_bytes']).decode('utf-8',errors='replace');judgment=quality(request['quality_task'],text)
-   quality_rows.append(dict(ordinal=i,mode=mode,task=request['quality_task'],raw_output=text,stop_reason=request['stop_reason'],metrics=request['metrics'],**judgment))
+   quality_rows.append(dict(ordinal=i,mode=mode,task=request['quality_task'],raw_output=text,stop_reason=request['stop_reason'],metrics=request['metrics'],whole_request=whole_request(request),**judgment))
  require(any(r['mode']==4 and r['speculation']['attempts']>1 for r in rows),'Repeated multi-token verification must be actually exercised')
  partial_proof=load(a.partial_case/'partial-IO-token-snapshots/complete.private.json')
  basis=load(a.partial_case/'self-exit-recovery-basis.private.json');restored=load(a.partial_case/'restored-complete.private.json')
@@ -88,7 +100,7 @@ def main():
    request=load(path/f'native-arm{i}.result.private.json')
    require(request['request_reset_completed']and request['full_F32_finite'],'Only positively reset native requests may survive a later abort')
    points=[load(path/f'partial-IO-token-snapshots/arm{i}-token-{j}.private.json')for j in range(1,request['metrics']['generated_tokens']+1)]
-   value=decode_interval(request,points);value.update(case=int(path.name.rsplit('-',1)[1]),mode=request['mode'],counting_quality_passed=request['counting_quality_passed'],same_tokens_as_control=request['same_counting_tokens_as_control'],cache_rank_calls=request['cache_rank_calls'],cache_rank_CPU_ns=request['cache_rank_CPU_ns'])
+   value=decode_interval(request,points);value['whole_request']=whole_request(request);value.update(case=int(path.name.rsplit('-',1)[1]),mode=request['mode'],counting_quality_passed=request['counting_quality_passed'],same_tokens_as_control=request['same_counting_tokens_as_control'],maximum_absolute_logit_error=request['maximum_absolute_logit_error'],cache_rank_calls=request['cache_rank_calls'],cache_rank_CPU_ns=request['cache_rank_CPU_ns'])
    if request['mode']==0:require(request['maximum_absolute_logit_error']==0 and request['same_counting_tokens_as_control'],'Unchanged partial controls must retain full F32 and emitted tokens')
    values.append(value)
   return values
@@ -107,6 +119,9 @@ def main():
   every=min(lookup[i]['accepted_transitions']/lookup[i]['decode_seconds']for i in candidate)>max(lookup[i]['accepted_transitions']/lookup[i]['decode_seconds']for i in control)
   return dict(name=name,case=case,control_ordinals=control,candidate_ordinals=candidate,control=A,candidate=B,
    decode_speedup_fraction=B['decode_tok_s']/A['decode_tok_s']-1,read_byte_reduction_fraction=1-B['physical_GB_per_token']/A['physical_GB_per_token'],read_call_reduction_fraction=1-B['read_calls_per_token']/A['read_calls_per_token'],every_candidate_faster_than_every_control=every,
+   whole_request_speedup_fraction=B['whole_request']['generated_tok_s']/A['whole_request']['generated_tok_s']-1,
+   whole_request_read_byte_reduction_fraction=1-B['whole_request']['physical_GB_per_request']/A['whole_request']['physical_GB_per_request'],
+   whole_request_read_call_reduction_fraction=1-B['whole_request']['read_calls_per_request']/A['whole_request']['read_calls_per_request'],
    counting_all_passed=all(lookup[i]['counting_quality_passed']for i in candidate),same_counting_tokens_as_control=all(lookup[i]['same_tokens_as_control']for i in candidate))
  comparisons.append(compare('cache_rank_1_5',[1,4],[2,3],{r['ordinal']:r for r in partial_rows},9440))
  for name,control,candidate in COMPARISONS:

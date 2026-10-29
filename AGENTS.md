@@ -29,6 +29,18 @@ the old cross-mode F32/token equality gate. Keep all source, memory, current-boo
 positive GPU completion and ordinary-close/restoration controls. Production
 db542fa2 remains the rollback; no new weight payload, CI, reboot or agents.
 
+That first-stage verification is now complete in
+`docs/expert-routing-sharing-results-20261030.md` / `.json`. All four concrete
+settings improve matched native decode ABBAs (+44.391%, +28.855%, +55.227%,
++12.674%); every mode passes the three fixed content/raw-format tasks.
+Do not reopen these comparisons or add their gains. Reused partial cases 9440
+and 9460 retain their actual failed overall completion records; final 9480
+completes the 20 remaining requests and positively retires every model/source/GPU
+owner, followed by ordinary shutdown and exact production/settings restoration.
+Graph reuse is disabled uniformly only in the isolated experiment. These are
+experimental implemented settings, not already placed production optimizations.
+The normal selected db542fa2 application below remains unchanged and idle.
+
 The four I/O reduction proposals are physically tested and closed in
 `docs/expert-q2-io-reduction-results-20261030.md` / `.json`. Normal case 9400
 qualifies the combined winner; placement 9410 installs SELF

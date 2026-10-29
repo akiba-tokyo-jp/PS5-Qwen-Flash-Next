@@ -7,6 +7,24 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+The [routing and multi-token comparison](docs/expert-routing-sharing-results-20261030.md)
+closes the owner's requested first-stage verification of three algorithm families.
+Matched native ABBAs measure cached ranking x1.5 at **1.841726 decode tok/s
+(+44.391%)**, Top-8 at 1.640244 (+28.855%), Top-6 at **1.974742 (+55.227%)**,
+and repeated causal width-two verification at 1.433831 (+12.674%). These individual
+gains are not additive. Uniform graph rebuilding makes them isolated comparison
+rates, not a replacement for the normal production rate below. Whole-request
+throughput gains are 20.763%, 14.033%, 24.773% and 3.501%, respectively.
+
+Every mode passes three fixed translation/arithmetic/JSON tasks for both contents
+and raw format; counting tokens remain exact. This finite result does not measure
+broad reasoning accuracy. Completed trials are reused across two corrected
+integration failures; their incomplete overall retirement records remain explicit.
+The final 20-request cohort retires all model/source/GPU owners positively.
+Ordinary shutdown and exact production/settings restoration pass, with fresh
+idle and no reboot. These are implemented experimental settings; production
+remains the selected `db542fa2...` application below.
+
 The [I/O reduction report](docs/expert-q2-io-reduction-results-20261030.md)
 and [installation record](config/production-installation.json) describe the
 selected all-Q2 application. Gate/Up use Q2_K and Down uses fitted-scale Q2_0 MSE;
