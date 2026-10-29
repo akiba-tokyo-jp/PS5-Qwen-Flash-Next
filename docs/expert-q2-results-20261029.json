@@ -1,6 +1,6 @@
 {
   "schema": "ps5-qwen-expert-q2-results-v1",
-  "status": "mixed counting passed; fixed Q4/Q2 quality comparison in progress",
+  "status": "mixed quality and normal application passed; placement and conditional all-Expert 2-bit work in progress",
   "selected_mixed_format": "Gate_Up_Q2_K_Down_Q4_0",
   "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
   "driver_profile": "cumulative-idle",
@@ -272,5 +272,228 @@
       "Q4 control precedes this run; not a matched same-time speed comparison.",
       "I/O counters cover prefill and decode together."
     ]
+  },
+  "fixed_quality_comparison": {
+    "completed": true,
+    "Q4_correct_cases": [
+      0,
+      1,
+      2
+    ],
+    "minimum_baseline_met": true,
+    "every_Q4_correct_answer_retained": true,
+    "quality_preserved": true,
+    "scope": "Three fixed prompts, three independent requests each; not broad reasoning certification",
+    "cohorts": [
+      {
+        "case": 8500,
+        "precision": "Q4",
+        "requests": [
+          {
+            "ordinal": 0,
+            "quality_case": 0,
+            "quality_passed": true,
+            "output_utf8": "\u732b",
+            "full_same_format_F32_rows_compared": 0,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 1,
+            "quality_case": 0,
+            "quality_passed": true,
+            "output_utf8": "\u732b",
+            "full_same_format_F32_rows_compared": 2,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 2,
+            "quality_case": 0,
+            "quality_passed": true,
+            "output_utf8": "\u732b",
+            "full_same_format_F32_rows_compared": 2,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 3,
+            "quality_case": 1,
+            "quality_passed": true,
+            "output_utf8": "42",
+            "full_same_format_F32_rows_compared": 0,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 4,
+            "quality_case": 1,
+            "quality_passed": true,
+            "output_utf8": "42",
+            "full_same_format_F32_rows_compared": 3,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 5,
+            "quality_case": 1,
+            "quality_passed": true,
+            "output_utf8": "42",
+            "full_same_format_F32_rows_compared": 3,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 6,
+            "quality_case": 2,
+            "quality_passed": true,
+            "output_utf8": "{\"city\": \"Tokyo\", \"count\": 3}",
+            "full_same_format_F32_rows_compared": 0,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 7,
+            "quality_case": 2,
+            "quality_passed": true,
+            "output_utf8": "{\"city\": \"Tokyo\", \"count\": 3}",
+            "full_same_format_F32_rows_compared": 14,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 8,
+            "quality_case": 2,
+            "quality_passed": true,
+            "output_utf8": "{\"city\": \"Tokyo\", \"count\": 3}",
+            "full_same_format_F32_rows_compared": 14,
+            "maximum_same_format_logit_error": 0.0
+          }
+        ],
+        "positive_resource_retirement": true,
+        "normal_close_and_exact_Q4_restoration": true
+      },
+      {
+        "case": 8520,
+        "precision": "mixed",
+        "requests": [
+          {
+            "ordinal": 0,
+            "quality_case": 0,
+            "quality_passed": true,
+            "output_utf8": "\u732b",
+            "full_same_format_F32_rows_compared": 0,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 1,
+            "quality_case": 0,
+            "quality_passed": true,
+            "output_utf8": "\u732b",
+            "full_same_format_F32_rows_compared": 2,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 2,
+            "quality_case": 0,
+            "quality_passed": true,
+            "output_utf8": "\u732b",
+            "full_same_format_F32_rows_compared": 2,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 3,
+            "quality_case": 1,
+            "quality_passed": true,
+            "output_utf8": "42",
+            "full_same_format_F32_rows_compared": 0,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 4,
+            "quality_case": 1,
+            "quality_passed": true,
+            "output_utf8": "42",
+            "full_same_format_F32_rows_compared": 3,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 5,
+            "quality_case": 1,
+            "quality_passed": true,
+            "output_utf8": "42",
+            "full_same_format_F32_rows_compared": 3,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 6,
+            "quality_case": 2,
+            "quality_passed": true,
+            "output_utf8": "{\n  \"city\": \"Tokyo\",\n  \"count\": 3\n}",
+            "full_same_format_F32_rows_compared": 0,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 7,
+            "quality_case": 2,
+            "quality_passed": true,
+            "output_utf8": "{\n  \"city\": \"Tokyo\",\n  \"count\": 3\n}",
+            "full_same_format_F32_rows_compared": 20,
+            "maximum_same_format_logit_error": 0.0
+          },
+          {
+            "ordinal": 8,
+            "quality_case": 2,
+            "quality_passed": true,
+            "output_utf8": "{\n  \"city\": \"Tokyo\",\n  \"count\": 3\n}",
+            "full_same_format_F32_rows_compared": 20,
+            "maximum_same_format_logit_error": 0.0
+          }
+        ],
+        "positive_resource_retirement": true,
+        "normal_close_and_exact_Q4_restoration": true
+      }
+    ]
+  },
+  "normal_application": {
+    "case": 8560,
+    "completed": true,
+    "requests": [
+      {
+        "ordinal": 0,
+        "TTFT_ms": 21555.263992995024,
+        "decode_ms": 23130.455103993416,
+        "decode_tokens_per_second": 0.9078939392063411,
+        "generated_tokens": 22,
+        "prefill_ms": 21525.77059200406,
+        "prompt_tokens": 30,
+        "total_ms": 45723.96441498399,
+        "counting_quality_passed": true
+      },
+      {
+        "ordinal": 1,
+        "TTFT_ms": 20116.79968699813,
+        "decode_ms": 23034.49312198162,
+        "decode_tokens_per_second": 0.9116762365376244,
+        "generated_tokens": 22,
+        "prefill_ms": 20086.50339099765,
+        "prompt_tokens": 30,
+        "total_ms": 44186.020873993635,
+        "counting_quality_passed": true
+      },
+      {
+        "ordinal": 2,
+        "TTFT_ms": 20143.424454003572,
+        "decode_ms": 22988.328290998936,
+        "decode_tokens_per_second": 0.9135070516729368,
+        "generated_tokens": 22,
+        "prefill_ms": 20113.832105010748,
+        "prompt_tokens": 30,
+        "total_ms": 44169.202303022146,
+        "counting_quality_passed": true
+      }
+    ],
+    "pooled_API_decode_tok_s": 0.9125907258731004,
+    "earlier_same_console_Q4_API_decode_tok_s": 0.86980770567884,
+    "earlier_control_decode_ratio": 1.0491867569290738,
+    "actual_native_frames_viewed": 2,
+    "precision_label_correct": true,
+    "all_sources_and_GPU_owners_positively_retired": true,
+    "native_whole_SELF_SHA256": "e64cd9a49851eec0e3062651f2cac91c925ddbdeca78eebb93c78586ec017730",
+    "same_format_full_F32_and_routes_exact": true,
+    "exact_Q4_and_settings_restored": true,
+    "production_placement_pending": true
   }
 }

@@ -7,7 +7,8 @@ non-Expert BF16/F32 payloads, F32 activation inputs and F32 KV are retained.
 The original BF16 and selected Q4 production files remain intact.
 
 Full-model conversion, physical readback, metadata sealing and complete-source
-host admission have completed. Generation qualification is in progress. Component
+host admission have completed. Mixed generation, fixed quality and normal-app
+qualification have passed; placement and conditional all-Expert work continue. Component
 results below do not establish model quality or inference throughput. The
 machine-readable measurements are in [the result record](expert-q2-results-20261029.json).
 
@@ -33,7 +34,41 @@ produce the same 22 output tokens and use 21 accepted decode transitions per
 request. Physical bytes include prefill and decode. This successful counting
 screen does not establish the additional quality criteria or production
 adoption. The fixed Japanese instruction, arithmetic and JSON extraction
-comparison is in progress before the conditional all-Expert 2-bit stage.
+comparison below also passed before the conditional all-Expert 2-bit stage.
+
+## Fixed quality and normal application
+
+Cases 8500 (Q4) and 8520 (mixed) completed all nine requests, positively retired
+their model/source/device owners and normally closed/restored exact Q4 settings.
+Both formats returned `cat`'s Japanese translation as `猫` and `19 + 23` as `42`.
+Both extracted the correct city `Tokyo` and integer count `3`; JSON whitespace
+differs across formats. All same-format repeated vocabulary rows and routes
+matched exactly. All three Q4-correct tasks remained correct in the mixed model,
+meeting the predeclared finite acceptance rule. This is three fixed tasks,
+not broad reasoning, perplexity or arbitrary-context quality certification.
+
+The earlier Q4 quality attempt 8460 returned before GPU initialization when its
+measured free pages were 1,168 against the next-phase requirement of 1,185.
+After positive close/restoration, a passive sample observed 5,847 pages versus
+the earlier 5,567 prelaunch minimum. Fresh case 8500 used a 5,585-page entry
+screen derived from the observed 4,400-page CPU decline plus the unchanged
+1,185-page next-phase requirement. It completed actual GPU inference. No floor
+was reduced, no inactive memory was counted as free, and no reboot was used.
+
+Normal passive application 8560 then passed warmup and two API requests,
+all same-format output/route checks, two positively completed native frames,
+positive resource retirement, ordinary close and exact Q4/settings restoration.
+Both 1920 x 1080 frames were inspected: CPU/GPU information, synchronized date,
+token rate and `Gate/Up Q2_K / Down Q4_0` labels are legible; there are no chat
+controls. Unavailable utilization counters remain `--`.
+
+The API requests measured **0.911676** and **0.913507 decode tok/s**,
+pooled **0.912591 tok/s**. Earlier same-console Q4 normal API was
+**0.869808 tok/s**, a **4.9187%** improvement in this finite counting comparison.
+Both use 22 generated tokens / 21 decode transitions and exclude prefill from
+decode speed. The older control is not a simultaneous ABBA run. The selected
+mixed SELF is `e64cd9a49851eec0e3062651f2cac91c925ddbdeca78eebb93c78586ec017730`;
+production placement remains separately recorded.
 
 ## Component results
 
