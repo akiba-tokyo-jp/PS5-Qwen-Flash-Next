@@ -1,0 +1,473 @@
+{
+  "schema": "ps5-qwen-Q2-requested-measurements-v1",
+  "completed": true,
+  "whole_request_controls": [
+    {
+      "case": 7820,
+      "format": "Q4_0",
+      "timed_requests": 2,
+      "prompt_tokens_per_request": 30,
+      "generated_tokens_per_request": 22,
+      "evaluated_tokens_per_request": 52.0,
+      "whole_request_physical_GB": 44.919764384,
+      "whole_request_read_calls": 48037.0,
+      "physical_GB_per_evaluated_token_including_prompt_EOS": 0.8638416227692307,
+      "read_calls_per_evaluated_token_including_prompt_EOS": 923.7884615384615,
+      "amortized_producer_wait_ms_per_physical_call": 0.7904313887940546,
+      "amortized_wait_is_not_individual_call_latency": true,
+      "effective_GB_per_producer_wait_second": 1.183034512300094,
+      "effective_GB_per_total_request_second": 0.9686845365146406,
+      "mean_physical_read_KiB": 913.1910278795511,
+      "process_outside_source_wait_s_per_request": 7.298714204500001
+    },
+    {
+      "case": 8780,
+      "format": "Gate_Up_Q2_K_Down_Q2_0_MSE",
+      "timed_requests": 2,
+      "prompt_tokens_per_request": 30,
+      "generated_tokens_per_request": 22,
+      "evaluated_tokens_per_request": 52.0,
+      "whole_request_physical_GB": 21.707681216,
+      "whole_request_read_calls": 41492.0,
+      "physical_GB_per_evaluated_token_including_prompt_EOS": 0.417455408,
+      "read_calls_per_evaluated_token_including_prompt_EOS": 797.9230769230769,
+      "amortized_producer_wait_ms_per_physical_call": 0.7655290796177577,
+      "amortized_wait_is_not_individual_call_latency": true,
+      "effective_GB_per_producer_wait_second": 0.6834195110709969,
+      "effective_GB_per_total_request_second": 0.5540614130507852,
+      "mean_physical_read_KiB": 510.9155364287092,
+      "process_outside_source_wait_s_per_request": 6.299055735499998
+    }
+  ],
+  "whole_request_byte_reduction": 0.5167454345835332,
+  "whole_request_call_reduction": 0.13624914128692467,
+  "Expert_triplet_payload_bytes": {
+    "Q4": 2764800,
+    "Q2": 1536000,
+    "Q2_over_Q4": 0.5555555555555556
+  },
+  "exact_Q4_decode": {
+    "completed": true,
+    "case": 8010,
+    "prefill_and_final_EOS_excluded": true,
+    "accepted_decode_transitions": 42,
+    "requests": [
+      {
+        "request": 1,
+        "accepted_decode_transitions": 21,
+        "decode_s": 24.098704724997283,
+        "physical_bytes": 21621279392,
+        "physical_calls": 23223,
+        "source_wait_s": 19.090114743,
+        "model_process_s": 23.200404454
+      },
+      {
+        "request": 2,
+        "accepted_decode_transitions": 21,
+        "decode_s": 24.097918025016785,
+        "physical_bytes": 21621279392,
+        "physical_calls": 23223,
+        "source_wait_s": 19.108281112,
+        "model_process_s": 23.201421766
+      }
+    ],
+    "physical_GB_per_decode_token": 1.0295847329523808,
+    "read_calls_per_decode_token": 1105.857142857143,
+    "effective_GB_per_producer_wait_second": 1.1320516952635262,
+    "source_wait_fraction_of_model_process": 0.8232088899668311
+  },
+  "exact_Q2_decode": {
+    "completed": true,
+    "case": 8900,
+    "prefill_and_final_EOS_excluded": true,
+    "accepted_decode_transitions": 42,
+    "requests": [
+      {
+        "request": 1,
+        "accepted_decode_transitions": 21,
+        "decode_s": 20.416463910996914,
+        "physical_bytes": 10351194240,
+        "physical_calls": 19833,
+        "source_wait_s": 15.89097448,
+        "model_process_s": 19.496381432,
+        "individual_read_wall_ns": 28130769175,
+        "individual_read_latency_histogram": [
+          0,
+          0,
+          0,
+          0,
+          20,
+          163,
+          48,
+          138,
+          1730,
+          6133,
+          5479,
+          1501,
+          620,
+          732,
+          892,
+          851,
+          1105,
+          392,
+          18,
+          0,
+          0,
+          2,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "size_classes": [
+          {
+            "bucket": 0,
+            "calls": 357,
+            "bytes": 6045696,
+            "wall_ns": 496796797
+          },
+          {
+            "bucket": 3,
+            "calls": 14,
+            "bytes": 2752512,
+            "wall_ns": 17801083
+          },
+          {
+            "bucket": 5,
+            "calls": 14,
+            "bytes": 5046272,
+            "wall_ns": 12199812
+          },
+          {
+            "bucket": 7,
+            "calls": 6436,
+            "bytes": 3057975296,
+            "wall_ns": 9432555358
+          },
+          {
+            "bucket": 8,
+            "calls": 12860,
+            "bytes": 7121399936,
+            "wall_ns": 17958127722
+          },
+          {
+            "bucket": 14,
+            "calls": 51,
+            "bytes": 47661056,
+            "wall_ns": 72432373
+          },
+          {
+            "bucket": 16,
+            "calls": 101,
+            "bytes": 110313472,
+            "wall_ns": 140856030
+          }
+        ]
+      },
+      {
+        "request": 4,
+        "accepted_decode_transitions": 21,
+        "decode_s": 20.39264900201559,
+        "physical_bytes": 10351194240,
+        "physical_calls": 19833,
+        "source_wait_s": 15.881739136,
+        "model_process_s": 19.489811683,
+        "individual_read_wall_ns": 28122135327,
+        "individual_read_latency_histogram": [
+          0,
+          0,
+          0,
+          0,
+          19,
+          165,
+          50,
+          154,
+          1709,
+          6177,
+          5372,
+          1562,
+          632,
+          771,
+          866,
+          841,
+          1094,
+          398,
+          12,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "size_classes": [
+          {
+            "bucket": 0,
+            "calls": 357,
+            "bytes": 6045696,
+            "wall_ns": 491943328
+          },
+          {
+            "bucket": 3,
+            "calls": 14,
+            "bytes": 2752512,
+            "wall_ns": 17551946
+          },
+          {
+            "bucket": 5,
+            "calls": 14,
+            "bytes": 5046272,
+            "wall_ns": 13749555
+          },
+          {
+            "bucket": 7,
+            "calls": 6436,
+            "bytes": 3057975296,
+            "wall_ns": 9438372555
+          },
+          {
+            "bucket": 8,
+            "calls": 12860,
+            "bytes": 7121399936,
+            "wall_ns": 17947294158
+          },
+          {
+            "bucket": 14,
+            "calls": 51,
+            "bytes": 47661056,
+            "wall_ns": 71873884
+          },
+          {
+            "bucket": 16,
+            "calls": 101,
+            "bytes": 110313472,
+            "wall_ns": 141349901
+          }
+        ]
+      }
+    ],
+    "physical_GB_per_decode_token": 0.4929140114285714,
+    "read_calls_per_decode_token": 944.4285714285714,
+    "effective_GB_per_producer_wait_second": 0.6515775998929709,
+    "source_wait_fraction_of_model_process": 0.8149734836196509,
+    "mean_individual_pread_wall_ms": 1.4181642843241062,
+    "individual_pread_p50_interval": {
+      "lower_ms": 1.28,
+      "upper_ms": 1.408
+    },
+    "individual_pread_p95_interval": {
+      "lower_ms": 2.048,
+      "upper_ms": 2.176
+    },
+    "individual_read_size_classes": [
+      {
+        "lower_KiB": 0,
+        "upper_KiB": 64,
+        "calls": 714,
+        "mean_returned_KiB": 16.537815126050422,
+        "mean_pread_wall_ms": 1.3847900910364146
+      },
+      {
+        "lower_KiB": 192,
+        "upper_KiB": 256,
+        "calls": 28,
+        "mean_returned_KiB": 192.0,
+        "mean_pread_wall_ms": 1.2626081785714287
+      },
+      {
+        "lower_KiB": 320,
+        "upper_KiB": 384,
+        "calls": 28,
+        "mean_returned_KiB": 352.0,
+        "mean_pread_wall_ms": 0.9267631071428571
+      },
+      {
+        "lower_KiB": 448,
+        "upper_KiB": 512,
+        "calls": 12872,
+        "mean_returned_KiB": 464.0,
+        "mean_pread_wall_ms": 1.4660447415320075
+      },
+      {
+        "lower_KiB": 512,
+        "upper_KiB": 576,
+        "calls": 25720,
+        "mean_returned_KiB": 540.7847686625195,
+        "mean_pread_wall_ms": 1.396011737169518
+      },
+      {
+        "lower_KiB": 896,
+        "upper_KiB": 960,
+        "calls": 102,
+        "mean_returned_KiB": 912.6274509803922,
+        "mean_pread_wall_ms": 1.4147672254901962
+      },
+      {
+        "lower_KiB": 1024,
+        "upper_KiB": null,
+        "calls": 202,
+        "mean_returned_KiB": 1066.6138613861385,
+        "mean_pread_wall_ms": 1.3970590643564356
+      }
+    ],
+    "individual_call_times_overlap_and_are_not_critical_path": true,
+    "physical_byte_reduction_vs_Q4": 0.5212496886826224,
+    "read_call_reduction_vs_Q4": 0.14597597209662838
+  },
+  "additional_measurement": {
+    "case": 8900,
+    "status": "completed",
+    "current_owner_freeze_risk_confirmation_required": false,
+    "prepared_SELF_sha256": "ba81f3f405b3a8413fecab0d4e7de0bfc89fc784f2743029f25ec4662664f551",
+    "original_policy_request_ordinals": [
+      1,
+      4
+    ],
+    "never_started_case_8880_superseded_by_combined_comparison": true,
+    "runtime_counters_static_bytes": 960,
+    "original_GPU_and_IO_schedule_preserved": true
+  },
+  "fused_compute": {
+    "completed": true,
+    "source_cases": [
+      7560,
+      8160,
+      8600
+    ],
+    "separate_dequantization_pass_exists_in_measured_width_one_path": false,
+    "standalone_dequantization_duration_measured": false,
+    "scope": "Already measured fused quantized matrix graph, submit, synchronize and checkpoint wall time; excludes timed SSD delivery",
+    "pure_GPU_timestamp": false,
+    "groups": [
+      {
+        "role": "Gate/Up",
+        "width": 1,
+        "Q4": {
+          "case": 7560,
+          "format": "Q4_0",
+          "compute_ms": 7.1975370000000005,
+          "paired_BF16_ms": 7.929165375,
+          "samples": 24
+        },
+        "Q2": {
+          "case": 8160,
+          "format": "Q2_K",
+          "compute_ms": 7.135824291666667,
+          "paired_BF16_ms": 7.930040791666666,
+          "samples": 24
+        },
+        "Q2_over_Q4_wall_ratio": 0.9914258574379912,
+        "cross_run_BF16_normalized_ratio": 0.9913164115042102
+      },
+      {
+        "role": "Down",
+        "width": 1,
+        "Q4": {
+          "case": 7560,
+          "format": "Q4_0",
+          "compute_ms": 7.668559583333334,
+          "paired_BF16_ms": 7.843056416666666,
+          "samples": 12
+        },
+        "Q2": {
+          "case": 8600,
+          "format": "Q2_0",
+          "compute_ms": 7.426239166666666,
+          "paired_BF16_ms": 7.839334333333333,
+          "samples": 12
+        },
+        "Q2_over_Q4_wall_ratio": 0.9684007910438198,
+        "cross_run_BF16_normalized_ratio": 0.9688605837112922
+      }
+    ],
+    "conclusion": "No increased fused-graph wall time observed in these finite component samples; not full-model dequant-only timing"
+  },
+  "fixed_SSD_command_latency_dominance_causally_identified": false,
+  "effective_path_rate_is_not_raw_SSD_bandwidth": true,
+  "original_internal_SSD_nominal_raw_GB_s": 5.5,
+  "nominal_spec_source": "https://sonyinteractive.com/en/press-releases/2020/playstation-5-launches-this-november-at-399-for-ps5-digital-edition-and-499-for-ps5-with-ultra-hd-blu-ray-disc-drive/",
+  "nominal_spec_ratio_is_not_device_utilization": true,
+  "actual_mount_device_bandwidth_not_measured": true,
+  "pure_NAND_OS_and_queue_time_not_separated": true,
+  "CI_runs": 0,
+  "production_changed": false
+}

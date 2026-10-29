@@ -20,6 +20,108 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+Latest selection: all routed Experts use Gate/Up Q2_K and fitted-scale Down
+Q2_0, with the measured two-touch-probation replacement policy. Case 8900's
+same-model ABBA improves decode 1.029182 -> 1.127026 tok/s (+9.507%); full F32
+rows and ordered routes match exactly. Final passive/API 8940 measures
+1.126481 and 1.125980 tok/s; both actual frames were viewed. Placement 8950
+completed whole native canonical/rollback/settings hashes and fresh idle on
+SELF `06e096630ce08b1a4b865798f7070295f74c9b5bb33fa7d0c32a5ad2bf729590`.
+All 867 slots, the 1,333,739,520-byte budget, non-Expert BF16/F32 and F32 KV/
+inputs remain. Mixed, Q4, BF16 and original MOSS rollbacks remain intact.
+The title/gateway/model are inactive; the finite execution binding is consumed.
+
+The owner explicitly accepted freeze risk for these eight optimization
+comparisons and adoption of faster qualified versions. The previous review
+hold is resolved. Unstarted diagnostic 8880 is superseded by 8900's original-
+policy arms 1/4: 0.492914 GB/decode token, 944.429 calls/token and 1.418164 ms
+mean individual pread wall time. Do not rerun 8880 or normal case 8720.
+CPU-only actual-weight bundle comparison 8914 improves read-wall throughput
+44.298% at equal bytes; this does not establish whole-model bundle speed.
+The remaining seven candidate implementation/validation gates are open in
+`docs/expert-q2-plan-20261029.md`; do not call the eight-candidate task complete.
+Preserve the strict all-Q2 result (6/9 format, 9/9 content) and the owner's
+acceptance of expected loss. No additional quality veto, CI, reboot or caches.
+Earlier mixed-production and review-blocked descriptions below are historical.
+
+The selected production is now **Gate/Up Q2_K with Down Q4_0**, placed and
+verified in case 8580 on SELF
+`e64cd9a49851eec0e3062651f2cac91c925ddbdeca78eebb93c78586ec017730`.
+See `docs/expert-q2-results-20261029.md` / `.json` and the current production
+installation record. Counting case 8440 measured 0.913361 decode tok/s;
+passive/API case 8560 measured pooled 0.912591, versus earlier same-console
+Q4 API 0.869808 (4.9187% higher). Q4 quality case 8500 and mixed case 8520 each
+passed three fixed tasks with three independent requests, preserving every
+Q4-correct answer. This finite scope does not certify broad reasoning quality.
+Both actual native frames were viewed with accurate mixed labels, clock,
+CPU/GPU and token-rate information. All owners retired positively; normal close,
+canonical/rollback whole native hashes, all five settings and fresh idle passed.
+The exact Q4 `98a57339...`, BF16 and older rollbacks remain intact. All Experts,
+top-10, non-Expert BF16/F32, F32 inputs/KV and the original cache budget remain;
+the cache has 581 active slots / 582 planes. The title/gateway/model are inactive.
+The finite run binding is consumed; another execution needs a fresh case.
+All-Expert 2-bit work has a measured format regression, with normal validation
+continuing under the owner's subsequent clarification accepting expected
+quantization quality loss. Preserve the original strict-format result; do not
+silently normalize output or claim the strict JSON predicate passed.
+All 49 original-BF16 Down tensors were converted to fitted-scale Q2_0, and all
+151,157,049,472 logical bytes / 1,330 spans passed native hashing. Corrected
+counting case 8780 passed, pooled 1.031136 decode tok/s versus earlier mixed
+0.913361. Fixed quality case 8700 completed all nine requests: translation and
+arithmetic passed, but all three JSON-only responses added Markdown fences.
+The extracted Tokyo/3 values were correct; raw format compliance failed. Same-
+format complete F32 rows/routes matched with zero error and all owners retired.
+The previous assistant-defined strict-format adoption gate does not override
+the owner's latest direction. Continue the fresh all-Q2 passive monitor/API
+case 8720, then select the faster positively qualified application while
+recording the observed quality tradeoff. Mixed production remains selected
+until that validation and verified placement complete. Final read-only audit
+8790 verified seven programs
+and five settings, including MOSS, Q4 and BF16 rollbacks; title/gateway/model
+are inactive. Keep CI/reboot/persistent caches disabled. Consumed cases 8680
+(known CPU-only preflight return), 8780 and 8700 must not be replayed.
+Earlier dated Q4/BF16 selections below remain historical controls.
+
+Read-only all-Q2 bottleneck verification is complete in
+`docs/expert-q2-bottleneck-20261029.md` / `.json`. It reconciles closed cases
+8780/8700 and historical Q4/mixed controls without another console operation.
+Whole-request producer source wait is 83.4507% of model-process time; it
+includes prefill/EOS and is not an exact decode-only percentage. Expert uploads
+account for 99.997472% of logical streaming, with 68.507% unique-demand cache
+misses. Each timed counting request reads 21,707,681,216 physical bytes.
+Non-Expert residual is exactly 532,480 bytes for 52 evaluated model tokens;
+its current physical amplification/time is not separately measured. Do not
+transfer the old Q4-only percentages, claim SSD hardware saturation or label
+the remaining process time GPU-only. Normal all-Q2 qualification/placement
+remain pending; this analysis changes neither production nor native policy.
+
+The owner's requested detailed I/O/compute comparison is recorded separately
+in `docs/expert-q2-requested-measurements-20261029.md` / `.json`. Existing
+whole-request bytes fall 51.6745% versus Q4, while read calls fall 13.6249%.
+Prompt/EOS-inclusive token averages are explicitly not decode-only metrics.
+Fused component graph times show no increase in their finite measured scope;
+they include submit/synchronize/checkpoint and are not standalone dequant times.
+Dedicated diagnostic case 8880 is prepared but has never started. SELF
+`06b1e2956ebcbcc7a9fd4a25b4c6f5b8fbe097340b1e696afab6ab89b39afa86`
+adds per-token completed counters and individual pread wall/size histograms,
+retaining GPU math, cache, memory and owner/completion guards. Host concurrency,
+12 safety checks, imports and six SELF segments passed. Automatic approval
+review rejected its launch pending direct owner freeze-risk confirmation;
+the risk question remains pending. Do not claim exact Q2 decode GB/token,
+calls/token or per-call latency were measured. Do not retry the rejected launch
+without resolving that approval. This diagnostic is separate from pending
+normal monitor/API case 8720 and changes no production selection.
+
+The owner authorized staged Expert 2-bit work on 2026-10-29: Gate/Up at
+Q2_K with Down retained at Q4_0 first; only if quality holds may the complete
+Expert set become 2-bit. This supersedes the earlier 4-bit-only limit for this
+isolated comparison. Follow `docs/expert-q2-plan-20261029.md`. Preserve all
+Experts/top-10, non-Expert precision, F32 input/KV, exact Q4/BF16 rollbacks and
+all completion/owner/memory controls. No 8-bit work or CI is authorized here.
+Q2_0 was qualified as a component control; its substantially larger sampled
+weight error makes Q2_K the selected Gate/Up candidate. Q2_K uses 256-value
+blocks, so the original Down row width of 640 is not compatible with Q2_K.
+
 The post-Q4 bottleneck measurement is complete in
 `docs/expert-q4-io-attribution-20261029.md` / `.json`. Fresh diagnostic case
 8010 completed warmup plus two API requests and all 66 token snapshots.

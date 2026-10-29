@@ -83,6 +83,22 @@ int main() {
         for (int i = 0; i < 10; ++i) policy.observe(0, {1});
         policy.observe(0, {2}); policy.observe(0, {3});
         check(policy.victim({1, 2, 3}, 0, {3}) == 1, "Frequency policy evicted an older hot expert");
+        policy.reset(1, 8, 3, 1);
+        policy.set_eviction_policy(ExpertEvictionPolicy::two_touch_probation);
+        for (int i = 0; i < 10; ++i) policy.observe(0, {1});
+        policy.observe(0, {2}); policy.observe(0, {2}); policy.observe(0, {3});
+        check(policy.victim({1, 2, 3}, 0, {3}) == 0,
+              "Probation did not use recency between twice-observed experts");
+        bool refused = false;
+        try { policy.set_eviction_policy(ExpertEvictionPolicy::aged_lfu); }
+        catch (const std::invalid_argument &) { refused = true; }
+        check(refused, "Policy changed during a live observation history");
+        policy.reset(1, 8, 3, 1);
+        policy.set_eviction_policy(ExpertEvictionPolicy::aged_lfu);
+        refused = false;
+        try { policy.set_eviction_policy(static_cast<ExpertEvictionPolicy>(99)); }
+        catch (const std::invalid_argument &) { refused = true; }
+        check(refused, "Unknown eviction policy was admitted");
         auto range = expert_advice_range(4097, 4096, 4096, 8192);
         check(range.address == 4096 && range.bytes == 8192, "Page advice rounding is wrong");
         check(!expert_advice_range(4097, 4096, 4096, 8191).bytes &&
