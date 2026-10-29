@@ -1,5 +1,12 @@
 # PS5 Flash Next plan status
 
+The fresh [post-Q4 I/O measurement](expert-q4-io-attribution-20261029.md)
+closes the current bottleneck investigation. Decode source waiting is 82.321%
+of model process time; non-Expert rows are only 0.027962% of physical traffic
+and 2.584% of source wait. Expert delivery remains dominant. This is a
+measurement, with the selected Q4 production restored; no diagnostic speedup
+or additional optimization adoption is claimed.
+
 The latest selected production is [Expert-only Q4](expert-q4-adoption-20261029.md)
 with [sanitized evidence](expert-q4-adoption-20261029.json). Conversion, component
 arithmetic, complete-model repeats, normal passive monitor/API, actual frame

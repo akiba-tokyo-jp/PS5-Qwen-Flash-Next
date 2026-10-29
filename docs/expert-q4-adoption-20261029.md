@@ -1,5 +1,9 @@
 # Expert-only Q4 production qualification
 
+Subsequent [post-Q4 bottleneck measurement](expert-q4-io-attribution-20261029.md)
+quantifies decode-only source waiting and named non-Expert row reads. Its
+diagnostic is not adopted; this selected application/settings were restored.
+
 The Expert-only Q4_0 candidate passed the complete native model comparison,
 the passive monitor/API application and production placement. The same PS5
 produced correct counting answers in all six requests, with complete same-Q4
