@@ -1,5 +1,22 @@
 # PS5 Flash Next plan status
 
+The current [all-Q2 optimization result](expert-q2-optimization-results-20261030.md)
+closes the eight-family plan and records verified production placement 9310.
+First independent decode is 1.143314 tok/s; the exact repeat is 1.106472 with
+63.117 ms TTFT. Bundles, atomic metadata hints, probation, exact-prefix reuse
+and one final-consumer causal attempt are adopted. Slower composite/copy/split
+variants are tested and closed. Output Q8 is execution unavailable after actual
+FTP and native ENOSPC; no Q8 GPU speed or quality result is claimed. All original
+models/rollbacks remain; 9 programs and 5 settings pass native whole readback,
+both native frames were viewed, and the console is idle. See the adjacent
+[JSON evidence](expert-q2-optimization-results-20261030.json).
+
+The dated selections below preserve historical controls and earlier constraints.
+Their obsolete pending lists do not reopen the completed current proposal set.
+
+## Historical checkpoints
+
+
 The fresh [post-Q4 I/O measurement](expert-q4-io-attribution-20261029.md)
 closes the current bottleneck investigation. Decode source waiting is 82.321%
 of model process time; non-Expert rows are only 0.027962% of physical traffic
