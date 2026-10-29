@@ -516,7 +516,7 @@
     "previous_production_SHA256": "98a573396af615f754fe4286c6600ccf5596b8fad9d4ab00b99d7e9295dfd8fa"
   },
   "conditional_all_Expert_2bit": {
-    "status": "isolated_model_quality_monitor_host_builds_complete_actual_model_unconverted_pending_capacity_permission",
+    "status": "actual_original_BF16_Down_conversion_running_after_authorized_code_archive_reclamation",
     "Expert_format": "Gate_Up_Q2_K_Down_Q2_0_MSE",
     "Down_encoding": "signed_FP16_scale_MSE_fit",
     "trigger_mixed_quality_preserved": true,
@@ -580,12 +580,18 @@
     "capacity": {
       "host_archived_code_copies": 253,
       "raw_host_copies_full_SHA256_verified": true,
-      "PS5_deletions": 0,
+      "PS5_deletions": 253,
       "reclaimable_allocated_bytes": 13115588608,
       "current_and_named_rollback_programs_preserved": 11,
       "all_BF16_Q4_mixed_model_data_preserved": true,
       "automatic_review_rejected_bulk_deletion": true,
-      "explicit_owner_permission_pending": true
+      "explicit_owner_permission_pending": false,
+      "explicit_owner_permission_received": true,
+      "previously_rejected_deletion_executed_after_direct_owner_reply": true,
+      "cleanup_positively_completed": true,
+      "native_available_bytes_after_cleanup": 18387435520,
+      "all_current_and_rollback_programs_native_verified": true,
+      "all_model_part_identities_preserved": true
     },
     "CI_runs": 0,
     "reboots": 0,

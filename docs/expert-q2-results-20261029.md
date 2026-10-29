@@ -121,11 +121,13 @@ completion checks and the actual selected cache/provider link map passed.
 
 For capacity, 253 historical executable copies have complete native/host SHA256
 matches and retained host backups, totaling 13,115,588,608 allocated console
-bytes. The frozen proposed cleanup protects all named current/rollback files
-and 996 retained model inode references. Its review-only build completed with
-zero console dispatches or deletions. Automatic review rejected PS5-side bulk
-deletion without explicit owner permission; that permission is pending. All
-BF16/Q4/mixed model files and the current production remain in place.
+bytes. After the owner's explicit deletion approval, the frozen cleanup ran
+once and removed all 253 copies. Before and after deletion it verified the
+whole native hashes of all 11 protected programs and 996 retained model inode
+references. The native available-capacity measurement was 18,387,435,520 bytes;
+the Direct window retired positively. All BF16/Q4/mixed model files and current
+and rollback programs remain intact. Actual original-BF16 Down conversion is
+now running on the PS5 CPU with four bounded workers and no GPU/title launch.
 
 ## Component results
 
