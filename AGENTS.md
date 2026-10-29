@@ -20,6 +20,22 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The post-Q4 bottleneck measurement is complete in
+`docs/expert-q4-io-attribution-20261029.md` / `.json`. Fresh diagnostic case
+8010 completed warmup plus two API requests and all 66 token snapshots.
+For 21 accepted decode transitions, source wait is 82.321% of model process
+time (79.255% of decode wall time). Physical reads are 1.029585 GB/token.
+Named token/PLE rows total 10 KiB logical / 281.14 KiB physical per token,
+0.027962% of physical traffic and 2.584% of source-wait time. All logical
+source bytes reconcile exactly to Expert cache uploads plus those rows.
+Expert delivery remains dominant; the rest of process time is not GPU-only.
+The diagnostic adds observations only and was not adopted. Exact selected
+Q4 SELF/settings and fresh idle were restored; no reboot or CI occurred.
+Preparation 8000 stopped offline at the obsolete BF16-only installation
+record check, before creating/publishing a case. The preparer now validates
+the separate exact closed Q4 qualification without fabricating BF16 arithmetic
+flags; original BF16 admission remains intact. Do not replay consumed cases.
+
 The selected production is now **Expert-only Q4_0**, qualified and placed in
 case 7940. See `docs/expert-q4-adoption-20261029.md` / `.json` and
 `config/production-installation.json`. Headless case 7820 measured 0.871504

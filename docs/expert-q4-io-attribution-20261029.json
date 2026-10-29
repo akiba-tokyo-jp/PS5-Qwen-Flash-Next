@@ -1,0 +1,243 @@
+{
+  "schema": "ps5-qwen-Q4-IO-attribution-v1",
+  "completed": true,
+  "actual_new_PS5_measurement": true,
+  "diagnostic_case": 8010,
+  "selected_production_SELF_sha256": "98a573396af615f754fe4286c6600ccf5596b8fad9d4ab00b99d7e9295dfd8fa",
+  "diagnostic_SELF_sha256": "a67473e2befd0775e38f7413fc8585a2ec34c8e4e90d2b0bf7a83632f6e7b14d",
+  "measurement_only_candidate_not_adopted": true,
+  "tokens_routes_and_weight_read_volume_match_selected_production": true,
+  "selected_Q4_application_and_five_settings_restored": true,
+  "ordinary_close_verified": true,
+  "final_native_owners": 0,
+  "CI_runs": 0,
+  "methodology": "First-to-last generated-token completed-counter differences; no extra reads or GPU work; named CPU GET_ROWS attribution",
+  "instrumentation_adds_CPU_counter_and_existing_token_record_fields": true,
+  "physical_reads_include_alignment": true,
+  "source_wait_includes_OS_and_scheduling": true,
+  "pure_NAND_or_device_bandwidth_not_measured": true,
+  "worker_intervals_overlap_and_are_not_added": true,
+  "requests": [
+    {
+      "request": 0,
+      "warmup": true,
+      "accepted_decode_transitions": 21,
+      "decode_tok_s": 0.8667077126762772,
+      "prefill_excluded": true,
+      "final_EOS_work_excluded": true,
+      "decode_elapsed_s": 24.229621696978807,
+      "model_process_s": 23.352402495,
+      "source_wait_s": 19.144799486,
+      "source_wait_fraction_of_process": 0.8198214076731123,
+      "source_wait_fraction_of_decode_wall": 0.7901402558170013,
+      "process_remainder_s": 4.207603009,
+      "physical_read_bytes": 21621279392,
+      "physical_read_calls": 23223,
+      "physical_GB_per_accepted_token": 1.0295847329523808,
+      "physical_calls_per_accepted_token": 1105.857142857143,
+      "mean_physical_request_MiB": 0.8878981545878716,
+      "effective_physical_GB_per_source_wait_s": 1.1293552281814692,
+      "Expert_logical_read_bytes": 21239193600,
+      "Expert_logical_bytes_per_token": 1011390171.4285715,
+      "Expert_misses": 7682,
+      "CPU_rows": {
+        "token_embedding": {
+          "rows": 21,
+          "logical_bytes": 107520,
+          "physical_read_bytes": 491520,
+          "physical_read_calls": 21,
+          "source_wait_s": 0.028672943
+        },
+        "PLE_embedding": {
+          "rows": 336,
+          "logical_bytes": 107520,
+          "physical_read_bytes": 5554176,
+          "physical_read_calls": 336,
+          "source_wait_s": 0.477875763
+        },
+        "other_CPU_rows": {
+          "rows": 0,
+          "logical_bytes": 0,
+          "physical_read_bytes": 0,
+          "physical_read_calls": 0,
+          "source_wait_s": 0.0
+        }
+      },
+      "non_Expert_logical_read_bytes": 215040,
+      "non_Expert_physical_read_bytes": 6045696,
+      "non_Expert_physical_read_calls": 357,
+      "non_Expert_source_wait_s": 0.506548706,
+      "non_Expert_logical_bytes_per_token": 10240.0,
+      "non_Expert_physical_bytes_per_token": 287890.28571428574,
+      "non_Expert_fraction_of_physical_bytes": 0.0002796178658251344,
+      "non_Expert_fraction_of_source_wait": 0.026458814905344054,
+      "non_CPU_source_physical_bytes": 21615233696,
+      "unclassified_logical_source_bytes": 0,
+      "whole_request": {
+        "physical_read_bytes": 44919764384,
+        "source_wait_s": 37.978815324,
+        "source_wait_fraction_of_process": 0.8119759854684796,
+        "non_Expert_residual_logical_bytes": 532480
+      }
+    },
+    {
+      "request": 1,
+      "warmup": false,
+      "accepted_decode_transitions": 21,
+      "decode_tok_s": 0.8714161296070392,
+      "prefill_excluded": true,
+      "final_EOS_work_excluded": true,
+      "decode_elapsed_s": 24.098704724997283,
+      "model_process_s": 23.200404454,
+      "source_wait_s": 19.090114743,
+      "source_wait_fraction_of_process": 0.8228354286172221,
+      "source_wait_fraction_of_decode_wall": 0.7921635191952066,
+      "process_remainder_s": 4.110289711,
+      "physical_read_bytes": 21621279392,
+      "physical_read_calls": 23223,
+      "physical_GB_per_accepted_token": 1.0295847329523808,
+      "physical_calls_per_accepted_token": 1105.857142857143,
+      "mean_physical_request_MiB": 0.8878981545878716,
+      "effective_physical_GB_per_source_wait_s": 1.1325903318589603,
+      "Expert_logical_read_bytes": 21239193600,
+      "Expert_logical_bytes_per_token": 1011390171.4285715,
+      "Expert_misses": 7682,
+      "CPU_rows": {
+        "token_embedding": {
+          "rows": 21,
+          "logical_bytes": 107520,
+          "physical_read_bytes": 491520,
+          "physical_read_calls": 21,
+          "source_wait_s": 0.028736532
+        },
+        "PLE_embedding": {
+          "rows": 336,
+          "logical_bytes": 107520,
+          "physical_read_bytes": 5554176,
+          "physical_read_calls": 336,
+          "source_wait_s": 0.465127646
+        },
+        "other_CPU_rows": {
+          "rows": 0,
+          "logical_bytes": 0,
+          "physical_read_bytes": 0,
+          "physical_read_calls": 0,
+          "source_wait_s": 0.0
+        }
+      },
+      "non_Expert_logical_read_bytes": 215040,
+      "non_Expert_physical_read_bytes": 6045696,
+      "non_Expert_physical_read_calls": 357,
+      "non_Expert_source_wait_s": 0.493864178,
+      "non_Expert_logical_bytes_per_token": 10240.0,
+      "non_Expert_physical_bytes_per_token": 287890.28571428574,
+      "non_Expert_fraction_of_physical_bytes": 0.0002796178658251344,
+      "non_Expert_fraction_of_source_wait": 0.025870152413886932,
+      "non_CPU_source_physical_bytes": 21615233696,
+      "unclassified_logical_source_bytes": 0,
+      "whole_request": {
+        "physical_read_bytes": 44919764384,
+        "source_wait_s": 37.967426507,
+        "source_wait_fraction_of_process": 0.8389638908998892,
+        "non_Expert_residual_logical_bytes": 532480
+      }
+    },
+    {
+      "request": 2,
+      "warmup": false,
+      "accepted_decode_transitions": 21,
+      "decode_tok_s": 0.8714445778344527,
+      "prefill_excluded": true,
+      "final_EOS_work_excluded": true,
+      "decode_elapsed_s": 24.097918025016785,
+      "model_process_s": 23.201421766,
+      "source_wait_s": 19.108281112,
+      "source_wait_fraction_of_process": 0.8235823349412923,
+      "source_wait_fraction_of_decode_wall": 0.7929432365137565,
+      "process_remainder_s": 4.093140653999999,
+      "physical_read_bytes": 21621279392,
+      "physical_read_calls": 23223,
+      "physical_GB_per_accepted_token": 1.0295847329523808,
+      "physical_calls_per_accepted_token": 1105.857142857143,
+      "mean_physical_request_MiB": 0.8878981545878716,
+      "effective_physical_GB_per_source_wait_s": 1.1315135707534594,
+      "Expert_logical_read_bytes": 21239193600,
+      "Expert_logical_bytes_per_token": 1011390171.4285715,
+      "Expert_misses": 7682,
+      "CPU_rows": {
+        "token_embedding": {
+          "rows": 21,
+          "logical_bytes": 107520,
+          "physical_read_bytes": 491520,
+          "physical_read_calls": 21,
+          "source_wait_s": 0.028630525
+        },
+        "PLE_embedding": {
+          "rows": 336,
+          "logical_bytes": 107520,
+          "physical_read_bytes": 5554176,
+          "physical_read_calls": 336,
+          "source_wait_s": 0.46439001
+        },
+        "other_CPU_rows": {
+          "rows": 0,
+          "logical_bytes": 0,
+          "physical_read_bytes": 0,
+          "physical_read_calls": 0,
+          "source_wait_s": 0.0
+        }
+      },
+      "non_Expert_logical_read_bytes": 215040,
+      "non_Expert_physical_read_bytes": 6045696,
+      "non_Expert_physical_read_calls": 357,
+      "non_Expert_source_wait_s": 0.49302053500000004,
+      "non_Expert_logical_bytes_per_token": 10240.0,
+      "non_Expert_physical_bytes_per_token": 287890.28571428574,
+      "non_Expert_fraction_of_physical_bytes": 0.0002796178658251344,
+      "non_Expert_fraction_of_source_wait": 0.02580140684084782,
+      "non_CPU_source_physical_bytes": 21615233696,
+      "unclassified_logical_source_bytes": 0,
+      "whole_request": {
+        "physical_read_bytes": 44919764384,
+        "source_wait_s": 37.956956641,
+        "source_wait_fraction_of_process": 0.8394533461940935,
+        "non_Expert_residual_logical_bytes": 532480
+      }
+    }
+  ],
+  "pooled_timed": {
+    "decode_tok_s": 0.8714303534885697,
+    "source_wait_fraction_of_process": 0.8232088899668311,
+    "source_wait_fraction_of_decode_wall": 0.7925533714909277,
+    "physical_bytes_per_token": 1029584732.9523809,
+    "non_Expert_fraction_of_physical_bytes": 0.0002796178658251344,
+    "non_Expert_fraction_of_source_wait": 0.025835763280379252,
+    "non_Expert_wait_fraction_of_decode_wall": 0.020476221292906088,
+    "Expert_source_wait_fraction_of_process": 0.8019406599553442,
+    "optimistic_decode_ratio_if_all_non_Expert_source_wait_removed": 1.0209042615789616
+  },
+  "non_Expert_inventory": {
+    "tensors": 1109,
+    "stored_tensor_bytes": 112610847232,
+    "PLE_table_bytes": 102400491520,
+    "token_embedding_bytes": 1271398400,
+    "output_projection_bytes": 1271398400,
+    "other_non_Expert_bytes": 7667558912
+  },
+  "model_load_GPU_upload_bytes_excluding_fixture": 8755105280,
+  "full_source_attribution_closed": true,
+  "conclusions": {
+    "dominant_remaining_source": "Routed Expert delivery",
+    "non_Expert_decode_IO_is_secondary": true,
+    "ordinary_dense_weights_not_reread_per_decode_token": true,
+    "next_candidate": "Q4-specific Expert read batching/pipelining and cache-miss reduction",
+    "fixed_request_latency_dominance_causally_proven": false
+  },
+  "limitations": [
+    "Finite counting workload, not general reasoning or a sustained service.",
+    "The producer I/O interval includes the OS/filesystem path and waiting; it is not isolated SSD/NAND service time.",
+    "Model process minus I/O includes GPU, CPU and framework work; it is not a GPU-only timestamp.",
+    "Diagnostic counter/record overhead is not a speed improvement and the diagnostic app is not adopted.",
+    "Stored tensor size and one-time model-load upload are not per-token disk traffic."
+  ]
+}

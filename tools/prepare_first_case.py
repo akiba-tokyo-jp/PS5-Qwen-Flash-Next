@@ -43,6 +43,25 @@ def qualified_control(context, production=False, installation=None):
         required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
             'original_rollback_full_readback_verified','arithmetic_smoke_passed','outputs_and_token_ids_equal_to_qualified_selected_case',
             'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified')
+        q4_precision=dict(Expert_weights='Q4_0',other_weights='original BF16/F32',KV_cache='F32',
+            activation_inputs='F32',quantization='Expert weights only')
+        if isinstance(installation,dict) and installation.get('precision')==q4_precision:
+            # Q4 has its own closed counting/F32/routes qualification. Never
+            # invent the historical BF16 arithmetic-smoke flags for this model.
+            required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
+                'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
+            if installation.get('qualification_report')!='docs/expert-q4-adoption-20261029.json':
+                raise ValueError('The exact closed Expert Q4 adoption report is required')
+            q4=read(ROOT/installation['qualification_report'])
+            flags=('completed','production_adopted','all_same_Q4_routes_passed','finite_counting_quality_passed',
+                'source_GPU_model_owners_positively_retired','ordinary_OS_close_verified',
+                'production_native_whole_SHA256_identity_EOF_verified','all_five_settings_verified','previous_and_older_rollbacks_verified')
+            if (q4.get('schema')!='ps5-qwen-Expert-Q4-adoption-v1' or any(q4.get(k)is not True for k in flags) or
+                q4.get('production_SELF')!=installation.get('application_SELF') or q4.get('final_native_owners')!=0 or
+                q4.get('Expert_format')!='Q4_0' or q4.get('KV_type')!='F32' or q4.get('activation_quantization')is not False or
+                q4.get('same_Q4_maximum_absolute_logit_error')!=0 or
+                q4.get('previous_BF16_SELF',{}).get('sha256')!=installation.get('previous_production_SHA256')):
+                raise ValueError('Completed exact Q4 inference, resource and rollback qualification required')
         if not isinstance(installation,dict)or installation.get('schema')!='ps5-qwen-production-installation-v1'or any(installation.get(k)is not True for k in required):
             raise ValueError('The exact qualified production installation record is required')
         if context.get('production_deployment_completed')is not True or context.get('original_restored')is not False or context.get('console_reserved')is not True:
