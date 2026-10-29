@@ -17,7 +17,7 @@ def monitor_scope(flags):
  return dict(OLD_SCOPE,schema='ps5-qwen-Q2-IO-reduction-monitor-v1',adjacent_bundle_groups=True,
      extra_bundles=84 if flags&1 else 0,temporal_protection_window=144 if flags&2 else 0,
      maximum_parallel_source_reads=4 if flags&4 else 2,additional_source_workers=3 if flags&4 else 0,
-     qualified_winner_flags=flags,diagnostic_occupancy_disabled=True)
+     qualified_winner_flags=flags,diagnostic_occupancy_disabled=True,actual_selected_path_counters_required=True)
 def normal_owner(text,flags):
  text=once(text,'        if(!Q2_quad_mode)source_occupancy.begin();','')
  text=once(text,'        if(!Q2_quad_mode)source_occupancy.end();source_latency.completed(got,ns);return got;',
@@ -28,7 +28,12 @@ def normal_owner(text,flags):
  if not flags&4:
   text=once(text,'        quad_=std::make_unique<qwen_app::BoundedReadPool>([this](const qwen_app::BoundedReadRequest&r){return read_at(r.fd,r.target,r.bytes,r.offset);});quad_->start();','')
   text=once(text,'        if(!quad_)throw std::runtime_error("Four-demand worker owner is absent");quad_->stop_completed();quad_.reset();','')
+ text=once(text,'Q2_bundle_hits+=n;Q2_merged_calls_saved+=n-1;return n;',
+  'Q2_bundle_hits+=n;if(extra)Q2_extra_hits+=n;Q2_merged_calls_saved+=n-1;return n;')
  return text+'''
+extern "C" void qwen_app_Q2_normal_IO_stats(std::uint64_t*out){
+    if(!out)throw std::runtime_error("Missing normal I/O counters");out[0]=Q2_merged_calls_saved;out[1]=Q2_extra_hits;out[2]=Q2_quad_batches;out[3]=Q2_quad_peak;
+}
 extern "C" void qwen_app_select_Q2_normal_IO(unsigned flags){
     required().require_completed_window();ops.require_metadata_idle();
     if(flags!='''+str(flags)+'''||!Q2_bundle_verified||((flags&1)&&!Q2_extra_verified))throw std::runtime_error("Only the qualified normal I/O selection is admitted");
@@ -43,13 +48,17 @@ def main():
  scope=monitor_scope(flags);frozen=active_link_inputs(prior)+active_link_inputs(comparison)+[r for r in prior['inputs_before']if Path(r['path']).suffix=='.so']+[record(x)for x in (a.parent,a.comparison,a.selection,Path(__file__))]
  for r in frozen:require(record(r['path'])==r,'Exact composed input changed')
  a.out.mkdir(parents=True,exist_ok=False);(a.out/'tmp').mkdir();entry=a.out/'entry.private.cpp';oldentry=prior['all_Q2_optimized_monitor']['actual_entry'];text=Path(oldentry['path']).read_text()
- text='#include <cstdint>\nextern "C" void qwen_app_select_Q2_normal_IO(unsigned);\nextern "C" void qwen_app_select_Q2_temporal(unsigned);\n'+text
+ text='#include <cstdint>\nextern "C" void qwen_app_select_Q2_normal_IO(unsigned);\nextern "C" void qwen_app_select_Q2_temporal(unsigned);\nextern "C" void qwen_app_Q2_normal_IO_stats(std::uint64_t*);\n'+text
  text=once(text,literal(OLD_SCOPE),literal(scope))
  text=once(text,'{"maximum_parallel_source_reads", selected ? 2 : 1}',
   '{"maximum_parallel_source_reads", selected ? '+str(4 if flags&4 else 2)+' : 1}')
  text=once(text,'qwen_app_select_Q2_reader(1);qwen_app_select_Q2_bundle(true);',
   'qwen_app_select_Q2_reader(1);qwen_app_select_Q2_bundle(true);qwen_app_select_Q2_normal_IO('+str(flags)+');')
  text=once(text,'qwen_app_select_Q2_probation(true);','qwen_app_select_Q2_probation(true);qwen_app_select_Q2_temporal('+str(144 if flags&2 else 0)+');')
+ text=once(text,'            const auto bundles_before=qwen_app_Q2_bundle_hits();',
+  '            std::uint64_t io_before[4]{};qwen_app_Q2_normal_IO_stats(io_before);\n            const auto bundles_before=qwen_app_Q2_bundle_hits();')
+ text=once(text,'            row["bundled_Experts"]=qwen_app_Q2_bundle_hits()-bundles_before;',
+  '            std::uint64_t io_after[4]{};qwen_app_Q2_normal_IO_stats(io_after);\n            row["io_optimization"]={{"adjacent_calls_saved",io_after[0]-io_before[0]},{"extra_bundled_Experts",io_after[1]-io_before[1]},{"quad_batches",io_after[2]-io_before[2]},{"maximum_lifetime_quad_inflight",io_after[3]},{"flags",'+str(flags)+'}};\n            row["bundled_Experts"]=qwen_app_Q2_bundle_hits()-bundles_before;')
  entry.write_text(text,newline='\n');oldowner=comparison['all_Q2_IO_measurement']['owner'];owner=a.out/'owner.private.cpp';owner.write_text(normal_owner(Path(oldowner['path']).read_text(),flags),newline='\n')
  reader=a.out/'resident-mapped-source.private.h';reader.write_bytes(Path(comparison['all_Q2_IO_reduction']['actual_reader']['path']).read_bytes())
  for name in ('Q2-bundle-plan.private.h','Q2-extra-bundle-plan.private.h'):(a.out/name).write_bytes((Path(oldowner['path']).parent/name).read_bytes())
