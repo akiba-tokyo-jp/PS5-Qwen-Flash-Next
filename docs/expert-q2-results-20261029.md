@@ -15,6 +15,8 @@ loss is accepted. Normal monitor/API qualification is therefore continuing;
 the mixed model remains installed until verified placement. Component results alone do not
 establish model quality or inference throughput. The
 machine-readable measurements are in [the result record](expert-q2-results-20261029.json).
+The [all-Q2 bottleneck verification](expert-q2-bottleneck-20261029.md) reconciles
+the completed native counters and Expert routes without another console launch.
 
 ## Mixed counting model
 

@@ -58,6 +58,19 @@ are inactive. Keep CI/reboot/persistent caches disabled. Consumed cases 8680
 (known CPU-only preflight return), 8780 and 8700 must not be replayed.
 Earlier dated Q4/BF16 selections below remain historical controls.
 
+Read-only all-Q2 bottleneck verification is complete in
+`docs/expert-q2-bottleneck-20261029.md` / `.json`. It reconciles closed cases
+8780/8700 and historical Q4/mixed controls without another console operation.
+Whole-request producer source wait is 83.4507% of model-process time; it
+includes prefill/EOS and is not an exact decode-only percentage. Expert uploads
+account for 99.997472% of logical streaming, with 68.507% unique-demand cache
+misses. Each timed counting request reads 21,707,681,216 physical bytes.
+Non-Expert residual is exactly 532,480 bytes for 52 evaluated model tokens;
+its current physical amplification/time is not separately measured. Do not
+transfer the old Q4-only percentages, claim SSD hardware saturation or label
+the remaining process time GPU-only. Normal all-Q2 qualification/placement
+remain pending; this analysis changes neither production nor native policy.
+
 The owner authorized staged Expert 2-bit work on 2026-10-29: Gate/Up at
 Q2_K with Down retained at Q4_0 first; only if quality holds may the complete
 Expert set become 2-bit. This supersedes the earlier 4-bit-only limit for this
