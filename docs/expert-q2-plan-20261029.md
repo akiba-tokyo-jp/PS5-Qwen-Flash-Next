@@ -50,7 +50,8 @@ No CI, reboot, force close, ambiguous dispatch replay or driver modification.
    Report this finite scope; do not call it broad reasoning certification.
 5. Adopt only with passing arithmetic/completion/source guards, passing quality
    and a measured decode improvement. Then test the all-2-bit candidate with the
-   same quality and speed criteria. Otherwise retain the fastest already
+   same quality and speed criteria, subject to the owner's later clarification
+   accepting expected all-Q2 quality loss below. Otherwise retain the fastest already
    qualified production and record the tested
    failure explicitly. Components alone never establish quality or tok/s.
 
@@ -61,3 +62,26 @@ slots plus one staging plane within the original 1,333,739,520-byte budget and
 the unchanged 512 MiB maximum individual bank. An all-2-bit Q2_K/Q2_0 triplet
 would use 1,536,000 bytes, 44.44% below Q4. Neither ratio is a promised
 end-to-end speedup.
+
+## Owner clarification and remaining normal qualification
+
+The mixed candidate remains installed. The all-Q2 candidate completed original
+BF16 Down conversion, full native logical hashing, actual sealed-source admission,
+three counting requests and all nine fixed quality requests. It measured
+1.031136 headless decode tok/s against earlier mixed 0.913361, but added Markdown
+fences to all three JSON-only responses. Extracted values were correct; the raw
+format instruction failed. Preserve that strict result, including its initial
+rejection under the assistant-defined rule. The owner subsequently clarified
+that expected Expert 2-bit quality loss is understood and did not require
+continued exact quality retention. Correct answer contents passed 9/9; strict
+format passed 6/9. No output normalization is added to the application.
+
+Continue the prepared fresh normal-display/API case 8720. Require two matching
+native frames, exact same-format complete F32 rows/routes, positive ownership
+retirement, ordinary close/restoration and both decode rates above the earlier
+mixed normal control. On success, place the exact tested SELF and settings,
+verify canonical and all retained rollback hashes, and record the quality
+tradeoff in the selected installation. Do not repeat conversion, source hashing,
+counting or the completed quality cohort. Every executed case normally closed
+and restored the exact mixed control; audit 8790 verified seven programs and
+five settings. Normal validation and final selection remain pending.

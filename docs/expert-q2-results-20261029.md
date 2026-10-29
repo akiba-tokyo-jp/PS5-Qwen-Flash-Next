@@ -8,8 +8,12 @@ The original BF16 and selected Q4 production files remain intact.
 
 Full-model conversion, physical readback, metadata sealing and complete-source
 host admission have completed. Mixed generation, fixed quality and normal-app
-qualification and production placement have passed. Conditional all-Expert work continues. Component
-results below do not establish model quality or inference throughput. The
+qualification and production placement have passed. The all-Expert candidate
+ran faster and retained all tested answer values, with a strict JSON-only format
+regression. The owner subsequently clarified that expected quantization quality
+loss is accepted. Normal monitor/API qualification is therefore continuing;
+the mixed model remains installed until verified placement. Component results alone do not
+establish model quality or inference throughput. The
 machine-readable measurements are in [the result record](expert-q2-results-20261029.json).
 
 ## Mixed counting model
@@ -104,18 +108,66 @@ Host native metadata controls passed complete coverage of 76 logical files,
 502 physical references and 1,389 source ranges; 13 malformed plans were
 refused. These controls use explicitly non-deployable synthetic new identities
 and hashes. They do not attest converted all-Q2 weights or a console model run.
-The all-Expert conversion, actual-source admission and model quality/speed
-comparison remain pending; no all-Expert throughput or adoption is claimed.
+Actual original-BF16 Down conversion has completed all 49 tensors / 25,088
+matrices, including MTP. Every new file passed whole Direct readback, all nine
+independent host sample hashes matched, and workers/Direct retired positively.
+The console then hashed all 151,157,049,472 logical model bytes and all 1,330
+payload/header spans. Actual sealed metadata passed complete host admission
+with 502 physical sources and 1,389 ranges.
+
+Case 8680 returned before GPU initialization because the existing source
+schedule self-test assumed physical source zero contained at least 16 MiB;
+the all-Q2 representation uses header-only files. The isolated correction
+selects the first already sealed physical payload meeting the same minimum.
+Its original reference offsets, exact-byte comparisons, parallel/coalesced
+counter checks, completion and memory guards remain intact. Four malformed or
+duplicate host admissions were refused. The CPU-only title normally closed
+and exact mixed production/settings were restored before fresh case 8780.
+Completed conversion and whole-model hashing were reused.
+
+Corrected counting case 8780 passed all three answers and complete same-format
+F32 rows/routes, with zero repeated logit error. Timed decode was 1.030974 and
+1.031299 tok/s, pooled **1.031136**, versus earlier same-console mixed 0.913361
+(approximately 12.9% higher). Both formats generated the same 22 tokens / 21 transitions
+for the same 30-token prompt. This is a historical control, not simultaneous
+ABBA. All model/source/device owners retired positively, ledger live bytes
+returned to zero, and normal close restored the exact mixed production.
+Fixed quality case 8700 completed all nine independent requests. Translation
+returned `猫` three times and arithmetic returned `42` three times. Extraction
+returned the correct `city=Tokyo` and integer `count=3` three times, but wrapped
+the object in Markdown code fences despite the unchanged JSON-only instruction.
+Raw JSON parsing therefore failed all three extraction requests. This is a
+specific instruction/format regression, not an incorrect extracted value or a
+GPU arithmetic failure. Same-format complete F32 rows/routes still matched
+exactly: two, three and 25 rows per repeated task, with maximum logit error zero.
+All source/device owners retired positively; normal close restored exact mixed
+production and settings.
+
+The original assistant-defined rule required retention of every previously
+correct raw response, including JSON format, and initially rejected this
+candidate. That original result remains recorded: **6/9 strict passes and 9/9
+correct answer contents**. The owner then clarified that expected quantization
+quality loss is accepted and did not request continued exact quality retention.
+The observed Markdown fences are recorded as an accepted tradeoff; the runtime
+does not strip them or change the original strict test result. Continue the
+fresh normal monitor/API case and select the faster qualified application after
+positive arithmetic, source, resource, frame, shutdown and speed checks. This
+finite three-task cohort does not bound broader reasoning quality loss.
+
 The three native candidates (counting, fixed quality and correctly labeled
 passive monitor) passed real runtime/driver audits and six-segment SELF
-round-trip checks. Their model execution remains conditional on actual weight
-conversion and source sealing. The complete logical hash finisher compiled in
-an explicitly non-deployable syntax-control mode; it cannot execute synthetic
-identity/hash controls on the console.
+round-trip checks. Counting and fixed quality executed on the console; the
+monitor has not yet launched. Before actual data was available,
+the logical hash finisher compiled in
+an explicitly non-deployable syntax-control mode. Its subsequent actual-data
+build and console whole-logical hash pass completed; synthetic identities and
+hashes were never eligible for console execution.
 
 The larger slot count uses more of the existing cache budget: unrounded payload
-banks total 1,333,248,000 bytes versus the mixed model's 1,162,137,600. Actual
-allocation alignment and total native peak usage still require measurement.
+banks total 1,333,248,000 bytes versus the mixed model's 1,162,137,600. Native
+case 8780 realized all 867 slots. Its CPU heap peak was 402,718,720 bytes and
+tracked device-ledger peak was 1,749,024,768 bytes; the latter is a scoped
+allocator ledger, not aggregate console physical memory.
 The bank cap and total budget remain unchanged. Twelve exact resource/identity/
 completion checks and the actual selected cache/provider link map passed.
 
@@ -123,11 +175,21 @@ For capacity, 253 historical executable copies have complete native/host SHA256
 matches and retained host backups, totaling 13,115,588,608 allocated console
 bytes. After the owner's explicit deletion approval, the frozen cleanup ran
 once and removed all 253 copies. Before and after deletion it verified the
-whole native hashes of all 11 protected programs and 996 retained model inode
-references. The native available-capacity measurement was 18,387,435,520 bytes;
+whole native hashes of 11 protected files (six programs and five production
+settings) and 996 retained model inode references. The native available-capacity
+measurement immediately after cleanup was 18,387,435,520 bytes;
 the Direct window retired positively. All BF16/Q4/mixed model files and current
-and rollback programs remain intact. Actual original-BF16 Down conversion is
-now running on the PS5 CPU with four bounded workers and no GPU/title launch.
+and rollback programs remain intact. Final read-only audit 8790 additionally
+verified the separate original MOSS rollback: seven programs and five settings
+passed whole native SHA256, identity and EOF checks. Exact mixed production is
+installed, with native title, gateway and model inactive. No reboot, CI or
+persistent cache was used. The all-Q2 data remains isolated pending normal-app
+validation and verified production placement.
+
+| Candidate | Headless decode tok/s | Fixed quality | Final disposition |
+| --- | --- | --- | --- |
+| Gate/Up Q2_K, Down Q4_0 | 0.913361 | 9/9 pass | Selected; normal API 0.912591 tok/s |
+| Gate/Up Q2_K, Down Q2_0 MSE | 1.031136 | 6/9 strict; 9/9 answer contents correct | Expected loss accepted; normal-app validation pending |
 
 ## Component results
 
@@ -247,6 +309,12 @@ aligned reads, malformed bounds, short-read quarantine and ordinary behavior.
   into their owned destination without overwriting existing paths or changing
   production-directory permissions.
 - [Upstream license](../third_party/notices/ggml-quantization/NOTICE.md).
+- [All-Q2 source schedule preflight](../tools/expert_all_q2_preflight.py):
+  `reader_header` selects a sufficiently large sealed payload while preserving
+  offsets, exact hashes and parallel/coalesced read checks.
+- [Owner relink](../tools/relink_expert_all_q2_preflight.py) and
+  [focused preflight controls](../tests/expert_all_q2_preflight.cpp): retain
+  exact cache/provider linkage and refuse malformed or duplicate admissions.
 
 Upstream llama.cpp is pinned to
 [`0a1ef309cdbb9f2024f58a38fb4c42352c5db569`](https://github.com/ggml-org/llama.cpp/tree/0a1ef309cdbb9f2024f58a38fb4c42352c5db569).
@@ -264,6 +332,7 @@ counting regression is a tested quality failure and stops the conditional
 all-2-bit stage. If counting passes, compare a fixed Japanese instruction,
 arithmetic and extraction/JSON cohort against Q4, requiring retention of every
 Q4-correct answer. Measure decode separately from prefill on the same console.
-Adoption requires passing source, arithmetic, completion, quality and measured
-speed criteria; otherwise the fastest already qualified production remains
-selected. The exact mixed, Q4 and BF16 controls are retained.
+That mixed-stage condition was met. For the subsequent all-Q2 adoption, apply
+the owner's later acceptance of expected quality loss, retain the original
+strict results, and require passing source, arithmetic, completion, normal-app
+and measured-speed checks. The exact mixed, Q4 and BF16 controls are retained.

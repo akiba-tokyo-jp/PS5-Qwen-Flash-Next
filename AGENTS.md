@@ -36,10 +36,26 @@ The exact Q4 `98a57339...`, BF16 and older rollbacks remain intact. All Experts,
 top-10, non-Expert BF16/F32, F32 inputs/KV and the original cache budget remain;
 the cache has 581 active slots / 582 planes. The title/gateway/model are inactive.
 The finite run binding is consumed; another execution needs a fresh case.
-Conditional all-Expert 2-bit work is now authorized by the passed mixed-quality
-screen and remains in progress. Down's fitted-scale Q2_0 component work is
-separate from deployed mixed precision. Do not claim all-Expert model quality
-or throughput from component samples. Keep CI/reboot/persistent caches disabled.
+All-Expert 2-bit work has a measured format regression, with normal validation
+continuing under the owner's subsequent clarification accepting expected
+quantization quality loss. Preserve the original strict-format result; do not
+silently normalize output or claim the strict JSON predicate passed.
+All 49 original-BF16 Down tensors were converted to fitted-scale Q2_0, and all
+151,157,049,472 logical bytes / 1,330 spans passed native hashing. Corrected
+counting case 8780 passed, pooled 1.031136 decode tok/s versus earlier mixed
+0.913361. Fixed quality case 8700 completed all nine requests: translation and
+arithmetic passed, but all three JSON-only responses added Markdown fences.
+The extracted Tokyo/3 values were correct; raw format compliance failed. Same-
+format complete F32 rows/routes matched with zero error and all owners retired.
+The previous assistant-defined strict-format adoption gate does not override
+the owner's latest direction. Continue the fresh all-Q2 passive monitor/API
+case 8720, then select the faster positively qualified application while
+recording the observed quality tradeoff. Mixed production remains selected
+until that validation and verified placement complete. Final read-only audit
+8790 verified seven programs
+and five settings, including MOSS, Q4 and BF16 rollbacks; title/gateway/model
+are inactive. Keep CI/reboot/persistent caches disabled. Consumed cases 8680
+(known CPU-only preflight return), 8780 and 8700 must not be replayed.
 Earlier dated Q4/BF16 selections below remain historical controls.
 
 The owner authorized staged Expert 2-bit work on 2026-10-29: Gate/Up at

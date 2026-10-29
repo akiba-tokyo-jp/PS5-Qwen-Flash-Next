@@ -12,6 +12,53 @@ def production():
         original_restored=False,production_SELF=dict(path='preserved-control',bytes=17,sha256='abc'),original_SELF=dict(path='rollback'))
     return state,record
 class Controls(unittest.TestCase):
+    def all_q2(self):
+        s,p,r=self.mixed()
+        r=copy.deepcopy(r);q=r['conditional_all_Expert_2bit']
+        q.update(completed=True,production_adopted=True,pending_validation=False,
+            actual_all_Q2_model_converted=True,actual_all_Q2_model_quality_measured=True,
+            actual_all_Q2_model_throughput_measured=True,
+            owner_quality_acceptance=dict(expected_loss_accepted=True,strict_quality_report_unchanged=True,
+                strict_correct_requests=6,semantic_correct_requests=9,total_requests=9,output_normalization_in_application=False),
+            normal_application=dict(completed=True,both_rates_faster=True,precision_label_correct=True,
+                all_sources_and_GPU_owners_positively_retired=True,same_format_full_F32_and_routes_exact=True,
+                native_whole_SELF_SHA256='all-Q2-fixture'),
+            production_placement=dict(completed=True,exact_mixed_Q4_BF16_and_older_rollbacks_preserved=True,
+                canonical_and_rollback_native_whole_SHA256_verified=True,all_five_settings_verified=True,fresh_idle_confirmed=True,
+                native_title_running=False,gateway_running=False,model_loaded=False,
+                application_SELF=dict(bytes=19,sha256='all-Q2-fixture'),previous_production_SHA256='mixed-fixture'))
+        q['actual_fixed_quality']['every_previous_correct_answer_retained']=False
+        p.update(application_SELF=dict(bytes=19,sha256='all-Q2-fixture'),previous_production_SHA256='mixed-fixture',
+            model_receipt_SHA256=q['actual_model_receipt_SHA256'])
+        p['precision']['Expert_weights']='Gate/Up Q2_K; Down Q2_0 MSE'
+        s.update(Expert_format='Gate_Up_Q2_K_Down_Q2_0_MSE',production_SELF=dict(path='all-Q2-fixture',**p['application_SELF']))
+        return s,p,r
+    def test_all_q2_accepts_recorded_loss_without_claiming_strict_quality(self):
+        s,p,r=self.all_q2()
+        with patch('prepare_first_case.read',return_value=r):
+            self.assertEqual(qualified_control(s,True,p),s['production_SELF'])
+    def test_all_q2_requires_closed_normal_placement_and_unchanged_strict_result(self):
+        s,p,r=self.all_q2()
+        for section,keys in {
+            'owner_quality_acceptance':['expected_loss_accepted','strict_quality_report_unchanged'],
+            'normal_application':['completed','both_rates_faster','precision_label_correct',
+                'all_sources_and_GPU_owners_positively_retired','same_format_full_F32_and_routes_exact'],
+            'production_placement':['completed','exact_mixed_Q4_BF16_and_older_rollbacks_preserved',
+                'canonical_and_rollback_native_whole_SHA256_verified','all_five_settings_verified','fresh_idle_confirmed']}.items():
+            for key in keys:
+                bad=copy.deepcopy(r);bad['conditional_all_Expert_2bit'][section].pop(key)
+                with patch('prepare_first_case.read',return_value=bad),self.assertRaises(ValueError):qualified_control(s,True,p)
+        for section,key,value in [('owner_quality_acceptance','output_normalization_in_application',True),
+            ('owner_quality_acceptance','semantic_correct_requests',8),('owner_quality_acceptance','strict_correct_requests',9),
+            ('actual_fixed_quality','every_previous_correct_answer_retained',True),
+            ('normal_application','native_whole_SELF_SHA256','wrong'),('production_placement','gateway_running',True)]:
+            bad=copy.deepcopy(r);bad['conditional_all_Expert_2bit'][section][key]=value
+            with patch('prepare_first_case.read',return_value=bad),self.assertRaises(ValueError):qualified_control(s,True,p)
+        for target,key,value in [('candidate','pending_validation',True),('candidate','production_adopted',False),
+            ('installation','model_receipt_SHA256','wrong'),('context','Expert_format','Gate_Up_Q2_K_Down_Q4_0')]:
+            a,b,c=copy.deepcopy(s),copy.deepcopy(p),copy.deepcopy(r)
+            {'candidate':c['conditional_all_Expert_2bit'],'installation':b,'context':a}[target][key]=value
+            with patch('prepare_first_case.read',return_value=c),self.assertRaises(ValueError):qualified_control(a,True,b)
     def mixed(self):
         root=Path(__file__).resolve().parents[1]
         report=json.loads((root/'docs/expert-q2-results-20261029.json').read_text())
