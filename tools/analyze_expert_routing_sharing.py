@@ -4,8 +4,7 @@
 import argparse,json,math,re
 from pathlib import Path
 from expert_q4 import require,record,write_json
-COMPARISONS=[('decode_top8',[1,4],[2,3]),('decode_top6',[4,7],[5,6]),
- ('repeated_causal_width2',[7,10],[8,9])]
+COMPARISONS=[('decode_top8',[1,4],[2,3]),('decode_top6',[4,7],[5,6])]
 def quality(task,text):
  raw=text.strip();content=False;strict=False
  if task==0:
@@ -50,14 +49,15 @@ def aggregate(rows):
 
 def main():
  p=argparse.ArgumentParser(description=__doc__)
- p.add_argument('--case',type=Path,required=True);p.add_argument('--partial-case',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
+ p.add_argument('--case',type=Path,required=True);p.add_argument('--partial-case',type=Path,required=True);p.add_argument('--reduced-case',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
  load=lambda p:json.loads(Path(p).read_text());root=a.case
  terminal=load(root/'native-model-terminal.private.json');closed=load(root/'restored-complete.private.json');proof=load(root/'IO-token-snapshots/complete.private.json')
  require(terminal['schema']=='ps5-qwen-routing-sharing-result-v1'and terminal['completed']and terminal['all_model_source_device_owners_positively_retired']and terminal['device_ledger_live_bytes']==0,'Completed actual model/source/GPU experiment required')
  require(closed['completed']and closed['CPU_title_normally_closed']and closed['exact_prior_configuration_restored']and not closed['unknown_completion'],'Ordinary close and exact restored production required')
  require(proof['completed']and proof['copied_only_after_positive_model_source_retirement'],'Closed token evidence required')
  for r in proof['records']:require(record(r['path'])==r,'Captured evidence changed')
- requests=terminal['requests'];require(len(requests)==26,'All remaining native cases must complete')
+ requests=terminal['requests'];require(len(requests)==20,'All remaining native cases must complete')
+ require([r['mode']for r in requests]==[0,0,4,4,0]+list(range(5))*3,'Final continuation order differs')
  rows=[];quality_rows=[];route_paths=[]
  for request in requests:
   i=request['ordinal'];route_path=root/f'native-arm{i}.routes.private.json';route=load(route_path);route_paths.append(record(route_path))
@@ -82,14 +82,25 @@ def main():
  basis=load(a.partial_case/'self-exit-recovery-basis.private.json');restored=load(a.partial_case/'restored-complete.private.json')
  require(partial_proof['completed']and not partial_proof['full_model_protocol_completed']and basis['OS_exit_idle_confirmed']and basis['app_self_terminated']and restored['completed'],'The partial run must preserve its actual self-exit and CPU-only restoration, not fabricate native retirement')
  for r in partial_proof['records']+partial_proof['request_records']:require(record(r['path'])==r,'Durable partial request evidence changed')
- partial_rows=[]
- for i in range(5):
-  request=load(a.partial_case/f'native-arm{i}.result.private.json')
-  require(request['request_reset_completed']and request['full_F32_finite'],'Only positively reset native requests may survive a later abort')
-  points=[load(a.partial_case/f'partial-IO-token-snapshots/arm{i}-token-{j}.private.json')for j in range(1,request['metrics']['generated_tokens']+1)]
-  value=decode_interval(request,points);value.update(mode=request['mode'],counting_quality_passed=request['counting_quality_passed'],same_tokens_as_control=request['same_counting_tokens_as_control'],cache_rank_calls=request['cache_rank_calls'],cache_rank_CPU_ns=request['cache_rank_CPU_ns'])
-  partial_rows.append(value)
+ def durable_partial(path,count):
+  values=[]
+  for i in range(count):
+   request=load(path/f'native-arm{i}.result.private.json')
+   require(request['request_reset_completed']and request['full_F32_finite'],'Only positively reset native requests may survive a later abort')
+   points=[load(path/f'partial-IO-token-snapshots/arm{i}-token-{j}.private.json')for j in range(1,request['metrics']['generated_tokens']+1)]
+   value=decode_interval(request,points);value.update(case=int(path.name.rsplit('-',1)[1]),mode=request['mode'],counting_quality_passed=request['counting_quality_passed'],same_tokens_as_control=request['same_counting_tokens_as_control'],cache_rank_calls=request['cache_rank_calls'],cache_rank_CPU_ns=request['cache_rank_CPU_ns'])
+   if request['mode']==0:require(request['maximum_absolute_logit_error']==0 and request['same_counting_tokens_as_control'],'Unchanged partial controls must retain full F32 and emitted tokens')
+   values.append(value)
+  return values
+ partial_rows=durable_partial(a.partial_case,5)
  require(all(partial_rows[i]['cache_rank_calls']>0 for i in (2,3)),'Cache-aware ranking must actually execute in both completed partial candidates')
+ reduced_proof=load(a.reduced_case/'partial-IO-token-snapshots/complete.private.json');reduced_closed=load(a.reduced_case/'restored-complete.private.json')
+ reduced_terminal=load(a.reduced_case/'native-model-terminal.private.json')
+ require(reduced_proof['completed']and not reduced_proof['full_model_protocol_completed']and reduced_closed['completed']and reduced_closed['CPU_title_normally_closed']and reduced_closed['unknown_completion'],'The second partial run must preserve its actual failure and ordinary close')
+ require(reduced_terminal['message']=='Complete checkpoint cannot retain original reserves','The actual checkpoint reservation refusal must be retained')
+ for r in reduced_proof['records']+reduced_proof['request_records']:require(record(r['path'])==r,'Durable reduced-k evidence changed')
+ reduced_rows=durable_partial(a.reduced_case,8)
+ require([r['mode']for r in reduced_rows]==[0,0,2,2,0,3,3,0],'Completed reduced-k continuation order differs')
  by_id={r['ordinal']:r for r in rows};comparisons=[]
  def compare(name,control,candidate,lookup,case):
   A,B=aggregate([lookup[i]for i in control]),aggregate([lookup[i]for i in candidate])
@@ -99,12 +110,15 @@ def main():
    counting_all_passed=all(lookup[i]['counting_quality_passed']for i in candidate),same_counting_tokens_as_control=all(lookup[i]['same_tokens_as_control']for i in candidate))
  comparisons.append(compare('cache_rank_1_5',[1,4],[2,3],{r['ordinal']:r for r in partial_rows},9440))
  for name,control,candidate in COMPARISONS:
-  comparisons.append(compare(name,control,candidate,by_id,int(root.name.rsplit('-',1)[1])))
- result=dict(schema='ps5-qwen-routing-sharing-analysis-v1',completed=True,all_three_families_physically_exercised=True,case=int(root.name.rsplit('-',1)[1]),comparisons=comparisons,counting_requests=rows,partial_counting_requests=partial_rows,quality_requests=quality_rows,
+  comparisons.append(compare(name,control,candidate,{r['ordinal']:r for r in reduced_rows},int(a.reduced_case.name.rsplit('-',1)[1])))
+ comparisons.append(compare('repeated_causal_width2',[1,4],[2,3],by_id,int(root.name.rsplit('-',1)[1])))
+ require(len(quality_rows)==15 and all(sorted(r['task']for r in quality_rows if r['mode']==m)==[0,1,2]for m in range(5)),'Every mode requires all three quality tasks')
+ result=dict(schema='ps5-qwen-routing-sharing-analysis-v1',completed=True,all_three_families_physically_exercised=True,case=int(root.name.rsplit('-',1)[1]),comparisons=comparisons,counting_requests=rows,partial_counting_requests=partial_rows+reduced_rows,quality_requests=quality_rows,
   quality_summary=[dict(mode=m,answer_contents=sum(r['answer_content_passed']for r in quality_rows if r['mode']==m),strict_format=sum(r['strict_format_passed']for r in quality_rows if r['mode']==m),requests=3)for m in range(5)],
   CPU_heap_peak_bytes=terminal['CPU_heap_peak_bytes'],device_ledger_peak_bytes=terminal['device_ledger_peak_bytes'],graph_reuse_disabled_uniformly=True,all_model_source_GPU_owners_positively_retired=True,ordinary_close_and_exact_restoration=True,production_adopted=False,
   partial_run=dict(case=9440,full_native_protocol_completed=False,completed_requests_reused=5,app_self_terminated_during_Top8_CPU_graph_construction=True,native_global_GPU_retirement_terminal_present=False,CPU_only_idle_and_exact_restoration_confirmed=True),
-  inputs=[record(root/x)for x in ('native-model-terminal.private.json','restored-complete.private.json','IO-token-snapshots/complete.private.json')]+route_paths+[record(a.partial_case/x)for x in ('partial-IO-token-snapshots/complete.private.json','self-exit-recovery-basis.private.json','restored-complete.private.json')],CI_runs=0,unknown_completion=False)
+  reduced_partial_run=dict(case=9460,full_native_protocol_completed=False,completed_requests_reused=8,one_accepted_width2_before_reservation_refusal=True,native_global_GPU_retirement_terminal_present=False,unknown_native_completion_retained=True,ordinary_OS_close_and_exact_restoration=True),
+  inputs=[record(root/x)for x in ('native-model-terminal.private.json','restored-complete.private.json','IO-token-snapshots/complete.private.json')]+route_paths+[record(a.partial_case/x)for x in ('partial-IO-token-snapshots/complete.private.json','self-exit-recovery-basis.private.json','restored-complete.private.json')]+[record(a.reduced_case/x)for x in ('partial-IO-token-snapshots/complete.private.json','native-model-terminal.private.json','restored-complete.private.json')],CI_runs=0,unknown_completion=False)
  write_json(a.out,result)
  print(json.dumps({k:v for k,v in result.items()if k not in ('inputs','counting_requests','partial_counting_requests','quality_requests')},indent=2))
 if __name__=='__main__':main()

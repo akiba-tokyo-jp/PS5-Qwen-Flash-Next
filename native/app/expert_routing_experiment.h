@@ -25,6 +25,18 @@ inline unsigned bounded_expert_aggregate(unsigned configured,unsigned actual){
         throw std::invalid_argument("Positive bounded Expert aggregation geometry required");
     return std::min(configured,actual);
 }
+// The pinned single-Vulkan-buffer ON_DEVICE writer destroys its old allocation
+// before allocating a changed-size replacement (llama-context.cpp:3131-3135).
+// Credit only bytes whose complete capture has returned; the raw payload is a
+// lower bound on retained allocation, so alignment slack is never credited.
+inline std::uint64_t checkpoint_replacement_growth(std::uint64_t bytes,std::uint64_t saved){
+    constexpr auto maximum=136ull<<20,alignment=2ull<<20;
+    if(!bytes||bytes>maximum||saved>maximum)
+        throw std::invalid_argument("Bounded complete checkpoint payload required");
+    if(saved==bytes)return 0;
+    const auto upper=(bytes+alignment-1)&~(alignment-1);
+    return upper>saved?upper-saved:0;
+}
 }
 struct ggml_tensor;
 extern "C" unsigned qwen_app_route_mode();

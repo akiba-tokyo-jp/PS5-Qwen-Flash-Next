@@ -12,6 +12,12 @@ int main(){
     assert(qwen_app::experimental_expert_count(2,1)==8&&qwen_app::experimental_expert_count(3,1)==6);
     assert(qwen_app::bounded_expert_aggregate(10,8)==8&&qwen_app::bounded_expert_aggregate(10,6)==6);
     assert(qwen_app::bounded_expert_aggregate(10,10)==10&&qwen_app::bounded_expert_aggregate(6,10)==6);
+    using qwen_app::checkpoint_replacement_growth;
+    assert(checkpoint_replacement_growth(118038528,0)==119537664);
+    assert(checkpoint_replacement_growth(118038528,118038528)==0);
+    assert(checkpoint_replacement_growth(118104064,118038528)==1499136);
+    assert(checkpoint_replacement_growth(118038528,120127488)==0);
+    bool oversized=false;try{checkpoint_replacement_growth((136ull<<20)+1,0);}catch(const std::exception&){oversized=true;}assert(oversized);
     a[42]=std::numeric_limits<float>::quiet_NaN();bool refused=false;
     try{qwen_app::cache_rank_scores(a.data(),b.data(),resident.data(),512,1.5f);}catch(const std::exception&){refused=true;}assert(refused);
 }

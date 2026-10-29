@@ -67,3 +67,28 @@ the corrected run; its already completed speed comparison remains case 9440.
 All new runs still require the original GPU fixture and admission/completion
 guards. The collector now detects an unexpected owner exit at its 30-second
 observation interval instead of waiting for the generic no-progress deadline.
+
+## Final continuation after checkpoint accounting refusal
+
+Case 9460 completed the eight warmup, Top-8 and Top-6 requests. The first
+repeated-verification request completed one accepted width-two verification,
+then the next checkpoint admission priced a changed-size replacement as a full
+additional allocation. The pinned `llama-context.cpp` ON_DEVICE writer releases
+its old buffer before allocating a changed-size replacement. This was an
+application reservation calculation, not a kernel-floor failure. The native
+failure terminal, ordinary OS close and exact production restoration are kept;
+global positive GPU retirement is not invented for the failed run.
+
+The experiment now credits only the raw payload of a positively completed
+snapshot belonging to the same retained single-Vulkan-buffer context. Alignment
+slack is never credited. A new size is rounded up by 2 MiB, and the original
+device cap, Direct reserve, physical reserve and kernel floor still apply.
+Each admission records payload, completed payload, additional upper bound,
+device ledger and Direct availability. The builder pins and checks the exact
+release-before-allocation writer source. Host regressions cover first capture,
+same-size reuse, growth, shrinkage and rejection beyond the payload limit.
+
+Case 9480 needs only 20 requests: counting order `0,0,4,4,0`, then the 15 quality
+requests. The five completed requests from 9440 and eight from 9460 supply their
+already completed speed ABBAs and are not replayed. Their partial evidence is
+explicitly distinct from the final complete model/source retirement protocol.

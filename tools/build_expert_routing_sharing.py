@@ -10,13 +10,13 @@ from driver_table_storage import audit_linked_storage
 from audit_native_imports import audit
 from native_dispatch import audit as dispatch
 ROOT=Path(__file__).resolve().parents[1]
-MODES=[0,0,2,2,0,3,3,0,4,4,0]+list(range(5))*3
-SCOPE=dict(schema='ps5-qwen-routing-sharing-continuation-v1',enabled=True,maximum_requests=26,
- order=MODES,counting_requests=11,quality_requests=15,quality_tasks=3,model_loads=1,
+MODES=[0,0,4,4,0]+list(range(5))*3
+SCOPE=dict(schema='ps5-qwen-routing-sharing-final-continuation-v1',enabled=True,maximum_requests=20,
+ order=MODES,counting_requests=5,quality_requests=15,quality_tasks=3,model_loads=1,
  active_cache_slots=867,cache_budget_bytes=1333739520,selected_IO_flags=5,
  cache_rank_multiplier=1.5,decode_Expert_counts=[10,10,8,6,10],prefill_Top10_preserved=True,
  maximum_causal_attempts=8,verification_width=2,causal_drafts_only=True,
- graph_reuse_disabled_uniformly=True,approximate_routing_changes_permitted=True,
+ graph_reuse_disabled_uniformly=True,completed_single_Vulkan_checkpoint_replacement_credit=True,approximate_routing_changes_permitted=True,
  quality_changes_recorded_without_aborting=True,complete_state_rejection_required=True,
  HTTP_requests=0,VideoOut_starts=0,automatic_retries=0)
 
@@ -77,8 +77,8 @@ def main():
  for k in ('parent','headless','workspace','cache','out'):p.add_argument('--'+k,type=Path,required=True)
  a=p.parse_args();prior=json.loads(a.parent.read_text());old=json.loads(a.headless.read_text())
  require(prior['all_Q2_IO_normal']['flags']==5,'Exact selected normal I/O parent required')
- model_scope=dict(old['expert_q2_model']['scope'],schema='ps5-qwen-routing-sharing-model-v1',maximum_requests=26,timed_requests=10,selected_Experts='10_prefill_6_8_10_decode',full_same_Q2_F32_rows_and_routes_required=False,approximate_routing_owner_authorized=True)
- IO_scope=dict(old['all_Q2_IO_measurement']['scope'],schema='ps5-qwen-routing-sharing-IO-v1',maximum_requests=26)
+ model_scope=dict(old['expert_q2_model']['scope'],schema='ps5-qwen-routing-sharing-model-v1',maximum_requests=20,timed_requests=4,selected_Experts='10_prefill_6_8_10_decode',full_same_Q2_F32_rows_and_routes_required=False,approximate_routing_owner_authorized=True)
+ IO_scope=dict(old['all_Q2_IO_measurement']['scope'],schema='ps5-qwen-routing-sharing-IO-v1',maximum_requests=20)
  frozen=active_link_inputs(prior)+[r for r in prior['inputs_before']if Path(r['path']).suffix=='.so']+[record(a.parent),record(a.headless)]
  added_files=[ROOT/'tools/build_expert_routing_sharing.py',ROOT/'native/app/expert_routing_experiment.h',ROOT/'native/app/expert_routing_experiment.cpp',ROOT/'native/app/expert_routing_sharing_cohort.inc',ROOT/'native/app/expert_q2_speculative.h',ROOT/'native/app/resident_checkpoint_capacity.h',ROOT/'native/app/completed_expert_routes.h',ROOT/'native/app/completed_expert_routes.cpp']
  frozen +=[record(x)for x in added_files]
@@ -102,6 +102,12 @@ def main():
  engine=once(engine,'    stage("inference_before_decode_call");','    qwen_app_route_phase(!inside_prefill_);\n    stage("inference_before_decode_call");')
  compile_db=json.loads((a.cache/'build/llama-ps5/compile_commands.json').read_text())
  graph=next(x for x in compile_db if x['file'].endswith('/llama-graph.cpp'))
+ context_source=Path(graph['file']).with_name('llama-context.cpp');context_text=context_source.read_text()
+ require('mbuf_cur = std::move(mbuf);\n\n                    mbuf_cur.buf.reset(ggml_backend_alloc_ctx_tensors_from_buft' in context_text,
+  'Pinned device checkpoint writer must release the old buffer before allocating its changed-size replacement')
+ require('mbuf_cur.total_size != mbuf.total_size' in context_text and 'mbufs(mbufs)' in context_text,
+  'Pinned context-owned checkpoint storage and size replacement semantics required')
+ frozen +=[record(context_source)]
  graph_cmd=[s.strip('"')for s in shlex.split(graph['command'],posix=False)]
  capture_cmd=prior['compile_commands'][0]
  engine_cmd=prior['all_Q2_optimized_monitor']['commands'][2]
@@ -135,7 +141,9 @@ def main():
  receipt['expert_q2_model'].update(scope=model_scope,actual_entry=actual['entry'],actual_cache=actual['cache'],commands=jobs[:2])
  receipt['all_Q2_IO_measurement']=dict(scope=IO_scope,entry=actual['entry'],owner=prior['all_Q2_optimized_monitor']['actual_owner'])
  receipt['all_Q2_bundle_comparison']=dict(scope=SCOPE)
- receipt['routing_sharing']=dict(scope=SCOPE,model_scope=model_scope,IO_scope=IO_scope,actual_sources=actual,commands=jobs,original_source_and_GPU_completion_guards_retained=True,production_adopted=False)
+ receipt['routing_sharing']=dict(scope=SCOPE,model_scope=model_scope,IO_scope=IO_scope,actual_sources=actual,commands=jobs,
+  checkpoint_writer=record(context_source),checkpoint_replacement='Single Vulkan buffer; release before changed-size allocation; only positively completed raw payload credited; alignment slack not credited',
+  original_source_and_GPU_completion_guards_retained=True,production_adopted=False)
  target=a.out/'receipt.private.json';write_json(target,receipt)
  receipt['real_module_import_audit']=audit(a.workspace,a.cache,a.out);receipt['native_dispatch_audit']=dispatch(a.workspace,a.workspace/'driver-work/PS5-Vulkan-Inference-qwen-872cc126',image,a.out/'dispatch')
  require(not receipt['real_module_import_audit']['missing']and receipt['native_dispatch_audit']['passed'],'Import/dispatch audit failed');write_json(target,receipt)

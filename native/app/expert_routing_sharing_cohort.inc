@@ -9,8 +9,8 @@
         const auto run=policy.at("native_first_generation_validation").at("run_id").get<std::string>();
         const auto columns=static_cast<std::size_t>(llama_vocab_n_tokens(llama_model_get_vocab(model)));
         if(!columns||columns>262144)throw std::runtime_error("Bounded original vocabulary required");
-        constexpr unsigned request_count=26;
-        constexpr unsigned counting_modes[]={0,0,2,2,0,3,3,0,4,4,0};
+        constexpr unsigned request_count=20;
+        constexpr unsigned counting_modes[]={0,0,4,4,0};
         const char*quality_prompts[]={
             "Translate to English. Output only the translation: おはようございます。",
             "Compute 17 + 26. Output only the integer.",
@@ -19,22 +19,28 @@
         Json completed=Json::array();
         std::vector<float>reference_logits(33*columns);
         std::vector<std::int32_t>reference_ids;std::size_t reference_rows=0;
-        qwen_app::ResidentCheckpointCapacity capacity;
-        std::uint64_t last_payload=0;const void*last_engine=nullptr;
+        std::uint64_t last_payload=0,saved_payload=0,observed_captures=0;
         const auto admit_checkpoint=[&](std::uint64_t bytes){
             require_model_CPU_budget();require_unchanged_model();
             if(bytes<118038528||bytes>142606336)throw std::runtime_error("Complete checkpoint payload outside qualification");
-            auto rounded=capacity.new_allocation(context,bytes);
-            if(last_engine==engine.get()&&last_payload==bytes&&engine->checkpoint_validation_stats().captures>0)rounded=0;
+            const auto captures=engine->checkpoint_validation_stats().captures;
+            if(captures!=observed_captures){
+                if(captures!=observed_captures+1||!last_payload)throw std::runtime_error("Checkpoint replacement lacks positive prior capture");
+                saved_payload=last_payload;observed_captures=captures;
+            }
+            const auto rounded=qwen_app::checkpoint_replacement_growth(bytes,saved_payload);
             const auto ledger=qwen_app::native_model_device_stats();const auto budget=qwen_native_allocator_budget(driver_total);
+            const auto admission="model_checkpoint_replacement_admission payload="+std::to_string(bytes)+" completed_payload="+std::to_string(saved_payload)+
+                " additional_upper="+std::to_string(rounded)+" device_live="+std::to_string(ledger.live)+" direct_available="+std::to_string(budget.available);
+            qwen_native_stage(admission.c_str());
             if(ledger.live>qwen_app::model_postload_device_budget||rounded>qwen_app::model_postload_device_budget-ledger.live||
                budget.available<rounded+memory_budget.direct_reserve||observed_system_headroom()<memory_budget.flexible_reserve)
                 throw std::runtime_error("Complete checkpoint cannot retain original reserves");
-            last_payload=bytes;last_engine=engine.get();
+            last_payload=bytes;
         };
         for(unsigned ordinal=0;ordinal<request_count;++ordinal){
-            const bool counting=ordinal<11;const unsigned mode=counting?counting_modes[ordinal]:(ordinal-11)%5;
-            const unsigned task=counting?0:(ordinal-11)/5;
+            const bool counting=ordinal<5;const unsigned mode=counting?counting_modes[ordinal]:(ordinal-5)%5;
+            const unsigned task=counting?0:(ordinal-5)/5;
             require_model_CPU_budget();require_unchanged_model();qwen_app_complete_predictive_expert();
             const auto previous=engine->expert_cache_metrics();if(!previous)throw std::runtime_error("Actual cache counters required");
             qwen_native_driver_begin();engine.reset();qwen_native_driver_complete();
@@ -44,6 +50,7 @@
             resident_reset_empty_context(context,model,startup.admission_report);
             qwen_app_route_begin(mode);
             engine=std::make_unique<qwen_app::LlamaEngine>(model,context,4);
+            observed_captures=0;
             engine->set_stage_observer(observed_inference_stage);
             engine->set_gpu_boundaries(qwen_native_driver_begin,qwen_native_driver_complete,qwen_native_driver_retain,qwen_native_driver_checkpoint);
             qwen_native_driver_complete();require_model_CPU_budget();
@@ -86,7 +93,7 @@
             const auto spec=engine->speculative_step_stats();const auto checkpoints=engine->checkpoint_validation_stats();
             if(spec.attempts){if(checkpoints.captures!=spec.attempts||spec.attempts!=spec.accepted+spec.rejected||checkpoints.restores!=spec.rejected)
                     throw std::runtime_error("Every speculative attempt requires complete capture and a verified decision");
-                capacity.completed(context,last_payload,result.request_reset_completed);}
+                saved_payload=last_payload;}
             std::uint64_t routing[3]{};qwen_app_route_stats(routing);
             bool counting_pass=false;if(counting)try{qwen_app::require_demo_sequence(result.output_bytes);counting_pass=true;}catch(const std::exception&){}
             Json row={{"ordinal",ordinal},{"mode",mode},{"counting",counting},{"quality_task",counting?Json(nullptr):Json(task)},
