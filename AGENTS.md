@@ -20,6 +20,15 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner subsequently requested native comparison of cache-aware routing,
+Top-k reduction and multi-token Expert sharing, explicitly removing model-side
+software restrictions for this experiment. Follow
+`docs/expert-routing-sharing-plan-20261030.md`. Approximate arms may change
+selected Experts and output quality; record those changes instead of imposing
+the old cross-mode F32/token equality gate. Keep all source, memory, current-boot,
+positive GPU completion and ordinary-close/restoration controls. Production
+db542fa2 remains the rollback; no new weight payload, CI, reboot or agents.
+
 The four I/O reduction proposals are physically tested and closed in
 `docs/expert-q2-io-reduction-results-20261030.md` / `.json`. Normal case 9400
 qualifies the combined winner; placement 9410 installs SELF
