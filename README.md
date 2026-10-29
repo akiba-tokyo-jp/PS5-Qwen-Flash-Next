@@ -7,6 +7,13 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+The [four-part I/O investigation](docs/expert-q2-io-distribution-20261030.md)
+measures median/P95/P99, actual two-lane occupancy, physical adjacency merging
+and layer/Expert miss concentration. Native ABBA case 9340 reduces decode read
+calls by 1.1983% and improves 1.144370 to 1.149977 tok/s (+0.48996%) with exact
+F32/routes and unchanged bytes. This headless candidate is recorded separately
+from the deployed monitor/API application; exact production was restored.
+
 The [complete optimization report](docs/expert-q2-optimization-results-20261030.md)
 and [installation record](config/production-installation.json) describe the
 selected all-Q2 application. Gate/Up use Q2_K and Down uses fitted-scale Q2_0 MSE;

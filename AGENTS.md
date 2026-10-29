@@ -20,6 +20,19 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The subsequent four requested I/O investigations are complete in
+`docs/expert-q2-io-distribution-20261030.md` / `.json`. Native case 9340 has
+five positively retired requests, exact F32/routes, ordinary close and exact
+production/settings restoration. Adjacency groups save 184 decode calls per
+21 transitions at equal bytes, improving matched 1.144370 to 1.149977 tok/s
+(+0.48996%). Observed pread depth is at most two, averaging 1.58755 while busy;
+this is not SSD hardware queue telemetry. Percentiles are 128-us interval bounds.
+The 68.51% miss reference is historical aged LFU, versus 63.54% probation on the
+same independent counting request. Layer/Expert and phase details are recorded.
+This completes investigation, not normal monitor/API adoption of the candidate.
+The deployed selection below remains exact. Do not replay consumed case 9340
+or label the small headless result a new deployed rate.
+
 Latest selection: the optimized all-Q2 app is qualified in normal case 9290
 and placed in 9310. SELF is
 `bb61e2af568ac5fba907fea8c14704413f5ea17452772d865aa097834170de00`,

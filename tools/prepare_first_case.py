@@ -47,7 +47,29 @@ def qualified_control(context, production=False, installation=None):
             activation_inputs='F32',quantization='Expert weights only')
         mixed_precision=dict(q4_precision,Expert_weights='Gate/Up Q2_K; Down Q4_0')
         all_q2_precision=dict(q4_precision,Expert_weights='Gate/Up Q2_K; Down Q2_0 MSE')
-        if isinstance(installation,dict) and installation.get('precision')==all_q2_precision:
+        optimized_Q2=(isinstance(installation,dict) and installation.get('precision')==all_q2_precision and
+            installation.get('qualification_report')=='docs/expert-q2-optimization-results-20261030.json')
+        if optimized_Q2:
+            required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
+                'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
+            report=read(ROOT/installation['qualification_report']);normal=report.get('normal_application',{})
+            placed=report.get('production_placement',{});quality=report.get('quality',{})
+            if (report.get('schema')!='ps5-qwen-Q2-eight-optimization-dispositions-v1' or
+                report.get('precision')!=all_q2_precision or report.get('unknown_completion')is not False or
+                any(normal.get(k)is not True for k in ('completed','ordinary_same_width_full_F32_and_routes_exact',
+                    'final_unlike_width_full_vocab_top1_and_tokens_equal','all_model_source_and_GPU_owners_positively_retired',
+                    'ordinary_close_and_exact_restoration_passed')) or
+                normal.get('case')!=installation.get('normal_application_case') or
+                any(placed.get(k)is not True for k in ('completed','all_canonical_and_rollback_whole_SHA256_identity_EOF_passed','fresh_idle_confirmed')) or
+                placed.get('verified_settings')!=5 or placed.get('verified_native_programs')!=9 or
+                any(placed.get(k)is not False for k in ('native_title_running','gateway_running','model_loaded')) or
+                placed.get('application_SELF')!=installation.get('application_SELF') or
+                placed.get('previous_production_SELF',{}).get('sha256')!=installation.get('previous_production_SHA256') or
+                quality.get('owner_expected_Expert_Q2_loss_accepted')is not True or quality.get('output_normalization')is not False or
+                (quality.get('strict_format'),quality.get('answer_contents'),quality.get('total_requests'))!=(6,9,9) or
+                context.get('Expert_format')!='Gate_Up_Q2_K_Down_Q2_0_MSE'):
+                raise ValueError('Completed optimized Q2 arithmetic, scoped width validation, exact placement and owner quality acceptance required')
+        if isinstance(installation,dict) and installation.get('precision')==all_q2_precision and not optimized_Q2:
             required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
                 'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
             if installation.get('qualification_report')!='docs/expert-q2-results-20261029.json':
