@@ -7,32 +7,34 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-The [four-part I/O investigation](docs/expert-q2-io-distribution-20261030.md)
-measures median/P95/P99, actual two-lane occupancy, physical adjacency merging
-and layer/Expert miss concentration. Native ABBA case 9340 reduces decode read
-calls by 1.1983% and improves 1.144370 to 1.149977 tok/s (+0.48996%) with exact
-F32/routes and unchanged bytes. This headless candidate is recorded separately
-from the deployed monitor/API application; exact production was restored.
-
-The [complete optimization report](docs/expert-q2-optimization-results-20261030.md)
+The [I/O reduction report](docs/expert-q2-io-reduction-results-20261030.md)
 and [installation record](config/production-installation.json) describe the
 selected all-Q2 application. Gate/Up use Q2_K and Down uses fitted-scale Q2_0 MSE;
 other weights remain BF16/F32 with F32 activation input and KV. It combines
-867 cache slots, two-touch probation, partial Expert bundles, atomic range hints,
-complete exact-prefix reuse and one causal target verification on the final
-prefix consumer.
+867 cache slots, original two-touch probation, 420 partial Expert bundles,
+adjacent read merging, bounded four-demand reads, atomic range hints, complete
+exact-prefix reuse and one causal target verification on the final prefix consumer.
 
-Normal physical-console case 9290 measures **1.143314 decode tokens/s** on the
-first independent request. Repeating its exact 30-token prompt gives **63.117 ms
-to the first token** and **1.106472 decode tokens/s**. These have different cache
+Normal physical-console case 9400 measures **1.293876 decode tokens/s** on the
+first independent request, **13.16896% faster** than previous 9290. Repeating
+its exact 30-token prompt gives **62.080 ms to the first token** and
+**1.264045 decode tokens/s**. These have different cache
 conditions and are reported separately. Including prefill, capture and restore,
-the two-request group gives 0.773582 generated tokens/s, 32.618% above its
-ordinary group control. Every emitted token matches; ordinary same-width F32
+the two-request group gives 0.906237 generated tokens/s, 17.1481% above the
+previous matched group. Every emitted token matches; ordinary same-width F32
 and routes match exactly. The final unlike-width maximum difference 0.971474
 is disclosed alongside full-vocabulary finite/top1 checks and the earlier
 same-width/rejection qualification.
 
-All eight current optimization proposals have a final disposition. Slower
+All four new I/O proposals have a final measured decision. Additional placement
+and four-demand reads improve independent headless ABBAs by 1.82721% and
+12.66318%; adjacency was already measured at +0.48996%. These percentages are
+not additive. Temporal protection reduces misses but slows decode 0.10565%,
+so the original policy remains. All three adopted I/O paths actually execute
+in the normal warmup and both API requests.
+
+The [earlier eight-family plan](docs/expert-q2-optimization-results-20261030.md)
+also retains final dispositions. Slower
 composite reads, small streaming copies and split-graph overlap are closed as
 tested. Output-head Q8 cannot complete its additional asset allocation under
 current filesystem ENOSPC; it is not adopted or reported as GPU-tested. Original
@@ -40,12 +42,14 @@ weights remain intact. Expected Expert-Q2 quality loss is accepted: three fixed
 prompts repeated three times give 6/9 strict-format and 9/9 answer-content passes,
 without output normalization. This is not a broad reasoning-quality claim.
 
-Placement 9310 verifies SELF `bb61e2af...`, all 9 canonical/rollback programs and
+Placement 9410 verifies SELF `db542fa2...`, all 10 canonical/rollback programs and
 5 settings, ordinary shutdown and fresh idle. Both actual native frames were
 viewed with CPU/GPU information, synchronized time, token rate and no chat UI.
 Unknown utilization counters remain `--`. The title/gateway/model are inactive;
 the finite binding is consumed and sustained service is not qualified. Original
-MOSS, BF16, Q4, mixed and probation-only applications remain rollbacks.
+MOSS, BF16, Q4, mixed, probation-only and previous `bb61e2af...` applications
+remain rollbacks. The [prior distribution study](docs/expert-q2-io-distribution-20261030.md)
+retains the latency percentiles and layer/Expert miss analysis.
 
 The [plan index](docs/plan-index.md) links current results and dated historical
 controls. CI, reboot, persistent shader/pipeline caches and ambiguous retries

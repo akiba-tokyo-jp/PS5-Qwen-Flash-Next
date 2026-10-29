@@ -20,29 +20,31 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-The subsequent four requested I/O investigations are complete in
-`docs/expert-q2-io-distribution-20261030.md` / `.json`. Native case 9340 has
-five positively retired requests, exact F32/routes, ordinary close and exact
-production/settings restoration. Adjacency groups save 184 decode calls per
-21 transitions at equal bytes, improving matched 1.144370 to 1.149977 tok/s
-(+0.48996%). Observed pread depth is at most two, averaging 1.58755 while busy;
-this is not SSD hardware queue telemetry. Percentiles are 128-us interval bounds.
-The 68.51% miss reference is historical aged LFU, versus 63.54% probation on the
-same independent counting request. Layer/Expert and phase details are recorded.
-This completes investigation, not normal monitor/API adoption of the candidate.
-The deployed selection below remains exact. Do not replay consumed case 9340
-or label the small headless result a new deployed rate.
+The four I/O reduction proposals are physically tested and closed in
+`docs/expert-q2-io-reduction-results-20261030.md` / `.json`. Normal case 9400
+qualifies the combined winner; placement 9410 installs SELF
+`db542fa213d399ec6935dbcb60e156b152afcb33340618d6bc998a7cee5c4a5c`,
+implementation `d156568a5bbf3b07c4abf641a883878864b873d5`.
+First independent API decode is 1.293876 tok/s versus 1.143314 (+13.16896%).
+Exact-repeat decode is 1.264045 with TTFT 62.080 ms. Capture-charged pair
+throughput is 0.906237 generated tok/s (+17.1481%). Do not pool unlike cache
+conditions or add independent candidate percentages.
 
-Latest selection: the optimized all-Q2 app is qualified in normal case 9290
-and placed in 9310. SELF is
-`bb61e2af568ac5fba907fea8c14704413f5ea17452772d865aa097834170de00`,
-implementation commit `af15450f61cbcc77d60f00a5295209dd06f07e5f`.
-It combines two-touch probation, 336 partial Expert bundles, the atomic range
-hint, complete exact-prefix reuse and one causal Expert-sharing attempt on the
-final prefix consumer. First independent API decode: 1.143314 tok/s; retained
-exact-repeat decode: 1.106472, TTFT 63.117 ms. Capture-charged pair throughput
-is 0.773582 generated tok/s. Do not pool unlike cache conditions or add the
-independent candidate percentages.
+Adopted: adjacent groups, 84 additional bundles (420 total), and actual four-read
+delivery, retaining original probation, atomic hints, complete exact-prefix
+reuse and one causal attempt on the final prefix consumer. All selected paths
+actually execute in warmup and both API requests. Independent ABBAs in 9380
+measure +1.82721% extra placement and +12.66318% depth four. Temporal window144
+reduces misses but slows decode 0.10565%; it is tested and closed, with window0
+selected. No requested comparison remains pending in this four-item scope.
+
+The earlier four-part I/O distribution investigation is preserved in
+`docs/expert-q2-io-distribution-20261030.md` / `.json`. Its 9340 adjacency ABBA
+measures +0.48996% at equal bytes. Its depth-two occupancy and 128-us percentile
+bounds are historical controls, not depth-four hardware queue telemetry.
+Headless 9380 retains an old descriptive max-parallel=2 field; its sealed
+scope and actual peak4 counters establish four. Normal 9400 fixes the label.
+Two-lane occupancy events are disabled for quad arms; do not reuse that analyzer.
 
 All eight current candidate dispositions are complete in
 `docs/expert-q2-optimization-results-20261030.md` / `.json`. Composite parallel
@@ -61,15 +63,17 @@ same-token checks; maximum difference 0.971474 is disclosed. Same-width causal
 F32 and forced rejection passed in 9160. Only the positively restored final
 prefix consumer may hand off the snapshot; do not reuse it for more requests.
 
-All 9 canonical/rollback programs and 5 settings passed native whole hashes,
+All 10 canonical/rollback programs and 5 settings passed native whole hashes,
 identities and EOF. Both actual frames were viewed; source/device owners retired,
 ordinary close and fresh idle passed. The native title/gateway/model are inactive.
 The finite binding is consumed; sustained service is not qualified. Preserve
-06e09663 probation-only, mixed, Q4, BF16 and original MOSS rollbacks, accepted
+bb61e2af previous optimized, 06e09663 probation-only, mixed, Q4, BF16 and original
+MOSS rollbacks, accepted
 Q2 strict-format 6/9 and answer-content 9/9, all original caps and positive
 completion. No CI, reboot, persistent caches, new quality veto or replay.
 The owner accepted the current freeze-risk comparison/adoption scope; no
-permission is pending. Unstarted 8880 is superseded by original-policy 8900
+permission is pending. Consumed 9340, 9367, 9380, 9400 and placement9410 must not
+be replayed. Unstarted 8880 is superseded by original-policy 8900
 arms 1/4. Earlier dated selections and review-blocked descriptions below are
 historical, including obsolete pending lists; they do not override this status.
 

@@ -62,6 +62,10 @@ class Controls(unittest.TestCase):
     def mixed(self):
         root=Path(__file__).resolve().parents[1]
         report=json.loads((root/'docs/expert-q2-results-20261029.json').read_text())
+        # Later adoptions replace the report's root normal/placement sections.
+        # Exercise this historical format with its exact original closed evidence.
+        historical=json.loads((root/'tests/fixtures/mixed-q2-control-20261029.json').read_text())
+        report.update(historical['report_fields'])
         state,record=production()
         for key in ('original_rollback_full_readback_verified','arithmetic_smoke_passed','outputs_and_token_ids_equal_to_qualified_selected_case'):
             del record[key]

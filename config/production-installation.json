@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-10-30",
-  "application_source_revision": "af15450f61cbcc77d60f00a5295209dd06f07e5f",
+  "application_source_revision": "d156568a5bbf3b07c4abf641a883878864b873d5",
   "application_SELF": {
-    "bytes": 17468775,
-    "sha256": "bb61e2af568ac5fba907fea8c14704413f5ea17452772d865aa097834170de00"
+    "bytes": 17495415,
+    "sha256": "db542fa213d399ec6935dbcb60e156b152afcb33340618d6bc998a7cee5c4a5c"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -24,34 +24,48 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "06e096630ce08b1a4b865798f7070295f74c9b5bb33fa7d0c32a5ad2bf729590",
+  "previous_production_SHA256": "bb61e2af568ac5fba907fea8c14704413f5ea17452772d865aa097834170de00",
   "active_expert_slots": 867,
   "physical_cache_planes": 868,
   "expert_cache_bytes": 1333739520,
   "external_requests": [
     {
       "ordinal": 1,
-      "decode_tokens_per_second": 1.143313610520963,
-      "TTFT_ms": 17548.17439800501,
-      "total_ms": 36860.952066004276,
+      "decode_tokens_per_second": 1.2938761225741247,
+      "TTFT_ms": 13921.304904997349,
+      "total_ms": 31006.475854992867,
       "generated_tokens": 22,
       "cache_condition": "independent_empty",
       "exact_prefix_restored": false,
-      "causal_target_acceptances": 0
+      "causal_target_acceptances": 0,
+      "io_optimization": {
+        "adjacent_calls_saved": 382,
+        "extra_bundled_Experts": 466,
+        "flags": 5,
+        "maximum_lifetime_quad_inflight": 4,
+        "quad_batches": 5081
+      }
     },
     {
       "ordinal": 2,
-      "decode_tokens_per_second": 1.1064718253801147,
-      "TTFT_ms": 63.117392003536224,
-      "total_ms": 20017.303532004356,
+      "decode_tokens_per_second": 1.2640447929665448,
+      "TTFT_ms": 62.08035504817963,
+      "total_ms": 17545.964168012142,
       "generated_tokens": 22,
       "cache_condition": "retained_after_exact_prefix_capture",
       "exact_prefix_restored": true,
-      "causal_target_acceptances": 1
+      "causal_target_acceptances": 1,
+      "io_optimization": {
+        "adjacent_calls_saved": 305,
+        "extra_bundled_Experts": 418,
+        "flags": 5,
+        "maximum_lifetime_quad_inflight": 4,
+        "quad_batches": 1797
+      }
     }
   ],
-  "normal_application_case": 9290,
-  "production_placement_case": 9310,
+  "normal_application_case": 9400,
+  "production_placement_case": 9410,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -66,8 +80,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": true,
-  "qualification_report": "docs/expert-q2-optimization-results-20261030.json",
-  "historical_installation": "config/production-installation-Expert-Q2-probation-20261029.json",
+  "qualification_report": "docs/expert-q2-io-reduction-results-20261030.json",
+  "historical_installation": "config/production-installation-Q2-optimized-20261030.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -91,6 +105,24 @@
   "maximum_causal_attempts_on_final_request": 1,
   "eight_optimization_dispositions_completed": true,
   "optimized_normal_comparison": {
+    "control_case": 9290,
+    "first_independent_decode_speedup_fraction": 0.1316896000079597,
+    "capture_charged_group_tok_s": 0.906236637729268,
+    "ordinary_group_control_case": 9290,
+    "capture_charged_group_speedup_fraction": 0.17148088893284674,
+    "unlike_cache_conditions_not_pooled": true,
+    "ordinary_full_F32_max_error": 0,
+    "final_unlike_width_max_F32_error": 0.9714741706848145,
+    "unlike_width_all_full_vocabulary_top1_and_tokens_equal": true
+  },
+  "adjacent_bundle_groups_enabled": true,
+  "additional_Expert_bundles": 84,
+  "total_bundled_Experts": 420,
+  "maximum_parallel_source_reads": 4,
+  "io_winner_flags": 5,
+  "temporal_protection_window": 0,
+  "four_IO_proposals_disposed": true,
+  "previous_optimized_normal_comparison": {
     "control_case": 8940,
     "first_independent_decode_speedup_fraction": 0.014942858123817127,
     "capture_charged_group_tok_s": 0.7735820927943593,

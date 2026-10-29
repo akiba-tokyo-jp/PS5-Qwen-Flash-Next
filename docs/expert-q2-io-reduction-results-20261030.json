@@ -1,0 +1,956 @@
+{
+  "schema": "ps5-qwen-Q2-IO-reduction-adoption-v1",
+  "date": "2026-10-30",
+  "all_four_proposals_disposed": true,
+  "pending_executable_comparisons": [],
+  "execution_unavailable_current_four_proposals": [],
+  "application_source_revision": "d156568a5bbf3b07c4abf641a883878864b873d5",
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "precision": {
+    "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
+    "other_weights": "original BF16/F32",
+    "KV_cache": "F32",
+    "activation_inputs": "F32",
+    "quantization": "Expert weights only"
+  },
+  "conditions": {
+    "one_physical_PS5": true,
+    "model": "Qwen3.8-Flash-Next",
+    "active_Expert_slots": 867,
+    "physical_cache_planes": 868,
+    "Expert_cache_bytes": 1333739520,
+    "all_49_stored_layers_and_512_Experts_per_layer_retained": true,
+    "top10_retained": true,
+    "prompt_tokens": 30,
+    "generated_tokens": 22,
+    "accepted_decode_transitions": 21,
+    "headless_requests_start_empty": true,
+    "headless_order": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      2,
+      2,
+      0,
+      0,
+      3,
+      3,
+      0
+    ],
+    "normal_requests": "warmup, first independent API with complete prefix capture, final exact-repeat API with one causal attempt"
+  },
+  "dispositions": [
+    {
+      "proposal": "adjacent_bundle_groups",
+      "status": "tested_adopted",
+      "native_comparison_case": 9340,
+      "full_model_gain_fraction": 0.0048996,
+      "normal_case": 9400,
+      "actual_normal_path_verified": true
+    },
+    {
+      "proposal": "additional_84_Expert_bundles",
+      "status": "tested_adopted",
+      "native_comparison_case": 9380,
+      "full_model_gain_fraction": 0.0182720895911892
+    },
+    {
+      "proposal": "temporal_probation_144",
+      "status": "tested_no_speed_improvement_not_adopted",
+      "native_comparison_case": 9380,
+      "full_model_gain_fraction": -0.0010565195680437567,
+      "selected_window": 0
+    },
+    {
+      "proposal": "four_demand_reads",
+      "status": "tested_adopted",
+      "native_comparison_case": 9380,
+      "full_model_gain_fraction": 0.12663177884721022
+    }
+  ],
+  "additional_placement": {
+    "original_bundled_Experts": 336,
+    "additional_bundled_Experts": 84,
+    "total_bundled_Experts": 420,
+    "additional_SSD_bytes": 129368064,
+    "native_pack_case": 9362,
+    "all_source_and_pack_SHA256_equal": true,
+    "original_model_and_bundle_preserved": true,
+    "readonly": true
+  },
+  "CPU_component": {
+    "case": 9367,
+    "component_not_model_tok_s": true,
+    "actual_same_layer_groups": 46,
+    "timed_order": [
+      1,
+      2,
+      4,
+      4,
+      2,
+      1
+    ],
+    "mean_elapsed_ns_by_depth": {
+      "1": 945163957.0,
+      "2": 654619983.5,
+      "4": 528228554.5
+    },
+    "depth4_throughput_gain_over_depth2": 0.23927413223549987,
+    "all_native_SHA256_equal": true,
+    "depth4_reached": true,
+    "owners_positively_retired": true
+  },
+  "full_model_comparison": {
+    "case": 9380,
+    "requests": 13,
+    "comparisons": [
+      {
+        "name": "extra_bundles",
+        "control_ordinals": [
+          1,
+          4
+        ],
+        "candidate_ordinals": [
+          2,
+          3
+        ],
+        "control_decode_tok_s": 1.1472201057987064,
+        "candidate_decode_tok_s": 1.1681822143526739,
+        "decode_speedup_fraction": 0.0182720895911892,
+        "every_candidate_faster_than_every_control": true,
+        "selected_for_normal_composition": true,
+        "disposition": "positive same-model comparison",
+        "control_IO": {
+          "completed": true,
+          "case": 9380,
+          "prefill_and_final_EOS_excluded": true,
+          "accepted_decode_transitions": 42,
+          "physical_GB_per_decode_token": 0.4303692373333333,
+          "read_calls_per_decode_token": 722.4285714285714,
+          "effective_GB_per_producer_wait_second": 0.6441129401337454,
+          "source_wait_fraction_of_model_process": 0.8074744808604064,
+          "mean_individual_pread_wall_ms": 1.4610233063410454,
+          "individual_pread_p50_interval": {
+            "lower_ms": 1.28,
+            "upper_ms": 1.408
+          },
+          "individual_pread_p95_interval": {
+            "lower_ms": 2.048,
+            "upper_ms": 2.176
+          },
+          "individual_read_size_classes": [
+            {
+              "lower_KiB": 0,
+              "upper_KiB": 64,
+              "calls": 714,
+              "mean_returned_KiB": 16.537815126050422,
+              "mean_pread_wall_ms": 1.3765461526610645
+            },
+            {
+              "lower_KiB": 192,
+              "upper_KiB": 256,
+              "calls": 24,
+              "mean_returned_KiB": 192.0,
+              "mean_pread_wall_ms": 1.2610125
+            },
+            {
+              "lower_KiB": 320,
+              "upper_KiB": 384,
+              "calls": 24,
+              "mean_returned_KiB": 352.0,
+              "mean_pread_wall_ms": 0.8188735416666666
+            },
+            {
+              "lower_KiB": 448,
+              "upper_KiB": 512,
+              "calls": 9216,
+              "mean_returned_KiB": 464.0,
+              "mean_pread_wall_ms": 1.499753089626736
+            },
+            {
+              "lower_KiB": 512,
+              "upper_KiB": 576,
+              "calls": 18412,
+              "mean_returned_KiB": 540.8033483597653,
+              "mean_pread_wall_ms": 1.4361597548881164
+            },
+            {
+              "lower_KiB": 896,
+              "upper_KiB": 960,
+              "calls": 66,
+              "mean_returned_KiB": 912.0,
+              "mean_pread_wall_ms": 1.3674189696969696
+            },
+            {
+              "lower_KiB": 1024,
+              "upper_KiB": null,
+              "calls": 1886,
+              "mean_returned_KiB": 1767.3976670201484,
+              "mean_pread_wall_ms": 1.5604721155885473
+            }
+          ],
+          "individual_call_times_overlap_and_are_not_critical_path": true,
+          "producer_wait_ms_per_decode_transition": 668.1580364523809
+        },
+        "candidate_IO": {
+          "completed": true,
+          "case": 9380,
+          "prefill_and_final_EOS_excluded": true,
+          "accepted_decode_transitions": 42,
+          "physical_GB_per_decode_token": 0.42964288,
+          "read_calls_per_decode_token": 687.5714285714286,
+          "effective_GB_per_producer_wait_second": 0.6568251366906598,
+          "source_wait_fraction_of_model_process": 0.8051667882018956,
+          "mean_individual_pread_wall_ms": 1.4643486119883649,
+          "individual_pread_p50_interval": {
+            "lower_ms": 1.28,
+            "upper_ms": 1.408
+          },
+          "individual_pread_p95_interval": {
+            "lower_ms": 2.048,
+            "upper_ms": 2.176
+          },
+          "individual_read_size_classes": [
+            {
+              "lower_KiB": 0,
+              "upper_KiB": 64,
+              "calls": 714,
+              "mean_returned_KiB": 16.537815126050422,
+              "mean_pread_wall_ms": 1.3830037969187674
+            },
+            {
+              "lower_KiB": 192,
+              "upper_KiB": 256,
+              "calls": 24,
+              "mean_returned_KiB": 192.0,
+              "mean_pread_wall_ms": 1.262532625
+            },
+            {
+              "lower_KiB": 320,
+              "upper_KiB": 384,
+              "calls": 24,
+              "mean_returned_KiB": 352.0,
+              "mean_pread_wall_ms": 0.8874889583333334
+            },
+            {
+              "lower_KiB": 448,
+              "upper_KiB": 512,
+              "calls": 8536,
+              "mean_returned_KiB": 464.0,
+              "mean_pread_wall_ms": 1.5042280254217433
+            },
+            {
+              "lower_KiB": 512,
+              "upper_KiB": 576,
+              "calls": 17052,
+              "mean_returned_KiB": 540.7623299319728,
+              "mean_pread_wall_ms": 1.4375719189537886
+            },
+            {
+              "lower_KiB": 896,
+              "upper_KiB": 960,
+              "calls": 48,
+              "mean_returned_KiB": 912.0,
+              "mean_pread_wall_ms": 1.4663640833333333
+            },
+            {
+              "lower_KiB": 1024,
+              "upper_KiB": null,
+              "calls": 2480,
+              "mean_returned_KiB": 1762.7612903225806,
+              "mean_pread_wall_ms": 1.5421135987903227
+            }
+          ],
+          "individual_call_times_overlap_and_are_not_critical_path": true,
+          "producer_wait_ms_per_decode_transition": 654.1206418571429
+        },
+        "requests": [
+          {
+            "ordinal": 1,
+            "mode": 0,
+            "decode_tok_s": 1.1466294545440943,
+            "misses": 12717,
+            "physical_read_calls": 35026,
+            "physical_read_bytes": 20066597184,
+            "quad_batches": 0,
+            "quad_peak_absolute": 0
+          },
+          {
+            "ordinal": 4,
+            "mode": 0,
+            "decode_tok_s": 1.1478113658789595,
+            "misses": 12717,
+            "physical_read_calls": 35026,
+            "physical_read_bytes": 20066597184,
+            "quad_batches": 0,
+            "quad_peak_absolute": 0
+          },
+          {
+            "ordinal": 2,
+            "mode": 1,
+            "decode_tok_s": 1.1677140786271876,
+            "misses": 12717,
+            "physical_read_calls": 34070,
+            "physical_read_bytes": 20046821696,
+            "quad_batches": 0,
+            "quad_peak_absolute": 0
+          },
+          {
+            "ordinal": 3,
+            "mode": 1,
+            "decode_tok_s": 1.1686507255792427,
+            "misses": 12717,
+            "physical_read_calls": 34070,
+            "physical_read_bytes": 20046821696,
+            "quad_batches": 0,
+            "quad_peak_absolute": 0
+          }
+        ]
+      },
+      {
+        "name": "temporal_probation",
+        "control_ordinals": [
+          5,
+          8
+        ],
+        "candidate_ordinals": [
+          6,
+          7
+        ],
+        "control_decode_tok_s": 1.1484878703709462,
+        "candidate_decode_tok_s": 1.1472744704622384,
+        "decode_speedup_fraction": -0.0010565195680437567,
+        "every_candidate_faster_than_every_control": false,
+        "selected_for_normal_composition": false,
+        "disposition": "tested without a consistent speed improvement",
+        "control_IO": {
+          "completed": true,
+          "case": 9380,
+          "prefill_and_final_EOS_excluded": true,
+          "accepted_decode_transitions": 42,
+          "physical_GB_per_decode_token": 0.4303692373333333,
+          "read_calls_per_decode_token": 722.4285714285714,
+          "effective_GB_per_producer_wait_second": 0.6450752369448093,
+          "source_wait_fraction_of_model_process": 0.8070805098804759,
+          "mean_individual_pread_wall_ms": 1.4586435403401226,
+          "individual_pread_p50_interval": {
+            "lower_ms": 1.28,
+            "upper_ms": 1.408
+          },
+          "individual_pread_p95_interval": {
+            "lower_ms": 2.048,
+            "upper_ms": 2.176
+          },
+          "individual_read_size_classes": [
+            {
+              "lower_KiB": 0,
+              "upper_KiB": 64,
+              "calls": 714,
+              "mean_returned_KiB": 16.537815126050422,
+              "mean_pread_wall_ms": 1.380899717086835
+            },
+            {
+              "lower_KiB": 192,
+              "upper_KiB": 256,
+              "calls": 24,
+              "mean_returned_KiB": 192.0,
+              "mean_pread_wall_ms": 1.2638592083333333
+            },
+            {
+              "lower_KiB": 320,
+              "upper_KiB": 384,
+              "calls": 24,
+              "mean_returned_KiB": 352.0,
+              "mean_pread_wall_ms": 0.9622151666666666
+            },
+            {
+              "lower_KiB": 448,
+              "upper_KiB": 512,
+              "calls": 9216,
+              "mean_returned_KiB": 464.0,
+              "mean_pread_wall_ms": 1.499454539279514
+            },
+            {
+              "lower_KiB": 512,
+              "upper_KiB": 576,
+              "calls": 18412,
+              "mean_returned_KiB": 540.8033483597653,
+              "mean_pread_wall_ms": 1.4319750028785574
+            },
+            {
+              "lower_KiB": 896,
+              "upper_KiB": 960,
+              "calls": 66,
+              "mean_returned_KiB": 912.0,
+              "mean_pread_wall_ms": 1.4156372121212122
+            },
+            {
+              "lower_KiB": 1024,
+              "upper_KiB": null,
+              "calls": 1886,
+              "mean_returned_KiB": 1767.3976670201484,
+              "mean_pread_wall_ms": 1.5593029029692471
+            }
+          ],
+          "individual_call_times_overlap_and_are_not_critical_path": true,
+          "producer_wait_ms_per_decode_transition": 667.1613056666666
+        },
+        "candidate_IO": {
+          "completed": true,
+          "case": 9380,
+          "prefill_and_final_EOS_excluded": true,
+          "accepted_decode_transitions": 42,
+          "physical_GB_per_decode_token": 0.4291747779047619,
+          "read_calls_per_decode_token": 725.5714285714286,
+          "effective_GB_per_producer_wait_second": 0.6421056010249546,
+          "source_wait_fraction_of_model_process": 0.807122485899932,
+          "mean_individual_pread_wall_ms": 1.4569357244864474,
+          "individual_pread_p50_interval": {
+            "lower_ms": 1.28,
+            "upper_ms": 1.408
+          },
+          "individual_pread_p95_interval": {
+            "lower_ms": 2.048,
+            "upper_ms": 2.176
+          },
+          "individual_read_size_classes": [
+            {
+              "lower_KiB": 0,
+              "upper_KiB": 64,
+              "calls": 714,
+              "mean_returned_KiB": 16.537815126050422,
+              "mean_pread_wall_ms": 1.3760803347338937
+            },
+            {
+              "lower_KiB": 192,
+              "upper_KiB": 256,
+              "calls": 24,
+              "mean_returned_KiB": 192.0,
+              "mean_pread_wall_ms": 1.2636787083333332
+            },
+            {
+              "lower_KiB": 320,
+              "upper_KiB": 384,
+              "calls": 24,
+              "mean_returned_KiB": 352.0,
+              "mean_pread_wall_ms": 0.817784375
+            },
+            {
+              "lower_KiB": 448,
+              "upper_KiB": 512,
+              "calls": 9272,
+              "mean_returned_KiB": 464.0,
+              "mean_pread_wall_ms": 1.4962111154012079
+            },
+            {
+              "lower_KiB": 512,
+              "upper_KiB": 576,
+              "calls": 18524,
+              "mean_returned_KiB": 540.7846982293241,
+              "mean_pread_wall_ms": 1.4336444573526235
+            },
+            {
+              "lower_KiB": 896,
+              "upper_KiB": 960,
+              "calls": 68,
+              "mean_returned_KiB": 912.4705882352941,
+              "mean_pread_wall_ms": 1.4723564705882353
+            },
+            {
+              "lower_KiB": 1024,
+              "upper_KiB": null,
+              "calls": 1848,
+              "mean_returned_KiB": 1729.5757575757575,
+              "mean_pread_wall_ms": 1.5348285524891776
+            }
+          ],
+          "individual_call_times_overlap_and_are_not_critical_path": true,
+          "producer_wait_ms_per_decode_transition": 668.3865974999999
+        },
+        "requests": [
+          {
+            "ordinal": 5,
+            "mode": 0,
+            "decode_tok_s": 1.148654257679014,
+            "misses": 12717,
+            "physical_read_calls": 35026,
+            "physical_read_bytes": 20066597184,
+            "quad_batches": 0,
+            "quad_peak_absolute": 0
+          },
+          {
+            "ordinal": 8,
+            "mode": 0,
+            "decode_tok_s": 1.1483215312596728,
+            "misses": 12717,
+            "physical_read_calls": 35026,
+            "physical_read_bytes": 20066597184,
+            "quad_batches": 0,
+            "quad_peak_absolute": 0
+          },
+          {
+            "ordinal": 6,
+            "mode": 2,
+            "decode_tok_s": 1.1475291549008024,
+            "misses": 12701,
+            "physical_read_calls": 35101,
+            "physical_read_bytes": 20043135552,
+            "quad_batches": 0,
+            "quad_peak_absolute": 0
+          },
+          {
+            "ordinal": 7,
+            "mode": 2,
+            "decode_tok_s": 1.147019899048725,
+            "misses": 12701,
+            "physical_read_calls": 35101,
+            "physical_read_bytes": 20043135552,
+            "quad_batches": 0,
+            "quad_peak_absolute": 0
+          }
+        ]
+      },
+      {
+        "name": "depth_four",
+        "control_ordinals": [
+          9,
+          12
+        ],
+        "candidate_ordinals": [
+          10,
+          11
+        ],
+        "control_decode_tok_s": 1.147096012213476,
+        "candidate_decode_tok_s": 1.2923548207486095,
+        "decode_speedup_fraction": 0.12663177884721022,
+        "every_candidate_faster_than_every_control": true,
+        "selected_for_normal_composition": true,
+        "disposition": "positive same-model comparison",
+        "control_IO": {
+          "completed": true,
+          "case": 9380,
+          "prefill_and_final_EOS_excluded": true,
+          "accepted_decode_transitions": 42,
+          "physical_GB_per_decode_token": 0.4303692373333333,
+          "read_calls_per_decode_token": 722.4285714285714,
+          "effective_GB_per_producer_wait_second": 0.6440378841831248,
+          "source_wait_fraction_of_model_process": 0.8071784551078743,
+          "mean_individual_pread_wall_ms": 1.4608921914837518,
+          "individual_pread_p50_interval": {
+            "lower_ms": 1.28,
+            "upper_ms": 1.408
+          },
+          "individual_pread_p95_interval": {
+            "lower_ms": 2.048,
+            "upper_ms": 2.176
+          },
+          "individual_read_size_classes": [
+            {
+              "lower_KiB": 0,
+              "upper_KiB": 64,
+              "calls": 714,
+              "mean_returned_KiB": 16.537815126050422,
+              "mean_pread_wall_ms": 1.3794193235294119
+            },
+            {
+              "lower_KiB": 192,
+              "upper_KiB": 256,
+              "calls": 24,
+              "mean_returned_KiB": 192.0,
+              "mean_pread_wall_ms": 1.2547783333333333
+            },
+            {
+              "lower_KiB": 320,
+              "upper_KiB": 384,
+              "calls": 24,
+              "mean_returned_KiB": 352.0,
+              "mean_pread_wall_ms": 0.883893875
+            },
+            {
+              "lower_KiB": 448,
+              "upper_KiB": 512,
+              "calls": 9216,
+              "mean_returned_KiB": 464.0,
+              "mean_pread_wall_ms": 1.4997009927300347
+            },
+            {
+              "lower_KiB": 512,
+              "upper_KiB": 576,
+              "calls": 18412,
+              "mean_returned_KiB": 540.8033483597653,
+              "mean_pread_wall_ms": 1.4346953058874647
+            },
+            {
+              "lower_KiB": 896,
+              "upper_KiB": 960,
+              "calls": 66,
+              "mean_returned_KiB": 912.0,
+              "mean_pread_wall_ms": 1.400279196969697
+            },
+            {
+              "lower_KiB": 1024,
+              "upper_KiB": null,
+              "calls": 1886,
+              "mean_returned_KiB": 1767.3976670201484,
+              "mean_pread_wall_ms": 1.5699282057264052
+            }
+          ],
+          "individual_call_times_overlap_and_are_not_critical_path": true,
+          "producer_wait_ms_per_decode_transition": 668.2359033571429
+        },
+        "candidate_IO": {
+          "completed": true,
+          "case": 9380,
+          "prefill_and_final_EOS_excluded": true,
+          "accepted_decode_transitions": 42,
+          "physical_GB_per_decode_token": 0.4304199497142857,
+          "read_calls_per_decode_token": 725.5238095238095,
+          "effective_GB_per_producer_wait_second": 0.745493098066731,
+          "source_wait_fraction_of_model_process": 0.7909547855714045,
+          "mean_individual_pread_wall_ms": 1.678653515981885,
+          "individual_pread_p50_interval": {
+            "lower_ms": 1.6640000000000001,
+            "upper_ms": 1.792
+          },
+          "individual_pread_p95_interval": {
+            "lower_ms": 2.432,
+            "upper_ms": 2.56
+          },
+          "individual_read_size_classes": [
+            {
+              "lower_KiB": 0,
+              "upper_KiB": 64,
+              "calls": 714,
+              "mean_returned_KiB": 16.537815126050422,
+              "mean_pread_wall_ms": 1.385696595238095
+            },
+            {
+              "lower_KiB": 192,
+              "upper_KiB": 256,
+              "calls": 24,
+              "mean_returned_KiB": 192.0,
+              "mean_pread_wall_ms": 1.2639595416666667
+            },
+            {
+              "lower_KiB": 320,
+              "upper_KiB": 384,
+              "calls": 24,
+              "mean_returned_KiB": 352.0,
+              "mean_pread_wall_ms": 0.8843147083333334
+            },
+            {
+              "lower_KiB": 448,
+              "upper_KiB": 512,
+              "calls": 9304,
+              "mean_returned_KiB": 464.0,
+              "mean_pread_wall_ms": 1.6792077375322443
+            },
+            {
+              "lower_KiB": 512,
+              "upper_KiB": 576,
+              "calls": 18584,
+              "mean_returned_KiB": 540.8157151312957,
+              "mean_pread_wall_ms": 1.7041059048105898
+            },
+            {
+              "lower_KiB": 896,
+              "upper_KiB": 960,
+              "calls": 22,
+              "mean_returned_KiB": 912.0,
+              "mean_pread_wall_ms": 1.1972557727272728
+            },
+            {
+              "lower_KiB": 1024,
+              "upper_KiB": null,
+              "calls": 1800,
+              "mean_returned_KiB": 1800.8,
+              "mean_pread_wall_ms": 1.5512174644444445
+            }
+          ],
+          "individual_call_times_overlap_and_are_not_critical_path": true,
+          "producer_wait_ms_per_decode_transition": 577.362756047619
+        },
+        "requests": [
+          {
+            "ordinal": 9,
+            "mode": 0,
+            "decode_tok_s": 1.1483915679340457,
+            "misses": 12717,
+            "physical_read_calls": 35026,
+            "physical_read_bytes": 20066597184,
+            "quad_batches": 0,
+            "quad_peak_absolute": 0
+          },
+          {
+            "ordinal": 12,
+            "mode": 0,
+            "decode_tok_s": 1.145803376356216,
+            "misses": 12717,
+            "physical_read_calls": 35026,
+            "physical_read_bytes": 20066597184,
+            "quad_batches": 0,
+            "quad_peak_absolute": 4
+          },
+          {
+            "ordinal": 10,
+            "mode": 3,
+            "decode_tok_s": 1.2924281994231486,
+            "misses": 12717,
+            "physical_read_calls": 35277,
+            "physical_read_bytes": 20070594880,
+            "quad_batches": 5465,
+            "quad_peak_absolute": 4
+          },
+          {
+            "ordinal": 11,
+            "mode": 3,
+            "decode_tok_s": 1.2922814504058668,
+            "misses": 12717,
+            "physical_read_calls": 35277,
+            "physical_read_bytes": 20070594880,
+            "quad_batches": 5465,
+            "quad_peak_absolute": 4
+          }
+        ]
+      }
+    ],
+    "all_full_F32_and_ordered_routes_exact": true,
+    "all_emitted_tokens_equal": true,
+    "CPU_heap_peak_bytes": 402718720,
+    "device_ledger_peak_bytes": 1749024768,
+    "positive_retirement_normal_close_exact_restoration": true
+  },
+  "normal_application": {
+    "case": 9400,
+    "completed": true,
+    "requests": [
+      {
+        "ordinal": 0,
+        "metrics": {
+          "TTFT_ms": 15315.479515016079,
+          "decode_ms": 16343.674713015556,
+          "decode_tokens_per_second": 1.2849007563321302,
+          "generated_tokens": 22,
+          "prefill_ms": 15285.214810967445,
+          "prompt_tokens": 30,
+          "total_ms": 32508.797183036804
+        },
+        "prefix": {
+          "capture_ns": 0,
+          "captures": 0,
+          "enabled": false,
+          "last_reused_prompt_tokens": 0,
+          "request_hit": false,
+          "restore_ns": 0,
+          "restores": 0
+        },
+        "speculation": {
+          "accepted": 0,
+          "attempts": 0,
+          "causal_proposals": 0,
+          "queued_bonus_samples": 0,
+          "rejected": 0
+        },
+        "io_optimization": {
+          "adjacent_calls_saved": 382,
+          "extra_bundled_Experts": 466,
+          "flags": 5,
+          "maximum_lifetime_quad_inflight": 4,
+          "quad_batches": 5081
+        },
+        "maximum_absolute_logit_error": 0.0
+      },
+      {
+        "ordinal": 1,
+        "metrics": {
+          "TTFT_ms": 13921.304904997349,
+          "decode_ms": 16230.301829993725,
+          "decode_tokens_per_second": 1.2938761225741247,
+          "generated_tokens": 22,
+          "prefill_ms": 13889.648343026638,
+          "prompt_tokens": 30,
+          "total_ms": 31006.475854992867
+        },
+        "prefix": {
+          "capture_ns": 33447103,
+          "captures": 1,
+          "enabled": true,
+          "last_reused_prompt_tokens": 0,
+          "request_hit": false,
+          "restore_ns": 0,
+          "restores": 0
+        },
+        "speculation": {
+          "accepted": 0,
+          "attempts": 0,
+          "causal_proposals": 0,
+          "queued_bonus_samples": 0,
+          "rejected": 0
+        },
+        "io_optimization": {
+          "adjacent_calls_saved": 382,
+          "extra_bundled_Experts": 466,
+          "flags": 5,
+          "maximum_lifetime_quad_inflight": 4,
+          "quad_batches": 5081
+        },
+        "maximum_absolute_logit_error": 0.0
+      },
+      {
+        "ordinal": 2,
+        "metrics": {
+          "TTFT_ms": 62.08035504817963,
+          "decode_ms": 16613.33531600237,
+          "decode_tokens_per_second": 1.2640447929665448,
+          "generated_tokens": 22,
+          "prefill_ms": 29.9612820148468,
+          "prompt_tokens": 30,
+          "total_ms": 17545.964168012142
+        },
+        "prefix": {
+          "capture_ns": 33447103,
+          "captures": 1,
+          "enabled": true,
+          "last_reused_prompt_tokens": 30,
+          "request_hit": true,
+          "restore_ns": 18641426,
+          "restores": 1
+        },
+        "speculation": {
+          "accepted": 1,
+          "attempts": 1,
+          "causal_proposals": 1,
+          "queued_bonus_samples": 1,
+          "rejected": 0
+        },
+        "io_optimization": {
+          "adjacent_calls_saved": 305,
+          "extra_bundled_Experts": 418,
+          "flags": 5,
+          "maximum_lifetime_quad_inflight": 4,
+          "quad_batches": 1797
+        },
+        "maximum_absolute_logit_error": 0.9714741706848145
+      }
+    ],
+    "first_independent_decode_tok_s": 1.2938761225741247,
+    "control_normal_case": 9290,
+    "control_first_independent_decode_tok_s": 1.143313610520963,
+    "first_independent_decode_speedup_fraction": 0.1316896000079597,
+    "repeat_decode_tok_s": 1.2640447929665448,
+    "repeat_TTFT_ms": 62.08035504817963,
+    "capture_charged_two_request_group_tok_s": 0.906236637729268,
+    "control_capture_charged_two_request_group_tok_s": 0.7735820927943593,
+    "capture_charged_group_speedup_fraction": 0.17148088893284674,
+    "actual_native_frames_viewed": 2,
+    "ordinary_same_width_full_F32_and_routes_exact": true,
+    "final_unlike_width_full_vocab_top1_and_tokens_equal": true,
+    "final_unlike_width_max_F32_error": 0.9714741706848145,
+    "same_width_and_rejection_prior_qualification_case": 9160,
+    "all_model_source_and_GPU_owners_positively_retired": true,
+    "ordinary_close_and_exact_restoration_passed": true,
+    "all_selected_IO_paths_exercised": true,
+    "io_winner_flags": 5,
+    "CPU_heap_peak_bytes": 486604800,
+    "device_ledger_peak_bytes": 1870659584,
+    "CPU_heap_cap_bytes": 536870912,
+    "device_ledger_cap_bytes": 1879048192,
+    "all_original_caps_reserves_and_owner_guards_retained": true
+  },
+  "production_placement": {
+    "case": 9410,
+    "completed": true,
+    "application_SELF": {
+      "bytes": 17495415,
+      "sha256": "db542fa213d399ec6935dbcb60e156b152afcb33340618d6bc998a7cee5c4a5c"
+    },
+    "previous_production_SELF": {
+      "bytes": 17468775,
+      "sha256": "bb61e2af568ac5fba907fea8c14704413f5ea17452772d865aa097834170de00"
+    },
+    "verified_native_programs": 10,
+    "verified_settings": 5,
+    "all_canonical_and_rollback_whole_SHA256_identity_EOF_passed": true,
+    "fresh_idle_confirmed": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "placement_title_launches": 0
+  },
+  "quality": {
+    "strict_format": 6,
+    "answer_contents": 9,
+    "total_requests": 9,
+    "owner_expected_Expert_Q2_loss_accepted": true,
+    "output_normalization": false,
+    "prior_case": 8700,
+    "weights_unchanged_in_this_comparison": true
+  },
+  "actual_relink_provenance": {
+    "native_ELF": {
+      "bytes": 96513400,
+      "sha256": "20be71983627d009e331a707205a699338df7cf3a20ec6f8eb2e073b86404ea5"
+    },
+    "entry": {
+      "bytes": 208827,
+      "sha256": "66ebd17eb78f385c7851560ec169bf109d35053edf6e5595e205fdd78b0bf5ae"
+    },
+    "source_owner": {
+      "bytes": 33539,
+      "sha256": "528f2ced7ace68866d7e8abcfbedff797094e286b86c1267d0b89865e5e65cfa"
+    },
+    "engine": {
+      "bytes": 31677,
+      "sha256": "6fc2019b422949fff681e8603dc6a71d4524054e13cb95127cb7b38d2cec0bf6"
+    },
+    "reader": {
+      "bytes": 66062,
+      "sha256": "0cacc404982f229059d1261e097446336ce1a1b694d7f03e475ccb39a553521a"
+    },
+    "cache": {
+      "bytes": 51707,
+      "sha256": "5d97441472906a1a3744e10d008b4bcb5417b0f2d836d86417c908f93b30c53e"
+    }
+  },
+  "implementation": {
+    "pool": "native/app/bounded_read_pool.h: BoundedReadPool::read / require_completed / stop_completed",
+    "reader": "tools/expert_q2_io_reduction.py: header_source -> upload_Q2_four",
+    "owner": "tools/expert_q2_io_reduction.py: owner_source -> read_four / extra pack admission",
+    "cache": "tools/expert_q2_io_reduction.py: cache_source -> physical bundle ordering / four-demand fills",
+    "normal": "tools/build_expert_q2_io_monitor.py: normal_owner / monitor_scope / main",
+    "observer": "tools/observe_expert_q2_io_monitor.py: actual path and positive completion validation",
+    "tested_loser": "native/app/expert_temporal_probation.h: TemporalProbationPolicy::observe; selected window 0"
+  },
+  "measurement_limits": [
+    "Single console, fixed 30-token prompt and 22 generated tokens; no broad throughput or long-running service claim.",
+    "Independent candidate speedups are not additive. Normal combined comparison is measured separately.",
+    "Per-pread durations overlap; their sum is not the critical-path producer wait.",
+    "Application inflight pread count is not SSD hardware queue telemetry.",
+    "Headless 9380 retains a legacy descriptive maximum_parallel_source_reads=2 field; its own sealed scope and actual quad counters prove four. Normal 9400 metadata is corrected to four.",
+    "Two-lane occupancy events are disabled in quad arms; no two-lane occupancy percentage is reused for depth four.",
+    "Normal per-request path counters include prefill and final EOS; do not divide those totals by 21 as decode-only counters."
+  ],
+  "CI_runs": 0,
+  "reboots": 0,
+  "unknown_completion": false,
+  "run_binding_consumed": true,
+  "sustained_service_qualified": false,
+  "manual_checks": {
+    "optimized_control_tests": 6,
+    "historical_and_original_control_tests": 8,
+    "actual_four_read_host_test_passed": true,
+    "original_resource_owner_completion_audit_families": 12,
+    "operational_Python_parse_passed": true,
+    "CI_runs": 0
+  }
+}

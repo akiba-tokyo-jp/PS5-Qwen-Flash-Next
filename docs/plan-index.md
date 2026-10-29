@@ -1,25 +1,26 @@
 # PS5 Flash Next plan status
 
-The subsequent [four-part I/O investigation](expert-q2-io-distribution-20261030.md)
-is complete in native case 9340. P50 is [1.280, 1.408) ms, P95
-[2.048, 2.176), P99 [2.176, 2.304). Actual application in-flight reads reach
-two and average 1.58755 during I/O-busy time. Adjacent groups reduce calls
-1.1983% and improve matched decode 0.48996%, preserving bytes and full F32.
-Whole-request aged-LFU miss rate 68.507% and selected-probation 63.541% have
-separate layer/Expert and prefill/decode analysis. This is a measured headless
-candidate; the selected normal application below was restored, not replaced.
-The [JSON](expert-q2-io-distribution-20261030.json) retains the sanitized detail.
+The [four-proposal I/O reduction result](expert-q2-io-reduction-results-20261030.md)
+closes all requested native comparisons and normal application adoption.
+Case 9380 separately measures +1.82721% additional placement and +12.66318%
+four-demand reads; temporal144 is a tested loser (-0.10565%), so window0 remains.
+Adjacency was already qualified headlessly at +0.48996% in 9340. Actual selected
+paths execute in normal warmup and both API requests. Their percentages are not
+added: normal 9400 separately measures **1.293876 tok/s**, +13.16896% versus 9290.
+Exact-repeat decode is 1.264045 with 62.080 ms TTFT; capture-charged group
+throughput is 0.906237 tok/s. Placement 9410 installs SELF `db542fa2...`, verifies
+10 programs and five settings, and confirms fresh idle. Both actual frames were
+viewed; all source/GPU owners retired and ordinary close/restoration passed.
+The [JSON evidence](expert-q2-io-reduction-results-20261030.json) and
+[installation](../config/production-installation.json) are current. No executable
+comparison remains pending in this four-item scope; sustained service is not qualified.
 
-The current [all-Q2 optimization result](expert-q2-optimization-results-20261030.md)
-closes the eight-family plan and records verified production placement 9310.
-First independent decode is 1.143314 tok/s; the exact repeat is 1.106472 with
-63.117 ms TTFT. Bundles, atomic metadata hints, probation, exact-prefix reuse
-and one final-consumer causal attempt are adopted. Slower composite/copy/split
-variants are tested and closed. Output Q8 is execution unavailable after actual
-FTP and native ENOSPC; no Q8 GPU speed or quality result is claimed. All original
-models/rollbacks remain; 9 programs and 5 settings pass native whole readback,
-both native frames were viewed, and the console is idle. See the adjacent
-[JSON evidence](expert-q2-optimization-results-20261030.json).
+The [prior distribution study](expert-q2-io-distribution-20261030.md) retains
+median/P95/P99, the historical two-lane occupancy, and layer/Expert miss analysis.
+The [earlier eight-family plan](expert-q2-optimization-results-20261030.md) stays
+closed with its measured decisions and actual output-Q8 ENOSPC. Its unavailable
+Q8 comparison is not relabelled successful. Original models and all earlier
+applications remain intact, including previous optimized SELF `bb61e2af...`.
 
 The dated selections below preserve historical controls and earlier constraints.
 Their obsolete pending lists do not reopen the completed current proposal set.
