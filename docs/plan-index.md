@@ -1,5 +1,26 @@
 # PS5 Flash Next plan status
 
+The [three-family routing/sharing verification](expert-routing-sharing-results-20261030.md)
+and [JSON evidence](expert-routing-sharing-results-20261030.json) close the latest
+requested comparison. Cached ranking x1.5, decode Top-8/6 and repeated causal
+width-two verification all improve their individual native ABBAs: +44.391%,
++28.855%, +55.227% and +12.674% decode, respectively. Whole-request gains are
++20.763%, +14.033%, +24.773% and +3.501%. Repeated verification increases total
+request reads slightly despite its decode gain; complete-request and decode
+traffic are reported separately. The effects are not added or combined.
+
+All five modes pass all three fixed quality tasks for contents and strict raw
+format. This is a finite test, not broad reasoning certification. Five completed
+requests from 9440 and eight from 9460 are reused without replaying their ABBAs;
+both failed overall protocols remain explicitly incomplete. Their CPU graph
+aggregation and checkpoint replacement accounting defects are corrected.
+Final 9480 completes all 20 remaining requests, positive resource retirement,
+ordinary close and exact `db542fa2...`/settings restoration with fresh idle.
+No comparison remains pending in this requested scope. Normal application
+adoption of the experimental policies is separate from this completed verification;
+the selected production below is unchanged. See the dated
+[plan and corrections](expert-routing-sharing-plan-20261030.md).
+
 The [four-proposal I/O reduction result](expert-q2-io-reduction-results-20261030.md)
 closes all requested native comparisons and normal application adoption.
 Case 9380 separately measures +1.82721% additional placement and +12.66318%
