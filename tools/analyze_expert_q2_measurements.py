@@ -27,7 +27,7 @@ def aggregate_whole(case):
         process_outside_source_wait_s_per_request=(total('model_process_s')-wait)/len(rows))
 
 
-def decode_phase(root,request_ordinals=None):
+def decode_phase(root,request_ordinals=None,allow_single_speculative_attempt=False):
     terminal=load(root/'native-model-terminal.private.json');closed=load(root/'restored-complete.private.json')
     proof=load(root/'IO-token-snapshots/complete.private.json')
     require(terminal['completed']and terminal['all_model_source_device_owners_positively_retired']and
@@ -52,9 +52,15 @@ def decode_phase(root,request_ordinals=None):
                 all(b['completed_performance'][k]>=v for k,v in a['completed_performance'].items()),'Cumulative token evidence reversed')
         first,last=points[0],points[-1];d={k:last['completed_performance'][k]-v for k,v in first['completed_performance'].items()}
         transitions=count-1;wall=(last['elapsed_ms']-first['elapsed_ms'])/1000
-        require(d['process_calls']==transitions and math.isclose(transitions/wall,request['metrics']['decode_tokens_per_second'],rel_tol=1e-7),
+        expected_calls=transitions
+        if allow_single_speculative_attempt:
+            stats=request['speculation']
+            require(stats['attempts']<=1 and stats['accepted']+stats['rejected']==stats['attempts'],
+                'The explicit single-attempt width-two observer scope is required')
+            expected_calls=transitions-stats['accepted']+stats['rejected']
+        require(d['process_calls']==expected_calls and math.isclose(transitions/wall,request['metrics']['decode_tokens_per_second'],rel_tol=1e-7),
             'First-to-last token interval must exclude prefill and final EOS')
-        row=dict(request=ordinal,accepted_decode_transitions=transitions,decode_s=wall,
+        row=dict(request=ordinal,accepted_decode_transitions=transitions,model_process_calls=d['process_calls'],decode_s=wall,
             physical_bytes=d['source_physical_read_bytes'],physical_calls=d['source_physical_read_calls'],
             source_wait_s=d['source_read_ns']/1e9,model_process_s=d['process_ns']/1e9)
         if 'individual_read_calls'in d:
