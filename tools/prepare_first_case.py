@@ -45,6 +45,26 @@ def qualified_control(context, production=False, installation=None):
             'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified')
         q4_precision=dict(Expert_weights='Q4_0',other_weights='original BF16/F32',KV_cache='F32',
             activation_inputs='F32',quantization='Expert weights only')
+        mixed_precision=dict(q4_precision,Expert_weights='Gate/Up Q2_K; Down Q4_0')
+        if isinstance(installation,dict) and installation.get('precision')==mixed_precision:
+            required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
+                'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
+            if installation.get('qualification_report')!='docs/expert-q2-results-20261029.json':
+                raise ValueError('The exact closed mixed Expert adoption report is required')
+            mixed=read(ROOT/installation['qualification_report'])
+            quality=mixed.get('fixed_quality_comparison',{});normal=mixed.get('normal_application',{});placed=mixed.get('production_placement',{})
+            if (mixed.get('schema')!='ps5-qwen-expert-q2-results-v1' or
+                mixed.get('selected_mixed_format')!='Gate_Up_Q2_K_Down_Q4_0' or
+                any(quality.get(k)is not True for k in ('completed','minimum_baseline_met','every_Q4_correct_answer_retained','quality_preserved')) or
+                any(normal.get(k)is not True for k in ('completed','precision_label_correct','all_sources_and_GPU_owners_positively_retired','same_format_full_F32_and_routes_exact')) or
+                any(placed.get(k)is not True for k in ('completed','exact_Q4_BF16_and_older_rollbacks_preserved',
+                    'canonical_and_rollback_native_whole_SHA256_verified','all_five_settings_verified','fresh_idle_confirmed')) or
+                any(placed.get(k)is not False for k in ('native_title_running','gateway_running','model_loaded')) or
+                placed.get('application_SELF')!=installation.get('application_SELF') or
+                normal.get('native_whole_SELF_SHA256')!=installation.get('application_SELF',{}).get('sha256') or
+                placed.get('previous_production_SHA256')!=installation.get('previous_production_SHA256') or
+                context.get('Expert_format')!='Gate_Up_Q2_K_Down_Q4_0'):
+                raise ValueError('Completed exact mixed quality, inference, resource and rollback qualification required')
         if isinstance(installation,dict) and installation.get('precision')==q4_precision:
             # Q4 has its own closed counting/F32/routes qualification. Never
             # invent the historical BF16 arithmetic-smoke flags for this model.

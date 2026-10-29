@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-10-29",
-  "application_source_revision": "00ee9fa2fd0919eb838e51648f30fbf307ce421d",
+  "application_source_revision": "01666c915e260e9453034edd3aee16054a52a56e",
   "application_SELF": {
-    "bytes": 17370183,
-    "sha256": "98a573396af615f754fe4286c6600ccf5596b8fad9d4ab00b99d7e9295dfd8fa"
+    "bytes": 17412119,
+    "sha256": "e64cd9a49851eec0e3062651f2cac91c925ddbdeca78eebb93c78586ec017730"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -15,7 +15,7 @@
     "persistent_pipeline_cache": false
   },
   "precision": {
-    "Expert_weights": "Q4_0",
+    "Expert_weights": "Gate/Up Q2_K; Down Q4_0",
     "other_weights": "original BF16/F32",
     "KV_cache": "F32",
     "activation_inputs": "F32",
@@ -24,28 +24,28 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "80c28a95e993458c54b5fbf73fe59accde17dd8302dd49a9aeecf367e617739c",
-  "active_expert_slots": 481,
-  "physical_cache_planes": 482,
+  "previous_production_SHA256": "98a573396af615f754fe4286c6600ccf5596b8fad9d4ab00b99d7e9295dfd8fa",
+  "active_expert_slots": 581,
+  "physical_cache_planes": 582,
   "expert_cache_bytes": 1333739520,
   "external_requests": [
     {
       "ordinal": 1,
-      "decode_tokens_per_second": 0.8693799613409143,
-      "TTFT_ms": 21170.11625701189,
-      "total_ms": 46398.91918101907,
+      "decode_tokens_per_second": 0.9116762365376244,
+      "TTFT_ms": 20116.79968699813,
+      "total_ms": 44186.020873993635,
       "generated_tokens": 22
     },
     {
       "ordinal": 2,
-      "decode_tokens_per_second": 0.8702358711336354,
-      "TTFT_ms": 21219.357481986284,
-      "total_ms": 46421.16911101341,
+      "decode_tokens_per_second": 0.9135070516729368,
+      "TTFT_ms": 20143.424454003572,
+      "total_ms": 44169.202303022146,
       "generated_tokens": 22
     }
   ],
-  "normal_application_case": 7920,
-  "production_placement_case": 7940,
+  "normal_application_case": 8560,
+  "production_placement_case": 8580,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -60,13 +60,18 @@
   "causal_width_two_enabled": false,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": true,
-  "qualification_report": "docs/expert-q4-adoption-20261029.json",
-  "historical_installation": "config/production-installation-BF16-cache134-20261029.json",
+  "qualification_report": "docs/expert-q2-results-20261029.json",
+  "historical_installation": "config/production-installation-Expert-Q4-20261029.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
   "sustained_service_qualified": false,
   "CI_runs": 0,
   "private_repository": true,
-  "GitHub_Actions_enabled": false
+  "GitHub_Actions_enabled": false,
+  "original_Q4_optimized_profile_preserved": true,
+  "fixed_quality_control_case": 8500,
+  "fixed_quality_candidate_case": 8520,
+  "finite_quality_scope": "Three fixed prompts, three independent requests each; counting/API qualification separately completed",
+  "model_receipt_SHA256": "d28acbe933416b9fe91ca056ce70be3e3cb64bf8940c90344835e5fb84910024"
 }

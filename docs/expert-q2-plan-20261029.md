@@ -14,6 +14,14 @@ These are weight errors, not language-quality scores. If mixed-model quality
 passes, the conditional all-2-bit candidate can retain Gate/Up Q2_K and use
 Q2_0 for Down without shape padding or Expert removal.
 
+The mixed candidate subsequently passed counting, three fixed quality tasks
+with three independent requests each, and the normal passive/API application.
+It is installed as production in case 8580; see the result record. This admits
+the conditional all-Expert stage. For that stage use the separately qualified
+signed-scale MSE Q2_0 encoder, not the earlier high-error upstream encoder.
+Retain the existing Q2_K Gate/Up bytes and convert only Down from original BF16.
+Preserve the exact mixed production, Q4 and BF16 programs, settings and weights.
+
 Preserve all 147 Expert tensors, all 512 Experts and top-10 routing, unchanged
 non-Expert BF16/F32 payloads, F32 activation inputs and F32 KV. Keep the selected
 Q4 SELF, settings, source files and original BF16 rollback intact. Reuse driver
@@ -42,7 +50,8 @@ No CI, reboot, force close, ambiguous dispatch replay or driver modification.
    Report this finite scope; do not call it broad reasoning certification.
 5. Adopt only with passing arithmetic/completion/source guards, passing quality
    and a measured decode improvement. Then test the all-2-bit candidate with the
-   same quality and speed criteria. Otherwise retain Q4 and record the tested
+   same quality and speed criteria. Otherwise retain the fastest already
+   qualified production and record the tested
    failure explicitly. Components alone never establish quality or tok/s.
 
 All current memory floors/caps and exact-owner ordinary close remain enforced.

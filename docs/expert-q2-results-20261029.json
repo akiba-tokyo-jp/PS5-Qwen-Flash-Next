@@ -1,6 +1,6 @@
 {
   "schema": "ps5-qwen-expert-q2-results-v1",
-  "status": "mixed quality and normal application passed; placement and conditional all-Expert 2-bit work in progress",
+  "status": "mixed production placement complete; conditional all-Expert 2-bit qualification in progress",
   "selected_mixed_format": "Gate_Up_Q2_K_Down_Q4_0",
   "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
   "driver_profile": "cumulative-idle",
@@ -494,6 +494,104 @@
     "native_whole_SELF_SHA256": "e64cd9a49851eec0e3062651f2cac91c925ddbdeca78eebb93c78586ec017730",
     "same_format_full_F32_and_routes_exact": true,
     "exact_Q4_and_settings_restored": true,
-    "production_placement_pending": true
+    "production_placement_pending": false
+  },
+  "production_placement": {
+    "case": 8580,
+    "completed": true,
+    "application_SELF": {
+      "bytes": 17412119,
+      "sha256": "e64cd9a49851eec0e3062651f2cac91c925ddbdeca78eebb93c78586ec017730"
+    },
+    "exact_Q4_BF16_and_older_rollbacks_preserved": true,
+    "canonical_and_rollback_native_whole_SHA256_verified": true,
+    "all_five_settings_verified": true,
+    "fresh_idle_confirmed": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "application_source_revision": "01666c915e260e9453034edd3aee16054a52a56e",
+    "previous_production_SHA256": "98a573396af615f754fe4286c6600ccf5596b8fad9d4ab00b99d7e9295dfd8fa"
+  },
+  "conditional_all_Expert_2bit": {
+    "status": "isolated_model_quality_monitor_host_builds_complete_actual_model_unconverted_pending_capacity_permission",
+    "Expert_format": "Gate_Up_Q2_K_Down_Q2_0_MSE",
+    "Down_encoding": "signed_FP16_scale_MSE_fit",
+    "trigger_mixed_quality_preserved": true,
+    "source": "original_BF16",
+    "Gate_Up_reencoded": false,
+    "all_Experts_retained": true,
+    "non_Expert_precision_preserved": true,
+    "activation_type": "F32",
+    "KV_type": "F32",
+    "native_CPU_component": {
+      "case": 8574,
+      "matrices": 9,
+      "all_exact_host_SHA256": true,
+      "mean_matrix_ms": 684.9188552222222
+    },
+    "native_GPU_component": {
+      "case": 8600,
+      "cases": 27,
+      "graphs": 324,
+      "all_outputs_reference_valid": true,
+      "all_owners_positively_retired": true,
+      "device_ledger_live_bytes": 0,
+      "maximum_absolute_own_format_F64_error": 1.7657329487441586e-09
+    },
+    "Down_sample_weight_NRMSE_range": [
+      0.3510127537981439,
+      0.361090833312379
+    ],
+    "host_only_metadata": {
+      "logical_files": 76,
+      "physical_sources": 502,
+      "source_segments": 1389,
+      "invalid_candidates_refused": 13,
+      "synthetic_new_identities_and_hashes": true,
+      "not_for_deployment": true
+    },
+    "host_native_builds": {
+      "counting": true,
+      "fixed_quality": true,
+      "passive_monitor": true,
+      "real_module_import_audits": true,
+      "driver_dispatch_audits": true,
+      "resource_identity_completion_audit_checks": 12,
+      "all_Q2_raster_label_compiled": true,
+      "SELF_roundtrip_verified_for_all_three": true
+    },
+    "original_Down_BF16_payload_bytes": 82208358400,
+    "new_Down_bytes": 11560550400,
+    "new_header_bytes": 11033888,
+    "logical_model_bytes": 151157049472,
+    "tensor_bytes": 151146015232,
+    "Expert_bytes": 38535168000,
+    "active_cache_slots": 867,
+    "physical_cache_planes": 868,
+    "cache_budget_bytes": 1333739520,
+    "maximum_bank_bytes": 536870912,
+    "actual_all_Q2_model_converted": false,
+    "actual_all_Q2_model_quality_measured": false,
+    "actual_all_Q2_model_throughput_measured": false,
+    "production_adopted": false,
+    "capacity": {
+      "host_archived_code_copies": 253,
+      "raw_host_copies_full_SHA256_verified": true,
+      "PS5_deletions": 0,
+      "reclaimable_allocated_bytes": 13115588608,
+      "current_and_named_rollback_programs_preserved": 11,
+      "all_BF16_Q4_mixed_model_data_preserved": true,
+      "automatic_review_rejected_bulk_deletion": true,
+      "explicit_owner_permission_pending": true
+    },
+    "CI_runs": 0,
+    "reboots": 0,
+    "persistent_caches_enabled": false,
+    "all_Q2_native_frames_viewed": false,
+    "planned_unrounded_cache_payload_bytes": 1333248000,
+    "mixed_unrounded_cache_payload_bytes": 1162137600
   }
 }

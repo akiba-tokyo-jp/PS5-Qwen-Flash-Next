@@ -20,6 +20,28 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The selected production is now **Gate/Up Q2_K with Down Q4_0**, placed and
+verified in case 8580 on SELF
+`e64cd9a49851eec0e3062651f2cac91c925ddbdeca78eebb93c78586ec017730`.
+See `docs/expert-q2-results-20261029.md` / `.json` and the current production
+installation record. Counting case 8440 measured 0.913361 decode tok/s;
+passive/API case 8560 measured pooled 0.912591, versus earlier same-console
+Q4 API 0.869808 (4.9187% higher). Q4 quality case 8500 and mixed case 8520 each
+passed three fixed tasks with three independent requests, preserving every
+Q4-correct answer. This finite scope does not certify broad reasoning quality.
+Both actual native frames were viewed with accurate mixed labels, clock,
+CPU/GPU and token-rate information. All owners retired positively; normal close,
+canonical/rollback whole native hashes, all five settings and fresh idle passed.
+The exact Q4 `98a57339...`, BF16 and older rollbacks remain intact. All Experts,
+top-10, non-Expert BF16/F32, F32 inputs/KV and the original cache budget remain;
+the cache has 581 active slots / 582 planes. The title/gateway/model are inactive.
+The finite run binding is consumed; another execution needs a fresh case.
+Conditional all-Expert 2-bit work is now authorized by the passed mixed-quality
+screen and remains in progress. Down's fitted-scale Q2_0 component work is
+separate from deployed mixed precision. Do not claim all-Expert model quality
+or throughput from component samples. Keep CI/reboot/persistent caches disabled.
+Earlier dated Q4/BF16 selections below remain historical controls.
+
 The owner authorized staged Expert 2-bit work on 2026-10-29: Gate/Up at
 Q2_K with Down retained at Q4_0 first; only if quality holds may the complete
 Expert set become 2-bit. This supersedes the earlier 4-bit-only limit for this

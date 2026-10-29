@@ -13,8 +13,11 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for key in ('parent','compile-control','workspace','cache','out'):p.add_argument('--'+key,type=Path,required=True)
+    p.add_argument('--all-expert-q2',action='store_true')
     a=p.parse_args();prior=json.loads(a.parent.read_text());control=json.loads(a.compile_control.read_text())
     require(prior['expert_q2_model']['passive_monitor'],'Only the separate mixed Expert monitor may be relabeled')
+    if a.all_expert_q2:require(prior['expert_q2_model']['scope']['Expert_format']=='Gate_Up_Q2_K_Down_Q2_0_MSE','All-Expert Q2 label requires the matching model scope')
+    else:require(prior['expert_q2_model']['scope']['Expert_format']=='Gate_Up_Q2_K_Down_Q4_0','Mixed label requires the matching model scope')
     frozen=active_link_inputs(prior)+[record(a.parent),record(a.compile_control),record(__file__)]
     for row in frozen:require(record(row['path'])==row,'Completed monitor input changed')
     old=next(x for x in prior['link_command']if Path(x).name.startswith('monitor_raster-')and x.endswith('.o'))
@@ -23,7 +26,7 @@ def main():
     require(all(captured_object[k]==selected_object[k]for k in('bytes','sha256')),
         'The captured raster compile command must produce the exact selected control object')
     original=Path(command[command.index('-c')+1]);text=original.read_text()
-    old_label='"ORIGINAL BF16 / INFERENCE MONITOR"';new_label='"GATE UP Q2_K / DOWN Q4_0 / BF16 F32"'
+    old_label='"ORIGINAL BF16 / INFERENCE MONITOR"';new_label='"GATE UP Q2_K / DOWN Q2_0 / BF16 F32"'if a.all_expert_q2 else'"GATE UP Q2_K / DOWN Q4_0 / BF16 F32"'
     require(text.count(old_label)==1,'One exact fixed BF16 raster label required')
     a.out.mkdir(parents=True,exist_ok=False);(a.out/'tmp').mkdir()
     source=a.out/'Q2-monitor-raster.private.cpp';source.write_text(text.replace(old_label,new_label,1),newline='\n')

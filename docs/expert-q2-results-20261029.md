@@ -8,7 +8,7 @@ The original BF16 and selected Q4 production files remain intact.
 
 Full-model conversion, physical readback, metadata sealing and complete-source
 host admission have completed. Mixed generation, fixed quality and normal-app
-qualification have passed; placement and conditional all-Expert work continue. Component
+qualification and production placement have passed. Conditional all-Expert work continues. Component
 results below do not establish model quality or inference throughput. The
 machine-readable measurements are in [the result record](expert-q2-results-20261029.json).
 
@@ -68,7 +68,64 @@ pooled **0.912591 tok/s**. Earlier same-console Q4 normal API was
 Both use 22 generated tokens / 21 decode transitions and exclude prefill from
 decode speed. The older control is not a simultaneous ABBA run. The selected
 mixed SELF is `e64cd9a49851eec0e3062651f2cac91c925ddbdeca78eebb93c78586ec017730`;
-production placement remains separately recorded.
+production placement completed in case 8580. Whole native hashes of the selected
+program and every specified older rollback, all five settings and fresh idle
+passed. The exact Q4 and BF16 programs/settings remain available. The title,
+gateway and model are inactive; this finite execution binding is consumed.
+
+## Conditional all-Expert 2-bit work
+
+The mixed model passed the required finite quality screen, authorizing the
+second stage. Gate/Up retain their existing Q2_K bytes. Down uses Q2_0 storage
+with fitted signed FP16 scales, preserving its original 640-column rows. The
+decoder remains `(q - 1) * d`; this encoder intentionally differs from the
+pinned upstream maximum-absolute-value encoder. It chooses a signed scale by
+block MSE and refines it by least squares, with explicit F32-to-F16 rounding.
+
+All 27 original-matrix component samples matched the independent and pinned
+Q2_0 decoders. Their sampled weight NRMSE was 0.351013–0.374749; the nine Down
+samples were 0.351013–0.361091. Native CPU case 8574 reproduced the exact nine
+host Down hashes, averaging 684.919 ms per matrix. GPU case 8600 passed 27 cases
+and 324 graphs, including widths 1/2/4, repeated IDs, canaries and negative
+fitted scales. Maximum own-format F64 error was 1.766e-9. Device/source owners
+retired positively and ordinary close restored the exact mixed production.
+These component errors do not establish language quality or model throughput.
+
+The isolated full-model candidate keeps all 49 layers, all 512 Experts/top-10,
+non-Expert BF16/F32 weights and F32 inputs/KV. Its planned 867 active cache slots
+plus one staging plane fit the existing 1,333,739,520-byte budget and 512 MiB
+bank cap. It reuses Gate/Up and non-Expert payloads, requiring only 11,560,550,400
+new Down bytes and 11,033,888 header bytes. Down is converted directly from
+82,208,358,400 bytes of original BF16 payloads; each original tensor hash is
+bound to the completed native Q4 conversion's original-input proof. It never
+requantizes Q4. Dense new Down files avoid sparse filesystem tail behavior.
+
+Host native metadata controls passed complete coverage of 76 logical files,
+502 physical references and 1,389 source ranges; 13 malformed plans were
+refused. These controls use explicitly non-deployable synthetic new identities
+and hashes. They do not attest converted all-Q2 weights or a console model run.
+The all-Expert conversion, actual-source admission and model quality/speed
+comparison remain pending; no all-Expert throughput or adoption is claimed.
+The three native candidates (counting, fixed quality and correctly labeled
+passive monitor) passed real runtime/driver audits and six-segment SELF
+round-trip checks. Their model execution remains conditional on actual weight
+conversion and source sealing. The complete logical hash finisher compiled in
+an explicitly non-deployable syntax-control mode; it cannot execute synthetic
+identity/hash controls on the console.
+
+The larger slot count uses more of the existing cache budget: unrounded payload
+banks total 1,333,248,000 bytes versus the mixed model's 1,162,137,600. Actual
+allocation alignment and total native peak usage still require measurement.
+The bank cap and total budget remain unchanged. Twelve exact resource/identity/
+completion checks and the actual selected cache/provider link map passed.
+
+For capacity, 253 historical executable copies have complete native/host SHA256
+matches and retained host backups, totaling 13,115,588,608 allocated console
+bytes. The frozen proposed cleanup protects all named current/rollback files
+and 996 retained model inode references. Its review-only build completed with
+zero console dispatches or deletions. Automatic review rejected PS5-side bulk
+deletion without explicit owner permission; that permission is pending. All
+BF16/Q4/mixed model files and the current production remain in place.
 
 ## Component results
 
@@ -206,4 +263,5 @@ all-2-bit stage. If counting passes, compare a fixed Japanese instruction,
 arithmetic and extraction/JSON cohort against Q4, requiring retention of every
 Q4-correct answer. Measure decode separately from prefill on the same console.
 Adoption requires passing source, arithmetic, completion, quality and measured
-speed criteria; otherwise the exact selected Q4 remains production.
+speed criteria; otherwise the fastest already qualified production remains
+selected. The exact mixed, Q4 and BF16 controls are retained.

@@ -74,3 +74,7 @@ native/qwen_flash_next/expert_q2* -text whitespace=cr-at-eol
 tests/expert_q2* -text whitespace=cr-at-eol
 tools/*expert_q2* -text whitespace=cr-at-eol
 tools/build_expert_quality_cohort.py -text whitespace=cr-at-eol
+native/app/expert_all_q2* -text whitespace=cr-at-eol
+native/qwen_flash_next/expert_all_q2* -text whitespace=cr-at-eol
+tests/expert_all_q2* -text whitespace=cr-at-eol
+tools/*expert_all_q2* -text whitespace=cr-at-eol

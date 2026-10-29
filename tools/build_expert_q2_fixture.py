@@ -39,9 +39,12 @@ def provider_source(text):
 
 def main():
     parser=argparse.ArgumentParser(add_help=False);parser.add_argument('--samples',type=Path,required=True)
+    parser.add_argument('--pack-filename',default='expert-q2-samples-8100.bin')
     own,rest=parser.parse_known_args();sys.argv=[sys.argv[0],*rest]
     output=Path(rest[rest.index('--out')+1]);header=output/'expert_q2_fixture_assets.h'
     samples=json.loads(own.samples.read_text())
+    require(0<len(own.pack_filename)<=128 and all(c.isascii()and(c.isalnum()or c in '-_.')for c in own.pack_filename)and
+        own.pack_filename.startswith('expert-q2-')and own.pack_filename.endswith('.bin'),'An owned component pack basename required')
     require(samples['completed']and samples['format']=='Q2_0'and len(samples['matrices'])==27,'Complete original Expert sample pack required')
     require(record(samples['pack']['path'])==samples['pack'],'Q2 sample pack changed')
     template=ROOT/'tools/build_portable_kernel_fixture.py'
@@ -52,7 +55,7 @@ def main():
     original_entry=namespace['entry_source']
     def entry_source(source):
         h='// Generated private actual-weight asset manifest; never commit.\n#pragma once\n#include <cstdint>\n'
-        h+='inline constexpr const char*q2_fixture_pack_path="/app0/qwen-runtime/expert-q2-samples-8100.bin";\n'
+        h+='inline constexpr const char*q2_fixture_pack_path='+json.dumps('/app0/qwen-runtime/'+own.pack_filename)+';\n'
         h+='inline constexpr std::uint64_t q2_fixture_pack_bytes='+str(samples['pack']['bytes'])+'ULL;\n'
         h+='inline constexpr const char*q2_fixture_pack_sha256='+json.dumps(samples['pack']['sha256'])+';\n'
         h+='struct Q2FixtureMatrix{std::uint64_t bf16_offset,q2_offset;unsigned columns,rows;const char*bf16_sha256,*q2_sha256;};\n'
