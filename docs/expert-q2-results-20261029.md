@@ -17,6 +17,8 @@ establish model quality or inference throughput. The
 machine-readable measurements are in [the result record](expert-q2-results-20261029.json).
 The [all-Q2 bottleneck verification](expert-q2-bottleneck-20261029.md) reconciles
 the completed native counters and Expert routes without another console launch.
+The [requested I/O and compute measurements](expert-q2-requested-measurements-20261029.md)
+separate completed historical measurements from the additional blocked diagnostic.
 
 ## Mixed counting model
 

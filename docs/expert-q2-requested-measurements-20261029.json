@@ -1,0 +1,152 @@
+{
+  "schema": "ps5-qwen-Q2-requested-measurements-v1",
+  "completed": false,
+  "whole_request_controls": [
+    {
+      "case": 7820,
+      "format": "Q4_0",
+      "timed_requests": 2,
+      "prompt_tokens_per_request": 30,
+      "generated_tokens_per_request": 22,
+      "evaluated_tokens_per_request": 52.0,
+      "whole_request_physical_GB": 44.919764384,
+      "whole_request_read_calls": 48037.0,
+      "physical_GB_per_evaluated_token_including_prompt_EOS": 0.8638416227692307,
+      "read_calls_per_evaluated_token_including_prompt_EOS": 923.7884615384615,
+      "amortized_producer_wait_ms_per_physical_call": 0.7904313887940546,
+      "amortized_wait_is_not_individual_call_latency": true,
+      "effective_GB_per_producer_wait_second": 1.183034512300094,
+      "effective_GB_per_total_request_second": 0.9686845365146406,
+      "mean_physical_read_KiB": 913.1910278795511,
+      "process_outside_source_wait_s_per_request": 7.298714204500001
+    },
+    {
+      "case": 8780,
+      "format": "Gate_Up_Q2_K_Down_Q2_0_MSE",
+      "timed_requests": 2,
+      "prompt_tokens_per_request": 30,
+      "generated_tokens_per_request": 22,
+      "evaluated_tokens_per_request": 52.0,
+      "whole_request_physical_GB": 21.707681216,
+      "whole_request_read_calls": 41492.0,
+      "physical_GB_per_evaluated_token_including_prompt_EOS": 0.417455408,
+      "read_calls_per_evaluated_token_including_prompt_EOS": 797.9230769230769,
+      "amortized_producer_wait_ms_per_physical_call": 0.7655290796177577,
+      "amortized_wait_is_not_individual_call_latency": true,
+      "effective_GB_per_producer_wait_second": 0.6834195110709969,
+      "effective_GB_per_total_request_second": 0.5540614130507852,
+      "mean_physical_read_KiB": 510.9155364287092,
+      "process_outside_source_wait_s_per_request": 6.299055735499998
+    }
+  ],
+  "whole_request_byte_reduction": 0.5167454345835332,
+  "whole_request_call_reduction": 0.13624914128692467,
+  "Expert_triplet_payload_bytes": {
+    "Q4": 2764800,
+    "Q2": 1536000,
+    "Q2_over_Q4": 0.5555555555555556
+  },
+  "exact_Q4_decode": {
+    "completed": true,
+    "case": 8010,
+    "prefill_and_final_EOS_excluded": true,
+    "accepted_decode_transitions": 42,
+    "requests": [
+      {
+        "request": 1,
+        "accepted_decode_transitions": 21,
+        "decode_s": 24.098704724997283,
+        "physical_bytes": 21621279392,
+        "physical_calls": 23223,
+        "source_wait_s": 19.090114743,
+        "model_process_s": 23.200404454
+      },
+      {
+        "request": 2,
+        "accepted_decode_transitions": 21,
+        "decode_s": 24.097918025016785,
+        "physical_bytes": 21621279392,
+        "physical_calls": 23223,
+        "source_wait_s": 19.108281112,
+        "model_process_s": 23.201421766
+      }
+    ],
+    "physical_GB_per_decode_token": 1.0295847329523808,
+    "read_calls_per_decode_token": 1105.857142857143,
+    "effective_GB_per_producer_wait_second": 1.1320516952635262,
+    "source_wait_fraction_of_model_process": 0.8232088899668311
+  },
+  "exact_Q2_decode": null,
+  "additional_measurement": {
+    "case": 8880,
+    "status": "prepared_not_executed_automatic_review_blocked",
+    "current_owner_freeze_risk_confirmation_required": true,
+    "prepared_SELF_sha256": "06b1e2956ebcbcc7a9fd4a25b4c6f5b8fbe097340b1e696afab6ab89b39afa86",
+    "runtime_counters_static_bytes": 960,
+    "original_GPU_and_IO_schedule_preserved": true
+  },
+  "fused_compute": {
+    "completed": true,
+    "source_cases": [
+      7560,
+      8160,
+      8600
+    ],
+    "separate_dequantization_pass_exists_in_measured_width_one_path": false,
+    "standalone_dequantization_duration_measured": false,
+    "scope": "Already measured fused quantized matrix graph, submit, synchronize and checkpoint wall time; excludes timed SSD delivery",
+    "pure_GPU_timestamp": false,
+    "groups": [
+      {
+        "role": "Gate/Up",
+        "width": 1,
+        "Q4": {
+          "case": 7560,
+          "format": "Q4_0",
+          "compute_ms": 7.1975370000000005,
+          "paired_BF16_ms": 7.929165375,
+          "samples": 24
+        },
+        "Q2": {
+          "case": 8160,
+          "format": "Q2_K",
+          "compute_ms": 7.135824291666667,
+          "paired_BF16_ms": 7.930040791666666,
+          "samples": 24
+        },
+        "Q2_over_Q4_wall_ratio": 0.9914258574379912,
+        "cross_run_BF16_normalized_ratio": 0.9913164115042102
+      },
+      {
+        "role": "Down",
+        "width": 1,
+        "Q4": {
+          "case": 7560,
+          "format": "Q4_0",
+          "compute_ms": 7.668559583333334,
+          "paired_BF16_ms": 7.843056416666666,
+          "samples": 12
+        },
+        "Q2": {
+          "case": 8600,
+          "format": "Q2_0",
+          "compute_ms": 7.426239166666666,
+          "paired_BF16_ms": 7.839334333333333,
+          "samples": 12
+        },
+        "Q2_over_Q4_wall_ratio": 0.9684007910438198,
+        "cross_run_BF16_normalized_ratio": 0.9688605837112922
+      }
+    ],
+    "conclusion": "No increased fused-graph wall time observed in these finite component samples; not full-model dequant-only timing"
+  },
+  "fixed_SSD_command_latency_dominance_causally_identified": false,
+  "effective_path_rate_is_not_raw_SSD_bandwidth": true,
+  "original_internal_SSD_nominal_raw_GB_s": 5.5,
+  "nominal_spec_source": "https://sonyinteractive.com/en/press-releases/2020/playstation-5-launches-this-november-at-399-for-ps5-digital-edition-and-499-for-ps5-with-ultra-hd-blu-ray-disc-drive/",
+  "nominal_spec_ratio_is_not_device_utilization": true,
+  "actual_mount_device_bandwidth_not_measured": true,
+  "pure_NAND_OS_and_queue_time_not_separated": true,
+  "CI_runs": 0,
+  "production_changed": false
+}

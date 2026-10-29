@@ -71,6 +71,23 @@ transfer the old Q4-only percentages, claim SSD hardware saturation or label
 the remaining process time GPU-only. Normal all-Q2 qualification/placement
 remain pending; this analysis changes neither production nor native policy.
 
+The owner's requested detailed I/O/compute comparison is recorded separately
+in `docs/expert-q2-requested-measurements-20261029.md` / `.json`. Existing
+whole-request bytes fall 51.6745% versus Q4, while read calls fall 13.6249%.
+Prompt/EOS-inclusive token averages are explicitly not decode-only metrics.
+Fused component graph times show no increase in their finite measured scope;
+they include submit/synchronize/checkpoint and are not standalone dequant times.
+Dedicated diagnostic case 8880 is prepared but has never started. SELF
+`06b1e2956ebcbcc7a9fd4a25b4c6f5b8fbe097340b1e696afab6ab89b39afa86`
+adds per-token completed counters and individual pread wall/size histograms,
+retaining GPU math, cache, memory and owner/completion guards. Host concurrency,
+12 safety checks, imports and six SELF segments passed. Automatic approval
+review rejected its launch pending direct owner freeze-risk confirmation;
+the risk question remains pending. Do not claim exact Q2 decode GB/token,
+calls/token or per-call latency were measured. Do not retry the rejected launch
+without resolving that approval. This diagnostic is separate from pending
+normal monitor/API case 8720 and changes no production selection.
+
 The owner authorized staged Expert 2-bit work on 2026-10-29: Gate/Up at
 Q2_K with Down retained at Q4_0 first; only if quality holds may the complete
 Expert set become 2-bit. This supersedes the earlier 4-bit-only limit for this
