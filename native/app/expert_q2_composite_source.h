@@ -7,8 +7,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <map>
+#include <cerrno>
 #if !defined(_WIN32)
-#include <ps5platform/heap.h>
+#include <ps5platform/kernel.h>
 #endif
 
 namespace qwen_app {
@@ -34,19 +35,42 @@ inline nlohmann::json expert_q2_backing_metadata(const std::string&path,
         !before.st_uid&&!before.st_gid&&std::uint64_t(before.st_size)==bytes;
     const auto identity=expert_q2_metadata_key(before);
     for(unsigned i=1;i<10;++i)ok=ok&&identity[i]==expected[i];
-    std::string raw(bytes,'\0');void*window=nullptr;
+    if(!ok){const int closed=close(fd);
+        throw std::runtime_error("Backing metadata identity differs "+nlohmann::json({{"path",path},
+            {"actual",identity},{"expected",expected},{"close_rc",closed}}).dump());}
+    std::string raw(bytes,'\0');void*window=nullptr;std::int64_t physical=-1;
+    constexpr std::size_t window_bytes=1u<<20;
     const auto requested=(bytes+16383)&~std::uint64_t(16383);
-    if(posix_memalign(&window,16384,requested)||!window||!ps5_heap_owns(window)){
-        (void)close(fd);throw std::runtime_error("Tracked bounded Direct metadata window unavailable");}
-    if(ok){const auto got=pread(fd,window,requested,0);ok=got==static_cast<ssize_t>(bytes);
-        if(ok)std::memcpy(raw.data(),window,bytes);}
-
-    ok=ok&&!fstat(fd,&after)&&!lstat(path.c_str(),&current)&&
+    const int allocated=sceKernelAllocateDirectMemory(0,sceKernelGetDirectMemorySize(),window_bytes,
+        16384,PS5_KERNEL_DIRECT_TYPE_CPU,&physical);
+    if(allocated||physical<0){(void)close(fd);throw std::runtime_error("Explicit CPU Direct metadata allocation failed");}
+    if(sceKernelMapDirectMemory(&window,window_bytes,3,0,physical,16384)||!window||
+       reinterpret_cast<std::uintptr_t>(window)%16384){(void)close(fd);
+        throw std::runtime_error("CPU Direct metadata map incomplete; physical owner retained until ordinary close");}
+    errno=0;const auto got=pread(fd,window,requested,0);const int read_error=errno;
+    ok=got==static_cast<ssize_t>(bytes);if(ok)std::memcpy(raw.data(),window,bytes);
+    const auto tail=ok?pread(fd,window,16384,static_cast<off_t>(requested)):-1;
+    const int after_rc=fstat(fd,&after);
+    // Match the qualified application's descriptor ABI. Reopening with
+    // O_NOFOLLOW independently binds the current named inode without lstat.
+    const int named=open(path.c_str(),O_RDONLY|O_NOFOLLOW);
+    const int path_rc=named<0?-1:fstat(named,&current);
+    const int path_error=errno;
+    const int named_closed=named<0?0:close(named);
+    const auto actual_digest=sha256_metadata_bytes(raw);
+    ok=ok&&tail==0&&!after_rc&&!path_rc&&
         expert_q2_metadata_key(after)==identity&&expert_q2_metadata_key(current)==identity&&
-        sha256_metadata_bytes(raw)==record.at("sha256");
+        actual_digest==record.at("sha256");
     const int closed=close(fd);
-    if(!closed)std::free(window);
-    if(!ok||closed)throw std::runtime_error("Backing metadata SHA/identity/completion failed");
+    if(closed||named_closed)throw std::runtime_error("CPU metadata descriptor close uncertain; Direct owner retained");
+    if(sceKernelMunmap(window,window_bytes)||sceKernelReleaseDirectMemory(physical,window_bytes))
+        throw std::runtime_error("CPU metadata Direct retirement uncertain; owner retained");
+    if(!ok)throw std::runtime_error("Backing metadata read/SHA/identity failed "+nlohmann::json({
+        {"path",path},{"read_bytes",got},{"read_errno",read_error},{"expected_bytes",bytes},{"EOF_return",tail},
+        {"actual_SHA256",actual_digest},{"expected_SHA256",record.at("sha256")},{"before",identity},
+        {"after",expert_q2_metadata_key(after)},{"path_identity",expert_q2_metadata_key(current)},
+        {"fstat_rc",after_rc},{"named_fstat_rc",path_rc},{"named_errno",path_error},
+        {"Direct_owner_positively_retired",true}}).dump());
     if(raw_out)*raw_out=raw;return nlohmann::json::parse(raw);
 }
 

@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-// Seal only this experiment's new receipt. Source model parts stay read-only.
+// Publish and seal only three owned metadata files. Model parts stay read-only.
 #include "expert_q2_seal_context.h"
 #include <ps5platform/kernel.h>
 #include <algorithm>
 #include <array>
+#include <cerrno>
 #include <cstdio>
 #include <cstring>
 #include <fcntl.h>
@@ -48,6 +49,8 @@ int main(int argc,char**){
         if(sceKernelMapDirectMemory(&window,window_bytes,3,0,physical,16384)||!window||reinterpret_cast<std::uintptr_t>(window)%16384)retain();mapped=true;
         for(unsigned metadata_index=0;metadata_index<3;++metadata_index){
         const auto&metadata=q2_seal_metadata[metadata_index];
+        struct stat absent{};errno=0;
+        need(lstat(metadata.destination,&absent)&&errno==ENOENT,"A new candidate metadata destination already exists");
         fd=open(metadata.path,O_RDONLY|O_NOFOLLOW|O_DIRECT);need(fd>=0&&(fcntl(fd,F_GETFL)&O_DIRECT),"Candidate receipt Direct open failed");
         const auto before=fd_key(fd);need(before==path_key(metadata.path)&&before[5]==metadata.bytes&&!before[3]&&!before[4],"Exact newly published candidate receipt required");
         sha256_t hash;sha256_init(&hash);
@@ -69,10 +72,19 @@ int main(int argc,char**){
         need(!fchmod(fd,0644),"New candidate receipt permission finalization failed");
         const auto after=fd_key(fd);need(after==path_key(metadata.path)&&after[2]==0100644&&!after[3]&&!after[4]&&after[0]==before[0]&&after[1]==before[1]&&after[5]==before[5],"Final candidate receipt identity differs");
         const int closing=fd;fd=-1;if(close(closing))retain();
-        emit_key("SEALED_METADATA index="+std::to_string(metadata_index),after);
-        if(!metadata_index)emit_key("SEALED_RECEIPT",after);
+        errno=0;need(lstat(metadata.destination,&absent)&&errno==ENOENT,"Candidate metadata publication cannot overwrite an existing path");
+        line("BEFORE own_candidate_metadata_rename index="+std::to_string(metadata_index));
+        const int published=rename(metadata.path,metadata.destination);
+        line("RETURN own_candidate_metadata_rename index="+std::to_string(metadata_index)+" rc="+std::to_string(published));
+        need(!published,"Own candidate metadata publication failed");
+        const auto sealed=path_key(metadata.destination);
+        need(sealed[0]==after[0]&&sealed[1]==after[1]&&sealed[2]==after[2]&&sealed[3]==after[3]&&sealed[4]==after[4]&&sealed[5]==after[5]&&
+            sealed[6]==after[6]&&sealed[7]==after[7],"Published candidate metadata inode, mode or payload changed");
+        emit_key("SEALED_METADATA index="+std::to_string(metadata_index),sealed);
+        if(!metadata_index)emit_key("SEALED_RECEIPT",sealed);
         }
-        parts_intact();const auto final_root=path_key(q2_seal_directory,true);need(final_root==root,"Candidate directory changed during metadata sealing");
+        parts_intact();const auto final_root=path_key(q2_seal_directory,true);
+        need(std::equal(root.begin(),root.begin()+5,final_root.begin()),"Candidate directory owner or inode changed during own metadata publication");
         for(unsigned i=0;i<sizeof(q2_seal_parts)/sizeof(q2_seal_parts[0]);++i)emit_key("SEALED_PART index="+std::to_string(i),q2_seal_parts[i].identity);
         emit_key("SEALED_DIRECTORY",final_root);
         need(split_context(5)&&split_headroom(),"Seal final current owner or memory admission refused");ok=true;

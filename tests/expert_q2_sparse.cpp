@@ -50,7 +50,7 @@ int main(){
         at>=(512ull<<20)?(at-(512ull<<20)+34)%251:
         at>=12345&&at<42345?(at-12345+777+34)%251:at%251;};
     struct Pair{std::array<std::uint64_t,2>at;std::size_t bytes;};
-    for(const auto&pair:std::vector<Pair>{{{10000,12344},50000},{{(512ull<<20)-500,(512ull<<20)+32768-500},1000},
+    for(const auto&pair:std::vector<Pair>{{{10000,12344},50000},{{10000,12344},model_read_window/2-model_read_alignment},{{(512ull<<20)-500,(512ull<<20)+32768-500},1000},
             {{41345,(512ull<<20)+32768-700},1000}}){
         const std::array<std::uintptr_t,2>addresses{base+pair.at[0],base+pair.at[1]};
         const auto verify=[&](unsigned arm,const void*window){

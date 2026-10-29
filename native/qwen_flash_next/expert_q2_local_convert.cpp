@@ -69,7 +69,7 @@ void capacity(std::uint64_t needed){
     struct statfs s{};need(!statfs(q2_destination_parent,&s)&&s.f_bsize==65536&&s.f_bavail>0,
         "Fresh destination storage observation required");
     const auto available=std::uint64_t(s.f_bavail)*std::uint64_t(s.f_bsize);
-    need(needed<=UINT64_MAX-(1ull<<30)&&available>=needed+(1ull<<30),"Candidate output cannot retain one GiB of disk headroom");
+    need(needed<=UINT64_MAX-(2ull<<30)&&available>=needed+(2ull<<30),"Candidate output cannot retain two GiB of disk headroom");
 }
 // Fixed four-worker CPU pool. All workers join before the Direct owner retires.
 struct EncoderPool {
@@ -143,8 +143,8 @@ struct Writer {
         need(final||physical==buffered,"Only the final packed extent may require Direct padding");
         std::memset(output+buffered,0,physical-buffered);
         line("BEFORE packed_output_write file="+std::to_string(file.index)+" part="+std::to_string(part)+" bytes="+std::to_string(physical));
-        const auto got=pwrite(fd,output,physical,static_cast<off_t>(part_written));
-        line("RETURN packed_output_write bytes="+std::to_string(got));
+        errno=0;const auto got=pwrite(fd,output,physical,static_cast<off_t>(part_written));const int error=errno;
+        line("RETURN packed_output_write bytes="+std::to_string(got)+" errno="+std::to_string(error)+" offset="+std::to_string(part_written));
         need(got==static_cast<ssize_t>(physical),"Packed output write was short");
         sha256_update(&part_hash,output,buffered);part_written+=buffered;buffered=0;
     }
@@ -197,8 +197,8 @@ int main(int argc,char**) {
         line("BEGIN nonce=" Q2_LOCAL_NONCE " CPU_only=1 source_writes=0 GPU_calls=0 title_launches=0 window_bytes=33554432 CPU_workers=4");
         need((argc==0||argc==1)&&started&&split_context(1)&&split_context(2),"Fresh idle conversion context required");boundary();roots();
 #if Q2_LOCAL_RESUME
-        need(q2_prior_new_bytes<=q2_total_new_bytes,"Completed Q2 prefix exceeds its complete source plan");
-        capacity(q2_total_new_bytes-q2_prior_new_bytes);completed_prefix_intact(true);
+        need(q2_prior_new_bytes<=q2_total_new_bytes&&q2_prior_packed_bytes<=q2_total_packed_bytes,"Completed Q2 prefix exceeds its complete source plan");
+        capacity(q2_total_packed_bytes-q2_prior_packed_bytes);completed_prefix_intact(true);
         completed_files=q2_prior_files;encoded_matrices=q2_prior_matrices;
 #else
         capacity(q2_maximum_physical_new_bytes);

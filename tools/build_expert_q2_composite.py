@@ -19,6 +19,7 @@ PACKED_SCOPE=dict(schema='ps5-qwen-expert-q2-composite-source-v1',enabled=True,
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--finalize-existing',action='store_true');p.add_argument('--reuse-owner',type=Path)
+    p.add_argument('--complete-prefix-metadata',action='store_true')
     for key in ('parent','workspace','cache','out'):p.add_argument('--'+key,type=Path,required=True)
     a=p.parse_args();prior=json.loads(a.parent.read_text())
     frozen=active_link_inputs(prior)+[record(a.parent),record(__file__)]
@@ -48,6 +49,9 @@ def main():
     marker='            qwen_app::start_native_model_sources(std::move(sources),std::move(logical));'
     require(text.count(marker)==1,'One original source startup required')
     text=text.replace(marker,'            qwen_app::configure_expert_q2_source_segments(std::move(qwen_app::expert_q2_pending_segments));\n'+marker,1)
+    if a.complete_prefix_metadata:
+        from expert_q2_metadata_reader import metadata_entry
+        text=metadata_entry(text)
     entry=a.out/'Q2-composite-entry.private.cpp';entry.write_text(text,newline='\n')
     commands=[prior['compile_commands'][0].copy(),owner['command'].copy()]
     # Quoted headers can resolve through several preserved include views.
@@ -78,6 +82,22 @@ def main():
         frozen +=[record(a.reuse_owner),details['source_owner'],details['reader_header'],record(reuse_owner)]
     old_entry=prior['compile_commands'][0][prior['compile_commands'][0].index('-o')+1]
     replacements={old_entry:str(objects[0]),owner['object']['path']:str(objects[1])}
+    metadata_details=None
+    if a.complete_prefix_metadata:
+        require(not a.finalize_existing,'Completed legacy links cannot acquire a new metadata owner')
+        from expert_q2_metadata_reader import metadata_source
+        metadata=next(row for row in geometry['additional_cache_geometry']['compiled']if 'direct_metadata'in Path(row['object']['path']).name)
+        actual_metadata=Path(metadata['compiled_source']['path']);require(record(actual_metadata)==metadata['compiled_source'],'Qualified metadata source changed')
+        metadata_cpp=a.out/'Q2-composite-metadata.private.cpp';metadata_cpp.write_text(metadata_source(actual_metadata.read_text()),newline='\n')
+        cmd=metadata['command'].copy();obj=a.out/'metadata.o'
+        cmd[cmd.index('-c')+1]=str(metadata_cpp);cmd[cmd.index('-o')+1]=str(obj)
+        if '-MF'in cmd:cmd[cmd.index('-MF')+1]=str(a.out/'metadata.private.d')
+        cmd[1:1]=['-I',str(ROOT/'native/app')];cmd+=['-I',str(actual_metadata.parent)]
+        commands.append(cmd);objects.append(obj);replacements[metadata['object']['path']]=str(obj)
+        frozen +=[record(actual_metadata),record(metadata_cpp),record(ROOT/'tools/expert_q2_metadata_reader.py'),record(ROOT/'native/app/expert_q2_metadata_window.h')]
+        metadata_details=dict(original=metadata['compiled_source'],source=record(metadata_cpp),command=cmd,
+            header=record(ROOT/'native/app/expert_q2_metadata_window.h'),ordinary_registration_unchanged=True,
+            complete_header_prefix_checked_before_registration=True)
     for old in replacements:require(prior['link_command'].count(old)==1,'One exact source/entry object replacement required')
     link=[replacements.get(x,x)for x in prior['link_command']];image=a.out/'qwen-native.pie.elf';link[link.index('-o')+1]=str(image)
     link=[('-Map='+str(a.out/'native-link.private.map'))if x.startswith('-Map=')else x for x in link]
@@ -89,7 +109,7 @@ def main():
             print(json.dumps(dict(qualified_source_owner_reused=True,recompiled=False)),flush=True);continue
         x=subprocess.run(command,cwd=ROOT,capture_output=True,timeout=600,env=dict(os.environ,TMP=str(a.out/'tmp'),TEMP=str(a.out/'tmp')))
         (a.out/f'{i}.private.log').write_bytes(x.stdout+x.stderr);require(x.returncode==0,x.stderr.decode(errors='replace')[-6000:])
-        print(json.dumps(dict(packed_source_build_step=i+1,total=3)),flush=True)
+        print(json.dumps(dict(packed_source_build_step=i+1,total=len(commands)+1)),flush=True)
     for name,row in existing.items():require(record(a.out/name)==row,'The already completed link/source differs; do not reuse it')
     for row in frozen:require(record(row['path'])==row,'An active source changed during the packed-source relink')
     historical=[]
@@ -106,6 +126,7 @@ def main():
     result['expert_q2_model'].update(actual_entry=record(entry),packed_source_scope=PACKED_SCOPE,
         source_owner=record(source),reader_header=record(derived),packed_source_commands=commands,
         GPU_math_and_provider_objects_unchanged=True,packed_source_model_validation_pending=True)
+    if metadata_details:result['expert_q2_model']['complete_prefix_metadata']=metadata_details
     if a.finalize_existing:result['completed_compile_generator_snapshot']=record(ROOT/'.local/build_expert_q2_composite_8242.snapshot.py')
     write_json(a.out/'receipt.private.json',result)
     result['real_module_import_audit']=audit(a.workspace,a.cache,a.out)

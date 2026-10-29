@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Build an isolated candidate receipt sealer; never execute or alter production."""
+"""Build an isolated candidate metadata publisher/sealer; never execute it."""
 import argparse,json,os,re,secrets,subprocess
 from pathlib import Path
 from expert_q2 import record,require,write_json
@@ -34,8 +34,9 @@ def main():
         dict(remote=root+'/retained-Q4-layout.json',local=conversion['retained_Q4_conversion'])]
     for item in sidecars:require(record(item['local']['path'])==item['local'],'Exact retained backing metadata required')
     metadata=[dict(remote=root+'/model-receipt.json',local=record(a.receipt)),*sidecars]
-    h+='struct SealMetadata{const char*path;std::uint64_t bytes;const char*sha256;};\ninline constexpr SealMetadata q2_seal_metadata[]={\n'
-    h+=''.join('{'+json.dumps(item['remote'])+','+str(item['local']['bytes'])+'ULL,'+json.dumps(item['local']['sha256'])+'},\n'for item in metadata)+'};\n'
+    for i,item in enumerate(metadata):item['staging']=prefix+'-metadata-'+str(i)+'.json'
+    h+='struct SealMetadata{const char*path;const char*destination;std::uint64_t bytes;const char*sha256;};\ninline constexpr SealMetadata q2_seal_metadata[]={\n'
+    h+=''.join('{'+json.dumps(item['staging'])+','+json.dumps(item['remote'])+','+str(item['local']['bytes'])+'ULL,'+json.dumps(item['local']['sha256'])+'},\n'for item in metadata)+'};\n'
     h+='struct SealPart{const char*path;std::array<std::uint64_t,10>identity;};\ninline constexpr SealPart q2_seal_parts[]={\n'
     h+=''.join('{'+json.dumps(part['path'])+',{'+','.join(str(x)+'ULL'for x in part['identity'])+'}},\n'for part in parts)+'};\n'
     header=a.out/'expert_q2_seal_context.h';header.write_text(h,newline='\n')
@@ -65,11 +66,12 @@ def main():
     nm=Path(commands[1][0]).parent/'llvm-nm.exe';symbols=subprocess.check_output([str(nm),'-D','--undefined-only','--format=posix',str(image)],text=True)
     names={line.split()[0]for line in symbols.splitlines()if line.split()}
     require(names<=parent['imports'].keys(),'New CPU sealer runtime import is not qualified')
-    require(not any(re.search(r'(sceAgc|KillApp|ptrace|chown|ftruncate|rename|pwrite|kernel_set_|kernel_copy|setuid|unlink)',name)for name in names),'Candidate sealer import boundary failed')
+    require(not any(re.search(r'(sceAgc|KillApp|ptrace|chown|ftruncate|pwrite|kernel_set_|kernel_copy|setuid|unlink)',name)for name in names),'Candidate sealer import boundary failed')
     write_json(a.out/'manifest.private.json',dict(schema='ps5-qwen-expert-q2-seal-build-v1',completed=True,artifact=record(image),inputs=inputs,commands=commands,
-        nonce=nonce,backing_metadata=sidecars,remote_elf=prefix+'.elf',remote_log=prefix+'.log',source_directory=root,model_receipt=record(a.receipt),conversion=record(a.conversion),
+        nonce=nonce,backing_metadata=sidecars,metadata_publication=metadata,remote_elf=prefix+'.elf',remote_log=prefix+'.log',source_directory=root,model_receipt=record(a.receipt),conversion=record(a.conversion),
         original_split_integrity=original,logical_files=files,physical_files=len(parts),CPU_only=True,source_writes=0,GPU_calls=0,title_launches=0,
-        production_permission_changes=0,only_permission_change='own newly published candidate receipt to 0644',automatic_retries=0))
+        production_permission_changes=0,only_permission_change='three own newly published candidate metadata files to 0644',
+        publication='native rename of exactly three verified staged metadata files into the owned candidate directory; no existing target overwrite',automatic_retries=0))
     print(json.dumps(dict(candidate_sealer_built=True,physical_files=len(parts),PS5_operations=0)),flush=True)
 
 if __name__=='__main__':main()
