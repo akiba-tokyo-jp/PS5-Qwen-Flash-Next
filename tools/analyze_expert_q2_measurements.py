@@ -27,7 +27,7 @@ def aggregate_whole(case):
         process_outside_source_wait_s_per_request=(total('model_process_s')-wait)/len(rows))
 
 
-def decode_phase(root):
+def decode_phase(root,request_ordinals=None):
     terminal=load(root/'native-model-terminal.private.json');closed=load(root/'restored-complete.private.json')
     proof=load(root/'IO-token-snapshots/complete.private.json')
     require(terminal['completed']and terminal['all_model_source_device_owners_positively_retired']and
@@ -38,6 +38,8 @@ def decode_phase(root):
     for row in proof['records']:require(record(row['path'])==row,'Captured token evidence changed')
     rows=[]
     for request in terminal['requests'][1:]:
+        if request_ordinals is not None and request['ordinal'] not in request_ordinals:
+            continue
         ordinal=request['ordinal'];count=request['metrics']['generated_tokens']
         points=[load(root/'IO-token-snapshots'/f'arm{ordinal}-token-{i}.private.json')for i in range(1,count+1)]
         require(count==22 and [p['token_id']for p in points]==request['token_ids']and request['counting_quality_passed'],
@@ -67,6 +69,8 @@ def decode_phase(root):
             row.update(individual_read_wall_ns=d['individual_read_wall_ns'],individual_read_latency_histogram=hist,
                 size_classes=[g for g in groups if g['calls']])
         rows.append(row)
+    require(rows and (request_ordinals is None or {r['request']for r in rows}==set(request_ordinals)),
+        'Every explicitly selected completed request must be present')
     sums=lambda k:sum(r[k]for r in rows)
     out=dict(completed=True,case=int(root.name.rsplit('-',1)[1]),prefill_and_final_EOS_excluded=True,
         accepted_decode_transitions=sums('accepted_decode_transitions'),requests=rows,
@@ -130,7 +134,17 @@ def analyze(cache,measurement):
     before,after=aggregate_whole(old),aggregate_whole(new)
     q4decode=decode_phase(cache/'hardware-first-generation-8010')
     candidate=cache/f'hardware-first-generation-{measurement}'
-    actual=decode_phase(candidate)if(candidate/'restored-complete.private.json').exists()else None
+    selection=None
+    if(candidate/'restored-complete.private.json').exists():
+        terminal=load(candidate/'native-model-terminal.private.json')
+        if terminal.get('completed_policy_comparison'):
+            require([r['expert_eviction_policy']for r in terminal['requests']]==
+                ['aged_lfu','aged_lfu','two_touch_probation','two_touch_probation','aged_lfu'],
+                'The mixed-policy diagnostic requires its exact original-policy control arms')
+            selection={1,4}
+        actual=decode_phase(candidate,selection)
+    else:
+        actual=None
     if actual:
         actual.update(physical_byte_reduction_vs_Q4=1-actual['physical_GB_per_decode_token']/q4decode['physical_GB_per_decode_token'],
             read_call_reduction_vs_Q4=1-actual['read_calls_per_decode_token']/q4decode['read_calls_per_decode_token'])
@@ -140,7 +154,10 @@ def analyze(cache,measurement):
         Expert_triplet_payload_bytes=dict(Q4=2764800,Q2=1536000,Q2_over_Q4=1536000/2764800),
         exact_Q4_decode=q4decode,exact_Q2_decode=actual,
         additional_measurement=dict(case=measurement,status='completed'if actual else'prepared_not_executed_automatic_review_blocked',
-            current_owner_freeze_risk_confirmation_required=actual is None,prepared_SELF_sha256='06b1e2956ebcbcc7a9fd4a25b4c6f5b8fbe097340b1e696afab6ab89b39afa86',
+            current_owner_freeze_risk_confirmation_required=actual is None,
+            prepared_SELF_sha256=terminal['candidate_SELF_sha256']if actual else'06b1e2956ebcbcc7a9fd4a25b4c6f5b8fbe097340b1e696afab6ab89b39afa86',
+            original_policy_request_ordinals=sorted(selection)if selection else None,
+            never_started_case_8880_superseded_by_combined_comparison=measurement==8900,
             runtime_counters_static_bytes=960,original_GPU_and_IO_schedule_preserved=True),
         fused_compute=component_times(cache),
         fixed_SSD_command_latency_dominance_causally_identified=False,
@@ -253,7 +270,7 @@ no console or network operations and runs no CI. Production is unchanged.
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--cache',type=Path,required=True);p.add_argument('--measurement-case',type=int,default=8880)
+    p.add_argument('--cache',type=Path,required=True);p.add_argument('--measurement-case',type=int,default=8900)
     p.add_argument('--json',type=Path,required=True);p.add_argument('--markdown',type=Path,required=True)
     a=p.parse_args();r=analyze(a.cache,a.measurement_case)
     a.json.write_text(json.dumps(r,indent=2)+'\n',encoding='utf-8',newline='\n')

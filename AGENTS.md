@@ -20,6 +20,30 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+Latest selection: all routed Experts use Gate/Up Q2_K and fitted-scale Down
+Q2_0, with the measured two-touch-probation replacement policy. Case 8900's
+same-model ABBA improves decode 1.029182 -> 1.127026 tok/s (+9.507%); full F32
+rows and ordered routes match exactly. Final passive/API 8940 measures
+1.126481 and 1.125980 tok/s; both actual frames were viewed. Placement 8950
+completed whole native canonical/rollback/settings hashes and fresh idle on
+SELF `06e096630ce08b1a4b865798f7070295f74c9b5bb33fa7d0c32a5ad2bf729590`.
+All 867 slots, the 1,333,739,520-byte budget, non-Expert BF16/F32 and F32 KV/
+inputs remain. Mixed, Q4, BF16 and original MOSS rollbacks remain intact.
+The title/gateway/model are inactive; the finite execution binding is consumed.
+
+The owner explicitly accepted freeze risk for these eight optimization
+comparisons and adoption of faster qualified versions. The previous review
+hold is resolved. Unstarted diagnostic 8880 is superseded by 8900's original-
+policy arms 1/4: 0.492914 GB/decode token, 944.429 calls/token and 1.418164 ms
+mean individual pread wall time. Do not rerun 8880 or normal case 8720.
+CPU-only actual-weight bundle comparison 8914 improves read-wall throughput
+44.298% at equal bytes; this does not establish whole-model bundle speed.
+The remaining seven candidate implementation/validation gates are open in
+`docs/expert-q2-plan-20261029.md`; do not call the eight-candidate task complete.
+Preserve the strict all-Q2 result (6/9 format, 9/9 content) and the owner's
+acceptance of expected loss. No additional quality veto, CI, reboot or caches.
+Earlier mixed-production and review-blocked descriptions below are historical.
+
 The selected production is now **Gate/Up Q2_K with Down Q4_0**, placed and
 verified in case 8580 on SELF
 `e64cd9a49851eec0e3062651f2cac91c925ddbdeca78eebb93c78586ec017730`.

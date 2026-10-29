@@ -85,3 +85,34 @@ tradeoff in the selected installation. Do not repeat conversion, source hashing,
 counting or the completed quality cohort. Every executed case normally closed
 and restored the exact mixed control; audit 8790 verified seven programs and
 five settings. Normal validation and final selection remain pending.
+
+## Post-quantization optimization validation
+
+The owner authorized all eight proposed optimization comparisons, incorporation
+of measured winners, and explicitly accepted the remaining console freeze risk.
+Preserve current memory, identity, ownership and positive-completion guards;
+reboot, CI and ambiguous-operation retries remain disabled.
+
+| Candidate | Current evidence | Required next gate |
+| --- | --- | --- |
+| Expert replacement policy | Twelve closed all-Q2 traces replay exactly, including every control fill/slot. Two-touch probation reduces counting misses 7.250% and held-out quality misses 5.306%. Same-model case 8900 ABBA improves decode 1.029182 to 1.127026 tok/s (+9.507%), with zero full-F32 difference and identical ordered routes. Normal passive/API 8940 measures 1.126481/1.125980; both frames viewed. Placement 8950 verifies the canonical app, all five settings, every retained rollback and fresh idle. | Adopted in the finite qualified scope. |
+| Gate/Up/Down bundle reads | Compact geometry and 25,088 positions pass host checks. CPU-only actual-weight 8914 compares the same bytes: one request versus three improves read-wall throughput 44.298% (time reduction 30.699%). | Integrate a bounded immutable bundle source; compare actual model decode before adoption. |
+| I/O serialization and GPU overlap | Case 8900 records the existing two lanes and 540/553 selected serial batches in the control/candidate whole requests. | Distinguish composite-gather fallback from deliberate serial selection; qualify Q2 owner geometry before model comparison. |
+| Expert-sharing speculative decode | Earlier BF16 results and current quantized component widths are preserved. They do not qualify Q2 complete-state handling. | Port complete-state and causal verification to Q2, charging rejected work and snapshot costs. |
+| Resident non-Expert compression | Output projection Q8_0 would save 595,968,000 payload bytes. This is arithmetic, not a native memory/speed result. | Original-BF16 conversion, own-format arithmetic, complete memory accounting and bounded cache quota transfer. |
+| Intermediate-copy reduction | The helper excludes single transfers below 1 MiB; individual Q2 roles are smaller. | Compare GPU-visible destinations at compressed sizes, retaining visibility and completion. |
+| Prefix/full-state reuse | Exact-prefix implementation exists, but is disabled in Q2. | Q2 full-state restoration and a separate TTFT/prefill comparison; charge snapshot memory. |
+| CPU management overhead | Default behavior remains unchanged; new policy selection requires empty observation history and adds no heap arrays. | Prove unchanged fills/guards and measure actual process benefit for duplicated immutable work. |
+
+The single-load 8900 experiment also completes the requested exact Q2 decode
+I/O measurement. Original-policy arms 1 and 4 give 0.492914 GB/token, 944.429
+calls/token and 1.418164 ms mean individual pread wall time. Probation arms 2
+and 3 give 0.432558 GB/token and 831.524 calls/token. Token counter differences
+exclude prefill and final EOS and reconcile with independent per-call counters.
+Never average different policies into one baseline. Unstarted diagnostic 8880
+is superseded, not replayed.
+
+Neither a bundle CPU comparison nor an offline miss reduction is a measured
+whole-model speedup. Production now uses the normally qualified all-Q2
+probation app. Open gates above remain open; this checkpoint does not
+close the owner's complete eight-candidate task.

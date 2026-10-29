@@ -17,6 +17,8 @@ extern "C" void llama_app_expert_counters(llama_app_expert_stats * result);
 
 namespace qwen_app {
 
+enum class ExpertEvictionPolicy { aged_lfu, two_touch_probation };
+
 // UMA cache allocations consume the same RAM as mapped host pages. Never add
 // driver free memory to OS free memory. Unknown observations must be passed as 0.
 inline std::uint64_t uma_cache_budget(std::uint64_t requested, std::uint64_t driver_free,
@@ -29,6 +31,11 @@ inline std::uint64_t uma_cache_budget(std::uint64_t requested, std::uint64_t dri
 // floor applies only when space remains after reserving the entire active set.
 class ExpertPolicy {
 public:
+    void set_eviction_policy(ExpertEvictionPolicy policy) {
+        if ((policy != ExpertEvictionPolicy::aged_lfu && policy != ExpertEvictionPolicy::two_touch_probation) || tick_ || routes_)
+            throw std::invalid_argument("Select an eviction policy only on an empty observation history");
+        eviction_policy_ = policy;
+    }
     void reset(std::size_t layers, std::size_t experts, std::size_t slots, std::size_t cached_layers) {
         if (!layers || !experts || !slots || !cached_layers || cached_layers > layers ||
             layers > std::size_t(std::numeric_limits<std::int32_t>::max()) / experts)
@@ -67,8 +74,12 @@ public:
             if (layer == std::size_t(active_layer)) {
                 if (std::find(selected.begin(), selected.end(), std::int32_t(key % experts_)) != selected.end()) continue;
             } else if (residents_[layer] <= floor) continue;
-            if (best < 0 || counts_[key] < counts_[keys[best]] ||
-                (counts_[key] == counts_[keys[best]] && recency_[key] < recency_[keys[best]]))
+            const auto score = [&](std::int32_t resident) {
+                return eviction_policy_ == ExpertEvictionPolicy::two_touch_probation ?
+                    std::uint32_t(counts_[resident] >= 2) : counts_[resident];
+            };
+            if (best < 0 || score(key) < score(keys[best]) ||
+                (score(key) == score(keys[best]) && recency_[key] < recency_[keys[best]]))
                 best = std::int32_t(slot);
         }
         return best;
@@ -76,6 +87,7 @@ public:
     std::uint32_t count(std::size_t key) const { return counts_.at(key); }
 
 private:
+    ExpertEvictionPolicy eviction_policy_ = ExpertEvictionPolicy::aged_lfu;
     std::size_t experts_ = 0, slots_ = 0, cached_layers_ = 0, routes_ = 0;
     std::uint64_t tick_ = 0;
     std::vector<std::uint32_t> counts_;

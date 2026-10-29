@@ -32,7 +32,7 @@ The existing Q4 diagnostic 8010 measures **1.029585 GB/token** and
 **1105.857 calls/token**, using token-1 to token-22
 completed-counter differences. Prefill and final EOS are excluded.
 
-Exact Q2 decode-only GB/token, calls/token and individual read latency remain unmeasured. The dedicated measurement SELF is built and import/roundtrip/safety audited, but automatic approval review rejected the new console launch pending explicit owner freeze-risk confirmation. No case launch, GPU work or production change occurred for that attempt.
+Fresh case 8900 completed: physical 0.492914 GB/decode token, 944.429 physical calls/decode token, mean individual pread wall 1.418164 ms. Physical bytes decreased 52.125% and calls 14.598% versus the historical Q4 decode cohort. Per-call times are entry-to-return wall intervals, including OS/filesystem/queue time, not NAND-only latency.
 
 The new observer records 128-microsecond latency histogram bins and 64-KiB
 read-size classes, exact returned bytes/counts and each pread entry-to-return
