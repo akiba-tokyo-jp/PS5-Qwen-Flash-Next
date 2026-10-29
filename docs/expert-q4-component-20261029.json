@@ -1,0 +1,115 @@
+{
+  "schema": "ps5-qwen-expert-q4-components-review-v1",
+  "completed": true,
+  "component_only": true,
+  "actual_model_tokens_per_second_measured": false,
+  "GPU_case": 7560,
+  "formats": [
+    "BF16",
+    "Q4_0"
+  ],
+  "effective_Q4_bits_per_weight": 4.5,
+  "matrices": 27,
+  "GPU_cases": 27,
+  "GPU_graphs": 324,
+  "groups": {
+    "layers": [
+      0,
+      23,
+      47
+    ],
+    "projections": [
+      "gate",
+      "up",
+      "down"
+    ],
+    "Experts": [
+      0,
+      257,
+      511
+    ],
+    "selected_IDs": 10,
+    "unique_IDs_per_graph": 3
+  },
+  "widths": [
+    {
+      "width": 1,
+      "cases": 9,
+      "delivery_us": {
+        "BF16_mean": 42220.88930555555,
+        "Q4_0_mean": 35840.80927777778,
+        "BF16_over_Q4_0_time": 1.178011606220443
+      },
+      "compute_us": {
+        "BF16_mean": 7900.462388888889,
+        "Q4_0_mean": 7354.544527777778,
+        "BF16_over_Q4_0_time": 1.0742286431266008
+      },
+      "delivery_and_compute_us": {
+        "BF16_mean": 50121.35169444445,
+        "Q4_0_mean": 43195.353805555555,
+        "BF16_over_Q4_0_time": 1.160341270037198
+      }
+    },
+    {
+      "width": 2,
+      "cases": 9,
+      "delivery_us": {
+        "BF16_mean": 50668.630722222224,
+        "Q4_0_mean": 35950.54338888889,
+        "BF16_over_Q4_0_time": 1.4093981883423272
+      },
+      "compute_us": {
+        "BF16_mean": 7842.1942500000005,
+        "Q4_0_mean": 7900.560416666667,
+        "BF16_over_Q4_0_time": 0.9926124017046261
+      },
+      "delivery_and_compute_us": {
+        "BF16_mean": 58510.824972222224,
+        "Q4_0_mean": 43851.103805555555,
+        "BF16_over_Q4_0_time": 1.334306776670224
+      }
+    },
+    {
+      "width": 4,
+      "cases": 9,
+      "delivery_us": {
+        "BF16_mean": 49790.878694444444,
+        "Q4_0_mean": 35582.27838888889,
+        "BF16_over_Q4_0_time": 1.3993167652241294
+      },
+      "compute_us": {
+        "BF16_mean": 7860.541055555555,
+        "Q4_0_mean": 8004.242361111111,
+        "BF16_over_Q4_0_time": 0.9820468572698732
+      },
+      "delivery_and_compute_us": {
+        "BF16_mean": 57651.41975,
+        "Q4_0_mean": 43586.520749999996,
+        "BF16_over_Q4_0_time": 1.3226891882624057
+      }
+    }
+  ],
+  "maximum_absolute_GPU_F64_reference_error": 1.7657329487441586e-09,
+  "F32_activation_input_preserved": true,
+  "per_format_F64_reference": true,
+  "quantization_is_lossy": true,
+  "full_model_answer_quality_qualified": false,
+  "per_matrix_BF16_bytes": 3276800,
+  "per_matrix_Q4_bytes": 921600,
+  "Q4_over_BF16_payload_ratio": 0.28125,
+  "theoretical_contiguous_Q4_slots_at_current_1333739520_byte_budget": 481,
+  "actual_full_model_Q4_cache_qualified": false,
+  "PS5_CPU_encoder_matrices_exact": 27,
+  "PS5_CPU_mean_encode_ms": 6.515733777777778,
+  "exact_BF16_restored": true,
+  "production_quantization_adopted": false,
+  "CI_runs": 0,
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "native_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_caches_enabled": false
+  }
+}

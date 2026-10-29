@@ -1,5 +1,16 @@
 # PS5 Flash Next plan status
 
+The latest selected production is [Expert-only Q4](expert-q4-adoption-20261029.md)
+with [sanitized evidence](expert-q4-adoption-20261029.json). Conversion, component
+arithmetic, complete-model repeats, normal passive monitor/API, actual frame
+review, ordinary shutdown and native production/rollback readback all passed.
+Normal decode is 0.869808 tok/s, 2.0719x the earlier BF16 control. Only routed
+Expert weights are quantized; other tensors and F32 KV remain unchanged.
+The finite counting scope is complete; general reasoning quality and an
+unbounded service are not certified. Original BF16 sources and its optimized
+application remain verified rollbacks. The dated BF16 selections below are
+historical and do not override this Q4 selection.
+
 The read-only [I/O attribution](read-latency-attribution-20261029.md) reuses
 completed size/count controls and selected production application 7080.
 Byte-volume-dependent delivery is the supported dominant cost; halving serial

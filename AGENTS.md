@@ -3,8 +3,9 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
-The objective is original-precision Qwen3.8-Flash-Next inference on one PS5.
-Use the pinned original BF16 weights. Do not substitute a quantized checkpoint,
+The baseline is original-precision Qwen3.8-Flash-Next inference on one PS5.
+The explicitly authorized Expert-only Q4 production exception is described below.
+For the original-precision control, use the pinned original BF16 weights. Do not substitute a quantized checkpoint,
 prune experts, omit required model components, or use learned PC/cloud inference
 as a substitute for console inference. Host builds, metadata processing, format
 conversion preserving precision, and offline numerical verification are allowed.
@@ -18,6 +19,38 @@ GitHub Actions and other CI must remain disabled. Use focused manual checks.
 Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
+
+The selected production is now **Expert-only Q4_0**, qualified and placed in
+case 7940. See `docs/expert-q4-adoption-20261029.md` / `.json` and
+`config/production-installation.json`. Headless case 7820 measured 0.871504
+decode tok/s; the final passive monitor/API case 7920 measured 0.869380 and
+0.870236 tok/s, pooled 0.869808, against earlier same-console BF16 controls
+at 0.419813 tok/s (2.0719x). All Experts/top-10, non-Expert BF16/F32 weights,
+F32 activation input and F32 KV remain present. The 481-slot compressed cache
+uses the original 1,333,739,520-byte budget. Same-Q4 complete vocabulary rows
+and ordered routes reproduce exactly in the finite counting cohort. This is
+lossy quantization, not BF16-logit equality or broad reasoning certification.
+
+Selected SELF: `98a573396af615f754fe4286c6600ccf5596b8fad9d4ab00b99d7e9295dfd8fa`.
+The exact BF16 `80c28a95...` application/settings, original model and older
+rollbacks are preserved and verified. Native resources retired positively;
+ordinary close, all five settings, canonical/rollback whole native readback
+and fresh idle passed. Title, gateway and model are inactive. The finite run
+binding is consumed; new execution needs fresh resource/owner admission.
+Do not rerun consumed cases. The BF16-specific padded six-demand and its
+prefix/speculative integration are disabled in Q4; their BF16 qualification
+is preserved, not claimed to transfer to Q4. No 8-bit work, reboot, CI or
+persistent shader/pipeline cache was used. All earlier dated selections below
+are historical controls and do not override this selected Q4 production.
+
+The owner explicitly authorized Expert-only quantization on 2026-10-29 and
+then narrowed the requested experiment to **4-bit only**. This instruction
+supersedes the original no-quantization rule for this new, isolated candidate.
+Preserve every Expert and the original routing/top-k, keep all non-Expert
+tensors and F32 KV at their current precision, and preserve the exact BF16
+production model/application/settings as rollback. Do not create an 8-bit
+comparison. Follow `docs/expert-q4-plan-20261029.md`; actual quantized-model
+speed and quality must be distinguished from component fixtures and host work.
 
 The authoritative continuation is `docs/remaining-validation-20261029.md` and
 `docs/remaining-validation-20261028.json`. Every measured loser is a tested
