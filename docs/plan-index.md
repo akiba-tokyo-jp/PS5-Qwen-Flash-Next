@@ -1,5 +1,15 @@
 # PS5 Flash Next plan status
 
+The subsequent [four-part I/O investigation](expert-q2-io-distribution-20261030.md)
+is complete in native case 9340. P50 is [1.280, 1.408) ms, P95
+[2.048, 2.176), P99 [2.176, 2.304). Actual application in-flight reads reach
+two and average 1.58755 during I/O-busy time. Adjacent groups reduce calls
+1.1983% and improve matched decode 0.48996%, preserving bytes and full F32.
+Whole-request aged-LFU miss rate 68.507% and selected-probation 63.541% have
+separate layer/Expert and prefill/decode analysis. This is a measured headless
+candidate; the selected normal application below was restored, not replaced.
+The [JSON](expert-q2-io-distribution-20261030.json) retains the sanitized detail.
+
 The current [all-Q2 optimization result](expert-q2-optimization-results-20261030.md)
 closes the eight-family plan and records verified production placement 9310.
 First independent decode is 1.143314 tok/s; the exact repeat is 1.106472 with
