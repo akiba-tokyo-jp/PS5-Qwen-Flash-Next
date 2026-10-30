@@ -1,5 +1,24 @@
 # PS5 Flash Next plan status
 
+The first [lean-qwenflash prefill verification](lean-prefill-results-20261030.json)
+is complete: all31 native requests, six compositions, one load, all18 fixed
+quality tasks, full routes/bytes/output-row reconciliation, positive retirement,
+ordinary close and exact55a8/settings restoration. Width16 reduces mean prefill
+from13.909s to11.648s/all or11.412s/tail, with about11.40% whole-request throughput
+gain. Tail-only adds no whole-request gain over16/all and decode is lower.
+The predeclared prefill-first selection is mode5; normal prefix/speculation
+confirmation remains a separate scope. No production replacement is claimed.
+Same-policy F32 controls are exact; cross-mode maximum error6.403900 is disclosed
+with identical counting tokens and finite full vocabulary. First new-shape
+preparation stays charged to its timed repetition. Other lean ideas are outside
+this first finite comparison; they are not relabelled tested.
+
+The [requested storage cleanup](closed-trial-cleanup-20261030.json) is complete:
+55 obsolete trial/partial files, 874.356MiB of logical bytes retired after whole
+hash agreement with preserved host copies. Current production, all11 qualified
+programs, five settings and models remain. The final9630 trial is also removed;
+16 unclassified old copies remain. No CI or reboot was performed.
+
 The [routing/sharing production adoption](routing-winners-adoption-20261030.md)
 and [sanitized evidence](routing-winners-adoption-20261030.json) close the latest
 implementation request through actual placement. Normal 9550 measures

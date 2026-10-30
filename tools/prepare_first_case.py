@@ -36,6 +36,35 @@ def write(path, value):
         output.write(json.dumps(value, indent=2) + "\n"); output.flush(); os.fsync(output.fileno())
 
 
+def require_routing_production(installation, context, report):
+    """Admit the qualified routing app without inventing cross-policy F32 equality."""
+    normal=report.get('normal',{});placed=report.get('placement',{});policy=report.get('policy',{})
+    if (report.get('schema')!='ps5-qwen-routing-winners-adoption-v1' or
+        report.get('completed')is not True or
+        report.get('all_requested_integration_and_qualification_and_placement_completed')is not True or
+        report.get('pending_steps')!=[] or report.get('precision')!=installation.get('precision') or
+        report.get('application_SELF')!=installation.get('application_SELF') or
+        report.get('previous_application_SELF',{}).get('sha256')!=installation.get('previous_production_SHA256') or
+        normal.get('schema')!='ps5-qwen-routing-winners-normal-qualification-v1' or
+        normal.get('completed')is not True or normal.get('all_declared_adoption_criteria_passed')is not True or
+        normal.get('same_policy_independent_full_F32_max_error')!=0 or normal.get('all_counting_tokens_equal')is not True or
+        normal.get('selected_policy')!=installation.get('selected_routing_policy') or
+        policy.get('bits')!=installation.get('selected_routing_policy') or
+        context.get('selected_routing_policy')!=installation.get('selected_routing_policy') or
+        placed.get('completed')is not True or
+        placed.get('all_11_programs_and_five_settings_native_whole_SHA256_identity_EOF_verified')is not True or
+        placed.get('prior_programs_and_settings_preserved')is not True or placed.get('fresh_idle_confirmed')is not True or
+        placed.get('verification_files')!=16 or
+        placed.get('normal_case')!=installation.get('normal_validation_case') or
+        placed.get('normal_case')!=context.get('routing_winners_normal_case') or
+        placed.get('case')!=installation.get('production_placement_case') or
+        placed.get('case')!=context.get('routing_winners_placement_case') or
+        any(placed.get(k)is not False for k in ('native_title_running','gateway_running','model_loaded')) or
+        installation.get('owner_expected_quantization_loss_accepted')is not True or
+        context.get('Expert_format')!='Gate_Up_Q2_K_Down_Q2_0_MSE'):
+        raise ValueError('Qualified routing normal app, exact placement and preserved rollbacks are required')
+
+
 def qualified_control(context, production=False, installation=None):
     if any(context.get(k)is not False for k in ('native_running','gateway_running','model_loaded')):
         raise ValueError('A positively idle preserved control is required')
@@ -50,8 +79,14 @@ def qualified_control(context, production=False, installation=None):
         optimized_reports={
             'docs/expert-q2-optimization-results-20261030.json':('ps5-qwen-Q2-eight-optimization-dispositions-v1',9),
             'docs/expert-q2-io-reduction-results-20261030.json':('ps5-qwen-Q2-IO-reduction-adoption-v1',10)}
+        routing_Q2=(isinstance(installation,dict) and installation.get('precision')==all_q2_precision and
+            installation.get('selected_routing_policy')in (2,6,14))
+        if routing_Q2:
+            require_routing_production(installation,context,read(ROOT/'docs/routing-winners-adoption-20261030.json'))
+            required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
+                'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
         optimized_Q2=(isinstance(installation,dict) and installation.get('precision')==all_q2_precision and
-            installation.get('qualification_report')in optimized_reports)
+            installation.get('qualification_report')in optimized_reports and not routing_Q2)
         if optimized_Q2:
             required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
                 'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
@@ -77,7 +112,7 @@ def qualified_control(context, production=False, installation=None):
                 (quality.get('strict_format'),quality.get('answer_contents'),quality.get('total_requests'))!=(6,9,9) or
                 context.get('Expert_format')!='Gate_Up_Q2_K_Down_Q2_0_MSE'):
                 raise ValueError('Completed optimized Q2 arithmetic, scoped width validation, exact placement and owner quality acceptance required')
-        if isinstance(installation,dict) and installation.get('precision')==all_q2_precision and not optimized_Q2:
+        if isinstance(installation,dict) and installation.get('precision')==all_q2_precision and not optimized_Q2 and not routing_Q2:
             required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
                 'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
             if installation.get('qualification_report')!='docs/expert-q2-results-20261029.json':

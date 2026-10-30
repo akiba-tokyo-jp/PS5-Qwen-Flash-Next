@@ -7,6 +7,45 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+The first [lean-qwenflash prefill comparison](docs/lean-prefill-results-20261030.json)
+is complete on the PS5: 31 requests, one model load, six compositions, positive
+resource retirement, ordinary close and exact production/settings restoration.
+These are isolated experimental implementations; the production selection below
+is retained. The 30-token counting prompt has two symmetric timed repetitions
+per mode, following one width-four warmup.
+
+| Prefill width | Output rows per chunk | Mean prefill seconds | Mean whole request seconds | Decode tok/s |
+| --- | --- | ---: | ---: | ---: |
+| 4 | All | 13.909 | 22.539 | 2.552567 |
+| 4 | Tail only | 13.723 | 22.259 | 2.582485 |
+| 8 | All | 13.076 | 21.736 | 2.541953 |
+| 8 | Tail only | 12.410 | 21.216 | 2.505059 |
+| 16 | All | 11.648 | 20.232 | 2.564703 |
+| 16 | Tail only | 11.412 | 20.232 | 2.500912 |
+
+Width16 reduces prefill by 16.25% with all outputs and 17.95% with one tail
+output per chunk. Both improve whole-request throughput by about 11.40% against
+width4/all. Tail-only adds no whole-request gain over width16/all: its shorter
+prefill is offset by slower decode. The predeclared prefill-first rule selects
+mode5 for normal confirmation; mode4 remains an important comparison. Do not
+claim a decode improvement or multiply these gains by earlier routing gains.
+
+All counting tokens match; all 18 fixed content and strict-format checks pass.
+Same-policy control F32 repeats are exact. Cross-mode full-vocabulary maximum
+logit difference reaches 6.403900 and is explicitly not bit equality or broad
+reasoning qualification. Zero-output batches are avoided because the current
+backend's final-layer crop bypasses its Expert-cache path. Common context
+capacity16, 160-entry CPU bookkeeping and complete route/output counters are
+qualified; GPU math, four-read delivery, cache budget and original guards remain.
+Normal prefix/speculation integration is a separate scope. Memory-phase reuse,
+complete packing and other lean-qwenflash ideas are not tested by this comparison.
+
+The owner's [storage cleanup](docs/closed-trial-cleanup-20261030.json) removes
+54 obsolete closed test programs and one unpublished transfer fragment,
+916,829,098 logical bytes (874.356 MiB). Each removed file matches its complete
+host preservation copy. Production, all 11 qualified programs, five settings
+and all model data remain; 16 unclassified historical copies are retained.
+
 The successful routing settings are **implemented and installed in production**.
 See the [adoption report](docs/routing-winners-adoption-20261030.md),
 [sanitized evidence](docs/routing-winners-adoption-20261030.json) and
