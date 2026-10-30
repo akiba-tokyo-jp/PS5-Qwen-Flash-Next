@@ -48,7 +48,7 @@ class ColdProductionTests(unittest.TestCase):
 
     def test_actual_published_installation(self):
         report = json.loads((ROOT / 'docs/cold-request-adoption-20261030.json').read_text())
-        installation = json.loads((ROOT / 'config/production-installation.json').read_text())
+        installation = json.loads((ROOT / 'config/production-installation-cold-20261030.json').read_text())
         require_cold_request_production(installation, self.c, report)
         self.assertEqual(qualified_control(self.c, True, installation), report['application_SELF'])
 
