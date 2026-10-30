@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
-  "date": "2026-10-30",
-  "application_source_revision": "2f7ab770a750b1008fe85aa3646570783de1d8d0",
+  "date": "2026-10-31",
+  "application_source_revision": "297851c53e8c40dbfdefa6e6c18810cbf28e2741",
   "application_SELF": {
-    "bytes": 19140135,
-    "sha256": "57043cbe809362e0910e69279caca1a4985c92f93114f0f06dd81ebe81bd2bbf"
+    "bytes": 20065607,
+    "sha256": "bd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -16,44 +16,45 @@
   },
   "precision": {
     "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
-    "other_weights": "original BF16/F32 except output and active shared Expert Q8_0",
+    "other_weights": "resident Q8_0 except original BF16 PLE convolution and F32 tensors; nonresident tensors unchanged",
     "output_weight": "Q8_0",
     "shared_Expert_weight": "Q8_0 (144 active projections)",
+    "PLE_convolution": "BF16 [4,10240], 81920 bytes",
     "KV_cache": "F32",
     "activation_inputs": "F32",
-    "quantization": "Expert, resident output and active shared Expert weights"
+    "quantization": "Expert Q2 and resident matrix Q8_0"
   },
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "5c5d70347f25d2fe0905da3325519c056038475254fbf90af745af61c7b126ea",
+  "previous_production_SHA256": "57043cbe809362e0910e69279caca1a4985c92f93114f0f06dd81ebe81bd2bbf",
   "active_expert_slots": 1381,
   "physical_cache_planes": 1382,
   "expert_cache_bytes": 2123243520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 5719.973827004433,
-      "decode_ms": 5648.801408946514,
-      "decode_tokens_per_second": 3.7176028115876782,
+      "TTFT_ms": 5591.661356985569,
+      "decode_ms": 5309.568246006966,
+      "decode_tokens_per_second": 3.955123849437842,
       "generated_tokens": 22,
-      "prefill_ms": 5689.243646979332,
+      "prefill_ms": 5561.576750040054,
       "prompt_tokens": 30,
-      "total_ms": 11635.87888598442
+      "total_ms": 11155.668687999249
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 62.10777801275253,
-      "decode_ms": 3991.047057032585,
-      "decode_tokens_per_second": 5.261777097565438,
+      "TTFT_ms": 63.07040399312973,
+      "decode_ms": 3753.298567056656,
+      "decode_tokens_per_second": 5.595078468928796,
       "generated_tokens": 22,
-      "prefill_ms": 29.922793984413147,
+      "prefill_ms": 30.623695015907288,
       "prompt_tokens": 30,
-      "total_ms": 4609.77356004715
+      "total_ms": 4354.447544038296
     }
   ],
-  "normal_application_case": 10970,
-  "production_placement_case": 11050,
+  "normal_application_case": 11480,
+  "production_placement_case": 11560,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -67,9 +68,9 @@
   "six_demand_enabled": false,
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
-  "original_BF16_optimized_profile_preserved": true,
-  "qualification_report": "docs/cold-request-adoption-20261030.json",
-  "historical_installation": "config/production-installation-shared-Q8-20261030.json",
+  "original_BF16_optimized_profile_preserved": false,
+  "qualification_report": "docs/resident-all-Q8-adoption-20261031.json",
+  "historical_installation": "config/production-installation-cold-20261030.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -77,13 +78,13 @@
   "CI_runs": 0,
   "private_repository": true,
   "GitHub_Actions_enabled": false,
-  "original_Q4_optimized_profile_preserved": true,
-  "fixed_quality_candidate_case": 11010,
-  "finite_quality_scope": "Four fixed short tasks, one independent pair each; no broad reasoning or sustained-service claim",
-  "model_receipt_SHA256": "7ba7bbf919eba43a365f570930558b9405b60ad66f9e3cdeea104ce5557377fb",
+  "original_Q4_optimized_profile_preserved": false,
+  "fixed_quality_candidate_case": 11520,
+  "finite_quality_scope": "Four fixed short tasks repeated independently; no broad reasoning or sustained-service qualification",
+  "model_receipt_SHA256": "8b67b85e6cb2f3fd910e900b0299c3325d8717814f0ffab9ef505cab1dfc686b",
   "expert_eviction_policy": "two_touch_probation",
   "owner_expected_quantization_loss_accepted": true,
-  "original_mixed_optimized_profile_preserved": true,
+  "original_mixed_optimized_profile_preserved": false,
   "partial_Expert_bundles_enabled": true,
   "immutable_range_hint_enabled": true,
   "final_prefix_consumer_only": true,
@@ -111,7 +112,7 @@
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
   "previous_production_source_revision": "8705b89f5ef563da12975be06f99798a1b68f221",
-  "normal_validation_case": 10970,
+  "normal_validation_case": 11480,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 6,
@@ -170,114 +171,112 @@
   "resident_shared_payload_saving_bytes": 221184000,
   "resident_combined_payload_saving_bytes": 817152000,
   "non_Expert_except_output_precision_preserved": false,
-  "non_Expert_except_output_and_shared_precision_preserved": true,
+  "non_Expert_except_output_and_shared_precision_preserved": false,
   "fixed_quality_cases": [
-    11010
+    11520
   ],
   "fixed_quality": {
-    "case": 11010,
-    "all_four_fixed_tasks_compared": true,
+    "case": 11520,
     "compared_requests": 8,
     "semantic_correct_requests": 8,
-    "strict_raw_format_correct_requests": 6,
-    "cross_delivery_full_F32_max_error": 0,
+    "strict_raw_correct_requests": 6,
     "all_ordered_routes_equal": true,
+    "same_profile_full_F32_passed": true,
+    "maximum_same_profile_full_F32_error": 0.0,
     "all_application_caches_empty": true,
-    "reversed_delivery_order": true,
-    "raw_JSON_fences_disclosed": true,
-    "application_output_normalization": false,
     "ordinary_close_exact_restore": true,
-    "comparisons": [
+    "application_output_normalization": false,
+    "raw_JSON_fences_disclosed": true,
+    "broad_reasoning_qualified": false,
+    "sustained_service_qualified": false,
+    "rows": [
       {
-        "task": "counting",
-        "delivery_order": [
-          false,
-          true
-        ],
-        "control_total_ms": 15315.186677992344,
-        "streaming_total_ms": 11491.367197990417,
-        "control_TTFT_ms": 7805.859870970249,
-        "streaming_TTFT_ms": 5582.2728479504585,
-        "time_reduction_fraction": 0.24967501607386144,
-        "same_tokens_and_bytes": true,
-        "full_vocabulary_F32_max_error": 0,
-        "ordered_routes_equal": true
+        "ordinal": 0,
+        "task": 0,
+        "strict_raw": true,
+        "answer": "1, 2, 3, 4, 5, 6, 7, 8",
+        "full_F32_max_error": 0.0
       },
       {
-        "task": "Japanese_translation",
-        "delivery_order": [
-          true,
-          false
-        ],
-        "control_total_ms": 7007.512492001057,
-        "streaming_total_ms": 6077.418783009052,
-        "control_TTFT_ms": 6426.177092015743,
-        "streaming_TTFT_ms": 5587.585533022881,
-        "time_reduction_fraction": 0.13272808433144978,
-        "same_tokens_and_bytes": true,
-        "full_vocabulary_F32_max_error": 0,
-        "ordered_routes_equal": true
+        "ordinal": 1,
+        "task": 0,
+        "strict_raw": true,
+        "answer": "1, 2, 3, 4, 5, 6, 7, 8",
+        "full_F32_max_error": 0.0
       },
       {
-        "task": "arithmetic",
-        "delivery_order": [
-          false,
-          true
-        ],
-        "control_total_ms": 7394.448682963848,
-        "streaming_total_ms": 6116.9276639819145,
-        "control_TTFT_ms": 6284.62239998579,
-        "streaming_TTFT_ms": 5217.225673019886,
-        "time_reduction_fraction": 0.17276758197338338,
-        "same_tokens_and_bytes": true,
-        "full_vocabulary_F32_max_error": 0,
-        "ordered_routes_equal": true
+        "ordinal": 2,
+        "task": 1,
+        "strict_raw": true,
+        "answer": "\u732b",
+        "full_F32_max_error": 0.0
       },
       {
-        "task": "JSON_extraction",
-        "delivery_order": [
-          true,
-          false
-        ],
-        "control_total_ms": 19305.581988036633,
-        "streaming_total_ms": 16451.49668097496,
-        "control_TTFT_ms": 9284.077221035957,
-        "streaming_TTFT_ms": 8512.5776039958,
-        "time_reduction_fraction": 0.14783730989463584,
-        "same_tokens_and_bytes": true,
-        "full_vocabulary_F32_max_error": 0,
-        "ordered_routes_equal": true
+        "ordinal": 3,
+        "task": 1,
+        "strict_raw": true,
+        "answer": "\u732b",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 4,
+        "task": 2,
+        "strict_raw": true,
+        "answer": "42",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 5,
+        "task": 2,
+        "strict_raw": true,
+        "answer": "42",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 6,
+        "task": 3,
+        "strict_raw": false,
+        "answer": "```json\n{\"city\": \"Tokyo\", \"count\": 3}\n```",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 7,
+        "task": 3,
+        "strict_raw": false,
+        "answer": "```json\n{\"city\": \"Tokyo\", \"count\": 3}\n```",
+        "full_F32_max_error": 0.0
       }
-    ],
-    "total_control_ms": 49022.72984099388,
-    "total_streaming_ms": 40137.210325956345,
-    "scope": "Four fixed short tasks, one independent pair each; no broad reasoning or sustained-service claim",
-    "route_header_caveat": "Legacy route JSON cache_slots label is867; actual native request, startup and all reset receipts bind1381. Compare ordered records, not that stale label."
+    ]
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 10760,
+    "control_case": 10970,
     "control_is_sequential_not_ABBA": true,
-    "first_independent_decode_speedup_fraction": 0.2851598424960142,
-    "capture_charged_group_tok_s": 2.7084169223839427,
-    "capture_charged_group_speedup_fraction": 0.2541050485781
+    "first_independent_decode_speedup_fraction": 0.06389091301249716,
+    "capture_charged_group_tok_s": 2.836858173191122,
+    "capture_charged_group_speedup_fraction": 0.047422998189704746
   },
   "indexed_window0_probation": true,
   "cross_projection_demand_streaming": true,
   "speculative_source_reads": false,
   "additional_GPU_forecast": false,
   "normal_application_speedup": {
-    "control_case": 10760,
-    "independent_decode_speedup_fraction": 0.2851598424960142,
-    "retained_decode_speedup_fraction": 0.1604616116564015,
-    "independent_TTFT_reduction_fraction": 0.23330765422534527,
-    "independent_whole_time_reduction_fraction": 0.22625927679260827,
-    "ordinary_full_F32_max_error": 0,
-    "final_unlike_width_max_F32_error": 3.9359834790229797,
+    "control_case": 10970,
+    "independent_decode_speedup_fraction": 0.06389091301249716,
+    "retained_decode_speedup_fraction": 0.06334387891831694,
+    "independent_TTFT_reduction_fraction": 0.022432352646980735,
+    "independent_whole_time_reduction_fraction": 0.04126978311570362,
+    "ordinary_full_F32_max_error": 0.0,
+    "final_unlike_width_max_F32_error": 4.2038960456848145,
     "final_full_vocabulary_finite": true,
     "final_emitted_tokens_and_bytes_equal": true,
     "final_explicit_cross_cache_top1_comparison_performed": false
   },
   "all_six_previous_memory_candidates_disposed": true,
-  "all_five_current_candidates_disposed": true
+  "all_five_current_candidates_disposed": true,
+  "remaining_resident_Q8_exception": true,
+  "PLE_convolution_weight_type": "BF16",
+  "remaining_resident_matrix_weight_type": "Q8_0",
+  "resident_weight_payload_bytes": 4774100480,
+  "additional_resident_weight_saved_bytes": 3163852800
 }

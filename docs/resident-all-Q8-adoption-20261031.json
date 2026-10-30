@@ -1,0 +1,228 @@
+{
+  "schema": "ps5-qwen-all-resident-Q8-adoption-v1",
+  "date": "2026-10-31",
+  "completed": true,
+  "pending_steps": [],
+  "application_source_revision": "297851c53e8c40dbfdefa6e6c18810cbf28e2741",
+  "application_SELF": {
+    "bytes": 20065607,
+    "sha256": "bd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49"
+  },
+  "previous_application_SELF": {
+    "bytes": 19140135,
+    "sha256": "57043cbe809362e0910e69279caca1a4985c92f93114f0f06dd81ebe81bd2bbf"
+  },
+  "model_receipt_SHA256": "8b67b85e6cb2f3fd910e900b0299c3325d8717814f0ffab9ef505cab1dfc686b",
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "precision": {
+    "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
+    "other_weights": "resident Q8_0 except original BF16 PLE convolution and F32 tensors; nonresident tensors unchanged",
+    "output_weight": "Q8_0",
+    "shared_Expert_weight": "Q8_0 (144 active projections)",
+    "PLE_convolution": "BF16 [4,10240], 81920 bytes",
+    "KV_cache": "F32",
+    "activation_inputs": "F32",
+    "quantization": "Expert Q2 and resident matrix Q8_0"
+  },
+  "policy": {
+    "active_cache_slots": 1381,
+    "physical_cache_planes": 1382,
+    "cache_bytes": 2123243520,
+    "quota_transfer_bytes": 601284608,
+    "postload_device_budget_bytes": 2480332800,
+    "postload_single_buffer_bytes": 750780416,
+    "workspace_reservation_bytes": 50331648,
+    "CPU_heap_limit_bytes": 536870912,
+    "physical_Direct_reserve_bytes": 536870912,
+    "prefill_tokens": 32,
+    "prefill_Experts": 6,
+    "decode_Experts": 6,
+    "bits": 14,
+    "total_bundled_Experts": 448,
+    "maximum_parallel_source_reads": 4,
+    "graph_reuse_enabled": true,
+    "integer_activation_quantization": false,
+    "indexed_window0_probation": true,
+    "cross_projection_demand_streaming": true,
+    "source_scratch_bytes": 8388608,
+    "speculative_source_reads": false,
+    "additional_GPU_forecast": false
+  },
+  "weight_conversion": {
+    "converted_tensors": 544,
+    "original_resident_payload_bytes": 7937953280,
+    "resident_payload_bytes": 4774100480,
+    "saved_resident_payload_bytes": 3163852800,
+    "saved_GiB": 2.9465675354003906,
+    "resident_BF16_tensors_remaining": 1,
+    "resident_BF16_bytes_remaining": 81920,
+    "PLE_convolution_BF16_preserved": true,
+    "Expert_Q2_payloads_unchanged": true,
+    "other_F32_and_nonresident_tensors_unchanged": true,
+    "native_whole_source_seal_completed": true,
+    "native_model_copy_bytes_before": 7937953280,
+    "native_model_copy_bytes_after": 4774100480,
+    "native_full_copy_reduction_matches_receipt": true,
+    "total_RAM_saving_measured": false,
+    "effective_weight_types": {
+      "F32": 399,
+      "Q8_0": 689,
+      "Q2_K": 98,
+      "Q2_0": 49,
+      "BF16": 21
+    },
+    "all1256_source_ranges_verified": true
+  },
+  "normal": {
+    "case": 11480,
+    "completed": true,
+    "POSTs": 3,
+    "actual_native_frames_viewed": 2,
+    "same_profile_F32_and_routes_passed": true,
+    "all_counting_answers_correct": true,
+    "source_model_GPU_owners_positively_retired": true,
+    "ordinary_close_exact_restore": true,
+    "independent": {
+      "TTFT_ms": 5591.661356985569,
+      "decode_ms": 5309.568246006966,
+      "decode_tokens_per_second": 3.955123849437842,
+      "generated_tokens": 22,
+      "prefill_ms": 5561.576750040054,
+      "prompt_tokens": 30,
+      "total_ms": 11155.668687999249
+    },
+    "retained": {
+      "TTFT_ms": 63.07040399312973,
+      "decode_ms": 3753.298567056656,
+      "decode_tokens_per_second": 5.595078468928796,
+      "generated_tokens": 22,
+      "prefill_ms": 30.623695015907288,
+      "prompt_tokens": 30,
+      "total_ms": 4354.447544038296
+    },
+    "CPU_heap_peak_bytes": 503382016,
+    "device_ledger_peak_bytes": 2472542208,
+    "actual_workspace_capacity_peak_bytes": 8388608,
+    "same_policy_independent_full_F32_max_error": 0.0,
+    "final_unlike_cache_width_full_F32_max_error": 4.2038960456848145,
+    "all_counting_tokens_equal": true,
+    "capture_charged_pair_generated_tok_s": 2.836858173191122,
+    "historical_control_case": 10970,
+    "matched_ABBA": false,
+    "independent_decode_speedup_fraction": 0.06389091301249716,
+    "retained_decode_speedup_fraction": 0.06334387891831694,
+    "independent_TTFT_reduction_fraction": 0.022432352646980735,
+    "independent_whole_time_reduction_fraction": 0.04126978311570362,
+    "retained_TTFT_increase_ms": 0.9626259803771973,
+    "pair_speedup_fraction": 0.047422998189704746
+  },
+  "fixed_quality": {
+    "case": 11520,
+    "compared_requests": 8,
+    "semantic_correct_requests": 8,
+    "strict_raw_correct_requests": 6,
+    "all_ordered_routes_equal": true,
+    "same_profile_full_F32_passed": true,
+    "maximum_same_profile_full_F32_error": 0.0,
+    "all_application_caches_empty": true,
+    "ordinary_close_exact_restore": true,
+    "application_output_normalization": false,
+    "raw_JSON_fences_disclosed": true,
+    "broad_reasoning_qualified": false,
+    "sustained_service_qualified": false,
+    "rows": [
+      {
+        "ordinal": 0,
+        "task": 0,
+        "strict_raw": true,
+        "answer": "1, 2, 3, 4, 5, 6, 7, 8",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 1,
+        "task": 0,
+        "strict_raw": true,
+        "answer": "1, 2, 3, 4, 5, 6, 7, 8",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 2,
+        "task": 1,
+        "strict_raw": true,
+        "answer": "\u732b",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 3,
+        "task": 1,
+        "strict_raw": true,
+        "answer": "\u732b",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 4,
+        "task": 2,
+        "strict_raw": true,
+        "answer": "42",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 5,
+        "task": 2,
+        "strict_raw": true,
+        "answer": "42",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 6,
+        "task": 3,
+        "strict_raw": false,
+        "answer": "```json\n{\"city\": \"Tokyo\", \"count\": 3}\n```",
+        "full_F32_max_error": 0.0
+      },
+      {
+        "ordinal": 7,
+        "task": 3,
+        "strict_raw": false,
+        "answer": "```json\n{\"city\": \"Tokyo\", \"count\": 3}\n```",
+        "full_F32_max_error": 0.0
+      }
+    ]
+  },
+  "comparison_limits": {
+    "cross_precision_full_logit_difference_measured": false,
+    "quantized_vs_BF16_logit_equality_required": false,
+    "historical_performance_control_is_ABBA": false,
+    "cache_capacity_changed": false,
+    "nonresident_BF16_and_all_F32_weights_preserved": true,
+    "CPU_GPU_utilization_available": false
+  },
+  "placement": {
+    "completed": true,
+    "case": 11560,
+    "normal_case": 11480,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
+  },
+  "CI_runs": 0,
+  "reboots": 0,
+  "forced_signals": 0
+}
