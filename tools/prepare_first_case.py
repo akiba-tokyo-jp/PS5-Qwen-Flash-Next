@@ -101,7 +101,12 @@ def qualified_control(context, production=False, installation=None):
         mixed_precision=dict(q4_precision,Expert_weights='Gate/Up Q2_K; Down Q4_0')
         all_q2_precision=dict(q4_precision,Expert_weights='Gate/Up Q2_K; Down Q2_0 MSE')
         from performance_production import OUTPUT_Q8_PRECISION,require_performance_production
-        if(isinstance(installation,dict)and(installation.get('precision')==OUTPUT_Q8_PRECISION or
+        if(isinstance(installation,dict)and installation.get('qualification_report')=='docs/memory-delivery-graph-adoption-20261030.json'):
+            from memory_graph_production import require_memory_graph_production
+            require_memory_graph_production(installation,context,read(ROOT/'docs/memory-delivery-graph-adoption-20261030.json'))
+            required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
+                'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
+        elif(isinstance(installation,dict)and(installation.get('precision')==OUTPUT_Q8_PRECISION or
                 installation.get('qualification_report')=='docs/six-candidate-adoption-20261030.json')):
             require_performance_production(installation,context,read(ROOT/'docs/six-candidate-adoption-20261030.json'))
             required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',

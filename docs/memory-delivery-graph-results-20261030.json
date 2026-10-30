@@ -1,0 +1,403 @@
+{
+  "schema": "ps5-qwen-memory-delivery-graph-results-v1",
+  "date": "2026-10-30",
+  "completed": true,
+  "production_adopted": true,
+  "source_revision": "8705b89f5ef563da12975be06f99798a1b68f221",
+  "native_normal_measurements": [
+    {
+      "case": 10240,
+      "label": "fresh997_control",
+      "completed": true,
+      "ordinary_close_exact_restore": true,
+      "independent": {
+        "TTFT_ms": 7779.690796971321,
+        "decode_ms": 7722.187506973743,
+        "decode_tokens_per_second": 2.7194366856587395,
+        "generated_tokens": 22,
+        "prefill_ms": 7748.859663009644,
+        "prompt_tokens": 30,
+        "total_ms": 15857.094184994698
+      },
+      "retained": {
+        "TTFT_ms": 59.81014400720596,
+        "decode_ms": 5678.529992997646,
+        "decode_tokens_per_second": 3.6981401922496993,
+        "generated_tokens": 22,
+        "prefill_ms": 29.938350021839142,
+        "prompt_tokens": 30,
+        "total_ms": 6533.394461035728
+      },
+      "capture_charged_pair_generated_tok_s": 1.9651201318377967,
+      "same_policy_independent_full_F32_max_error": 0.0,
+      "final_unlike_cache_width_full_F32_max_error": 6.634333610534668,
+      "CPU_heap_peak_bytes": 503382016,
+      "device_ledger_peak_bytes": 2071986176,
+      "actual_workspace_capacity_peak_bytes": null,
+      "all_counting_tokens_equal": true
+    },
+    {
+      "case": 10270,
+      "label": "completion_ordered997",
+      "completed": true,
+      "ordinary_close_exact_restore": true,
+      "independent": {
+        "TTFT_ms": 7667.447405993938,
+        "decode_ms": 7715.978588998318,
+        "decode_tokens_per_second": 2.7216249705439117,
+        "generated_tokens": 22,
+        "prefill_ms": 7638.066905975342,
+        "prompt_tokens": 30,
+        "total_ms": 15743.72899901867
+      },
+      "retained": {
+        "TTFT_ms": 59.83299797773361,
+        "decode_ms": 5685.544292986393,
+        "decode_tokens_per_second": 3.6935777680784763,
+        "generated_tokens": 22,
+        "prefill_ms": 29.932816982269287,
+        "prompt_tokens": 30,
+        "total_ms": 6544.051424980164
+      },
+      "capture_charged_pair_generated_tok_s": 1.974175945874901,
+      "same_policy_independent_full_F32_max_error": 0.0,
+      "final_unlike_cache_width_full_F32_max_error": 6.634333610534668,
+      "CPU_heap_peak_bytes": 503382016,
+      "device_ledger_peak_bytes": 2071986176,
+      "actual_workspace_capacity_peak_bytes": null,
+      "all_counting_tokens_equal": true
+    },
+    {
+      "case": 10320,
+      "label": "cache1125",
+      "completed": true,
+      "ordinary_close_exact_restore": true,
+      "independent": {
+        "TTFT_ms": 7724.373602032661,
+        "decode_ms": 7429.601490020752,
+        "decode_tokens_per_second": 2.826531144127536,
+        "generated_tokens": 22,
+        "prefill_ms": 7693.527632951736,
+        "prompt_tokens": 30,
+        "total_ms": 15487.095961034298
+      },
+      "retained": {
+        "TTFT_ms": 59.62259101867676,
+        "decode_ms": 5252.514074027538,
+        "decode_tokens_per_second": 3.998085431858264,
+        "generated_tokens": 22,
+        "prefill_ms": 29.976197004318237,
+        "prompt_tokens": 30,
+        "total_ms": 6054.77666503191
+      },
+      "capture_charged_pair_generated_tok_s": 2.0425336628700927,
+      "same_policy_independent_full_F32_max_error": 0.0,
+      "final_unlike_cache_width_full_F32_max_error": 3.4549508094787598,
+      "CPU_heap_peak_bytes": 503382016,
+      "device_ledger_peak_bytes": 2269118464,
+      "actual_workspace_capacity_peak_bytes": 8388608,
+      "all_counting_tokens_equal": true
+    },
+    {
+      "case": 10380,
+      "label": "cache1253_workspace64",
+      "completed": true,
+      "ordinary_close_exact_restore": true,
+      "independent": {
+        "TTFT_ms": 7627.282689034939,
+        "decode_ms": 7322.254861950874,
+        "decode_tokens_per_second": 2.867969006258402,
+        "generated_tokens": 22,
+        "prefill_ms": 7596.498863995075,
+        "prompt_tokens": 30,
+        "total_ms": 15240.068495035172
+      },
+      "retained": {
+        "TTFT_ms": 61.05750995874405,
+        "decode_ms": 4762.823873996735,
+        "decode_tokens_per_second": 4.409148974551058,
+        "generated_tokens": 22,
+        "prefill_ms": 29.198720037937164,
+        "prompt_tokens": 30,
+        "total_ms": 5513.636934995651
+      },
+      "capture_charged_pair_generated_tok_s": 2.120103330383188,
+      "same_policy_independent_full_F32_max_error": 0.0,
+      "final_unlike_cache_width_full_F32_max_error": 4.432245254516602,
+      "CPU_heap_peak_bytes": 503382016,
+      "device_ledger_peak_bytes": 2273312768,
+      "actual_workspace_capacity_peak_bytes": 8388608,
+      "all_counting_tokens_equal": true
+    },
+    {
+      "case": 10530,
+      "label": "shared_Q8_cache1253",
+      "completed": true,
+      "ordinary_close_exact_restore": true,
+      "independent": {
+        "TTFT_ms": 7695.300612986088,
+        "decode_ms": 7474.860065996647,
+        "decode_tokens_per_second": 2.8094171415368168,
+        "generated_tokens": 22,
+        "prefill_ms": 7664.47421002388,
+        "prompt_tokens": 30,
+        "total_ms": 15476.361216962337
+      },
+      "retained": {
+        "TTFT_ms": 61.174980998039246,
+        "decode_ms": 4712.2426699995995,
+        "decode_tokens_per_second": 4.456476771388725,
+        "generated_tokens": 22,
+        "prefill_ms": 29.919346034526825,
+        "prompt_tokens": 30,
+        "total_ms": 5444.076002001762
+      },
+      "capture_charged_pair_generated_tok_s": 2.1032065219035947,
+      "same_policy_independent_full_F32_max_error": 0.0,
+      "final_unlike_cache_width_full_F32_max_error": 8.082051277160645,
+      "CPU_heap_peak_bytes": 503382016,
+      "device_ledger_peak_bytes": 2273312768,
+      "actual_workspace_capacity_peak_bytes": 8388608,
+      "all_counting_tokens_equal": true
+    },
+    {
+      "case": 10640,
+      "label": "width_CPU_plans1253",
+      "completed": true,
+      "ordinary_close_exact_restore": true,
+      "independent": {
+        "TTFT_ms": 7642.119717955589,
+        "decode_ms": 7369.505083024502,
+        "decode_tokens_per_second": 2.8495807742059984,
+        "generated_tokens": 22,
+        "prefill_ms": 7611.2661319971085,
+        "prompt_tokens": 30,
+        "total_ms": 15305.054046988487
+      },
+      "retained": {
+        "TTFT_ms": 63.53034794330597,
+        "decode_ms": 4772.760130047798,
+        "decode_tokens_per_second": 4.39996970888828,
+        "generated_tokens": 22,
+        "prefill_ms": 30.654003977775574,
+        "prompt_tokens": 30,
+        "total_ms": 5531.934364974499
+      },
+      "capture_charged_pair_generated_tok_s": 2.1116295277458907,
+      "same_policy_independent_full_F32_max_error": 0.0,
+      "final_unlike_cache_width_full_F32_max_error": 4.432245254516602,
+      "CPU_heap_peak_bytes": 503382016,
+      "device_ledger_peak_bytes": 2273312768,
+      "actual_workspace_capacity_peak_bytes": 8388608,
+      "all_counting_tokens_equal": true,
+      "retained_width_plans": {
+        "GPU_schedule_reallocated_after_positive_sync": true,
+        "enabled": true,
+        "invalidations": 0,
+        "new_topologies": 14,
+        "reactivations": 0,
+        "retained_CPU_metadata_peak_bytes": 18465264
+      }
+    },
+    {
+      "case": 10760,
+      "label": "shared_Q8_cache1381_checkpoint_margin",
+      "completed": true,
+      "ordinary_close_exact_restore": true,
+      "independent": {
+        "TTFT_ms": 7460.585538029671,
+        "decode_ms": 7259.612729012966,
+        "decode_tokens_per_second": 2.892716289957689,
+        "generated_tokens": 22,
+        "prefill_ms": 7429.788082003593,
+        "prompt_tokens": 30,
+        "total_ms": 15038.472885012627
+      },
+      "retained": {
+        "TTFT_ms": 63.55817198753357,
+        "decode_ms": 4631.456900000572,
+        "decode_tokens_per_second": 4.534210390686655,
+        "generated_tokens": 22,
+        "prefill_ms": 31.354583978652954,
+        "prompt_tokens": 30,
+        "total_ms": 5335.281865000725
+      },
+      "capture_charged_pair_generated_tok_s": 2.1596411923026197,
+      "same_policy_independent_full_F32_max_error": 0.0,
+      "final_unlike_cache_width_full_F32_max_error": 7.568033695220947,
+      "CPU_heap_peak_bytes": 503382016,
+      "device_ledger_peak_bytes": 2470445056,
+      "actual_workspace_capacity_peak_bytes": 8388608,
+      "all_counting_tokens_equal": true
+    },
+    {
+      "case": 10780,
+      "label": "miss_ranked532_triplets1253",
+      "completed": true,
+      "ordinary_close_exact_restore": true,
+      "independent": {
+        "TTFT_ms": 7794.536567032337,
+        "decode_ms": 7373.185835003853,
+        "decode_tokens_per_second": 2.848158241218265,
+        "generated_tokens": 22,
+        "prefill_ms": 7763.0697229504585,
+        "prompt_tokens": 30,
+        "total_ms": 15456.15497303009
+      },
+      "retained": {
+        "TTFT_ms": 61.40872198343277,
+        "decode_ms": 4688.2561630010605,
+        "decode_tokens_per_second": 4.479277426376254,
+        "generated_tokens": 22,
+        "prefill_ms": 29.22910898923874,
+        "prompt_tokens": 30,
+        "total_ms": 5437.000360012054
+      },
+      "capture_charged_pair_generated_tok_s": 2.105952849085212,
+      "same_policy_independent_full_F32_max_error": 0.0,
+      "final_unlike_cache_width_full_F32_max_error": 4.432245254516602,
+      "CPU_heap_peak_bytes": 503382016,
+      "device_ledger_peak_bytes": 2273312768
+    }
+  ],
+  "GPU_diagnostic": {
+    "diagnostic_scheduling_changes": true,
+    "fused_ranges_attributed_to_terminal_node": true,
+    "groups": [
+      {
+        "decode_kernel_ns": 0,
+        "group": "Q2_weight_conversion",
+        "intervals": 0,
+        "kernel_ns": 0,
+        "prefill_kernel_ns": 0
+      },
+      {
+        "decode_kernel_ns": 104886260,
+        "group": "Q2_MoE_matmul",
+        "intervals": 3456,
+        "kernel_ns": 270119900,
+        "prefill_kernel_ns": 165233640
+      },
+      {
+        "decode_kernel_ns": 93540470,
+        "group": "output_projection",
+        "intervals": 312,
+        "kernel_ns": 114774510,
+        "prefill_kernel_ns": 21234040
+      },
+      {
+        "decode_kernel_ns": 136478630,
+        "group": "shared_Expert_matmul",
+        "intervals": 4608,
+        "kernel_ns": 176195790,
+        "prefill_kernel_ns": 39717160
+      },
+      {
+        "decode_kernel_ns": 600047120,
+        "group": "attention_SSM",
+        "intervals": 11544,
+        "kernel_ns": 889840970,
+        "prefill_kernel_ns": 289793850
+      },
+      {
+        "decode_kernel_ns": 1176110950,
+        "group": "other",
+        "intervals": 60361,
+        "kernel_ns": 1439585320,
+        "prefill_kernel_ns": 263474370
+      }
+    ],
+    "host_source_wait_and_external_copies_excluded": true,
+    "ordinary_speed_comparison_valid": false,
+    "timestamp_period_ps": 10000,
+    "timestamp_valid_bits": 64
+  },
+  "caveats": [
+    "One fresh normal control; these are sequential normal cohorts, not a matched ABBA.",
+    "Do not add isolated percentage gains.",
+    "Retained prompt includes exact prefix reuse and causal verification; independent and retained speeds are separate conditions.",
+    "CPU heap, app device ledger, physical Direct/Flexible memory and kernel pages are separate accounts.",
+    "Short fixed prompts do not qualify sustained service or broad reasoning."
+  ],
+  "candidate_disposition": {
+    "cache_redistribution": "adopted1381_with64MiB_workspace",
+    "shared_Expert_Q8": "adopted144_active_projections",
+    "miss_retention_and_placement": "frequency_policies_screened_worse; new532_triplet_placement_measured_mixed_no_whole_pair_gain_not_adopted",
+    "completion_ordered_delivery": "measured_mixed_under_one_percent_not_adopted",
+    "width_specific_CPU_plans": "measured_zero_accepted_reactivations_not_adopted",
+    "GPU_kernel_work": "diagnostic_complete_no_specific_shader_speed_win_established"
+  },
+  "pending_steps": [],
+  "failure_evidence": [
+    {
+      "case": 10520,
+      "kind": "CPU_pre_GPU_raw_metadata_newline_hash_mismatch",
+      "superseded_by": 10530
+    },
+    {
+      "case": 10660,
+      "kind": "checkpoint_software_quota_refusal",
+      "ordinary_close_exact_restore": true,
+      "original_GPU_uncertainty_preserved": true,
+      "superseded_by": 10760
+    },
+    {
+      "case": 10690,
+      "kind": "CPU_integrity1123_below1154_before_canonical_publication",
+      "title_launches": 0,
+      "GPU_calls": 0,
+      "settings_restored": true
+    },
+    {
+      "case": 10740,
+      "kind": "strict_raw_JSON_fence_quality_refusal_after_seven_complete_requests",
+      "ordinary_close_exact_restore": true,
+      "contents_correct_on_all_seven": true,
+      "remaining_JSON_repeat_only": 10800
+    }
+  ],
+  "optional_cleanup": {
+    "programs_retired": 11,
+    "old_setting_backups_remaining": 55,
+    "permission_change_rejected_by_automatic_review": true,
+    "explicit_owner_reply_pending": true,
+    "not_a_prerequisite_for_inference_comparisons": true
+  },
+  "adoption_record": "docs/memory-delivery-graph-adoption-20261030.json",
+  "selected": {
+    "bytes": 19112551,
+    "sha256": "5c5d70347f25d2fe0905da3325519c056038475254fbf90af745af61c7b126ea"
+  },
+  "placement": {
+    "completed": true,
+    "case": 10820,
+    "normal_case": 10760,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
+  },
+  "fixed_quality": {
+    "all_four_fixed_tasks_compared": true,
+    "compared_requests": 8,
+    "semantic_correct_requests": 8,
+    "strict_raw_format_correct_requests": 6,
+    "same_policy_repeat_full_F32_max_error": 0,
+    "raw_JSON_fences_disclosed": true,
+    "application_output_normalization": false,
+    "cases": [
+      10740,
+      10800
+    ],
+    "scope": "Fixed short counting, Japanese translation, arithmetic and JSON extraction; broad reasoning unqualified"
+  }
+}

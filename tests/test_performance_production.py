@@ -9,7 +9,7 @@ from prepare_first_case import qualified_control
 class PerformanceProductionTests(unittest.TestCase):
  def setUp(self):
   self.report=json.loads((ROOT/'docs/six-candidate-adoption-20261030.json').read_text())
-  self.installation=json.loads((ROOT/'config/production-installation.json').read_text())
+  self.installation=json.loads((ROOT/'config/production-installation-output-Q8-20261030.json').read_text())
   r=self.report
   self.context=dict(prefill_tokens=16,selected_routing_policy=14,active_cache_slots=997,output_weight_type='Q8_0',
    graph_reuse_disabled_for_policy=False,Expert_format='Gate_Up_Q2_K_Down_Q2_0_MSE',normal_performance_case=r['placement']['normal_case'],

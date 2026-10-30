@@ -20,6 +20,46 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The memory/delivery/graph campaign is complete in
+`docs/memory-delivery-graph-results-20261030.json` and
+`docs/memory-delivery-graph-adoption-20261030.json`. Placement10820 selects
+SELF5c5d70347f25d2fe0905da3325519c056038475254fbf90af745af61c7b126ea
+(19112551 bytes), implementation8705b89f5ef563da12975be06f99798a1b68f221.
+Expert Q2 stays unchanged; output and144 active shared-Expert projections use
+Q8_0. Other weights remain original BF16/F32 and activation/KV remain F32.
+Cache1381/1382 planes uses2123243520 bytes. Explicit post-load quota transfer
+601284608 includes the checkpoint allowance and derives from817152000 actual
+combined resident payload savings. CPU512/physical Direct reserve512 MiB remain;
+workspace64 MiB exceeds the measured8 MiB capacity. Keep every physical/kernel,
+owner and positive completion guard, driver872cc126 cumulative-idle and disabled
+persistent caches. The device ledger is not physical or kernel free memory.
+
+Normal10760 completes all three requests and two viewed actual native frames.
+Independent decode2.892716 tok/s, TTFT7.460586s and total15.038473s; retained
+decode4.534210, TTFT63.558ms and total5.335282s. Capture-charged pair throughput
+improves9.898685% over fresh997 control10240. These are sequential cohorts,
+not matched ABBA. Retained TTFT increases3.748ms; disclose it. Same-policy full
+F32 repeat error is0; final unlike-cache/width maximum7.568034 is finite with
+identical counting tokens. Fixed comparisons cover eight requests: all contents
+correct, raw format6/8 because JSON retains Markdown fences. No application
+normalization or broad reasoning/sustained-service qualification is claimed.
+The early strict-format failure10740 is preserved; only the missing JSON repeat
+pair is run in10800. Completion delivery, frequency retention,532-triplet
+placement and width-plan variants show no whole-pair benefit and are closed.
+GPU timestamps are diagnostic; no specific shader gain is established.
+
+Placement10820 verifies current and immediate-control programs plus both sets
+of five settings with native whole SHA256/identity/EOF, restores ownership and
+confirms fresh idle. The original5487 control and host archives remain. This
+current-and-immediate-control policy supersedes the older current-only state.
+Eleven obsolete trial programs are retired. The55 setting backups selected by
+cleanup10730 remain:
+automatic approval review rejected temporary runtime-directory permission changes
+for their deletion; an explicit owner reply is pending. Do not execute that
+cleanup or infer permission from this file. It is separate from the completed
+six-candidate qualification and production placement. No CI, reboot or agents.
+Earlier navigation/results below are historical and do not override this selection.
+
 Owner-authorized cleanup10200 supersedes console rollback retention below.
 See `docs/obsolete-version-cleanup-20261030.md` / `.json`. Only the selected
 SELF5487e687 and five current settings remain;108 obsolete executable copies

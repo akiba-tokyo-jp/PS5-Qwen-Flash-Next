@@ -176,3 +176,27 @@ frozen1253 screen covers170 independent and88 retained actual misses. Native
 CPU helper10686 writes and whole-SHA/EOF verifies112 complete supplemental
 triplets (172,490,752 bytes), retires its Direct owner and preserves every source.
 Application10710 selects that sealed superset; its GPU comparison remains pending.
+
+## Final disposition
+
+Normal10760 completes the explicit shared-Q8/1381 checkpoint allowance and every
+original owner/completion guard. Placement10780 completes the532-triplet
+comparison but has a mixed result: independent2.848158 tok/s, total15456.155 ms;
+retained4.479277, total5437.000 ms. Its whole-pair time is0.672% higher than1253,
+so the448-triplet placement remains selected. Neither frequency replacement nor
+new placement is left pending. Diagnostic10560 and width-plan10640 are closed
+without a production kernel or topology replacement.
+
+Quality10740 completes seven requests before its strict raw-format assertion:
+counting/Japanese/arithmetic pairs are F32-exact and correct; JSON has the correct
+contents in a Markdown fence. The remaining JSON pair alone completes in10800,
+with exact same-policy F32/routes and positive source/model/GPU retirement.
+Content and raw format are scored separately; no application normalization is
+added. All four required pairs are compared. The known early failure is retained.
+
+Placement10820 installs the exact10760 program/settings, verifies both programs
+and both sets of five settings using native whole SHA256/identity/EOF, restores
+ownership and confirms fresh idle. See the [final results](memory-delivery-graph-results-20261030.md)
+and [adoption record](memory-delivery-graph-adoption-20261030.json). No candidate,
+selected implementation, finite qualification or production placement remains.
+Optional old-setting cleanup is explicitly permission-blocked and separate.
