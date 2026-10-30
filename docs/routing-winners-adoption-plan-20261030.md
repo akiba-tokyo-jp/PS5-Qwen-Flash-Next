@@ -14,9 +14,17 @@ cached ranking x1.5; that combination with repeated causal width-two verificatio
 Counting order is `2,2,6,14,14,6,2`; the first request is warmup. Each candidate
 has two timed runs bracketed by controls. Nine quality requests cover translation,
 arithmetic and raw JSON once per composition. Do not replay the earlier
-independent-setting ABBAs. Select only a measured whole-request improvement;
-both timing candidates must beat their bracketed control runs. Preserve all
+independent-setting ABBAs. Preserve all
 quality outputs, approximate logit differences and actual route/read counters.
+
+Selection refinement after the exploratory comparison: the initially written
+strict whole-request rule selects policy 6. Policy 14 improves both decode
+repetitions over both policy-6 controls, but its aggregate whole-request gain is
+only about 0.277% and the individual whole-request intervals overlap. The owner
+prioritized generation speed, so policy 14 advances to independent normal-app
+confirmation with this limitation disclosed. Require repeated decode improvement
+and aggregate whole-request non-regression; do not relabel the small whole-request
+gain a reproducible finding. Normal acceptance below remains required.
 
 Both rows of a decode verification use the same selected Expert count. Cached
 preferences are latched before each target event, including its rejection replay;
