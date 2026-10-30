@@ -1,5 +1,30 @@
 # PS5 Flash Next plan status
 
+The [routing/sharing production adoption](routing-winners-adoption-20261030.md)
+and [sanitized evidence](routing-winners-adoption-20261030.json) close the latest
+implementation request through actual placement. Normal 9550 measures
+2.565459 independent decode tok/s (+98.277%), exact-repeat 3.522102 with
+62.492 ms TTFT, and capture-charged pair throughput 1.497207 (+65.212%).
+Production selects Top-6, cached ranking x1.5 and repeated width-two only on
+the final complete-prefix consumer; both widths use the same selected count.
+All nine composition quality tasks pass and every counting token matches.
+Selection refinement, the small uncertain marginal whole-request gain and
+final approximate logit difference are explicitly disclosed.
+
+Placement 9560 verifies 11 programs and five settings with native complete
+hashes, stable identity and EOF. Both actual passive frames were viewed;
+positive resource retirement, ordinary close, exact rollback preservation and
+fresh idle pass. SELF `55a8e4c4...` is installed and native/gateway/models are
+inactive. The inherited finite binding is consumed; sustained service is not
+qualified. No integration, verification or placement remains pending in this
+requested scope. Keep the [dated plan](routing-winners-adoption-plan-20261030.md)
+as completed history. Do not replay consumed cases 9510/9550/9560.
+
+## Earlier checkpoint summaries
+
+The following entries preserve their original dated scopes. Their earlier
+verification-only or production selections do not override the adoption above.
+
 The [three-family routing/sharing verification](expert-routing-sharing-results-20261030.md)
 and [JSON evidence](expert-routing-sharing-results-20261030.json) close the latest
 requested comparison. Cached ranking x1.5, decode Top-8/6 and repeated causal

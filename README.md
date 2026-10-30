@@ -7,71 +7,48 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-The [routing and multi-token comparison](docs/expert-routing-sharing-results-20261030.md)
-closes the owner's requested first-stage verification of three algorithm families.
-Matched native ABBAs measure cached ranking x1.5 at **1.841726 decode tok/s
-(+44.391%)**, Top-8 at 1.640244 (+28.855%), Top-6 at **1.974742 (+55.227%)**,
-and repeated causal width-two verification at 1.433831 (+12.674%). These individual
-gains are not additive. Uniform graph rebuilding makes them isolated comparison
-rates, not a replacement for the normal production rate below. Whole-request
-throughput gains are 20.763%, 14.033%, 24.773% and 3.501%, respectively.
+The successful routing settings are **implemented and installed in production**.
+See the [adoption report](docs/routing-winners-adoption-20261030.md),
+[sanitized evidence](docs/routing-winners-adoption-20261030.json) and
+[installation record](config/production-installation.json).
 
-Every mode passes three fixed translation/arithmetic/JSON tasks for both contents
-and raw format; counting tokens remain exact. This finite result does not measure
-broad reasoning accuracy. Completed trials are reused across two corrected
-integration failures; their incomplete overall retirement records remain explicit.
-The final 20-request cohort retires all model/source/GPU owners positively.
-Ordinary shutdown and exact production/settings restoration pass, with fresh
-idle and no reboot. These are implemented experimental settings; production
-remains the selected `db542fa2...` application below.
+Normal PS5 case 9550 measures **2.565459 independent decode tok/s** versus
+1.293876 (+98.277%). Exact prompt reuse gives **3.522102 decode tok/s** and
+62.492 ms to the first token. Capture-charged two-request throughput is
+**1.497207 generated tok/s**, +65.212%. These cache conditions remain separate;
+initial independent first-token time stays about 14 seconds.
 
-The [I/O reduction report](docs/expert-q2-io-reduction-results-20261030.md)
-and [installation record](config/production-installation.json) describe the
-selected all-Q2 application. Gate/Up use Q2_K and Down uses fitted-scale Q2_0 MSE;
-other weights remain BF16/F32 with F32 activation input and KV. It combines
-867 cache slots, original two-touch probation, 420 partial Expert bundles,
-adjacent read merging, bounded four-demand reads, atomic range hints, complete
-exact-prefix reuse and one causal target verification on the final prefix consumer.
+Production selects decode Top-6, cached ranking x1.5 and up to eight causal
+pair verifications on the final positively restored-prefix consumer. The actual
+normal consumer completes seven attempts, six accepts and one rejection with
+complete rollback. Preference snapshots stay fixed during each target event;
+both decode widths use Top-6. Prefill keeps Top-10 and exact prefix reuse remains.
+The first independent repeat is F32-exact; final approximate cache/width logits
+have maximum difference 3.666849, finite full vocabulary and identical emitted
+counting tokens. Three fixed quality tasks pass for each of the three compositions;
+broad reasoning accuracy is outside these finite checks.
 
-Normal physical-console case 9400 measures **1.293876 decode tokens/s** on the
-first independent request, **13.16896% faster** than previous 9290. Repeating
-its exact 30-token prompt gives **62.080 ms to the first token** and
-**1.264045 decode tokens/s**. These have different cache
-conditions and are reported separately. Including prefill, capture and restore,
-the two-request group gives 0.906237 generated tokens/s, 17.1481% above the
-previous matched group. Every emitted token matches; ordinary same-width F32
-and routes match exactly. The final unlike-width maximum difference 0.971474
-is disclosed alongside full-vocabulary finite/top1 checks and the earlier
-same-width/rejection qualification.
+Expert weights stay Gate/Up Q2_K and Down Q2_0 MSE; other BF16/F32 weights,
+F32 inputs/KV, every stored Expert, 867 cache slots, original probation,
+420 bundles, adjacency and four-demand reads remain. Graph reuse is disabled
+for the variable policy. Persistent shader/pipeline caches stay disabled.
 
-All four new I/O proposals have a final measured decision. Additional placement
-and four-demand reads improve independent headless ABBAs by 1.82721% and
-12.66318%; adjacency was already measured at +0.48996%. These percentages are
-not additive. Temporal protection reduces misses but slows decode 0.10565%,
-so the original policy remains. All three adopted I/O paths actually execute
-in the normal warmup and both API requests.
+Placement 9560 verifies SELF `55a8e4c4...`, all **11 programs and five settings**
+with native complete hashes/identity/EOF, and fresh idle. Both actual frames
+were viewed with CPU/GPU information, synchronized time, 2.57/3.52 tok/s and
+no chat controls. Unknown utilization remains `--`. The exact prior db542fa2,
+older Q2/Q4/BF16 and MOSS applications remain rollbacks. Native title, gateway
+and models are inactive; the inherited finite binding is consumed and sustained
+service is not qualified. No CI, reboot, forced Unix signal or GPU retry ran.
 
-The [earlier eight-family plan](docs/expert-q2-optimization-results-20261030.md)
-also retains final dispositions. Slower
-composite reads, small streaming copies and split-graph overlap are closed as
-tested. Output-head Q8 cannot complete its additional asset allocation under
-current filesystem ENOSPC; it is not adopted or reported as GPU-tested. Original
-weights remain intact. Expected Expert-Q2 quality loss is accepted: three fixed
-prompts repeated three times give 6/9 strict-format and 9/9 answer-content passes,
-without output normalization. This is not a broad reasoning-quality claim.
-
-Placement 9410 verifies SELF `db542fa2...`, all 10 canonical/rollback programs and
-5 settings, ordinary shutdown and fresh idle. Both actual native frames were
-viewed with CPU/GPU information, synchronized time, token rate and no chat UI.
-Unknown utilization counters remain `--`. The title/gateway/model are inactive;
-the finite binding is consumed and sustained service is not qualified. Original
-MOSS, BF16, Q4, mixed, probation-only and previous `bb61e2af...` applications
-remain rollbacks. The [prior distribution study](docs/expert-q2-io-distribution-20261030.md)
-retains the latency percentiles and layer/Expert miss analysis.
-
-The [plan index](docs/plan-index.md) links current results and dated historical
-controls. CI, reboot, persistent shader/pipeline caches and ambiguous retries
-remain disabled.
+The [composition comparison](docs/routing-winners-adoption-20261030.md#direct-composition-comparison)
+discloses the post-exploratory generation-speed selection refinement: repeated
+verification adds a reproducible decode gain, while its additional whole-request
+gain is small and uncertain. Independent percentages are not added.
+The [first-stage report](docs/expert-routing-sharing-results-20261030.md),
+[earlier I/O winners](docs/expert-q2-io-reduction-results-20261030.md),
+[eight-family dispositions](docs/expert-q2-optimization-results-20261030.md) and
+[plan index](docs/plan-index.md) retain the measured historical controls.
 
 ## Native driver integration
 
