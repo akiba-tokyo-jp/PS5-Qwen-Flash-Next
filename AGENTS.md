@@ -20,6 +20,17 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+Owner-authorized cleanup10200 supersedes console rollback retention below.
+See `docs/obsolete-version-cleanup-20261030.md` / `.json`. Only the selected
+SELF5487e687 and five current settings remain;108 obsolete executable copies
+and1,346 setting backups are removed. All12 formerly qualified production
+programs retain verified host archives; all model assets remain untouched.
+Do not assume historical console backup paths or the9980 trial program exist.
+Current production admission requires the completed cleanup and matching
+current-only host-archive policy; keep all numerical/memory/driver/owner guards.
+During future qualification preserve its immediate control, then retire obsolete
+console copies once replacement qualification and exact installation succeed.
+
 The six-candidate scope is complete in `docs/six-candidate-results-20261030.md`
 and `docs/six-candidate-adoption-20261030.json`. Normal10140 completes all three
 requests and two viewed native frames. Independent TTFT7.800974s, total15.986655s,
@@ -30,8 +41,8 @@ final unlike-cache/width maximum6.634334 is finite with identical counting token
 
 Placement10160 installs SELF5487e687dbc13a5f6a7655faf52d91752f3d029ba13938762b133b99e6a3a7a5
 (18299623 bytes), implementation37ac48b07cf0742636e8639fec13c4374108cb30.
-All13 programs and five settings pass native whole SHA256/identity/EOF in two
-bounded batches. Exactf49ba8ef and every older named rollback remain. The native
+At placement, all13 programs and five settings pass native whole SHA256/identity/EOF
+in two bounded batches. Their subsequent console retirement is recorded above. The native
 title/gateway/models are inactive; the finite binding is consumed. No selected
 implementation, qualification or placement step remains. Sustained service and
 broad reasoning remain unqualified. Do not replay9800/9860/9900/9950/9980/10010/

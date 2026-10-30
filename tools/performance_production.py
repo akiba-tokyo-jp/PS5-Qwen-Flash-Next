@@ -31,4 +31,23 @@ def require_performance_production(installation,context,report):
     placed.get('case')!=installation.get('production_placement_case') or placed.get('case')!=context.get('normal_performance_placement_case') or
     any(placed.get(k)is not False for k in ('native_title_running','gateway_running','model_loaded')) or
     installation.get('owner_expected_quantization_loss_accepted')is not True):
-  raise ValueError('Exact output-Q8 normal qualification, quota coupling, idle placement and every preserved rollback are required')
+  raise ValueError('Exact output-Q8 normal qualification, quota coupling and historical idle placement are required')
+ retention=installation.get('console_retention')
+ if retention is None and context.get('console_rollback_retention')is not None:
+  raise ValueError('The cleaned console requires its current retention record')
+ if retention is not None:
+  if(not isinstance(retention,dict)or retention.get('schema')!='ps5-qwen-console-retention-v1' or
+     retention.get('policy')!='current-only-host-archives' or retention.get('cleanup_case')!=10200 or
+     retention.get('completed')is not True or retention.get('application_SELF')!=installation.get('application_SELF') or
+     retention.get('current_programs')!=1 or retention.get('current_settings')!=5 or
+     retention.get('protected_files_verified')!=6 or retention.get('qualified_host_rollback_programs_verified')!=12 or
+     any(retention.get(k)is not True for k in ('owner_authorized','host_archives_preserved',
+       'obsolete_console_versions_removed','current_files_full_readback_verified','runtime_ownership_restored','model_assets_preserved')) or
+     installation.get('previous_production_rollback_preserved')is not False or
+     installation.get('all_previous_production_programs_preserved')is not False or
+     installation.get('preserved_programs_verified')!=1 or
+     context.get('obsolete_versions_cleanup_case')!=retention.get('cleanup_case') or
+     context.get('console_rollback_retention')!='current-only-host-archives' or
+     any(context.get(k)is not True for k in ('current_console_files_full_readback_verified',
+       'host_rollback_archives_preserved','obsolete_console_versions_removed'))):
+   raise ValueError('Current-only console retention requires exact cleanup, protected files and retained host archives')

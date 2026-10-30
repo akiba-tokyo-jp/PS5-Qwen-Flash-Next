@@ -31,8 +31,11 @@ are closed. Gains are measured in the combination, not added across candidates.
 The normal control is historical9720, not a fresh normal ABBA. Independent
 same-policy F32 error is0; final approximate cross-cache/width error6.634334 is
 disclosed with finite full vocabulary and identical counting tokens. Both actual
-information-only native frames were viewed. Placement10160 verifies13 programs
-and five settings; SELF `5487e687...` is installed and exactf49ba8ef remains.
+information-only native frames were viewed. Placement10160 verified13 programs
+and five settings. Subsequent [owner-authorized cleanup10200](docs/obsolete-version-cleanup-20261030.md)
+removes108 obsolete executables and1,346 setting backups. SELF `5487e687...`
+and the five current settings remain exact;12 qualified past programs retain
+host archives. The current console retains only its selected application version.
 Native/gateway/models are inactive after verification. Sustained service and
 broad reasoning remain outside this finite qualification. Driver872cc126,
 disabled persistent caches, physical reserves and no-CI policy remain.
@@ -70,9 +73,9 @@ reservation, not measured physical allocations. GPU math and the pinned driver
 are unchanged. Initial returned failures 9660/9690 and their ordinary restoration
 are retained in the evidence; neither was replayed.
 
-Placement 9730 verifies **12 programs and five settings** in two original-bounded
-native hash/identity/EOF batches. SELF `f49ba8ef...` is installed, with exact
-`55a8e4c4...` and every older rollback retained. Native/gateway/models are inactive
+At historical placement9730, **12 programs and five settings** passed two bounded
+native hash/identity/EOF batches. SELF `f49ba8ef...` was installed with exact
+`55a8e4c4...` and older rollbacks retained before cleanup10200. Native/gateway/models are inactive
 after verification; the finite binding is consumed and sustained service remains
 outside qualification. No CI, reboot, forced Unix signal or ambiguous GPU retry.
 

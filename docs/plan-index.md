@@ -1,5 +1,12 @@
 # PS5 Flash Next plan status
 
+The subsequent [owner-authorized version cleanup](obsolete-version-cleanup-20261030.md)
+retires108 obsolete executables and1,346 setting backups from the console.
+The selected SELF and five current settings pass complete raw readback;
+all12 formerly qualified program archives remain on the host. Models and
+the measured inference implementation are unchanged. Cleanup supersedes the
+historical on-console rollback retention statements below.
+
 The [six-candidate plan](six-candidate-plan-20261030.md) is complete in the
 [results](six-candidate-results-20261030.md) and
 [adoption evidence](six-candidate-adoption-20261030.json). All63 headless requests
@@ -12,8 +19,8 @@ the identical-prompt default retains its complete30-token checkpoint. Top8 is
 a tested alternative; late head cropping has no qualified gain.
 
 Placement10160 installs `5487e687...`, verifies13 programs/five settings in two
-native whole-hash batches, and retains exactf49ba8ef plus every older named
-rollback. All successful owners retire; ordinary closes, exact restorations,
+native whole-hash batches, and initially retained exactf49ba8ef plus every older
+named rollback before cleanup10200. All successful owners retire; ordinary closes, exact restorations,
 two viewed native frames and fresh final idle pass. No requested finite
 candidate, implementation or selected placement step remains. This does not
 certify sustained service or broad reasoning. No CI, reboot or agents.
