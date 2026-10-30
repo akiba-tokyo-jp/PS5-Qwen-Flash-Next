@@ -21,6 +21,12 @@ def main():
  require(engine_source(e0)==e1,'Engine changed beyond chosen width validation');checks.append(dict(engine_only_width_validation_changes=True,all_output_logits_retained=True))
  header=new['prefill16_normal']['causal_header'];require(record(header['path'])==header and Path(header['path']).read_text()==causal_header_source((ROOT/'native/app/causal_expert_sharing.h').read_text()),'Causal adapter changed beyond its chosen width validation');checks.append(dict(causal_only_prefill_width_validation_changes=True))
  for key in ('routing','graph'):require(old['routing_sharing']['actual_sources'][key]==new['routing_sharing']['actual_sources'][key],'GPU policy provider changed');checks.append(dict(provider=key,exact_original=True))
+ if 'workspace_budget'in new['prefill16_normal']:
+  from build_prefill16_workspace_monitor import workspace_header_source
+  w=new['prefill16_normal']['workspace_budget'];require(record(w['header']['path'])==w['header']and Path(w['header']['path']).read_text()==workspace_header_source((ROOT/'native/app/device_buffer_budget.h').read_text()),'Workspace header differs beyond its tighter bound')
+  require(Path(w['owner_source']['path']).read_bytes()==Path(w['original_owner_source']['path']).read_bytes()and w['aggregate_device_MiB']==1792 and w['CPU_MiB']==512,'Source reader or total working budget changed')
+  linked=Path(new['artifact']['path']).with_name('native-link.private.map').read_text();require(str(Path(w['owner_object']['path']))+':(.text.qwen_app_model_workspace_admit)'in linked,'Actual workspace callback must use the new owner object')
+  checks.append(dict(workspace_bound_tightened_MiB=248,original_total_device_MiB=1792,CPU_MiB=512))
  for row in new['prefill16_normal']['actual_sources'].values():require(record(row['path'])==row,'Actual compiled source changed')
  require(new['prefill16_normal']['scope']['prefill_tokens']==16 and new['prefill16_normal']['scope']['all_prompt_outputs_requested']and new['native_dispatch_audit']['passed']and not new['real_module_import_audit']['missing'],'Exact scope, imports and native dispatch required')
  write_json(a.out,dict(completed=True,checks=checks,original_physical_kernel_heap_ledger_ownership_positive_completion_guards_retained=True,chosen_width_policy=dict(previous=4,selected=16),PS5_operations=0,CI_runs=0))
