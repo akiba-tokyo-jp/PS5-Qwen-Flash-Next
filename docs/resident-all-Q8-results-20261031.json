@@ -1,11 +1,9 @@
 {
   "schema": "ps5-qwen-all-resident-Q8-adoption-v1",
   "date": "2026-10-31",
-  "completed": false,
-  "pending_steps": [
-    "production_placement"
-  ],
-  "application_source_revision": "efd41d409000cb0033dfd16eba7859563fb1e142",
+  "completed": true,
+  "pending_steps": [],
+  "application_source_revision": "297851c53e8c40dbfdefa6e6c18810cbf28e2741",
   "application_SELF": {
     "bytes": 20065607,
     "sha256": "bd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49"
@@ -207,7 +205,22 @@
     "CPU_GPU_utilization_available": false
   },
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 11560,
+    "normal_case": 11480,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "CI_runs": 0,
   "reboots": 0,

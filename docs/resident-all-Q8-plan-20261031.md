@@ -32,3 +32,7 @@ payloads must remain bit-identical. Keep cache capacity fixed for this compariso
 
 No CI, agents, reboot, force-kill, GPU reset or removal of original model assets.
 Host conversion/build success does not establish PS5 qualification or adoption.
+
+All five stages completed: native normal11480, fixed quality11520 and
+placement11560. See `resident-all-Q8-results-20261031.md` and the completed
+`resident-all-Q8-adoption-20261031.json`. No selected step remains pending.

@@ -2,7 +2,14 @@
 
 Normal/API/display case11480 and the eight-request fixed-task case11520 completed
 on PS5, normally closed and restored the exact57043cbe control and its settings.
-Production placement is the next stage; native qualification alone is complete.
+Placement11560 subsequently installed SELF
+`bd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49`
+(20065607bytes). Current and immediate-control programs plus both five-setting
+sets pass native whole SHA256/identity/EOF before and after placement:12 files.
+Ownership is finalized and fresh idle is confirmed. The title, gateway and model
+remain inactive. The finite validation binding is consumed; a future launch
+requires a fresh case. Every selected conversion, qualification and placement
+stage is complete.
 
 The544 remaining resident BF16 matrices become Q8_0. Routed Expert Gate/Up Q2_K
 and Down Q2_0 MSE payloads remain exact. The single small resident convolution
@@ -73,5 +80,6 @@ inference or changing numerical/answer gates. All failures and recovery evidence
 remain private. No CI, agents, reboot, forced signals or GPU reset were used.
 
 Machine-readable measurements are in
-`resident-all-Q8-results-20261031.json`; final placement must be recorded in
-`resident-all-Q8-adoption-20261031.json` before production admission.
+`resident-all-Q8-results-20261031.json`; final placement is recorded in
+`resident-all-Q8-adoption-20261031.json`. Production admission checks that exact
+completed report through `tools/resident_all_q8_production.py`.

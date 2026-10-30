@@ -20,15 +20,43 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-The owner authorized conversion of the remaining resident BF16 weights to Q8
-on2026-10-31, then explicitly clarified that the small PLE convolution alone
-must remain BF16. The scoped plan is `docs/resident-all-Q8-plan-20261031.md`:
-544 resident matrices become Q8_0; `blk.1.ple_conv1d.weight` keeps its original
-BF16 payload and[4,10240] shape. Routed Expert Q2, existing output/shared Q8,
-other F32 weights, mapped embeddings/lazy PLE/MTP and the current driver remain.
-Keep1381 slots initially to isolate the precision change. This authorization
-does not claim a new model has been qualified or installed. Host conversion,
-native comparison and production placement are distinct pending stages.
+The resident-Q8 task is complete in `docs/resident-all-Q8-results-20261031.md`
+and `docs/resident-all-Q8-adoption-20261031.json`. Placement11560 installs
+SELFbd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49
+(20065607bytes), model receipt8b67b85e. Exactly544 additional resident BF16
+matrices become Q8_0; routed Expert Q2 payloads stay exact and the small
+`blk.1.ple_conv1d.weight` remains original BF16[4,10240],81920bytes. Other F32,
+mapped embeddings/lazy PLE/MTP remain unchanged. Keep1381/1382 cache planes,
+2123243520bytes, prefill32/Top6 and continuous four-lane demand reads, the
+original CPU/physical reserves and every owner/kernel/GPU completion guard.
+Driver872cc126 cumulative-idle/archiveb57fe26e and disabled persistent caches
+remain. Use `resident_all_q8_production.py` admission; historical sections below
+do not override this installed selection.
+
+Normal11480 independent decode3.955124 tok/s, TTFT5.591661s,total11.155669s;
+repeat decode5.595078, TTFT63.070ms,total4.354448s. Decode improves6.389%/6.334%
+against historical10970, not matched ABBA. Repeat TTFT regresses0.963ms. Native
+model copies independently reconcile7937953280 ->4774100480bytes, saving
+3163852800bytes of resident payload; this is not a whole-system RAM measurement.
+The transient device ledger remains separate. Quality11520 covers four fixed
+tasks twice with empty application caches: contents8/8, raw6/8 due unchanged
+JSON fences, same-profile full F32 maximum0 and exact ordered routes. The final
+normal unlike cache/width maximum4.203896 is finite with identical counting
+output. No cross-precision full-logit, broad reasoning or sustained-service
+qualification is claimed.
+
+All selected owners retire positively; both actual normal frames are viewed.
+Both cases normally close/exactly restore. Placement verifies two programs and
+two five-setting sets (12 files), ownership and fresh idle. Title/gateway/models
+are inactive; the finite binding is consumed. Do not replay11480/11520/11560 or
+any completed transfer/reclaim helper. A host output-name collision was resumed
+without reupload; the headless collector's absent delivery column was reconciled
+without rerunning inference. Future derived recipes must include the pending
+SELF verifier's case offset8 rather than retaining an old namespace. Keep the
+unrelated55-old-settings permission block; do not execute10733. No CI, reboot,
+forced signals, GPU reset or agents were used.
+
+## Earlier delivery and cold-request campaigns (historical)
 
 The later five-candidate delivery follow-up is complete in
 `docs/delivery-followup-results-20261030.md` / `.json`. No production change is
