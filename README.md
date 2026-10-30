@@ -7,11 +7,49 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+**Width16/all prefill is implemented, qualified in the normal PS5 app, and
+installed in production.** See the [adoption evidence](docs/prefill16-adoption-20261030.json)
+and [installation record](config/production-installation.json).
+
+| Normal application metric | Previous 9550 | Selected 9720 |
+| --- | ---: | ---: |
+| Independent time to first token | 14.014686 s | **11.634333 s (-16.985%)** |
+| Independent whole request | 22.571456 s | **20.179917 s (-10.595%)** |
+| Independent decode | 2.565459 tok/s | **2.567815 tok/s** |
+| Exact repeated-prompt decode | 3.522102 tok/s | **3.448557 tok/s (-2.088%)** |
+| Repeated-prompt first token | 62.492 ms | **63.143 ms** |
+| Capture-charged two-request throughput | 1.497207 tok/s | **1.621072 tok/s (+8.273%)** |
+
+This normal integration uses the historical 9550 protocol as control, not a new
+normal ABBA. It retains every prior routing/I/O winner and complete-prefix reuse.
+Seven final causal attempts reconcile as six accepts and one rejection, with
+seven captures and one complete restore. Independent same-policy F32 rows and
+tokens are exact; the final approximate cross-cache/width difference is 7.322802,
+with finite full vocabulary and identical counting tokens. Both actual passive
+frames were viewed. Three normal requests, positive resource retirement,
+ordinary close and exact control restoration pass before placement.
+
+The internal workspace capacity and fixed ledger reservation are tightened from
+256 to 248 MiB. Each actual four-buffer capacity sum still has to fit that tighter
+bound; total post-load device 1792 MiB, single buffer 512 MiB, CPU 512 MiB and all
+physical Direct/Flexible/kernel reserves remain. This reduces conservative ledger
+reservation, not measured physical allocations. GPU math and the pinned driver
+are unchanged. Initial returned failures 9660/9690 and their ordinary restoration
+are retained in the evidence; neither was replayed.
+
+Placement 9730 verifies **12 programs and five settings** in two original-bounded
+native hash/identity/EOF batches. SELF `f49ba8ef...` is installed, with exact
+`55a8e4c4...` and every older rollback retained. Native/gateway/models are inactive
+after verification; the finite binding is consumed and sustained service remains
+outside qualification. No CI, reboot, forced Unix signal or ambiguous GPU retry.
+
+## Earlier finite prefill comparison
+
 The first [lean-qwenflash prefill comparison](docs/lean-prefill-results-20261030.json)
 is complete on the PS5: 31 requests, one model load, six compositions, positive
 resource retirement, ordinary close and exact production/settings restoration.
-These are isolated experimental implementations; the production selection below
-is retained. The 30-token counting prompt has two symmetric timed repetitions
+These were isolated experimental implementations; normal production adoption is
+qualified separately above. The 30-token counting prompt has two timed repetitions
 per mode, following one width-four warmup.
 
 | Prefill width | Output rows per chunk | Mean prefill seconds | Mean whole request seconds | Decode tok/s |
@@ -37,7 +75,7 @@ reasoning qualification. Zero-output batches are avoided because the current
 backend's final-layer crop bypasses its Expert-cache path. Common context
 capacity16, 160-entry CPU bookkeeping and complete route/output counters are
 qualified; GPU math, four-read delivery, cache budget and original guards remain.
-Normal prefix/speculation integration is a separate scope. Memory-phase reuse,
+Normal prefix/speculation integration is now completed above. Memory-phase reuse,
 complete packing and other lean-qwenflash ideas are not tested by this comparison.
 
 The owner's [storage cleanup](docs/closed-trial-cleanup-20261030.json) removes
@@ -46,7 +84,9 @@ The owner's [storage cleanup](docs/closed-trial-cleanup-20261030.json) removes
 host preservation copy. Production, all 11 qualified programs, five settings
 and all model data remain; 16 unclassified historical copies are retained.
 
-The successful routing settings are **implemented and installed in production**.
+## Retained routing baseline
+
+The successful routing settings remain **implemented in production**.
 See the [adoption report](docs/routing-winners-adoption-20261030.md),
 [sanitized evidence](docs/routing-winners-adoption-20261030.json) and
 [installation record](config/production-installation.json).
@@ -72,7 +112,7 @@ F32 inputs/KV, every stored Expert, 867 cache slots, original probation,
 420 bundles, adjacency and four-demand reads remain. Graph reuse is disabled
 for the variable policy. Persistent shader/pipeline caches stay disabled.
 
-Placement 9560 verifies SELF `55a8e4c4...`, all **11 programs and five settings**
+Historical placement 9560 verifies SELF `55a8e4c4...`, all **11 programs and five settings**
 with native complete hashes/identity/EOF, and fresh idle. Both actual frames
 were viewed with CPU/GPU information, synchronized time, 2.57/3.52 tok/s and
 no chat controls. Unknown utilization remains `--`. The exact prior db542fa2,
