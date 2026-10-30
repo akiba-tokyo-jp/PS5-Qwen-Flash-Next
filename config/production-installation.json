@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-10-30",
-  "application_source_revision": "8705b89f5ef563da12975be06f99798a1b68f221",
+  "application_source_revision": "2f7ab770a750b1008fe85aa3646570783de1d8d0",
   "application_SELF": {
-    "bytes": 19112551,
-    "sha256": "5c5d70347f25d2fe0905da3325519c056038475254fbf90af745af61c7b126ea"
+    "bytes": 19140135,
+    "sha256": "57043cbe809362e0910e69279caca1a4985c92f93114f0f06dd81ebe81bd2bbf"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -26,34 +26,34 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "5487e687dbc13a5f6a7655faf52d91752f3d029ba13938762b133b99e6a3a7a5",
+  "previous_production_SHA256": "5c5d70347f25d2fe0905da3325519c056038475254fbf90af745af61c7b126ea",
   "active_expert_slots": 1381,
   "physical_cache_planes": 1382,
   "expert_cache_bytes": 2123243520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 7460.585538029671,
-      "decode_ms": 7259.612729012966,
-      "decode_tokens_per_second": 2.892716289957689,
+      "TTFT_ms": 5719.973827004433,
+      "decode_ms": 5648.801408946514,
+      "decode_tokens_per_second": 3.7176028115876782,
       "generated_tokens": 22,
-      "prefill_ms": 7429.788082003593,
+      "prefill_ms": 5689.243646979332,
       "prompt_tokens": 30,
-      "total_ms": 15038.472885012627
+      "total_ms": 11635.87888598442
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 63.55817198753357,
-      "decode_ms": 4631.456900000572,
-      "decode_tokens_per_second": 4.534210390686655,
+      "TTFT_ms": 62.10777801275253,
+      "decode_ms": 3991.047057032585,
+      "decode_tokens_per_second": 5.261777097565438,
       "generated_tokens": 22,
-      "prefill_ms": 31.354583978652954,
+      "prefill_ms": 29.922793984413147,
       "prompt_tokens": 30,
-      "total_ms": 5335.281865000725
+      "total_ms": 4609.77356004715
     }
   ],
-  "normal_application_case": 10760,
-  "production_placement_case": 10820,
+  "normal_application_case": 10970,
+  "production_placement_case": 11050,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -68,8 +68,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": true,
-  "qualification_report": "docs/memory-delivery-graph-adoption-20261030.json",
-  "historical_installation": "config/production-installation-output-Q8-20261030.json",
+  "qualification_report": "docs/cold-request-adoption-20261030.json",
+  "historical_installation": "config/production-installation-shared-Q8-20261030.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -78,8 +78,8 @@
   "private_repository": true,
   "GitHub_Actions_enabled": false,
   "original_Q4_optimized_profile_preserved": true,
-  "fixed_quality_candidate_case": 10800,
-  "finite_quality_scope": "Fixed short counting, Japanese translation, arithmetic and JSON extraction; broad reasoning unqualified",
+  "fixed_quality_candidate_case": 11010,
+  "finite_quality_scope": "Four fixed short tasks, one independent pair each; no broad reasoning or sustained-service claim",
   "model_receipt_SHA256": "7ba7bbf919eba43a365f570930558b9405b60ad66f9e3cdeea104ce5557377fb",
   "expert_eviction_policy": "two_touch_probation",
   "owner_expected_quantization_loss_accepted": true,
@@ -110,8 +110,8 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "previous_production_source_revision": "37ac48b07cf0742636e8639fec13c4374108cb30",
-  "normal_validation_case": 10760,
+  "previous_production_source_revision": "8705b89f5ef563da12975be06f99798a1b68f221",
+  "normal_validation_case": 10970,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 6,
@@ -125,14 +125,13 @@
   "gateway_running": false,
   "model_loaded": false,
   "finite_binding_consumed": true,
-  "prefill_tokens": 16,
+  "prefill_tokens": 32,
   "all_prompt_outputs_requested": true,
   "supplemental_Expert_bundles": 28,
   "output_only_Q8_exception": false,
   "integer_activation_quantization": false,
   "postload_quota_transfer_bytes": 601284608,
   "resident_output_payload_saving_bytes": 595968000,
-  "all_six_current_candidates_disposed": true,
   "console_retention": {
     "policy": "current-and-immediate-control-host-archives",
     "current_programs": 1,
@@ -142,7 +141,7 @@
     "host_archives_preserved": true,
     "qualified_host_rollback_programs_verified": 13
   },
-  "retention_report": "docs/memory-delivery-graph-adoption-20261030.json",
+  "retention_report": "docs/cold-request-adoption-20261030.json",
   "historical_placement_programs_verified": 13,
   "historical_cache_same_model_ABBA_case": 8900,
   "historical_cache_same_model_decode_speedup_fraction": 0.09506953699578458,
@@ -164,7 +163,7 @@
   },
   "shared_Expert_Q8_exception": true,
   "shared_Expert_Q8_tensors": 144,
-  "workspace_reservation_bytes": 67108864,
+  "workspace_reservation_bytes": 50331648,
   "postload_single_buffer_bytes": 750780416,
   "physical_Direct_reserve_bytes": 536870912,
   "CPU_heap_limit_bytes": 536870912,
@@ -173,29 +172,112 @@
   "non_Expert_except_output_precision_preserved": false,
   "non_Expert_except_output_and_shared_precision_preserved": true,
   "fixed_quality_cases": [
-    10740,
-    10800
+    11010
   ],
   "fixed_quality": {
+    "case": 11010,
     "all_four_fixed_tasks_compared": true,
     "compared_requests": 8,
     "semantic_correct_requests": 8,
     "strict_raw_format_correct_requests": 6,
-    "same_policy_repeat_full_F32_max_error": 0,
+    "cross_delivery_full_F32_max_error": 0,
+    "all_ordered_routes_equal": true,
+    "all_application_caches_empty": true,
+    "reversed_delivery_order": true,
     "raw_JSON_fences_disclosed": true,
     "application_output_normalization": false,
-    "cases": [
-      10740,
-      10800
+    "ordinary_close_exact_restore": true,
+    "comparisons": [
+      {
+        "task": "counting",
+        "delivery_order": [
+          false,
+          true
+        ],
+        "control_total_ms": 15315.186677992344,
+        "streaming_total_ms": 11491.367197990417,
+        "control_TTFT_ms": 7805.859870970249,
+        "streaming_TTFT_ms": 5582.2728479504585,
+        "time_reduction_fraction": 0.24967501607386144,
+        "same_tokens_and_bytes": true,
+        "full_vocabulary_F32_max_error": 0,
+        "ordered_routes_equal": true
+      },
+      {
+        "task": "Japanese_translation",
+        "delivery_order": [
+          true,
+          false
+        ],
+        "control_total_ms": 7007.512492001057,
+        "streaming_total_ms": 6077.418783009052,
+        "control_TTFT_ms": 6426.177092015743,
+        "streaming_TTFT_ms": 5587.585533022881,
+        "time_reduction_fraction": 0.13272808433144978,
+        "same_tokens_and_bytes": true,
+        "full_vocabulary_F32_max_error": 0,
+        "ordered_routes_equal": true
+      },
+      {
+        "task": "arithmetic",
+        "delivery_order": [
+          false,
+          true
+        ],
+        "control_total_ms": 7394.448682963848,
+        "streaming_total_ms": 6116.9276639819145,
+        "control_TTFT_ms": 6284.62239998579,
+        "streaming_TTFT_ms": 5217.225673019886,
+        "time_reduction_fraction": 0.17276758197338338,
+        "same_tokens_and_bytes": true,
+        "full_vocabulary_F32_max_error": 0,
+        "ordered_routes_equal": true
+      },
+      {
+        "task": "JSON_extraction",
+        "delivery_order": [
+          true,
+          false
+        ],
+        "control_total_ms": 19305.581988036633,
+        "streaming_total_ms": 16451.49668097496,
+        "control_TTFT_ms": 9284.077221035957,
+        "streaming_TTFT_ms": 8512.5776039958,
+        "time_reduction_fraction": 0.14783730989463584,
+        "same_tokens_and_bytes": true,
+        "full_vocabulary_F32_max_error": 0,
+        "ordered_routes_equal": true
+      }
     ],
-    "scope": "Fixed short counting, Japanese translation, arithmetic and JSON extraction; broad reasoning unqualified"
+    "total_control_ms": 49022.72984099388,
+    "total_streaming_ms": 40137.210325956345,
+    "scope": "Four fixed short tasks, one independent pair each; no broad reasoning or sustained-service claim",
+    "route_header_caveat": "Legacy route JSON cache_slots label is867; actual native request, startup and all reset receipts bind1381. Compare ordered records, not that stale label."
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 10240,
-    "control_is_fresh_sequential_not_ABBA": true,
-    "first_independent_decode_speedup_fraction": 0.06371893312050969,
-    "capture_charged_group_tok_s": 2.1596411923026197,
-    "capture_charged_group_speedup_fraction": 0.09898685444889588
-  }
+    "control_case": 10760,
+    "control_is_sequential_not_ABBA": true,
+    "first_independent_decode_speedup_fraction": 0.2851598424960142,
+    "capture_charged_group_tok_s": 2.7084169223839427,
+    "capture_charged_group_speedup_fraction": 0.2541050485781
+  },
+  "indexed_window0_probation": true,
+  "cross_projection_demand_streaming": true,
+  "speculative_source_reads": false,
+  "additional_GPU_forecast": false,
+  "normal_application_speedup": {
+    "control_case": 10760,
+    "independent_decode_speedup_fraction": 0.2851598424960142,
+    "retained_decode_speedup_fraction": 0.1604616116564015,
+    "independent_TTFT_reduction_fraction": 0.23330765422534527,
+    "independent_whole_time_reduction_fraction": 0.22625927679260827,
+    "ordinary_full_F32_max_error": 0,
+    "final_unlike_width_max_F32_error": 3.9359834790229797,
+    "final_full_vocabulary_finite": true,
+    "final_emitted_tokens_and_bytes_equal": true,
+    "final_explicit_cross_cache_top1_comparison_performed": false
+  },
+  "all_six_previous_memory_candidates_disposed": true,
+  "all_five_current_candidates_disposed": true
 }

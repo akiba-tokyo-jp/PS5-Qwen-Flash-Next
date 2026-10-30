@@ -46,6 +46,12 @@ class ColdProductionTests(unittest.TestCase):
         with patch('prepare_first_case.read', return_value=self.r):
             self.assertEqual(qualified_control(self.c, True, self.i), self.r['application_SELF'])
 
+    def test_actual_published_installation(self):
+        report = json.loads((ROOT / 'docs/cold-request-adoption-20261030.json').read_text())
+        installation = json.loads((ROOT / 'config/production-installation.json').read_text())
+        require_cold_request_production(installation, self.c, report)
+        self.assertEqual(qualified_control(self.c, True, installation), report['application_SELF'])
+
     def test_refuse_unqualified_or_mixed_evidence(self):
         changes = [('policy', 'prefill_tokens', 16), ('policy', 'workspace_reservation_bytes', 64 << 20),
             ('policy', 'maximum_parallel_source_reads', 5), ('policy', 'speculative_source_reads', True),

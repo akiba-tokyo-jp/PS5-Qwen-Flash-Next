@@ -7,29 +7,54 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-**Shared-Expert Q8 and1381 cache slots are verified and installed.** See the
-[current results](docs/memory-delivery-graph-results-20261030.md),
-[adoption evidence](docs/memory-delivery-graph-adoption-20261030.json) and
+**Cold and different-input improvements are qualified and installed.** See the
+[results](docs/cold-request-results-20261030.md),
+[complete adoption evidence](docs/cold-request-adoption-20261030.json) and
 [installation record](config/production-installation.json).
 
-| Normal application metric | Fresh997 control10240 | Selected10760 |
+| Normal application metric | Previous10760 | Selected10970 |
 | --- | ---: | ---: |
-| Independent decode |2.719437 tok/s |**2.892716 tok/s** |
-| Exact-repeat decode |3.698140 tok/s |**4.534210 tok/s** |
-| Independent TTFT |7.779691 s |**7.460586 s** |
-| Capture-charged pair throughput |1.965120 tok/s |**2.159641 tok/s (+9.899%)** |
+| Independent decode |2.892716 tok/s |**3.717603 tok/s (+28.516%)** |
+| Exact-repeat decode |4.534210 tok/s |**5.261777 tok/s (+16.046%)** |
+| Independent TTFT |7.460586 s |**5.719974 s (-23.331%)** |
+| Independent whole request |15.038473 s |**11.635879 s (-22.626%)** |
+| Capture-charged pair throughput |2.159641 tok/s |**2.708417 tok/s (+25.411%)** |
 
-Output and144 active shared projections use Q8_0; routed Expert Q2 and F32
-activation/KV remain. Actual workspace capacity is8 MiB under a64 MiB fixed
-reservation; the original CPU/physical Direct512 MiB reserves remain. Other
-candidates are tested without a whole-pair benefit or closed as diagnostic
-work. Comparison is sequential, not ABBA; repeated TTFT increases3.748 ms.
-Fixed task contents pass8/8, raw formats6/8 because JSON retains Markdown fences.
-Both native frames, positive retirement and exact deployment10820 pass. The
-current and immediate-control programs are retained, with host archives for
-historical recovery. Optional deletion of55 previously inventoried old setting
-backups awaits explicit permission; it is separate from the completed adoption.
-No CI, reboot, persistent caches or sustained-service qualification is added.
+The selection combines prefill32, exact indexed probation and continuous
+four-lane demanded Gate/Up/Down reads using the original8 MiB scratch. Cache
+stays1381 slots; ExpertQ2, output/shared144Q8 and F32 activation/KV are unchanged.
+Workspace reservation/cap tightens64 ->48 MiB around measured8 MiB capacity;
+original CPU/physical Direct512 MiB and total device limits remain.
+
+All four different-input pairs improve with empty application caches and
+prefix/speculation disabled: total49.022730 ->40.137210 s. Complete F32 logits,
+ordered routes, output bytes and tokens match across delivery modes. Contents
+pass8/8; raw format6/8 because both JSON outputs retain Markdown fences. Normal
+independent F32 repeat error is0; final unlike-cache/width maximum3.935983 is
+finite with identical counting tokens. These are finite short tasks and
+sequential normal cohorts, not ABBA, broad reasoning or sustained service.
+
+Two causal layer-quota variants increase misses. The actual early-router
+observer shows no whole-request gain and few useful miss predictions; physical
+predictive I/O is screened out. Independent source wait falls9.986 ->6.750 s,
+but P99 read latency increases to[3.072,3.200) ms. Syscall/producer intervals do
+not isolate raw SSD service time; diagnostic GPU sums are not ordinary wall
+percentages. See the report for counter semantics and retained failures.
+
+Placement11050 installs SELF57043cbe with exact immediate5c5 control and both
+sets of five settings verified by native whole SHA256/identity/EOF. Ownership
+and fresh idle are confirmed; the native app/gateway/models are inactive.
+Driver872cc126 cumulative-idle and disabled persistent caches remain. No CI,
+reboot, forced signal or reset is used. Optional55-old-settings deletion is a
+separate unresolved permission item, not an inference prerequisite.
+
+## Previous shared-Q8/cache1381 control
+
+The prior memory/delivery/graph campaign remains complete in its
+[results](docs/memory-delivery-graph-results-20261030.md) and
+[adoption evidence](docs/memory-delivery-graph-adoption-20261030.json).
+Placement10820/SELF5c5 is now the immediate control. Its source/configuration
+and the earlier measured candidates remain preserved as historical evidence.
 
 ## Previous output-Q8/997 production control
 

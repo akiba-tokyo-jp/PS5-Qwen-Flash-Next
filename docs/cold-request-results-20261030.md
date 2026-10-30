@@ -2,8 +2,10 @@
 
 The five finite candidates are decided. The qualified selection combines
 prefill32, exact indexed window0 probation and continuous four-lane demanded
-reads across Gate/Up/Down. Placement is recorded separately in
-`cold-request-adoption-20261030.json`; qualification does not itself install it.
+reads across Gate/Up/Down. Placement11050 is complete in
+`cold-request-adoption-20261030.json`, with exact current/immediate-control
+programs, both five-setting sets, ownership and fresh idle verified.
+Implementation revision is`2f7ab770a750b1008fe85aa3646570783de1d8d0`.
 Complete sanitized measurements are in `cold-request-results-20261030.json`.
 
 ## Normal application comparison

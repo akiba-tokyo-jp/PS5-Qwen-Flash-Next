@@ -11,7 +11,7 @@
     "bytes": 19112551,
     "sha256": "5c5d70347f25d2fe0905da3325519c056038475254fbf90af745af61c7b126ea"
   },
-  "application_source_revision": null,
+  "application_source_revision": "2f7ab770a750b1008fe85aa3646570783de1d8d0",
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
     "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
