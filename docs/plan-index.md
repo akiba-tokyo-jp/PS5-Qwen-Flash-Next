@@ -1,5 +1,15 @@
 # PS5 Flash Next plan status
 
+The [five-candidate delivery follow-up](delivery-followup-results-20261030.md)
+is complete. No additional change qualifies for production: bundle/wide/depth
+variants do not improve overall time, numeric-name guard checks have no whole
+gain, and actual GPU prepass11420 regresses165.6259% and fails the Japanese F32
+gate. Its remaining same-variant timings are canceled after rejection. All
+native cases close normally and restore exactly; placement11050 remains.
+Route-capacity, legacy-target, imported-view and Vulkan buffer-identity issues
+in experimental tooling are fixed and recorded. No further test is queued by
+this follow-up; the conditional adoption cohort is not triggered.
+
 The current [cold/different-input campaign](cold-request-results-20261030.md)
 is complete through [native placement11050](cold-request-adoption-20261030.json).
 Prefill32, indexed probation and demanded four-lane cross-projection reads are
