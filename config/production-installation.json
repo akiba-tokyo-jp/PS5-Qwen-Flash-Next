@@ -24,7 +24,7 @@
   },
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
-  "previous_production_rollback_preserved": true,
+  "previous_production_rollback_preserved": false,
   "previous_production_SHA256": "f49ba8ef32cb5a1cb82b16f833792eb43f7e566eed2cdace8730292a755a01fd",
   "active_expert_slots": 997,
   "physical_cache_planes": 998,
@@ -197,8 +197,8 @@
   "cached_ranking_multiplier": 1.5,
   "ranking_preferences_latched_per_target_event": true,
   "graph_reuse_disabled_for_policy": false,
-  "all_previous_production_programs_preserved": true,
-  "preserved_programs_verified": 13,
+  "all_previous_production_programs_preserved": false,
+  "preserved_programs_verified": 1,
   "canonical_settings_verified": 5,
   "native_title_running": false,
   "gateway_running": false,
@@ -211,5 +211,30 @@
   "integer_activation_quantization": false,
   "postload_quota_transfer_bytes": 199680000,
   "resident_output_payload_saving_bytes": 595968000,
-  "all_six_current_candidates_disposed": true
+  "all_six_current_candidates_disposed": true,
+  "console_retention": {
+    "schema": "ps5-qwen-console-retention-v1",
+    "policy": "current-only-host-archives",
+    "cleanup_case": 10200,
+    "completed": true,
+    "owner_authorized": true,
+    "application_SELF": {
+      "bytes": 18299623,
+      "sha256": "5487e687dbc13a5f6a7655faf52d91752f3d029ba13938762b133b99e6a3a7a5"
+    },
+    "current_programs": 1,
+    "current_settings": 5,
+    "protected_files_verified": 6,
+    "host_archives_preserved": true,
+    "qualified_host_rollback_programs_verified": 12,
+    "obsolete_console_versions_removed": true,
+    "current_files_full_readback_verified": true,
+    "runtime_ownership_restored": true,
+    "model_assets_preserved": true,
+    "obsolete_programs_removed": 108,
+    "obsolete_setting_backups_removed": 1346,
+    "deleted_file_bytes": 3101941517
+  },
+  "retention_report": "docs/obsolete-version-cleanup-20261030.json",
+  "historical_placement_programs_verified": 13
 }

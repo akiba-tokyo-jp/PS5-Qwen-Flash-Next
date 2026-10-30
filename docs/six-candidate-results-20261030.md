@@ -120,10 +120,13 @@ Installed SELF: `5487e687dbc13a5f6a7655faf52d91752f3d029ba13938762b133b99e6a3a7a
 linked archive `b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925`.
 Persistent shader and pipeline caches remain disabled.
 
-Placement10160 verifies13 programs and five settings through two original-bounded
+Placement10160 verified13 programs and five settings through two original-bounded
 native whole-SHA256/identity/EOF batches. Exact previousf49ba8ef and every older
-named rollback remain. Host-preserved duplicate files and three closed trial
-executables were retired; model assets and the shared-prefix program remain.
+named rollback were retained at that point. Subsequent owner-authorized
+[cleanup10200](obsolete-version-cleanup-20261030.md) retires108 obsolete console
+executables, including shared-prefix9980, and1,346 setting backups. The selected
+SELF and five current settings remain exact; all12 qualified old productions
+retain host archives. Model assets, source and qualification evidence remain.
 The native title, gateway and model are inactive. The finite binding is consumed;
 a future run needs a fresh binding. No CI, reboot, forced Unix signal or delegated
 agent is used.

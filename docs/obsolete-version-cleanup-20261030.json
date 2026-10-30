@@ -1,0 +1,41 @@
+{
+  "schema": "ps5-qwen-obsolete-version-cleanup-v1",
+  "date": "2026-10-30",
+  "completed": true,
+  "console_retention": {
+    "schema": "ps5-qwen-console-retention-v1",
+    "policy": "current-only-host-archives",
+    "cleanup_case": 10200,
+    "completed": true,
+    "owner_authorized": true,
+    "application_SELF": {
+      "bytes": 18299623,
+      "sha256": "5487e687dbc13a5f6a7655faf52d91752f3d029ba13938762b133b99e6a3a7a5"
+    },
+    "current_programs": 1,
+    "current_settings": 5,
+    "protected_files_verified": 6,
+    "host_archives_preserved": true,
+    "qualified_host_rollback_programs_verified": 12,
+    "obsolete_console_versions_removed": true,
+    "current_files_full_readback_verified": true,
+    "runtime_ownership_restored": true,
+    "model_assets_preserved": true,
+    "obsolete_programs_removed": 108,
+    "obsolete_setting_backups_removed": 1346,
+    "deleted_file_bytes": 3101941517
+  },
+  "GPU_calls": 0,
+  "title_launches": 0,
+  "CI_runs": 0,
+  "automatic_deletion_retries": 0,
+  "prior_native_placement_evidence_unchanged": true,
+  "cleanup_uses_raw_full_readback_for_current_files": true,
+  "raw_readback_not_described_as_new_native_digest_execution": true,
+  "recovered_capacity_basis": "Sum of removed raw file lengths; not a measured free-space delta",
+  "manual_checks": {
+    "focused_unit_tests_passed": 23,
+    "current_private_production_control_admitted": true,
+    "diff_check_passed": true
+  }
+}

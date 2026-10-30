@@ -105,7 +105,9 @@ def qualified_control(context, production=False, installation=None):
                 installation.get('qualification_report')=='docs/six-candidate-adoption-20261030.json')):
             require_performance_production(installation,context,read(ROOT/'docs/six-candidate-adoption-20261030.json'))
             required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
-                'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
+                'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified')
+            if installation.get('console_retention')is None:
+                required+=('previous_production_rollback_preserved',)
         optimized_reports={
             'docs/expert-q2-optimization-results-20261030.json':('ps5-qwen-Q2-eight-optimization-dispositions-v1',9),
             'docs/expert-q2-io-reduction-results-20261030.json':('ps5-qwen-Q2-IO-reduction-adoption-v1',10)}

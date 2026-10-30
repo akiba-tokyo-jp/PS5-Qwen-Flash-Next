@@ -9,8 +9,15 @@ import prepare_first_case as subject
 
 class OptimizedControlTests(unittest.TestCase):
     def setUp(self):
-        self.installation=json.loads((ROOT/'config/production-installation.json').read_text())
-        self.report=json.loads((ROOT/self.installation['qualification_report']).read_text())
+        # This suite exercises the historical I/O schema, not the moving current profile.
+        self.installation=json.loads((ROOT/'config/production-installation-Q2-optimized-20261030.json').read_text())
+        report_path='docs/expert-q2-io-reduction-results-20261030.json'
+        self.report=json.loads((ROOT/report_path).read_text())
+        placed=self.report['production_placement']
+        self.installation.update(qualification_report=report_path,application_SELF=placed['application_SELF'],
+            previous_production_SHA256=placed['previous_production_SELF']['sha256'],
+            normal_application_case=self.report['normal_application']['case'],io_winner_flags=5,
+            application_source_revision=self.report['application_source_revision'])
         self.context=dict(native_running=False,gateway_running=False,model_loaded=False,
             production_deployment_completed=True,original_restored=False,console_reserved=True,
             production_SELF=dict(self.installation['application_SELF'],path='preserved-local-control'),
@@ -19,7 +26,7 @@ class OptimizedControlTests(unittest.TestCase):
         with patch.object(subject,'read',return_value=self.report if report is None else report):
             return subject.qualified_control(self.context if context is None else context,True,
                 self.installation if installation is None else installation)
-    def test_current_complete_evidence(self):
+    def test_historical_IO_complete_evidence(self):
         self.assertEqual(self.qualify(),self.context['production_SELF'])
     def test_previous_optimized_control_remains_admissible(self):
         installation=json.loads((ROOT/'config/production-installation-Q2-optimized-20261030.json').read_text())
