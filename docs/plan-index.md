@@ -1,5 +1,13 @@
 # PS5 Flash Next plan status
 
+The current [cold/different-input campaign](cold-request-results-20261030.md)
+is complete through [native placement11050](cold-request-adoption-20261030.json).
+Prefill32, indexed probation and demanded four-lane cross-projection reads are
+installed. Independent/retained decode3.717603/5.261777 tok/s; four independent
+input pairs improve with exact delivery F32/routes. Both specific layer quotas
+and the actual-router observer are closed without adoption. Physical predictive
+I/O is screened out. The previous memory campaign below is historical.
+
 The current memory/delivery/graph campaign is complete: [results](memory-delivery-graph-results-20261030.md) and [installed qualification](memory-delivery-graph-adoption-20261030.json). Selected shared-Q8/cache1381 normal10760 is installed by10820; earlier entries below are historical.
 
 The subsequent [owner-authorized version cleanup](obsolete-version-cleanup-20261030.md)

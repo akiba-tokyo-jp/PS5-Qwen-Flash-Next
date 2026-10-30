@@ -20,6 +20,42 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The cold/different-input campaign is complete in
+`docs/cold-request-results-20261030.md` / `.json` and
+`docs/cold-request-adoption-20261030.json`. Placement11050 installs
+SELF57043cbe809362e0910e69279caca1a4985c92f93114f0f06dd81ebe81bd2bbf
+(19140135 bytes), implementation2f7ab770a750b1008fe85aa3646570783de1d8d0.
+Select prefill32, exact indexed window0 probation and continuous four-lane
+known-demand cross-projection reads. Cache stays1381/1382, ExpertQ2/output and
+shared144Q8, F32 inputs/KV, original CPU/physical Direct512 MiB and total ledger
+2480332800 remain. Workspace reservation/enforced cap is48 MiB around measured
+8 MiB. Use the exact admission in cold_request_production.py; the older16/64
+memory admission remains for historical controls only. Driver872cc126
+cumulative-idle/persistent caches off remains unchanged.
+
+Normal10970 independent decode3.717603 tok/s, TTFT5.719974s,total11.635879s;
+exact-repeat decode5.261777, TTFT62.108ms,total4.609774s. Pair throughput2.708417
+is25.411% above sequential10760; no ABBA claim. Four independent input pairs11010
+all improve with empty application caches and no prefix/speculation; complete
+F32/routes/tokens/bytes match exactly. Contents8/8, strict raw6/8 due JSON fences.
+Normal same-policy independent F32 is0; final unlike-cache/width maximum3.935983
+is finite with identical counting tokens. No broad reasoning/sustained-service
+qualification. Read P99 worsens despite whole-request gains; syscall wall is not
+raw SSD latency. GPU diagnostic11030 completes but is not ordinary wall timing.
+
+Both specific layer quotas screen worse. Actual-router observer10990 completes
+without a speed win; physical speculative I/O is screened out, not implemented.
+Keep failed10890 and10950 evidence and their normal close/restoration; do not
+replay consumed cases. All selected owners retire positively, both actual frames
+were viewed, ordinary closes/exact restores pass. Placement verifies current
+and immediate5c5 programs plus both5-setting sets (12 files), restored ownership
+and fresh idle. Native/gateway/models inactive; finite binding consumed. No CI,
+reboot, forced signals, GPU reset or agents. The55-old-settings cleanup remains
+separately permission pending; do not execute10733. Earlier navigation below is
+historical and does not override this selection.
+
+## Historical memory/delivery/graph campaign
+
 The memory/delivery/graph campaign is complete in
 `docs/memory-delivery-graph-results-20261030.json` and
 `docs/memory-delivery-graph-adoption-20261030.json`. Placement10820 selects

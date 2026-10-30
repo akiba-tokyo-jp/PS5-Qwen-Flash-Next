@@ -8,7 +8,7 @@ from prepare_first_case import qualified_control
 
 class MemoryProductionTests(unittest.TestCase):
  def setUp(self):
-  self.r=json.loads((ROOT/'docs/memory-delivery-graph-adoption-20261030.json').read_text());self.i=json.loads((ROOT/'config/production-installation.json').read_text())
+  self.r=json.loads((ROOT/'docs/memory-delivery-graph-adoption-20261030.json').read_text());self.i=json.loads((ROOT/'config/production-installation-shared-Q8-20261030.json').read_text())
   self.c=dict(active_cache_slots=1381,Expert_format='Gate_Up_Q2_K_Down_Q2_0_MSE',output_weight_type='Q8_0',shared_Expert_weight_type='Q8_0',graph_reuse_disabled_for_policy=False,prefill_tokens=16,selected_routing_policy=14,normal_performance_case=10760,normal_performance_placement_case=10820,selected_model_receipt_SHA256=self.r['model_receipt_SHA256'],native_running=False,gateway_running=False,model_loaded=False,production_deployment_completed=True,original_restored=False,console_reserved=True,production_SELF=self.r['application_SELF'])
  def test_selected_installed_control(self):
   require_memory_graph_production(self.i,self.c,self.r);self.assertEqual(qualified_control(self.c,True,self.i),self.r['application_SELF'])
