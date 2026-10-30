@@ -20,6 +20,13 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner now explicitly requests implementation of the successful routing and
+sharing settings. Follow `docs/routing-winners-adoption-plan-20261030.md` through
+normal PS5 qualification and production placement. The prior verification-only
+status below is historical and does not require another permission request.
+Preserve db542fa2 as rollback, all current physical/owner/completion guards, the
+selected driver and cache policy; no CI, reboot or delegation.
+
 The owner subsequently requested native comparison of cache-aware routing,
 Top-k reduction and multi-token Expert sharing, explicitly removing model-side
 software restrictions for this experiment. Follow
