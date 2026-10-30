@@ -20,12 +20,34 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-The owner now explicitly requests implementation of the successful routing and
-sharing settings. Follow `docs/routing-winners-adoption-plan-20261030.md` through
-normal PS5 qualification and production placement. The prior verification-only
-status below is historical and does not require another permission request.
-Preserve db542fa2 as rollback, all current physical/owner/completion guards, the
-selected driver and cache policy; no CI, reboot or delegation.
+The requested routing/sharing production integration is complete in
+`docs/routing-winners-adoption-20261030.md` / `.json` and the installation record.
+Normal 9550 qualifies decode Top-6, cached ranking x1.5 and repeated causal pairs
+only on the final exact-prefix consumer. Independent decode is 2.565459 tok/s
+(+98.277% versus 9400), repeated-prompt decode 3.522102, TTFT 62.492 ms and
+capture-charged pair throughput 1.497207 (+65.212%). Do not pool cache conditions
+or add separate gains. The post-exploratory selection refinement and uncertain
+0.277% marginal whole-request gain are disclosed; normal adoption is independently
+qualified, not inferred from summed headless improvements.
+
+Placement 9560 installs SELF
+`55a8e4c4778481b80e9ad32e4dd1c77a7b9051717de5cdba50e77435b7a6f0e1`,
+source `d2c166573dd8f1b7cae552b35e574fc0581d9715`. All 11 programs and five
+settings pass native whole SHA256/identity/EOF in two original-bounded batches;
+all previous rollbacks including exact db542fa2 remain. Two actual native frames
+were viewed. Positive model/source/GPU retirement, ordinary close and fresh idle
+pass. The title/gateway/models are inactive; the finite binding is consumed and
+sustained service remains outside the qualification. Do not replay consumed
+9510, 9550 or placement9560 or reopen the completed comparison/adoption scope.
+
+Keep same-policy independent F32/token repeats exact. The final retained-cache
+and mixed-width maximum difference 3.666849 is disclosed with finite full
+vocabulary and identical counting tokens, not relabelled bit equality. Actual
+seven attempts, six accepts, one rejection, seven captures and one restore
+reconcile; both decode widths use six Experts and event-latched preferences.
+Preserve all original physical/kernel/device/owner/completion guards, driver
+872cc126 cumulative-idle and disabled persistent caches. No CI, reboot or agents.
+The earlier dated records below are historical and do not override this selection.
 
 The owner subsequently requested native comparison of cache-aware routing,
 Top-k reduction and multi-token Expert sharing, explicitly removing model-side

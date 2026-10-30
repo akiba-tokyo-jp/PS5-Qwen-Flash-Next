@@ -1,5 +1,7 @@
 # Native cache-aware routing, Top-k and multi-token verification results
 
+Status: integration, normal PS5 qualification and production placement are complete. See the [current adoption result](routing-winners-adoption-20261030.md). The scope and decision sequence below remain historical evidence.
+
 All three requested algorithm families have completed physical verification.
 The five completed requests of 9440 and eight of 9460 are retained; final continuation 9480
 completes the remaining 20 requests, positive resource retirement, ordinary close

@@ -1,5 +1,7 @@
 # Routing and sharing production integration
 
+Status: integration, normal PS5 qualification and production placement are complete. See the [current adoption result](routing-winners-adoption-20261030.md). The scope and decision sequence below remain historical evidence.
+
 The owner explicitly requested implementation of the successful first-stage
 settings. This authorizes normal application integration, physical comparison
 and placement of the measured winner. The earlier verification-only record is
