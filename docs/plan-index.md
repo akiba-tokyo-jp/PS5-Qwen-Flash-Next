@@ -1,5 +1,25 @@
 # PS5 Flash Next plan status
 
+The [six-candidate plan](six-candidate-plan-20261030.md) is complete in the
+[results](six-candidate-results-20261030.md) and
+[adoption evidence](six-candidate-adoption-20261030.json). All63 headless requests
+and three normal/API requests complete. The final composition uses output Q8,
+997 cache slots, prefill Top6, guarded graph reuse and28 additional triplets.
+Independent TTFT is7.800974s, total15.986655s and decode2.681407 tok/s; repeated
+decode is3.676969. Capture-charged pair throughput improves20.263% against the
+historical9720 normal control. Shared16 is a completed different-suffix mode;
+the identical-prompt default retains its complete30-token checkpoint. Top8 is
+a tested alternative; late head cropping has no qualified gain.
+
+Placement10160 installs `5487e687...`, verifies13 programs/five settings in two
+native whole-hash batches, and retains exactf49ba8ef plus every older named
+rollback. All successful owners retire; ordinary closes, exact restorations,
+two viewed native frames and fresh final idle pass. No requested finite
+candidate, implementation or selected placement step remains. This does not
+certify sustained service or broad reasoning. No CI, reboot or agents.
+
+## Historical width16/all adoption
+
 The [normal width16/all integration and placement](prefill16-adoption-20261030.json)
 are complete. Normal 9720 passes all three requests, two actual passive frames,
 complete-prefix reuse and reconciled seven causal verifications (six accepts,

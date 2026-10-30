@@ -1,5 +1,15 @@
 # Six-candidate performance qualification
 
+Status: complete in [the results](six-candidate-results-20261030.md) and
+[sanitized adoption evidence](six-candidate-adoption-20261030.json).
+Cases9800/9980/10050 complete63 headless requests;10140 completes the normal
+three-request/API/frame protocol. Placement10160 installs the measured
+composition and verifies13 programs plus five settings. Shared16 andTop8 are
+implemented, tested alternative modes; the selected identical-prompt normal
+default uses complete-prefix reuse andTop6. Late output cropping has no qualified
+gain. The original84-triplet short-write attempt is closed and superseded by
+the sealed, compared28-triplet implementation. No finite step remains pending.
+
 The owner authorized implementation, physical comparisons and adoption of useful
 changes on 2026-10-30. Preserve the installed `f49ba8ef...` control and all model
 sources. No reboot, CI, persistent driver cache or delegated agent is required.

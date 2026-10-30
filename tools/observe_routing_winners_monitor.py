@@ -7,11 +7,7 @@ import observe_expert_all_q2_monitor as ordinary
 from expert_q4 import require,record
 from active_native_inputs import active_link_inputs
 from build_speculative_batch_probe import once
-def main():
- p=argparse.ArgumentParser(add_help=False);p.add_argument('--routing-native-receipt',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a,remaining=p.parse_known_args()
- receipt=json.loads(a.routing_native_receipt.read_text());selected=receipt['routing_winners_normal'];scope=selected['scope']
- require(receipt['input_hashes_stable']and receipt['native_dispatch_audit']['passed']and not receipt['real_module_import_audit']['missing'],'Qualified normal providers and native dispatch required')
- for row in active_link_inputs(receipt):require(record(row['path'])==row,'Sealed normal link input changed')
+def observer_source():
  source=inspect.getsource(ordinary.main)
  marker="    b=json.loads(a.binding.read_text());host=b['host'];owner=b['native_binding'];run=owner['run_id'];remote=b['report_remote']"
  source=once(source,marker,marker+"\n    require(b.get('routing_winners_scope')==ROUTING_SCOPE,'Exact selected routing scope binding required')")
@@ -29,6 +25,14 @@ def main():
                 require(s['attempts']>1 and s['attempts']==s['accepted']+s['rejected'] and s['queued_bonus_samples']==s['accepted'] and c['captures']==s['attempts'] and c['restores']==s['rejected'],'Every repeated verification/rollback and delivered bonus must reconcile')
 """+marker)
  source=once(source,"result['source_windows']==result['source_completed_windows']", "result['source_windows']==result['source_completed_windows'] and result['routing_winners_policy']==ROUTING_SCOPE['selected_routing_policy'] and result['graph_reuse_disabled_for_policy']==ROUTING_SCOPE['graph_reuse_disabled_for_policy']")
+ return once(source,"result['active_cache_slots']==867","result['active_cache_slots']==ROUTING_SCOPE['active_cache_slots']")
+
+def main():
+ p=argparse.ArgumentParser(add_help=False);p.add_argument('--routing-native-receipt',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a,remaining=p.parse_known_args()
+ receipt=json.loads(a.routing_native_receipt.read_text());selected=receipt['routing_winners_normal'];scope=selected['scope']
+ require(receipt['input_hashes_stable']and receipt['native_dispatch_audit']['passed']and not receipt['real_module_import_audit']['missing'],'Qualified normal providers and native dispatch required')
+ for row in active_link_inputs(receipt):require(record(row['path'])==row,'Sealed normal link input changed')
+ source=observer_source()
  env=dict(ordinary.__dict__,ROUTING_SCOPE=scope);sys.argv=[sys.argv[0],*remaining,'--out',str(a.out)]
  exec(compile(source,__file__+'#selected-policy-observer','exec'),env);env['main']()
 if __name__=='__main__':main()

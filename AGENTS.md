@@ -20,6 +20,46 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The six-candidate scope is complete in `docs/six-candidate-results-20261030.md`
+and `docs/six-candidate-adoption-20261030.json`. Normal10140 completes all three
+requests and two viewed native frames. Independent TTFT7.800974s, total15.986655s,
+decode2.681407 and repeated decode3.676969 tok/s improve against historical9720;
+capture-charged pair throughput is1.949547 (+20.263%). Do not add isolated gains
+or describe the historical normal control as a fresh ABBA. Independent F32 is0;
+final unlike-cache/width maximum6.634334 is finite with identical counting tokens.
+
+Placement10160 installs SELF5487e687dbc13a5f6a7655faf52d91752f3d029ba13938762b133b99e6a3a7a5
+(18299623 bytes), implementation37ac48b07cf0742636e8639fec13c4374108cb30.
+All13 programs and five settings pass native whole SHA256/identity/EOF in two
+bounded batches. Exactf49ba8ef and every older named rollback remain. The native
+title/gateway/models are inactive; the finite binding is consumed. No selected
+implementation, qualification or placement step remains. Sustained service and
+broad reasoning remain unqualified. Do not replay9800/9860/9900/9950/9980/10010/
+10050/10140 or placement10160; unstarted10100 is superseded.
+
+The owner-authorized output-only Q8 exception is now selected: Expert Gate/Up
+Q2_K and Down Q2_0 MSE remain; only resident output.weight becomes Q8_0. Other
+non-Expert tensors retain original BF16/F32, and inputs/KV remain F32. Integer
+dot and both cooperative-matrix paths are explicitly disabled before GPU init
+for this floating-input profile. Cache997/998 planes uses1533419520 bytes;
+exactly199680000 post-load quota bytes derive from595968000 actual resident
+payload bytes saved. Keep single512/CPU512/workspace248 MiB and every original
+physical/kernel/owner/completion guard. App ledger headroom is not physical or
+kernel free memory. Driver872cc126 cumulative-idle and persistent caches stay
+unchanged. Keep the new exact production admission in performance_production.py.
+
+Prefill Top6, route/phase/original-shape graph reuse and28 sealed supplemental
+triplets (448 total) are selected. Normal actual graph reuses21/21/3 and new
+bundle uses53/53/16 reconcile. Shared16-prefix reuse is implemented and qualified
+on different suffixes (pair time-17.134%, suffix TTFT-38.210%, first suffix full
+vocabulary F32 difference0); it remains an alternative to the normal identical-
+prompt complete30-token snapshot. Top8 is a tested alternative. Late output
+cropping is tested without a qualified whole-request gain. The failed84-triplet
+write is preserved and superseded by the completed28-triplet implementation.
+The obsolete867-slot observer assertion was reconciled from the completed
+997-slot native result with no repeated POST; the observer and future admission
+now bind actual scopes. No CI, reboot, forced signals or agents.
+
 Normal width16/all integration and production placement are complete in
 `docs/prefill16-adoption-20261030.json` and the installation record. Case 9720
 completes warmup plus two actual API requests, complete prefix capture/restore,
