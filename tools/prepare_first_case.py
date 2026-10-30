@@ -100,6 +100,12 @@ def qualified_control(context, production=False, installation=None):
             activation_inputs='F32',quantization='Expert weights only')
         mixed_precision=dict(q4_precision,Expert_weights='Gate/Up Q2_K; Down Q4_0')
         all_q2_precision=dict(q4_precision,Expert_weights='Gate/Up Q2_K; Down Q2_0 MSE')
+        from performance_production import OUTPUT_Q8_PRECISION,require_performance_production
+        if(isinstance(installation,dict)and(installation.get('precision')==OUTPUT_Q8_PRECISION or
+                installation.get('qualification_report')=='docs/six-candidate-adoption-20261030.json')):
+            require_performance_production(installation,context,read(ROOT/'docs/six-candidate-adoption-20261030.json'))
+            required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
+                'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
         optimized_reports={
             'docs/expert-q2-optimization-results-20261030.json':('ps5-qwen-Q2-eight-optimization-dispositions-v1',9),
             'docs/expert-q2-io-reduction-results-20261030.json':('ps5-qwen-Q2-IO-reduction-adoption-v1',10)}

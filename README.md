@@ -7,9 +7,42 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+**The six-candidate composition is implemented, qualified on the PS5, and
+installed.** See the [results](docs/six-candidate-results-20261030.md),
+[sanitized evidence](docs/six-candidate-adoption-20261030.json) and
+[installation record](config/production-installation.json).
+
+| Normal application metric | Previous 9720 | Selected 10140 |
+| --- | ---: | ---: |
+| Independent TTFT | 11.634333 s | **7.800974 s (-32.949%)** |
+| Independent whole request | 20.179917 s | **15.986655 s (-20.779%)** |
+| Independent decode | 2.567815 tok/s | **2.681407 tok/s (+4.424%)** |
+| Exact repeated-prompt decode | 3.448557 tok/s | **3.676969 tok/s (+6.623%)** |
+| Capture-charged pair throughput | 1.621072 tok/s | **1.949547 tok/s (+20.263%)** |
+
+The selected composition adds resident output Q8,997 active Expert slots,
+prefill Top6, guarded graph reuse and28 supplemental triplets (448 total).
+Other non-Expert weights remain original BF16/F32; inputs and KV remain F32.
+Shared16-prefix reuse is implemented and physically qualified for different
+suffixes; the identical-prompt normal default retains complete-prefix reuse.
+Late output cropping is tested without a qualified gain. All six finite scopes
+are closed. Gains are measured in the combination, not added across candidates.
+
+The normal control is historical9720, not a fresh normal ABBA. Independent
+same-policy F32 error is0; final approximate cross-cache/width error6.634334 is
+disclosed with finite full vocabulary and identical counting tokens. Both actual
+information-only native frames were viewed. Placement10160 verifies13 programs
+and five settings; SELF `5487e687...` is installed and exactf49ba8ef remains.
+Native/gateway/models are inactive after verification. Sustained service and
+broad reasoning remain outside this finite qualification. Driver872cc126,
+disabled persistent caches, physical reserves and no-CI policy remain.
+
+## Previous width16/all production control
+
 **Width16/all prefill is implemented, qualified in the normal PS5 app, and
-installed in production.** See the [adoption evidence](docs/prefill16-adoption-20261030.json)
-and [installation record](config/production-installation.json).
+was installed before the current composition.** See the
+[historical adoption evidence](docs/prefill16-adoption-20261030.json) and
+[preserved installation](config/production-installation-prefill16-20261030.json).
 
 | Normal application metric | Previous 9550 | Selected 9720 |
 | --- | ---: | ---: |

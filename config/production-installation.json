@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-10-30",
-  "application_source_revision": "d648ff44ff09297778768458ee340b15c3623f99",
+  "application_source_revision": "37ac48b07cf0742636e8639fec13c4374108cb30",
   "application_SELF": {
-    "bytes": 17500215,
-    "sha256": "f49ba8ef32cb5a1cb82b16f833792eb43f7e566eed2cdace8730292a755a01fd"
+    "bytes": 18299623,
+    "sha256": "5487e687dbc13a5f6a7655faf52d91752f3d029ba13938762b133b99e6a3a7a5"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -16,24 +16,25 @@
   },
   "precision": {
     "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
-    "other_weights": "original BF16/F32",
+    "other_weights": "original BF16/F32 except output Q8_0",
+    "output_weight": "Q8_0",
     "KV_cache": "F32",
     "activation_inputs": "F32",
-    "quantization": "Expert weights only"
+    "quantization": "Expert and resident output weights"
   },
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "55a8e4c4778481b80e9ad32e4dd1c77a7b9051717de5cdba50e77435b7a6f0e1",
-  "active_expert_slots": 867,
-  "physical_cache_planes": 868,
-  "expert_cache_bytes": 1333739520,
+  "previous_production_SHA256": "f49ba8ef32cb5a1cb82b16f833792eb43f7e566eed2cdace8730292a755a01fd",
+  "active_expert_slots": 997,
+  "physical_cache_planes": 998,
+  "expert_cache_bytes": 1533419520,
   "external_requests": [
     {
       "ordinal": 1,
-      "decode_tokens_per_second": 2.567814570816692,
-      "TTFT_ms": 11634.333072006702,
-      "total_ms": 20179.91651904583,
+      "decode_tokens_per_second": 2.6814072209032336,
+      "TTFT_ms": 7800.973771035671,
+      "total_ms": 15986.655061006546,
       "generated_tokens": 22,
       "cache_condition": "independent_empty",
       "exact_prefix_restored": false,
@@ -55,24 +56,26 @@
         "cache_rank": true,
         "decode_Experts": 6,
         "preferences_latched_per_target_event": true,
-        "rank_CPU_ns": 3678738,
+        "rank_CPU_ns": 3781217,
         "rank_calls": 1056,
         "repeated_sharing": false,
-        "resident_scores": 19074
+        "resident_scores": 21934
       },
       "io_optimization": {
-        "adjacent_calls_saved": 228,
-        "extra_bundled_Experts": 151,
+        "adjacent_calls_saved": 134,
+        "extra_bundled_Experts": 128,
         "flags": 5,
         "maximum_lifetime_quad_inflight": 4,
-        "quad_batches": 3059
-      }
+        "quad_batches": 2075
+      },
+      "actual_graph_reuses": 21,
+      "supplemental_bundle_hits": 53
     },
     {
       "ordinal": 2,
-      "decode_tokens_per_second": 3.4485570423421605,
-      "TTFT_ms": 63.14257103204727,
-      "total_ms": 6962.621326029301,
+      "decode_tokens_per_second": 3.676969194786059,
+      "TTFT_ms": 63.669468998909,
+      "total_ms": 6582.69189697504,
       "generated_tokens": 22,
       "cache_condition": "retained_after_exact_prefix_capture",
       "exact_prefix_restored": true,
@@ -94,22 +97,24 @@
         "cache_rank": true,
         "decode_Experts": 6,
         "preferences_latched_per_target_event": true,
-        "rank_CPU_ns": 3221785,
+        "rank_CPU_ns": 3283353,
         "rank_calls": 816,
         "repeated_sharing": true,
-        "resident_scores": 20808
+        "resident_scores": 23928
       },
       "io_optimization": {
-        "adjacent_calls_saved": 6,
-        "extra_bundled_Experts": 41,
+        "adjacent_calls_saved": 8,
+        "extra_bundled_Experts": 27,
         "flags": 5,
         "maximum_lifetime_quad_inflight": 4,
-        "quad_batches": 218
-      }
+        "quad_batches": 216
+      },
+      "actual_graph_reuses": 3,
+      "supplemental_bundle_hits": 16
     }
   ],
   "normal_application_case": 9400,
-  "production_placement_case": 9730,
+  "production_placement_case": 10160,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -124,8 +129,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": true,
-  "qualification_report": "docs/prefill16-adoption-20261030.json",
-  "historical_installation": "config/production-installation-Q2-optimized-20261030.json",
+  "qualification_report": "docs/six-candidate-adoption-20261030.json",
+  "historical_installation": "config/production-installation-prefill16-20261030.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -137,7 +142,7 @@
   "fixed_quality_control_case": 8500,
   "fixed_quality_candidate_case": 8700,
   "finite_quality_scope": "Three fixed prompts, three requests each: strict format 6/9; answer contents 9/9; expected quantization loss accepted by owner",
-  "model_receipt_SHA256": "efd101c3661e6eb81f17306c43fc41b361f94aa58495f2025401659228163191",
+  "model_receipt_SHA256": "458c4b06bcc4c77fa23ce7d1fb6fadf5901439504e712be024e0cc3bf625a6fb",
   "expert_eviction_policy": "two_touch_probation",
   "owner_expected_quantization_loss_accepted": true,
   "original_mixed_optimized_profile_preserved": true,
@@ -149,6 +154,28 @@
   "maximum_causal_attempts_on_final_request": 8,
   "eight_optimization_dispositions_completed": true,
   "optimized_normal_comparison": {
+    "control_case": 9720,
+    "control_is_historical_not_new_normal_ABBA": true,
+    "first_independent_decode_speedup_fraction": 0.04423709226418704,
+    "capture_charged_group_tok_s": 1.9495468824116562,
+    "capture_charged_group_speedup_fraction": 0.20262840992287745,
+    "unlike_cache_conditions_not_pooled": true,
+    "ordinary_full_F32_max_error": 0,
+    "final_unlike_width_max_F32_error": 6.634333610534668,
+    "final_full_vocabulary_finite": true,
+    "final_emitted_tokens_and_bytes_equal": true,
+    "final_explicit_cross_cache_top1_comparison_performed": false,
+    "independent_TTFT_reduction_fraction": 0.32948681091092824,
+    "independent_whole_time_reduction_fraction": 0.20779379607847626
+  },
+  "adjacent_bundle_groups_enabled": true,
+  "additional_Expert_bundles": 84,
+  "total_bundled_Experts": 448,
+  "maximum_parallel_source_reads": 4,
+  "io_winner_flags": 5,
+  "temporal_protection_window": 0,
+  "four_IO_proposals_disposed": true,
+  "previous_optimized_normal_comparison": {
     "control_case": 9550,
     "first_independent_decode_speedup_fraction": 0.0009182020652622747,
     "capture_charged_group_tok_s": 1.6210717012220568,
@@ -162,40 +189,27 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "adjacent_bundle_groups_enabled": true,
-  "additional_Expert_bundles": 84,
-  "total_bundled_Experts": 420,
-  "maximum_parallel_source_reads": 4,
-  "io_winner_flags": 5,
-  "temporal_protection_window": 0,
-  "four_IO_proposals_disposed": true,
-  "previous_optimized_normal_comparison": {
-    "control_case": 9400,
-    "first_independent_decode_speedup_fraction": 0.982770155767591,
-    "capture_charged_group_tok_s": 1.4972072652089305,
-    "capture_charged_group_speedup_fraction": 0.6521151351378172,
-    "unlike_cache_conditions_not_pooled": true,
-    "ordinary_full_F32_max_error": 0.0,
-    "final_unlike_width_max_F32_error": 3.666849374771118,
-    "final_full_vocabulary_finite": true,
-    "final_emitted_tokens_and_bytes_equal": true,
-    "final_explicit_cross_cache_top1_comparison_performed": false
-  },
-  "previous_production_source_revision": "d2c166573dd8f1b7cae552b35e574fc0581d9715",
-  "normal_validation_case": 9720,
+  "previous_production_source_revision": "d648ff44ff09297778768458ee340b15c3623f99",
+  "normal_validation_case": 10140,
   "selected_routing_policy": 14,
-  "prefill_Experts": 10,
+  "prefill_Experts": 6,
   "decode_Experts": 6,
   "cached_ranking_multiplier": 1.5,
   "ranking_preferences_latched_per_target_event": true,
-  "graph_reuse_disabled_for_policy": true,
+  "graph_reuse_disabled_for_policy": false,
   "all_previous_production_programs_preserved": true,
-  "preserved_programs_verified": 12,
+  "preserved_programs_verified": 13,
   "canonical_settings_verified": 5,
   "native_title_running": false,
   "gateway_running": false,
   "model_loaded": false,
   "finite_binding_consumed": true,
   "prefill_tokens": 16,
-  "all_prompt_outputs_requested": true
+  "all_prompt_outputs_requested": true,
+  "supplemental_Expert_bundles": 28,
+  "output_only_Q8_exception": true,
+  "integer_activation_quantization": false,
+  "postload_quota_transfer_bytes": 199680000,
+  "resident_output_payload_saving_bytes": 595968000,
+  "all_six_current_candidates_disposed": true
 }
