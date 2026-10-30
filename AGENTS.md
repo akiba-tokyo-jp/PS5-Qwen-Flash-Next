@@ -20,6 +20,29 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The later five-candidate delivery follow-up is complete in
+`docs/delivery-followup-results-20261030.md` / `.json`. No production change is
+adopted. Individual bundles and the wider known-demand queue regress; two/three
+lanes are slower than four; all-bundle four-task time is+0.2964%. Numeric-name
+memory checks reduce their timed guard path39.0568% but whole time is+0.2599%.
+The buffer-aware GPU prepass11420 actually submits671 counting subgraphs but
+whole time is+165.6259%, decode0.934026 versus3.723656; the Japanese pair also
+fails its F32 gate (max0.0092787743, same tokens/bytes). This tested variant is
+rejected and its remaining same-variant timings are canceled. No physical
+impossibility is claimed. All cases are normally closed/exactly restored;
+native/gateway/models inactive. Keep placement11050 and the performance below.
+Do not replay consumed cases11120/11160/11180/11220/11260/11280/11320/11360/
+11380/11420 or reopen these rejected variants without a new task.
+
+New comparison builders couple route storage to constexpr request count and
+use `.at()`; old extended cohorts11160/11220 overflowed the historical nine
+slots and remain rejected evidence. Depth2 legacy targets are fixed. Imported
+NONE/view values remain live inputs, and Vulkan ranges require actual buffer
+identity because separate device buffers all expose fake base0x1000. Host
+negative fixtures and actual selected-object disassembly preserve these proofs.
+The normal/API/display adoption stage is conditional on a headless winner and
+is not triggered. The unrelated55-old-settings permission block remains.
+
 The cold/different-input campaign is complete in
 `docs/cold-request-results-20261030.md` / `.json` and
 `docs/cold-request-adoption-20261030.json`. Placement11050 installs
