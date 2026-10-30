@@ -20,6 +20,35 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The first lean-qwenflash prefill verification is complete in
+`docs/lean-prefill-results-20261030.json`. Final9630 completes all31 requests
+with one load, widths4/8/16 and all/tail-only outputs. All18 fixed content/raw
+format tasks and counting tokens pass; same-policy controls are F32-exact.
+Cross-mode maximum full-vocabulary logit error6.403900 is disclosed. Width16/all
+reduces prefill16.253% and whole throughput improves11.4005%; tail-only reduces
+prefill17.953% but adds no whole-request gain over16/all and decode is lower.
+The predeclared prefill-first rule selects mode5 for separate normal confirmation;
+do not relabel this headless result as normal prefix/speculation adoption.
+Other lean ideas remain outside this explicitly finite comparison.
+
+All source/model/GPU owners retire positively, ordinary close and exact55a8
+production/five-settings restore with fresh idle pass. The title/gateway/models
+are inactive. No request remains pending in the six-composition comparison.
+Do not replay consumed9590/9610/9630. Earlier failures and the known prelaunch
+ENOSPC transfer remain preserved; partial timings are not pooled. Keep original
+memory/owner/completion guards and the pinned driver/cache policy. The new CPU
+bookkeeping160/context16 capacities are explicit experimental changes; no GPU
+allocation cap, source delivery or matrix shader is relaxed. Default production
+continues below. No CI, reboot or agents.
+
+Owner-requested cleanup is complete in `docs/closed-trial-cleanup-20261030.json`:
+54 closed obsolete trial executables and one unpublished partial retired from
+the PS5 after complete host/raw-console SHA256 agreement, 916829098 logical
+bytes. All11 qualified programs, five settings, model data and complete host
+copies remain. The final9630 temporary executable is also retired; its host
+package/evidence remain intact. Sixteen unclassified historical copies are
+retained; do not infer that their required closure evidence was established.
+
 The requested routing/sharing production integration is complete in
 `docs/routing-winners-adoption-20261030.md` / `.json` and the installation record.
 Normal 9550 qualifies decode Top-6, cached ranking x1.5 and repeated causal pairs

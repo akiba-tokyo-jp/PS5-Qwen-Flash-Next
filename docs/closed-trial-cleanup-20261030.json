@@ -1,0 +1,42 @@
+{
+  "schema": "ps5-qwen-closed-trial-cleanup-v1",
+  "date": "2026-10-30",
+  "completed": true,
+  "closed_trial_program_copies_retired": 54,
+  "unpublished_failed_transfer_retired": 1,
+  "total_files_retired": 55,
+  "retired_logical_file_bytes": 916829098,
+  "retired_MiB": 874.3563632965088,
+  "filesystem_available_bytes_after_cleanup": null,
+  "preservation": {
+    "complete_host_copies_retained": true,
+    "whole_remote_SHA256_matched_before_deletion": true,
+    "each_removed_path_absence_verified": true,
+    "canonical_production_untouched_by_cleanup": true,
+    "all_11_qualified_programs_preserved": true,
+    "all_5_settings_preserved": true,
+    "all_model_data_preserved": true
+  },
+  "deletion_scope": "Only exact obsolete closed test-program paths and the positively reconciled unpublished ENOSPC prefix.",
+  "other_unclassified_historical_copies_retained": 16,
+  "title_launches": 0,
+  "GPU_calls": 0,
+  "automatic_deletion_retries": 0,
+  "evidence": [
+    {
+      "kind": "completed-private-cleanup-receipt",
+      "bytes": 371,
+      "sha256": "07019e15bfbb7cc9132c85f2a46c98e12a280cfcb56791e38f14adf336a56ab0"
+    },
+    {
+      "kind": "completed-private-cleanup-receipt",
+      "bytes": 394,
+      "sha256": "a98ea37ab70b57f2db6973370aa0b0b48389a09e6673a1894d5cd691cc00061d"
+    },
+    {
+      "kind": "completed-private-cleanup-receipt",
+      "bytes": 380,
+      "sha256": "7720458c52797d3d19873b82f52ea4060a73bb5b0051c1b75828861078c63e3d"
+    }
+  ]
+}
