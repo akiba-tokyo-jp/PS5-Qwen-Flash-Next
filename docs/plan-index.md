@@ -1,13 +1,32 @@
 # PS5 Flash Next plan status
 
+The [normal width16/all integration and placement](prefill16-adoption-20261030.json)
+are complete. Normal 9720 passes all three requests, two actual passive frames,
+complete-prefix reuse and reconciled seven causal verifications (six accepts,
+one rejection), positive retirement, ordinary close and exact control restoration.
+Independent TTFT falls 14.014686 -> 11.634333 s; total falls 22.571456 -> 20.179917 s.
+Decode is 2.567815 tok/s; repeated decode falls 3.522102 -> 3.448557, while
+capture-charged pair throughput rises 8.273% to 1.621072. Historical 9550 is the
+normal control; no fresh normal ABBA is claimed.
+
+Placement 9730 installs `f49ba8ef...` and verifies 12 programs/five settings in
+two bounded native complete-hash batches. Exact55a8 and every older rollback
+remain. The title/gateway/models are inactive and the finite binding consumed.
+No implementation, verification or placement step remains in this adoption scope.
+Workspace capacity/reservation tightens 256 -> 248 MiB; original total1792,
+single512, CPU512 MiB and all physical reserves remain. This is a ledger change,
+not measured physical memory reclamation. Both earlier returned failures and
+restorations remain in the report. No CI, reboot, forced signals or GPU replay.
+
 The first [lean-qwenflash prefill verification](lean-prefill-results-20261030.json)
 is complete: all31 native requests, six compositions, one load, all18 fixed
 quality tasks, full routes/bytes/output-row reconciliation, positive retirement,
 ordinary close and exact55a8/settings restoration. Width16 reduces mean prefill
 from13.909s to11.648s/all or11.412s/tail, with about11.40% whole-request throughput
 gain. Tail-only adds no whole-request gain over16/all and decode is lower.
-The predeclared prefill-first selection is mode5; normal prefix/speculation
-confirmation remains a separate scope. No production replacement is claimed.
+The predeclared prefill-first selection was mode5; the separate normal
+prefix/speculation adoption above selects mode4 with its disclosed whole-request
+criterion. The initial comparison alone did not qualify production replacement.
 Same-policy F32 controls are exact; cross-mode maximum error6.403900 is disclosed
 with identical counting tokens and finite full vocabulary. First new-shape
 preparation stays charged to its timed repetition. Other lean ideas are outside

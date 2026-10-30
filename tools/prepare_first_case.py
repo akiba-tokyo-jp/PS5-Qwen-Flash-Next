@@ -65,6 +65,30 @@ def require_routing_production(installation, context, report):
         raise ValueError('Qualified routing normal app, exact placement and preserved rollbacks are required')
 
 
+def require_prefill16_production(installation, context, report):
+    """Bind the normal width16 qualification to its exact installed program."""
+    normal=report.get('normal',{});placed=report.get('placement',{});policy=report.get('policy',{})
+    if (report.get('schema')!='ps5-qwen-prefill16-adoption-v1' or
+        report.get('completed')is not True or report.get('pending_steps')!=[] or
+        report.get('application_SELF')!=installation.get('application_SELF') or
+        report.get('previous_application_SELF',{}).get('sha256')!=installation.get('previous_production_SHA256') or
+        report.get('precision')!=installation.get('precision') or report.get('driver')!=installation.get('driver') or
+        normal.get('schema')!='ps5-qwen-prefill16-normal-qualification-v1' or
+        normal.get('completed')is not True or normal.get('all_declared_adoption_criteria_passed')is not True or
+        normal.get('same_policy_independent_full_F32_max_error')!=0 or normal.get('all_counting_tokens_equal')is not True or
+        normal.get('prefill_tokens')!=16 or normal.get('all_prompt_outputs_requested')is not True or
+        any(v!=16 for v in (policy.get('prefill_tokens'),installation.get('prefill_tokens'),context.get('prefill_tokens'))) or
+        any(v!=14 for v in (normal.get('selected_policy'),policy.get('bits'),installation.get('selected_routing_policy'),context.get('selected_routing_policy'))) or
+        placed.get('completed')is not True or placed.get('all_programs_and_settings_native_whole_SHA256_identity_EOF_verified')is not True or
+        placed.get('verified_programs')!=12 or placed.get('verified_settings')!=5 or placed.get('verification_files')!=17 or
+        placed.get('prior_programs_and_settings_preserved')is not True or placed.get('fresh_idle_confirmed')is not True or
+        placed.get('normal_case')!=installation.get('normal_validation_case') or placed.get('normal_case')!=context.get('prefill16_normal_case') or
+        placed.get('case')!=installation.get('production_placement_case') or placed.get('case')!=context.get('prefill16_placement_case') or
+        any(placed.get(k)is not False for k in ('native_title_running','gateway_running','model_loaded')) or
+        installation.get('owner_expected_quantization_loss_accepted')is not True or context.get('Expert_format')!='Gate_Up_Q2_K_Down_Q2_0_MSE'):
+        raise ValueError('Qualified normal width16 app, exact placement and preserved rollbacks are required')
+
+
 def qualified_control(context, production=False, installation=None):
     if any(context.get(k)is not False for k in ('native_running','gateway_running','model_loaded')):
         raise ValueError('A positively idle preserved control is required')
@@ -82,7 +106,10 @@ def qualified_control(context, production=False, installation=None):
         routing_Q2=(isinstance(installation,dict) and installation.get('precision')==all_q2_precision and
             installation.get('selected_routing_policy')in (2,6,14))
         if routing_Q2:
-            require_routing_production(installation,context,read(ROOT/'docs/routing-winners-adoption-20261030.json'))
+            if installation.get('prefill_tokens')==16:
+                require_prefill16_production(installation,context,read(ROOT/'docs/prefill16-adoption-20261030.json'))
+            else:
+                require_routing_production(installation,context,read(ROOT/'docs/routing-winners-adoption-20261030.json'))
             required=('canonical_startup_SELF_full_readback_verified','installed_configuration_full_readback_verified',
                 'source_GPU_model_resources_positively_retired','ordinary_OS_shutdown_verified','previous_production_rollback_preserved')
         optimized_Q2=(isinstance(installation,dict) and installation.get('precision')==all_q2_precision and

@@ -20,6 +20,39 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+Normal width16/all integration and production placement are complete in
+`docs/prefill16-adoption-20261030.json` and the installation record. Case 9720
+completes warmup plus two actual API requests, complete prefix capture/restore,
+seven causal attempts (six accepts, one rejection), seven captures and one
+restore. Same-policy independent full F32 error is zero; all counting tokens
+match. Final approximate cross-cache/width difference 7.322802 is disclosed.
+Both actual native frames were viewed; all resource owners retire positively,
+ordinary close and exact control restoration pass. No pending implementation,
+normal verification or placement remains in this width16/all scope.
+
+Independent TTFT is 11.634333 s (-16.985%), total 20.179917 s (-10.595%) and decode
+2.567815 tok/s. Repeated decode is 3.448557 versus 3.522102; disclose this 2.088%
+decline rather than claiming every metric improves. Capture-charged pair
+throughput improves 8.273% to 1.621072. Control is historical 9550, not a fresh
+normal ABBA. The first headless prefill-first mode5 selection stays historical;
+normal mode4 selection prioritizes whole request and decode preservation.
+
+Placement 9730 installs SELF f49ba8ef32cb5a1cb82b16f833792eb43f7e566eed2cdace8730292a755a01fd
+(17500215 bytes), source d648ff44ff09297778768458ee340b15c3623f99. All 12 programs
+and five settings pass native whole hashes/identity/EOF in two bounded batches;
+exact 55a8 and all earlier rollbacks remain. Native/gateway/models are inactive.
+The finite binding is consumed; sustained service remains unqualified.
+
+Internal workspace capacity/reservation is tightened 256 -> 248 MiB, with actual
+capacity sums checked on each callback. Total device1792/single512/CPU512 MiB and
+every physical Direct/Flexible/kernel/owner/completion guard remain. Do not
+describe the 8 MiB ledger reduction as measured physical memory reclaimed.
+The initial 9660 adapter-width and 9690 checkpoint-budget returned failures are
+preserved with their actual collector flags and normal restoration. Never
+replay 9660, 9690, 9720 or placement9730. Keep driver872cc126 cumulative-idle,
+disabled persistent caches, no CI/reboot/agents. Earlier entries below are
+dated controls and do not override the selected normal implementation.
+
 The first lean-qwenflash prefill verification is complete in
 `docs/lean-prefill-results-20261030.json`. Final9630 completes all31 requests
 with one load, widths4/8/16 and all/tail-only outputs. All18 fixed content/raw
