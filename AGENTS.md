@@ -20,6 +20,16 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner authorized conversion of the remaining resident BF16 weights to Q8
+on2026-10-31, then explicitly clarified that the small PLE convolution alone
+must remain BF16. The scoped plan is `docs/resident-all-Q8-plan-20261031.md`:
+544 resident matrices become Q8_0; `blk.1.ple_conv1d.weight` keeps its original
+BF16 payload and[4,10240] shape. Routed Expert Q2, existing output/shared Q8,
+other F32 weights, mapped embeddings/lazy PLE/MTP and the current driver remain.
+Keep1381 slots initially to isolate the precision change. This authorization
+does not claim a new model has been qualified or installed. Host conversion,
+native comparison and production placement are distinct pending stages.
+
 The later five-candidate delivery follow-up is complete in
 `docs/delivery-followup-results-20261030.md` / `.json`. No production change is
 adopted. Individual bundles and the wider known-demand queue regress; two/three
