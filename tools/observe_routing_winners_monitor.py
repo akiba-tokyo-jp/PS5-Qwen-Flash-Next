@@ -28,7 +28,7 @@ def main():
                 s=row['speculation'];c=row['checkpoint']
                 require(s['attempts']>1 and s['attempts']==s['accepted']+s['rejected'] and s['queued_bonus_samples']==s['accepted'] and c['captures']==s['attempts'] and c['restores']==s['rejected'],'Every repeated verification/rollback and delivered bonus must reconcile')
 """+marker)
- source=once(source,"result['source_windows']==result['source_completed_windows']", "result['source_windows']==result['source_completed_windows'] and result['routing_winners_policy']==ROUTING_SCOPE['selected_routing_policy'] and result['graph_reuse_disabled_for_policy']")
+ source=once(source,"result['source_windows']==result['source_completed_windows']", "result['source_windows']==result['source_completed_windows'] and result['routing_winners_policy']==ROUTING_SCOPE['selected_routing_policy'] and result['graph_reuse_disabled_for_policy']==ROUTING_SCOPE['graph_reuse_disabled_for_policy']")
  env=dict(ordinary.__dict__,ROUTING_SCOPE=scope);sys.argv=[sys.argv[0],*remaining,'--out',str(a.out)]
  exec(compile(source,__file__+'#selected-policy-observer','exec'),env);env['main']()
 if __name__=='__main__':main()
