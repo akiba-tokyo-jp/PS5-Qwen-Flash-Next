@@ -1,0 +1,140 @@
+{
+  "schema": "ps5-qwen-memory-delivery-graph-adoption-v1",
+  "date": "2026-10-30",
+  "completed": true,
+  "all_six_candidates_disposed": true,
+  "pending_steps": [],
+  "application_SELF": {
+    "bytes": 19112551,
+    "sha256": "5c5d70347f25d2fe0905da3325519c056038475254fbf90af745af61c7b126ea"
+  },
+  "previous_application_SELF": {
+    "bytes": 18299623,
+    "sha256": "5487e687dbc13a5f6a7655faf52d91752f3d029ba13938762b133b99e6a3a7a5"
+  },
+  "application_source_revision": "8705b89f5ef563da12975be06f99798a1b68f221",
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "precision": {
+    "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
+    "other_weights": "original BF16/F32 except output and active shared Expert Q8_0",
+    "output_weight": "Q8_0",
+    "shared_Expert_weight": "Q8_0 (144 active projections)",
+    "KV_cache": "F32",
+    "activation_inputs": "F32",
+    "quantization": "Expert, resident output and active shared Expert weights"
+  },
+  "model_receipt_SHA256": "7ba7bbf919eba43a365f570930558b9405b60ad66f9e3cdeea104ce5557377fb",
+  "policy": {
+    "active_cache_slots": 1381,
+    "physical_cache_planes": 1382,
+    "cache_bytes": 2123243520,
+    "quota_transfer_bytes": 601284608,
+    "postload_device_budget_bytes": 2480332800,
+    "postload_single_buffer_bytes": 750780416,
+    "workspace_reservation_bytes": 67108864,
+    "CPU_heap_limit_bytes": 536870912,
+    "physical_Direct_reserve_bytes": 536870912,
+    "prefill_tokens": 16,
+    "prefill_Experts": 6,
+    "decode_Experts": 6,
+    "bits": 14,
+    "total_bundled_Experts": 448,
+    "maximum_parallel_source_reads": 4,
+    "graph_reuse_enabled": true,
+    "integer_activation_quantization": false
+  },
+  "normal": {
+    "completed": true,
+    "case": 10760,
+    "control_case": 10240,
+    "all_declared_adoption_criteria_passed": true,
+    "same_policy_independent_full_F32_max_error": 0,
+    "all_counting_tokens_equal": true,
+    "final_unlike_cache_width_full_F32_max_error": 7.568033695220947,
+    "actual_native_frames_viewed": 2,
+    "source_model_GPU_owners_positively_retired": true,
+    "ordinary_close_exact_restore": true,
+    "CPU_heap_peak_bytes": 503382016,
+    "device_ledger_peak_bytes": 2470445056,
+    "actual_workspace_capacity_peak_bytes": 8388608,
+    "independent": {
+      "TTFT_ms": 7460.585538029671,
+      "decode_ms": 7259.612729012966,
+      "decode_tokens_per_second": 2.892716289957689,
+      "generated_tokens": 22,
+      "prefill_ms": 7429.788082003593,
+      "prompt_tokens": 30,
+      "total_ms": 15038.472885012627
+    },
+    "retained": {
+      "TTFT_ms": 63.55817198753357,
+      "decode_ms": 4631.456900000572,
+      "decode_tokens_per_second": 4.534210390686655,
+      "generated_tokens": 22,
+      "prefill_ms": 31.354583978652954,
+      "prompt_tokens": 30,
+      "total_ms": 5335.281865000725
+    },
+    "capture_charged_pair_generated_tok_s": 2.1596411923026197,
+    "control_capture_charged_pair_generated_tok_s": 1.9651201318377967,
+    "pair_speedup_fraction": 0.09898685444889588,
+    "repeated_TTFT_regression_ms": 3.748027980327606,
+    "comparison_is_sequential_not_ABBA": true
+  },
+  "placement": {
+    "completed": true,
+    "case": 10820,
+    "normal_case": 10760,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
+  },
+  "fixed_quality": {
+    "all_four_fixed_tasks_compared": true,
+    "compared_requests": 8,
+    "semantic_correct_requests": 8,
+    "strict_raw_format_correct_requests": 6,
+    "same_policy_repeat_full_F32_max_error": 0,
+    "raw_JSON_fences_disclosed": true,
+    "application_output_normalization": false,
+    "cases": [
+      10740,
+      10800
+    ],
+    "scope": "Fixed short counting, Japanese translation, arithmetic and JSON extraction; broad reasoning unqualified"
+  },
+  "dispositions": {
+    "cache_redistribution": "adopted1381_with64MiB_workspace",
+    "shared_Expert_Q8": "adopted144_active_projections",
+    "miss_retention_and_placement": "frequency_policies_screened_worse; new532_triplet_placement_measured_mixed_no_whole_pair_gain_not_adopted",
+    "completion_ordered_delivery": "measured_mixed_under_one_percent_not_adopted",
+    "width_specific_CPU_plans": "measured_zero_accepted_reactivations_not_adopted",
+    "GPU_kernel_work": "diagnostic_complete_no_specific_shader_speed_win_established"
+  },
+  "optional_cleanup": {
+    "old_setting_backups": 55,
+    "explicit_permission_pending": true,
+    "not_a_prerequisite_for_adoption": true
+  },
+  "sustained_service_qualified": false,
+  "CI_runs": 0,
+  "private_repository": true,
+  "GitHub_Actions_enabled": false
+}

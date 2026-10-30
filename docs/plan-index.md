@@ -1,5 +1,7 @@
 # PS5 Flash Next plan status
 
+The current memory/delivery/graph campaign is complete: [results](memory-delivery-graph-results-20261030.md) and [installed qualification](memory-delivery-graph-adoption-20261030.json). Selected shared-Q8/cache1381 normal10760 is installed by10820; earlier entries below are historical.
+
 The subsequent [owner-authorized version cleanup](obsolete-version-cleanup-20261030.md)
 retires108 obsolete executables and1,346 setting backups from the console.
 The selected SELF and five current settings pass complete raw readback;

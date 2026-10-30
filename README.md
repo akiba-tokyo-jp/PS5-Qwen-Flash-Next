@@ -7,8 +7,34 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+**Shared-Expert Q8 and1381 cache slots are verified and installed.** See the
+[current results](docs/memory-delivery-graph-results-20261030.md),
+[adoption evidence](docs/memory-delivery-graph-adoption-20261030.json) and
+[installation record](config/production-installation.json).
+
+| Normal application metric | Fresh997 control10240 | Selected10760 |
+| --- | ---: | ---: |
+| Independent decode |2.719437 tok/s |**2.892716 tok/s** |
+| Exact-repeat decode |3.698140 tok/s |**4.534210 tok/s** |
+| Independent TTFT |7.779691 s |**7.460586 s** |
+| Capture-charged pair throughput |1.965120 tok/s |**2.159641 tok/s (+9.899%)** |
+
+Output and144 active shared projections use Q8_0; routed Expert Q2 and F32
+activation/KV remain. Actual workspace capacity is8 MiB under a64 MiB fixed
+reservation; the original CPU/physical Direct512 MiB reserves remain. Other
+candidates are tested without a whole-pair benefit or closed as diagnostic
+work. Comparison is sequential, not ABBA; repeated TTFT increases3.748 ms.
+Fixed task contents pass8/8, raw formats6/8 because JSON retains Markdown fences.
+Both native frames, positive retirement and exact deployment10820 pass. The
+current and immediate-control programs are retained, with host archives for
+historical recovery. Optional deletion of55 previously inventoried old setting
+backups awaits explicit permission; it is separate from the completed adoption.
+No CI, reboot, persistent caches or sustained-service qualification is added.
+
+## Previous output-Q8/997 production control
+
 **The six-candidate composition is implemented, qualified on the PS5, and
-installed.** See the [results](docs/six-candidate-results-20261030.md),
+was installed before the current memory composition.** See the [results](docs/six-candidate-results-20261030.md),
 [sanitized evidence](docs/six-candidate-adoption-20261030.json) and
 [installation record](config/production-installation.json).
 
@@ -35,7 +61,7 @@ information-only native frames were viewed. Placement10160 verified13 programs
 and five settings. Subsequent [owner-authorized cleanup10200](docs/obsolete-version-cleanup-20261030.md)
 removes108 obsolete executables and1,346 setting backups. SELF `5487e687...`
 and the five current settings remain exact;12 qualified past programs retain
-host archives. The current console retains only its selected application version.
+host archives. That historical cleanup retained only the then-selected application.
 Native/gateway/models are inactive after verification. Sustained service and
 broad reasoning remain outside this finite qualification. Driver872cc126,
 disabled persistent caches, physical reserves and no-CI policy remain.
