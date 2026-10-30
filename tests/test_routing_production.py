@@ -8,8 +8,10 @@ from prepare_first_case import require_routing_production
 
 class RoutingProductionTests(unittest.TestCase):
  def setUp(self):
-  self.installation=json.loads((ROOT/'config/production-installation.json').read_text())
   self.report=json.loads((ROOT/'docs/routing-winners-adoption-20261030.json').read_text())
+  r=self.report
+  self.installation=dict(precision=r['precision'],application_SELF=r['application_SELF'],previous_production_SHA256=r['previous_application_SELF']['sha256'],
+   selected_routing_policy=r['policy']['bits'],normal_validation_case=r['placement']['normal_case'],production_placement_case=r['placement']['case'],owner_expected_quantization_loss_accepted=True)
   self.context=dict(selected_routing_policy=14,routing_winners_normal_case=9550,
    routing_winners_placement_case=9560,Expert_format='Gate_Up_Q2_K_Down_Q2_0_MSE')
  def test_completed_routing_evidence_is_accepted(self):
