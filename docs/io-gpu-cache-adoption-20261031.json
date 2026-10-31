@@ -1,0 +1,642 @@
+{
+  "schema": "ps5-qwen-io-gpu-cache-dispositions-v1",
+  "date": "2026-10-31",
+  "all_declared_candidates_have_evidence_and_final_disposition": true,
+  "all_planned_full_model_comparisons_completed": false,
+  "remaining_executions_in_consumed_cases": 0,
+  "unchanged_refused_launch_replay": false,
+  "production_changed": false,
+  "new_speed_qualified_defaults": 0,
+  "production_SELF": {
+    "bytes": 20089335,
+    "sha256": "5564792aa1a8e193d60a13e0ea12f8293900fbc8c2e8ff3c8414c7c8ac212257"
+  },
+  "current_production_source_revision": "a95b91d977fe168964105c9197c7610f244ba0f5",
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "historical_qualified_normal_decode_tok_s": 4.894846483714048,
+  "historical_qualified_prefix_decode_tok_s": 6.579934208036408,
+  "current_production_throughput_remeasured": false,
+  "ordinary_title_launches": 4,
+  "cases": [
+    {
+      "case": 12600,
+      "title_launches": 1,
+      "model_requests_completed": 0,
+      "returned_message": "Only one device-owned GDN trial allowed",
+      "free_kernel_pages": 3886,
+      "unchanged_operational_requirement_pages": null,
+      "completed_model_copy_bytes": 32778280,
+      "completed_model_copy_calls": 6,
+      "preclose_completion_unknown": true,
+      "ordinary_OS_close_and_exact_restoration": true,
+      "native_terminal_completed": false,
+      "GPU_fixture_graphs": 0
+    },
+    {
+      "case": 12640,
+      "title_launches": 1,
+      "model_requests_completed": 0,
+      "returned_message": "Model load failed; restart through the ordinary OS path",
+      "free_kernel_pages": 1148,
+      "unchanged_operational_requirement_pages": 1154,
+      "completed_model_copy_bytes": 2539077920,
+      "completed_model_copy_calls": 661,
+      "preclose_completion_unknown": true,
+      "ordinary_OS_close_and_exact_restoration": true,
+      "native_terminal_completed": false,
+      "GPU_fixture_graphs": 0
+    },
+    {
+      "case": 12680,
+      "title_launches": 1,
+      "model_requests_completed": 0,
+      "returned_message": "Model load failed; restart through the ordinary OS path",
+      "free_kernel_pages": 1137,
+      "unchanged_operational_requirement_pages": 1154,
+      "completed_model_copy_bytes": 3384249632,
+      "completed_model_copy_calls": 929,
+      "preclose_completion_unknown": true,
+      "ordinary_OS_close_and_exact_restoration": true,
+      "native_terminal_completed": false,
+      "GPU_fixture_graphs": 0
+    },
+    {
+      "case": 12720,
+      "title_launches": 1,
+      "model_requests_completed": 0,
+      "returned_message": null,
+      "free_kernel_pages": null,
+      "unchanged_operational_requirement_pages": null,
+      "completed_model_copy_bytes": null,
+      "completed_model_copy_calls": null,
+      "preclose_completion_unknown": false,
+      "ordinary_OS_close_and_exact_restoration": true,
+      "native_terminal_completed": true,
+      "GPU_fixture_graphs": 288
+    }
+  ],
+  "candidates": [
+    {
+      "priority": 1,
+      "name": "Current-miss exact Expert triplets",
+      "implementation_complete": true,
+      "disposition": "full_model_speed_comparison_execution_unavailable_under_observed_policy",
+      "physical_impossibility_demonstrated": false,
+      "sealed_triplets": 256,
+      "existing_supplemental_triplets_preserved": 28,
+      "new_triplets": 228,
+      "total_exposed_control_keys": 448,
+      "total_candidate_keys": 676,
+      "immutable_pack_bytes": 394264576,
+      "immutable_pack_sha256": "680e24d63a350bc37953e99efec7578727de28094a762e8d32a1c1b49075e1bb",
+      "native_CPU_seal_and_full_triplet_readback_complete": true,
+      "production_adopted": false,
+      "no_speed_loss_or_gain_claim_from_refusal": true,
+      "adoption_requires": "A materially changed application memory scope must admit model/context without lowering reserves; then fresh both-order retained whole-time gain>=2%,cold regression<=2%,exact full rows/routes/tokens/bytes and normal/API/display qualification."
+    },
+    {
+      "priority": 2,
+      "name": "GDN128 four columns per workgroup",
+      "implementation_complete": true,
+      "disposition": "native_operator_completed_without_qualifying_speed;full_model_comparison_unavailable",
+      "physical_impossibility_demonstrated": false,
+      "native_operator_cases": 8,
+      "native_operator_graphs": 288,
+      "maximum_F64_absolute_error": 1.7101234629779416e-08,
+      "both_order_operator_speed_winners": 0,
+      "primary_scalar_shape_speed_winners": 0,
+      "operator_rows": [
+        {
+          "shape": {
+            "heads": 48,
+            "query_heads": 16,
+            "tokens": 1,
+            "sequences": 1,
+            "snapshots": 1,
+            "vector_gate": false
+          },
+          "forward_reduction_percent": -6.5277947351250365,
+          "reverse_reduction_percent": 0.05883846213208255,
+          "both_orders_at_least_two_percent": false,
+          "maximum_absolute_error": 8.107385179867421e-09,
+          "control_mean_us": 7136.948312500001,
+          "candidate_mean_us": 7367.7925
+        },
+        {
+          "shape": {
+            "heads": 48,
+            "query_heads": 16,
+            "tokens": 1,
+            "sequences": 1,
+            "snapshots": 2,
+            "vector_gate": false
+          },
+          "forward_reduction_percent": -0.09821829730651821,
+          "reverse_reduction_percent": -6.399421141158967,
+          "both_orders_at_least_two_percent": false,
+          "maximum_absolute_error": 8.107385179867421e-09,
+          "control_mean_us": 7137.750375,
+          "candidate_mean_us": 7369.781812499999
+        },
+        {
+          "shape": {
+            "heads": 48,
+            "query_heads": 16,
+            "tokens": 32,
+            "sequences": 1,
+            "snapshots": 1,
+            "vector_gate": false
+          },
+          "forward_reduction_percent": -1.1008340961912388,
+          "reverse_reduction_percent": -4.81178292740454,
+          "both_orders_at_least_two_percent": false,
+          "maximum_absolute_error": 1.7101234629779416e-08,
+          "control_mean_us": 7355.283375,
+          "candidate_mean_us": 7570.2654375
+        },
+        {
+          "shape": {
+            "heads": 48,
+            "query_heads": 16,
+            "tokens": 32,
+            "sequences": 1,
+            "snapshots": 2,
+            "vector_gate": false
+          },
+          "forward_reduction_percent": -0.1670716745696854,
+          "reverse_reduction_percent": 2.3864253036285477,
+          "both_orders_at_least_two_percent": false,
+          "maximum_absolute_error": 1.7101234629779416e-08,
+          "control_mean_us": 7487.378874999999,
+          "candidate_mean_us": 7403.1389375
+        },
+        {
+          "shape": {
+            "heads": 4,
+            "query_heads": 2,
+            "tokens": 1,
+            "sequences": 2,
+            "snapshots": 1,
+            "vector_gate": true
+          },
+          "forward_reduction_percent": 6.150977540326696,
+          "reverse_reduction_percent": -1.312835956836489,
+          "both_orders_at_least_two_percent": false,
+          "maximum_absolute_error": 7.60448437553407e-09,
+          "control_mean_us": 7371.525750000001,
+          "candidate_mean_us": 7184.3931875
+        },
+        {
+          "shape": {
+            "heads": 4,
+            "query_heads": 2,
+            "tokens": 1,
+            "sequences": 2,
+            "snapshots": 2,
+            "vector_gate": true
+          },
+          "forward_reduction_percent": 3.626381009260271,
+          "reverse_reduction_percent": 0.6155303673238577,
+          "both_orders_at_least_two_percent": false,
+          "maximum_absolute_error": 7.60448437553407e-09,
+          "control_mean_us": 7339.617249999999,
+          "candidate_mean_us": 7182.9348125
+        },
+        {
+          "shape": {
+            "heads": 4,
+            "query_heads": 2,
+            "tokens": 32,
+            "sequences": 2,
+            "snapshots": 1,
+            "vector_gate": true
+          },
+          "forward_reduction_percent": -0.04847008497457228,
+          "reverse_reduction_percent": 4.747040179346218,
+          "both_orders_at_least_two_percent": false,
+          "maximum_absolute_error": 1.2162016144179333e-08,
+          "control_mean_us": 7312.02825,
+          "candidate_mean_us": 7135.986312500001
+        },
+        {
+          "shape": {
+            "heads": 4,
+            "query_heads": 2,
+            "tokens": 32,
+            "sequences": 2,
+            "snapshots": 2,
+            "vector_gate": true
+          },
+          "forward_reduction_percent": 1.2322011084583084,
+          "reverse_reduction_percent": -1.1242213588608774,
+          "both_orders_at_least_two_percent": false,
+          "maximum_absolute_error": 1.3441841147099343e-08,
+          "control_mean_us": 7181.4315,
+          "candidate_mean_us": 7177.0413125000005
+        }
+      ],
+      "production_adopted": false,
+      "timing_limit": "Synchronized graph wall includes original memory/completion guards; approximately7ms floor does not isolate pure shader execution. No claim that every pure GPU kernel is slower.",
+      "adoption_requires": "A materially different specialization/timing scope must establish repeatable operator benefit and then pass fresh full-model,quality and normal/API/display conditions;do not replay rejected unconditional variant."
+    },
+    {
+      "priority": 3,
+      "name": "Causal prefill protection and capacity",
+      "implementation_complete": true,
+      "disposition": "host_screen_complete_no_incremental_gain_for_installed_fixed_prompt",
+      "original_planner_reproduces_native_controls": true,
+      "history_caps": [
+        0,
+        512,
+        1024,
+        1536
+      ],
+      "thresholds": [
+        "none",
+        "1/8",
+        "1/4",
+        "1/2"
+      ],
+      "accepted_decode_only": true,
+      "aging_route_observations": 13200,
+      "ownership_maps_validated": true,
+      "screen_rows": [
+        {
+          "capacity": 0,
+          "cohort": "current_identical_prompt",
+          "mode": 0,
+          "total_misses": 6193
+        },
+        {
+          "capacity": 0,
+          "cohort": "different_inputs",
+          "mode": 0,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 1536,
+          "cohort": "current_identical_prompt",
+          "mode": 0,
+          "total_misses": 6193
+        },
+        {
+          "capacity": 1536,
+          "cohort": "current_identical_prompt",
+          "mode": 1,
+          "total_misses": 5732
+        },
+        {
+          "capacity": 1536,
+          "cohort": "current_identical_prompt",
+          "mode": 2,
+          "total_misses": 5732
+        },
+        {
+          "capacity": 1536,
+          "cohort": "current_identical_prompt",
+          "mode": 3,
+          "total_misses": 5732
+        },
+        {
+          "capacity": 1536,
+          "cohort": "current_identical_prompt",
+          "mode": 4,
+          "total_misses": 5964
+        },
+        {
+          "capacity": 1536,
+          "cohort": "current_identical_prompt",
+          "mode": 5,
+          "total_misses": 6156
+        },
+        {
+          "capacity": 1536,
+          "cohort": "current_identical_prompt",
+          "mode": 6,
+          "total_misses": 5964
+        },
+        {
+          "capacity": 1536,
+          "cohort": "different_inputs",
+          "mode": 0,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 1536,
+          "cohort": "different_inputs",
+          "mode": 1,
+          "total_misses": 11270
+        },
+        {
+          "capacity": 1536,
+          "cohort": "different_inputs",
+          "mode": 2,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 1536,
+          "cohort": "different_inputs",
+          "mode": 3,
+          "total_misses": 11211
+        },
+        {
+          "capacity": 1536,
+          "cohort": "different_inputs",
+          "mode": 4,
+          "total_misses": 11145
+        },
+        {
+          "capacity": 1536,
+          "cohort": "different_inputs",
+          "mode": 5,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 1536,
+          "cohort": "different_inputs",
+          "mode": 6,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 512,
+          "cohort": "current_identical_prompt",
+          "mode": 0,
+          "total_misses": 6193
+        },
+        {
+          "capacity": 512,
+          "cohort": "current_identical_prompt",
+          "mode": 1,
+          "total_misses": 6159
+        },
+        {
+          "capacity": 512,
+          "cohort": "current_identical_prompt",
+          "mode": 2,
+          "total_misses": 6159
+        },
+        {
+          "capacity": 512,
+          "cohort": "current_identical_prompt",
+          "mode": 3,
+          "total_misses": 6193
+        },
+        {
+          "capacity": 512,
+          "cohort": "current_identical_prompt",
+          "mode": 4,
+          "total_misses": 6193
+        },
+        {
+          "capacity": 512,
+          "cohort": "current_identical_prompt",
+          "mode": 5,
+          "total_misses": 6193
+        },
+        {
+          "capacity": 512,
+          "cohort": "current_identical_prompt",
+          "mode": 6,
+          "total_misses": 6193
+        },
+        {
+          "capacity": 512,
+          "cohort": "different_inputs",
+          "mode": 0,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 512,
+          "cohort": "different_inputs",
+          "mode": 1,
+          "total_misses": 11158
+        },
+        {
+          "capacity": 512,
+          "cohort": "different_inputs",
+          "mode": 2,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 512,
+          "cohort": "different_inputs",
+          "mode": 3,
+          "total_misses": 11107
+        },
+        {
+          "capacity": 512,
+          "cohort": "different_inputs",
+          "mode": 4,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 512,
+          "cohort": "different_inputs",
+          "mode": 5,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 512,
+          "cohort": "different_inputs",
+          "mode": 6,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 1024,
+          "cohort": "current_identical_prompt",
+          "mode": 0,
+          "total_misses": 6193
+        },
+        {
+          "capacity": 1024,
+          "cohort": "current_identical_prompt",
+          "mode": 1,
+          "total_misses": 5971
+        },
+        {
+          "capacity": 1024,
+          "cohort": "current_identical_prompt",
+          "mode": 2,
+          "total_misses": 5971
+        },
+        {
+          "capacity": 1024,
+          "cohort": "current_identical_prompt",
+          "mode": 3,
+          "total_misses": 6074
+        },
+        {
+          "capacity": 1024,
+          "cohort": "current_identical_prompt",
+          "mode": 4,
+          "total_misses": 6171
+        },
+        {
+          "capacity": 1024,
+          "cohort": "current_identical_prompt",
+          "mode": 5,
+          "total_misses": 6190
+        },
+        {
+          "capacity": 1024,
+          "cohort": "current_identical_prompt",
+          "mode": 6,
+          "total_misses": 6171
+        },
+        {
+          "capacity": 1024,
+          "cohort": "different_inputs",
+          "mode": 0,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 1024,
+          "cohort": "different_inputs",
+          "mode": 1,
+          "total_misses": 11210
+        },
+        {
+          "capacity": 1024,
+          "cohort": "different_inputs",
+          "mode": 2,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 1024,
+          "cohort": "different_inputs",
+          "mode": 3,
+          "total_misses": 11142
+        },
+        {
+          "capacity": 1024,
+          "cohort": "different_inputs",
+          "mode": 4,
+          "total_misses": 11116
+        },
+        {
+          "capacity": 1024,
+          "cohort": "different_inputs",
+          "mode": 5,
+          "total_misses": 11108
+        },
+        {
+          "capacity": 1024,
+          "cohort": "different_inputs",
+          "mode": 6,
+          "total_misses": 11108
+        }
+      ],
+      "production_adopted": false,
+      "different_input_identity_gate_restores_unprotected_control": true,
+      "adoption_requires": "A separately requested arbitrary-input integration or materially different causal rule must reduce relevant3072-slot misses beyond the fixed1536 baseline and pass fresh matched native whole-time/quality/adoption checks."
+    }
+  ],
+  "final_state": {
+    "native_gateway_and_models_inactive": true,
+    "source_model_GPU_owners_positively_retired_in_final_fixture": true,
+    "native_fixture_device_ledger_peak_bytes": 69206016,
+    "exact_production_and_settings_restored": true,
+    "fresh_idle_evidence": {
+      "label": "hardware-first-generation-12720\\restored-idle\\fresh-session\\session.private.json",
+      "bytes": 9750,
+      "sha256": "1ed642db9555d8bfa430ba14247355bf3ecbbf459079a068feda6162da5f32bb"
+    }
+  },
+  "invariants": {
+    "Expert_Q2": true,
+    "resident_Q8": true,
+    "PLE_convolution_BF16": true,
+    "activation_and_KV_F32": true,
+    "cache_slots": 3072,
+    "source_workers": 4,
+    "original_reserves": true,
+    "reboot_used": false,
+    "forced_signals": false,
+    "persistent_caches": false,
+    "CI_runs": 0
+  },
+  "evidence": [
+    {
+      "label": "hardware-first-generation-12600\\native-model-terminal.private.json",
+      "bytes": 2251,
+      "sha256": "52f45116f8dd1e7d08545c57613c925307a584d9e6e79d2d9e99fdfb04dd05ef"
+    },
+    {
+      "label": "hardware-first-generation-12600\\restored-complete.private.json",
+      "bytes": 1208,
+      "sha256": "b11ec18e73ca536f91f43a0d28f40c986fb3f22ce465668a92eab41053c4abd9"
+    },
+    {
+      "label": "hardware-first-generation-12640\\native-model-terminal.private.json",
+      "bytes": 2285,
+      "sha256": "1a507dae9a52b641d6b01922300cd667b6b7d4cbe743c4d4cb58446f34d83a62"
+    },
+    {
+      "label": "hardware-first-generation-12640\\restored-complete.private.json",
+      "bytes": 1208,
+      "sha256": "c748bdedab1aebc69a3303405e02c4d55666e77f6f4f1d5f344628b094d97ce4"
+    },
+    {
+      "label": "hardware-first-generation-12680\\native-model-terminal.private.json",
+      "bytes": 2285,
+      "sha256": "29ddce2d58d19c9c3f2dee4a1eef7870b947c47391ed888d36e610146641a7c9"
+    },
+    {
+      "label": "hardware-first-generation-12680\\restored-complete.private.json",
+      "bytes": 1208,
+      "sha256": "3a8ca2cc3a42cdc607e26e3a3e28fdbeb4f9aa01c30a98a7ac212beb13170985"
+    },
+    {
+      "label": "hardware-first-generation-12720\\native-model-terminal.private.json",
+      "bytes": 15529,
+      "sha256": "54b49b9bfc6ac64859041fe9785112ab25b58ecd865dc0f7ac7ff36746b87e4a"
+    },
+    {
+      "label": "hardware-first-generation-12720\\restored-complete.private.json",
+      "bytes": 1209,
+      "sha256": "86c8ceca7b607d934cae5d17a184e573eaa78d2ee6edb9d8b332cd851eef0873"
+    },
+    {
+      "label": "io-gpu-cache-screen-12594\\summary.private.json",
+      "bytes": 15740,
+      "sha256": "ebb566cdc7f5a711542fc72c1e287f37b044b7d7367ae7898cbf56d17e40c35a"
+    },
+    {
+      "label": "io-gpu-host-12592\\complete.private.json",
+      "bytes": 177,
+      "sha256": "846848c9957fb4afa845bcf95853168f8152483b6bc12c35e171b1f15823b10f"
+    },
+    {
+      "label": "io-gpu-registry-host-12626\\complete.private.json",
+      "bytes": 403,
+      "sha256": "7610b926fc47d8818e61860c8e83cb7c984a44d59501ef3b31120d6611869fe1"
+    },
+    {
+      "label": "io-gpu-capacity-screen-12734\\complete.private.json",
+      "bytes": 7078,
+      "sha256": "38b8ab79af80fcd23b8c6f6166d9923a5a00a2047e393ae68be581435e3521cb"
+    },
+    {
+      "label": "IO-current-pack-12565\\result.private.json",
+      "bytes": 43977,
+      "sha256": "65bee622347c4351f6d5915a010b00e02531c9b96144debb0a561b2ef2f85736"
+    },
+    {
+      "label": "hardware-first-generation-12720\\GDN-analysis.private.json",
+      "bytes": 4750,
+      "sha256": "d9c3f82b776094025fa3d2b8999c0c101e237522deb9af4fcf61d164fb76beb8"
+    },
+    {
+      "label": "hardware-first-generation-12720\\collection-scope-reconciliation.private.json",
+      "bytes": 874,
+      "sha256": "ff5c2d4a785f25d7c858b274871c7265db634d5771fb41624c823cc58f379b68"
+    }
+  ]
+}

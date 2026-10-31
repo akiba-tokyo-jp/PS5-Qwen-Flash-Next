@@ -20,6 +20,28 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The remaining I/O/GPU/cache follow-up has final dispositions in
+`docs/io-gpu-cache-results-20261031.md` and
+`docs/io-gpu-cache-adoption-20261031.json`; its specification is
+`docs/io-gpu-cache-spec-20261031.md`. No new performance default is adopted.
+The exact256-triplet pack is natively sealed, but full-model comparison12640
+and original-GPU-only12680 return load refusals at1148/1137 free pages versus
+the unchanged1154-page operational requirement. These are current-policy
+execution unavailability, not physical impossibility or measured speed loss.
+Do not replay12600/12640/12680. Final no-model12720 completes eight GDN cases,
+288 graphs and all F64 outputs/canaries/snapshots (max1.71012346298e-8);0/8
+operator cases meet2% in both orders. Its approximately7ms synchronized wall
+floor includes guards, so no pure-kernel slowdown claim follows. The tested
+unconditional specialization is not adopted. A host collector's absent
+model-phase memory file is reconciled from the unchanged completed terminal;
+no graph is replayed. Exact5564/settings restoration and fresh idle complete,
+with positive final-fixture owners and no unknown completion. Native/gateway/
+models are inactive. Caps0/512/1024/1536 and causal rules finish host screens;
+installed fixed1536 gives5732 misses versus6159/5971 for512/1024 and6193
+unprotected. Prompt identity matches5732, with no installed-task gain. Keep
+the existing fixed-prompt production policy and speed_followup_production.py
+admission. No CI, reboot, forced reset, persistent caches or agents.
+
 The speed follow-up is complete in `docs/speed-followup-spec-20261031.md`,
 `docs/speed-followup-results-20261031.md` and its adoption JSON. Corrected12420
 completes16 different-input headless requests with exact byte-cache full-row
