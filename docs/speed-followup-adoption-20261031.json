@@ -1,0 +1,430 @@
+{
+  "schema": "ps5-qwen-speed-followup-adoption-v1",
+  "completed": true,
+  "pending_steps": [],
+  "all_current_candidate_dispositions_completed": true,
+  "application_SELF": {
+    "bytes": 20089335,
+    "sha256": "5564792aa1a8e193d60a13e0ea12f8293900fbc8c2e8ff3c8414c7c8ac212257"
+  },
+  "previous_application_SELF": {
+    "bytes": 20081383,
+    "sha256": "3066dfe45c32d0586e3bdddb9e9ab31b200b3185a20aa0206e2418f326b2002f"
+  },
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "precision": {
+    "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
+    "other_weights": "resident Q8_0 except original BF16 PLE convolution and F32 tensors; nonresident tensors unchanged",
+    "output_weight": "Q8_0",
+    "shared_Expert_weight": "Q8_0 (144 active projections)",
+    "PLE_convolution": "BF16 [4,10240], 81920 bytes",
+    "KV_cache": "F32",
+    "activation_inputs": "F32",
+    "quantization": "Expert Q2 and resident matrix Q8_0"
+  },
+  "model_receipt_SHA256": "8b67b85e6cb2f3fd910e900b0299c3325d8717814f0ffab9ef505cab1dfc686b",
+  "policy": {
+    "active_cache_slots": 3072,
+    "physical_cache_planes": 3073,
+    "cache_bytes": 4720619520,
+    "quota_transfer_bytes": 3207049216,
+    "postload_device_budget_bytes": 5086097408,
+    "postload_single_buffer_bytes": 1677721600,
+    "workspace_reservation_bytes": 50331648,
+    "CPU_heap_limit_bytes": 536870912,
+    "physical_Direct_reserve_bytes": 536870912,
+    "prefill_tokens": 32,
+    "prefill_Experts": 6,
+    "decode_Experts": 6,
+    "bits": 14,
+    "total_bundled_Experts": 448,
+    "maximum_parallel_source_reads": 4,
+    "graph_reuse_enabled": true,
+    "integer_activation_quantization": false,
+    "indexed_window0_probation": true,
+    "cross_projection_demand_streaming": true,
+    "source_scratch_bytes": 8388608,
+    "speculative_source_reads": false,
+    "additional_GPU_forecast": false,
+    "retained_Expert_weights": true,
+    "request_and_KV_state_retained": false,
+    "parallel_small_rows": true,
+    "maximum_small_rows": 8,
+    "owned_BF16_row_cache": true,
+    "row_cache_payload_bytes": 491520,
+    "row_cache_allocation_bytes": 525344,
+    "decode_prefill_protection": true,
+    "maximum_protected_keys": 1536,
+    "protection_scope": "compiled_identical_prompt_finite_normal_only",
+    "maximum_speculative_attempts": 6,
+    "bounded_four_lane_delivery_counters": true
+  },
+  "normal": {
+    "case": 12500,
+    "completed": true,
+    "POSTs": 3,
+    "actual_native_frames_viewed": 2,
+    "all_full_vocabulary_rows_finite": true,
+    "all_counting_tokens_and_bytes_equal": true,
+    "complete_actual_routes_verified": true,
+    "retained_weights_and_empty_request_memory_verified": true,
+    "source_model_GPU_owners_positively_retired": true,
+    "ordinary_close_exact_restore": true,
+    "CPU_heap_peak_bytes": 503382016,
+    "device_ledger_peak_bytes": 5068816384,
+    "actual_workspace_capacity_peak_bytes": 8388608,
+    "maximum_absolute_logit_error_by_request": [
+      0.0,
+      5.104034423828125,
+      4.570299461483955
+    ],
+    "finite_quality_scope": "Four fixed headless tasks; normal application is three identical compiled30-token counting prompts with22 generated tokens. Complete finite vocabulary; unlike-cache or unlike-width F32 equality is not claimed.",
+    "cold_start": {
+      "TTFT_ms": 6504.029999017715,
+      "decode_ms": 4791.31134802103,
+      "decode_tokens_per_second": 4.38293370533595,
+      "generated_tokens": 22,
+      "prefill_ms": 6473.314332008362,
+      "prompt_tokens": 30,
+      "total_ms": 11494.213860034943
+    },
+    "request_reset_weights_retained": {
+      "TTFT_ms": 2068.9714890122414,
+      "decode_ms": 4290.226480007172,
+      "decode_tokens_per_second": 4.894846483714048,
+      "generated_tokens": 22,
+      "prefill_ms": 2037.5841889977455,
+      "prompt_tokens": 30,
+      "total_ms": 6581.031576991081
+    },
+    "exact_prefix_repeat": {
+      "TTFT_ms": 60.98045200109482,
+      "decode_ms": 3191.5212730169296,
+      "decode_tokens_per_second": 6.579934208036408,
+      "generated_tokens": 22,
+      "prefill_ms": 29.208422005176544,
+      "prompt_tokens": 30,
+      "total_ms": 3459.632936000824
+    }
+  },
+  "causal_budget_comparison": {
+    "control_case": 12460,
+    "candidate_case": 12500,
+    "attempt_caps": [
+      8,
+      6
+    ],
+    "same_model_driver_and_providers": true,
+    "all_counting_tokens_and_bytes_equal": true,
+    "both_cases_closed_and_restored": true,
+    "complete_request_time_reduction_percent": 7.290622216057674,
+    "completion_tail_reduction_ms": 242.77940201759338,
+    "control_tail_ms": 449.9106130003929,
+    "candidate_tail_ms": 207.13121098279953,
+    "physical_calls_saved": 134,
+    "physical_bytes_saved": 66600960,
+    "matched_ABBA": false
+  },
+  "headless": {
+    "completed": true,
+    "case": 12420,
+    "requests": 16,
+    "contents_correct": 16,
+    "matched_row_cache_full_F32_SHA256_routes_tokens_bytes_exact": true,
+    "original_weight_payloads_and_reserves_unchanged": true,
+    "ordinary_close_exact_restore": true,
+    "comparisons": {
+      "row_cache_forward_time_reduction_percent": 8.07843940955999,
+      "row_cache_reverse_time_reduction_percent": 1.4951133587801424,
+      "protection_forward_time_reduction_percent": 11.079690766862226,
+      "protection_reverse_time_reduction_percent": 4.963081145807536,
+      "row_cache_physical_call_reduction": 684,
+      "protection_miss_reduction": 335,
+      "protection_equal_output_tasks": [
+        0,
+        1,
+        2
+      ],
+      "protection_equal_output_warm_time_reduction_percent": -0.24442885823705574,
+      "protection_generated_token_counts": [
+        22,
+        1,
+        2,
+        18
+      ],
+      "row_cache_generated_token_counts": [
+        22,
+        1,
+        2,
+        24
+      ],
+      "protection_aggregate_is_not_equal_work_throughput": true
+    }
+  },
+  "candidate_evidence": {
+    "cases": [
+      12360,
+      12420,
+      12460,
+      12500
+    ],
+    "headless_rows": 16,
+    "normal_rows": 6,
+    "all_normal_tokens_and_bytes_equal": true,
+    "original_weights_driver_and_reserves_unchanged": true,
+    "changed_JSON_output_length_disclosed": true,
+    "protection_arbitrary_prompt_speedup_qualified": false,
+    "row_cache_standalone_2_percent_target_met": false,
+    "adoption_unit": "measured compiled-identical-prompt normal composition"
+  },
+  "installed_comparison": [
+    {
+      "condition": "cold_start",
+      "current_case": 12220,
+      "candidate_case": 12500,
+      "generated_tokens": 22,
+      "complete_time_reduction_percent": -0.36044023351298193,
+      "decode_rate_change_percent": 0.12271371171439505,
+      "source_physical_calls_before": 10474,
+      "source_physical_calls_after": 10406,
+      "source_physical_bytes_before": 6066046048,
+      "source_physical_bytes_after": 6064817248,
+      "source_wait_ms_before": 5594.691558,
+      "source_wait_ms_after": 5619.052798,
+      "source_wait_fraction_of_total": 0.48885925270081215
+    },
+    {
+      "condition": "request_reset_weights_retained",
+      "current_case": 12220,
+      "candidate_case": 12500,
+      "generated_tokens": 22,
+      "complete_time_reduction_percent": 12.09182538226482,
+      "decode_rate_change_percent": 17.16123382793966,
+      "source_physical_calls_before": 6719,
+      "source_physical_calls_after": 5279,
+      "source_physical_bytes_before": 3402153984,
+      "source_physical_bytes_after": 2980954368,
+      "source_wait_ms_before": 3481.920684,
+      "source_wait_ms_after": 2638.468845,
+      "source_wait_fraction_of_total": 0.40092025302305817
+    },
+    {
+      "condition": "exact_prefix_repeat",
+      "current_case": 12220,
+      "candidate_case": 12500,
+      "generated_tokens": 22,
+      "complete_time_reduction_percent": 10.647774144131494,
+      "decode_rate_change_percent": 4.438152461791334,
+      "source_physical_calls_before": 1043,
+      "source_physical_calls_after": 673,
+      "source_physical_bytes_before": 356352000,
+      "source_physical_bytes_after": 348307712,
+      "source_wait_ms_before": 603.249634,
+      "source_wait_ms_after": 380.678001,
+      "source_wait_fraction_of_total": 0.11003421693633376
+    }
+  ],
+  "application_relink": {
+    "native_build": "Speed-normal-12402",
+    "SELF_build": "Speed-normal-SELF-12406",
+    "native_receipt": {
+      "label": "receipt.private.json",
+      "bytes": 2060579,
+      "sha256": "954755867252355aea3e8c4ca627abd452518ce5ae20893285786767cf37d9e9"
+    },
+    "exact_native_sources": {
+      "entry": {
+        "bytes": 220847,
+        "sha256": "88fce873269488f868e76be772d3176da280dd103551fd307b04ec414c10937e"
+      },
+      "cache": {
+        "bytes": 56980,
+        "sha256": "cd3500d0df1b4d2f1ba37da2dec35ab370d9b64fda43128ae651bddd2a276d36"
+      },
+      "owner": {
+        "bytes": 41324,
+        "sha256": "a5c2d78ffc334c8c0acbed34890dc289cb89023ea9dca5077ab0b49dbe3a7252"
+      }
+    },
+    "selected_driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "selected_profile": "cumulative-idle",
+    "linked_driver": {
+      "native_archive_SHA256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+      "native_platform_manifest_SHA256": "1f701e2b64ca117dd6bf8e25d11a90c986179bebf831bf4fba9300930066b6e0",
+      "shared_profile_archive_SHA256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+      "shared_profile_manifest_SHA256": "f3643fa639b12a0573067356cf8dd703fc17861e7f9761d85f50e0eab188bc6e",
+      "native_adapter_source_inputs": [
+        {
+          "path": "native/driver/arena.h",
+          "bytes": 2093,
+          "sha256": "2c0f168f0e5fce4cb347064e4714c3ecb77d8ab937304610bd06f08b4f36614f"
+        },
+        {
+          "path": "native/driver/driver_journal_impl.inc",
+          "bytes": 6495,
+          "sha256": "07527cc82d0e30ef55c0d9feba0b3794536689494e36232d62368dc91047d797"
+        },
+        {
+          "path": "native/driver/journal_metrics.h",
+          "bytes": 1483,
+          "sha256": "326ee6978e0f5c543c1c07e8d3693c534ce45470a6ff166c0f50f55f4f82e234"
+        },
+        {
+          "path": "native/driver/kick_impl32.c",
+          "bytes": 8423,
+          "sha256": "e81480e731add25418fe54a1a2348543c0928e5d7a52a7725eb21789b1ceee91"
+        },
+        {
+          "path": "native/driver/perbo_owner_impl.c",
+          "bytes": 19791,
+          "sha256": "9866ad7515e44794fa2a990dd92fbaf86052102fda1559454ab9d6d9869f937e"
+        },
+        {
+          "path": "native/driver/placement.h",
+          "bytes": 2065,
+          "sha256": "60ca863a67b2b07200aa3e28fb2c397c6abe711b14e3fa25789124a97d550786"
+        },
+        {
+          "path": "native/driver/radv_ps5_platform_native.c",
+          "bytes": 18886,
+          "sha256": "e83bf11ec9a0f41a51f551f8f7a68b00ddae086eb3bbdfceb3bd3b2011aa3217"
+        },
+        {
+          "path": "native/driver/source-provenance.json",
+          "bytes": 1299,
+          "sha256": "5c51bc8da7ee67913688dbbec3e8b4e8f11d6f4b956e19cc44633ce75771d419"
+        }
+      ]
+    },
+    "package_receipt": {
+      "label": "candidate-package.private.json",
+      "bytes": 295982,
+      "sha256": "248f84a4af94e6cd71370bd6a3350b57d937ff97ac568e578b1c5da513c207da"
+    }
+  },
+  "dispositions": [
+    {
+      "candidate": "S1 recent decode protection",
+      "status": "adopted_in_fixed_identical_prompt_composition_only",
+      "arbitrary_prompt_speedup_proven": false,
+      "changed_JSON_output_length_disclosed": true
+    },
+    {
+      "candidate": "S2 owned immutable BF16 rows",
+      "status": "adopted_in_measured_composition",
+      "standalone_reverse_gain_percent": 1.4951133587801424,
+      "independent_2_percent_claim": false,
+      "exact_full_F32_routes_tokens_bytes": true
+    },
+    {
+      "candidate": "S3 cap6 completion budget",
+      "status": "adopted",
+      "matched_budget_comparison": {
+        "control_case": 12460,
+        "candidate_case": 12500,
+        "attempt_caps": [
+          8,
+          6
+        ],
+        "same_model_driver_and_providers": true,
+        "all_counting_tokens_and_bytes_equal": true,
+        "both_cases_closed_and_restored": true,
+        "complete_request_time_reduction_percent": 7.290622216057674,
+        "completion_tail_reduction_ms": 242.77940201759338,
+        "control_tail_ms": 449.9106130003929,
+        "candidate_tail_ms": 207.13121098279953,
+        "physical_calls_saved": 134,
+        "physical_bytes_saved": 66600960,
+        "matched_ABBA": false
+      }
+    },
+    {
+      "candidate": "S4 selected four-lane diagnostics",
+      "status": "implemented_and_measured",
+      "raw_SSD_or_pure_GPU_latency_claimed": false
+    }
+  ],
+  "host_checks": {
+    "actual_reader_bytes_leases_reset_and_canaries": true,
+    "short_read_consumer_admission_failure_drain": true,
+    "aligned_BF16_storage_bytes": 525344,
+    "native_control_replays_exact": true,
+    "protected_fallback_and_4096_boundary": true,
+    "actual3072_slot_aging_trace_observations": 13200,
+    "native_sustained_aging_qualification_claimed": false,
+    "VM_sample_capacity_bound_to_request_count": true,
+    "corrected16_request_case_completed": true
+  },
+  "limitations": [
+    "Finite four-input tasks; no broad reasoning or sustained-service qualification.",
+    "Protection changes JSON output length from24 to18 tokens. The aggregate reduction is not proof of faster equal-work inference; matched-output tasks must be assessed separately.",
+    "Forward row-cache timing includes the first pipeline-cold request and uses the earlier byte-identical but not explicitly aligned row-store prototype; use the corrected reverse comparison and normal qualification for adoption.",
+    "Fixed-route replay omits cache-aware ranking feedback; native demands can change under protection.",
+    "Read-function and overlapping syscall intervals include OS and scheduling, not raw SSD NAND service.",
+    "CPU/GPU work inside the model-process residual remains unseparated.",
+    "Normal gains against12220 are sequential observations, not matched ABBA.",
+    "The8/6 budget comparison is one matched finite pair, with both ordinary controls and all output bytes equal.",
+    "The selected program is a finite fixed-prompt application, not a sustained arbitrary-prompt service."
+  ],
+  "placement": {
+    "completed": true,
+    "case": 12540,
+    "normal_case": 12500,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
+  },
+  "CI_runs": 0,
+  "agents": 0,
+  "reboots": 0,
+  "evidence": [
+    {
+      "label": "native-model-terminal.private.json",
+      "bytes": 39536,
+      "sha256": "5b1200bc119ea18a6f2fcc17a431fb8d2571ba02aeda0babc73dbddaa3b85e65"
+    },
+    {
+      "label": "restored-complete.private.json",
+      "bytes": 1219,
+      "sha256": "5a060154f6920747664ece417b1b52c0e3863e51bf4b0aba6aacf6fb02fc132d"
+    },
+    {
+      "label": "visual-review.private.json",
+      "bytes": 448,
+      "sha256": "551fe286f2c8ec46a741e9ee2f7c9b6165638574c5a1c10dc4ba32d533ab450c"
+    },
+    {
+      "label": "native-model-terminal.private.json",
+      "bytes": 39528,
+      "sha256": "1ef4de4fa948501d83043095a9b9638b12f3bce98278e4f28babb2634ed7604e"
+    },
+    {
+      "label": "restored-complete.private.json",
+      "bytes": 1219,
+      "sha256": "93884f5e6ad11b52da2281d30e2cb2ac897245e3541aa7557f2479033751169d"
+    },
+    {
+      "label": "visual-review.private.json",
+      "bytes": 449,
+      "sha256": "ce97d9a3e47e3c84d0e84eb133946676f813a0fb555510d150515a3cf4f83165"
+    }
+  ],
+  "application_source_revision": "a95b91d977fe168964105c9197c7610f244ba0f5"
+}

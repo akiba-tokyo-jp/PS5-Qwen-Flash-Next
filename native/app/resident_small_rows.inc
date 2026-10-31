@@ -11,6 +11,7 @@ bool upload_small_rows(const std::array<std::uintptr_t,8>&addresses,
     require_completed_window();
     if(!execute||!consume||!count||count>8||!bytes||bytes>5120)return false;
     std::array<std::size_t,8>files{},order{},group{};
+    std::array<const void*,8>cached{};
     std::array<std::uint64_t,8>offset{},begin{},end{};
     for(unsigned i=0;i<count;++i){
         const auto at=addresses[i];
@@ -20,6 +21,9 @@ bool upload_small_rows(const std::array<std::uintptr_t,8>&addresses,
         begin[i]=offset[i]-(offset[i]%model_read_alignment);
         end[i]=begin[i]+rounded(offset[i]-begin[i]+bytes);order[i]=i;
         if(end[i]>files_[files[i]].bytes)return false;
+#ifdef QWEN_IMMUTABLE_ROW_CACHE
+        if(row_cache_selected_&&(bytes==320||bytes==5120))cached[i]=row_cache_.get(files[i],offset[i],bytes);
+#endif
     }
     std::sort(order.begin(),order.begin()+count,[&](auto a,auto b){
         return files[a]<files[b]||(files[a]==files[b]&&begin[a]<begin[b]);});
@@ -28,6 +32,7 @@ bool upload_small_rows(const std::array<std::uintptr_t,8>&addresses,
     unsigned groups=0;
     for(unsigned sorted=0;sorted<count;++sorted){
         const unsigned i=unsigned(order[sorted]);
+        if(cached[i])continue;
         if(groups&&group_file[groups-1]==files[i]&&
            begin[i]<=requests[groups-1].offset+requests[groups-1].bytes&&
            end[i]-requests[groups-1].offset<=model_read_window/4){
@@ -48,6 +53,16 @@ bool upload_small_rows(const std::array<std::uintptr_t,8>&addresses,
     busy_=true;pending_windows_=count;
     std::uint64_t consumer_ns=0,metadata_ns=0;unsigned used=0,returned=0;
     try{
+        // A hit is consumed while all source identities are still checked and
+        // before a later miss can replace an owned cache row.
+        for(unsigned i=0;i<count;++i)if(cached[i]){
+            {ProfileScope timing(metadata_ns);const auto fd=handle(files[i]);
+             if(ops_.system_headroom()<model_read_system_reserve+model_read_flexible_metadata_margin||
+                ops_.identity(fd)!=files_[files[i]].identity)fail("Cached row source identity or reserves changed");}
+            {ProfileScope timing(consumer_ns);consume(i,cached[i]);++used;}
+            {ProfileScope timing(metadata_ns);if(ops_.identity(handle(files[i]))!=files_[files[i]].identity)
+                fail("Cached row source identity changed after consumption");}
+        }
         const auto before=[&](unsigned g){ProfileScope timing(metadata_ns);
             if(g>=groups||ops_.system_headroom()<model_read_system_reserve+model_read_flexible_metadata_margin||
                ops_.identity(requests[g].fd)!=files_[group_file[g]].identity)
@@ -58,17 +73,24 @@ bool upload_small_rows(const std::array<std::uintptr_t,8>&addresses,
                 ops_.identity(requests[g].fd)!=files_[group_file[g]].identity)
                 fail("Small-row batch returned incomplete or changed input");}
             {ProfileScope timing(consumer_ns);
-             for(unsigned i=0;i<count;++i)if(group[i]==g){
-                 consume(i,static_cast<const unsigned char*>(target)+(offset[i]-requests[g].offset));++used;}}
+             for(unsigned i=0;i<count;++i)if(!cached[i]&&group[i]==g){
+                 const void*row=static_cast<const unsigned char*>(target)+(offset[i]-requests[g].offset);
+                 consume(i,row);++used;
+#ifdef QWEN_IMMUTABLE_ROW_CACHE
+                 if(row_cache_selected_&&(bytes==320||bytes==5120))row_cache_.put(files[i],offset[i],bytes,row);
+#endif
+             }}
             ++returned;++stats_.physical_read_calls;stats_.physical_read_bytes+=requests[g].bytes;
             stats_.maximum_chunk=std::max<std::uint64_t>(stats_.maximum_chunk,requests[g].bytes);
             counters[4]+=requests[g].bytes;
         };
-        const auto started=ProfileClock::now();execute(requests,groups,leases,before,use);
+        const auto started=ProfileClock::now();const auto hit_consumer_ns=consumer_ns,hit_metadata_ns=metadata_ns;
+        if(groups)execute(requests,groups,leases,before,use);
         const auto elapsed=profile_elapsed_ns(started);
-        if(used!=count||returned!=groups||consumer_ns>elapsed||metadata_ns>elapsed-consumer_ns)
+        const auto miss_consumer_ns=consumer_ns-hit_consumer_ns,miss_metadata_ns=metadata_ns-hit_metadata_ns;
+        if(used!=count||returned!=groups||miss_consumer_ns>elapsed||miss_metadata_ns>elapsed-miss_consumer_ns)
             fail("Small-row batch completion counters differ");
-        stats_.read_ns+=elapsed-consumer_ns-metadata_ns;stats_.consumer_ns+=consumer_ns;
+        stats_.read_ns+=elapsed-miss_consumer_ns-miss_metadata_ns;stats_.consumer_ns+=consumer_ns;
         stats_.bytes+=count*bytes;stats_.chunks+=count;++stats_.parallel_batches;
         ++counters[0];counters[1]+=count;counters[2]+=groups;counters[3]+=count*bytes;
         consumer_started_=ProfileClock::now();completed();return true;

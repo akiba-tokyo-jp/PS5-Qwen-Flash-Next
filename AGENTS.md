@@ -20,6 +20,35 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The speed follow-up is complete in `docs/speed-followup-spec-20261031.md`,
+`docs/speed-followup-results-20261031.md` and its adoption JSON. Corrected12420
+completes16 different-input headless requests with exact byte-cache full-row
+SHA256/routes/tokens/bytes, positive owners and exact restoration. Normal12460/12500
+qualify the compiled-identical-prompt cache composition and cap8 versus6.
+Placement12540 installs SELF5564792aa1a8e193d60a13e0ea12f8293900fbc8c2e8ff3c8414c7c8ac212257,
+20089335bytes, sourcea95b91d977fe168964105c9197c7610f244ba0f5. Immediate3066 and
+both five-setting sets pass native whole SHA256/identity/EOF; ownership and fresh
+idle pass. Use `speed_followup_production.py` admission. Normal weights-retained
+decode4.894846 tok/s,TTFT2.068971s,total6.581032s; exact-prefix repeat6.579934,
+TTFT60.980ms,total3.459633s. Cold whole time is0.360% slower, not a cold speedup.
+Protect at most1536 committed decode keys only in this finite identical-prompt
+normal composition, retain exact BF16 row bytes in525344 owned/aligned CPU bytes,
+and cap causal attempts6 while keeping complete reject/restore/ordinary fallback.
+Do not claim arbitrary-prompt protection speedup: native JSON changes24 to18
+tokens; equal-output different-input tasks are0.244% slower. Row cache standalone
+reverse gain1.495% is below the2% target; the adoption unit is the measured normal
+composition.13200-route host aging is not sustained native-service qualification.
+Initial12360's19 completed requests and returned VM evidence-capacity failure
+remain preserved; conservative pre-close unknown retirement and normal OS close
+are not erased. Corrected16 requests price88 VM samples and complete. Keep
+3072/3073 planes, original weights/driver/reserves, request/KV resets and four
+source workers. No CI, agents, reboot, persistent caches or forced resets.
+The native/gateway/models are inactive and the finite binding is consumed.
+
+## Historical plan navigation
+
+The following selections are historical controls, superseded by12540 above.
+
 Read-only `docs/current-speed-analysis-20261031.json` reconciles installed
 normal12220, all emitted-token cache counters and the frozen3072-slot planner.
 It records prefill eviction of521 previously used decode keys that are needed

@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-10-31",
-  "application_source_revision": "e59f782824396dd8e4421c7d83fdaa179c50127b",
+  "application_source_revision": "a95b91d977fe168964105c9197c7610f244ba0f5",
   "application_SELF": {
-    "bytes": 20081383,
-    "sha256": "3066dfe45c32d0586e3bdddb9e9ab31b200b3185a20aa0206e2418f326b2002f"
+    "bytes": 20089335,
+    "sha256": "5564792aa1a8e193d60a13e0ea12f8293900fbc8c2e8ff3c8414c7c8ac212257"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -27,34 +27,34 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "bd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49",
+  "previous_production_SHA256": "3066dfe45c32d0586e3bdddb9e9ab31b200b3185a20aa0206e2418f326b2002f",
   "active_expert_slots": 3072,
   "physical_cache_planes": 3073,
   "expert_cache_bytes": 4720619520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 2234.619172990322,
-      "decode_ms": 5026.4822779893875,
-      "decode_tokens_per_second": 4.177872086002874,
+      "TTFT_ms": 2068.9714890122414,
+      "decode_ms": 4290.226480007172,
+      "decode_tokens_per_second": 4.894846483714048,
       "generated_tokens": 22,
-      "prefill_ms": 2204.5486780405045,
+      "prefill_ms": 2037.5841889977455,
       "prompt_tokens": 30,
-      "total_ms": 7486.256659984589
+      "total_ms": 6581.031576991081
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 61.87275403738022,
-      "decode_ms": 3333.1658529639244,
-      "decode_tokens_per_second": 6.300316553803147,
+      "TTFT_ms": 60.98045200109482,
+      "decode_ms": 3191.5212730169296,
+      "decode_tokens_per_second": 6.579934208036408,
       "generated_tokens": 22,
-      "prefill_ms": 29.946609020233154,
+      "prefill_ms": 29.208422005176544,
       "prompt_tokens": 30,
-      "total_ms": 3871.904592037201
+      "total_ms": 3459.632936000824
     }
   ],
-  "normal_application_case": 12220,
-  "production_placement_case": 12260,
+  "normal_application_case": 12500,
+  "production_placement_case": 12540,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -69,8 +69,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": false,
-  "qualification_report": "docs/weight-followup-adoption-20261031.json",
-  "historical_installation": "config/production-installation-resident-Q8-20261031.json",
+  "qualification_report": "docs/speed-followup-adoption-20261031.json",
+  "historical_installation": "config/production-installation-weight-followup-20261031.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -79,8 +79,8 @@
   "private_repository": true,
   "GitHub_Actions_enabled": false,
   "original_Q4_optimized_profile_preserved": false,
-  "fixed_quality_candidate_case": 12120,
-  "finite_quality_scope": "Four short fixed tasks; retained normal counting output; no broad reasoning or sustained service qualification",
+  "fixed_quality_candidate_case": 12420,
+  "finite_quality_scope": "Four fixed headless tasks; normal application is three identical compiled30-token counting prompts with22 generated tokens. Complete finite vocabulary; unlike-cache or unlike-width F32 equality is not claimed.",
   "model_receipt_SHA256": "8b67b85e6cb2f3fd910e900b0299c3325d8717814f0ffab9ef505cab1dfc686b",
   "expert_eviction_policy": "two_touch_probation",
   "owner_expected_quantization_loss_accepted": true,
@@ -111,8 +111,8 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "previous_production_source_revision": "297851c53e8c40dbfdefa6e6c18810cbf28e2741",
-  "normal_validation_case": 12220,
+  "previous_production_source_revision": "e59f782824396dd8e4421c7d83fdaa179c50127b",
+  "normal_validation_case": 12500,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 6,
@@ -173,37 +173,37 @@
   "non_Expert_except_output_precision_preserved": false,
   "non_Expert_except_output_and_shared_precision_preserved": false,
   "fixed_quality_cases": [
-    11660,
-    11720,
-    11760,
-    12120
+    12420
   ],
   "fixed_quality": {
-    "retention_requests": 12,
-    "small_row_requests": 24,
+    "requests": 16,
+    "contents_correct": 16,
     "all_contents_correct": true,
     "small_row_full_F32_routes_tokens_bytes_exact": true,
-    "cross_cache_F32_equality_claimed": false,
-    "raw_JSON_fences_disclosed": true
+    "cross_policy_F32_equality_claimed": false,
+    "changed_JSON_output_length_disclosed": true
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 11480,
+    "control_case": 12220,
     "control_is_sequential_not_ABBA": true,
     "cache_occupancy_differs": true,
     "unlike_cache_conditions_not_pooled": true,
     "causal_candidate_evidence": {
-      "retention_case": 11660,
-      "retention_total_time_reduction_percent": 22.952135143510166,
-      "row_cases": [
-        11720,
-        11760,
-        12120
+      "cases": [
+        12360,
+        12420,
+        12460,
+        12500
       ],
-      "same_cache_opposite_order_row_reduction_percent": 4.835671998154789,
-      "all_row_full_F32_routes_tokens_bytes_exact": true,
-      "all_retention_task_contents_correct": true,
-      "PLE_BF16_and_all_weight_payloads_unchanged": true
+      "headless_rows": 16,
+      "normal_rows": 6,
+      "all_normal_tokens_and_bytes_equal": true,
+      "original_weights_driver_and_reserves_unchanged": true,
+      "changed_JSON_output_length_disclosed": true,
+      "protection_arbitrary_prompt_speedup_qualified": false,
+      "row_cache_standalone_2_percent_target_met": false,
+      "adoption_unit": "measured compiled-identical-prompt normal composition"
     }
   },
   "indexed_window0_probation": true,
@@ -211,15 +211,15 @@
   "speculative_source_reads": false,
   "additional_GPU_forecast": false,
   "normal_application_speedup": {
-    "control_case": 11480,
-    "comparison": "Historical different cache occupancy; use separate headless candidate evidence for causal gains",
+    "control_case": 12220,
+    "comparison": "Same model/driver/fixed prompt; sequential installed12220 versus qualified12500, not ABBA; use matched causal-budget cases12460/12500 separately",
     "full_vocabulary_finite": true,
     "all_counting_tokens_and_bytes_equal": true,
     "cross_cache_exact_F32_required": false,
     "maximum_absolute_logit_error_by_request": [
       0.0,
-      3.459212675690651,
-      3.509687900543213
+      5.104034423828125,
+      4.570299461483955
     ]
   },
   "all_six_previous_memory_candidates_disposed": true,
@@ -234,5 +234,42 @@
   "request_and_KV_state_retained": false,
   "parallel_small_rows": true,
   "maximum_small_rows": 8,
-  "weight_followup_candidates_disposed": true
+  "weight_followup_candidates_disposed": true,
+  "speed_followup_policy": {
+    "active_cache_slots": 3072,
+    "physical_cache_planes": 3073,
+    "cache_bytes": 4720619520,
+    "quota_transfer_bytes": 3207049216,
+    "postload_device_budget_bytes": 5086097408,
+    "postload_single_buffer_bytes": 1677721600,
+    "workspace_reservation_bytes": 50331648,
+    "CPU_heap_limit_bytes": 536870912,
+    "physical_Direct_reserve_bytes": 536870912,
+    "prefill_tokens": 32,
+    "prefill_Experts": 6,
+    "decode_Experts": 6,
+    "bits": 14,
+    "total_bundled_Experts": 448,
+    "maximum_parallel_source_reads": 4,
+    "graph_reuse_enabled": true,
+    "integer_activation_quantization": false,
+    "indexed_window0_probation": true,
+    "cross_projection_demand_streaming": true,
+    "source_scratch_bytes": 8388608,
+    "speculative_source_reads": false,
+    "additional_GPU_forecast": false,
+    "retained_Expert_weights": true,
+    "request_and_KV_state_retained": false,
+    "parallel_small_rows": true,
+    "maximum_small_rows": 8,
+    "owned_BF16_row_cache": true,
+    "row_cache_payload_bytes": 491520,
+    "row_cache_allocation_bytes": 525344,
+    "decode_prefill_protection": true,
+    "maximum_protected_keys": 1536,
+    "protection_scope": "compiled_identical_prompt_finite_normal_only",
+    "maximum_speculative_attempts": 6,
+    "bounded_four_lane_delivery_counters": true
+  },
+  "speed_followup_candidates_disposed": true
 }
