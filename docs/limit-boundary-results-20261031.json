@@ -1,0 +1,1066 @@
+{
+  "schema": "ps5-qwen-limit-boundary-audit-v1",
+  "completed": true,
+  "inventory": [
+    {
+      "id": "K1",
+      "kind": "unmeasured_application_padding",
+      "value": "minimum+max(reserved,256) during load;minimum+64 after load",
+      "observed": "Inference selects0 padding and completes;load minimum2312 pages never reaches the old load floor",
+      "physical_limit": false
+    },
+    {
+      "id": "K2",
+      "kind": "measured_components_with_padding",
+      "value": "context entry1005;observed transient41+unmeasured2+steady64",
+      "observed": "Context completes;phase minimum2267,so a low context-entry boundary is not established",
+      "physical_limit": false
+    },
+    {
+      "id": "K3",
+      "kind": "measured_components_with_padding",
+      "value": "GPU entry1185;CPU entry1410;new source allocation19 extra pages",
+      "observed": "Component observations exist;no universal minimum is qualified",
+      "physical_limit": false
+    },
+    {
+      "id": "K4",
+      "kind": "retired_global_interval_estimates",
+      "value": "Old10142/8159-page prelaunch estimates;universal100MiB interpretation",
+      "observed": "Later phase-local execution and current3072-slot model supersede them",
+      "physical_limit": false
+    },
+    {
+      "id": "D1",
+      "kind": "unmeasured_physical_pool_padding",
+      "value_bytes": 536870912,
+      "name": "Direct reserve",
+      "observed": "No minimum-reserve sweep;do not confuse it with kernel free pages",
+      "physical_limit": false
+    },
+    {
+      "id": "D2",
+      "kind": "unmeasured_physical_pool_padding",
+      "value_bytes": 268435456,
+      "name": "Additional Direct platform margin",
+      "observed": "Separate from CPU/staging;no marginal necessity measurement",
+      "physical_limit": false
+    },
+    {
+      "id": "F1",
+      "kind": "unmeasured_separate_quota_padding",
+      "value_bytes": 268435456,
+      "name": "Flexible reserve",
+      "observed_available_bytes": 443547648,
+      "physical_limit": false
+    },
+    {
+      "id": "F2",
+      "kind": "unmeasured_separate_quota_padding",
+      "value_bytes": 8388608,
+      "name": "Source Flexible metadata margin",
+      "observed": "Read window is already Direct-backed;8MiB Flexible metadata necessity not established",
+      "physical_limit": false
+    },
+    {
+      "id": "C1",
+      "kind": "software_heap_cap",
+      "value_bytes": 536870912,
+      "successful_normal_mapped_peak_bytes": 503382016,
+      "current_headless_peak_bytes": 453050368,
+      "physical_limit": false
+    },
+    {
+      "id": "C2",
+      "kind": "conservative_growth_accounting",
+      "value": "Full512MiB CPU cap is charged against a Direct-free query that already excludes allocated CPU extents",
+      "observed": "Before-load MemoryBudget uses cpu_working in full;the older after-load pricing helper correctly subtracts already-mapped CPU. Exact simultaneous overpricing needs a same-point heap sample.",
+      "physical_limit": false
+    },
+    {
+      "id": "W1",
+      "kind": "fixed_accounting_reservation",
+      "value_bytes": 50331648,
+      "observed_rounded_capacity_peak_bytes": 8388608,
+      "legacy_terminal_label_bytes": 67108864,
+      "observed_accounting_gap_bytes": 41943040,
+      "physical_limit": false
+    },
+    {
+      "id": "B1",
+      "kind": "software_single_buffer_cap",
+      "value_bytes": 1677721600,
+      "reported_batch_limit_bytes": 2147483648,
+      "separately_demonstrated_allocated_buffer_bytes": 2147483648,
+      "physical_limit": false
+    },
+    {
+      "id": "B2",
+      "kind": "software_live_byte_quota",
+      "value_bytes": 5086097408,
+      "current_normal_peak_bytes": 5068816384,
+      "current_headless_peak_bytes": 4947181568,
+      "physical_limit": false
+    },
+    {
+      "id": "B3",
+      "kind": "evidence_and_entry_capacities",
+      "value": "8192 live ledger entries;bounded VM sample vectors;finite route/request arrays",
+      "observed": "12360 exhausts diagnostic VM observations after19 requests;not device RAM exhaustion",
+      "physical_limit": false
+    },
+    {
+      "id": "I1",
+      "kind": "performance_selected_range",
+      "value": "4 source workers;2MiB scratch per lane;8MiB total;12 known reads/group",
+      "observed": "2/3/4 lane comparisons exist;no hardware concurrency or larger-window optimum established",
+      "physical_limit": false
+    },
+    {
+      "id": "I2",
+      "kind": "tested_but_not_absolute_optimum",
+      "value": "prefill32;1536 protected keys;6 causal attempts;3072 Expert slots",
+      "observed": "Finite alternatives are measured;these are workload selections rather than hardware limits",
+      "physical_limit": false
+    },
+    {
+      "id": "T1",
+      "kind": "unmeasured_recovery_horizon",
+      "value": "20s boundary/60s process wait;100ms poll;20min load deadline",
+      "observed": "Timeouts bound an experiment;they do not establish memory capacity",
+      "physical_limit": false
+    },
+    {
+      "id": "P1",
+      "kind": "chosen_adoption_threshold",
+      "value_percent": 2,
+      "observed": "I/O whole time improves in both orders below2%;the cutoff is not hardware- or variance-derived",
+      "physical_limit": false
+    },
+    {
+      "id": "P2",
+      "kind": "measurement_scope_constraint",
+      "value": "Mandatory completion check included in old isolated graph stopwatch",
+      "observed_completion_fraction_percent": 99.08199562146717,
+      "observed": "Decode and prefill effects differ once components are separated",
+      "physical_limit": false
+    },
+    {
+      "id": "H1",
+      "kind": "reported_runtime_resource_envelope",
+      "Direct_pool_bytes": 12280922112,
+      "Direct_largest_before_load_bytes": 12201230336,
+      "buffer_batch_limit_bytes": 2147483648,
+      "observed": "Runtime pool and selected backend limit;no allocation-to-failure physical maximum claim"
+    },
+    {
+      "id": "H2",
+      "kind": "correctness_and_ownership_invariants",
+      "value": "Alignment,source/hash/shape identity,complete output,positive GPU completion and ordinary close",
+      "observed": "These are not arbitrary padding and are not relaxed by this audit"
+    }
+  ],
+  "historical_indexed_cases": 174,
+  "historical_completed_true_flags": 98,
+  "kernel_policy_refusals": [
+    {
+      "case": 3700,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1109,
+      "terminal": {
+        "label": "hardware-first-generation-3700/native-model-terminal.private.json",
+        "bytes": 827,
+        "sha256": "1a286d02a3f560770e1a936650268a6fdeb7214c1d96cb2667ef2b27c193434e"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 3870,
+      "message": "Model load failed; restart through the ordinary OS path",
+      "observed_free_pages": 1143,
+      "terminal": {
+        "label": "hardware-first-generation-3870/native-model-terminal.private.json",
+        "bytes": 842,
+        "sha256": "c3aad923dfeff1b5d572c4031b92e379ffd6c21b1fc3908a079b026a1d8fbcca"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 3910,
+      "message": "Model load failed; restart through the ordinary OS path",
+      "observed_free_pages": 1127,
+      "terminal": {
+        "label": "hardware-first-generation-3910/native-model-terminal.private.json",
+        "bytes": 1008,
+        "sha256": "ed87ba29c7b14f33f76cc5d69bb2e6b320c09c39068063668e5aa3f2ffc34821"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 3960,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1017,
+      "terminal": {
+        "label": "hardware-first-generation-3960/native-model-terminal.private.json",
+        "bytes": 1034,
+        "sha256": "ebc9e2fb1b892eb2917077f9559b8fcfc49a5a49112836ff7ac66627b2cde2a3"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 4110,
+      "message": "Model load failed; restart through the ordinary OS path",
+      "observed_free_pages": 1131,
+      "terminal": {
+        "label": "hardware-first-generation-4110/native-model-terminal.private.json",
+        "bytes": 1211,
+        "sha256": "2ba8bf43780c4cfe76b70bfa27989b5722e265df3bac9e00438188002b8c8f7f"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 4260,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 986,
+      "terminal": {
+        "label": "hardware-first-generation-4260/native-model-terminal.private.json",
+        "bytes": 1033,
+        "sha256": "871f3561e57d33c17814d84cd09cc545f9b74d5301962c7904de73b2273e39b5"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 4340,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1142,
+      "terminal": {
+        "label": "hardware-first-generation-4340/native-model-terminal.private.json",
+        "bytes": 1048,
+        "sha256": "18e0c87febb84bb2de0bf78bd1ca431692ba59345994c54ca718cf55fe37d21c"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 4440,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1035,
+      "terminal": {
+        "label": "hardware-first-generation-4440/native-model-terminal.private.json",
+        "bytes": 7504,
+        "sha256": "86cd03ef0a50c069f0e9b264fc7665364a0a02ccd831c02f9f69df77578fc81a"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 4460,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1134,
+      "terminal": {
+        "label": "hardware-first-generation-4460/native-model-terminal.private.json",
+        "bytes": 1048,
+        "sha256": "6f6e35aa425f9c8e963d828af79d53f923926ac567ac07494dd529de1c868d83"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 4600,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1098,
+      "terminal": {
+        "label": "hardware-first-generation-4600/native-model-terminal.private.json",
+        "bytes": 1236,
+        "sha256": "23d80c83de5c90cbd2cc36bdeac1aff144a43fd817e50733c090a10766743aed"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 4860,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1055,
+      "terminal": {
+        "label": "hardware-first-generation-4860/native-model-terminal.private.json",
+        "bytes": 10250,
+        "sha256": "3c38b02e823177e9095425ae750efffdb6ec97ec6250fd614c7121067d4a5329"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 4940,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1182,
+      "terminal": {
+        "label": "hardware-first-generation-4940/native-model-terminal.private.json",
+        "bytes": 2395,
+        "sha256": "8765b149f84744158e02acc0347b573d354401da747903b00c7959e04becf04e"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 5100,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1106,
+      "terminal": {
+        "label": "hardware-first-generation-5100/native-model-terminal.private.json",
+        "bytes": 8853,
+        "sha256": "0a9505d94f33a3cf1c3d7ff273f3b10d9b26c7136c21207a75b5361643576ec9"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 5120,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1030,
+      "terminal": {
+        "label": "hardware-first-generation-5120/native-model-terminal.private.json",
+        "bytes": 13054,
+        "sha256": "1d815ca8fec4e25abc2868d196701fd8517e27d50a5a8a0a81aa50806de59dd4"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 5300,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1162,
+      "terminal": {
+        "label": "hardware-first-generation-5300/native-model-terminal.private.json",
+        "bytes": 7858,
+        "sha256": "e415b6d6892fd3f48b59b12016c82d971113b858e96017a8fe237511492db37b"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 5400,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1083,
+      "terminal": {
+        "label": "hardware-first-generation-5400/native-model-terminal.private.json",
+        "bytes": 4679,
+        "sha256": "9249167ea5ac4b426551085b1989132865f0a58ccebcf01bbdafe72ada17f74e"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 6480,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1096,
+      "terminal": {
+        "label": "hardware-first-generation-6480/native-model-terminal.private.json",
+        "bytes": 2289,
+        "sha256": "69dbe935512870216b95f916fca4518a5e19392c93c236892a759da076845d2e"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 8460,
+      "message": "Native kernel free pages do not retain their minimum and extra reserve",
+      "observed_free_pages": 1168,
+      "terminal": {
+        "label": "hardware-first-generation-8460/native-model-terminal.private.json",
+        "bytes": 2276,
+        "sha256": "7fec27856eabbe7451e28287942de520b02bc8c641d810051d1cfbd871aa6deb"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 12060,
+      "message": "Model load failed; restart through the ordinary OS path",
+      "observed_free_pages": 1145,
+      "terminal": {
+        "label": "hardware-first-generation-12060/native-model-terminal.private.json",
+        "bytes": 2286,
+        "sha256": "0958d60c9b968527bd4a9c3dbaa36455b339daec931a77f10eb5e19259529aec"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 12080,
+      "message": "Model load failed; restart through the ordinary OS path",
+      "observed_free_pages": 1122,
+      "terminal": {
+        "label": "hardware-first-generation-12080/native-model-terminal.private.json",
+        "bytes": 2286,
+        "sha256": "1e305259d704e5f01e850fba8262f4df7e08b8cb3da78cc5a67a3ed3e615ce4a"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 12640,
+      "message": "Model load failed; restart through the ordinary OS path",
+      "observed_free_pages": 1148,
+      "terminal": {
+        "label": "hardware-first-generation-12640/native-model-terminal.private.json",
+        "bytes": 2285,
+        "sha256": "1a507dae9a52b641d6b01922300cd667b6b7d4cbe743c4d4cb58446f34d83a62"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 12680,
+      "message": "Model load failed; restart through the ordinary OS path",
+      "observed_free_pages": 1137,
+      "terminal": {
+        "label": "hardware-first-generation-12680/native-model-terminal.private.json",
+        "bytes": 2285,
+        "sha256": "29ddce2d58d19c9c3f2dee4a1eef7870b947c47391ed888d36e610146641a7c9"
+      },
+      "hardware_exhaustion_demonstrated": false
+    }
+  ],
+  "software_checkpoint_quota_refusals": [
+    {
+      "case": 5520,
+      "message": "Complete checkpoint cannot retain original reserves",
+      "terminal": {
+        "label": "hardware-first-generation-5520/native-model-terminal.private.json",
+        "bytes": 14596,
+        "sha256": "957addc7ce395eed724e06462e5f2ab7de7c3694eee617557283a81eed3f128d"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 9460,
+      "message": "Complete checkpoint cannot retain original reserves",
+      "terminal": {
+        "label": "hardware-first-generation-9460/native-model-terminal.private.json",
+        "bytes": 9607,
+        "sha256": "4af71b64d50ee569d33dd535ee36966c79d0294da71b34feca94271f05ff4475"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 9690,
+      "message": "Complete checkpoint cannot retain original reserves",
+      "terminal": {
+        "label": "hardware-first-generation-9690/native-model-terminal.private.json",
+        "bytes": 4788,
+        "sha256": "8d8da520bffccb75a256d22239562840a4f9b02d7da412335d5713d08df29315"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 10660,
+      "message": "Complete checkpoint cannot retain original reserves",
+      "terminal": {
+        "label": "hardware-first-generation-10660/native-model-terminal.private.json",
+        "bytes": 5067,
+        "sha256": "3d36ac73a327da246b49cd65558afa2f2fb33a7653afbf9dfe64f592000514e5"
+      },
+      "hardware_exhaustion_demonstrated": false
+    },
+    {
+      "case": 10890,
+      "message": "Complete checkpoint cannot retain original reserves: ledger_live=2367684608 limit=2480332800 growth=121634816 Direct_available=1432354816 Direct_reserve=536870912 Flexible_available=443547648 Flexible_reserve=268435456",
+      "terminal": {
+        "label": "hardware-first-generation-10890/native-model-terminal.private.json",
+        "bytes": 4963,
+        "sha256": "a8dfa301c9fe604de5543e8d957d84e79754327a2ab9b6cfad8e310258ea81d5"
+      },
+      "hardware_exhaustion_demonstrated": false
+    }
+  ],
+  "additional_affected_families": [
+    {
+      "case": 12360,
+      "cause": "diagnostic_VM_observation_capacity",
+      "later_disposition": "corrected12420 completes16;already resolved"
+    },
+    {
+      "case": 3174,
+      "cause": "estimated_initial_CPU_interval_price",
+      "later_disposition": "old53/128 scope superseded by later qualified capacities and3072;do not replay obsolete format"
+    },
+    {
+      "candidate": "Gate/Up Q2_0 format",
+      "cases": [
+        12060,
+        12080
+      ],
+      "cause": "application1154-page load predicate;old1360 prose arithmetic corrected",
+      "later_disposition": "eligible for new measured-margin format comparison;no new quality/speed claim"
+    },
+    {
+      "candidate": "Current-miss676-triplet placement",
+      "cases": [
+        12640,
+        12680,
+        12840
+      ],
+      "cause": "earlier load predicate;fresh12840 completes10",
+      "later_disposition": "Exact full-row/route/token proof and positive1.5-1.9% retained timing;adaptive margin state and finite sample size remain separate adoption qualifications"
+    },
+    {
+      "candidate": "GDN128 four-column specialization",
+      "cases": [
+        12720,
+        12900
+      ],
+      "cause": "guard-inclusive timing obscures shape effects",
+      "later_disposition": "Reopen decode-only specialization;unconditional variant still regresses on32-token scalar cases"
+    },
+    {
+      "candidate": "Fully completed losing/quality-failing variants",
+      "cases": [
+        11420,
+        11720,
+        11880
+      ],
+      "cause": "measured slowdown or output difference",
+      "later_disposition": "Memory-margin audit does not overturn these distinct failures"
+    }
+  ],
+  "margin_experiment": {
+    "case": 12840,
+    "model_loads": 1,
+    "requests": 10,
+    "probe": {
+      "OS_counter_writes": 0,
+      "OS_minimum_preserved": true,
+      "active_phase": 4,
+      "application_padding_experiment": true,
+      "last_selected_padding_pages": 0,
+      "original_physical_and_completion_checks": true,
+      "phases": [
+        {
+          "admission_calls": 6791,
+          "legacy_refusals": 0,
+          "minimum_free_pages": 2312,
+          "minimum_selected_padding_pages": 256,
+          "padding_reductions": 0,
+          "phase": 1
+        },
+        {
+          "admission_calls": 9,
+          "legacy_refusals": 0,
+          "minimum_free_pages": 2267,
+          "minimum_selected_padding_pages": 64,
+          "padding_reductions": 0,
+          "phase": 2
+        },
+        {
+          "admission_calls": 241616,
+          "legacy_refusals": 43,
+          "minimum_free_pages": 873,
+          "minimum_selected_padding_pages": 0,
+          "padding_reductions": 1,
+          "phase": 3
+        },
+        {
+          "admission_calls": 0,
+          "legacy_refusals": 0,
+          "minimum_free_pages": null,
+          "minimum_selected_padding_pages": null,
+          "padding_reductions": 0,
+          "phase": 4
+        }
+      ],
+      "schema": "ps5-qwen-limit-probe-result-v1",
+      "universal_physical_limit_established": false
+    },
+    "all_full_F32_maximum_zero": true,
+    "all_ordered_routes_tokens_and_bytes_exact": true,
+    "observed_below_OS_watermark_is_not_an_admission": true,
+    "load_under_old1154_floor_reproduced": false,
+    "inference_reaches_zero_extra_and_cohort_completes": true,
+    "physical_kernel_exhaustion_point_determined": false
+  },
+  "IO_recomparison": [
+    {
+      "weights_retained": false,
+      "forward_whole_reduction_percent": 1.7418350142378025,
+      "reverse_whole_reduction_percent": 1.1676492081847512,
+      "forward_calls_saved": 453,
+      "reverse_calls_saved": 453,
+      "forward_bytes_saved": 6897664,
+      "reverse_bytes_saved": 6897664,
+      "control_calls": 10409,
+      "candidate_calls": 9956,
+      "candidate_mean_decode_tok_s": 4.676464007778598
+    },
+    {
+      "weights_retained": true,
+      "forward_whole_reduction_percent": 1.5186201178519654,
+      "reverse_whole_reduction_percent": 1.931702405702851,
+      "forward_calls_saved": 587,
+      "reverse_calls_saved": 587,
+      "forward_bytes_saved": 9371648,
+      "reverse_bytes_saved": 9371648,
+      "control_calls": 5281,
+      "candidate_calls": 4694,
+      "candidate_mean_decode_tok_s": 4.949841315692733
+    }
+  ],
+  "IO_adopted": false,
+  "legacy_adoption_threshold_percent": 2,
+  "timing_experiment": {
+    "case": 12900,
+    "graphs": 288,
+    "completion_check_fraction_percent": 99.08199562146717,
+    "rows": [
+      {
+        "vector_gate": false,
+        "tokens": 1,
+        "snapshots": 1,
+        "backend_us": [
+          61.372,
+          57.23225,
+          56.821375,
+          59.668124999999996
+        ],
+        "completion_check_us": [
+          7075.69175,
+          7084.352125,
+          7077.135125,
+          7180.533874999999
+        ],
+        "backend_forward_reduction_percent": 6.745339894414393,
+        "backend_reverse_reduction_percent": 4.770972776503357,
+        "maximum_F64_error": 8.107385179867421e-09
+      },
+      {
+        "vector_gate": false,
+        "tokens": 1,
+        "snapshots": 2,
+        "backend_us": [
+          58.65575000000001,
+          57.2925,
+          57.64325000000001,
+          62.153875
+        ],
+        "completion_check_us": [
+          7079.4005,
+          7085.965375000001,
+          7079.109875,
+          7071.451999999999
+        ],
+        "backend_forward_reduction_percent": 2.3241540684417417,
+        "backend_reverse_reduction_percent": 7.257190319992102,
+        "maximum_F64_error": 8.107385179867421e-09
+      },
+      {
+        "vector_gate": false,
+        "tokens": 32,
+        "snapshots": 1,
+        "backend_us": [
+          98.568125,
+          101.053625,
+          100.482625,
+          97.22475
+        ],
+        "completion_check_us": [
+          7214.43275,
+          7385.9995,
+          7382.30075,
+          7218.291625
+        ],
+        "backend_forward_reduction_percent": -2.521606249484809,
+        "backend_reverse_reduction_percent": -3.350870020236618,
+        "maximum_F64_error": 1.7101234629779416e-08
+      },
+      {
+        "vector_gate": false,
+        "tokens": 32,
+        "snapshots": 2,
+        "backend_us": [
+          102.05612500000001,
+          104.100625,
+          101.905625,
+          100.793
+        ],
+        "completion_check_us": [
+          7465.453249999999,
+          7308.09925,
+          7116.035500000001,
+          7127.431374999999
+        ],
+        "backend_forward_reduction_percent": -2.0033094534992246,
+        "backend_reverse_reduction_percent": -1.1038713005863343,
+        "maximum_F64_error": 1.7101234629779416e-08
+      },
+      {
+        "vector_gate": true,
+        "tokens": 1,
+        "snapshots": 1,
+        "backend_us": [
+          43.370124999999994,
+          43.260125,
+          43.490500000000004,
+          44.312374999999996
+        ],
+        "completion_check_us": [
+          7107.154750000001,
+          8865.921375,
+          7085.825375,
+          7088.441375
+        ],
+        "backend_forward_reduction_percent": 0.25363081153211287,
+        "backend_reverse_reduction_percent": 1.8547301967001162,
+        "maximum_F64_error": 7.60448437553407e-09
+      },
+      {
+        "vector_gate": true,
+        "tokens": 1,
+        "snapshots": 2,
+        "backend_us": [
+          48.000750000000004,
+          46.337250000000004,
+          44.031749999999995,
+          45.365125000000006
+        ],
+        "completion_check_us": [
+          7354.9577500000005,
+          7084.632375,
+          7095.507624999999,
+          7099.697125000001
+        ],
+        "backend_forward_reduction_percent": 3.465570850455457,
+        "backend_reverse_reduction_percent": 2.9392071552762356,
+        "maximum_F64_error": 7.60448437553407e-09
+      },
+      {
+        "vector_gate": true,
+        "tokens": 32,
+        "snapshots": 1,
+        "backend_us": [
+          61.19137500000001,
+          62.81525,
+          57.893625,
+          62.42425
+        ],
+        "completion_check_us": [
+          7074.759749999999,
+          7072.163500000001,
+          7080.102124999999,
+          7334.410250000001
+        ],
+        "backend_forward_reduction_percent": -2.6537645215522376,
+        "backend_reverse_reduction_percent": 7.257796449296549,
+        "maximum_F64_error": 1.2162016144179333e-08
+      },
+      {
+        "vector_gate": true,
+        "tokens": 32,
+        "snapshots": 2,
+        "backend_us": [
+          64.2185,
+          61.37200000000001,
+          60.890875,
+          71.98637500000001
+        ],
+        "completion_check_us": [
+          7160.157,
+          7078.327875000001,
+          7072.314125000001,
+          7150.69525
+        ],
+        "backend_forward_reduction_percent": 4.432523338290362,
+        "backend_reverse_reduction_percent": 15.413333425943465,
+        "maximum_F64_error": 1.3441841147099343e-08
+      }
+    ],
+    "complete_F64_snapshots_and_canaries": true,
+    "pure_GPU_timestamp_claimed": false,
+    "whole_model_speed_claimed": false
+  },
+  "cache_envelope": {
+    "bounds": {
+      "current_slots": 3072,
+      "software_single_buffer_cap": 1677721600,
+      "reported_buffer_batch_limit": 2147483648,
+      "single_buffer_software_max_slots": 3119,
+      "batch_limit_geometry_max_slots": 3993,
+      "unchanged_preflight_envelope_max_slots": 3665,
+      "unchanged_weight_saving_and_24MiB_allowance_max_slots": 3424,
+      "preflight_slack_bytes": 911348224,
+      "not_a_native_capacity_qualification": true
+    },
+    "rows": [
+      {
+        "slots": 3072,
+        "cohort": "current_identical_prompt",
+        "mode": 0,
+        "misses": 6193
+      },
+      {
+        "slots": 3072,
+        "cohort": "current_identical_prompt",
+        "mode": 1,
+        "misses": 5732
+      },
+      {
+        "slots": 3072,
+        "cohort": "different_inputs",
+        "mode": 0,
+        "misses": 11108
+      },
+      {
+        "slots": 3072,
+        "cohort": "different_inputs",
+        "mode": 1,
+        "misses": 11270
+      },
+      {
+        "slots": 3328,
+        "cohort": "current_identical_prompt",
+        "mode": 0,
+        "misses": 5811
+      },
+      {
+        "slots": 3328,
+        "cohort": "current_identical_prompt",
+        "mode": 1,
+        "misses": 5466
+      },
+      {
+        "slots": 3328,
+        "cohort": "different_inputs",
+        "mode": 0,
+        "misses": 10737
+      },
+      {
+        "slots": 3328,
+        "cohort": "different_inputs",
+        "mode": 1,
+        "misses": 10769
+      },
+      {
+        "slots": 3424,
+        "cohort": "current_identical_prompt",
+        "mode": 0,
+        "misses": 5673
+      },
+      {
+        "slots": 3424,
+        "cohort": "current_identical_prompt",
+        "mode": 1,
+        "misses": 5383
+      },
+      {
+        "slots": 3424,
+        "cohort": "different_inputs",
+        "mode": 0,
+        "misses": 10593
+      },
+      {
+        "slots": 3424,
+        "cohort": "different_inputs",
+        "mode": 1,
+        "misses": 10627
+      },
+      {
+        "slots": 3584,
+        "cohort": "current_identical_prompt",
+        "mode": 0,
+        "misses": 5437
+      },
+      {
+        "slots": 3584,
+        "cohort": "current_identical_prompt",
+        "mode": 1,
+        "misses": 5251
+      },
+      {
+        "slots": 3584,
+        "cohort": "different_inputs",
+        "mode": 0,
+        "misses": 10423
+      },
+      {
+        "slots": 3584,
+        "cohort": "different_inputs",
+        "mode": 1,
+        "misses": 10429
+      },
+      {
+        "slots": 3665,
+        "cohort": "current_identical_prompt",
+        "mode": 0,
+        "misses": 5297
+      },
+      {
+        "slots": 3665,
+        "cohort": "current_identical_prompt",
+        "mode": 1,
+        "misses": 5183
+      },
+      {
+        "slots": 3665,
+        "cohort": "different_inputs",
+        "mode": 0,
+        "misses": 10304
+      },
+      {
+        "slots": 3665,
+        "cohort": "different_inputs",
+        "mode": 1,
+        "misses": 10310
+      },
+      {
+        "slots": 3993,
+        "cohort": "current_identical_prompt",
+        "mode": 0,
+        "misses": 4468
+      },
+      {
+        "slots": 3993,
+        "cohort": "current_identical_prompt",
+        "mode": 1,
+        "misses": 4468
+      },
+      {
+        "slots": 3993,
+        "cohort": "different_inputs",
+        "mode": 0,
+        "misses": 9863
+      },
+      {
+        "slots": 3993,
+        "cohort": "different_inputs",
+        "mode": 1,
+        "misses": 9893
+      }
+    ],
+    "host_trace_screen_not_native_speed": true,
+    "ownership_maps_validated": true
+  },
+  "observed_memory": {
+    "CPU_budget_bytes": 536870912,
+    "CPU_heap_budget_includes_source_read_window": true,
+    "CPU_metadata_scope_active": false,
+    "Direct_largest_available_bytes": 12201230336,
+    "Flexible_available_bytes": 443547648,
+    "Flexible_reserve_bytes": 268435456,
+    "Vulkan_estimated_free_bytes": 12201230336,
+    "additional_Direct_platform_margin_bytes": 268435456,
+    "device_budget_source": "canary-validated native Direct allocator",
+    "device_buffer_alignment_bytes": 4,
+    "device_buffer_batch_limit_bytes": 2147483648,
+    "device_weights_bytes": 4774100480,
+    "driver_free_bytes": 12201230336,
+    "full_resident_model_charged": true,
+    "kernel_extra_margin_bytes": 4194304,
+    "kernel_vm0_free_pages": 3992,
+    "kernel_vm0_minimum_pages": 898,
+    "kernel_vm0_reserved_pages": 206,
+    "mapped_embedding_bytes": 1271398400,
+    "mapped_experts_bytes": 37748736000,
+    "mapped_file_bytes": 150561081472,
+    "maximum_CPU_heap_bytes": 536870912,
+    "maximum_aggregate_postload_device_buffer_bytes": 5086097408,
+    "maximum_explicitly_addressed_CPU_model_page_bytes": 160432128,
+    "maximum_postload_device_buffer_bytes": 1677721600,
+    "maximum_resident_CPU_model_source_bytes": 0,
+    "model_loaded": false,
+    "native_Direct_owned_bytes": 16793600,
+    "planned_resident_headroom_bytes": 11289882112,
+    "required_lazy_PLE_bytes": 102400491520,
+    "resident_set_qualified": false,
+    "schema": "ps5-qwen-memory-admission-v1"
+  },
+  "observed_after_load": {
+    "Vulkan_estimated_free_bytes": 2731835392,
+    "device_budget_source": "canary-validated native Direct allocator",
+    "expert_cache_requested_bytes": 4720619520,
+    "model_loaded": true,
+    "native_Direct_available_bytes": 7330807808,
+    "native_Direct_owned_bytes": 4791336960,
+    "native_Direct_pool_bytes": 12280922112,
+    "remaining_context_workspace_staging_reserve_bytes": 989855744
+  },
+  "old1360_page_explanation_corrected_to1154": true,
+  "OS_counter_writes": 0,
+  "reboots": 0,
+  "forced_signals": 0,
+  "CI_runs": 0,
+  "production_adopted": false,
+  "production_SELF": {
+    "bytes": 20089335,
+    "sha256": "5564792aa1a8e193d60a13e0ea12f8293900fbc8c2e8ff3c8414c7c8ac212257"
+  },
+  "final_exact_restoration_and_native_gateway_models_inactive": true,
+  "evidence": [
+    {
+      "label": "limit-audit-12804/index.private.json",
+      "bytes": 830598,
+      "sha256": "d63f7f6318e6ed7aa4c9881773a2bf1d0b2993f2cbffc7ff3f1c44c5d05b2c41"
+    },
+    {
+      "label": "cache-limit-screen-12920/complete.private.json",
+      "bytes": 9835,
+      "sha256": "e9657d3c6cfb22b4eb5c29ac5a2b4d77f2fefe00c3bd712d3c631c109691e2af"
+    },
+    {
+      "label": "limit-audit-12804/preprocess-proof.private.json",
+      "bytes": 2851,
+      "sha256": "6271c47d6a96f8021904dafdd52ee1b6c6c1a83b5176413c31d2afeab3ec8707"
+    },
+    {
+      "label": "hardware-first-generation-3643/native-CPU-terminal.private.json",
+      "bytes": 3178,
+      "sha256": "66ad9bbcb2e4fa45ecffee0e4f29a9367d934049759932970f49d85bcc30c94d"
+    },
+    {
+      "label": "limit-audit-12804/closed-runtime-12840/memory.private.json",
+      "bytes": 1414,
+      "sha256": "5624ec11e5bc44b5be747f89b91798c512a1f889f741fd91a64a5a45e1ef9ce3"
+    },
+    {
+      "label": "limit-audit-12804/closed-runtime-12840/memory.after-load.private.json",
+      "bytes": 387,
+      "sha256": "6aa6ff9bca28f4cc5b7eda9379a3384e49369941b096a2fbb04b90c9a14b7354"
+    },
+    {
+      "label": "limit-overlay-proof-12815/complete.private.json",
+      "bytes": 845,
+      "sha256": "79674493692f9bcf9d18e117ec5a3f0e0e6ea06c927c1b63e5f9fa195ff15386"
+    },
+    {
+      "label": "limit-probe-host-12810/complete.private.json",
+      "bytes": 599,
+      "sha256": "41e002c0d27f861875cd33a5e79e14fb5d77898a1a250efa2b00f1810a4e696e"
+    },
+    {
+      "label": "build/Limit-margin-12814/receipt.private.json",
+      "bytes": 2126890,
+      "sha256": "b2bcaadce75423720728ac4b00fc4b69a978eb050d3c42ec439a38359f969aaf"
+    },
+    {
+      "label": "build/Limit-margin-SELF-12816/receipt.private.json",
+      "bytes": 295412,
+      "sha256": "3bafa27c6578008ba6219d0e3d7b7ade2024182ee0fcc0d5219c3ee09c8d6698"
+    },
+    {
+      "label": "build/GDN-timing-12880/receipt.private.json",
+      "bytes": 2112489,
+      "sha256": "49ec6172c23b9da8ede7e644782bf1c2a94ed2fb040897ab086e64dcc94c92f4"
+    },
+    {
+      "label": "build/GDN-timing-SELF-12882/receipt.private.json",
+      "bytes": 295136,
+      "sha256": "e9837d797eda63d9d8c5de7ac9fd41dc91f4f526f7ba29a69cbfafb2ed240df9"
+    },
+    {
+      "label": "hardware-first-generation-12840/native-model-terminal.private.json",
+      "bytes": 119998,
+      "sha256": "1d00f9ebab1bcd85fdfe550f483635e95cbf347401534adebfab3b0900db7167"
+    },
+    {
+      "label": "hardware-first-generation-12840/restored-complete.private.json",
+      "bytes": 1210,
+      "sha256": "c760b6756a8fe7b0206484b18b2ff46d5ca0ea9762542e84044a94c8512506f1"
+    },
+    {
+      "label": "hardware-first-generation-12900/native-model-terminal.private.json",
+      "bytes": 32207,
+      "sha256": "ca10739bebc84e991acac1efec41fb564e0531ae8e19886f6996beba88c8bc2c"
+    },
+    {
+      "label": "hardware-first-generation-12900/restored-complete.private.json",
+      "bytes": 1209,
+      "sha256": "ef1995136ec7050884e9a3e6ce34830bb7c65cc06f8b546135c80728f0d08f24"
+    }
+  ],
+  "primary_OS_reference": {
+    "url": "https://raw.githubusercontent.com/freebsd/freebsd-src/releng/9.0/sys/vm/vm_page.c",
+    "interpretation": "Upstream allocation classes use distinct free/reserved watermarks;adding them is not an upstream universal physical-limit formula. Exact proprietary PS5 allocator equivalence is not established."
+  }
+}

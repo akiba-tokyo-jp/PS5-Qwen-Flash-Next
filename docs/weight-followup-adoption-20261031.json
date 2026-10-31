@@ -116,10 +116,11 @@
           "ordinary_minimum_pages": 898,
           "reserved_pages": 206,
           "margin_pages": 256,
-          "required_pages": 1360,
+          "required_pages": 1154,
           "native_owner_retirement_unproven_before_ordinary_close": true,
           "ordinary_OS_close_and_exact_control_restore": true,
-          "completed_resident_copy_bytes": 4736464672
+          "completed_resident_copy_bytes": 4736464672,
+          "predicate_formula": "minimum+max(reserved,application_margin)"
         },
         {
           "case": 12080,
@@ -129,14 +130,15 @@
           "ordinary_minimum_pages": 898,
           "reserved_pages": 206,
           "margin_pages": 256,
-          "required_pages": 1360,
+          "required_pages": 1154,
           "native_owner_retirement_unproven_before_ordinary_close": true,
           "ordinary_OS_close_and_exact_control_restore": true,
-          "completed_resident_copy_bytes": 4060357152
+          "completed_resident_copy_bytes": 4060357152,
+          "predicate_formula": "minimum+max(reserved,application_margin)"
         }
       ],
       "compact_metadata_host_proofs_passed": true,
-      "constraint": "Application kernel-memory reserve policy, not demonstrated physical impossibility; last observed1122 free pages versus1360 required",
+      "constraint": "Application kernel-memory reserve policy, not demonstrated physical impossibility; last observed1122 free pages versus1154 required",
       "reopen_criterion": "A new separately scoped variant must reduce measured startup kernel consumption and complete all eight requests with unchanged reserves, then beat total request time"
     },
     {
@@ -279,5 +281,11 @@
     "model_loaded": false,
     "title_launches": 0,
     "GPU_calls": 0
+  },
+  "arithmetic_correction_20261031": {
+    "original_reported_pages": 1360,
+    "actual_selected_predicate_pages": 1154,
+    "basis": "Recorded compiler preprocessing of the actual linked system-memory provider; no native evidence rewritten.",
+    "reference": "docs/limit-boundary-results-20261031.md"
   }
 }
