@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
  p=argparse.ArgumentParser(description=__doc__)
  for k in ('normal','placement','rollback','comparison','workspace','cache','out'):p.add_argument('--'+k,type=Path,required=True)
+ p.add_argument('--observed-loading-reservation',action='store_true',help='Ancillary finite experiment; default preserves original256-page loading padding')
  a=p.parse_args();normal=json.loads(a.normal.read_text());placement=json.loads(a.placement.read_text());rollback=json.loads(a.rollback.read_text());proof=json.loads(a.comparison.read_text())
  require(proof['candidate_comparisons_completed']and proof['placement']['eligible']and proof['rollback']['eligible']and not proof['two_token']['eligible']and not proof['gate_up']['kernel_eligible'],'Exactly the two closed measured winners required')
  require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT).strip(),'Commit exact source before final normal relink')
@@ -42,14 +43,16 @@ def main():
   additional_application_state_allowance_bytes=124<<20,postload_device_budget_bytes=5216120832,postload_single_buffer_bytes=1677721600,
   original_physical_Direct_Flexible_OS_minimum_workspace_and_completion=True,checkpoint_pool_and_batch_policy_preserved=True,
   checkpoint_maximum_bytes=136<<20,maximum_causal_attempts=6,original_model_and_PLE_BF16=True,benchmark_checkpoint_injections=0,persistent_caches=False,automatic_retries=0)
- scope.update(loading_application_padding='observed_OS_reserved',loading_expected_OS_minimum_pages=898,loading_expected_OS_reserved_pages=206,loading_legacy_padding_pages=256,loading_scope_once=True)
+ scope.update(loading_application_padding='observed_OS_reserved'if a.observed_loading_reservation else'original256',loading_expected_OS_minimum_pages=898,loading_expected_OS_reserved_pages=206,loading_legacy_padding_pages=256,loading_scope_once=True)
  ec=normal['compile_commands'][0];oc=placement['all_Q2_optimized_monitor']['commands'][1];entry=Path(ec[ec.index('-c')+1]).read_text();entry=once(entry,'qwen_app::model_postload_device_budget==5086097408ull','qwen_app::model_postload_device_budget==5216120832ull')
  entry='#include <cstdint>\nextern "C" void qwen_app_compact_rollback_select(bool);\nextern "C" void qwen_app_compact_rollback_stats(std::uint64_t*);\n'+entry
  optimized=normal['all_Q2_optimized_monitor']['scope'];new_optimized=dict(optimized,supplemental_bundles=348,total_bundled_Experts=768);entry=entry.replace(literal(optimized),literal(new_optimized))
- original_limit=normal['limit_defaults']['scope'];new_limit=dict(original_limit,Expert_supplemental_triplets=348,total_bundled_Experts=768,original_loading_context_and_physical_checks=False,original_OS_minimum_reservation_context_and_physical_checks=True,loading_application_padding='observed_OS_reserved');entry=once(entry,literal(original_limit),literal(new_limit))
- entry='extern "C" void qwen_normal_loading_reserved_select(bool);\n'+entry
- entry=once(entry,'        qwen_native_stage("model_load_started_after_memory_admission");','        qwen_limit_probe_stage(1);qwen_normal_loading_reserved_select(true);\n        qwen_native_stage("model_load_started_after_memory_admission");')
- entry=once(entry,'        qwen_native_stage("model_load_completed");','        qwen_normal_loading_reserved_select(false);qwen_limit_probe_stage(2);\n        qwen_native_stage("model_load_completed");')
+ original_limit=normal['limit_defaults']['scope'];new_limit=dict(original_limit,Expert_supplemental_triplets=348,total_bundled_Experts=768)
+ if a.observed_loading_reservation:new_limit.update(original_loading_context_and_physical_checks=False,original_OS_minimum_reservation_context_and_physical_checks=True,loading_application_padding='observed_OS_reserved');entry='extern "C" void qwen_normal_loading_reserved_select(bool);\n'+entry
+ entry=once(entry,literal(original_limit),literal(new_limit))
+ entry=once(entry,'        qwen_native_stage("model_load_started_after_memory_admission");','        qwen_limit_probe_stage(1);'+('qwen_normal_loading_reserved_select(true);'if a.observed_loading_reservation else'')+'\n        qwen_native_stage("model_load_started_after_memory_admission");')
+ entry=once(entry,'        qwen_native_stage("model_load_completed");','        '+('qwen_normal_loading_reserved_select(false);'if a.observed_loading_reservation else'')+'qwen_limit_probe_stage(2);\n        qwen_native_stage("model_load_completed");')
+ entry=reconcile_compact_guard(entry)
  entry=once(entry,'        qwen_checkpoint_trial_select(2);','        if(policy.at("native_four_next_normal")!=Json::parse('+literal(scope)+'))throw std::runtime_error("Exact two-winner normal scope required");\n        qwen_app_compact_rollback_select(true);\n        qwen_checkpoint_trial_select(2);')
  helper='''static Json four_next_report(){std::uint64_t count[2]{};qwen_app_compact_rollback_stats(count);return {{"scope",Json::parse(SCOPE_LITERAL)},{"complete_captures_elided",count[0]},{"all_memory_rollbacks",count[1]},{"placement_keys",768},{"additional_application_state_allowance_bytes",124ull<<20}};}
 '''.replace('SCOPE_LITERAL',literal(scope))
@@ -60,7 +63,9 @@ def main():
  memory_provider=next(row for row in normal['CPU_metadata_scope']['changed_sources']if 'system_memory'in row['original']['path']);mc=memory_provider['command'].copy()+['-I',str(ROOT/'native/app')]
  memory=Path(memory_provider['source']['path']).read_text();memory=once(memory,'#include "limit_margin_probe.h"','#include "loading_reserved_scope.h"\n#include "limit_margin_probe.h"')
  memory=once(memory,'return limit_probe.required(free,minimum,reserved,legacy)-minimum;','return limit_probe.required(free,minimum,reserved,qwen_normal_loading_reserved_extra(minimum,reserved,legacy))-minimum;')
- r,jobs,sources=link(seedpath,a.out,dict(entry=(ec,entry),owner=(oc,owner),loading=(mc,memory)),[Path(__file__),a.comparison,header,source_header,budget,a.out/budget.name,overlay,ROOT/'native/app/loading_reserved_scope.h'])
+ variants=dict(entry=(ec,entry),owner=(oc,owner))
+ if a.observed_loading_reservation:variants['loading']=(mc,memory)
+ r,jobs,sources=link(seedpath,a.out,variants,[Path(__file__),a.comparison,header,source_header,budget,a.out/budget.name,overlay,ROOT/'native/app/loading_reserved_scope.h'])
  write_json(a.out/'compiled-providers.private.json',dict(result=r,commands=jobs,sources=sources))
  for key in ('normal_performance','output_Q8_normal','cold_request','resident_all_Q8','resident_cache3072','resident_small_rows','resident_weight_normal'):
   r[key]['actual_sources'].update(sources);r[key]['commands'].update(jobs)
@@ -73,9 +78,13 @@ def main():
  r['four_next_normal']=dict(scope=scope,actual_sources=sources,commands=jobs,source_revision=revision,comparison=record(a.comparison),selected_engine=rollback['routing_sharing']['actual_sources']['engine'],selected_engine_command=new_engine,additional_budget_providers=providers,placement_header=record(header),placement_proof=placement['four_next_placement']['pack'],rollback_scope=selected['scope'],normal_qualification_pending=True,production_adopted=False)
  # Keep explicit provider metadata consistent with the actual budget link.
  for row in r['CPU_metadata_scope']['changed_sources']:
-  if row['object_path']==memory_provider['object_path']:row.update(object_path=jobs['loading'][jobs['loading'].index('-o')+1],source=sources['loading'],command=jobs['loading'])
+  if a.observed_loading_reservation and row['object_path']==memory_provider['object_path']:row.update(object_path=jobs['loading'][jobs['loading'].index('-o')+1],source=sources['loading'],command=jobs['loading'])
   for replacement in providers:
    if row['object_path']==replacement['original']:
     label=next(k for k,c in selected['commands'].items()if c[c.index('-o')+1]==replacement['selected']['path']);row.update(object_path=replacement['selected']['path'],source=selected['actual_sources'][label],command=selected['commands'][label])
  seal(r,a.workspace,a.cache,a.out);write_json(a.out/'core-safety.private.json',dict(completed=True,kind='measured_two_winner_normal',candidate=record(a.out/'receipt.private.json'),source_revision=revision,scope=scope,PS5_operations=0,CI_runs=0))
+def reconcile_compact_guard(entry):
+ entry=once(entry,'            const auto checkpoints=engine->checkpoint_validation_stats();','            const auto checkpoints=engine->checkpoint_validation_stats();\n            std::uint64_t compact[2]{};qwen_app_compact_rollback_stats(compact);')
+ entry=once(entry,'checkpoints.captures-checkpoint_baseline.captures!=speculative.attempts||','checkpoints.captures-checkpoint_baseline.captures!=0||compact[0]!=speculative.attempts||')
+ return once(entry,'checkpoints.restores-checkpoint_baseline.restores!=speculative.rejected))','checkpoints.restores-checkpoint_baseline.restores!=0||compact[1]!=speculative.rejected))')
 if __name__=='__main__':main()
