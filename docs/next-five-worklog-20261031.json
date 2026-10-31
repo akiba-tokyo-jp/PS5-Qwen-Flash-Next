@@ -1,0 +1,26 @@
+{
+  "schema": "ps5-qwen-next-five-worklog-v1",
+  "completed": false,
+  "control_SELF": "c2eafe1a5fa0726fa60fe63fa25d821f7ae50cf777dfebc51f8031c11c03f002",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "reboots": 0,
+  "CI_runs": 0,
+  "learned_host_inference": false,
+  "results": [
+    {"family": 1, "candidate": "Top-4", "native_case": 21300, "requests": 14, "retained_decode_gain_percent": 7.761122069442283, "retained_whole_time_reduction_percent": 9.47763040364553, "fixed_semantic_tasks_passed": 4, "counting_output_equal": true, "positive_retirement_and_exact_restore": true, "status": "measured_winner_pending_combined_normal"},
+    {"family": 2, "candidate": "up_to32_attempts_with_rejection_stop", "native_case": 21400, "requests": 14, "retained_decode_gain_percent": 0.38604098135779363, "retained_whole_time_reduction_percent": 0.2389331461945976, "fixed_semantic_tasks_passed": 4, "positive_retirement_and_exact_restore": true, "status": "measured_gain_within_control_variation_not_selected"},
+    {"family": 3, "candidate": "relax_uniform_layer_floor", "scope": "actual_planner_replay_seven_saved_traces", "baseline_native_counts_exact": true, "half_floor_miss_changes": [6,1320,15,6,0,0,220], "zero_floor_miss_changes": [6,1412,16,6,0,0,246], "native_speed_proven": false, "status": "host_screen_worse_not_selected"},
+    {"family": 3, "candidate": "Q4_saving_to3712_slots", "resident_payload_saved_bytes": 1038090240, "Expert_cache_growth_bytes": 983040000, "status": "built_native_comparison_pending"},
+    {"family": 4, "candidate": "Attention_KV_F16", "native_case": 21500, "status": "native_comparison_in_progress"},
+    {"family": 4, "candidate": "recurrent_S_F16_storage_F32_compute", "status": "built_native_comparison_pending"},
+    {"family": 5, "candidate": "refill_before_GPU_consumption", "extra_owned_CPU_bytes": 2097152, "host_byte_ownership_and_error_drain_cases": 8, "status": "host_passed_native_comparison_pending"}
+  ],
+  "attempt_history": [
+    {"build": 19900, "scope": "host_only", "failure": "exact inherited KL boundary differed", "PS5_launches": 0},
+    {"native_case": 20000, "failure": "legacy route observer rejected Top-4 metadata after inference returned", "completed_durable_requests": 3, "global_retirement_proven_before_close": false, "ordinary_close_and_exact_restore": true, "disposition": "corrected_capture_to2_4_6_8_10_in_new_scope"},
+    {"case": 21000, "failure": "CPU_pending_SELF_integrity_refused_transient_ShellCore_service_state", "PS5_launches": 0, "canonical_SELF_never_renamed": true, "all_five_settings_restored": true, "disposition": "new_CPU_integrity_scope_accepts_previously_qualified_timestamp_bound_ShellCore_SLOCK_only"},
+    {"CPU_publication": 20510, "files": 40, "new_Q4_payloads_whole_native_SHA256_identity_EOF_verified": true, "positive_CPU_Direct_retirement": true, "production_sources_preserved": true}
+  ],
+  "remaining": ["lower_and_adaptive_routing_comparisons", "KV_and_recurrent_storage_comparisons", "Q4_cache_redistribution_comparison", "I_O_handoff_comparison", "combined_normal_API_display_qualification", "verified_production_placement"]
+}
