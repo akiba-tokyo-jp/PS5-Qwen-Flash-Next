@@ -103,3 +103,7 @@ tools/build_limit_margin_probe.py text eol=lf
 tools/audit_limit_evidence.py text eol=lf
 tools/analyze_limit_audit.py text eol=lf
 tools/screen_cache_limit.py text eol=lf
+tools/analyze_limit_winners.py text eol=lf
+tools/build_limit_winner_normal.py text eol=lf
+tools/finalize_limit_winners.py text eol=lf
+tools/limit_winners_production.py text eol=lf
