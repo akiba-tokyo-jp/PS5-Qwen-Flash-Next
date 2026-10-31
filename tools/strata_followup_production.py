@@ -4,9 +4,9 @@ import math
 from speed_followup_production import DRIVER,MODEL_RECEIPT,PRECISION,POLICY
 from limit_winners_production import SELECTED_SELF as CONTROL_SELF
 REPORT='docs/strata-followup-adoption-20261031.json'
-SELECTED_SELF='de5163d9a9a8b3f0807bd2f9df1ea034d0ddf2ba87554203dae5102596aed3d7'
-SELECTED_BYTES=20133495
-SOURCE_REVISION='87f20f3354e4fcc30473b520d0591efa5a6927ed'
+SELECTED_SELF='1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3'
+SELECTED_BYTES=20133559
+SOURCE_REVISION='36a44bb1008895430d562e5904232a60efb284fa'
 
 def require_strata_followup_production(installation,context,report):
  def need(value,message):
@@ -42,7 +42,7 @@ def require_strata_followup_production(installation,context,report):
   candidates.get('GDN_case')==16800 and report.get('cache3424_disposition')=='not_selected_for_decode_regression',
   'Actual exercised matched winners and explicit larger-cache tradeoff required')
  normal=report.get('normal',{})
- need(normal.get('case')==installation.get('normal_validation_case')==context.get('normal_performance_case')==15600 and normal.get('completed')is True and
+ need(normal.get('case')==installation.get('normal_validation_case')==context.get('normal_performance_case')==17000 and normal.get('completed')is True and
   normal.get('requests')==3 and normal.get('POSTs')==3 and normal.get('actual_native_frames_viewed')==2 and
   all(normal.get(k)is True for k in('all_full_vocabulary_rows_finite','all_counting_tokens_and_bytes_equal','complete_actual_routes_verified',
    'retained_weights_and_empty_request_memory_verified','source_model_GPU_owners_positively_retired','ordinary_close_exact_restore')),
@@ -59,8 +59,8 @@ def require_strata_followup_production(installation,context,report):
   need(all(type(normal.get(kind,{}).get(k))in(int,float)and math.isfinite(normal[kind][k])and normal[kind][k]>0 for k in('total_ms','TTFT_ms','decode_tokens_per_second')),
    'Complete finite actual normal timing required')
  placed=report.get('placement',{})
- need(placed.get('completed')is True and placed.get('case')==installation.get('production_placement_case')==context.get('normal_performance_placement_case')==15700 and
-  placed.get('normal_case')==15600 and placed.get('verification_files')==12 and placed.get('verified_programs')==2 and
+ need(placed.get('completed')is True and placed.get('case')==installation.get('production_placement_case')==context.get('normal_performance_placement_case')==17100 and
+  placed.get('normal_case')==17000 and placed.get('verification_files')==12 and placed.get('verified_programs')==2 and
   placed.get('verified_settings')==placed.get('verified_control_settings')==5 and placed.get('title_launches')==placed.get('GPU_calls')==0 and
   all(placed.get(k)is True for k in('native_whole_SHA256_identity_EOF_verified','immediate_control_preserved','fresh_idle_confirmed','runtime_ownership_restored')),
   'Native whole current/rollback program/settings identity/SHA256/EOF and fresh idle required')
