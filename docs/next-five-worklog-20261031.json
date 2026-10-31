@@ -331,6 +331,17 @@
       "original_loading_inference_and_GPU_reserves_preserved": true,
       "all14_requests_completed": true,
       "positive_retirement_ordinary_close_and_exact_restore": true
+    },
+    {
+      "native_case": 28000,
+      "failure": "active_cache_selector_called_before_original_resident_producer_registration",
+      "completed_model_requests": 0,
+      "model_loaded": false,
+      "completed_GPU_upload_fixture_calls": 28,
+      "CPU_worker_completion_unknown": false,
+      "preclose_global_retirement_unproven": true,
+      "ordinary_OS_context_close_and_exact_restore": true,
+      "disposition": "selector_moved_to_original_idle_producer_boundary_before_request_metadata_reset_in_fresh28400"
     }
   ],
   "remaining": [

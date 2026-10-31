@@ -69,7 +69,8 @@ def main():
   '        if(policy.at("native_next_five_normal")!=Json::parse('+literal(scope)+'))throw std::runtime_error("Exact measured next-five composition required");\n'
   '        qwen_next_select(2);\n        qwen_native_stage("model_load_started_after_memory_admission");')
  if slots!=3072:
-  entry=once(entry,'        qwen_next_select(2);','        qwen_next_select(2);qwen_app_select_output_Q8_slots('+str(slots)+');')
+  entry=once(entry,'                resident_reset_empty_context(context,model,startup.admission_report);',
+   '                qwen_app_select_output_Q8_slots('+str(slots)+');\n                resident_reset_empty_context(context,model,startup.admission_report);')
  old_entry=ec[ec.index('-o')+1];candidate_entry=candidate['compile_commands'][0];position=normal['link_command'].index(old_entry)
  require(candidate['link_command'][position]==candidate_entry[candidate_entry.index('-o')+1],'Entry positions must match')
  seed['link_command']=candidate['link_command'].copy();seed['link_command'][position]=old_entry

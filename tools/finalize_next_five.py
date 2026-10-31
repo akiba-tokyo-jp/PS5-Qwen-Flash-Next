@@ -17,6 +17,7 @@ def main():
  rows=n['requests'];require(len(rows)==3 and all(x['full_F32_finite']and x['counting_quality_passed']and x['request_reset_completed']for x in rows)and all(x['token_ids']==rows[0]['token_ids']and x['output_bytes']==rows[0]['output_bytes']for x in rows),'Finite actual complete counting output required')
  for i in range(3):
   r=load(c/f'native-arm{i}.routes.private.json');require(r['complete']and r['cache_slots']==scope['active_cache_slots']and r['cache_reset_before_request']==(i==0),'Complete actual selected-capacity routes required')
+  counts={x['experts']for x in r['records']};require(2 in counts and counts<={2,6}and all(x['experts']==6 for x in r['records']if x['tokens']>2),'Actual two-Expert decode and unchanged six-Expert large prefill required')
  prior=load(ROOT/'config/production-installation.json');require(prior['application_SELF']['sha256']==CONTROL_SELF,'Immediate c2e control required')
  archive=ROOT/'config/production-installation-four-next-20261031.json'
  if not archive.exists():archive.write_bytes((ROOT/'config/production-installation.json').read_bytes())
