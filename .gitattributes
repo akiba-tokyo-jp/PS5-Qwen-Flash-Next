@@ -146,7 +146,7 @@ native/app/gdn_conv_norm_range_guard.inc text eol=lf
 tools/build_gdn_range_guard.py text eol=lf
 docs/strata-followup-plan-20261031.md text eol=lf
 docs/strata-followup-worklog-20261031.json text eol=lf
-docs/strata-followup-candidates-20261031.json text eol=lf
+docs/strata-followup-candidates-20261031.json text eol=crlf
 docs/strata-followup-adoption-20261031.json text eol=lf
 docs/strata-followup-results-20261031.md text eol=lf
 
