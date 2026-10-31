@@ -20,6 +20,33 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The next-five campaign is complete; normal30200 and production placement30300
+are positively verified. See `docs/next-five-results-20261031.md`,
+`docs/next-five-worklog-20261031.json` and `docs/next-five-adoption-20261031.json`.
+Selected SELF5b829d396dbbf4f7b6d07b139917ee5d3740c44bbb245cf4542f24371d1e36cd,
+source76870d256094c93d083aa72a45b626e1b8b04975; the exact c2e control and
+its five settings remain preserved. Twelve native files and fresh idle pass.
+Actual normal30200: cold5.537146, retained6.538603, exact-prefix7.872825 tok/s.
+Decode uses two active Experts,108 large resident matrices use Q4_0, and other
+resident weights remain Q8 except tiny BF16 PLE convolution and original F32
+weights/state. Active/physical slots3712/3713, Expert cache5703659520 bytes;
+ledger cap6199160832, single-buffer cap2147483648. KV/recurrent S remain F32.
+Available placement keys1444 apply only to the initial prefill; all decode and
+later requests use768. Actual source counters show392 high512+ pack indices and
+zero during decode. The normal suite has two correct counting answers and one
+incorrect prefix-repeat answer. Report this quality loss; do not claim unchanged
+quality or replace output. Semantic misanswers are recorded independently of
+finite numerics, stream integrity and positive GPU/source/model retirement.
+All3 requests/two actual viewed frames complete, device live0, ordinary close and
+exact c2e restoration pass. Case30200 is consumed; never replay its launch.
+The legacy base routing descriptor remains6; actual routes and `next_five`
+record the two-Expert decode override. Preserve the qualified original GPU object
+17cb982e, driver872cc126/cumulative-idle and disabled persistent caches.
+Use `next_five_production.py` for the installed selected production;
+the four-next control below is historical and remains the immediate rollback.
+
+### Previous four-next control (historical)
+
 The four-next campaign is complete in `docs/four-next-results-20261031.md` and
 `docs/four-next-adoption-20261031.json`; scope and immutable attempt history are
 `docs/four-next-optimizations-plan-20261031.md` and

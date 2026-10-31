@@ -1,0 +1,37 @@
+{
+  "schema": "ps5-qwen-next-five-selection-v1",
+  "SELF": {
+    "bytes": 21868935,
+    "sha256": "5b829d396dbbf4f7b6d07b139917ee5d3740c44bbb245cf4542f24371d1e36cd"
+  },
+  "source_revision": "76870d256094c93d083aa72a45b626e1b8b04975",
+  "normal_scope": {
+    "schema": "ps5-qwen-next-five-normal-v1",
+    "maximum_requests": 3,
+    "decode_Experts": 2,
+    "prefill_routing_unchanged": true,
+    "active_cache_slots": 3712,
+    "physical_cache_planes": 3713,
+    "cache_bytes": 5703659520,
+    "placement_keys": 1444,
+    "supplemental_triplets": 1024,
+    "resident_precision": "108 additional matrices Q4_0",
+    "Attention_KV": "F32",
+    "recurrent_S": "F32",
+    "PLE_convolution": "BF16",
+    "maximum_causal_attempts": 6,
+    "n_rs_seq": 1,
+    "original_GPU_object": true,
+    "original_OS_minimum_physical_reserves_completion_and_close": true,
+    "CI_runs": 0,
+    "automatic_retries": 0,
+    "approximate_model_quality_reported_separately": true,
+    "semantic_misanswer_does_not_quarantine_completed_GPU_work": true,
+    "expanded_placement_prefill_only": true,
+    "decode_placement_keys": 768,
+    "expanded_placement_only_first_request": true,
+    "later_request_placement_keys": 768
+  },
+  "normal_case": 30200,
+  "placement_case": 30300
+}

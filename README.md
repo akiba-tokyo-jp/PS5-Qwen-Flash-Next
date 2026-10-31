@@ -2,31 +2,46 @@
 
 Experimental **Qwen3.8-Flash-Next on one PlayStation 5**, streaming the complete
 text model from SSD into bounded shared memory. The original baseline is BF16;
-the owner subsequently authorized routed-Expert quantization. Every Expert and
+the owner subsequently authorized routed-Expert/resident quantization and lower
+active decode Expert counts. Every Expert and
 required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-The [speed specification](docs/speed-followup-spec-20261031.md) is implemented,
-verified on the PS5, and installed by placement12540. See the
-[results](docs/speed-followup-results-20261031.md),
-[adoption evidence](docs/speed-followup-adoption-20261031.json) and
+All five software optimization families have final dispositions. The selected
+normal30200 program is installed by verified production placement30300. See the
+[results](docs/next-five-results-20261031.md),
+[adoption evidence](docs/next-five-adoption-20261031.json),
+[complete experiment dispositions](docs/next-five-worklog-20261031.json) and
 [installation record](config/production-installation.json).
 
-| Fixed30-token prompt,22 generated tokens | Previous12220 | Selected12500 |
-| --- | ---: | ---: |
-| Independent KV reset, Expert weights retained |4.177872 tok/s;7.486257s|4.894846 tok/s;6.581032s|
-| Exact prefix plus causal reuse |6.300317 tok/s;3.871905s|6.579934 tok/s;3.459633s|
+Decode uses two active Experts. Expert Gate/Up stays Q2_K and Down Q2_0 MSE;
+108 large resident matrices become Q4_0, others remain Q8 except tiny BF16 PLE
+convolution and original F32 weights/state. KV and recurrent S remain F32.
+The Expert cache grows3072 to3712 active slots,3713 physical planes. Expanded
+1444-key placement applies only to the initial prefill; decode and later
+requests use768 keys. The original qualified GPU object and driver872cc126 /
+cumulative-idle remain, with persistent caches disabled.
 
-The composition retains exact BF16 small rows, protects recent decode residency
-for the compiled identical prompt and caps speculation at six attempts.
-Normal complete request time falls12.092%; exact-prefix time falls10.648%.
-Cold inference has no demonstrated improvement. These sequential finite results
-are not broad-input or sustained-service qualification. Different-input protection
-changes JSON length and does not establish equal-work acceleration. Driver872cc126,
-ExpertQ2/residentQ8/PLE-convolutionBF16, all reserves and disabled persistent caches
-remain. Immediate3066 rollback and both settings sets pass native12-file verification.
-The app/gateway/models are inactive; the finite binding is consumed.
+| Fixed30-token prompt,22 generated tokens | Previous19000 tok/s | Selected30200 tok/s | Selected counting correct |
+| --- | ---: | ---: | --- |
+| Cold Expert cache |4.377344|5.537146|true|
+| Independent KV reset, Expert weights retained |5.012038|6.538603|true|
+| Exact prefix plus causal reuse |7.036085|7.872825|false|
+
+These are sequential finite cohorts, not matched ABBA or general-quality
+qualification. The prefix-repeat answer repeats7 and is incorrect; its rate is
+not correct-answer throughput. Four fixed semantic tasks pass in the complete
+candidate comparisons, but unchanged answer quality is not established. Actual
+quality flags and output are preserved. A semantic misanswer no longer
+quarantines already returned GPU work.
+
+All3 normal requests, two actual viewed native frames, zero live device ledger,
+positive model/source/GPU retirement, ordinary close and exact control restoration
+pass. Production verifies both complete programs and both five-setting sets
+with native SHA256/identity/EOF. The exact c2e control is preserved. The installed
+app/gateway/models are inactive and the30200 finite binding is consumed. CI,
+learned host inference and reboot were not used.
 
 ## Historical cold and different-input campaign
 
