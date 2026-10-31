@@ -1,0 +1,59 @@
+{
+  "schema": "ps5-qwen-post-top2-Gate-Up-fixture-v1",
+  "completed": true,
+  "case": 30700,
+  "GPU_graphs": 180,
+  "all_F64_and_canary_checks": true,
+  "device_live_bytes": 0,
+  "ordinary_close_exact_restore": true,
+  "rows": [
+    {
+      "tokens": 1,
+      "duplicate_ids": false,
+      "control_backend_us": 108.15,
+      "candidate_backend_us": 67.260625,
+      "backend_time_reduction_percent": 37.80802126675913,
+      "maximum_F64_error": 4.803502698548642e-12,
+      "candidate_selections": 18
+    },
+    {
+      "tokens": 1,
+      "duplicate_ids": true,
+      "control_backend_us": 104.55199999999999,
+      "candidate_backend_us": 58.5703125,
+      "backend_time_reduction_percent": 43.97973018211033,
+      "maximum_F64_error": 4.6902995742381486e-12,
+      "candidate_selections": 18
+    },
+    {
+      "tokens": 2,
+      "duplicate_ids": false,
+      "control_backend_us": 114.344375,
+      "candidate_backend_us": 77.023125,
+      "backend_time_reduction_percent": 32.63934058846358,
+      "maximum_F64_error": 4.803502698548642e-12,
+      "candidate_selections": 18
+    },
+    {
+      "tokens": 2,
+      "duplicate_ids": true,
+      "control_backend_us": 112.715625,
+      "candidate_backend_us": 76.71237500000001,
+      "backend_time_reduction_percent": 31.941667359782635,
+      "maximum_F64_error": 4.6902995742381486e-12,
+      "candidate_selections": 18
+    },
+    {
+      "tokens": 3,
+      "duplicate_ids": false,
+      "control_backend_us": 134.90699999999998,
+      "candidate_backend_us": 121.039875,
+      "backend_time_reduction_percent": 10.279025550935083,
+      "maximum_F64_error": 5.099508899056521e-12,
+      "candidate_selections": 0
+    }
+  ],
+  "whole_model_speed_proven": false,
+  "production_adopted": false,
+  "invalid_reference_case30500_preserved": true
+}

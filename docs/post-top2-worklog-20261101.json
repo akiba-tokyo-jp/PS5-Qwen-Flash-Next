@@ -1,0 +1,224 @@
+{
+  "schema": "ps5-qwen-post-top2-worklog-v1",
+  "completed": false,
+  "production_changed": false,
+  "baseline_normal_case": 30200,
+  "baseline_placement_case": 30300,
+  "driver": "872cc1264ad8ba5d6b888b092968fa5858a38c58/cumulative-idle",
+  "persistent_caches": false,
+  "CI_runs": 0,
+  "reboot_required": false,
+  "candidates": {
+    "N1": {
+      "implementation": "CPU finite-greedy comparison built; GPU tie-correct shader compiles",
+      "native_validation": "case31500:14 requests completed; full F32/routes/tokens exact; CPU candidate not faster; GPU compact transport remains pending",
+      "adopted": false,
+      "host_rows_exact": 132,
+      "host_invalid_rejections": 11,
+      "case30800_normally_closed_and_exactly_restored": true,
+      "CPU_subcandidate_disposition": "tested-negative",
+      "CPU_retained_decode_gain_percent": -0.717014605849009,
+      "CPU_retained_whole_time_reduction_percent": -0.43075940172490057,
+      "ordinary_close_and_exact_restore_case": 31500,
+      "GPU_32_thread_fixture": {
+        "case": 33400,
+        "GPU_graphs": 110,
+        "all_finite_first_index_and_canaries_exact": true,
+        "columns": 248320,
+        "one_row_CPU_mean_us": 531.409,
+        "one_row_GPU_mean_us": 1198.281,
+        "disposition": "tested-negative; slower than CPU control"
+      },
+      "GPU_256_thread_fixture": {
+        "case": 33900,
+        "GPU_graphs": 110,
+        "all_finite_first_index_and_canaries_exact": true,
+        "one_row_CPU_mean_us": 547.255,
+        "one_row_GPU_mean_us": 375.007,
+        "two_row_CPU_mean_us": 1027.496,
+        "two_row_GPU_mean_us": 376.781,
+        "scope": "synthetic selection plus readback only; full-model integration pending",
+        "ordinary_close_and_exact_restore": true
+      }
+    },
+    "N2": {
+      "implementation": "actual GPU bound31840; submission-divisor40/10 full-model comparison32800 built and packaged",
+      "native_validation": "case33000:14 requests completed; all full F32/routes/tokens exact; ordinary close and exact restore passed",
+      "adopted": false,
+      "GPU_timestamps_are_diagnostic_queue_intervals_not_pure_shader_instruction_time": true,
+      "disposition": "tested-negative divisor10",
+      "retained_decode_gain_percent": -0.26316667510782876,
+      "retained_whole_time_reduction_percent": -0.19760004400661835
+    },
+    "N3": {
+      "implementation": "outputQ4 composition32740;metadata-only binding32780/SELF32788 to actual source; originalQ8/model sources retained",
+      "native_validation": "33600 returned before GPU with missing plain output source-plan adapter;exact production restored.34120 fixes complete two-part output coverage with16 malformed-geometry refusals;fresh34200 running.",
+      "adopted": false,
+      "additional_output_saved_bytes": 317849600
+    },
+    "N4": {
+      "implementation": "phase-specific Top4-prefill/Top2-decode comparison31920 built; native pending",
+      "native_validation": "case32500:14 requests completed and normally closed; Top4 cold TTFT24.322% shorter and total cold bytes30.659% lower; cold answer prematurely ended as1,2; retained decode9.361% slower",
+      "adopted": false,
+      "static_Top4_disposition": "tested-negative for general deployment; cold whole-time shortening is not equivalent completed work",
+      "static_Top4_quality_tasks": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "adaptive_prefill": "34420 built:Top4 only before the final16 prompt tokens;Top6 for the final window;at most one extra prefill call;native pending",
+      "ordinary_close_and_exact_restore_case": 32500
+    },
+    "N5": {
+      "implementation": "condition-based two admitted observations; max51 unchanged; builder32200/SELF32208",
+      "native_validation": "case32600:3 requests,API streams,2 native frames,positive retirement,ordinary close and exact restore passed",
+      "adopted": false,
+      "settle_seconds": 0.100198499,
+      "first_recorded_stage_to_context_ready_seconds": 26.949297476,
+      "accepted_for_final_composition": true,
+      "scope": "startup latency only; decode math and memory predicates unchanged"
+    },
+    "R1": {
+      "implementation": "F64 fixture passed; full model31700 stopped during load before requests due application loading-padding predicate",
+      "native_validation": "case33300 completed14 requests but candidate Gate_Up_pipeline_selections==0 in every row; no actual fused full-model path was exercised",
+      "adopted": false,
+      "invalid_reference_case": 30500,
+      "fixture_maximum_F64_error": 5.099508899056521e-12,
+      "ordinary_close_and_exact_restore": true,
+      "full_model_peak_memory_condition": {
+        "last_kernel_free_pages": 1135,
+        "observed_minimum": 898,
+        "observed_reserved": 206,
+        "application_loading_padding": 256
+      },
+      "next_action": "diagnose real graph shape/matcher and require positive candidate dispatches before timing/adoption",
+      "disposition": "coverage-invalid full-model comparison; not a measured kernel speed result"
+    },
+    "R2": {
+      "implementation": "current single-latest cap6/8 comparison built",
+      "native_validation": "case31600:14 requests completed; cap8 made7 attempts,6 accepted and1 rejected on timed inputs; no whole-time gain",
+      "adopted": false,
+      "disposition": "tested-negative cap8; cap12 does not bind on the same recorded timed proposal sequence",
+      "retained_decode_gain_percent": 0.41495616734092966,
+      "retained_whole_time_reduction_percent": -0.14948656041233743,
+      "ordinary_close_and_exact_restore_case": 31600,
+      "cap12": {
+        "case": 34000,
+        "completed_requests": 14,
+        "retained_decode_gain_percent": 0.04747616191291826,
+        "retained_whole_time_reduction_percent": -0.45050125116590234,
+        "quality_tasks_passed": 4,
+        "adopted": false,
+        "ordinary_close_and_exact_restore": true
+      }
+    },
+    "R3": {
+      "implementation": "33520/SELF33528 current Top2 cap6 comparison; prior216-graph F64 proof reused with no repeated numerical fixture",
+      "native_validation": "case33800:14 requests; candidate216 actual two-token selections on timed requests; three of four quality tasks pass; full retirement,ordinary close and exact restore",
+      "adopted": false,
+      "disposition": "tested;0.262percent whole-time reduction within noise and altered counting answer;not adopted"
+    },
+    "R4": {
+      "implementation": "34440 exact native cache-planner replay; same348 supplemental slots refit on current cold/retained traces",
+      "native_validation": "host route replay only; retained covered misses42->274,but cold496->366 and all four held-out tasks regress;phase-specific candidate remains to test",
+      "adopted": false
+    },
+    "R5": {
+      "implementation": "33780/SELF33788 built and packaged; eight no-copy ownership/error-drain tests pass; four actual reader workers retained",
+      "native_validation": "34300 prepared;pending",
+      "adopted": false
+    },
+    "C1": {
+      "implementation": "pending",
+      "native_validation": "pending",
+      "adopted": false
+    },
+    "C2": {
+      "implementation": "pending",
+      "native_validation": "pending",
+      "adopted": false
+    },
+    "C3": {
+      "implementation": "pending",
+      "native_validation": "pending",
+      "adopted": false
+    },
+    "C4": {
+      "implementation": "pending",
+      "native_validation": "pending",
+      "adopted": false
+    },
+    "D1": {
+      "implementation": "pending",
+      "native_validation": "pending",
+      "adopted": false
+    },
+    "D2": {
+      "implementation": "pending",
+      "native_validation": "pending",
+      "adopted": false
+    },
+    "D3": {
+      "implementation": "pending",
+      "native_validation": "pending",
+      "adopted": false
+    }
+  },
+  "storage_interruption": {
+    "PS5_disk_ENOSPC_confirmed": true,
+    "one_closed_trial_bytes_removed": 18891930,
+    "failed_helper_transfer_never_executed": true,
+    "guarded_first_close_completed": true,
+    "production_and_immediate_control_restored": true,
+    "remaining_cleanup": "completed30820/32020/32920/32370 scopes only; live ancestors protected",
+    "additional_closed_programs_removed": 9,
+    "additional_logical_bytes_removed": 187057870,
+    "current_root_CPU_statfs_free_bytes": 2809856000,
+    "free_space_change_not_exclusively_attributed_to_cleanup": true,
+    "program_cleanup_32020_bytes": 85843000,
+    "program_cleanup_32920_bytes": 43329169,
+    "case32350": {
+      "FTP_ENOSPC": true,
+      "partial_bytes": 14202880,
+      "CPU_publisher_executions": 0,
+      "title_launches": 0,
+      "GPU_calls": 0,
+      "partial_host_prefix_exact_archived_and_removed": true,
+      "statfs_reported_free_bytes": 1750663168,
+      "statfs_not_a_writable_space_guarantee": true
+    },
+    "same_staging_and_title_filesystem_proven": true,
+    "unused_native_generated_Q2_0_directory": "retired32370;22.673GB logical; original BF16 and recipes retained,full old generated-weight archive not claimed",
+    "old_generated_Q2_0_retirement": {
+      "completed": true,
+      "files": 170,
+      "logical_bytes": 22673162481,
+      "full_old_weight_archive_claimed": false,
+      "original_BF16_files_retained": 76,
+      "recipes_metadata_logs_and_prior_archives_retained": true,
+      "current_and_rollback_twelve_files_unchanged": true
+    }
+  },
+  "application_statfs_interruption": {
+    "case": 31100,
+    "owner_exited_before_model_load": true,
+    "precise_cause_not_proven": true,
+    "ordinary_close_calls": 0,
+    "exited_owner_and_context_inactive_verified": true,
+    "exact_production_and_settings_restored": true,
+    "native_call_removed_from_all_future_candidates": true,
+    "source_verified_raw_syscall": 396,
+    "raw_syscall_in_title_image": true,
+    "precise_kernel_exit_mechanism_still_unproven": true
+  },
+  "unstarted_cases_superseded": [
+    31000,
+    31300
+  ],
+  "prepared_external_comparisons": {
+    "N1": "31400",
+    "R2": "31420",
+    "R1": "31440"
+  }
+}

@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: MIT
+#version 450
+layout(local_size_x_id=0,local_size_y=1,local_size_z=1) in;
+layout(constant_id=0) const uint BLOCK_SIZE=32;
+layout(binding=0,std430) readonly buffer Input { float values[]; };
+layout(binding=1,std430) writeonly buffer Output { int selected[]; };
+layout(push_constant) uniform P { uint columns,rows;float p0,p1,p2,p3; } p;
+shared float maxima[BLOCK_SIZE];
+shared uint indices[BLOCK_SIZE],invalid[BLOCK_SIZE];
+void main() {
+    uint row=gl_WorkGroupID.z*262144+gl_WorkGroupID.y*512+gl_WorkGroupID.x;
+    uint lane=gl_LocalInvocationID.x;
+    if(row>=p.rows) return;
+    float best=-3.402823466e38;uint index=0xffffffffu,bad=0;
+    for(uint i=lane;i<p.columns;i+=BLOCK_SIZE) {
+        float v=values[row*p.columns+i];
+        if(isnan(v)||isinf(v))bad=1;
+        else if(v>best||(v==best&&i<index)) { best=v;index=i; }
+    }
+    maxima[lane]=best;indices[lane]=index;invalid[lane]=bad;barrier();
+    for(uint step=BLOCK_SIZE/2;step>0;step>>=1) {
+        if(lane<step) {
+            uint other=lane+step;
+            if(maxima[other]>maxima[lane]||(maxima[other]==maxima[lane]&&indices[other]<indices[lane])) {
+                maxima[lane]=maxima[other];indices[lane]=indices[other];
+            }
+            invalid[lane]|=invalid[other];
+        }
+        barrier();
+    }
+    if(lane==0)selected[row]=invalid[0]!=0?-1:int(indices[0]);
+}
