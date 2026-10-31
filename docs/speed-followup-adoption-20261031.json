@@ -1,9 +1,7 @@
 {
   "schema": "ps5-qwen-speed-followup-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "all_current_candidate_dispositions_completed": true,
   "application_SELF": {
     "bytes": 20089335,
@@ -376,7 +374,22 @@
     "The selected program is a finite fixed-prompt application, not a sustained arbitrary-prompt service."
   ],
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 12540,
+    "normal_case": 12500,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "CI_runs": 0,
   "agents": 0,
@@ -412,5 +425,6 @@
       "bytes": 449,
       "sha256": "ce97d9a3e47e3c84d0e84eb133946676f813a0fb555510d150515a3cf4f83165"
     }
-  ]
+  ],
+  "application_source_revision": "a95b91d977fe168964105c9197c7610f244ba0f5"
 }

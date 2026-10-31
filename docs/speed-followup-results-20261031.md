@@ -1,6 +1,6 @@
 # Speed follow-up results
 
-The specification and its bounded native comparisons are implemented. Cases12420,12460 and12500 complete16+3+3 requests, preserve all original physical/kernel/heap/device limits, positively retire all model/source/GPU owners, and normally close/exactly restore the3066 control. Native/API/display qualification selects SELF5564792a,20089335bytes. Production placement is the final pending step in the adoption JSON until its native verification completes.
+The specification, bounded native comparisons and production placement are complete. Cases12420,12460 and12500 complete16+3+3 requests, preserve all original physical/kernel/heap/device limits, positively retire all model/source/GPU owners, and normally close/exactly restore the3066 control. Placement12540 installs SELF5564792a,20089335bytes, preserving immediate3066 rollback and both five-setting sets. Native whole SHA256/identity/EOF verifies all12 files; permissions/ownership and fresh idle pass. Native/gateway/models are inactive. The finite run binding is consumed; future launches require a fresh admitted case.
 
 | Condition, same30-token prompt and22 output tokens | Installed12220 | Qualified12500 | Whole-time change |
 | --- | ---: | ---: | ---: |

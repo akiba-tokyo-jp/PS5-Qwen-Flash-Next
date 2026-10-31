@@ -7,6 +7,29 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+The [speed specification](docs/speed-followup-spec-20261031.md) is implemented,
+verified on the PS5, and installed by placement12540. See the
+[results](docs/speed-followup-results-20261031.md),
+[adoption evidence](docs/speed-followup-adoption-20261031.json) and
+[installation record](config/production-installation.json).
+
+| Fixed30-token prompt,22 generated tokens | Previous12220 | Selected12500 |
+| --- | ---: | ---: |
+| Independent KV reset, Expert weights retained |4.177872 tok/s;7.486257s|4.894846 tok/s;6.581032s|
+| Exact prefix plus causal reuse |6.300317 tok/s;3.871905s|6.579934 tok/s;3.459633s|
+
+The composition retains exact BF16 small rows, protects recent decode residency
+for the compiled identical prompt and caps speculation at six attempts.
+Normal complete request time falls12.092%; exact-prefix time falls10.648%.
+Cold inference has no demonstrated improvement. These sequential finite results
+are not broad-input or sustained-service qualification. Different-input protection
+changes JSON length and does not establish equal-work acceleration. Driver872cc126,
+ExpertQ2/residentQ8/PLE-convolutionBF16, all reserves and disabled persistent caches
+remain. Immediate3066 rollback and both settings sets pass native12-file verification.
+The app/gateway/models are inactive; the finite binding is consumed.
+
+## Historical cold and different-input campaign
+
 **Cold and different-input improvements are qualified and installed.** See the
 [results](docs/cold-request-results-20261030.md),
 [complete adoption evidence](docs/cold-request-adoption-20261030.json) and
