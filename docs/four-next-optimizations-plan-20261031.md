@@ -60,3 +60,16 @@ requirements remain. Host checks cover inactive behavior, exact selection,
 counter mismatch and reentry refusal. This is a finite native experiment,
 not proof of a universal memory limit. A refusal at the new boundary must be
 disposed without another unchanged launch or a further floor reduction.
+
+Ancillary18600 loaded and generated all three22-token outputs, but the native
+final-consumer predicate still required the eliminated capture count. Its
+failure retained resources; ordinary close and exact restoration completed.
+The native predicate is corrected to require zero explicit captures/restores
+and exact elided-attempt/all-memory-rollback reconciliation, while retaining
+the original final-prefix certificate, routes, full finite rows and completion
+checks. The loader minimum in18600 was2110 pages: the206-page configuration
+was exercised, but no admission below the old1154-page predicate was needed.
+Therefore the final scope restores the original256-page loading predicate.
+Only the entry provider is rebuilt for this correction; model/GPU/cache/engine
+providers remain exact. The old observer/CPU/native failures are preserved and
+are not counted as completed normal qualifications.
