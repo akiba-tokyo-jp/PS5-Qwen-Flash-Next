@@ -1,6 +1,6 @@
 {
   "schema": "ps5-qwen-next-five-worklog-v1",
-  "completed": false,
+  "completed": true,
   "control_SELF": "c2eafe1a5fa0726fa60fe63fa25d821f7ae50cf777dfebc51f8031c11c03f002",
   "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
   "driver_profile": "cumulative-idle",
@@ -30,7 +30,7 @@
       "fixed_semantic_tasks_passed": 4,
       "counting_output_equal": true,
       "positive_retirement_and_exact_restore": true,
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "family": 1,
@@ -78,7 +78,7 @@
       "fixed_semantic_tasks_passed": 4,
       "counting_output_equal": true,
       "positive_retirement_and_exact_restore": true,
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "family": 5,
@@ -186,7 +186,7 @@
       "all_full_F32_routes_tokens_bytes_exact": true,
       "fixed_semantic_tasks_passed": 4,
       "positive_retirement_and_exact_restore": true,
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "retained_trial_not_adopted": true
     }
   ],
@@ -388,10 +388,7 @@
       "legacy_HUD_Q8_Top6_caption_found_and_corrected_for_final_normal": true
     }
   ],
-  "remaining": [
-    "verified_production_placement",
-    "private_PR_merge"
-  ],
+  "remaining": [],
   "last_updated_local_date": "2026-11-01",
   "normal_qualification": {
     "case": 30200,
@@ -414,5 +411,8 @@
     "actual_native_frames_viewed": 2,
     "source_GPU_model_owners_positively_retired": true,
     "ordinary_OS_close_exact_restore": true
-  }
+  },
+  "normal_case": 30200,
+  "production_placement_case": 30300,
+  "all_five_families_disposed": true
 }

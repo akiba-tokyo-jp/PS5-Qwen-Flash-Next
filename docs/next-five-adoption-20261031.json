@@ -1,9 +1,7 @@
 {
   "schema": "ps5-qwen-next-five-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 21868935,
     "sha256": "5b829d396dbbf4f7b6d07b139917ee5d3740c44bbb245cf4542f24371d1e36cd"
@@ -291,7 +289,7 @@
       "fixed_semantic_tasks_passed": 4,
       "counting_output_equal": true,
       "positive_retirement_and_exact_restore": true,
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "family": 1,
@@ -339,7 +337,7 @@
       "fixed_semantic_tasks_passed": 4,
       "counting_output_equal": true,
       "positive_retirement_and_exact_restore": true,
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "family": 5,
@@ -447,7 +445,7 @@
       "all_full_F32_routes_tokens_bytes_exact": true,
       "fixed_semantic_tasks_passed": 4,
       "positive_retirement_and_exact_restore": true,
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "retained_trial_not_adopted": true
     }
   ],
@@ -474,7 +472,7 @@
       "fixed_semantic_tasks_passed": 4,
       "counting_output_equal": true,
       "positive_retirement_and_exact_restore": true,
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "family": 1,
@@ -522,7 +520,7 @@
       "fixed_semantic_tasks_passed": 4,
       "counting_output_equal": true,
       "positive_retirement_and_exact_restore": true,
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "family": 5,
@@ -630,12 +628,27 @@
       "all_full_F32_routes_tokens_bytes_exact": true,
       "fixed_semantic_tasks_passed": 4,
       "positive_retirement_and_exact_restore": true,
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "retained_trial_not_adopted": true
     }
   ],
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 30300,
+    "normal_case": 30200,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "application_relink": {
     "source_revision": "76870d256094c93d083aa72a45b626e1b8b04975",
@@ -682,5 +695,49 @@
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
-  "forced_resets": 0
+  "forced_resets": 0,
+  "placement_metadata_revision": "1e3cb4a0279c7312bd768b1f888dda2179cdff94",
+  "host_adoption_refusal_checks": {
+    "completed": true,
+    "positive_selection_passed": true,
+    "expected_refusals": 12,
+    "refusals": [
+      "wrong_SELF",
+      "wrong_model",
+      "wrong_cache",
+      "live_owner",
+      "wrong_GPU_object",
+      "missing_retirement",
+      "over_CPU_budget",
+      "missing_control",
+      "large_layout_during_decode",
+      "reduced_loading_padding",
+      "below_OS_minimum",
+      "unrecorded_loading_refusal"
+    ],
+    "PS5_operations": 0,
+    "CI_runs": 0
+  },
+  "placement_evidence": {
+    "before-placement-complete.private.json": {
+      "bytes": 338,
+      "sha256": "72912fa9096fd3c29d15b6b63c4decb0cdd90f67e2213ed416db16c2ee60f744"
+    },
+    "after-placement-complete.private.json": {
+      "bytes": 337,
+      "sha256": "ca2ee4036e08603bdcdae8e15842af1691731598b19d2fbaf21370b145c41e57"
+    },
+    "after-placement-sources.private.json": {
+      "bytes": 5083,
+      "sha256": "b45419a3816650ff4defa003c97c0b708b2814b9a7f96dab5869e9cb5e8a97d2"
+    },
+    "complete.private.json": {
+      "bytes": 1214,
+      "sha256": "999c534d8c04c3694d859f2d633a3b5e8ff80aec5c05842e5e9194bc8ee86487"
+    },
+    "production-complete.private.json": {
+      "bytes": 20785,
+      "sha256": "61b115348fbe5133e76b6e0a6e9154a993daad3d26872be96276aa73d39091af"
+    }
+  }
 }
