@@ -10,7 +10,7 @@ from gdn_conv_norm_source import CREATE
 ROOT=Path(__file__).resolve().parents[1]
 SCOPE=dict(schema='ps5-qwen-gate-up-fixture-v1',model_loads=0,requests=0,GPU_graphs=108,cases=3,tokens=[1,2,3],
  original_actual_Gate_Up_Q2_K=True,F32_inputs_and_accumulation=True,F64_all_outputs=True,
- original_three_token_fallback=True,additional_immutable_shaders=2,physical_reserves_and_positive_completion=True,
+ original_three_token_fallback=True,additional_immutable_shaders=1,unused_GDN_specialization_not_registered=True,physical_reserves_and_positive_completion=True,
  deadline_seconds=240,automatic_retries=0,CI_runs=0,production_adoption=False)
 def main():
  p=argparse.ArgumentParser(description=__doc__)
@@ -28,6 +28,10 @@ def main():
  sh=a.out/'expert_gate_up_state.private.inc';sh.write_text(state,newline='\n')
  output=pack['output'];assets=a.out/'expert_gate_up_fixture_assets.private.h';assets.write_text('#pragma once\ninline constexpr const char*gate_up_pack_path='+json.dumps('/app0/'+output['path'].split('/PPSA99190/',1)[1])+';\ninline constexpr const char*gate_up_pack_sha256='+json.dumps(output['sha256'])+';\ninline constexpr unsigned long long gate_up_pack_bytes='+str(output['bytes'])+'ULL;\n',newline='\n')
  gc=n['io_gpu_comparison']['GPU_command'];gpu=Path(n['io_gpu_comparison']['GPU_source']['path']).read_text();gpu=once(gpu,'#include "ggml-vulkan-common.h"','#include "ggml-vulkan-common.h"\n#include "expert_gate_up_state.private.inc"')
+ # Keep the qualified single-additional-shader registry. This isolated fixture
+ # has no GDN graph, so the unused GDN program is neither registered nor made.
+ gpu=once(gpu,CREATE,'')
+ donor=a.cache/'build/GDN-conv-norm-14700/qwen_conv_norm_spirv.private.h';old_header=donor.read_text();old_header,count=__import__('re').subn(r'__attribute__\(\(constructor\)\) static void qwen_register_conv_norm_asset\(\)\{[^\n]*\}\n','',old_header);require(count==1,'One original GDN constructor required');(a.out/donor.name).write_text(old_header,newline='\n')
  create=CREATE.replace('QwenConvNorm','QwenGateUp').replace('qwen_conv_norm','qwen_gate_up').replace('qwen_conv_norm_f32','qwen_gate_up_q2')
  anchor='    ggml_vk_create_pipeline(device, device->pipeline_ssm_conv_bias_silu_f32,';start=gpu.index(anchor);end=gpu.index('\n',start)+1;gpu=gpu[:end]+create+gpu[end:]
  anchor='void ggml_vk_mul_mat_id(ggml_backend_vk_context * ctx, vk_context& subctx, const struct ggml_cgraph * cgraph, int node_idx) {'
@@ -35,7 +39,6 @@ def main():
  gpu=once(gpu,'            if(qwen_norm.extra){',
   '            if(qwen_gate_up_match(cgraph,i)){ctx->num_additional_fused_ops=2;ctx->fused_ops_write_mask=1u<<2;fusion_string="Q2_GATE_UP_SWIGLU";op_srcs_fused_elementwise[0]=false;op_srcs_fused_elementwise[1]=false;op_srcs_fused_elementwise[2]=true;}else if(qwen_norm.extra){')
  ec=n['compile_commands'][0];entry=Path(ec[ec.index('-c')+1]).read_text();entry='#include "expert_gate_up_fixture.h"\nextern "C" void qwen_app_gate_up_trial_release();\n'+entry
- entry=entry.replace('qwen_app_additional_shaders_verified()!=1','qwen_app_additional_shaders_verified()!=2')
  branch='''        {if(policy.at("native_GDN_conv_normalization_fixture")!=Json::parse(SCOPE_LITERAL))throw std::runtime_error("Exact Gate/Up fixture policy required");
         qwen_app::enforce_native_model_compute_limits();if(qwen_app::native_model_device_stats().live)throw std::runtime_error("Empty Gate/Up fixture ledger required");
         auto result=qwen_app::gate_up_fixture::run(qwen_native_driver_checkpoint,qwen_native_stage,require_model_CPU_budget);
@@ -51,7 +54,7 @@ def main():
 '''.replace('SCOPE_LITERAL',json.dumps(json.dumps(SCOPE,separators=(',',':'))))
  entry=once(entry,'        screen.state="loading original BF16 model";',branch+'        screen.state="loading original BF16 model";')
  ec=ec.copy();ec+=['-I',str(ROOT/'native/app')];gc=gc.copy();gc+=['-I',str(ROOT/'native/app')]
- inputs=[Path(__file__),a.pack,header,sh,assets,shader,spv,compiler,ROOT/'native/app/expert_gate_up_backend.inc',ROOT/'native/app/expert_gate_up_fixture.h']
+ inputs=[Path(__file__),a.pack,header,sh,assets,shader,spv,compiler,donor,a.out/donor.name,ROOT/'native/app/expert_gate_up_backend.inc',ROOT/'native/app/expert_gate_up_fixture.h']
  r,jobs,sources=link(a.parent,a.out,dict(entry=(ec,entry),gpu=(gc,gpu)),inputs)
  for key in ('normal_performance','output_Q8_normal','cold_request','resident_all_Q8','resident_cache3072','resident_small_rows','resident_weight_normal'):
   r[key]['actual_sources']['entry']=sources['entry'];r[key]['commands']['entry']=jobs['entry']

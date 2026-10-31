@@ -2,6 +2,7 @@
 #pragma once
 #include <llama_engine.h>
 #include <model_free_draft.h>
+extern "C" void qwen_app_routing_event_begin();
 namespace qwen_app {
 // Six causal proposals; the quality phase forces EOS proposals to exercise
 // rejection and subsequent-token continuation in every memory implementation.
@@ -22,7 +23,7 @@ public:
             if(force_)draft=llama_vocab_eos(llama_model_get_vocab(m_));
             else{auto p=propose_model_free_token(prompt_.data(),prompt_.size(),history_.data(),history_.size(),llama_vocab_n_tokens(llama_model_get_vocab(m_)),DraftEvidence::consistent_pair);if(p.found&&!llama_vocab_is_eog(llama_model_get_vocab(m_),p.token))draft=p.token;}
         }
-        auto before=e_.speculative_step_stats();bonus_=false;
+        auto before=e_.speculative_step_stats();if(!bonus_)qwen_app_routing_event_begin();bonus_=false;
         auto token=draft==LLAMA_TOKEN_NULL?e_.next():e_.next_with_one_draft(draft);
         if(draft!=LLAMA_TOKEN_NULL){++causal_proposals;++attempts_;auto after=e_.speculative_step_stats();
             if(after.attempts!=before.attempts+1||after.accepted+after.rejected!=before.accepted+before.rejected+1)throw std::runtime_error("Complete rollback decision required");bonus_=after.accepted==before.accepted+1;}

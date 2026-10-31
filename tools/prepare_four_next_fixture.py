@@ -17,7 +17,7 @@ def main():
  if a.kind=='two-token':
   s=s.replace("report['GPU_graphs']==144 and len(report['cases'])==4","report['GPU_graphs']==216 and len(report['cases'])==6").replace('(ordinal<3)','(ordinal<5)').replace('if ordinal<3 else','if ordinal<5 else').replace('GPU_graphs=144','GPU_graphs=216')
  else:
-  s=s.replace('ps5-qwen-GDN-conv-normalization-fixture-result-v1','ps5-qwen-gate-up-fixture-result-v1').replace("report['GPU_graphs']==144 and len(report['cases'])==4 and report['F64_reference_all_outputs_passed']","report['GPU_graphs']==108 and len(report['cases'])==3 and report['all_F64_outputs_passed']").replace("report['additional_shader_verified']==1 and report['additional_shader_modules']>0","report['additional_shader_verified']==2")
+  s=s.replace('ps5-qwen-GDN-conv-normalization-fixture-result-v1','ps5-qwen-gate-up-fixture-result-v1').replace("report['GPU_graphs']==144 and len(report['cases'])==4 and report['F64_reference_all_outputs_passed']","report['GPU_graphs']==108 and len(report['cases'])==3 and report['all_F64_outputs_passed']").replace("report['additional_shader_verified']==1 and report['additional_shader_modules']>0","report['additional_shader_verified']==1")
   left=s.index('    for ordinal,row in enumerate(report[\'cases\']):');right=s.index('    pid=state',left)
   s=s[:left]+'''    for ordinal,row in enumerate(report['cases']):
         assert row['all_F64_outputs_passed'] and row['canary_passed'] and row['positive_retirement']
