@@ -151,3 +151,4 @@ docs/strata-followup-adoption-20261031.json text eol=lf
 docs/strata-followup-results-20261031.md text eol=lf
 
 .gitattributes text eol=lf
+tools/strata_followup_production.py text eol=lf

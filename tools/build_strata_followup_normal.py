@@ -67,6 +67,8 @@ extern "C" void qwen_app_conv_norm_planner_stats(std::uint64_t*);
   'std::uint64_t planner[8]{};qwen_app_conv_norm_planner_stats(planner);out["GDN_planner_stats"]=std::vector<std::uint64_t>(planner,planner+8);out["GDN_pipeline_selections"]=qwen_app_conv_norm_trial_selections();out["additional_shaders_verified"]=qwen_app_additional_shaders_verified();'if use_gpu else'out["GDN_pipeline_selections"]=0;')
  entry=once(entry,'static Json memory_backpressure_report()',helper+'\nstatic Json memory_backpressure_report()')
  entry=once(entry,'{"memory_backpressure",memory_backpressure_report()}','{"strata_followup",strata_followup_report()},{"memory_backpressure",memory_backpressure_report()}')
+ entry=once(entry,'write_fresh_report(startup.admission_report,{{"limit_margin_probe",limit_probe_report()},{"schema","ps5-qwen-expert-all-q2-model-result-v1"}',
+  'write_fresh_report(startup.admission_report,{{"strata_followup",strata_followup_report()},{"limit_margin_probe",limit_probe_report()},{"schema","ps5-qwen-expert-all-q2-model-result-v1"}')
  if use_gpu:entry=once(entry,'engine.reset();llama_free(context);context=nullptr;llama_model_free(model);model=nullptr;qwen_native_driver_complete();',
   'engine.reset();llama_free(context);context=nullptr;llama_model_free(model);model=nullptr;qwen_app_conv_norm_trial_release();qwen_native_driver_complete();')
  command=ec.copy();command+=['-I',str(ROOT/'native/app')]
