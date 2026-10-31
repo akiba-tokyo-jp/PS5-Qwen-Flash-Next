@@ -34,8 +34,13 @@ decode4.956084 tok/s, prefix6.548935. Prefix total is4.461ms slower than12500;
 disclose the finite sequential comparison rather than claiming every condition
 improves. The48MiB workspace,3072/3073 planes and all physical/loading/context
 checks stay unchanged. Inference padding is fixed0 while the OS watermark stays
-enforced. Production placement13200 remains pending at this source commit;
-keep5564 until verified placement, then use limit_winners_production.py.
+enforced. Production placement13200 is complete: both programs and both five-
+setting sets pass native whole SHA256/identity/EOF, ownership restoration and
+fresh idle. Source8a5a44922267bb97286f076e4cd35c33d0b78e87 binds the actual
+qualified relink. SELFa5375d76 is selected; immediate5564 is preserved. Use
+limit_winners_production.py. Native/gateway/models are inactive. Inherited host
+bundle-count labels448/28 are explicitly reconciled to actual676/256; compiled
+scope/runtime settings were already correct and native evidence is unchanged.
 Both native cases are consumed; never relaunch them or replay completed probes.
 Normal observers must finish the declared POST/frame sequence before the
 read-only collector acquires its writer lease. A host-only collector was stopped

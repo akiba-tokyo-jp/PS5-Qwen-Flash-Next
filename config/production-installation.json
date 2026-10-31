@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-10-31",
-  "application_source_revision": "a95b91d977fe168964105c9197c7610f244ba0f5",
+  "application_source_revision": "8a5a44922267bb97286f076e4cd35c33d0b78e87",
   "application_SELF": {
-    "bytes": 20089335,
-    "sha256": "5564792aa1a8e193d60a13e0ea12f8293900fbc8c2e8ff3c8414c7c8ac212257"
+    "bytes": 20098631,
+    "sha256": "a5375d766aecf7a2f9c45818d008a6da0fc65dcabe2cf38b2a94fe2eefe7e8c9"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -27,34 +27,34 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "3066dfe45c32d0586e3bdddb9e9ab31b200b3185a20aa0206e2418f326b2002f",
+  "previous_production_SHA256": "5564792aa1a8e193d60a13e0ea12f8293900fbc8c2e8ff3c8414c7c8ac212257",
   "active_expert_slots": 3072,
   "physical_cache_planes": 3073,
   "expert_cache_bytes": 4720619520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 2068.9714890122414,
-      "decode_ms": 4290.226480007172,
-      "decode_tokens_per_second": 4.894846483714048,
+      "TTFT_ms": 2002.4094920158386,
+      "decode_ms": 4237.216618955135,
+      "decode_tokens_per_second": 4.956083648415982,
       "generated_tokens": 22,
-      "prefill_ms": 2037.5841889977455,
+      "prefill_ms": 1970.1402319669724,
       "prompt_tokens": 30,
-      "total_ms": 6581.031576991081
+      "total_ms": 6455.065333008766
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 60.98045200109482,
-      "decode_ms": 3191.5212730169296,
-      "decode_tokens_per_second": 6.579934208036408,
+      "TTFT_ms": 63.47317498922348,
+      "decode_ms": 3206.628448009491,
+      "decode_tokens_per_second": 6.548934602334646,
       "generated_tokens": 22,
-      "prefill_ms": 29.208422005176544,
+      "prefill_ms": 29.936505019664764,
       "prompt_tokens": 30,
-      "total_ms": 3459.632936000824
+      "total_ms": 3464.0934900045395
     }
   ],
-  "normal_application_case": 12500,
-  "production_placement_case": 12540,
+  "normal_application_case": 13100,
+  "production_placement_case": 13200,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -69,8 +69,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": false,
-  "qualification_report": "docs/speed-followup-adoption-20261031.json",
-  "historical_installation": "config/production-installation-weight-followup-20261031.json",
+  "qualification_report": "docs/limit-winners-adoption-20261031.json",
+  "historical_installation": "config/production-installation-speed-followup-20261031.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -80,7 +80,7 @@
   "GitHub_Actions_enabled": false,
   "original_Q4_optimized_profile_preserved": false,
   "fixed_quality_candidate_case": 12420,
-  "finite_quality_scope": "Four fixed headless tasks; normal application is three identical compiled30-token counting prompts with22 generated tokens. Complete finite vocabulary; unlike-cache or unlike-width F32 equality is not claimed.",
+  "finite_quality_scope": "Unchanged Q2/Q8/BF16/F32 payloads. Sixteen matched headless counting requests and three normal30-token counting prompts with22 outputs. Prior four-input precision/row-cache qualification remains historical; no new arbitrary-prompt or sustained-service qualification.",
   "model_receipt_SHA256": "8b67b85e6cb2f3fd910e900b0299c3325d8717814f0ffab9ef505cab1dfc686b",
   "expert_eviction_policy": "two_touch_probation",
   "owner_expected_quantization_loss_accepted": true,
@@ -92,7 +92,7 @@
   "eight_optimization_dispositions_completed": true,
   "adjacent_bundle_groups_enabled": true,
   "additional_Expert_bundles": 84,
-  "total_bundled_Experts": 448,
+  "total_bundled_Experts": 676,
   "maximum_parallel_source_reads": 4,
   "io_winner_flags": 5,
   "temporal_protection_window": 0,
@@ -111,8 +111,8 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "previous_production_source_revision": "e59f782824396dd8e4421c7d83fdaa179c50127b",
-  "normal_validation_case": 12500,
+  "previous_production_source_revision": "a95b91d977fe168964105c9197c7610f244ba0f5",
+  "normal_validation_case": 13100,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 6,
@@ -128,7 +128,7 @@
   "finite_binding_consumed": true,
   "prefill_tokens": 32,
   "all_prompt_outputs_requested": true,
-  "supplemental_Expert_bundles": 28,
+  "supplemental_Expert_bundles": 256,
   "output_only_Q8_exception": false,
   "integer_activation_quantization": false,
   "postload_quota_transfer_bytes": 3207049216,
@@ -173,7 +173,8 @@
   "non_Expert_except_output_precision_preserved": false,
   "non_Expert_except_output_and_shared_precision_preserved": false,
   "fixed_quality_cases": [
-    12420
+    12420,
+    13000
   ],
   "fixed_quality": {
     "requests": 16,
@@ -185,25 +186,22 @@
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 12220,
+    "control_case": 12500,
     "control_is_sequential_not_ABBA": true,
     "cache_occupancy_differs": true,
     "unlike_cache_conditions_not_pooled": true,
     "causal_candidate_evidence": {
       "cases": [
-        12360,
-        12420,
-        12460,
-        12500
+        13000,
+        13100
       ],
       "headless_rows": 16,
-      "normal_rows": 6,
+      "normal_rows": 3,
       "all_normal_tokens_and_bytes_equal": true,
-      "original_weights_driver_and_reserves_unchanged": true,
-      "changed_JSON_output_length_disclosed": true,
-      "protection_arbitrary_prompt_speedup_qualified": false,
-      "row_cache_standalone_2_percent_target_met": false,
-      "adoption_unit": "measured compiled-identical-prompt normal composition"
+      "byte_placement_complete_F32_exact": true,
+      "fixed_zero_inference_padding": true,
+      "loading_context_and_physical_checks_preserved": true,
+      "adoption_unit": "measured676-key placement in the qualified finite normal composition"
     }
   },
   "indexed_window0_probation": true,
@@ -211,8 +209,8 @@
   "speculative_source_reads": false,
   "additional_GPU_forecast": false,
   "normal_application_speedup": {
-    "control_case": 12220,
-    "comparison": "Same model/driver/fixed prompt; sequential installed12220 versus qualified12500, not ABBA; use matched causal-budget cases12460/12500 separately",
+    "control_case": 12500,
+    "comparison": "Sequential installed12500 versus qualified13100, not ABBA; use the stable matched placement comparison13000 for the isolated effect",
     "full_vocabulary_finite": true,
     "all_counting_tokens_and_bytes_equal": true,
     "cross_cache_exact_F32_required": false,
@@ -271,5 +269,14 @@
     "maximum_speculative_attempts": 6,
     "bounded_four_lane_delivery_counters": true
   },
-  "speed_followup_candidates_disposed": true
+  "speed_followup_candidates_disposed": true,
+  "limit_winner_policy": {
+    "supplemental_Expert_triplets": 256,
+    "total_bundled_Experts": 676,
+    "inference_extra_kernel_pages": 0,
+    "loading_and_context_predicates_unchanged": true,
+    "OS_minimum_preserved": true,
+    "OS_counter_writes": 0,
+    "decode_only_GDN": false
+  }
 }

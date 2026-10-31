@@ -1,6 +1,6 @@
 # Measured Expert I/O placement integration
 
-The owner-authorized integration adopts the exact256 supplemental Expert triplets (676 bundled keys in total) in the normal application. Native comparison13000 and normal/API/display13100 complete and ordinarily close with exact production/settings restoration. Verified production placement13200 is pending at this source commit. The [numeric adoption record](limit-winners-adoption-20261031.json) binds complete metrics, numerical controls and relink evidence.
+The owner-authorized integration adopts the exact256 supplemental Expert triplets (676 bundled keys in total) in the normal application. Native comparison13000 and normal/API/display13100 complete and ordinarily close with exact production/settings restoration. Verified production placement13200 is complete. The [numeric adoption record](limit-winners-adoption-20261031.json) binds complete metrics, numerical controls and relink evidence.
 
 ## Matched native comparison
 
@@ -13,7 +13,7 @@ One model load serves16 requests using the same immutable pack and predeclared A
 
 Retained mean whole time decreases6542.638437 ->6435.565802ms; physical calls decrease5281 ->4694 (11.12%). Complete F32 rows have maximum difference0, with exact routes/tokens/output bytes. The physical bytes include the whole request, not decode-only GB/tok. Two candidate samples per condition establish finite engineering evidence; no confidence interval or sustained-service claim follows. The earlier chosen2% cutoff is recorded but does not veto this repeated positive effect.
 
-The scalar-gate S_v128 single-token GDN trial is **not adopted**. Cold whole-time changes are+0.123923% /-0.140982%, while retained changes are+1.269790% /+0.908443%. Maximum full-vocabulary F32 difference is4.055511 and routing/read counts change, including129 fewer retained reads. Its retained timing cannot be attributed solely to a faster shader. Same counting output is not broad quality acceptance; a failed strict numerical screen does not itself prove unusable output. The original GPU provider and exact shader pool remain selected in the normal winner.
+The scalar-gate S_v128 single-token GDN trial is **not adopted**. Cold whole-time reductions are+0.123923% /-0.140982%, while retained reductions are+1.269790% /+0.908443%. Maximum full-vocabulary F32 difference is4.055511 and routing/read counts change, including129 fewer retained reads. Its retained timing cannot be attributed solely to a faster shader. Same counting output is not broad quality acceptance; a failed strict numerical screen does not itself prove unusable output. The original GPU provider and exact shader pool remain selected in the normal winner.
 
 ## Normal/API/passive-display qualification
 
@@ -30,6 +30,8 @@ The sequential12500 ->13100 observations show ordinary whole time-1.9141% and de
 Normal mapped CPU peak remains503382016bytes, device-ledger peak5068816384 and rounded workspace peak8388608. The caps remain512MiB CPU,5086097408 ledger and48MiB workspace. No larger cache or physical-reserve reduction is promoted. All49943 normal inference admission observations select0 padding; minimum observed free975 pages exceeds the898 watermark. No standalone speed gain is attributed to the padding policy.
 
 The normal candidate SELFa5375d766aecf7a2f9c45818d008a6da0fc65dcabe2cf38b2a94fe2eefe7e8c9 is20098631bytes. Driver remains PS5-Vulkan-Inference872cc126/cumulative-idle, native archiveb57fe26e; persistent caches are disabled. Expert Q2, resident Q8, BF16 PLE convolution and F32 inputs/KV remain unchanged.
+
+Placement13200 selects this exact program and preserves immediate5564 plus its five settings. Both programs and both five-setting sets (12 files) pass complete native SHA256/identity/EOF before and after placement. Runtime ownership and fresh idle pass; native/gateway/models are inactive. Actual relink source revision is8a5a44922267bb97286f076e4cd35c33d0b78e87. Inherited host-only bundle labels448/28 are explicitly corrected to676/256; compiled scope and verified runtime settings were already correct, and original native evidence is unchanged. No additional model launch or GPU call is used for placement.
 
 ## Source and delivery
 

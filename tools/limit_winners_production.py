@@ -21,6 +21,9 @@ def require_limit_winners_production(installation,context,report):
     need(report.get('policy')==installation.get('speed_followup_policy')==context.get('speed_followup_policy')==POLICY,
          'Original qualified finite prompt, rows, protection and six-attempt policy required')
     limits=report.get('limit_winner_policy',{})
+    need(installation.get('total_bundled_Experts')==context.get('total_bundled_Experts')==676 and
+         installation.get('supplemental_Expert_bundles')==context.get('supplemental_Expert_bundles')==256,
+         'Current host bundle-count labels must match the compiled selected pack')
     need(limits==installation.get('limit_winner_policy')==context.get('limit_winner_policy')and
          limits.get('supplemental_Expert_triplets')==256 and limits.get('total_bundled_Experts')==676 and
          limits.get('inference_extra_kernel_pages')==0 and limits.get('loading_and_context_predicates_unchanged')is True and

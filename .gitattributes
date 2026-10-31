@@ -107,3 +107,5 @@ tools/analyze_limit_winners.py text eol=lf
 tools/build_limit_winner_normal.py text eol=lf
 tools/finalize_limit_winners.py text eol=lf
 tools/limit_winners_production.py text eol=lf
+tools/scoped_native_variant.py text eol=lf
+tools/prepare_first_case.py text eol=lf

@@ -1,9 +1,7 @@
 {
   "schema": "ps5-qwen-limit-winners-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 20098631,
     "sha256": "a5375d766aecf7a2f9c45818d008a6da0fc65dcabe2cf38b2a94fe2eefe7e8c9"
@@ -755,7 +753,7 @@
   "dispositions": [
     {
       "candidate": "Exact676-key placement",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "complete_F32_routes_tokens_bytes_exact": true
     },
     {
@@ -937,7 +935,22 @@
     "The selected application retains finite prompt/binding limits; no reboot-free indefinite service qualification is claimed."
   ],
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 13200,
+    "normal_case": 13100,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "CI_runs": 0,
   "agents": 0,
@@ -964,5 +977,18 @@
       "bytes": 17697,
       "sha256": "d1f4173d4020e03df19e6ba71b274b58cb6253692d236386507c05bd8a52d708"
     }
-  ]
+  ],
+  "application_source_revision": "8a5a44922267bb97286f076e4cd35c33d0b78e87",
+  "metadata_label_reconciliation": {
+    "before": {
+      "total_bundled_Experts": 448,
+      "supplemental_Expert_bundles": 28
+    },
+    "after": {
+      "total_bundled_Experts": 676,
+      "supplemental_Expert_bundles": 256
+    },
+    "actual_compiled_policy_and_verified_runtime_settings_already_correct": true,
+    "additional_PS5_operations": 0
+  }
 }
