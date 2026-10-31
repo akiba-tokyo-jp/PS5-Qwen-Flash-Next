@@ -22,6 +22,9 @@ def main():
  text=text.replace('active_cache_slots=3072','active_cache_slots='+str(scope['active_cache_slots'])).replace('tools/build_preservation_integrity.py','tools/build_next_five_integrity.py')
  ast.parse(text);path.write_text(text,newline='\n')
  path=ROOT/f'.local/resident_cohort_operator_{a.case}.py';text=path.read_text().replace("reset['slots']==3072","reset['slots']==report['active_cache_slots']").replace('tools/build_preservation_integrity.py','tools/build_next_five_integrity.py').replace("ROOT/'tools/staged_self_upload.py',","ROOT/'tools/staged_self_upload.py',ROOT/'tools/self_upload_cache.py',ROOT/'tools/build_closed_pack_cache_reclaim.py',");ast.parse(text);path.write_text(text,newline='\n')
+ text=once(text,"row['full_F32_finite']and row['counting_quality_passed']","row['full_F32_finite']and type(row['counting_quality_passed'])is bool")
+ text=text.replace("ROOT/'tools/observe_four_next_normal.py',","ROOT/'tools/observe_four_next_normal.py',ROOT/'tools/observe_next_five_normal.py',");ast.parse(text);path.write_text(text,newline='\n')
+ path=ROOT/f'.local/collect_Q2_monitor_{a.case}.py';text=path.read_text();text=once(text,"R/'tools/observe_four_next_normal.py'","R/'tools/observe_next_five_normal.py'");ast.parse(text);path.write_text(text,newline='\n')
  for name in(f'first_operator_{a.case}_base.py',f'restore_resident_cohort_{a.case+5}.py'):
   path=ROOT/'.local'/name;text=path.read_text().replace('tools/build_preservation_integrity.py','tools/build_next_five_integrity.py')
   if name.startswith('first_'):text=bind_pending_cache_control(text)

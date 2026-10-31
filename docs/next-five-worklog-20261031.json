@@ -342,6 +342,21 @@
       "preclose_global_retirement_unproven": true,
       "ordinary_OS_context_close_and_exact_restore": true,
       "disposition": "selector_moved_to_original_idle_producer_boundary_before_request_metadata_reset_in_fresh28400"
+    },
+    {
+      "native_case": 28400,
+      "completed_requests_recorded": 3,
+      "completed_HTTP_generation_requests": 1,
+      "failure": "third_prefix_repeat_counting_misanswer_triggered_legacy_semantic_exception_after_returned_inference",
+      "normal_retained_decode_tokens_per_second": 6.513797868139173,
+      "prefix_observed_decode_tokens_per_second": 7.885357950021568,
+      "prefix_output_repeated_7_not_correct_counting": true,
+      "large_bundle_high_index_hits": 392,
+      "large_bundle_high_index_decode_hits": 0,
+      "CPU_worker_completion_unknown": false,
+      "preclose_global_retirement_unproven": true,
+      "ordinary_OS_close_and_exact_restore": true,
+      "disposition": "semantic_quality_recorded_without_veto_or_output_rewriting_in_fresh_normal_scope"
     }
   ],
   "remaining": [

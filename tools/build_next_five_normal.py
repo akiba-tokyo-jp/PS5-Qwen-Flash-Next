@@ -55,6 +55,9 @@ def main():
   resident_precision='108 additional matrices Q4_0'if candidate.get('precision_candidate',{}).get('scope',{}).get('mode')=='dense-Q4'else'Q8_0',
   Attention_KV='F32',recurrent_S='F32',PLE_convolution='BF16',maximum_causal_attempts=6,n_rs_seq=1,original_GPU_object=True,
   original_OS_minimum_physical_reserves_completion_and_close=True,CI_runs=0,automatic_retries=0)
+ scope.update(approximate_model_quality_reported_separately=True,semantic_misanswer_does_not_quarantine_completed_GPU_work=True)
+ entry=once(entry,'            if(!counting_quality)throw std::runtime_error("Completed all-Expert Q2 counting response failed normal-app quality");',
+  '            // Report approximate-answer quality without misclassifying returned inference as an unknown GPU completion.')
  if placement:scope.update(expanded_placement_prefill_only=placement['next_five_placement']['scope']['expanded_placement_prefill_only'],decode_placement_keys=768 if placement['next_five_placement']['scope']['expanded_placement_prefill_only']else 420+supplemental,expanded_placement_only_first_request=a.cold_first_only,later_request_placement_keys=768 if a.cold_first_only else 420+supplemental)
  marker='{"four_next",four_next_report()}'
  require(entry.count(marker)==2,'Both normal progress and terminal contracts required')
