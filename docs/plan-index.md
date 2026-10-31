@@ -1,5 +1,15 @@
 # PS5 Flash Next plan status
 
+The [current speed analysis](current-speed-analysis-20261031.json) reuses
+closed normal12220 and replays the frozen3072-slot planner on the host. All
+three native hit/miss/upload sequences reconcile. It identifies524 future
+decode keys evicted by retained-request prefill, including521 keys used in the
+previous decode; small-row call overhead; and a rejected speculative EOS tail.
+The report separates accepted decode from prefill and all post-output model
+calls, and lists specific source targets and validation criteria. It changes
+no production code or configuration and starts no PS5 operation or CI.
+Its improvement proposals remain hypotheses requiring separate verification.
+
 The current [weight follow-up](weight-followup-results-20261031.md) has resolved
 all five dispositions and completed [production placement12260](weight-followup-adoption-20261031.json).
 The selected normal SELF is `3066dfe4...`:3072 Expert slots, verified weight
