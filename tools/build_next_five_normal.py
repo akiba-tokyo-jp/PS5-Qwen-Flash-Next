@@ -37,6 +37,7 @@ def main():
   if not isinstance(value,dict):return value
   return{k:(changes[k]if k in changes and type(v)is int else 'prefill_unchanged_Top2_decode'if k=='selected_Experts'and isinstance(v,str)else changed(v))for k,v in value.items()}
  seed=copy.deepcopy(normal);ec=normal['compile_commands'][0];entry=Path(ec[ec.index('-c')+1]).read_text()
+ entry=once(entry,'EXPERT Q2 / RESIDENT Q8 + PLE BF16 / TOP6 CACHE','EXPERT Q2 / RESIDENT Q4 Q8 / PLE BF16 / TOP2 CACHE')
  # Rewrite the exact normal contracts, preserving their three-request/API scope.
  for key,original in normal.items():
   if not isinstance(original,dict):continue

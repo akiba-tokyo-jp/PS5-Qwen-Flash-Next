@@ -363,6 +363,29 @@
       "PS5_operations": 0,
       "failure": "generated_boolean_expression_whitespace_detected_by_AST_check",
       "disposition": "factory_fixed_fresh29600_reuses_identical_sealed29308_SELF_no_rebuild"
+    },
+    {
+      "native_case": 29600,
+      "completed_requests": 3,
+      "completed_generation_POSTs": 2,
+      "completed_finish_POSTs": 1,
+      "actual_native_frames_viewed": 2,
+      "decode_tokens_per_second": [
+        5.542696806823001,
+        6.556820791235233,
+        7.813774395200767
+      ],
+      "counting_quality_by_request": [
+        true,
+        true,
+        false
+      ],
+      "source_GPU_model_owners_positively_retired": true,
+      "live_device_bytes": 0,
+      "ordinary_OS_close_and_exact_restore": true,
+      "host_observer_zero_adjacent_merges_recorded_without_forcing_exercise": true,
+      "finish_only_continuation_generation_replays": 0,
+      "legacy_HUD_Q8_Top6_caption_found_and_corrected_for_final_normal": true
     }
   ],
   "remaining": [
