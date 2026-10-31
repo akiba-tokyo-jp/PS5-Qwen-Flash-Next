@@ -20,6 +20,22 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The five-candidate weight follow-up has resolved dispositions in
+`docs/weight-followup-results-20261031.md` and its adoption JSON. Native
+normal12220 qualifies combined3072-slot/cache retention and parallel small-row
+defaults. All three POSTs, two viewed native frames, full finite vocabulary,
+counting output, positive owners and exact normal close/restore pass.
+Production placement12260 is pending; resident-Q8 below is still deployed.
+Priority3's complete cohort is execution unavailable under current kernel
+policy (1122 free versus1360 required), not physical impossibility. Corrected
+12060 and compact12080 fail during loading and normally close/restore; their
+pre-close retirement-unknown evidence remains. Never replay consumed cases.
+Large-resident Q4 and router-Q8 comparisons complete and are rejected for speed.
+PLE convolution and all selected weight bytes remain unchanged. No CI, agents,
+reboot, persistent caches or relaxed reserves. The unused original-BF16 host
+conversion is canceled and its identity-verified process closed. See the final
+results for measured gains, constraints and qualification limitations.
+
 The resident-Q8 task is complete in `docs/resident-all-Q8-results-20261031.md`
 and `docs/resident-all-Q8-adoption-20261031.json`. Placement11560 installs
 SELFbd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49
