@@ -25,7 +25,7 @@ The five-candidate weight follow-up has resolved dispositions in
 normal12220 qualifies combined3072-slot/cache retention and parallel small-row
 defaults. All three POSTs, two viewed native frames, full finite vocabulary,
 counting output, positive owners and exact normal close/restore pass.
-Production placement12260 is pending; resident-Q8 below is still deployed.
+Production placement12260 is complete: SELF3066dfe45c32d0586e3bdddb9e9ab31b200b3185a20aa0206e2418f326b2002f,20081383bytes. Current and immediate bd390 control plus both five-setting sets pass native whole SHA256/identity/EOF. Ownership and fresh idle pass; native/gateway/models inactive. Use weight_followup_production.py admission. The resident-Q8 section below is historical and does not override this selection. Normal weights-retained request decode4.177872 tok/s,TTFT2.234619s,total7.486257s; exact-prefix repeat6.300317 tok/s,TTFT61.873ms,total3.871905s. These reuse conditions differ. Keep3072/3073planes,4720619520 cache bytes, independent KV/request resets, four source workers and all original reserves.
 Priority3's complete cohort is execution unavailable under current kernel
 policy (1122 free versus1360 required), not physical impossibility. Corrected
 12060 and compact12080 fail during loading and normally close/restore; their

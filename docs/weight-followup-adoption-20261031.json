@@ -1,10 +1,8 @@
 {
   "schema": "ps5-qwen-weight-followup-adoption-v1",
   "date": "2026-10-31",
-  "completed": false,
-  "pending_steps": [
-    "production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 20081383,
     "sha256": "3066dfe45c32d0586e3bdddb9e9ab31b200b3185a20aa0206e2418f326b2002f"
@@ -262,5 +260,24 @@
   },
   "CI_runs": 0,
   "reboots": 0,
-  "agents": 0
+  "agents": 0,
+  "application_source_revision": "e59f782824396dd8e4421c7d83fdaa179c50127b",
+  "placement": {
+    "completed": true,
+    "case": 12260,
+    "normal_case": 12220,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
+  }
 }

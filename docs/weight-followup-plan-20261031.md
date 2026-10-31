@@ -1,8 +1,7 @@
 # Weight follow-up execution plan and final dispositions
 
 The five candidates are resolved. Two measured winners are integrated and
-qualified together in normal/API/display case12220. Separate production
-placement12260 is the final step; its positive evidence belongs in
+qualified together in normal/API/display case12220. Production placement12260 is complete; its positive evidence is recorded in
 `weight-followup-adoption-20261031.json` and the production installation file.
 
 | Priority | Candidate | Verification status | Disposition |

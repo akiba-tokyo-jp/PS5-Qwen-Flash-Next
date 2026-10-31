@@ -5,8 +5,12 @@ weight retention across requests and parallel delivery of small PLE/embedding
 rows. It keeps every production weight byte unchanged: Gate/Up Q2_K, Down
 Q2_0 MSE, resident matrices Q8_0, the original81920-byte BF16 PLE convolution,
 and F32 activation/KV state. Native normal/API/display case12220 qualifies the
-combined application. The machine-readable adoption report records whether
-the separate production placement has completed.
+combined application. Production placement12260 is complete. Both the selected executable and its
+immediate bd390 control, plus both five-setting sets, pass native whole
+SHA256/identity/EOF verification. Runtime ownership is restored and a fresh CPU
+observation confirms no native title, gateway or model running. The previous
+control remains available. Placement starts no title or GPU inference. The
+finite normal run binding is consumed; another run requires a fresh case.
 
 | Priority | Candidate | Native result | Decision |
 | --- | --- | --- | --- |
@@ -120,3 +124,11 @@ kernel memory. No exclusive OS VM attribution is established.
 See `weight-followup-adoption-20261031.json`,
 `weight-followup-retention-results-20261031.json` and
 `weight-followup-small-rows-results-20261031.json` for machine-readable results.
+
+Manual validation includes the native cases above, exact small-row/scratch/EOF
+and retained-map ownership fixtures, all1256 overlay descriptor checks and
+negative controls, actual source-planner/scope checks, Python syntax checks and
+production admission refusal tests. The final installed record also passes the
+ordinary `qualified_control` dispatcher. No CI was run. Unused interrupted host
+conversion outputs11800/11801 are removed (2,799,688,352 and10,048,788,512 bytes);
+original BF16 sources and all selected model sources remain.

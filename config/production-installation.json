@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-10-31",
-  "application_source_revision": "297851c53e8c40dbfdefa6e6c18810cbf28e2741",
+  "application_source_revision": "e59f782824396dd8e4421c7d83fdaa179c50127b",
   "application_SELF": {
-    "bytes": 20065607,
-    "sha256": "bd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49"
+    "bytes": 20081383,
+    "sha256": "3066dfe45c32d0586e3bdddb9e9ab31b200b3185a20aa0206e2418f326b2002f"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -27,34 +27,34 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "57043cbe809362e0910e69279caca1a4985c92f93114f0f06dd81ebe81bd2bbf",
-  "active_expert_slots": 1381,
-  "physical_cache_planes": 1382,
-  "expert_cache_bytes": 2123243520,
+  "previous_production_SHA256": "bd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49",
+  "active_expert_slots": 3072,
+  "physical_cache_planes": 3073,
+  "expert_cache_bytes": 4720619520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 5591.661356985569,
-      "decode_ms": 5309.568246006966,
-      "decode_tokens_per_second": 3.955123849437842,
+      "TTFT_ms": 2234.619172990322,
+      "decode_ms": 5026.4822779893875,
+      "decode_tokens_per_second": 4.177872086002874,
       "generated_tokens": 22,
-      "prefill_ms": 5561.576750040054,
+      "prefill_ms": 2204.5486780405045,
       "prompt_tokens": 30,
-      "total_ms": 11155.668687999249
+      "total_ms": 7486.256659984589
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 63.07040399312973,
-      "decode_ms": 3753.298567056656,
-      "decode_tokens_per_second": 5.595078468928796,
+      "TTFT_ms": 61.87275403738022,
+      "decode_ms": 3333.1658529639244,
+      "decode_tokens_per_second": 6.300316553803147,
       "generated_tokens": 22,
-      "prefill_ms": 30.623695015907288,
+      "prefill_ms": 29.946609020233154,
       "prompt_tokens": 30,
-      "total_ms": 4354.447544038296
+      "total_ms": 3871.904592037201
     }
   ],
-  "normal_application_case": 11480,
-  "production_placement_case": 11560,
+  "normal_application_case": 12220,
+  "production_placement_case": 12260,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -69,8 +69,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": false,
-  "qualification_report": "docs/resident-all-Q8-adoption-20261031.json",
-  "historical_installation": "config/production-installation-cold-20261030.json",
+  "qualification_report": "docs/weight-followup-adoption-20261031.json",
+  "historical_installation": "config/production-installation-resident-Q8-20261031.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -79,8 +79,8 @@
   "private_repository": true,
   "GitHub_Actions_enabled": false,
   "original_Q4_optimized_profile_preserved": false,
-  "fixed_quality_candidate_case": 11520,
-  "finite_quality_scope": "Four fixed short tasks repeated independently; no broad reasoning or sustained-service qualification",
+  "fixed_quality_candidate_case": 12120,
+  "finite_quality_scope": "Four short fixed tasks; retained normal counting output; no broad reasoning or sustained service qualification",
   "model_receipt_SHA256": "8b67b85e6cb2f3fd910e900b0299c3325d8717814f0ffab9ef505cab1dfc686b",
   "expert_eviction_policy": "two_touch_probation",
   "owner_expected_quantization_loss_accepted": true,
@@ -111,8 +111,8 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "previous_production_source_revision": "8705b89f5ef563da12975be06f99798a1b68f221",
-  "normal_validation_case": 11480,
+  "previous_production_source_revision": "297851c53e8c40dbfdefa6e6c18810cbf28e2741",
+  "normal_validation_case": 12220,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 6,
@@ -131,7 +131,7 @@
   "supplemental_Expert_bundles": 28,
   "output_only_Q8_exception": false,
   "integer_activation_quantization": false,
-  "postload_quota_transfer_bytes": 601284608,
+  "postload_quota_transfer_bytes": 3207049216,
   "resident_output_payload_saving_bytes": 595968000,
   "console_retention": {
     "policy": "current-and-immediate-control-host-archives",
@@ -165,7 +165,7 @@
   "shared_Expert_Q8_exception": true,
   "shared_Expert_Q8_tensors": 144,
   "workspace_reservation_bytes": 50331648,
-  "postload_single_buffer_bytes": 750780416,
+  "postload_single_buffer_bytes": 1677721600,
   "physical_Direct_reserve_bytes": 536870912,
   "CPU_heap_limit_bytes": 536870912,
   "resident_shared_payload_saving_bytes": 221184000,
@@ -173,104 +173,54 @@
   "non_Expert_except_output_precision_preserved": false,
   "non_Expert_except_output_and_shared_precision_preserved": false,
   "fixed_quality_cases": [
-    11520
+    11660,
+    11720,
+    11760,
+    12120
   ],
   "fixed_quality": {
-    "case": 11520,
-    "compared_requests": 8,
-    "semantic_correct_requests": 8,
-    "strict_raw_correct_requests": 6,
-    "all_ordered_routes_equal": true,
-    "same_profile_full_F32_passed": true,
-    "maximum_same_profile_full_F32_error": 0.0,
-    "all_application_caches_empty": true,
-    "ordinary_close_exact_restore": true,
-    "application_output_normalization": false,
-    "raw_JSON_fences_disclosed": true,
-    "broad_reasoning_qualified": false,
-    "sustained_service_qualified": false,
-    "rows": [
-      {
-        "ordinal": 0,
-        "task": 0,
-        "strict_raw": true,
-        "answer": "1, 2, 3, 4, 5, 6, 7, 8",
-        "full_F32_max_error": 0.0
-      },
-      {
-        "ordinal": 1,
-        "task": 0,
-        "strict_raw": true,
-        "answer": "1, 2, 3, 4, 5, 6, 7, 8",
-        "full_F32_max_error": 0.0
-      },
-      {
-        "ordinal": 2,
-        "task": 1,
-        "strict_raw": true,
-        "answer": "\u732b",
-        "full_F32_max_error": 0.0
-      },
-      {
-        "ordinal": 3,
-        "task": 1,
-        "strict_raw": true,
-        "answer": "\u732b",
-        "full_F32_max_error": 0.0
-      },
-      {
-        "ordinal": 4,
-        "task": 2,
-        "strict_raw": true,
-        "answer": "42",
-        "full_F32_max_error": 0.0
-      },
-      {
-        "ordinal": 5,
-        "task": 2,
-        "strict_raw": true,
-        "answer": "42",
-        "full_F32_max_error": 0.0
-      },
-      {
-        "ordinal": 6,
-        "task": 3,
-        "strict_raw": false,
-        "answer": "```json\n{\"city\": \"Tokyo\", \"count\": 3}\n```",
-        "full_F32_max_error": 0.0
-      },
-      {
-        "ordinal": 7,
-        "task": 3,
-        "strict_raw": false,
-        "answer": "```json\n{\"city\": \"Tokyo\", \"count\": 3}\n```",
-        "full_F32_max_error": 0.0
-      }
-    ]
+    "retention_requests": 12,
+    "small_row_requests": 24,
+    "all_contents_correct": true,
+    "small_row_full_F32_routes_tokens_bytes_exact": true,
+    "cross_cache_F32_equality_claimed": false,
+    "raw_JSON_fences_disclosed": true
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 10970,
+    "control_case": 11480,
     "control_is_sequential_not_ABBA": true,
-    "first_independent_decode_speedup_fraction": 0.06389091301249716,
-    "capture_charged_group_tok_s": 2.836858173191122,
-    "capture_charged_group_speedup_fraction": 0.047422998189704746
+    "cache_occupancy_differs": true,
+    "unlike_cache_conditions_not_pooled": true,
+    "causal_candidate_evidence": {
+      "retention_case": 11660,
+      "retention_total_time_reduction_percent": 22.952135143510166,
+      "row_cases": [
+        11720,
+        11760,
+        12120
+      ],
+      "same_cache_opposite_order_row_reduction_percent": 4.835671998154789,
+      "all_row_full_F32_routes_tokens_bytes_exact": true,
+      "all_retention_task_contents_correct": true,
+      "PLE_BF16_and_all_weight_payloads_unchanged": true
+    }
   },
   "indexed_window0_probation": true,
   "cross_projection_demand_streaming": true,
   "speculative_source_reads": false,
   "additional_GPU_forecast": false,
   "normal_application_speedup": {
-    "control_case": 10970,
-    "independent_decode_speedup_fraction": 0.06389091301249716,
-    "retained_decode_speedup_fraction": 0.06334387891831694,
-    "independent_TTFT_reduction_fraction": 0.022432352646980735,
-    "independent_whole_time_reduction_fraction": 0.04126978311570362,
-    "ordinary_full_F32_max_error": 0.0,
-    "final_unlike_width_max_F32_error": 4.2038960456848145,
-    "final_full_vocabulary_finite": true,
-    "final_emitted_tokens_and_bytes_equal": true,
-    "final_explicit_cross_cache_top1_comparison_performed": false
+    "control_case": 11480,
+    "comparison": "Historical different cache occupancy; use separate headless candidate evidence for causal gains",
+    "full_vocabulary_finite": true,
+    "all_counting_tokens_and_bytes_equal": true,
+    "cross_cache_exact_F32_required": false,
+    "maximum_absolute_logit_error_by_request": [
+      0.0,
+      3.459212675690651,
+      3.509687900543213
+    ]
   },
   "all_six_previous_memory_candidates_disposed": true,
   "all_five_current_candidates_disposed": true,
@@ -278,5 +228,11 @@
   "PLE_convolution_weight_type": "BF16",
   "remaining_resident_matrix_weight_type": "Q8_0",
   "resident_weight_payload_bytes": 4774100480,
-  "additional_resident_weight_saved_bytes": 3163852800
+  "additional_resident_weight_saved_bytes": 3163852800,
+  "postload_device_budget_bytes": 5086097408,
+  "retain_Expert_weights_between_requests": true,
+  "request_and_KV_state_retained": false,
+  "parallel_small_rows": true,
+  "maximum_small_rows": 8,
+  "weight_followup_candidates_disposed": true
 }
