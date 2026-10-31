@@ -8,6 +8,42 @@ precision,3072/3073 cache geometry and original single-token GPU object remain.
 The [adoption record](four-next-adoption-20261031.json) binds final qualification
 and placement separately from the matched candidate measurements.
 
+## Installed normal result
+
+Normal19000 completes3 requests,3 POSTs and two viewed native frames; all
+source/model/GPU owners retire positively. Ordinary close and exact1247
+restoration complete. Placement19100 then verifies both programs and both
+five-setting sets with native whole SHA256/identity/EOF before and after the
+rename, restores runtime ownership and confirms fresh idle. It launches no
+title/GPU work. Selected SELF is
+`c2eafe1a5fa0726fa60fe63fa25d821f7ae50cf777dfebc51f8031c11c03f002`
+(20140599bytes), relink source
+`6d899b41a2b3e492c9f3b4c166de6f7223a720b3`. Immediate1247 is preserved;
+native/gateway/model are inactive. All four requested dispositions are closed.
+
+| Normal condition | Previous17000 tok/s | Installed19000 tok/s | Measurement |
+| --- | ---: | ---: | --- |
+| Cold | 4.392052 | 4.377344 | -0.335%; whole time+0.215% |
+| Request reset, Expert weights retained | 4.991265 | 5.012038 | +0.416%; whole time-0.414% |
+| Exact prefix restored, six causal attempts | 6.715606 | 7.036085 | +4.772%; whole time-4.073% |
+
+These normal comparisons are sequential, not matched A/B/B/A, and are not
+standalone estimates for either candidate. Prefix TTFT is63.037ms; retained
+TTFT1993.904ms. The normal run elides6 captures, accepts6 drafts and has no
+rejections; forced rejection coverage is the separate15-rollbacks17600 test.
+Original prefix batches still execute: pool stats `[0,0,2,218,0]` and1944
+single-token fusion selections. No work is injected to manufacture reuse hits.
+
+CPU peak503382016 bytes is below536870912; application device-ledger peak
+5186256896 is below5216120832; workspace8MiB is below48MiB. Loading makes6791
+admissions with minimum1160 free pages and original256-page application padding,
+preserving the1154-page loading predicate. No lower loading floor is adopted.
+Normal counting tokens/bytes are equal and full vocabulary rows finite; maximum
+F32 differences by request are0,5.1533527374,3.7448878288. Retained-cache ranking
+and unlike-width prefix paths are not bit-equality claims. Exact F32 evidence
+in the matched placement/rollback comparisons must not be generalized to these
+different normal paths or to arbitrary input quality.
+
 | Candidate | Actual comparison | Disposition |
 | --- | --- | --- |
 | Placement676 ->768 keys; supplemental256 ->348 | Native17300,14 requests. Retained decode4.981678 ->5.050946 tok/s,+1.390%. Both temporal directions improve beyond the measured control spread. | Adopt |

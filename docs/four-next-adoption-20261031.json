@@ -1,9 +1,7 @@
 {
   "schema": "ps5-qwen-four-next-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 20140599,
     "sha256": "c2eafe1a5fa0726fa60fe63fa25d821f7ae50cf777dfebc51f8031c11c03f002"
@@ -919,12 +917,27 @@
     }
   ],
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 19100,
+    "normal_case": 19000,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "dispositions": [
     {
       "candidate": "768-key placement with348 supplemental triplets",
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "candidate": "Two-token convolution/SiLU/QK RMS-scale fusion",
@@ -933,7 +946,7 @@
     },
     {
       "candidate": "Native one-token all-memory rollback with complete pre-verification capture elision",
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "candidate": "Q2 Gate/Up matmul and SwiGLU prototype",
@@ -1005,5 +1018,6 @@
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
-  "forced_resets": 0
+  "forced_resets": 0,
+  "placement_metadata_revision": "b7110b2ae0f0bf67b649ce0f217d743aa40ea97f"
 }

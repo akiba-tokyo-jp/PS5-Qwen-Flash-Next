@@ -1,6 +1,6 @@
 {
   "schema": "ps5-qwen-four-next-worklog-v1",
-  "completed": false,
+  "completed": true,
   "control_SELF_sha256": "1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3",
   "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
   "driver_profile": "cumulative-idle",
@@ -10,7 +10,7 @@
   "candidates": [
     {
       "id": 1,
-      "status": "native_comparison_completed_adoption_pending",
+      "status": "adopted_and_verified_in_production_placement",
       "case": 17300,
       "requests": 14,
       "control_keys": 676,
@@ -50,7 +50,7 @@
     },
     {
       "id": 3,
-      "status": "native_comparison_completed_adoption_pending",
+      "status": "adopted_and_verified_in_production_placement",
       "n_rs_seq": 1,
       "additional_application_state_allowance_bytes": 130023424,
       "physical_Direct_Flexible_and_OS_reserves_unchanged": true,
@@ -114,12 +114,45 @@
       "case": 17200,
       "kind": "GPU_fixture_returned_coverage_failure",
       "cause": "View metadata was checked after walking to the root tensor; two-token fusion was not selected. Fixed17400 verifies view metadata before walking and completes216 graphs. Ordinary close and exact restoration completed; no hang or relaunch."
+    },
+    {
+      "case": 17500,
+      "kind": "registry_refused_before_GPU",
+      "cause": "Two additional shaders exceeded the immutable capacity1 registry. Fresh17800 uses only Gate/Up, preserves the original registry and completes108 graphs."
+    },
+    {
+      "case": 18000,
+      "kind": "host_preparation_only",
+      "cause": "Precreated session helper conflicted with the normal preparation factory. No title launch; fresh18200 owns its own helper."
+    },
+    {
+      "case": 18200,
+      "kind": "loading_returned_at_completed_boundary",
+      "cause": "1146 free kernel pages versus original1154 predicate. Ordinary close and exact restoration completed; no unchanged retry."
+    },
+    {
+      "case": 18600,
+      "kind": "obsolete_native_counter_guard",
+      "cause": "All three22-token outputs generated, then the original predicate required eliminated complete captures. Corrected consumer-only19000 reconciles six elisions/zero normal rejects and completes with original256 loading padding. The206-page ancillary configuration did not admit below the old loading boundary."
     }
   ],
-  "remaining": [
-    "integrate measured placement and rollback winners",
-    "normal application qualification",
-    "verified production placement",
-    "final review and merge"
-  ]
+  "remaining": [],
+  "normal_case": 19000,
+  "production_placement_case": 19100,
+  "application_SELF": {
+    "bytes": 20140599,
+    "sha256": "c2eafe1a5fa0726fa60fe63fa25d821f7ae50cf777dfebc51f8031c11c03f002"
+  },
+  "source_revision": "6d899b41a2b3e492c9f3b4c166de6f7223a720b3",
+  "all_candidate_comparisons_completed": true,
+  "normal_API_and_viewed_frames_completed": true,
+  "verified_production_placement_completed": true,
+  "verification": {
+    "manual_production_and_future_control_admission": true,
+    "negative_guard_cases_refused": 8,
+    "CI_runs": 0,
+    "reboots": 0,
+    "forced_resets": 0,
+    "agents": 0
+  }
 }

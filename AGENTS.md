@@ -20,7 +20,38 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-The Strata follow-up has final native dispositions in
+The four-next campaign is complete in `docs/four-next-results-20261031.md` and
+`docs/four-next-adoption-20261031.json`; scope and immutable attempt history are
+`docs/four-next-optimizations-plan-20261031.md` and
+`docs/four-next-optimizations-worklog-20261031.json`. Adopt768-key placement
+(348 supplemental triplets, no new3072/3073 Expert cache slots) and native
+one-token recurrent rollback with complete speculative capture elision.
+Matched17300 retained decode4.981678->5.050946 tok/s;17600
+5.245591->5.416584,35 elisions/15 forced all-memory rejection rollbacks.
+Two-token GDN fusion17700 and Gate/Up prototype17800 are tested and not selected;
+the former is within A/A variation and the latter is slower. Keep the exact
+original single-token GPU object. Extra recurrent storage has an explicit
+124MiB application-ledger allowance: cap5216120832, measured peak5186256896.
+Physical/OS minimum/reserves, CPU512MiB, workspace48MiB and driver remain.
+Normal19000 completes3 requests/two viewed native frames: cold4.377344,
+retained5.012038 and prefix7.036085 tok/s. Sequential versus17000, retained
+changes+0.416%, prefix+4.772%, cold-0.335%; do not add isolated percentages or
+claim all input conditions improve. Normal tokens/bytes are equal and full
+vocabulary finite; unlike-cache/width F32 maxima are0/5.153353/3.744888.
+The final native guard reconciles actual elisions/rejections and preserves the
+prefix certificate; no checkpoint work is injected to raise pool-hit counts.
+Keep original256-page loading padding:19000 minimum1160 meets1154 predicate.
+Ancillary206-page loading pricing is not adopted. Do not replay failed18200,
+18600 or consumed19000 bindings; all ordinarily closed with exact restoration.
+Final SELFc2eafe1a (20140599bytes) is relinked at
+6d899b41a2b3e492c9f3b4c166de6f7223a720b3. Placement19100 verifies both programs
+and both5-setting sets through native whole SHA256/identity/EOF, ownership
+restoration and fresh idle; immediate1247 is preserved. Native/gateway/model
+are inactive. Use `four_next_production.py` and fresh cases for future work.
+No reboot, CI, agents, persistent caches, forced reset, uncertain manual release
+or learned host inference.
+
+The historical Strata follow-up has final native dispositions in
 `docs/strata-followup-results-20261031.md` and
 `docs/strata-followup-adoption-20261031.json`; scope is
 `docs/strata-followup-plan-20261031.md`. Adopt2MiB checkpoint/metadata reuse,
@@ -38,7 +69,7 @@ positive retirement, ordinary close and exactA537 restore. Normal decode is
 results. Source36a44bb1008895430d562e5904232a60efb284fa binds final SELF1247c365
 (20133559bytes). Placement17100 verifies both programs and both5-setting sets
 through native whole SHA256/identity/EOF, ownership restoration and fresh idle.
-SELF1247c365 is selected; immediateA537 is preserved. Native/gateway/model are
+SELF1247c365 was selected; immediateA537 was preserved. Native/gateway/model are
 inactive. Use`strata_followup_production.py`; finite bindings are consumed and
 future launches require fresh cases. No reboot, CI, agents, persistent cache,
 forced signal/reset, uncertain manual GPU release or learned host inference.
