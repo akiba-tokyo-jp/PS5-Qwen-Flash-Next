@@ -990,5 +990,12 @@
   "agents": 0,
   "reboots": 0,
   "forced_resets": 0,
-  "placement_metadata_revision": "12b64996b85d58ef0fdb0e5a0cafa0c8a1971713"
+  "placement_metadata_revision": "12b64996b85d58ef0fdb0e5a0cafa0c8a1971713",
+  "source_delivery": {
+    "repository_private": true,
+    "pull_request": "https://github.com/akiba-tokyo-jp/PS5-Qwen-Flash-Next/pull/69",
+    "merged": true,
+    "merge_commit": "9d3ba40bcbe035d5088751861c0f5bfb63875810",
+    "CI_runs": 0
+  }
 }

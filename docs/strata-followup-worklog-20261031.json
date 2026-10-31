@@ -1,6 +1,6 @@
 {
   "schema": "ps5-qwen-strata-followup-worklog-v1",
-  "completed": false,
+  "completed": true,
   "production_adopted": true,
   "production_SELF_sha256": "1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3",
   "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
@@ -336,9 +336,7 @@
     ],
     "representative_limit": "Mixed shrinking/regrowing states. Monotonic growth needs a rounded-capacity pool, not just retention of a prior maximum."
   },
-  "remaining": [
-    "Private GitHub self-merge"
-  ],
+  "remaining": [],
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
@@ -411,5 +409,11 @@
     "SELF_sha256": "1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3"
   },
   "production_placement_case": 17100,
-  "production_native_verified_files": 12
+  "production_native_verified_files": 12,
+  "GitHub": {
+    "pull_request": "https://github.com/akiba-tokyo-jp/PS5-Qwen-Flash-Next/pull/69",
+    "merged": true,
+    "merge_commit": "9d3ba40bcbe035d5088751861c0f5bfb63875810"
+  },
+  "implementation_native_validation_and_production_complete": true
 }
