@@ -357,6 +357,12 @@
       "preclose_global_retirement_unproven": true,
       "ordinary_OS_close_and_exact_restore": true,
       "disposition": "semantic_quality_recorded_without_veto_or_output_rewriting_in_fresh_normal_scope"
+    },
+    {
+      "host_preparation_case": 29400,
+      "PS5_operations": 0,
+      "failure": "generated_boolean_expression_whitespace_detected_by_AST_check",
+      "disposition": "factory_fixed_fresh29600_reuses_identical_sealed29308_SELF_no_rebuild"
     }
   ],
   "remaining": [
