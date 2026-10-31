@@ -1,5 +1,26 @@
 # PS5 Flash Next plan status
 
+The current [weight follow-up](weight-followup-results-20261031.md) has resolved
+all five dispositions and completed [production placement12260](weight-followup-adoption-20261031.json).
+The selected normal SELF is `3066dfe4...`:3072 Expert slots, verified weight
+retention between requests and parallel small-row delivery. All weight bytes,
+the original BF16 PLE convolution, driver872cc126/cumulative-idle, disabled
+persistent caches, request/KV resets and original reserves remain. Measured
+weights-retained decode is4.177872 tok/s; exact-prefix repeat is6.300317 tok/s.
+The two conditions differ. Both native frames, positive retirement, ordinary
+close/restoration, two-program/two-setting-set native verification and fresh
+idle pass. The immediate bd390 control is preserved.
+
+Large-resident Q4 and router-Q8 comparisons complete without a qualifying speed
+gain. Gate/Up Q2_0 conversion and partial inference execute, but the corrected
+full comparison is unavailable under the measured current kernel-memory policy
+(1122 pages free,1360 required). It is not physically proved impossible or
+described as a successful full comparison. Its concrete failure and future
+admission criterion are recorded. No identical retry, reboot, CI or agents.
+All entries below are historical and do not override this installed selection.
+
+## Historical campaigns
+
 The [five-candidate delivery follow-up](delivery-followup-results-20261030.md)
 is complete. No additional change qualifies for production: bundle/wide/depth
 variants do not improve overall time, numeric-name guard checks have no whole

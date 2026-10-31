@@ -1,0 +1,283 @@
+{
+  "schema": "ps5-qwen-weight-followup-adoption-v1",
+  "date": "2026-10-31",
+  "completed": true,
+  "pending_steps": [],
+  "application_SELF": {
+    "bytes": 20081383,
+    "sha256": "3066dfe45c32d0586e3bdddb9e9ab31b200b3185a20aa0206e2418f326b2002f"
+  },
+  "previous_application_SELF": {
+    "bytes": 20065607,
+    "sha256": "bd390b921eaf6cfee9057cfd01ab1b03ecc48b171c0501a2807b999375dcca49"
+  },
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "precision": {
+    "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
+    "other_weights": "resident Q8_0 except original BF16 PLE convolution and F32 tensors; nonresident tensors unchanged",
+    "output_weight": "Q8_0",
+    "shared_Expert_weight": "Q8_0 (144 active projections)",
+    "PLE_convolution": "BF16 [4,10240], 81920 bytes",
+    "KV_cache": "F32",
+    "activation_inputs": "F32",
+    "quantization": "Expert Q2 and resident matrix Q8_0"
+  },
+  "model_receipt_SHA256": "8b67b85e6cb2f3fd910e900b0299c3325d8717814f0ffab9ef505cab1dfc686b",
+  "policy": {
+    "active_cache_slots": 3072,
+    "physical_cache_planes": 3073,
+    "cache_bytes": 4720619520,
+    "quota_transfer_bytes": 3207049216,
+    "postload_device_budget_bytes": 5086097408,
+    "postload_single_buffer_bytes": 1677721600,
+    "workspace_reservation_bytes": 50331648,
+    "CPU_heap_limit_bytes": 536870912,
+    "physical_Direct_reserve_bytes": 536870912,
+    "prefill_tokens": 32,
+    "prefill_Experts": 6,
+    "decode_Experts": 6,
+    "bits": 14,
+    "total_bundled_Experts": 448,
+    "maximum_parallel_source_reads": 4,
+    "graph_reuse_enabled": true,
+    "integer_activation_quantization": false,
+    "indexed_window0_probation": true,
+    "cross_projection_demand_streaming": true,
+    "source_scratch_bytes": 8388608,
+    "speculative_source_reads": false,
+    "additional_GPU_forecast": false,
+    "retained_Expert_weights": true,
+    "request_and_KV_state_retained": false,
+    "parallel_small_rows": true,
+    "maximum_small_rows": 8
+  },
+  "all_five_candidate_dispositions_completed": true,
+  "all_five_full_model_comparisons_completed": false,
+  "candidate_evidence": {
+    "retention_case": 11660,
+    "retention_total_time_reduction_percent": 22.952135143510166,
+    "row_cases": [
+      11720,
+      11760,
+      12120
+    ],
+    "same_cache_opposite_order_row_reduction_percent": 4.835671998154789,
+    "all_row_full_F32_routes_tokens_bytes_exact": true,
+    "all_retention_task_contents_correct": true,
+    "PLE_BF16_and_all_weight_payloads_unchanged": true
+  },
+  "dispositions": [
+    {
+      "priority": 1,
+      "status": "qualified_selected",
+      "implementation": "3072 slots and retain validated Expert weights",
+      "case": 11660
+    },
+    {
+      "priority": 2,
+      "status": "qualified_selected",
+      "implementation": "Eight small rows on four existing source workers",
+      "cases": [
+        11720,
+        11760,
+        12120
+      ]
+    },
+    {
+      "priority": 3,
+      "status": "not_adopted_execution_unavailable_under_current_memory_policy",
+      "implementation": "Current Gate/Up Q2_K dequantized then requantized to Q2_0; Down unchanged",
+      "CPU_conversion_case": 12004,
+      "new_native_payload_bytes": 22649241600,
+      "Expert_payload_saved_bytes": 3774873600,
+      "triplet_bytes_before": 1536000,
+      "triplet_bytes_after": 1382400,
+      "partial_generation_case": 12040,
+      "partial_counting_tokens": 22,
+      "partial_counting_content_correct": true,
+      "partial_decode_tok_s": 2.591632595,
+      "partial_timing_not_a_complete_or_matched_speed_comparison": true,
+      "full_eight_request_comparison_completed": false,
+      "host_original_BF16_conversion_cancelled": true,
+      "host_converter_positively_closed": true,
+      "memory_attempts": [
+        {
+          "case": 12060,
+          "model_loaded": false,
+          "requests_completed": 0,
+          "free_kernel_pages": 1145,
+          "ordinary_minimum_pages": 898,
+          "reserved_pages": 206,
+          "margin_pages": 256,
+          "required_pages": 1360,
+          "native_owner_retirement_unproven_before_ordinary_close": true,
+          "ordinary_OS_close_and_exact_control_restore": true,
+          "completed_resident_copy_bytes": 4736464672
+        },
+        {
+          "case": 12080,
+          "model_loaded": false,
+          "requests_completed": 0,
+          "free_kernel_pages": 1122,
+          "ordinary_minimum_pages": 898,
+          "reserved_pages": 206,
+          "margin_pages": 256,
+          "required_pages": 1360,
+          "native_owner_retirement_unproven_before_ordinary_close": true,
+          "ordinary_OS_close_and_exact_control_restore": true,
+          "completed_resident_copy_bytes": 4060357152
+        }
+      ],
+      "compact_metadata_host_proofs_passed": true,
+      "constraint": "Application kernel-memory reserve policy, not demonstrated physical impossibility; last observed1122 free pages versus1360 required",
+      "reopen_criterion": "A new separately scoped variant must reduce measured startup kernel consumption and complete all eight requests with unchanged reserves, then beat total request time"
+    },
+    {
+      "priority": 4,
+      "candidate": "108 resident Q8 matrices to Q4",
+      "case": 11880,
+      "full_model_requests": 8,
+      "contents_correct": 8,
+      "strict_raw_correct": 6,
+      "same_profile_full_F32_maximum": 0,
+      "whole_f32_equality_to_other_precision_claimed": false,
+      "resident_payload_saved_bytes": 1038090240,
+      "warm_four_task_total_ms": 39020.937938034534,
+      "historical_control_case": 11520,
+      "historical_control_total_ms": 37218.136659026146,
+      "whole_time_change_percent": 4.843878390594214,
+      "matched_ABBA": false,
+      "counting_decode_tok_s": 3.951400830057932,
+      "ordinary_close_exact_restore": true,
+      "disposition": "tested_not_adopted_slower"
+    },
+    {
+      "priority": 5,
+      "candidate": "48 F32 routers to Q8",
+      "case": 11940,
+      "full_model_requests": 8,
+      "contents_correct": 8,
+      "strict_raw_correct": 6,
+      "same_profile_full_F32_maximum": 0,
+      "whole_f32_equality_to_other_precision_claimed": false,
+      "resident_payload_saved_bytes": 184811520,
+      "warm_four_task_total_ms": 37100.499113976955,
+      "historical_control_case": 11520,
+      "historical_control_total_ms": 37218.136659026146,
+      "whole_time_change_percent": -0.31607585873233424,
+      "matched_ABBA": false,
+      "counting_decode_tok_s": 3.9202326282622164,
+      "ordinary_close_exact_restore": true,
+      "disposition": "tested_not_adopted_no_material_gain"
+    }
+  ],
+  "normal": {
+    "case": 12220,
+    "completed": true,
+    "POSTs": 3,
+    "actual_native_frames_viewed": 2,
+    "all_full_vocabulary_rows_finite": true,
+    "all_counting_tokens_and_bytes_equal": true,
+    "complete_actual_routes_verified": true,
+    "retained_weights_and_empty_request_memory_verified": true,
+    "source_model_GPU_owners_positively_retired": true,
+    "ordinary_close_exact_restore": true,
+    "cross_cache_exact_F32_equality_claimed": false,
+    "maximum_absolute_logit_error_by_request": [
+      0.0,
+      3.459212675690651,
+      3.509687900543213
+    ],
+    "cold_start": {
+      "TTFT_ms": 6454.050988018513,
+      "decode_ms": 4797.19094401598,
+      "decode_tokens_per_second": 4.377561836723514,
+      "generated_tokens": 22,
+      "prefill_ms": 6423.9901940226555,
+      "prompt_tokens": 30,
+      "total_ms": 11452.932882010937
+    },
+    "request_reset_weights_retained": {
+      "TTFT_ms": 2234.619172990322,
+      "decode_ms": 5026.4822779893875,
+      "decode_tokens_per_second": 4.177872086002874,
+      "generated_tokens": 22,
+      "prefill_ms": 2204.5486780405045,
+      "prompt_tokens": 30,
+      "total_ms": 7486.256659984589
+    },
+    "exact_prefix_repeat": {
+      "TTFT_ms": 61.87275403738022,
+      "decode_ms": 3333.1658529639244,
+      "decode_tokens_per_second": 6.300316553803147,
+      "generated_tokens": 22,
+      "prefill_ms": 29.946609020233154,
+      "prompt_tokens": 30,
+      "total_ms": 3871.904592037201
+    },
+    "CPU_heap_peak_bytes": 503382016,
+    "device_ledger_peak_bytes": 5068816384,
+    "actual_workspace_capacity_peak_bytes": 8388608,
+    "device_ledger_live_bytes_after_retirement": 0,
+    "finite_quality_scope": "Four short fixed tasks; retained normal counting output; no broad reasoning or sustained service qualification"
+  },
+  "cleanup": {
+    "obsolete_Q4_case": 11787,
+    "obsolete_Q4_logical_bytes": 26066742624,
+    "rejected_dense_Q4_case": 12172,
+    "rejected_dense_Q4_logical_bytes": 1179356480,
+    "current_and_immediate_control_model_sources_preserved": true,
+    "rejected_dense_full_host_payloads_preserved": true,
+    "kernel_free_pages_before_dense_reclaim": 5517,
+    "kernel_free_pages_after_dense_reclaim": 5516,
+    "kernel_recovery_from_file_retirement_demonstrated": false
+  },
+  "evidence_SHA256": {
+    "11520": "880d37983720d72b57c7309bcb35539d0f92f109f41065b14fa132083e0a9be8",
+    "11660": "c12abfed7fc62dd939d14ad8678c223cb0b5601eb9338de1db207a9ff9142f5c",
+    "11720": "90b03e4ea4b48e09f75af1555be52e587c418adf251583c5fd17b273da55699e",
+    "11760": "c81684c5086f7824fa3227366c687b569bfee6a45bdc5baf885f05ac149ec13e",
+    "11880": "e9c614295f9748efde8c572d3b04684c4dcc11a121dcfdd2b056ed374db17acd",
+    "11940": "3bab38388178702708db7431a6f476f111e2b1b01a290e5501b59ffe92e323b1",
+    "12040": "b3bb97d1e9ab615c50597fc8718c75fc36d1b3d1e5deb9f217bf103da78678c1",
+    "12060": "0958d60c9b968527bd4a9c3dbaa36455b339daec931a77f10eb5e19259529aec",
+    "12080": "1e305259d704e5f01e850fba8262f4df7e08b8cb3da78cc5a67a3ed3e615ce4a",
+    "12120": "62e05d2d8af355415faaf610bdb26cda06f4f3d4fff991a678351f3453e1c130",
+    "12220": "e65f74fd8384b2873691679b5c52885eb4e942f18d8193153f6148b9413ed1b1"
+  },
+  "application_relink": {
+    "native_build": "Weight-followup-normal-12200",
+    "package": "Weight-followup-normal-SELF-12202",
+    "native_receipt_SHA256": "254375b906bfca6ad53fc57f28a801485776981202b520b104e8c75d88a90657",
+    "package_receipt_SHA256": "875a402f59b3500427f414c9e34ea343d3756209b2b8486b66de03c57e9c145d"
+  },
+  "CI_runs": 0,
+  "reboots": 0,
+  "agents": 0,
+  "application_source_revision": "e59f782824396dd8e4421c7d83fdaa179c50127b",
+  "placement": {
+    "completed": true,
+    "case": 12260,
+    "normal_case": 12220,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
+  }
+}
