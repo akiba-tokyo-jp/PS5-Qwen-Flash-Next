@@ -55,15 +55,27 @@ public:
         keys_[slot]=next;locations_[next]=slot;layers_[next/experts_].insert(entry(next,slot));
     }
     std::int32_t victim(const std::vector<std::int32_t>&keys,std::int32_t active,const std::vector<std::int32_t>&selected){
+        return victim_avoiding(keys,active,selected,nullptr);
+    }
+    // Optional host-screened prefill preference. Original eligibility and the
+    // original victim remain the fallback when every eligible key is protected.
+    std::int32_t victim_avoiding(const std::vector<std::int32_t>&keys,std::int32_t active,
+            const std::vector<std::int32_t>&selected,const std::vector<bool>*protected_keys){
         if(keys.size()!=slots_||selected.size()>slots_)return -1;
+        if(protected_keys&&protected_keys->size()!=locations_.size())throw std::invalid_argument("Protection geometry differs");
         if(!empty_.empty())return *empty_.begin();
-        const auto floor=(slots_-selected.size())/cached_layers_;bool have=false;Entry best{};
+        const auto floor=(slots_-selected.size())/cached_layers_;bool have=false,have_unprotected=false;Entry best{},unprotected{};
         for(std::size_t layer=0;layer<layers_.size();++layer){
             const auto&tree=layers_[layer];if(layer!=std::size_t(active)&&tree.size()<=floor)continue;
             auto it=tree.begin();
             if(layer==std::size_t(active))while(it!=tree.end()&&std::find(selected.begin(),selected.end(),keys_[std::get<2>(*it)]%experts_)!=selected.end())++it;
             if(it!=tree.end()&&(!have||*it<best)){best=*it;have=true;}
-        }return have?std::get<2>(best):-1;
+            if(protected_keys){
+                while(it!=tree.end()&&((*protected_keys)[keys_[std::get<2>(*it)]]||
+                      (layer==std::size_t(active)&&std::find(selected.begin(),selected.end(),keys_[std::get<2>(*it)]%experts_)!=selected.end())))++it;
+                if(it!=tree.end()&&(!have_unprotected||*it<unprotected)){unprotected=*it;have_unprotected=true;}
+            }
+        }return have_unprotected?std::get<2>(unprotected):(have?std::get<2>(best):-1);
     }
     std::uint32_t count(std::size_t key)const{return counts_.at(key);}
 };

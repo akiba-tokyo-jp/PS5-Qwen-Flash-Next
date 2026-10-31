@@ -8,7 +8,7 @@ namespace qwen_app {
 // before reusing that lane; workers never access the GPU or modify descriptors.
 class StreamingReadPool {
     enum class State {idle,queued,reading,ready};
-    struct Slot {State state=State::idle;BoundedReadRequest request{};unsigned id=0;std::int64_t result=-1;std::exception_ptr error;std::uint64_t order=0;};
+    struct Slot {State state=State::idle;BoundedReadRequest request{};unsigned id=0;std::int64_t result=-1;std::exception_ptr error;std::uint64_t order=0,queued_ns=0,ready_ns=0;};
     std::function<std::int64_t(const BoundedReadRequest&)>reader_;
     std::array<std::thread,4>threads_;
     std::array<Slot,4>slots_{};
@@ -16,12 +16,16 @@ class StreamingReadPool {
     unsigned started_=0,ready_=0,active_=0,maximum_=0;
     std::uint64_t order_=0;bool stop_=false,pending_=false,failed_=false,uncertain_=false;
     std::array<std::uint64_t,4>legacy_timing_{};
+    std::array<std::uint64_t,16>delivery_{};
+    std::uint64_t occupancy_at_=0;
+    static std::uint64_t now_ns(){return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();}
+    void occupancy(std::uint64_t now){if(occupancy_at_)delivery_[8+active_]+=now-occupancy_at_;occupancy_at_=now;}
     void worker(unsigned lane)noexcept{
         std::unique_lock<std::mutex>lock(mutex_);++ready_;changed_.notify_all();
         for(;;){changed_.wait(lock,[&]{return stop_||slots_[lane].state==State::queued;});if(stop_)return;
-            auto&s=slots_[lane];const auto r=s.request;s.state=State::reading;++active_;maximum_=std::max(maximum_,active_);lock.unlock();
+            auto&s=slots_[lane];const auto r=s.request;const auto begin=now_ns();delivery_[3]+=begin-s.queued_ns;occupancy(begin);s.state=State::reading;++active_;maximum_=std::max(maximum_,active_);lock.unlock();
             std::int64_t got=-1;std::exception_ptr error;try{got=reader_(r);}catch(...){error=std::current_exception();}
-            lock.lock();--active_;s.result=got;s.error=error;s.order=++order_;s.state=State::ready;changed_.notify_all();
+            const auto returned=now_ns();lock.lock();occupancy(now_ns());--active_;delivery_[4]+=returned-begin;++delivery_[2];if(error||got!=std::int64_t(r.bytes))++delivery_[13];s.ready_ns=returned;s.result=got;s.error=error;s.order=++order_;s.state=State::ready;changed_.notify_all();
         }
     }
 public:
@@ -40,10 +44,10 @@ public:
             throw std::invalid_argument("Bounded aligned streaming extent required");}
         std::unique_lock<std::mutex>lock(mutex_);if(ready_!=4||pending_||failed_||stop_||active_)throw std::runtime_error("Streaming owner unavailable");
         for(const auto&s:slots_)if(s.state!=State::idle)throw std::runtime_error("A streaming lease remains live");
-        pending_=true;maximum_=0;unsigned next=0,live=0,completed=0;std::exception_ptr failure;
+        pending_=true;maximum_=0;const auto run_started=now_ns();occupancy_at_=run_started;++delivery_[0];unsigned next=0,live=0,completed=0;std::exception_ptr failure;
         const auto queue=[&](unsigned lane){
-            lock.unlock();try{before(next);}catch(...){failure=std::current_exception();}lock.lock();if(failure)return;
-            auto&s=slots_[lane];s.request=requests[next];s.request.target=leases[lane];s.id=next++;s.result=-1;s.error=nullptr;s.state=State::queued;++live;changed_.notify_all();
+            const auto before_started=now_ns();lock.unlock();try{before(next);}catch(...){failure=std::current_exception();}lock.lock();delivery_[14]+=now_ns()-before_started;if(failure)return;
+            auto&s=slots_[lane];s.request=requests[next];s.request.target=leases[lane];s.id=next++;s.result=-1;s.error=nullptr;s.queued_ns=now_ns();s.state=State::queued;++delivery_[1];++live;changed_.notify_all();
         };
         for(unsigned i=0;i<4&&next<count&&!failure;++i)queue(i);
         const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(10);
@@ -52,15 +56,18 @@ public:
                 failed_=uncertain_=true;throw std::runtime_error("Streaming read completion unknown; retain all leases");}
             unsigned lane=4;for(unsigned i=0;i<4;++i)if(slots_[i].state==State::ready&&(lane==4||slots_[i].order<slots_[lane].order))lane=i;
             auto&s=slots_[lane];const auto id=s.id;const auto request=s.request;const auto got=s.result;const auto error=s.error;
+            delivery_[5]+=now_ns()-s.ready_ns;
             if(!failure){if(error)failure=error;else if(got!=std::int64_t(request.bytes))failure=std::make_exception_ptr(std::runtime_error("Streaming read was short"));
-                else{lock.unlock();try{consume(id,request.target,got);}catch(...){failure=std::current_exception();}lock.lock();}}
+                else{const auto consume_started=now_ns();lock.unlock();try{consume(id,request.target,got);}catch(...){failure=std::current_exception();}lock.lock();delivery_[6]+=now_ns()-consume_started;}}
             s.state=State::idle;--live;++completed;if(!failure&&next<count)queue(lane);
         }
         if(active_){failed_=uncertain_=true;throw std::runtime_error("Streaming worker retirement unknown");}
-        pending_=false;if(failure){failed_=true;lock.unlock();std::rethrow_exception(failure);}
+        const auto run_finished=now_ns();occupancy(run_finished);occupancy_at_=0;delivery_[7]+=run_finished-run_started;
+        pending_=false;if(failure){++delivery_[15];failed_=true;lock.unlock();std::rethrow_exception(failure);}
         if(completed!=count||next!=count){failed_=true;throw std::runtime_error("Streaming request accounting differs");}
     }
     unsigned maximum_inflight(){std::lock_guard<std::mutex>lock(mutex_);return maximum_;}
+    std::array<std::uint64_t,16>delivery_timing(){require_completed();std::lock_guard<std::mutex>lock(mutex_);return delivery_;}
     std::array<std::int64_t,4>read(const std::array<BoundedReadRequest,4>&requests,unsigned depth){
         if(depth!=4)throw std::invalid_argument("Legacy streaming compatibility owns four lanes");
         std::array<void*,4>leases{};for(unsigned i=0;i<4;++i)leases[i]=requests[i].target;
