@@ -8,31 +8,118 @@
   "CI_runs": 0,
   "reboots": 0,
   "candidates": [
-    {"id": 1, "status": "native_comparison_completed_adoption_pending", "case": 17300,
-     "requests": 14, "control_keys": 676, "candidate_keys": 768,
-     "supplemental_triplets": 348, "common_file_bytes": 535953408,
-     "common_file_layout_reordered": true, "all_compared_F32_bytes_routes_tokens_exact": true,
-     "retained_decode_control": 4.981678420945155, "retained_decode_candidate": 5.050946354220135,
-     "retained_total_ms_control": 6412.255619496107, "retained_total_ms_candidate": 6338.60070002079,
-     "retained_physical_calls_control": 4684, "retained_physical_calls_candidate": 4388,
-     "retained_physical_bytes_control": 2968256768, "retained_physical_bytes_candidate": 2962276608,
-     "normal_close_and_exact_control_restore": true},
-    {"id": 2, "status": "native_F64_fixture_completed_model_comparison_building",
-     "case": 17400, "GPU_graphs": 216, "cases": 6,
-     "full_recurrent_state_history_weights_snapshots_canaries_passed": true,
-     "one_and_two_token_selected_three_token_fallback_verified": true,
-     "normal_close_and_exact_control_restore": true},
-    {"id": 3, "status": "experimental_model_build_completed_package_pending",
-     "n_rs_seq": 1, "additional_application_state_allowance_bytes": 130023424,
-     "physical_Direct_Flexible_and_OS_reserves_unchanged": true,
-     "control_saves_complete_state": true, "candidate_uses_native_one_token_rollback": true,
-     "quality_forces_EOS_rejections": true},
-    {"id": 4, "status": "actual_Q2_F64_fixture_building", "tokens": [1, 2, 3],
-     "fused_operations": "Gate matmul, Up matmul and SwiGLU", "intended_GPU_graphs": 108}
+    {
+      "id": 1,
+      "status": "native_comparison_completed_adoption_pending",
+      "case": 17300,
+      "requests": 14,
+      "control_keys": 676,
+      "candidate_keys": 768,
+      "supplemental_triplets": 348,
+      "common_file_bytes": 535953408,
+      "common_file_layout_reordered": true,
+      "all_compared_F32_bytes_routes_tokens_exact": true,
+      "retained_decode_control": 4.981678420945155,
+      "retained_decode_candidate": 5.050946354220135,
+      "retained_total_ms_control": 6412.255619496107,
+      "retained_total_ms_candidate": 6338.60070002079,
+      "retained_physical_calls_control": 4684,
+      "retained_physical_calls_candidate": 4388,
+      "retained_physical_bytes_control": 2968256768,
+      "retained_physical_bytes_candidate": 2962276608,
+      "normal_close_and_exact_control_restore": true
+    },
+    {
+      "id": 2,
+      "status": "tested_not_selected_gain_within_AA_variation",
+      "case": 17400,
+      "GPU_graphs": 216,
+      "cases": 6,
+      "full_recurrent_state_history_weights_snapshots_canaries_passed": true,
+      "one_and_two_token_selected_three_token_fallback_verified": true,
+      "normal_close_and_exact_control_restore": true,
+      "model_case": 17700,
+      "model_requests": 14,
+      "retained_decode_control": 5.280617905798085,
+      "retained_decode_candidate": 5.317423412942562,
+      "retained_gain_percent": 0.6969924315876864,
+      "retained_control_AA_spread_tok_s": 0.04508899897584584,
+      "candidate_pipeline_selections_per_timed_request": 180,
+      "all_four_semantic_tasks_passed": true,
+      "maximum_compared_logit_error": 0.007359445095062256
+    },
+    {
+      "id": 3,
+      "status": "native_comparison_completed_adoption_pending",
+      "n_rs_seq": 1,
+      "additional_application_state_allowance_bytes": 130023424,
+      "physical_Direct_Flexible_and_OS_reserves_unchanged": true,
+      "control_saves_complete_state": true,
+      "candidate_uses_native_one_token_rollback": true,
+      "quality_forces_EOS_rejections": true,
+      "case": 17600,
+      "requests": 14,
+      "all_four_semantic_tasks_passed": true,
+      "all_compared_counting_F32_bytes_exact": true,
+      "complete_checkpoint_captures_elided": 35,
+      "forced_all_memory_rollbacks": 15,
+      "candidate_explicit_checkpoint_copy_counters_all_zero": true,
+      "retained_decode_control": 5.245591258485397,
+      "retained_decode_candidate": 5.416583749844313,
+      "retained_total_ms_control": 6204.121049970388,
+      "retained_total_ms_candidate": 6081.566253513098,
+      "device_ledger_peak_bytes": 5186256896,
+      "device_ledger_live_bytes": 0,
+      "normal_close_and_exact_control_restore": true
+    },
+    {
+      "id": 4,
+      "status": "tested_not_selected_slower_kernel",
+      "tokens": [
+        1,
+        2,
+        3
+      ],
+      "fused_operations": "Gate matmul, Up matmul and SwiGLU",
+      "intended_GPU_graphs": 108,
+      "case": 17800,
+      "GPU_graphs": 108,
+      "full_F64_outputs_canaries_and_three_token_fallback_passed": true,
+      "control_backend_us": [
+        124.127,
+        149.3204375
+      ],
+      "candidate_backend_us": [
+        157.388875,
+        297.061875
+      ],
+      "slower_percent": [
+        26.796647788152434,
+        98.9425426107528
+      ],
+      "actual_Expert_samples": 3,
+      "selected_IDs": 6,
+      "sample_IDs_repeat": true,
+      "whole_model_speed_claimed": false,
+      "normal_close_and_exact_control_restore": true
+    }
   ],
   "nonqualifying_attempts": [
-    {"case": 17215, "kind": "CPU_pack_returned_refusal", "cause": "Same timestamp-bound ShellCore briefly entered SDK SLOCK7; all descriptors and Direct memory positively retired. Fresh17217 admits SLOCK without weakening identity, boot or tracer checks and completes348 triplets."},
-    {"case": 17200, "kind": "GPU_fixture_returned_coverage_failure", "cause": "View metadata was checked after walking to the root tensor; two-token fusion was not selected. Fixed17400 verifies view metadata before walking and completes216 graphs. Ordinary close and exact restoration completed; no hang or relaunch."}
+    {
+      "case": 17215,
+      "kind": "CPU_pack_returned_refusal",
+      "cause": "Same timestamp-bound ShellCore briefly entered SDK SLOCK7; all descriptors and Direct memory positively retired. Fresh17217 admits SLOCK without weakening identity, boot or tracer checks and completes348 triplets."
+    },
+    {
+      "case": 17200,
+      "kind": "GPU_fixture_returned_coverage_failure",
+      "cause": "View metadata was checked after walking to the root tensor; two-token fusion was not selected. Fixed17400 verifies view metadata before walking and completes216 graphs. Ordinary close and exact restoration completed; no hang or relaunch."
+    }
   ],
-  "remaining": ["two-token actual-model comparison", "rollback actual-model comparison", "Gate/Up native fixture and disposition", "integrate measured winners", "normal application qualification", "verified production placement", "final review and merge"]
+  "remaining": [
+    "integrate measured placement and rollback winners",
+    "normal application qualification",
+    "verified production placement",
+    "final review and merge"
+  ]
 }
