@@ -337,7 +337,6 @@
     "representative_limit": "Mixed shrinking/regrowing states. Monotonic growth needs a rounded-capacity pool, not just retention of a prior maximum."
   },
   "remaining": [
-    "Complete matched GDN actual-model disposition16800",
     "Normal3-request/two-frame qualification",
     "Native-verified production placement",
     "Private GitHub self-merge"
@@ -386,6 +385,14 @@
     },
     "lower_consumption3072_case16600_completed": true,
     "current_range_protection_case": 16800,
-    "current_case_in_progress": true
-  }
+    "current_case_in_progress": false,
+    "current_case_completed": true,
+    "actual_fused_pipeline_exercised": true,
+    "complete_requests": 14,
+    "all_four_semantic_tasks_passed": true,
+    "positive_retirement_and_exact_restore": true,
+    "planner_overlap_rejections": 0,
+    "fused_selections_per_timed_candidate_request": 792
+  },
+  "candidate_comparisons_completed": true
 }
