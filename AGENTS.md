@@ -20,6 +20,15 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+Read-only `docs/current-speed-analysis-20261031.json` reconciles installed
+normal12220, all emitted-token cache counters and the frozen3072-slot planner.
+It records prefill eviction of521 previously used decode keys that are needed
+again, small-row overhead, and two post-output EOS processes with54 Expert
+misses. The hypotheses are not implemented or speed-qualified by this analysis.
+No additional PS5 operation, production mutation or CI was performed. Correct
+the stale sidecar geometry/reset labels before reusing those fields in a new
+comparison; the original raw evidence is preserved and never rewritten.
+
 The five-candidate weight follow-up has resolved dispositions in
 `docs/weight-followup-results-20261031.md` and its adoption JSON. Native
 normal12220 qualifies combined3072-slot/cache retention and parallel small-row
