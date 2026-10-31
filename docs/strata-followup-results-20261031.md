@@ -4,8 +4,10 @@ All four candidates have a native disposition. Three measured improvements are
 integrated in normal SELF `1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3`
 (20,133,559 bytes), relinked from clean source
 `36a44bb1008895430d562e5904232a60efb284fa`. The exact prior A537 program and
-configuration are the immediate control. Placement target is17100; consult the
-[adoption receipt](strata-followup-adoption-20261031.json) for its verified state.
+configuration are the immediate control. Production placement17100 is complete:
+both programs and both five-setting sets pass native whole SHA256, stable
+identity and EOF. Ownership is restored and fresh idle is confirmed. See the
+[adoption receipt](strata-followup-adoption-20261031.json).
 
 | Candidate | Native evidence | Disposition |
 |---|---|---|

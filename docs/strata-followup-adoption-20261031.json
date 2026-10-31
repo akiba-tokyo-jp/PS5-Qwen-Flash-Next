@@ -1,9 +1,7 @@
 {
   "schema": "ps5-qwen-strata-followup-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 20133559,
     "sha256": "1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3"
@@ -911,15 +909,15 @@
     },
     {
       "candidate": "2MiB checkpoint capacity/metadata reuse",
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "candidate": "Independent same-operation Vulkan checkpoint copy batching",
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "candidate": "Single-token F32 convolution/SiLU/QK RMS-scale fusion with planner lifetimes",
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     }
   ],
   "application_relink": {
@@ -938,7 +936,22 @@
   },
   "prior_qualification": "docs/limit-winners-adoption-20261031.json",
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 17100,
+    "normal_case": 17000,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "limitations": [
     "Matched16800 GPU decode improvement is1.17% retained and1.74% cold; routing/I/O may change, so it is not a pure-GPU isolation.",
@@ -976,5 +989,6 @@
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
-  "forced_resets": 0
+  "forced_resets": 0,
+  "placement_metadata_revision": "12b64996b85d58ef0fdb0e5a0cafa0c8a1971713"
 }
