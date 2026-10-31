@@ -7,8 +7,9 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--case',type=int,required=True);p.add_argument('--build-name',required=True);p.add_argument('--package-name',required=True);a=p.parse_args()
  if a.case<18000 or a.case%100:raise ValueError('Fresh hundred-aligned normal case required')
- names=['prepared_phase_model_17000.private.py','resident_cohort_operator_17000.py','first_operator_17000_base.py','close_resident_cohort_17004.py','restore_resident_cohort_17005.py','build_resident_owner_17003.py','collect_Q2_monitor_17000.py']
+ names=['prepared_phase_model_17000.private.py','resident_cohort_operator_17000.py','first_operator_17000_base.py','close_resident_cohort_17004.py','restore_resident_cohort_17005.py','build_resident_owner_17003.py','collect_Q2_monitor_17000.py','current_CPU_session_17000.py']
  def shift(s):return re.sub(r'(?<![0-9A-Za-z])170\d{2}(?![0-9A-Za-z])',lambda m:str(int(m[0])-17000+a.case),s)
+ for name in names:assert (ROOT/'.local'/name).is_file() and not(ROOT/'.local'/shift(name)).exists()
  for name in names:
   s=shift((ROOT/'.local'/name).read_text());s=s.replace('Strata-winners-SELF-16908',a.package_name).replace('Strata-winners-16900',a.build_name);dest=ROOT/'.local'/shift(name)
   if name.startswith('prepared_'):
