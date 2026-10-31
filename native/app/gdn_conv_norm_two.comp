@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: MIT
+#version 450
+layout(local_size_x=128,local_size_y=1,local_size_z=1)in;
+layout(binding=0,std430)readonly buffer X{float x[];};
+layout(binding=1,std430)readonly buffer W{float w[];};
+layout(binding=2,std430)writeonly buffer Y{float y[];};
+layout(binding=3,std430)writeonly buffer Q{float q[];};
+layout(binding=4,std430)writeonly buffer K{float k[];};
+layout(push_constant)uniform P{uint xo,wo,yo,qo,ko,xstride,wstride;float epsilon,scale;uint tokens,ystep,qstep,kstep;}p;
+shared float squares[128];
+void main(){
+    const uint head=gl_WorkGroupID.x,lane=gl_LocalInvocationID.x,c=head*128+lane,t=gl_WorkGroupID.y;
+    if(t>=p.tokens)return;
+    float acc=0.0;
+    for(uint tap=0;tap<4;++tap)acc=fma(x[p.xo+c*p.xstride+t+tap],w[p.wo+c*p.wstride+tap],acc);
+    const float activation=acc/(1.0+exp(-acc));y[p.yo+t*p.ystep+c]=activation;
+    if(head>=32)return;
+    squares[lane]=activation*activation;barrier();
+    for(uint step=64;step>0;step>>=1){if(lane<step)squares[lane]+=squares[lane+step];barrier();}
+    const float rms=1.0/sqrt(squares[0]*(1.0/128.0)+p.epsilon);
+    precise float normalized=activation*rms;normalized=normalized*p.scale;
+    if(head<16)q[p.qo+t*p.qstep+c]=normalized;else k[p.ko+t*p.kstep+c-2048]=normalized;
+}

@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: MIT
+#version 450
+layout(local_size_x=128)in;
+layout(binding=0,std430)readonly buffer Gate{uint g[];};
+layout(binding=1,std430)readonly buffer Up{uint u[];};
+layout(binding=2,std430)readonly buffer Input{float x[];};
+layout(binding=3,std430)readonly buffer Ids{int ids[];};
+layout(binding=4,std430)writeonly buffer Output{float y[];};
+layout(push_constant)uniform P{uint go,uo,xo,io,yo,gplane,uplane,grow,urow,xstep,istep,ystep,slots,selected,tokens;}p;
+shared float gate_sum[128],up_sum[128];
+uint byte_at(bool up,uint at){uint word=up?u[at>>2]:g[at>>2];return(word>>(8*(at&3)))&255;}
+float weight(bool up,uint row,uint slot,uint col){
+    uint base=4*(up?p.uo:p.go)+slot*4*(up?p.uplane:p.gplane)+row*4*(up?p.urow:p.grow)+(col/256)*84;
+    uint within=col%256,sc=byte_at(up,base+within/16);
+    uint qs=(byte_at(up,base+16+(within/128)*32+within%32)>>(2*((within%128)/32)))&3;
+    uint scales=up?u[(base+80)>>2]:g[(base+80)>>2];vec2 d=unpackHalf2x16(scales);
+    precise float value=(d.x*float(sc&15))*float(qs)-d.y*float(sc>>4);return value;
+}
+void main(){
+    uint row=gl_WorkGroupID.x,selection=gl_WorkGroupID.y,t=gl_WorkGroupID.z,lane=gl_LocalInvocationID.x;
+    if(row>=640||selection>=p.selected||t>=p.tokens)return;
+    int expert=ids[p.io+t*p.istep+selection];if(expert<0||uint(expert)>=p.slots)return;
+    float a=0,b=0;
+    for(uint col=lane;col<2560;col+=128){float v=x[p.xo+t*p.xstep+col];a=fma(weight(false,row,uint(expert),col),v,a);b=fma(weight(true,row,uint(expert),col),v,b);}
+    gate_sum[lane]=a;up_sum[lane]=b;barrier();
+    for(uint step=64;step>0;step>>=1){if(lane<step){gate_sum[lane]+=gate_sum[lane+step];up_sum[lane]+=up_sum[lane+step];}barrier();}
+    if(lane==0){precise float activated=gate_sum[0]/(1.0+exp(-gate_sum[0]));y[p.yo+t*p.ystep+selection*640+row]=activated*up_sum[0];}
+}

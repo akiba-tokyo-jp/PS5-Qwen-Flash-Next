@@ -10,6 +10,7 @@ def main():
  p=argparse.ArgumentParser(description=__doc__)
  for k in ('cache','receipt','out'):p.add_argument('--'+k,type=Path,required=True)
  p.add_argument('--selection',type=Path,required=True)
+ p.add_argument('--allow-observed-service-lock-wait',action='store_true',help='Admit SDK SLOCK for the same timestamp-bound idle service; keep every identity/tracer/boot check')
  a=p.parse_args();selection=json.loads(a.selection.read_text());require(selection['completed']and selection['no_Experts_omitted']and 0<selection['bundles']<=348,'Bounded complete partial selection required');model=json.loads(a.receipt.read_text());require(model['completed']and model['Expert_format']=='Gate_Up_Q2_K_Down_Q2_0_MSE','Actual sealed all-Q2 model required')
  finish=json.loads(Path(model['complete_conversion']['path']).read_text());mixed_path=Path(model['retained_mixed_model_receipt']['path']);mixed=json.loads(mixed_path.read_text());seal_path=Path(model['retained_mixed_source_seal']['path']);seal=json.loads(seal_path.read_text())
  down_path=Path(model['Down_conversion']['path']);down=json.loads(down_path.read_text());parent_path=Path(down['native_build']['path']);parent=json.loads(parent_path.read_text())
@@ -51,6 +52,10 @@ def main():
  h+='struct BundleProbeExpert{unsigned layer,expert,first_span,spans;};\ninline constexpr BundleProbeExpert bundle_probe_experts[]={\n'+''.join('{'+','.join(str(s[k])for k in ('layer','expert','first_span','spans'))+'},\n'for s in experts)+'};\n'
  header=a.out/'expert_q2_bundle_probe_plan.h';header.write_text(h,newline='\n')
  for name in ('CPU-only-headroom.private.c','qualified_context_guard.c','close_context.h'):(a.out/name).write_bytes((parent_path.parent/name).read_bytes())
+ if a.allow_observed_service_lock_wait:
+  guard=a.out/'qualified_context_guard.c';text=guard.read_text();old='(k.ki_stat==SSLEEP||k.ki_stat==SRUN)'
+  require(text.count(old)==1,'One original live-service state predicate required')
+  guard.write_text(text.replace(old,'(k.ki_stat==SSLEEP||k.ki_stat==SRUN||k.ki_stat==SLOCK)'),newline='\n')
  (a.out/'source_split_context.h').write_text('#pragma once\n#define SPLIT_LOG '+json.dumps(remote+'.log')+'\n',newline='\n')
  commands=[parent['commands'][0].copy(),parent['commands'][1].copy(),parent['commands'][-1].copy()]
  for command in commands:

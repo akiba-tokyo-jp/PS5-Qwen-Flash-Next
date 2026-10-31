@@ -1,0 +1,158 @@
+{
+  "schema": "ps5-qwen-four-next-worklog-v1",
+  "completed": true,
+  "control_SELF_sha256": "1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "persistent_caches": false,
+  "CI_runs": 0,
+  "reboots": 0,
+  "candidates": [
+    {
+      "id": 1,
+      "status": "adopted_and_verified_in_production_placement",
+      "case": 17300,
+      "requests": 14,
+      "control_keys": 676,
+      "candidate_keys": 768,
+      "supplemental_triplets": 348,
+      "common_file_bytes": 535953408,
+      "common_file_layout_reordered": true,
+      "all_compared_F32_bytes_routes_tokens_exact": true,
+      "retained_decode_control": 4.981678420945155,
+      "retained_decode_candidate": 5.050946354220135,
+      "retained_total_ms_control": 6412.255619496107,
+      "retained_total_ms_candidate": 6338.60070002079,
+      "retained_physical_calls_control": 4684,
+      "retained_physical_calls_candidate": 4388,
+      "retained_physical_bytes_control": 2968256768,
+      "retained_physical_bytes_candidate": 2962276608,
+      "normal_close_and_exact_control_restore": true
+    },
+    {
+      "id": 2,
+      "status": "tested_not_selected_gain_within_AA_variation",
+      "case": 17400,
+      "GPU_graphs": 216,
+      "cases": 6,
+      "full_recurrent_state_history_weights_snapshots_canaries_passed": true,
+      "one_and_two_token_selected_three_token_fallback_verified": true,
+      "normal_close_and_exact_control_restore": true,
+      "model_case": 17700,
+      "model_requests": 14,
+      "retained_decode_control": 5.280617905798085,
+      "retained_decode_candidate": 5.317423412942562,
+      "retained_gain_percent": 0.6969924315876864,
+      "retained_control_AA_spread_tok_s": 0.04508899897584584,
+      "candidate_pipeline_selections_per_timed_request": 180,
+      "all_four_semantic_tasks_passed": true,
+      "maximum_compared_logit_error": 0.007359445095062256
+    },
+    {
+      "id": 3,
+      "status": "adopted_and_verified_in_production_placement",
+      "n_rs_seq": 1,
+      "additional_application_state_allowance_bytes": 130023424,
+      "physical_Direct_Flexible_and_OS_reserves_unchanged": true,
+      "control_saves_complete_state": true,
+      "candidate_uses_native_one_token_rollback": true,
+      "quality_forces_EOS_rejections": true,
+      "case": 17600,
+      "requests": 14,
+      "all_four_semantic_tasks_passed": true,
+      "all_compared_counting_F32_bytes_exact": true,
+      "complete_checkpoint_captures_elided": 35,
+      "forced_all_memory_rollbacks": 15,
+      "candidate_explicit_checkpoint_copy_counters_all_zero": true,
+      "retained_decode_control": 5.245591258485397,
+      "retained_decode_candidate": 5.416583749844313,
+      "retained_total_ms_control": 6204.121049970388,
+      "retained_total_ms_candidate": 6081.566253513098,
+      "device_ledger_peak_bytes": 5186256896,
+      "device_ledger_live_bytes": 0,
+      "normal_close_and_exact_control_restore": true
+    },
+    {
+      "id": 4,
+      "status": "tested_not_selected_slower_kernel",
+      "tokens": [
+        1,
+        2,
+        3
+      ],
+      "fused_operations": "Gate matmul, Up matmul and SwiGLU",
+      "intended_GPU_graphs": 108,
+      "case": 17800,
+      "GPU_graphs": 108,
+      "full_F64_outputs_canaries_and_three_token_fallback_passed": true,
+      "control_backend_us": [
+        124.127,
+        149.3204375
+      ],
+      "candidate_backend_us": [
+        157.388875,
+        297.061875
+      ],
+      "slower_percent": [
+        26.796647788152434,
+        98.9425426107528
+      ],
+      "actual_Expert_samples": 3,
+      "selected_IDs": 6,
+      "sample_IDs_repeat": true,
+      "whole_model_speed_claimed": false,
+      "normal_close_and_exact_control_restore": true
+    }
+  ],
+  "nonqualifying_attempts": [
+    {
+      "case": 17215,
+      "kind": "CPU_pack_returned_refusal",
+      "cause": "Same timestamp-bound ShellCore briefly entered SDK SLOCK7; all descriptors and Direct memory positively retired. Fresh17217 admits SLOCK without weakening identity, boot or tracer checks and completes348 triplets."
+    },
+    {
+      "case": 17200,
+      "kind": "GPU_fixture_returned_coverage_failure",
+      "cause": "View metadata was checked after walking to the root tensor; two-token fusion was not selected. Fixed17400 verifies view metadata before walking and completes216 graphs. Ordinary close and exact restoration completed; no hang or relaunch."
+    },
+    {
+      "case": 17500,
+      "kind": "registry_refused_before_GPU",
+      "cause": "Two additional shaders exceeded the immutable capacity1 registry. Fresh17800 uses only Gate/Up, preserves the original registry and completes108 graphs."
+    },
+    {
+      "case": 18000,
+      "kind": "host_preparation_only",
+      "cause": "Precreated session helper conflicted with the normal preparation factory. No title launch; fresh18200 owns its own helper."
+    },
+    {
+      "case": 18200,
+      "kind": "loading_returned_at_completed_boundary",
+      "cause": "1146 free kernel pages versus original1154 predicate. Ordinary close and exact restoration completed; no unchanged retry."
+    },
+    {
+      "case": 18600,
+      "kind": "obsolete_native_counter_guard",
+      "cause": "All three22-token outputs generated, then the original predicate required eliminated complete captures. Corrected consumer-only19000 reconciles six elisions/zero normal rejects and completes with original256 loading padding. The206-page ancillary configuration did not admit below the old loading boundary."
+    }
+  ],
+  "remaining": [],
+  "normal_case": 19000,
+  "production_placement_case": 19100,
+  "application_SELF": {
+    "bytes": 20140599,
+    "sha256": "c2eafe1a5fa0726fa60fe63fa25d821f7ae50cf777dfebc51f8031c11c03f002"
+  },
+  "source_revision": "6d899b41a2b3e492c9f3b4c166de6f7223a720b3",
+  "all_candidate_comparisons_completed": true,
+  "normal_API_and_viewed_frames_completed": true,
+  "verified_production_placement_completed": true,
+  "verification": {
+    "manual_production_and_future_control_admission": true,
+    "negative_guard_cases_refused": 8,
+    "CI_runs": 0,
+    "reboots": 0,
+    "forced_resets": 0,
+    "agents": 0
+  }
+}
