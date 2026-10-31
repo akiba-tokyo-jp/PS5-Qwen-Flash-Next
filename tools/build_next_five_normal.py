@@ -14,6 +14,7 @@ def main():
  p=argparse.ArgumentParser(description=__doc__)
  for key in ('normal','candidate','analysis','workspace','cache','out'):p.add_argument('--'+key,type=Path,required=True)
  p.add_argument('--placement',type=Path);p.add_argument('--placement-analysis',type=Path)
+ p.add_argument('--cold-first-only',action='store_true')
  a=p.parse_args();normal=json.loads(a.normal.read_text());candidate=json.loads(a.candidate.read_text());proof=json.loads(a.analysis.read_text())
  require(proof['completed']and proof['speed_and_finite_quality_eligible']and proof['retired'],'Measured eligible candidate required')
  require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT).strip(),'Commit implementation before final relink')
@@ -24,7 +25,8 @@ def main():
  supplemental=348;placement=None
  if a.placement:
   require(a.placement_analysis is not None,'Measured placement analysis required');placement=json.loads(a.placement.read_text());pp=json.loads(a.placement_analysis.read_text())
-  require(pp['completed']and pp['speed_and_finite_quality_eligible']and pp['retired'],'Placement improvement must be measured')
+  require(pp['completed']and(pp.get('cold_prefill_latency_eligible')if a.cold_first_only else pp['speed_and_finite_quality_eligible']or pp.get('latency_with_decode_nonregression_eligible'))and pp['retired'],'Improvement must be measured in the selected cold or retained scope')
+  require(not a.cold_first_only or placement['next_five_placement']['scope']['expanded_placement_prefill_only'],'Cold-first mode requires the tested prefill-only provider')
   supplemental=placement['next_five_placement']['scope']['common_file_triplets']
  changes={'active_cache_slots':slots,'active_slots':slots,'cache_slots':slots,'physical_cache_planes':planes,'physical_planes':planes,
   'cache_bytes':cache_bytes,'cache_budget_bytes':cache_bytes,'Expert_supplemental_triplets':supplemental,'supplemental_triplets':supplemental,
@@ -53,9 +55,16 @@ def main():
   resident_precision='108 additional matrices Q4_0'if candidate.get('precision_candidate',{}).get('scope',{}).get('mode')=='dense-Q4'else'Q8_0',
   Attention_KV='F32',recurrent_S='F32',PLE_convolution='BF16',maximum_causal_attempts=6,n_rs_seq=1,original_GPU_object=True,
   original_OS_minimum_physical_reserves_completion_and_close=True,CI_runs=0,automatic_retries=0)
+ if placement:scope.update(expanded_placement_prefill_only=placement['next_five_placement']['scope']['expanded_placement_prefill_only'],decode_placement_keys=768 if placement['next_five_placement']['scope']['expanded_placement_prefill_only']else 420+supplemental,expanded_placement_only_first_request=a.cold_first_only,later_request_placement_keys=768 if a.cold_first_only else 420+supplemental)
  marker='{"four_next",four_next_report()}'
  require(entry.count(marker)==2,'Both normal progress and terminal contracts required')
  entry=entry.replace(marker,marker+',{ "next_five",Json::parse('+literal(scope)+')}')
+ if placement:
+  entry='#include <cstdint>\nextern "C" std::uint64_t qwen_app_large_bundle_index_hits();\nextern "C" std::uint64_t qwen_app_large_bundle_decode_index_hits();\n'+entry
+  entry=entry.replace(marker,marker+',{ "large_bundle_high_index_hits_total",qwen_app_large_bundle_index_hits()},{ "large_bundle_high_index_decode_hits_total",qwen_app_large_bundle_decode_index_hits()}')
+  if a.cold_first_only:
+   entry='extern "C" void qwen_app_io_trial_select(bool);\n'+entry
+   entry=once(entry,'qwen_app_select_current_bundle(true);','qwen_app_select_current_bundle(true);qwen_app_io_trial_select(ordinal==0);')
  entry=once(entry,'        qwen_native_stage("model_load_started_after_memory_admission");',
   '        if(policy.at("native_next_five_normal")!=Json::parse('+literal(scope)+'))throw std::runtime_error("Exact measured next-five composition required");\n'
   '        qwen_next_select(2);\n        qwen_native_stage("model_load_started_after_memory_admission");')
