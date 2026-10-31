@@ -9,6 +9,8 @@ def check(installation,context,report):
  require_next_five_production(installation,context,report)
  mutations=[('wrong_SELF',0,('application_SELF','sha256'),'0'*64),('wrong_model',0,('model_receipt_SHA256',),'0'*64),('wrong_cache',0,('active_expert_slots',),3072),('live_owner',1,('native_running',),True),('wrong_GPU_object',2,('application_relink','original_GPU_object_SHA256'),'0'*64),('missing_retirement',2,('normal','source_model_GPU_owners_positively_retired'),False),('over_CPU_budget',2,('normal','CPU_heap_peak_bytes'),536870913),('missing_control',1,('previous_production_SELF','sha256'),'0'*64)]
  if report['next_five_policy'].get('expanded_placement_only_first_request'):mutations.append(('large_layout_during_decode',2,('normal','large_bundle_high_index_decode_hits_total'),1))
+ mutations.extend([('reduced_loading_padding',2,('normal','limit_margin_probe','phases',0,'minimum_selected_padding_pages'),0),('below_OS_minimum',2,('normal','limit_margin_probe','phases',0,'minimum_free_pages'),897)])
+ if report['normal']['limit_margin_probe']['phases'][0]['minimum_free_pages']<1154:mutations.append(('unrecorded_loading_refusal',2,('normal','limit_margin_probe','phases',0,'legacy_refusals'),0))
  passed=[]
  for name,index,keys,value in mutations:
   parts=copy.deepcopy([installation,context,report]);target=parts[index]
