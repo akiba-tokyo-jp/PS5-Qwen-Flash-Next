@@ -40,3 +40,23 @@ Each candidate ends as adopted, tested without gain, correctness failure or
 execution unavailable with an exact cause and the work actually completed.
 Do not relabel a failed or unavailable experiment as a measured speed result.
 Restore and verify the selected normal app after every native comparison.
+
+## Normal integration boundary
+
+Normal18200 returned at a completed model-upload boundary with kernel free1146,
+OS minimum898 and OS reservation206 pages. The unchanged loading predicate
+required1154 pages; the difference was8 pages/128KiB, rather than a failed
+physical allocation. It completed4484683808 upload bytes before cancellation,
+waited passively for20 seconds, retained uncertain native ownership and was
+ordinarily closed with exact control/settings restoration. Do not repeat it.
+
+A fresh normal scope uses minimum+observed OS reservation during loading only
+(898+206=1104 pages), replacing the256-page application padding. It does not
+write OS counters or reduce the206-page OS reservation. The scope must enter
+and leave once, must refuse changed observed thresholds or legacy padding,
+and must end before the original context admission. Existing context transient
+pricing, zero inference padding, physical reserves, completion and retention
+requirements remain. Host checks cover inactive behavior, exact selection,
+counter mismatch and reentry refusal. This is a finite native experiment,
+not proof of a universal memory limit. A refusal at the new boundary must be
+disposed without another unchanged launch or a further floor reduction.

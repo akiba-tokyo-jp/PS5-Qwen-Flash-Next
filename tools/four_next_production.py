@@ -3,11 +3,11 @@
 import math
 from strata_followup_production import DRIVER,MODEL_RECEIPT,PRECISION,POLICY,SELECTED_SELF as CONTROL_SELF
 REPORT='docs/four-next-adoption-20261031.json'
-SELECTED_SELF='5920b19e54532391bd99ad8100da5f29f40375e90a23010effa2203969a26783'
-SELECTED_BYTES=20140343
-SOURCE_REVISION='b9893a8d6bbee05efb64091f02600e10920f3473'
-NORMAL_CASE=18200
-PLACEMENT_CASE=18300
+SELECTED_SELF='d7ee4c5beaa809034eeb1856c6f2f23278bc924a7966afe3ad519e55f4949477'
+SELECTED_BYTES=20141111
+SOURCE_REVISION='20c6fbb9549d89ef9f31ead559f46540f2bbaed4'
+NORMAL_CASE=18600
+PLACEMENT_CASE=18700
 
 def require_four_next_production(installation,context,report):
  def need(value,message):
@@ -33,7 +33,8 @@ def require_four_next_production(installation,context,report):
       all(scope.get(k)==v for k,v in dict(maximum_requests=3,active_cache_slots=3072,physical_cache_planes=3073,cache_bytes=4720619520,
        supplemental_triplets=348,total_placement_keys=768,n_rs_seq=1,additional_application_state_allowance_bytes=130023424,
        postload_device_budget_bytes=5216120832,postload_single_buffer_bytes=1677721600,checkpoint_maximum_bytes=142606336,
-       maximum_causal_attempts=6,benchmark_checkpoint_injections=0,automatic_retries=0).items())and
+       maximum_causal_attempts=6,benchmark_checkpoint_injections=0,automatic_retries=0,loading_application_padding='observed_OS_reserved',
+       loading_expected_OS_minimum_pages=898,loading_expected_OS_reserved_pages=206,loading_legacy_padding_pages=256,loading_scope_once=True).items())and
       all(scope.get(k)is True for k in('original_GPU_object','original_single_token_GDN_fusion','complete_speculative_capture_elision',
        'original_physical_Direct_Flexible_OS_minimum_workspace_and_completion','checkpoint_pool_and_batch_policy_preserved','original_model_and_PLE_BF16'))and
       all(scope.get(k)is False for k in('two_token_fusion_selected','Gate_Up_fusion_selected','persistent_caches')),
@@ -60,6 +61,9 @@ def require_four_next_production(installation,context,report):
  probe=normal.get('limit_margin_probe',{})
  need(probe.get('OS_minimum_preserved')is True and probe.get('OS_counter_writes')==0 and probe.get('phases',[{},{},{}])[2].get('minimum_selected_padding_pages')==0,
       'Original OS watermark and measured zero inference padding required')
+ loading=probe.get('phases',[{}])[0]
+ need(loading.get('admission_calls',0)>0 and loading.get('minimum_selected_padding_pages')==206 and loading.get('minimum_free_pages',0)>=1104,
+      'Actual loading admissions must preserve observed898 minimum plus206 OS reservation')
  for kind in('cold_start','request_reset_weights_retained','exact_prefix_repeat'):
   need(all(type(normal.get(kind,{}).get(k))in(int,float)and math.isfinite(normal[kind][k])and normal[kind][k]>0 for k in('total_ms','TTFT_ms','decode_tokens_per_second')),
        'Complete finite actual normal timing required')

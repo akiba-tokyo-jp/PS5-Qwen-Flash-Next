@@ -54,6 +54,7 @@ def main():
    'Rollback arms both allocate n_rs_seq1 under an explicit additional124MiB application-ledger allowance. Physical/OS reserves remain unchanged; complete-copy elimination does not eliminate recurrent state storage.',
    'Normal-versus17000 timing is sequential, not matched A/B/B/A. Individual improvements are not added to predict joint speed.',
    'Normal speculative pool reuse can be zero after capture elision; original prefix capture/restore batches remain exercised. No synthetic state work was added to raise counters.',
+   'Normal18200 stopped during loading at1146 free pages versus its1154-page predicate and was ordinarily closed/restored. Fresh18600 prices loading padding at the observed206-page OS reservation, preserving898 minimum, context/physical checks and all completion requirements; this is not a universal memory-limit claim.',
    'Gate/Up numbers include backend dispatch and synchronization, not GPU timestamp-only kernel time; this rejects the tested prototype, not all future fusion designs.',
    'Finite launch binding is consumed; future launches require fresh cases. No indefinite reboot-free service claim.'],
   evidence=[fingerprint(q)for q in(case/'native-model-terminal.private.json',case/'restored-complete.private.json',case/'visual-review.private.json',case/'passive-observer/complete.private.json',a.comparison)],
