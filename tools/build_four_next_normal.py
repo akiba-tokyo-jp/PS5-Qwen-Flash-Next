@@ -52,6 +52,7 @@ def main():
  entry=once(entry,'static Json strata_followup_report()',helper+'\nstatic Json strata_followup_report()');entry=entry.replace('{"strata_followup",strata_followup_report()}', '{"four_next",four_next_report()},{"strata_followup",strata_followup_report()}')
  entry=entry.replace('Context admission failed; restart through the ordinary OS path','Context admission stopped; close the application normally')
  owner=Path(oc[oc.index('-c')+1]).read_text();ec=ec.copy()+['-ivfsoverlay',str(overlay),'-I',str(ROOT/'native/app')];oc=oc.copy()+['-ivfsoverlay',str(overlay)]
+ original_owner=normal['all_Q2_optimized_monitor']['commands'][1];oc[oc.index('-o')+1]=original_owner[original_owner.index('-o')+1]
  r,jobs,sources=link(seedpath,a.out,dict(entry=(ec,entry),owner=(oc,owner)),[Path(__file__),a.comparison,header,source_header,budget,a.out/budget.name,overlay])
  write_json(a.out/'compiled-providers.private.json',dict(result=r,commands=jobs,sources=sources))
  for key in ('normal_performance','output_Q8_normal','cold_request','resident_all_Q8','resident_cache3072','resident_small_rows','resident_weight_normal'):
