@@ -45,6 +45,7 @@ def main():
    seed[key][member]=new
    if old!=new:entry=entry.replace(literal(old),literal(new))
  entry=once(entry,'qwen_app::model_postload_device_budget==5216120832ull','qwen_app::model_postload_device_budget=='+str(cap)+'ull')
+ entry=once(entry,'qwen_app::model_postload_single_buffer==1677721600ull','qwen_app::model_postload_single_buffer=='+str(changes['postload_single_buffer_bytes'])+'ull')
  entry=entry.replace('{"cache_slots",3072}','{"cache_slots",'+str(slots)+'}').replace('{"active_cache_slots",3072}','{"active_cache_slots",'+str(slots)+'}')
  entry='#include "next_five_policy.h"\nextern "C" void qwen_app_select_output_Q8_slots(unsigned);\n'+entry
  scope=dict(schema='ps5-qwen-next-five-normal-v1',maximum_requests=3,decode_Experts=2,prefill_routing_unchanged=True,
@@ -52,6 +53,9 @@ def main():
   resident_precision='108 additional matrices Q4_0'if candidate.get('precision_candidate',{}).get('scope',{}).get('mode')=='dense-Q4'else'Q8_0',
   Attention_KV='F32',recurrent_S='F32',PLE_convolution='BF16',maximum_causal_attempts=6,n_rs_seq=1,original_GPU_object=True,
   original_OS_minimum_physical_reserves_completion_and_close=True,CI_runs=0,automatic_retries=0)
+ marker='{"four_next",four_next_report()}'
+ require(entry.count(marker)==2,'Both normal progress and terminal contracts required')
+ entry=entry.replace(marker,marker+',{ "next_five",Json::parse('+literal(scope)+')}')
  entry=once(entry,'        qwen_native_stage("model_load_started_after_memory_admission");',
   '        if(policy.at("native_next_five_normal")!=Json::parse('+literal(scope)+'))throw std::runtime_error("Exact measured next-five composition required");\n'
   '        qwen_next_select(2);\n        qwen_native_stage("model_load_started_after_memory_admission");')
