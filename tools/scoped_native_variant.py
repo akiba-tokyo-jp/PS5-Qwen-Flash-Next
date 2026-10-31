@@ -29,7 +29,7 @@ def link(parent_path,out,variants,inputs):
         run=subprocess.run(cmd,capture_output=True,timeout=600,env=dict(os.environ,TMP=str(out/'tmp'),TEMP=str(out/'tmp')))
         (out/f'{i}.private.log').write_bytes(run.stdout+run.stderr);require(run.returncode==0,run.stderr.decode(errors='replace')[-4500:])
         print(json.dumps(dict(scoped_build_step=i+1,total=len(commands)+1)),flush=True)
-    for row in frozen:require(record(row['path'])==row,'Frozen scoped provider changed during build')
+    for row in frozen:require(record(row['path'])==row,'Frozen scoped provider changed during build: '+row['path'])
     result=copy.deepcopy(prior);result.update(artifact=record(image),link_command=command,source_parent=record(parent_path),
         inputs_before=frozen+added+[record(out/(k+'.o'))for k in variants],
         lossless_driver_table_geometry=audit_linked_storage(image,prior['lossless_driver_tables']))

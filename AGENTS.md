@@ -20,6 +20,33 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner-approved measured-limit integration is normal-qualified in
+`docs/limit-winners-adoption-20261031.json` and
+`docs/limit-winners-results-20261031.md`, with its scope in
+`docs/limit-winners-plan-20261031.md`. Stable-policy native13000 completes16
+requests: exact676-key placement improves retained whole time1.491%/1.782%
+and saves587 calls; cold time improves1.240%/1.279%. Decode-only GDN has
+mixed cold timing, changed routing/I/O and maximum F32 difference4.055511,
+so the normal candidate keeps the exact original GPU object. Normal13100
+completes all3 requests/two viewed frames, with positive owners, ordinary close
+and exact5564 restoration. Candidate SELFa5375d76 is20098631bytes; ordinary
+decode4.956084 tok/s, prefix6.548935. Prefix total is4.461ms slower than12500;
+disclose the finite sequential comparison rather than claiming every condition
+improves. The48MiB workspace,3072/3073 planes and all physical/loading/context
+checks stay unchanged. Inference padding is fixed0 while the OS watermark stays
+enforced. Production placement13200 is complete: both programs and both five-
+setting sets pass native whole SHA256/identity/EOF, ownership restoration and
+fresh idle. Source8a5a44922267bb97286f076e4cd35c33d0b78e87 binds the actual
+qualified relink. SELFa5375d76 is selected; immediate5564 is preserved. Use
+limit_winners_production.py. Native/gateway/models are inactive. Inherited host
+bundle-count labels448/28 are explicitly reconciled to actual676/256; compiled
+scope/runtime settings were already correct and native evidence is unchanged.
+Both native cases are consumed; never relaunch them or replay completed probes.
+Normal observers must finish the declared POST/frame sequence before the
+read-only collector acquires its writer lease. A host-only collector was stopped
+to release that lease in13100; the same native PID completed, with no inference
+replay or title restart. No CI, agents, reboot, persistent cache or console force.
+
 The owner's limit audit is completed in `docs/limit-boundary-results-20261031.md`
 and `.json`, with its scope in `docs/limit-boundary-plan-20261031.md`.
 Application padding was explicitly authorized for measurement; older unchanged-

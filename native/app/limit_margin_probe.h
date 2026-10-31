@@ -18,14 +18,17 @@ class LimitMarginProbe {
     std::array<Bucket,4> buckets_{};
     std::atomic<unsigned> phase_{0};
     std::atomic<std::uint64_t> current_{256};
+    const bool stable_inference_;
     static void lower(std::atomic<std::uint64_t>&target,std::uint64_t value) {
         auto before=target.load(std::memory_order_relaxed);
         while(value<before&&!target.compare_exchange_weak(before,value,std::memory_order_relaxed)){}
     }
 public:
+    explicit LimitMarginProbe(bool stable_inference=false):stable_inference_(stable_inference){}
     void phase(unsigned phase) {
         const auto old=phase_.load(std::memory_order_relaxed);
         if(phase<1||phase>4||phase<old)throw std::logic_error("Ordered limit-probe phase required");
+        if(stable_inference_&&phase>=3)current_.store(0,std::memory_order_relaxed);
         phase_.store(phase,std::memory_order_relaxed);
     }
     std::uint64_t required(std::uint64_t free,std::uint64_t minimum,std::uint64_t reserved,
@@ -35,7 +38,8 @@ public:
         if(!minimum||!reserved||reserved>minimum)throw std::invalid_argument("Observed OS thresholds required");
         auto&bucket=buckets_.at(phase-1);++bucket.calls;lower(bucket.minimum_free,free);
         if(free<minimum+legacy_extra+transient)++bucket.legacy_refusals;
-        auto selected=std::min(legacy_extra,current_.load(std::memory_order_relaxed));
+        auto selected=stable_inference_&&phase<3?legacy_extra:std::min(legacy_extra,current_.load(std::memory_order_relaxed));
+        if(stable_inference_){lower(bucket.minimum_extra,selected);return minimum+selected+transient;}
         while(free<minimum+selected+transient&&selected) {
             const auto next=selected>reserved?reserved:selected>128?128:selected>64?64:0;
             if(next>=selected)throw std::logic_error("Limit-probe padding must decrease");
