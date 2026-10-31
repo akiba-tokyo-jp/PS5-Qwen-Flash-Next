@@ -389,9 +389,30 @@
     }
   ],
   "remaining": [
-    "combined_normal_API_display_qualification",
     "verified_production_placement",
     "private_PR_merge"
   ],
-  "last_updated_local_date": "2026-11-01"
+  "last_updated_local_date": "2026-11-01",
+  "normal_qualification": {
+    "case": 30200,
+    "completed": true,
+    "SELF": {
+      "bytes": 21868935,
+      "sha256": "5b829d396dbbf4f7b6d07b139917ee5d3740c44bbb245cf4542f24371d1e36cd"
+    },
+    "source_revision": "76870d256094c93d083aa72a45b626e1b8b04975",
+    "decode_tokens_per_second": [
+      5.537145844937842,
+      6.538602543809402,
+      7.872825221681705
+    ],
+    "counting_quality_by_request": [
+      true,
+      true,
+      false
+    ],
+    "actual_native_frames_viewed": 2,
+    "source_GPU_model_owners_positively_retired": true,
+    "ordinary_OS_close_exact_restore": true
+  }
 }
