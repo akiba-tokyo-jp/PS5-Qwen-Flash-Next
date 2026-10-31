@@ -20,6 +20,29 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The Strata follow-up has final native dispositions in
+`docs/strata-followup-results-20261031.md` and
+`docs/strata-followup-adoption-20261031.json`; scope is
+`docs/strata-followup-plan-20261031.md`. Adopt2MiB checkpoint/metadata reuse,
+independent same-operation copy batches, and the original-F32 convolution/SiLU/
+QK RMS-scale fusion with pre-allocation lifetimes/full-range pulling protection.
+14600 checks60 events/10.17GB;15400 completes16 exact complete-F32/routes/tokens
+requests;14800 checks144 full-state F64 graphs;16800 completes14 requests,
+exercises fusion in every candidate arm and passes4 semantic tasks. Keep3072/3073 cache geometry:3424
+improves TTFT/whole latency but regresses retained decode3.46%. No new precision
+change or driver/cache-policy change. Normal17000 completes3 requests/two
+viewed native frames, actual pool/batch counters and1944 fusion dispatches,
+positive retirement, ordinary close and exactA537 restore. Normal decode is
+4.991265 tok/s and prefix6.715606; cold is4.392052 and marginally slower than
+13100. These normal comparisons are sequential; use16800 for matched GPU
+results. Source36a44bb1008895430d562e5904232a60efb284fa binds final SELF1247c365
+(20133559bytes). Placement17100 verifies both programs and both5-setting sets
+through native whole SHA256/identity/EOF, ownership restoration and fresh idle.
+SELF1247c365 is selected; immediateA537 is preserved. Native/gateway/model are
+inactive. Use`strata_followup_production.py`; finite bindings are consumed and
+future launches require fresh cases. No reboot, CI, agents, persistent cache,
+forced signal/reset, uncertain manual GPU release or learned host inference.
+
 The owner-approved measured-limit integration is normal-qualified in
 `docs/limit-winners-adoption-20261031.json` and
 `docs/limit-winners-results-20261031.md`, with its scope in

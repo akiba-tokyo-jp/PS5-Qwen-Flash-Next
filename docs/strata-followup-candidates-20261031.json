@@ -1,0 +1,333 @@
+{
+  "schema": "ps5-qwen-strata-followup-candidates-v1",
+  "candidate_comparisons_completed": true,
+  "production_placement_completed": false,
+  "checkpoint_pool_eligible": true,
+  "checkpoint_batch_eligible": true,
+  "GDN_eligible": true,
+  "GDN_candidate_exercised": true,
+  "GDN_case": 16800,
+  "cache3424_whole_latency_eligible": true,
+  "cache3424_retained_decode_regression_disclosed": true,
+  "cache": {
+    "control_cold": {
+      "ordinals": [
+        2,
+        8
+      ],
+      "metrics": {
+        "TTFT_ms": 5232.895026028156,
+        "decode_tokens_per_second": 4.667333129471757,
+        "total_ms": 9930.393802046776
+      }
+    },
+    "candidate_cold": {
+      "ordinals": [
+        4,
+        6
+      ],
+      "metrics": {
+        "TTFT_ms": 5249.2475600242615,
+        "decode_tokens_per_second": 4.773043561479504,
+        "total_ms": 9839.664440006018
+      }
+    },
+    "control_retained": {
+      "ordinals": [
+        3,
+        9
+      ],
+      "metrics": {
+        "TTFT_ms": 1971.5501724779606,
+        "decode_tokens_per_second": 4.9412653895890895,
+        "total_ms": 6444.96401450038
+      }
+    },
+    "candidate_retained": {
+      "ordinals": [
+        5,
+        7
+      ],
+      "metrics": {
+        "TTFT_ms": 1501.9644219875336,
+        "decode_tokens_per_second": 4.770284264359693,
+        "total_ms": 6120.180585503578
+      }
+    }
+  },
+  "checkpoint_injected_actual_model": {
+    "original_cold": {
+      "ordinals": [
+        2,
+        8
+      ],
+      "metrics": {
+        "TTFT_ms": 5225.992945998907,
+        "decode_tokens_per_second": 4.183239974627972,
+        "total_ms": 10439.754568487406
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 337.386974,
+        "restore": 185.44474400000001
+      }
+    },
+    "original_retained": {
+      "ordinals": [
+        3,
+        9
+      ],
+      "metrics": {
+        "TTFT_ms": 1509.5662010014057,
+        "decode_tokens_per_second": 4.237064800020975,
+        "total_ms": 6681.453954011202
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 356.29377450000004,
+        "restore": 186.52495900000002
+      }
+    },
+    "combined_cold": {
+      "ordinals": [
+        4,
+        6
+      ],
+      "metrics": {
+        "TTFT_ms": 5229.694825977087,
+        "decode_tokens_per_second": 4.316496396854125,
+        "total_ms": 10288.453019022942
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 231.2227605,
+        "restore": 182.734597
+      }
+    },
+    "combined_retained": {
+      "ordinals": [
+        5,
+        7
+      ],
+      "metrics": {
+        "TTFT_ms": 1500.7796030044556,
+        "decode_tokens_per_second": 4.347811922631443,
+        "total_ms": 6544.705897986889
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 229.3628185,
+        "restore": 165.4786535
+      }
+    },
+    "pooled_cold": {
+      "ordinals": [
+        10,
+        14
+      ],
+      "metrics": {
+        "TTFT_ms": 5225.02723300457,
+        "decode_tokens_per_second": 4.298145809734476,
+        "total_ms": 10301.496139496565
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 250.95158,
+        "restore": 185.84013900000002
+      }
+    },
+    "pooled_retained": {
+      "ordinals": [
+        11,
+        15
+      ],
+      "metrics": {
+        "TTFT_ms": 1509.081079006195,
+        "decode_tokens_per_second": 4.228023218492089,
+        "total_ms": 6693.094631969929
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 248.3476395,
+        "restore": 187.2667165
+      }
+    },
+    "incremental_combined_cold": {
+      "ordinals": [
+        12
+      ],
+      "metrics": {
+        "TTFT_ms": 5225.370666980743,
+        "decode_tokens_per_second": 4.332382940213606,
+        "total_ms": 10264.177122950554
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 232.163576,
+        "restore": 166.982369
+      }
+    },
+    "incremental_combined_retained": {
+      "ordinals": [
+        13
+      ],
+      "metrics": {
+        "TTFT_ms": 1511.4538859724998,
+        "decode_tokens_per_second": 4.371867745263845,
+        "total_ms": 6529.396416962147
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 230.119809,
+        "restore": 165.42982
+      }
+    }
+  },
+  "GDN_ordinary_actual_model": {
+    "control_cold": {
+      "ordinals": [
+        2,
+        8
+      ],
+      "metrics": {
+        "TTFT_ms": 5234.833067476749,
+        "decode_tokens_per_second": 4.637701185124969,
+        "total_ms": 9962.949243485928
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 0.0,
+        "restore": 0.0
+      }
+    },
+    "candidate_cold": {
+      "ordinals": [
+        4,
+        6
+      ],
+      "metrics": {
+        "TTFT_ms": 5261.998405009508,
+        "decode_tokens_per_second": 4.718227860874385,
+        "total_ms": 9908.489230006933
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 0.0,
+        "restore": 0.0
+      }
+    },
+    "control_retained": {
+      "ordinals": [
+        3,
+        9
+      ],
+      "metrics": {
+        "TTFT_ms": 1963.199140995741,
+        "decode_tokens_per_second": 4.93086103010018,
+        "total_ms": 6440.801749497652
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 0.0,
+        "restore": 0.0
+      }
+    },
+    "candidate_retained": {
+      "ordinals": [
+        5,
+        7
+      ],
+      "metrics": {
+        "TTFT_ms": 1981.9501414895058,
+        "decode_tokens_per_second": 4.988623440391847,
+        "total_ms": 6409.685035467148
+      },
+      "checkpoint_ms_per_request": {
+        "capture": 0.0,
+        "restore": 0.0
+      }
+    }
+  },
+  "GDN_AA_noise": {
+    "cold": {
+      "control_decode_spread": 0.0382291718138843,
+      "control_total_ms_spread": 54.68589496612549,
+      "decode_gain_exceeds_AA_spread": true,
+      "whole_mean_nonregressing_within_AA_spread": true
+    },
+    "retained": {
+      "control_decode_spread": 0.03942543710054203,
+      "control_total_ms_spread": 50.988385021686554,
+      "decode_gain_exceeds_AA_spread": true,
+      "whole_mean_nonregressing_within_AA_spread": true
+    }
+  },
+  "checkpoint_speed_is_not_ordinary_production_speed": true,
+  "checkpoint_fixture": {
+    "events": 60,
+    "checked_bytes": 10168811520,
+    "all_bytes_canaries_exact": true
+  },
+  "GDN_F64_fixture": {
+    "graphs": 144,
+    "maximum_absolute_error": 1.2685367867248942e-08,
+    "all_state_history_weights_and_canaries_passed": true
+  },
+  "quality": {
+    "fixed_semantic_requests": 4,
+    "all_contents_passed": true,
+    "complete_F32_finite": true,
+    "candidate_maximum_logit_error": 1.2013705968856812
+  },
+  "no_arbitrary_percentage_floor": true,
+  "unlike_models_or_cache_scopes_not_pooled": true,
+  "native_evidence": {
+    "14000": {
+      "native": {
+        "bytes": 159766,
+        "sha256": "a9ba8162097e0a68fcef37340ab8e8b852570a0293bdc8fa68fe1aa5ad7b43fa"
+      },
+      "restore": {
+        "bytes": 1210,
+        "sha256": "985c490881994f9133769401bcb4446fe9db7ec8a9bec372e344ada97ab99a51"
+      }
+    },
+    "14600": {
+      "native": {
+        "bytes": 26538,
+        "sha256": "488546428db0da9837445a964a6b2e855257ea8bdcd9c19f6fd768ddccb1a3b3"
+      },
+      "restore": {
+        "bytes": 1209,
+        "sha256": "a860e08dd35dff8a0df49cf9d094ea56cdcf7e318c106125c2023c03efc28e94"
+      }
+    },
+    "14800": {
+      "native": {
+        "bytes": 15568,
+        "sha256": "3c14408572c371c214ed6396cd4e9f967fdaff346cdc00e7568d9df4e6d84f9f"
+      },
+      "restore": {
+        "bytes": 1209,
+        "sha256": "2f50d76f311d1770d9a677ccb9707689bef5a4d824dab1ea2d262861ae0fbcf4"
+      }
+    },
+    "15400": {
+      "native": {
+        "bytes": 227539,
+        "sha256": "d371bbc8745a55f7ebaef33193a93c83d2e2007f9525b073cba13d4720983d2a"
+      },
+      "restore": {
+        "bytes": 1210,
+        "sha256": "802bd93f6119217a9200b3e851922ca1843b2935cfb62a7cd841d2befcbd17ee"
+      }
+    },
+    "16800": {
+      "native": {
+        "bytes": 173649,
+        "sha256": "f9d48de0a67a2c25cff9a2673c0172f307c31a183800860bd8e25f7ba46e6a69"
+      },
+      "restore": {
+        "bytes": 1210,
+        "sha256": "be400a958101f53974c59679f3773bbf7a441bdceaa0e326d2043f206dcb53c4"
+      }
+    }
+  },
+  "remaining": [
+    "Normal3-request/two-frame qualification",
+    "Verified production placement",
+    "Private GitHub self-merge"
+  ],
+  "CI_runs": 0,
+  "reboots": 0,
+  "agents": 0
+}

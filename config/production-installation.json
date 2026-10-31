@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-10-31",
-  "application_source_revision": "8a5a44922267bb97286f076e4cd35c33d0b78e87",
+  "application_source_revision": "36a44bb1008895430d562e5904232a60efb284fa",
   "application_SELF": {
-    "bytes": 20098631,
-    "sha256": "a5375d766aecf7a2f9c45818d008a6da0fc65dcabe2cf38b2a94fe2eefe7e8c9"
+    "bytes": 20133559,
+    "sha256": "1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -27,34 +27,34 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "5564792aa1a8e193d60a13e0ea12f8293900fbc8c2e8ff3c8414c7c8ac212257",
+  "previous_production_SHA256": "a5375d766aecf7a2f9c45818d008a6da0fc65dcabe2cf38b2a94fe2eefe7e8c9",
   "active_expert_slots": 3072,
   "physical_cache_planes": 3073,
   "expert_cache_bytes": 4720619520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 2002.4094920158386,
-      "decode_ms": 4237.216618955135,
-      "decode_tokens_per_second": 4.956083648415982,
+      "TTFT_ms": 2010.9247829914093,
+      "decode_ms": 4207.349875986576,
+      "decode_tokens_per_second": 4.991265432869601,
       "generated_tokens": 22,
-      "prefill_ms": 1970.1402319669724,
+      "prefill_ms": 1975.9422079920769,
       "prompt_tokens": 30,
-      "total_ms": 6455.065333008766
+      "total_ms": 6437.184466004372
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 63.47317498922348,
-      "decode_ms": 3206.628448009491,
-      "decode_tokens_per_second": 6.548934602334646,
+      "TTFT_ms": 60.769082963466644,
+      "decode_ms": 3127.0446569919586,
+      "decode_tokens_per_second": 6.715606044526662,
       "generated_tokens": 22,
-      "prefill_ms": 29.936505019664764,
+      "prefill_ms": 27.09248799085617,
       "prompt_tokens": 30,
-      "total_ms": 3464.0934900045395
+      "total_ms": 3385.9292230010033
     }
   ],
-  "normal_application_case": 13100,
-  "production_placement_case": 13200,
+  "normal_application_case": 17000,
+  "production_placement_case": 17100,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -69,8 +69,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": false,
-  "qualification_report": "docs/limit-winners-adoption-20261031.json",
-  "historical_installation": "config/production-installation-speed-followup-20261031.json",
+  "qualification_report": "docs/strata-followup-adoption-20261031.json",
+  "historical_installation": "config/production-installation-limit-winners-20261031.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -79,8 +79,8 @@
   "private_repository": true,
   "GitHub_Actions_enabled": false,
   "original_Q4_optimized_profile_preserved": false,
-  "fixed_quality_candidate_case": 12420,
-  "finite_quality_scope": "Unchanged Q2/Q8/BF16/F32 payloads. Sixteen matched headless counting requests and three normal30-token counting prompts with22 outputs. Prior four-input precision/row-cache qualification remains historical; no new arbitrary-prompt or sustained-service qualification.",
+  "fixed_quality_candidate_case": 16800,
+  "finite_quality_scope": "Four fixed semantic tasks; complete F64 recurrent state/history/weights/snapshot/canary oracle; exact complete F32/routes/tokens for checkpoint-only changes. Normal delivery is three identical30-token prompts with22 generated tokens. Unlike-cache/arithmetic/width bit equality and arbitrary-prompt/sustained-service quality are not claimed.",
   "model_receipt_SHA256": "8b67b85e6cb2f3fd910e900b0299c3325d8717814f0ffab9ef505cab1dfc686b",
   "expert_eviction_policy": "two_touch_probation",
   "owner_expected_quantization_loss_accepted": true,
@@ -111,8 +111,8 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "previous_production_source_revision": "a95b91d977fe168964105c9197c7610f244ba0f5",
-  "normal_validation_case": 13100,
+  "previous_production_source_revision": "8a5a44922267bb97286f076e4cd35c33d0b78e87",
+  "normal_validation_case": 17000,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 6,
@@ -173,35 +173,358 @@
   "non_Expert_except_output_precision_preserved": false,
   "non_Expert_except_output_and_shared_precision_preserved": false,
   "fixed_quality_cases": [
-    12420,
-    13000
+    14000,
+    15400,
+    16800
   ],
   "fixed_quality": {
-    "requests": 16,
-    "contents_correct": 16,
+    "requests": 14,
+    "contents_correct": 14,
     "all_contents_correct": true,
-    "small_row_full_F32_routes_tokens_bytes_exact": true,
+    "fixed_semantic_tasks": 4,
+    "checkpoint_full_F32_routes_tokens_bytes_exact": true,
+    "checkpoint_exact_case": 15400,
     "cross_policy_F32_equality_claimed": false,
-    "changed_JSON_output_length_disclosed": true
+    "GDN_full_state_F64_case": 14800
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 12500,
+    "control_case": 13100,
     "control_is_sequential_not_ABBA": true,
     "cache_occupancy_differs": true,
     "unlike_cache_conditions_not_pooled": true,
     "causal_candidate_evidence": {
-      "cases": [
-        13000,
-        13100
+      "schema": "ps5-qwen-strata-followup-candidates-v1",
+      "candidate_comparisons_completed": true,
+      "production_placement_completed": false,
+      "checkpoint_pool_eligible": true,
+      "checkpoint_batch_eligible": true,
+      "GDN_eligible": true,
+      "GDN_candidate_exercised": true,
+      "GDN_case": 16800,
+      "cache3424_whole_latency_eligible": true,
+      "cache3424_retained_decode_regression_disclosed": true,
+      "cache": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "TTFT_ms": 5232.895026028156,
+            "decode_tokens_per_second": 4.667333129471757,
+            "total_ms": 9930.393802046776
+          }
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "TTFT_ms": 5249.2475600242615,
+            "decode_tokens_per_second": 4.773043561479504,
+            "total_ms": 9839.664440006018
+          }
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "TTFT_ms": 1971.5501724779606,
+            "decode_tokens_per_second": 4.9412653895890895,
+            "total_ms": 6444.96401450038
+          }
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "TTFT_ms": 1501.9644219875336,
+            "decode_tokens_per_second": 4.770284264359693,
+            "total_ms": 6120.180585503578
+          }
+        }
+      },
+      "checkpoint_injected_actual_model": {
+        "original_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "TTFT_ms": 5225.992945998907,
+            "decode_tokens_per_second": 4.183239974627972,
+            "total_ms": 10439.754568487406
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 337.386974,
+            "restore": 185.44474400000001
+          }
+        },
+        "original_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "TTFT_ms": 1509.5662010014057,
+            "decode_tokens_per_second": 4.237064800020975,
+            "total_ms": 6681.453954011202
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 356.29377450000004,
+            "restore": 186.52495900000002
+          }
+        },
+        "combined_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "TTFT_ms": 5229.694825977087,
+            "decode_tokens_per_second": 4.316496396854125,
+            "total_ms": 10288.453019022942
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 231.2227605,
+            "restore": 182.734597
+          }
+        },
+        "combined_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "TTFT_ms": 1500.7796030044556,
+            "decode_tokens_per_second": 4.347811922631443,
+            "total_ms": 6544.705897986889
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 229.3628185,
+            "restore": 165.4786535
+          }
+        },
+        "pooled_cold": {
+          "ordinals": [
+            10,
+            14
+          ],
+          "metrics": {
+            "TTFT_ms": 5225.02723300457,
+            "decode_tokens_per_second": 4.298145809734476,
+            "total_ms": 10301.496139496565
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 250.95158,
+            "restore": 185.84013900000002
+          }
+        },
+        "pooled_retained": {
+          "ordinals": [
+            11,
+            15
+          ],
+          "metrics": {
+            "TTFT_ms": 1509.081079006195,
+            "decode_tokens_per_second": 4.228023218492089,
+            "total_ms": 6693.094631969929
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 248.3476395,
+            "restore": 187.2667165
+          }
+        },
+        "incremental_combined_cold": {
+          "ordinals": [
+            12
+          ],
+          "metrics": {
+            "TTFT_ms": 5225.370666980743,
+            "decode_tokens_per_second": 4.332382940213606,
+            "total_ms": 10264.177122950554
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 232.163576,
+            "restore": 166.982369
+          }
+        },
+        "incremental_combined_retained": {
+          "ordinals": [
+            13
+          ],
+          "metrics": {
+            "TTFT_ms": 1511.4538859724998,
+            "decode_tokens_per_second": 4.371867745263845,
+            "total_ms": 6529.396416962147
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 230.119809,
+            "restore": 165.42982
+          }
+        }
+      },
+      "GDN_ordinary_actual_model": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "TTFT_ms": 5234.833067476749,
+            "decode_tokens_per_second": 4.637701185124969,
+            "total_ms": 9962.949243485928
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 0.0,
+            "restore": 0.0
+          }
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "TTFT_ms": 5261.998405009508,
+            "decode_tokens_per_second": 4.718227860874385,
+            "total_ms": 9908.489230006933
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 0.0,
+            "restore": 0.0
+          }
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "TTFT_ms": 1963.199140995741,
+            "decode_tokens_per_second": 4.93086103010018,
+            "total_ms": 6440.801749497652
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 0.0,
+            "restore": 0.0
+          }
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "TTFT_ms": 1981.9501414895058,
+            "decode_tokens_per_second": 4.988623440391847,
+            "total_ms": 6409.685035467148
+          },
+          "checkpoint_ms_per_request": {
+            "capture": 0.0,
+            "restore": 0.0
+          }
+        }
+      },
+      "GDN_AA_noise": {
+        "cold": {
+          "control_decode_spread": 0.0382291718138843,
+          "control_total_ms_spread": 54.68589496612549,
+          "decode_gain_exceeds_AA_spread": true,
+          "whole_mean_nonregressing_within_AA_spread": true
+        },
+        "retained": {
+          "control_decode_spread": 0.03942543710054203,
+          "control_total_ms_spread": 50.988385021686554,
+          "decode_gain_exceeds_AA_spread": true,
+          "whole_mean_nonregressing_within_AA_spread": true
+        }
+      },
+      "checkpoint_speed_is_not_ordinary_production_speed": true,
+      "checkpoint_fixture": {
+        "events": 60,
+        "checked_bytes": 10168811520,
+        "all_bytes_canaries_exact": true
+      },
+      "GDN_F64_fixture": {
+        "graphs": 144,
+        "maximum_absolute_error": 1.2685367867248942e-08,
+        "all_state_history_weights_and_canaries_passed": true
+      },
+      "quality": {
+        "fixed_semantic_requests": 4,
+        "all_contents_passed": true,
+        "complete_F32_finite": true,
+        "candidate_maximum_logit_error": 1.2013705968856812
+      },
+      "no_arbitrary_percentage_floor": true,
+      "unlike_models_or_cache_scopes_not_pooled": true,
+      "native_evidence": {
+        "14000": {
+          "native": {
+            "bytes": 159766,
+            "sha256": "a9ba8162097e0a68fcef37340ab8e8b852570a0293bdc8fa68fe1aa5ad7b43fa"
+          },
+          "restore": {
+            "bytes": 1210,
+            "sha256": "985c490881994f9133769401bcb4446fe9db7ec8a9bec372e344ada97ab99a51"
+          }
+        },
+        "14600": {
+          "native": {
+            "bytes": 26538,
+            "sha256": "488546428db0da9837445a964a6b2e855257ea8bdcd9c19f6fd768ddccb1a3b3"
+          },
+          "restore": {
+            "bytes": 1209,
+            "sha256": "a860e08dd35dff8a0df49cf9d094ea56cdcf7e318c106125c2023c03efc28e94"
+          }
+        },
+        "14800": {
+          "native": {
+            "bytes": 15568,
+            "sha256": "3c14408572c371c214ed6396cd4e9f967fdaff346cdc00e7568d9df4e6d84f9f"
+          },
+          "restore": {
+            "bytes": 1209,
+            "sha256": "2f50d76f311d1770d9a677ccb9707689bef5a4d824dab1ea2d262861ae0fbcf4"
+          }
+        },
+        "15400": {
+          "native": {
+            "bytes": 227539,
+            "sha256": "d371bbc8745a55f7ebaef33193a93c83d2e2007f9525b073cba13d4720983d2a"
+          },
+          "restore": {
+            "bytes": 1210,
+            "sha256": "802bd93f6119217a9200b3e851922ca1843b2935cfb62a7cd841d2befcbd17ee"
+          }
+        },
+        "16800": {
+          "native": {
+            "bytes": 173649,
+            "sha256": "f9d48de0a67a2c25cff9a2673c0172f307c31a183800860bd8e25f7ba46e6a69"
+          },
+          "restore": {
+            "bytes": 1210,
+            "sha256": "be400a958101f53974c59679f3773bbf7a441bdceaa0e326d2043f206dcb53c4"
+          }
+        }
+      },
+      "remaining": [
+        "Normal3-request/two-frame qualification",
+        "Verified production placement",
+        "Private GitHub self-merge"
       ],
-      "headless_rows": 16,
-      "normal_rows": 3,
-      "all_normal_tokens_and_bytes_equal": true,
-      "byte_placement_complete_F32_exact": true,
-      "fixed_zero_inference_padding": true,
-      "loading_context_and_physical_checks_preserved": true,
-      "adoption_unit": "measured676-key placement in the qualified finite normal composition"
+      "CI_runs": 0,
+      "reboots": 0,
+      "agents": 0
     }
   },
   "indexed_window0_probation": true,
@@ -209,15 +532,15 @@
   "speculative_source_reads": false,
   "additional_GPU_forecast": false,
   "normal_application_speedup": {
-    "control_case": 12500,
-    "comparison": "Sequential installed12500 versus qualified13100, not ABBA; use the stable matched placement comparison13000 for the isolated effect",
+    "control_case": 13100,
+    "comparison": "Sequential installed13100 versus qualified17000, not ABBA; use matched ordinary GDN16800 and explicitly checkpoint-injected15400 for isolated candidate evidence",
     "full_vocabulary_finite": true,
     "all_counting_tokens_and_bytes_equal": true,
     "cross_cache_exact_F32_required": false,
     "maximum_absolute_logit_error_by_request": [
       0.0,
-      5.104034423828125,
-      4.570299461483955
+      5.153352737426758,
+      3.7448878288269043
     ]
   },
   "all_six_previous_memory_candidates_disposed": true,
@@ -278,5 +601,26 @@
     "OS_minimum_preserved": true,
     "OS_counter_writes": 0,
     "decode_only_GDN": false
+  },
+  "strata_followup_policy": {
+    "schema": "ps5-qwen-strata-followup-normal-v1",
+    "maximum_requests": 3,
+    "active_cache_slots": 3072,
+    "physical_cache_planes": 3073,
+    "cache_bytes": 4720619520,
+    "checkpoint_pool_capacity_quantum_bytes": 2097152,
+    "checkpoint_maximum_bytes": 142606336,
+    "checkpoint_metadata_arena_reuse": true,
+    "independent_same_operation_copy_batch": true,
+    "convolution_SiLU_QK_RMS_scale_fusion": true,
+    "fusion_single_token_F32_only": true,
+    "independent_single_token_QK_normalizations_before_head_repeats": true,
+    "Vulkan_fusion_span_and_external_input_allocation_dependencies": true,
+    "original_PLE_BF16_and_all_model_payloads": true,
+    "original_driver_physical_OS_minimum_workspace_and_completion": true,
+    "unknown_owner_retention": true,
+    "persistent_caches": false,
+    "benchmark_checkpoint_injections": 0,
+    "automatic_retries": 0
   }
 }

@@ -1,0 +1,415 @@
+{
+  "schema": "ps5-qwen-strata-followup-worklog-v1",
+  "completed": false,
+  "production_adopted": true,
+  "production_SELF_sha256": "1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "persistent_shader_pipeline_caches": false,
+  "cache_comparison": {
+    "case": 14000,
+    "requests": 14,
+    "model_loads": 1,
+    "physical_planes": 3425,
+    "active_slots": [
+      3072,
+      3424
+    ],
+    "extra_cache_bytes": 540672000,
+    "positive_retirement": true,
+    "device_live_bytes": 0,
+    "restored_exact_production": true,
+    "all_four_semantic_tasks_passed": true,
+    "cross_capacity_maximum_logit_error": 5.241647720336914,
+    "all_compared_top1_equal": true,
+    "maximum_mean_KL": 0.0001422590759766349,
+    "summary": {
+      "control_cold": {
+        "ordinals": [
+          2,
+          8
+        ],
+        "metrics": {
+          "TTFT_ms": 5232.895026028156,
+          "decode_tokens_per_second": 4.667333129471757,
+          "total_ms": 9930.393802046776
+        },
+        "source": {
+          "source_physical_read_bytes": 6057919584,
+          "source_physical_read_calls": 9956,
+          "source_read_ns": 5542595663
+        }
+      },
+      "candidate_cold": {
+        "ordinals": [
+          4,
+          6
+        ],
+        "metrics": {
+          "TTFT_ms": 5249.2475600242615,
+          "decode_tokens_per_second": 4.773043561479504,
+          "total_ms": 9839.664440006018
+        },
+        "source": {
+          "source_physical_read_bytes": 6001460320,
+          "source_physical_read_calls": 9876,
+          "source_read_ns": 5476965966
+        }
+      },
+      "control_retained": {
+        "ordinals": [
+          3,
+          9
+        ],
+        "metrics": {
+          "TTFT_ms": 1971.5501724779606,
+          "decode_tokens_per_second": 4.9412653895890895,
+          "total_ms": 6444.96401450038
+        },
+        "source": {
+          "source_physical_read_bytes": 2971582720,
+          "source_physical_read_calls": 4694,
+          "source_read_ns": 2562670774
+        }
+      },
+      "candidate_retained": {
+        "ordinals": [
+          5,
+          7
+        ],
+        "metrics": {
+          "TTFT_ms": 1501.9644219875336,
+          "decode_tokens_per_second": 4.770284264359693,
+          "total_ms": 6120.180585503578
+        },
+        "source": {
+          "source_physical_read_bytes": 2490073600,
+          "source_physical_read_calls": 4043,
+          "source_read_ns": 2283597595
+        }
+      }
+    }
+  },
+  "checkpoint_v1": {
+    "failed_case": 14200,
+    "failed_case_native_test_completed": false,
+    "failure": "The fixture passed one unused metadata byte; original read-device destructor asserts full metadata consumption. Baseline mode0 exited at first restore. No optimization timing admitted.",
+    "failed_case_exact_production_restored": true,
+    "failed_case_native_manual_retirement_unknown_preserved": true,
+    "corrected_case": 14400,
+    "completed": true,
+    "save_restore_events": 60,
+    "checked_bytes": 10168811520,
+    "device_peak_bytes": 364904448,
+    "device_live_bytes": 0,
+    "positive_retirement": true,
+    "all_bytes_canaries_source_identity_and_changed_chunking_passed": true,
+    "blocks": [
+      {
+        "ordinal": 0,
+        "mode": 0,
+        "counter_delta": [
+          0,
+          0,
+          0,
+          0,
+          490
+        ],
+        "sums_us": {
+          "save_backend_us": 28399.432,
+          "save_completion_us": 48637.429000000004,
+          "restore_backend_us": 9172.973,
+          "restore_completion_us": 37218.703,
+          "save_total_us": 77036.861,
+          "restore_total_us": 46391.676
+        }
+      },
+      {
+        "ordinal": 1,
+        "mode": 1,
+        "counter_delta": [
+          1,
+          2,
+          0,
+          0,
+          490
+        ],
+        "sums_us": {
+          "save_backend_us": 15125.216,
+          "save_completion_us": 37610.811,
+          "restore_backend_us": 9106.978,
+          "restore_completion_us": 37254.708,
+          "save_total_us": 52736.027,
+          "restore_total_us": 46361.686
+        }
+      },
+      {
+        "ordinal": 2,
+        "mode": 1,
+        "counter_delta": [
+          1,
+          2,
+          0,
+          0,
+          490
+        ],
+        "sums_us": {
+          "save_backend_us": 15194.576,
+          "save_completion_us": 37587.398,
+          "restore_backend_us": 8696.83,
+          "restore_completion_us": 37676.162,
+          "save_total_us": 52781.974,
+          "restore_total_us": 46372.992
+        }
+      },
+      {
+        "ordinal": 3,
+        "mode": 0,
+        "counter_delta": [
+          0,
+          0,
+          0,
+          0,
+          490
+        ],
+        "sums_us": {
+          "save_backend_us": 28238.578,
+          "save_completion_us": 48856.577,
+          "restore_backend_us": 8778.940999999999,
+          "restore_completion_us": 37619.231,
+          "save_total_us": 77095.155,
+          "restore_total_us": 46398.172
+        }
+      },
+      {
+        "ordinal": 4,
+        "mode": 0,
+        "counter_delta": [
+          0,
+          0,
+          0,
+          0,
+          490
+        ],
+        "sums_us": {
+          "save_backend_us": 28370.964,
+          "save_completion_us": 55057.476,
+          "restore_backend_us": 8733.956,
+          "restore_completion_us": 37659.724,
+          "save_total_us": 83428.44,
+          "restore_total_us": 46393.68
+        }
+      },
+      {
+        "ordinal": 5,
+        "mode": 3,
+        "counter_delta": [
+          0,
+          0,
+          10,
+          490,
+          0
+        ],
+        "sums_us": {
+          "save_backend_us": 36339.231,
+          "save_completion_us": 47291.356,
+          "restore_backend_us": 3417.823,
+          "restore_completion_us": 35839.997,
+          "save_total_us": 83630.587,
+          "restore_total_us": 39257.82
+        }
+      },
+      {
+        "ordinal": 6,
+        "mode": 3,
+        "counter_delta": [
+          0,
+          0,
+          10,
+          490,
+          0
+        ],
+        "sums_us": {
+          "save_backend_us": 22631.212,
+          "save_completion_us": 47251.423,
+          "restore_backend_us": 3691.176,
+          "restore_completion_us": 36234.268,
+          "save_total_us": 69882.635,
+          "restore_total_us": 39925.444
+        }
+      },
+      {
+        "ordinal": 7,
+        "mode": 0,
+        "counter_delta": [
+          0,
+          0,
+          0,
+          0,
+          490
+        ],
+        "sums_us": {
+          "save_backend_us": 28442.010000000002,
+          "save_completion_us": 48617.943,
+          "restore_backend_us": 8790.807999999999,
+          "restore_completion_us": 37617.949,
+          "save_total_us": 77059.953,
+          "restore_total_us": 46408.757
+        }
+      },
+      {
+        "ordinal": 8,
+        "mode": 1,
+        "counter_delta": [
+          1,
+          2,
+          0,
+          0,
+          490
+        ],
+        "sums_us": {
+          "save_backend_us": 15232.583999999999,
+          "save_completion_us": 37575.048,
+          "restore_backend_us": 9063.998,
+          "restore_completion_us": 37318.536,
+          "save_total_us": 52807.632,
+          "restore_total_us": 46382.534
+        }
+      },
+      {
+        "ordinal": 9,
+        "mode": 2,
+        "counter_delta": [
+          1,
+          2,
+          10,
+          490,
+          0
+        ],
+        "sums_us": {
+          "save_backend_us": 9805.713,
+          "save_completion_us": 37976.697,
+          "restore_backend_us": 3380.2160000000003,
+          "restore_completion_us": 35831.256,
+          "save_total_us": 47782.409999999996,
+          "restore_total_us": 39211.472
+        }
+      },
+      {
+        "ordinal": 10,
+        "mode": 2,
+        "counter_delta": [
+          1,
+          2,
+          10,
+          490,
+          0
+        ],
+        "sums_us": {
+          "save_backend_us": 9795.051,
+          "save_completion_us": 35848.094,
+          "restore_backend_us": 3653.569,
+          "restore_completion_us": 36291.520000000004,
+          "save_total_us": 45643.145,
+          "restore_total_us": 39945.089
+        }
+      },
+      {
+        "ordinal": 11,
+        "mode": 1,
+        "counter_delta": [
+          1,
+          2,
+          0,
+          0,
+          490
+        ],
+        "sums_us": {
+          "save_backend_us": 15229.537,
+          "save_completion_us": 37526.536,
+          "restore_backend_us": 8682.557,
+          "restore_completion_us": 39140.91,
+          "save_total_us": 52756.073,
+          "restore_total_us": 47823.467
+        }
+      }
+    ],
+    "representative_limit": "Mixed shrinking/regrowing states. Monotonic growth needs a rounded-capacity pool, not just retention of a prior maximum."
+  },
+  "remaining": [
+    "Private GitHub self-merge"
+  ],
+  "CI_runs": 0,
+  "agents": 0,
+  "reboots": 0,
+  "checkpoint_monotonic_pool_fixture": {
+    "case": 14600,
+    "events": 60,
+    "checked_bytes": 10168811520,
+    "all_payloads_canaries_source_identities_and_chunkings_exact": true,
+    "device_ledger_peak_bytes": 364904448,
+    "positive_retirement_and_exact_restore": true
+  },
+  "checkpoint_actual_model": {
+    "case": 15400,
+    "requests": 16,
+    "checkpoint_pairs_per_timed_request": 7,
+    "complete_F32_bytes_routes_tokens_and_output_exact": true,
+    "allocation_arena_and_growth_reuse_exercised": true,
+    "independent_copy_batches_exercised": true,
+    "positive_retirement_and_exact_restore": true,
+    "ordinary_production_speed_claim": false
+  },
+  "GDN_F64_fixture": {
+    "case": 14800,
+    "graphs": 144,
+    "maximum_absolute_error": 1.2685367867248942e-08,
+    "all_outputs_full_state_history_weights_and_canaries_passed": true,
+    "positive_retirement_and_exact_restore": true
+  },
+  "GDN_model_integration": {
+    "zero_execution_cases": [
+      15200,
+      15800,
+      16600
+    ],
+    "zero_execution_cases_not_qualified_as_acceleration": true,
+    "larger_loading_scope_refusal": {
+      "case": 16200,
+      "minimum_free_pages": 1132,
+      "required_pages": 1154,
+      "ordinary_close_exact_restore": true,
+      "unknown_manual_GPU_completion_retained": true
+    },
+    "lower_consumption3072_case16600_completed": true,
+    "current_range_protection_case": 16800,
+    "current_case_in_progress": false,
+    "current_case_completed": true,
+    "actual_fused_pipeline_exercised": true,
+    "complete_requests": 14,
+    "all_four_semantic_tasks_passed": true,
+    "positive_retirement_and_exact_restore": true,
+    "planner_overlap_rejections": 0,
+    "fused_selections_per_timed_candidate_request": 792
+  },
+  "candidate_comparisons_completed": true,
+  "normal_qualification": {
+    "case": 17000,
+    "requests": 3,
+    "API_POSTs_including_finish": 3,
+    "actual_native_frames_viewed": 2,
+    "checkpoint_pool_stats": [
+      6,
+      6,
+      8,
+      872,
+      0
+    ],
+    "GDN_pipeline_selections": 1944,
+    "positive_retirement_and_exact_restore": true,
+    "source_revision": "36a44bb1008895430d562e5904232a60efb284fa",
+    "SELF_sha256": "1247c365144f9226ee5d62973256faf49f4aab7579b8493c4d26b7e8a9451eb3"
+  },
+  "production_placement_case": 17100,
+  "production_native_verified_files": 12
+}
