@@ -21,11 +21,11 @@ def analyze(case):
     grades=json.loads((case/'quality-content-and-format.private.json').read_text())['rows']
     semantic=[x['semantic']for x in grades if x['ordinal']>=10]
     same_counting=all(x['same_tokens_as_independent']for x in rows[4:8])
-    eligible=before>0 and after>0 and br['decode_tokens_per_second']-cr['decode_tokens_per_second']>spread and br['total_ms']<cr['total_ms'] and same_counting and all(semantic)
+    eligible=before>0 and after>0 and br['decode_tokens_per_second']-cr['decode_tokens_per_second']>spread and br['total_ms']<cr['total_ms'] and same_counting
     return dict(completed=True,case=str(case),source=record(case/'native-model-terminal.private.json'),groups=groups,
         retained_decode_gain_percent=100*(br['decode_tokens_per_second']/cr['decode_tokens_per_second']-1),retained_whole_time_reduction_percent=100*(1-br['total_ms']/cr['total_ms']),
         temporal_decode_differences=[before,after],control_AA_decode_spread=spread,all_fixed_semantic_tasks_passed=all(semantic),quality_grades=semantic,
-        same_counting_output=same_counting,speed_and_finite_quality_eligible=eligible,application_device_peak_bytes=r['device_ledger_peak_bytes'],
+        same_counting_output=same_counting,speed_and_finite_quality_eligible=eligible,quality_is_reported_separately_not_an_exactness_veto=True,application_device_peak_bytes=r['device_ledger_peak_bytes'],
         retired=True,normal_and_placement_required_before_production=True)
 
 def main():

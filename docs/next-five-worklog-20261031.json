@@ -8,19 +8,220 @@
   "CI_runs": 0,
   "learned_host_inference": false,
   "results": [
-    {"family": 1, "candidate": "Top-4", "native_case": 21300, "requests": 14, "retained_decode_gain_percent": 7.761122069442283, "retained_whole_time_reduction_percent": 9.47763040364553, "fixed_semantic_tasks_passed": 4, "counting_output_equal": true, "positive_retirement_and_exact_restore": true, "status": "measured_winner_pending_combined_normal"},
-    {"family": 2, "candidate": "up_to32_attempts_with_rejection_stop", "native_case": 21400, "requests": 14, "retained_decode_gain_percent": 0.38604098135779363, "retained_whole_time_reduction_percent": 0.2389331461945976, "fixed_semantic_tasks_passed": 4, "positive_retirement_and_exact_restore": true, "status": "measured_gain_within_control_variation_not_selected"},
-    {"family": 3, "candidate": "relax_uniform_layer_floor", "scope": "actual_planner_replay_seven_saved_traces", "baseline_native_counts_exact": true, "half_floor_miss_changes": [6,1320,15,6,0,0,220], "zero_floor_miss_changes": [6,1412,16,6,0,0,246], "native_speed_proven": false, "status": "host_screen_worse_not_selected"},
-    {"family": 3, "candidate": "Q4_saving_to3712_slots", "resident_payload_saved_bytes": 1038090240, "Expert_cache_growth_bytes": 983040000, "status": "built_native_comparison_pending"},
-    {"family": 4, "candidate": "Attention_KV_F16", "native_case": 21500, "status": "native_comparison_in_progress"},
-    {"family": 4, "candidate": "recurrent_S_F16_storage_F32_compute", "status": "built_native_comparison_pending"},
-    {"family": 5, "candidate": "refill_before_GPU_consumption", "extra_owned_CPU_bytes": 2097152, "host_byte_ownership_and_error_drain_cases": 8, "status": "host_passed_native_comparison_pending"}
+    {
+      "family": 1,
+      "candidate": "Top4",
+      "native_case": 21300,
+      "requests": 14,
+      "retained_decode_gain_percent": 7.761122069442283,
+      "retained_whole_time_reduction_percent": 9.47763040364553,
+      "fixed_semantic_tasks_passed": 4,
+      "counting_output_equal": true,
+      "positive_retirement_and_exact_restore": true,
+      "status": "measured_pending_final_selection"
+    },
+    {
+      "family": 1,
+      "candidate": "Top2",
+      "native_case": 23700,
+      "requests": 14,
+      "retained_decode_gain_percent": 25.83487187631377,
+      "retained_whole_time_reduction_percent": 24.011449064779132,
+      "fixed_semantic_tasks_passed": 4,
+      "counting_output_equal": true,
+      "positive_retirement_and_exact_restore": true,
+      "status": "measured_pending_final_selection"
+    },
+    {
+      "family": 1,
+      "candidate": "adaptive2_4_6",
+      "native_case": 22100,
+      "requests": 14,
+      "retained_decode_gain_percent": 13.235698329701284,
+      "retained_whole_time_reduction_percent": 8.972310595379584,
+      "fixed_semantic_tasks_passed": 4,
+      "counting_output_equal": true,
+      "positive_retirement_and_exact_restore": true,
+      "status": "measured_pending_final_selection"
+    },
+    {
+      "family": 2,
+      "candidate": "up_to32_attempts",
+      "native_case": 21400,
+      "requests": 14,
+      "retained_decode_gain_percent": 0.38604098135779363,
+      "retained_whole_time_reduction_percent": 0.2389331461945976,
+      "fixed_semantic_tasks_passed": 4,
+      "counting_output_equal": true,
+      "positive_retirement_and_exact_restore": true,
+      "status": "measured_not_selected_within_variation_or_slower"
+    },
+    {
+      "family": 3,
+      "candidate": "Q4_cache3072_to3712",
+      "native_case": 21600,
+      "requests": 14,
+      "retained_decode_gain_percent": -1.5061007445321128,
+      "retained_whole_time_reduction_percent": 13.028052852427653,
+      "fixed_semantic_tasks_passed": 4,
+      "counting_output_equal": true,
+      "positive_retirement_and_exact_restore": true,
+      "status": "measured_pending_final_selection"
+    },
+    {
+      "family": 4,
+      "candidate": "Q4_cache3712_Top2",
+      "native_case": 24300,
+      "requests": 14,
+      "retained_decode_gain_percent": 34.08778765709688,
+      "retained_whole_time_reduction_percent": 31.250155948696722,
+      "fixed_semantic_tasks_passed": 4,
+      "counting_output_equal": true,
+      "positive_retirement_and_exact_restore": true,
+      "status": "measured_pending_final_selection"
+    },
+    {
+      "family": 5,
+      "candidate": "early_refill_with_owned_copy",
+      "native_case": 21700,
+      "requests": 14,
+      "retained_decode_gain_percent": -0.2614070014776426,
+      "retained_whole_time_reduction_percent": -0.13969356593008797,
+      "fixed_semantic_tasks_passed": 4,
+      "counting_output_equal": true,
+      "positive_retirement_and_exact_restore": true,
+      "status": "measured_not_selected_within_variation_or_slower"
+    },
+    {
+      "family": 3,
+      "candidate": "relax_uniform_layer_floor",
+      "scope": "actual_planner_replay_seven_saved_traces",
+      "baseline_native_counts_exact": true,
+      "half_floor_miss_changes": [
+        6,
+        1320,
+        15,
+        6,
+        0,
+        0,
+        220
+      ],
+      "zero_floor_miss_changes": [
+        6,
+        1412,
+        16,
+        6,
+        0,
+        0,
+        246
+      ],
+      "native_speed_proven": false,
+      "status": "host_screen_worse_not_selected"
+    },
+    {
+      "family": 4,
+      "candidate": "Attention_KV_F16",
+      "native_case": 21800,
+      "requests": 14,
+      "all_requests_same_F16_storage": true,
+      "within_run_storage_ABBA": false,
+      "device_bytes_saved": 8388608,
+      "status": "completed_no_demonstrated_speed_gain"
+    },
+    {
+      "family": 4,
+      "candidate": "recurrent_S_F16",
+      "native_cases": [
+        21900,
+        24000
+      ],
+      "requests": 0,
+      "status": "executed_context_initialization_failure_not_selected",
+      "ordinary_OS_context_close_and_exact_restore": true,
+      "preclose_global_retirement_unproven": true,
+      "F16_SCALE_source_incompatibility_fixed_but_additional_backend_abort_remains": true
+    },
+    {
+      "family": 2,
+      "candidate": "width_four_with_three_recurrent_slots",
+      "native_case": 22400,
+      "requests": 0,
+      "status": "executed_context_initialization_failure_not_selected",
+      "ordinary_OS_context_close_and_exact_restore": true,
+      "preclose_global_retirement_unproven": true
+    },
+    {
+      "family": 5,
+      "candidate": "768_to1444_placement",
+      "native_pack_case": 23610,
+      "new_pack_bytes": 1577058304,
+      "extra_cache_slots": 0,
+      "status": "CPU_pack_in_progress_native_comparison_pending"
+    }
   ],
   "attempt_history": [
-    {"build": 19900, "scope": "host_only", "failure": "exact inherited KL boundary differed", "PS5_launches": 0},
-    {"native_case": 20000, "failure": "legacy route observer rejected Top-4 metadata after inference returned", "completed_durable_requests": 3, "global_retirement_proven_before_close": false, "ordinary_close_and_exact_restore": true, "disposition": "corrected_capture_to2_4_6_8_10_in_new_scope"},
-    {"case": 21000, "failure": "CPU_pending_SELF_integrity_refused_transient_ShellCore_service_state", "PS5_launches": 0, "canonical_SELF_never_renamed": true, "all_five_settings_restored": true, "disposition": "new_CPU_integrity_scope_accepts_previously_qualified_timestamp_bound_ShellCore_SLOCK_only"},
-    {"CPU_publication": 20510, "files": 40, "new_Q4_payloads_whole_native_SHA256_identity_EOF_verified": true, "positive_CPU_Direct_retirement": true, "production_sources_preserved": true}
+    {
+      "build": 19900,
+      "scope": "host_only",
+      "failure": "exact inherited KL boundary differed",
+      "PS5_launches": 0
+    },
+    {
+      "native_case": 20000,
+      "failure": "legacy route observer rejected Top-4 metadata after inference returned",
+      "completed_durable_requests": 3,
+      "global_retirement_proven_before_close": false,
+      "ordinary_close_and_exact_restore": true,
+      "disposition": "corrected_capture_to2_4_6_8_10_in_new_scope"
+    },
+    {
+      "case": 21000,
+      "failure": "CPU_pending_SELF_integrity_refused_transient_ShellCore_service_state",
+      "PS5_launches": 0,
+      "canonical_SELF_never_renamed": true,
+      "all_five_settings_restored": true,
+      "disposition": "new_CPU_integrity_scope_accepts_previously_qualified_timestamp_bound_ShellCore_SLOCK_only"
+    },
+    {
+      "CPU_publication": 20510,
+      "files": 40,
+      "new_Q4_payloads_whole_native_SHA256_identity_EOF_verified": true,
+      "positive_CPU_Direct_retirement": true,
+      "production_sources_preserved": true
+    },
+    {
+      "native_case": 21500,
+      "failure": "live_context_replacement_backend_abort",
+      "ordinary_close_and_exact_restore": true,
+      "disposition": "superseded_by_single_initial_context21800"
+    },
+    {
+      "native_case": 22000,
+      "failure": "fresh_CPU_observer_upload_ENOSPC_before_title_or_configuration_changes",
+      "title_launches": 0,
+      "disposition": "changed_SSD_state_then_fresh_Top2_case23700"
+    },
+    {
+      "CPU_pack_case": 23210,
+      "failure": "new_output_short_write_after49_triplets",
+      "new_partial_output_bytes": 75464704,
+      "positive_CPU_Direct_retirement": true,
+      "original_sources_preserved": true,
+      "partial_output_removed": true
+    },
+    {
+      "cleanup_case": 23500,
+      "obsolete_programs_removed": 83,
+      "recovered_bytes": 1604106898,
+      "current_and_immediate_rollback_twelve_files_fully_verified": true,
+      "old_settings_not_removed": 470
+    }
   ],
-  "remaining": ["lower_and_adaptive_routing_comparisons", "KV_and_recurrent_storage_comparisons", "Q4_cache_redistribution_comparison", "I_O_handoff_comparison", "combined_normal_API_display_qualification", "verified_production_placement"]
+  "remaining": [
+    "complete_expanded_placement_comparison",
+    "combined_normal_API_display_qualification",
+    "verified_production_placement",
+    "private_PR_merge"
+  ],
+  "last_updated_local_date": "2026-11-01"
 }

@@ -17,4 +17,5 @@ def main():
  text=text.replace('active_cache_slots=3072','active_cache_slots=3712').replace('non_Expert_precision_preserved=False','non_Expert_precision_preserved=False')
  text=text.replace('installed control/candidate A-B-B-A cold-retained pairs','Q4 common-weight3072/3712 A-B-B-A cold-retained pairs; installed Q8 requires separate nearby comparison')
  ast.parse(text);path.write_text(text,newline='\n');print('Newly sealed Q4 sources and explicit3712 geometry bound; no console operation.')
+ path=ROOT/f'.local/resident_cohort_operator_{a.case}.py';text=path.read_text();text=once(text,"reset['slots']==3072","reset['slots']==report['requests'][ordinal]['active_cache_slots']");ast.parse(text);path.write_text(text,newline='\n')
 if __name__=='__main__':main()
