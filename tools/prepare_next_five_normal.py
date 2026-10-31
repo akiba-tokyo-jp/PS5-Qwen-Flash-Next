@@ -4,6 +4,7 @@
 import argparse,ast,json,subprocess,sys
 from pathlib import Path
 from build_speculative_batch_probe import once
+from self_upload_cache import bind_pending_cache_control
 ROOT=Path(__file__).resolve().parents[1]
 
 def main():
@@ -20,8 +21,10 @@ def main():
   text=once(text,"app['model_receipt']=op.load(all_Q8_seal)['source_directory']+'/model-receipt.json'","app['model_receipt']=op.load(precision_seal)['source_directory']+'/model-receipt.json'")
  text=text.replace('active_cache_slots=3072','active_cache_slots='+str(scope['active_cache_slots'])).replace('tools/build_preservation_integrity.py','tools/build_next_five_integrity.py')
  ast.parse(text);path.write_text(text,newline='\n')
- path=ROOT/f'.local/resident_cohort_operator_{a.case}.py';text=path.read_text().replace("reset['slots']==3072","reset['slots']==report['active_cache_slots']").replace('tools/build_preservation_integrity.py','tools/build_next_five_integrity.py');ast.parse(text);path.write_text(text,newline='\n')
+ path=ROOT/f'.local/resident_cohort_operator_{a.case}.py';text=path.read_text().replace("reset['slots']==3072","reset['slots']==report['active_cache_slots']").replace('tools/build_preservation_integrity.py','tools/build_next_five_integrity.py').replace("ROOT/'tools/staged_self_upload.py',","ROOT/'tools/staged_self_upload.py',ROOT/'tools/self_upload_cache.py',ROOT/'tools/build_closed_pack_cache_reclaim.py',");ast.parse(text);path.write_text(text,newline='\n')
  for name in(f'first_operator_{a.case}_base.py',f'restore_resident_cohort_{a.case+5}.py'):
-  path=ROOT/'.local'/name;text=path.read_text().replace('tools/build_preservation_integrity.py','tools/build_next_five_integrity.py');ast.parse(text);path.write_text(text,newline='\n')
+  path=ROOT/'.local'/name;text=path.read_text().replace('tools/build_preservation_integrity.py','tools/build_next_five_integrity.py')
+  if name.startswith('first_'):text=bind_pending_cache_control(text)
+  ast.parse(text);path.write_text(text,newline='\n')
  print('Fresh measured normal composition prepared; no console operation.')
 if __name__=='__main__':main()

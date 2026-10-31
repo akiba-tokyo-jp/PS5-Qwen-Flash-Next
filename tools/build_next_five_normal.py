@@ -80,7 +80,8 @@ def main():
  if placement:
   source_header=Path(placement['next_five_placement']['header']['path']);header=a.out/source_header.name
   header.write_text(once(source_header.read_text(),'Q2_trial_mode=false','Q2_trial_mode=true'),newline='\n')
-  oc=candidate['all_Q2_optimized_monitor']['commands'][1];variants['owner']=(oc,Path(oc[oc.index('-c')+1]).read_text());dependencies+=[a.placement,a.placement_analysis,source_header,header]
+  reader_original=Path(placement['next_five_placement']['source_reader']['path']);reader=a.out/reader_original.name;reader.write_bytes(reader_original.read_bytes())
+  oc=candidate['all_Q2_optimized_monitor']['commands'][1];pc=placement['all_Q2_optimized_monitor']['commands'][1];owner_source=Path(pc[pc.index('-c')+1]);variants['owner']=(oc,owner_source.read_text());dependencies+=[a.placement,a.placement_analysis,source_header,header,reader_original,reader,owner_source]
  r,jobs,sources=link(seedpath,a.out,variants,dependencies)
  # Some normal ancestors predate the headless comparison metadata.
  for key in ('normal_performance','output_Q8_normal','cold_request','resident_all_Q8','resident_cache3072','resident_small_rows','resident_weight_normal'):

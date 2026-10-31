@@ -3,6 +3,7 @@
 """Prepare a fresh fourteen-request experiment and its positive close protocol."""
 import argparse,ast,re
 from pathlib import Path
+from self_upload_cache import bind_pending_cache_control
 ROOT=Path(__file__).resolve().parents[1]
 
 def main():
@@ -16,6 +17,8 @@ def main():
         # The initial shift also changes numeric suffixes inside build names.
         s=s.replace('Four-next-rollback-ranked-SELF-'+str(a.case+28),a.package_name).replace('Four-next-rollback-ranked-'+str(a.case+20),a.build_name)
         s=s.replace('tools/build_preservation_integrity.py','tools/build_next_five_integrity.py')
+        if name.startswith('first_'):s=bind_pending_cache_control(s)
+        if name.startswith('resident_'):s=s.replace("ROOT/'tools/staged_self_upload.py',","ROOT/'tools/staged_self_upload.py',ROOT/'tools/self_upload_cache.py',ROOT/'tools/build_closed_pack_cache_reclaim.py',")
         if name.startswith('prepared_'):
             needle="policy['native_GDN_model_comparison']=actual_native['GDN_model_comparison']['scope']";assert s.count(needle)==1;s=s.replace(needle,needle+";policy['native_next_five']=actual_native['next_five_comparison']['scope']")
             s=s.replace('ordinary original/fused A-B-B-A cold-retained pairs','installed control/candidate A-B-B-A cold-retained pairs')
