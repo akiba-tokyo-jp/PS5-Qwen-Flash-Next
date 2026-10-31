@@ -71,7 +71,13 @@ integrity or shape/type/byte checks, and all1256 tensor descriptors and negative
 fixtures pass on the host.
 
 Case12060 observes1145 free kernel pages; compact case12080 observes1122.
-Both require1360:898 ordinary minimum +206 reserved +256 margin,16KiB/page.
+Both use1154:898 ordinary minimum +max(206 reserved,256 application margin),
+16KiB/page. The earlier1360-page explanation incorrectly added both alternatives.
+The limit audit reproduces the actual selected system-memory header through the
+recorded compiler command and confirms the shared linked admission object.
+The differences from the predicate are9/32 pages, or144/512KiB. See
+[the limit-boundary audit](limit-boundary-results-20261031.md); raw native
+terminals and their hashes are unchanged.
 Neither completes model loading or the eight-request comparison. This is an
 application policy refusal under the observed condition, not proof of a
 physical PS5 impossibility. There is no supported speed or quality admission

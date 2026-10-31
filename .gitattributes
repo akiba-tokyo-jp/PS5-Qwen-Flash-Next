@@ -96,3 +96,10 @@ tools/finalize_io_gpu_build.py text eol=lf
 tools/rebind_gpu_provenance.py text eol=lf
 tools/screen_adaptive_prefill.cpp text eol=lf
 tools/screen_protection_capacities.py text eol=lf
+# Keep the limit-audit providers and manual evidence tools byte-stable.
+native/app/limit_margin_probe.h text eol=lf
+tools/check_limit_margin_probe.cpp text eol=lf
+tools/build_limit_margin_probe.py text eol=lf
+tools/audit_limit_evidence.py text eol=lf
+tools/analyze_limit_audit.py text eol=lf
+tools/screen_cache_limit.py text eol=lf

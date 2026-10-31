@@ -20,6 +20,31 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The owner's limit audit is completed in `docs/limit-boundary-results-20261031.md`
+and `.json`, with its scope in `docs/limit-boundary-plan-20261031.md`.
+Application padding was explicitly authorized for measurement; older unchanged-
+reserve clauses describe their historical controls, not a veto on this audit.
+Case12840 completes one load/ten requests with exact complete F32/routes/tokens/
+bytes. Loading stays above2312 pages and does not reproduce a low loading
+frontier. Inference reaches0 selected application padding;43 instantaneous old
+predicates fail. Minimum observed873 is not an admission: below898 must still
+wait/refuse. All owners retire positively and exact5564/settings restore.
+Case12900 completes288 F64/snapshot/canary graphs and splits backend/synchronize
+from the original completion checkpoint, which is99.082% of isolated wall.
+Decode-shaped backend improves, prefill regresses; no pure-GPU/model gain or
+production adoption is claimed. Both cases are consumed; do not replay.
+Native/gateway/models are inactive after exact restoration and fresh idle.
+Twenty-one limit families are classified. Historical scan:174 result files,22
+kernel-policy stops and5 checkpoint-quota stops; many are superseded by later
+adoptions.12060/12080 actually require1154, not the former1360 prose sum.
+Current buffer cap1600MiB is below reported/demonstrated2GiB;3424 slots fit the
+captured unchanged-reserve/weight-saving price and host miss count improves
+6.09%, but larger native capacity is not qualified.12840 retained I/O timing
+improves1.519%/1.932% with587 fewer physical calls; chosen2% gate and adaptive
+margin-state/sample limitations remain separate from effect. No new default
+is adopted; keep speed_followup_production.py and SELF5564. No OS counter writes,
+CI, reboot, forced reset, persistent caches or agents.
+
 The remaining I/O/GPU/cache follow-up has final dispositions in
 `docs/io-gpu-cache-results-20261031.md` and
 `docs/io-gpu-cache-adoption-20261031.json`; its specification is
@@ -87,7 +112,7 @@ defaults. All three POSTs, two viewed native frames, full finite vocabulary,
 counting output, positive owners and exact normal close/restore pass.
 Production placement12260 is complete: SELF3066dfe45c32d0586e3bdddb9e9ab31b200b3185a20aa0206e2418f326b2002f,20081383bytes. Current and immediate bd390 control plus both five-setting sets pass native whole SHA256/identity/EOF. Ownership and fresh idle pass; native/gateway/models inactive. Use weight_followup_production.py admission. The resident-Q8 section below is historical and does not override this selection. Normal weights-retained request decode4.177872 tok/s,TTFT2.234619s,total7.486257s; exact-prefix repeat6.300317 tok/s,TTFT61.873ms,total3.871905s. These reuse conditions differ. Keep3072/3073planes,4720619520 cache bytes, independent KV/request resets, four source workers and all original reserves.
 Priority3's complete cohort is execution unavailable under current kernel
-policy (1122 free versus1360 required), not physical impossibility. Corrected
+policy (1122 free versus1154 required), not physical impossibility. Corrected
 12060 and compact12080 fail during loading and normally close/restore; their
 pre-close retirement-unknown evidence remains. Never replay consumed cases.
 Large-resident Q4 and router-Q8 comparisons complete and are rejected for speed.
