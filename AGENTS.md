@@ -3,6 +3,33 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Latest abnormal-stop audit — 2026-11-02
+
+Read `docs/AMPR-recovery-runtime-boundary-20261102.md` first. Previous recovery
+completed: changed boot, six original/mounted whole-file hashes, registered
+metadata, ordinary existing-title alias, old five trial files and 64 MiB
+unmounted image/directory retirement. Direct candidate62280 was OS-rejected
+before native entry; its supervisor never executed and production was restored.
+
+The exact previously qualified compatibility initializer was then requested
+once in62300. It did not produce a return/ready END. The owner confirmed an
+abnormal termination and powered on again. Recovered62370 journal stops at
+BEFORE upstream_kernel_entry. This narrows a failure window, not an instruction
+or common cause. Do not automatically replay the same initialization conditions.
+Reopening this initializer requires a documented corrected implementation or
+source-backed prerequisite change; a new boot alone is insufficient evidence.
+Acquisition permission does not by itself authorize a new kernel patch.
+
+The current endpoint is owner-confirmed in private transport/context records.
+Read-only log access recovered after restart; latest boot/runtime/alias
+readmission remains pending. Do not reuse prior PIDs or infer alias survival.
+The active context holds execution. No new direct PFS, APR read, hardware Kraken
+or GPU inference ran. Draft PR85 is an unqualified host-built prototype outside
+main/production. Previous and current stop boundaries differ; both involved OS
+operations. Historical successful setup restored runtime before alias; this
+attempt reversed that order and encountered an OS rejection before runtime
+restoration. Order is an untested difference, not a proven cause.
+
 ### Latest AMPR / Kraken state — 2026-11-02
 
 Read `docs/AMPR-Kraken-revalidation-20261102.md` and its JSON before console

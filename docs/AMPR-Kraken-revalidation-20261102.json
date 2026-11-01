@@ -1,6 +1,6 @@
 {
   "schema": "ps5-AMPR-Kraken-revalidation-v1",
-  "status": "blocked_console_unreachable",
+  "status": "superseded_by_recovery_runtime_boundary",
   "owner_scope": "Investigate errors, correct the implementation, complete PS5 validation for both AMPR and Kraken, and adopt only measured speed improvements.",
   "acquisition_authorized": true,
   "reboot_available": false,
@@ -84,22 +84,6 @@
     "direct_compressed_PFS_PPR_control_tested": false,
     "hardware_absence_proven": false
   },
-  "last_console_boundary": {
-    "native_positive_END_and_return": true,
-    "native_PID_absence_observed": true,
-    "view_ordinary_unmount_rc": 0,
-    "own_auth_and_parent_restored": true,
-    "original_SELF_verified_before_restore_rename": true,
-    "both_restore_rename_ACKs_received": true,
-    "interruption_phase": "Post-rename six-file whole-readback loop",
-    "post_restore_verification_complete": false,
-    "final_remote_cleanup_complete": false,
-    "owned_base_PFS_and_image_retained": true,
-    "HTTP_FTP_unavailable": true,
-    "expected_console_ICMP_reply_observed": false,
-    "discovery": "One unidentified standby PS5 at another address; no wake/launch packet sent",
-    "freeze_or_failure_cause_proven": false
-  },
   "remaining_work": [
     "Identify an available console channel and verify current boot, ownership, restored files and settings without depending on reboot.",
     "Retire owned base PFS through ordinary filesystem API before deleting its backing image; finish pending probe artifact cleanup.",
@@ -124,5 +108,22 @@
     "profile": "cumulative-idle",
     "changed": false,
     "persistent_caches_enabled": false
+  },
+  "latest_followup": "AMPR-recovery-runtime-boundary-20261102.json",
+  "pre_recovery_boundary": {
+    "native_positive_END_and_return": true,
+    "native_PID_absence_observed": true,
+    "view_ordinary_unmount_rc": 0,
+    "own_auth_and_parent_restored": true,
+    "original_SELF_verified_before_restore_rename": true,
+    "both_restore_rename_ACKs_received": true,
+    "interruption_phase": "Post-rename six-file whole-readback loop",
+    "post_restore_verification_complete": false,
+    "final_remote_cleanup_complete": false,
+    "owned_base_PFS_and_image_retained": true,
+    "HTTP_FTP_unavailable": true,
+    "expected_console_ICMP_reply_observed": false,
+    "discovery": "One unidentified standby PS5 at another address; no wake/launch packet sent",
+    "freeze_or_failure_cause_proven": false
   }
 }
