@@ -56,6 +56,8 @@ def require_service_kernel_production(installation,context,report):
  if scope['service_overhead_mode']&16:need(normal.get('HC_no_split_selections',0)>0,'Selected HC kernel path must execute')
  if scope['service_overhead_mode']&64:need(normal.get('HC_split_two_selections',0)>0,'Selected HC parallel split path must execute')
  if scope['service_overhead_mode']&32:need(normal.get('Q4_large_workgroup_selections',0)>0,'Selected Q4 kernel path must execute')
+ if not scope['service_overhead_mode']&32:need(normal.get('Q4_large_workgroup_selections')==0,'Unselected Q4 kernel must remain inactive')
+ if not scope['service_overhead_mode']&16:need(normal.get('HC_no_split_selections')==0,'Unselected HC no-split policy must remain inactive')
  rows=report.get('dispositions',[]);need(len(rows)==5 and {x['id']for x in rows}==IDS and all(x.get('verification_stage_completed')is True and not x.get('remaining_current_plan_steps')for x in rows),'All five service/kernel stages must be explicitly disposed')
  need(placement.get('completed')and placement.get('case')==installation.get('production_placement_case')==context.get('normal_performance_placement_case')==PLACEMENT_CASE and placement.get('normal_case')==NORMAL_CASE and placement.get('verification_files')==12 and placement.get('verified_programs')==2 and placement.get('verified_settings')==placement.get('verified_control_settings')==5,'Whole current/immediate-control program and settings required')
  need(all(placement.get(k)is True for k in('native_whole_SHA256_identity_EOF_verified','immediate_control_preserved','fresh_idle_confirmed','runtime_ownership_restored')),'Positive native placement and idle ownership proof required')

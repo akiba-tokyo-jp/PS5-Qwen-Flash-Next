@@ -695,7 +695,6 @@
     }
   },
   "remaining": [
-    "normal_API_display",
     "verified_production_placement"
   ],
   "CI_runs": 0,
@@ -739,7 +738,7 @@
     },
     {
       "id": "S2",
-      "status": "status_tested_not_selected",
+      "status": "tested_not_selected",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 48500,
@@ -784,7 +783,7 @@
     },
     {
       "id": "S5",
-      "status": "status_tested_not_selected",
+      "status": "tested_not_selected",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 49700,
@@ -797,5 +796,18 @@
         true
       ]
     }
-  ]
+  ],
+  "normal_case": 50100,
+  "normal_qualified": true,
+  "normal_generated_tokens": [
+    22,
+    22,
+    25
+  ],
+  "normal_counting_quality": [
+    true,
+    true,
+    false
+  ],
+  "prefix_reuse_changed_output_reported": true
 }

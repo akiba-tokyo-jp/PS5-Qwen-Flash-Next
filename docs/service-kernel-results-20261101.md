@@ -22,7 +22,7 @@ Stage2 pairs only the returned llama synchronization marker and the following be
 
 Stage3 holds the existing queue lock and reuses a positive certificate only for the same frontend/device/submission generation and freshly matching, healthy, quiet requested/completed worker epoch. A new submit invalidates reuse through its changed generation. Owner snapshots, retirement and journal checks remain. Focused host API stubs exercise positive reuse, new-submit invalidation, producer overlap and pending/epoch/log/snapshot/retirement failures. Native timed candidates execute132 positive reuses and preserve every complete target F32 row/token. Paired whole savings27.634ms/41.090ms exceed9.533ms A/A spread.
 
-Stage4 initial case49300 inspects1160 eligible HC choices in the timed candidate groups: every original split is already1 and zero forced-removal selections execute. No speed gain is attributed to this unchanged path. Follow-up49900 therefore exercises actual existing splitK2 only for Q8 HC matrices with K>=2048, M<=512 and N16-32; existing workspace/device/single-buffer budgets remain. This is a changed parallelism experiment, not a replay of the null comparison.
+Stage4 initial case49300 inspects1160 eligible HC choices in the timed candidate groups: every original split is already1 and zero forced-removal selections execute. No speed gain is attributed to this unchanged path. Follow-up49900 therefore exercises actual existing splitK2 only for Q8 HC matrices with K>=2048, M<=512 and N16-32; existing workspace/device/single-buffer budgets remain. This is a changed parallelism experiment, not a replay of the null comparison. It executes1158 split-two selections across the complete native cohort, passes all four semantic tasks and reduces retained whole time4.153832%; cross-control maximum F32 difference9.662799 is disclosed separately from exact independent-candidate reproduction.
 
 Stage5 reuses the identical GPU object and recompiles only its entry selector. The existing Q4 LARGE workgroup is exercised8208 times overall, preserves candidate-independent complete F32 SHA256/routes, but changes routes relative to control. It produces no repeatable speedup and fails1/4 semantic tasks; maximum cross-control F32 difference is7.871416. It is not selected. This decision uses actual speed/answer results, not an arbitrary maximum-F32 cutoff. Candidate repeatability alone does not establish answer quality.
 
@@ -47,3 +47,38 @@ The source partition remains caller-wall accounting, not CPU cycles. Inclusive s
 - `tools/analyze_service_kernel.py`: immutable measured results and exact exclusive CPU span reconciliation.
 
 Raw console logs, target rows, ledgers, images, models and binaries stay outside Git. Source/build failures and the zero-launch preparation refusal remain preserved in the worklog; they do not represent PS5 launch attempts or physical impossibility. [Worklog](service-kernel-worklog-20261101.json), [machine-readable results](service-kernel-results-20261101.json), [adoption](service-kernel-adoption-20261101.json) and [installation](../config/production-installation.json) distinguish completed comparisons, selection, normal qualification and verified production placement.
+
+## Final actual normal application
+
+One local cold generation, two actual streamed API generations and a finish POST complete; two actual positive native VideoOut frames are viewed. Fixed30-token prompt; cold/retained generate22 tokens, selected prefix25 versus previous22. Previous47100 and selected50100 are sequential cohorts, not matched A/B.
+
+| Condition | Previous47100 tok/s | Selected50100 tok/s | Counting correct |
+| --- | ---: | ---: | --- |
+| Cold Expert cache | 7.215938 | 7.983627 | true |
+| Independent KV reset, weights retained | 9.186170 | 10.555503 | true |
+| Exact prefix with causal reuse | 10.476288 | 11.719167 | false |
+
+Prefix counting remains incorrect and its changed25-token output is not a same-output speed comparison. Its rate is not correct-answer throughput; no returned output is rewritten. All three actual ledgers are read back exactly. Exclusive caller-wall intervals reconcile exactly with every enclosing request.
+
+Retained request exclusive intervals:
+
+| Caller interval | ms |
+| --- | ---: |
+| model_process | 1839.944849 |
+| stage | 266.694945 |
+| checkpoint | 164.137791 |
+| epoch_complete | 147.785664 |
+| request_run | 62.544461 |
+| token_persistence | 42.518319 |
+| epoch_begin | 36.047438 |
+| full_validation | 15.167633 |
+| sampler | 12.836003 |
+| finite_scan | 2.787245 |
+| publication | 1.771214 |
+| logit_access | 0.111299 |
+| token_render | 0.079065 |
+| work_guard | 0.000000 |
+
+Selected service mode69; actual CPU peak503382016bytes, device-ledger peak6167724032bytes. Original CPU536870912 and device6199160832 limits remain.
+
+Final placement50200 preserves immediate8858 and its five settings, verifies all12 selected/control files natively before/after placement and restores idle runtime ownership without another title launch. Its exact positive state is in the adoption and installation records.
