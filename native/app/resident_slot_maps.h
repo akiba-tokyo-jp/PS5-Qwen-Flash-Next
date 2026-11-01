@@ -35,7 +35,8 @@ public:
         ctx_=ggml_init(params);if(!ctx_)throw std::runtime_error("Slot-map metadata unavailable");
         storage_=ggml_new_tensor_1d(ctx_,GGML_TYPE_I32,layers*stride);
         ggml_set_input(storage_);ggml_set_output(storage_);
-        for(std::size_t i=0;i<layers;++i){maps_[i]=ggml_view_1d(ctx_,storage_,experts,(i*stride+guard)*sizeof(std::int32_t));ggml_set_input(maps_[i]);}
+        // Only the owning NONE tensor is an input; GGML views retain their VIEW op.
+        for(std::size_t i=0;i<layers;++i)maps_[i]=ggml_view_1d(ctx_,storage_,experts,(i*stride+guard)*sizeof(std::int32_t));
         buffer_=ggml_backend_alloc_ctx_tensors(ctx_,backend_);
         if(!buffer_){ggml_free(ctx_);ctx_=nullptr;throw std::runtime_error("Resident slot-map device buffer unavailable");}
         std::vector<std::int32_t> initial(layers*stride,sentinel);
