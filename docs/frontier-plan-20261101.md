@@ -8,7 +8,7 @@ by this plan. Use fresh case identifiers and the exact current rollback SELF.
 
 | Order | Candidate | Required evidence | State |
 | --- | --- | --- | --- |
-| 1 | GPU/worker/owner/journal-generation certificate | Focused invalidation checks; native matched control, whole-request gain and exact F32/routes | Native 51100 passed; selected pending combined normal qualification |
+| 1 | GPU/worker/owner/journal-generation certificate | Focused invalidation checks; native matched control, whole-request gain and exact F32/routes | Native 51100 passed; adopted after normal53100/placement53200 |
 | 2 | HC Down/Inject shared-input projection | Prove actual Q8 layout/alias bounds; native independent repeats and semantic checks | Corrected native 51500 passed; selected for prefill latency |
 | 3 | Shape-specific HC split-K 2/4/8 | Preserve qualified factors; count actual selections, whole request and numerical repeats | 51700/51900 complete; split-K 4 selected, 8 negative |
 | 4 | Reusable Vulkan commands for fixed non-Expert ranges | Prove selected-driver support and descriptor/command-buffer lifetime; compare actual executed reuse | 52100 complete; measured negative, not selected |
@@ -92,4 +92,7 @@ verified placement must finish before the campaign is reported delivered.
 
 Normal53100 has now passed API, viewed frames, all three counting answers,
 ledger readback, positive retirement and exact restoration. Verified placement
-53200 is the final delivery step. See frontier-adoption-20261101.json.
+53200 completed delivery; thirty rejection controls and actual current admission pass. See frontier-adoption-20261101.json.
+
+Delivery is complete: normal53100, placement53200, current strict admission
+and30 rejection controls pass. Native/gateway/models remain inactive.

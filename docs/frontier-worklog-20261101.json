@@ -6,7 +6,7 @@
   "stages": {
     "1": {
       "completed": true,
-      "state": "native_verified_selected_pending_normal",
+      "state": "native_verified_adopted",
       "case": 51100,
       "analysis": {
         "retained_decode_gain_percent": 2.3920339619869058,
@@ -35,7 +35,7 @@
     },
     "2": {
       "completed": true,
-      "state": "native_verified_prefill_latency_selected_pending_normal",
+      "state": "native_verified_prefill_latency_adopted",
       "case": 51500,
       "initial_failed_case": 51300,
       "failure_corrected": "explicit contiguous Down/Inject result slices",
@@ -73,7 +73,7 @@
     },
     "3": {
       "completed": true,
-      "state": "split4_selected_split8_tested_negative",
+      "state": "split4_adopted_split8_tested_negative",
       "split4": {
         "completed": true,
         "case": 51700,
@@ -185,24 +185,24 @@
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 51100,
-      "status": "adopted_pending_verified_placement",
-      "scope": "native_verified_selected_pending_normal"
+      "status": "adopted",
+      "scope": "native_verified_adopted"
     },
     {
       "id": "F2",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 51500,
-      "status": "adopted_pending_verified_placement",
-      "scope": "native_verified_prefill_latency_selected_pending_normal"
+      "status": "adopted",
+      "scope": "native_verified_prefill_latency_adopted"
     },
     {
       "id": "F3",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 51700,
-      "status": "adopted_pending_verified_placement",
-      "scope": "split4_selected_split8_tested_negative"
+      "status": "adopted",
+      "scope": "split4_adopted_split8_tested_negative"
     },
     {
       "id": "F4",
@@ -213,5 +213,44 @@
       "scope": "native_verified_negative_not_selected"
     }
   ],
-  "delivery_record": "docs/frontier-adoption-20261101.json"
+  "delivery_record": "docs/frontier-adoption-20261101.json",
+  "production_changed": true,
+  "results": [
+    {
+      "id": "F1",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 51100,
+      "status": "adopted",
+      "scope": "native_verified_adopted"
+    },
+    {
+      "id": "F2",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 51500,
+      "status": "adopted",
+      "scope": "native_verified_prefill_latency_adopted"
+    },
+    {
+      "id": "F3",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 51700,
+      "status": "adopted",
+      "scope": "split4_adopted_split8_tested_negative"
+    },
+    {
+      "id": "F4",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 52100,
+      "status": "verified_not_selected",
+      "scope": "native_verified_negative_not_selected"
+    }
+  ],
+  "remaining": [],
+  "normal_case": 53100,
+  "production_placement_case": 53200,
+  "all_four_priorities_completed": true
 }

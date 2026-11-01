@@ -278,10 +278,8 @@
     "timestamp_intervals_include_fused_ranges_and_dependencies": true
   },
   "schema": "ps5-qwen-frontier-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 21887991,
     "sha256": "1a76c37007962b9da767b0e70667d140bfaeb2138a4d29925245958afd84047e"
@@ -822,24 +820,24 @@
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 51100,
-      "status": "adopted_pending_verified_placement",
-      "scope": "native_verified_selected_pending_normal"
+      "status": "adopted",
+      "scope": "native_verified_adopted"
     },
     {
       "id": "F2",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 51500,
-      "status": "adopted_pending_verified_placement",
-      "scope": "native_verified_prefill_latency_selected_pending_normal"
+      "status": "adopted",
+      "scope": "native_verified_prefill_latency_adopted"
     },
     {
       "id": "F3",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 51700,
-      "status": "adopted_pending_verified_placement",
-      "scope": "split4_selected_split8_tested_negative"
+      "status": "adopted",
+      "scope": "split4_adopted_split8_tested_negative"
     },
     {
       "id": "F4",
@@ -856,24 +854,24 @@
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 51100,
-      "status": "adopted_pending_verified_placement",
-      "scope": "native_verified_selected_pending_normal"
+      "status": "adopted",
+      "scope": "native_verified_adopted"
     },
     {
       "id": "F2",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 51500,
-      "status": "adopted_pending_verified_placement",
-      "scope": "native_verified_prefill_latency_selected_pending_normal"
+      "status": "adopted",
+      "scope": "native_verified_prefill_latency_adopted"
     },
     {
       "id": "F3",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 51700,
-      "status": "adopted_pending_verified_placement",
-      "scope": "split4_selected_split8_tested_negative"
+      "status": "adopted",
+      "scope": "split4_adopted_split8_tested_negative"
     },
     {
       "id": "F4",
@@ -885,7 +883,22 @@
     }
   ],
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 53200,
+    "normal_case": 53100,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "application_relink": {
     "selected_frontend_object": {
@@ -929,6 +942,10 @@
     {
       "bytes": 1504,
       "sha256": "43b5e71b21ab459e4674570278c246a313aebb4e451be37490e4e1e0fbfaffda"
+    },
+    {
+      "bytes": 1469,
+      "sha256": "65435d808c01eddc1e57d27cce999416ff3c89439adce1073c8d33ff18668315"
     }
   ],
   "limitations": [
@@ -940,5 +957,46 @@
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
-  "forced_resets": 0
+  "forced_resets": 0,
+  "placement_metadata_revision": "689ff54570caf6f7d8d7af1d4142d9f428864ec8",
+  "admission_validation": {
+    "completed": true,
+    "actual_current_configuration_admitted": true,
+    "prepare_first_case_current_control_passed": true,
+    "expected_refusals": 30,
+    "refusals": [
+      "wrong_program",
+      "wrong_model",
+      "wrong_cache",
+      "lost_control",
+      "live_owner",
+      "missing_finite_proof",
+      "missing_native_frames",
+      "wrong_GPU_provider",
+      "old_node_policy",
+      "missing_seal_reuse",
+      "below_OS_minimum",
+      "missing_plan_stage",
+      "incomplete_placement",
+      "GPU_diagnostics_in_production",
+      "missing_CPU_rows",
+      "unretired_query_pool",
+      "missing_API_publication",
+      "inexact_CPU_partition",
+      "missing_ledger_readback",
+      "incomplete_ledger_set",
+      "wrong_service_mode",
+      "missing_GPU_stage",
+      "unselected_Q4_kernel_executed",
+      "missing_owner_certificate_execution",
+      "missing_HC_join_execution",
+      "wrong_frontier_mode",
+      "wrong_actual_split_sum",
+      "missing_frontier_verification",
+      "incomplete_frontier_stages",
+      "selected_quality_failed"
+    ],
+    "PS5_operations": 0,
+    "CI_runs": 0
+  }
 }

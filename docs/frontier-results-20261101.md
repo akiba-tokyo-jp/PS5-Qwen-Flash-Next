@@ -98,6 +98,7 @@ native composed archive b57fe26e969940d147be05c1ffae830503d4865877281dffe03af323
 The exact clean application relink revision and fingerprints are in
 [the adoption record](frontier-adoption-20261101.json); normal source revision
 is a24f6da7a09859432cb9c994f221bf727441c9b5. Verified production placement53200
-must complete before delivery is declared. The immediate4f5d control and all
+is complete. Thirty current-config rejection controls and future-case admission
+pass; all twelve current/control native files have full SHA256/identity/EOF proof. The immediate4f5d control and all
 five settings are preserved. Qualification is this finite scope, not arbitrary
 prompt, context or sustained-service qualification.
