@@ -1,0 +1,41 @@
+{
+  "schema": "ps5-qwen-load-followup-worklog-v1",
+  "completed": false,
+  "production_changed": false,
+  "baseline_normal": 45100,
+  "baseline_production": 45200,
+  "P1": {
+    "completed": true,
+    "case": 46100,
+    "all14_requests_full_F32_routes_tokens_exact": true,
+    "whole_time_reduction_percent": 7.782193198188569,
+    "decode_gain_percent": 9.978405940081746,
+    "paired_whole_time_savings_ms": [
+      260.10330295562744,
+      229.84918397665024
+    ],
+    "AA_spread_ms": 27.458615005016327,
+    "adoption_pending_normal_and_placement": true
+  },
+  "P2": {
+    "completed": false,
+    "headless_nested_CPU_spans_case": 46100,
+    "normal_controller_measurement_pending": true
+  },
+  "P3": {
+    "completed": false,
+    "case": 46500,
+    "diagnostic_running": true,
+    "query_read_after_existing_completion": true,
+    "no_additional_wait": true
+  },
+  "remaining": [
+    "P2_normal_CPU_attribution",
+    "P3_GPU_ranges",
+    "normal_API_display_qualification",
+    "verified_production_placement"
+  ],
+  "CI_runs": 0,
+  "reboots": 0,
+  "agents": 0
+}
