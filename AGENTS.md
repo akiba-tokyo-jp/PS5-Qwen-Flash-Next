@@ -3,6 +3,34 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Authorized APR system-library investigation — 2026-11-01
+
+The owner subsequently authorized system-library acquisition for this APR
+investigation, including libSceAmpr, libkernel, libkernel_sys and the existing
+FTP SELF decoder's temporary kernel pager switch risk, then authorized all
+needed acquisition. Do not request the same acquisition authorization again.
+Keep all proprietary bytes, disassembly, module hashes and endpoints private
+on the data disk; publish only sanitized measurements and interpretation.
+This acquisition permission does not replace positive execution/completion
+requirements or authorize installing a new kernel patch.
+
+Read `docs/APR-system-library-analysis-20261101.json`. Three original files
+are byte-identical after acquisition; full current production SELF hash and
+no native owner pass. FTP mode is restored. No title, model/GPU execution or
+APR read was performed. All three decoder outputs have matching ELF/program
+headers but fail the embedded whole-ELF digest; executable qualification is
+false. The zero-filled trailing note and common padding checks do not prove
+the mismatch cause. Treat static results as observations of the acquired
+copies, not authenticated firmware or a new production dependency.
+
+Observed libkernel and libkernel_sys resolve wrappers have the same four
+argument order as the prior probe, then call syscall701 (0x2bd). Size/stat
+uses syscall702 (0x2be). The error stub stores the syscall error in errno and
+returns -1. No user-space ioctl was observed on this path. This narrows the
+boundary but does not locate the kernel's rejection branch or prove a PFS fix.
+Do not repeat unchanged ENOTTY calls, submit synthetic IDs, or replace the
+command writer as an assumed cure. Production and driver policy remain intact.
+
 ### Native APR title recheck — 2026-11-01
 
 Read `docs/APR-native-recheck-20261101.json` before reopening APR work. Exact NID
