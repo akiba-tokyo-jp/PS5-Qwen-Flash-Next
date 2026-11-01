@@ -16,6 +16,8 @@ def main():
     for key in('normal','package','bindings','bundle-proof','out'):p.add_argument('--'+key,type=Path,required=True)
     p.add_argument('--pfs-fixture',type=Path)
     p.add_argument('--attach-pfs-view',action='store_true')
+    p.add_argument('--direct-pfs-control',action='store_true')
+    p.add_argument('--boot-observation',type=Path)
     a=p.parse_args();n=json.loads(a.normal.read_text());package=json.loads(a.package.read_text());bindings=json.loads(a.bindings.read_text());bundle=json.loads(a.bundle_proof.read_text())
     if not bindings['completed']or not bindings['helper_exited']:raise ValueError('Completed exact-NID observation required')
     if not all(r['matches_exact']=='1'for r in bindings['SDK']if 1<=int(r['index'])<=8):raise ValueError('Actual native kernel binding required')
@@ -29,8 +31,14 @@ def main():
             context['APR_PFS_VIEW_DIR']='/app0/qwen-runtime/pv-'+nonce[:12]
             context['APR_PFS_FILE']=context['APR_PFS_VIEW_DIR']+'/control.bin'
     elif a.attach_pfs_view:raise ValueError('An owned mounted PFS fixture is required')
+    if a.direct_pfs_control:
+        if a.pfs_fixture or a.attach_pfs_view or not a.boot_observation:raise ValueError('Direct control requires fresh boot metadata and no pre-existing PFS view')
+        boot=json.loads(a.boot_observation.read_text());assert boot['double_snapshot_equal']and boot['helper_exited']
+        context.update(APR_DIRECT_DIR='/app0/qwen-runtime/ad-'+nonce[:12],APR_DIRECT_STATUS='/app0/qwen-runtime/ac-'+nonce+'.bin')
+        context['APR_PFS_FILE']=context['APR_DIRECT_DIR']+'/control.bin'
+    boot_values=json.loads(a.boot_observation.read_text())['boot']if a.boot_observation else[1793526511,650440]
     (a.out/'apr_title_context.h').write_text(''.join('#define '+k+' '+json.dumps(v)+'\n'for k,v in context.items())+
-        '#define APR_BOOT_SEC 1793526511LL\n#define APR_BOOT_USEC 650440LL\n',newline='\n')
+        '#define APR_BOOT_SEC '+str(boot_values[0])+'LL\n#define APR_BOOT_USEC '+str(boot_values[1])+'LL\n',newline='\n')
     rows=['{'+json.dumps(r['name'])+','+json.dumps(r['nid'])+'},'for r in bindings['names']]
     digest=hashlib.sha1(b'__error'+bytes.fromhex('518d64a635ded8c1e6b039b1c3e55230')).digest()[:8][::-1]
     rows.append('{"__error",'+json.dumps(base64.b64encode(digest,altchars=b'+-').decode().rstrip('='))+'},')
@@ -42,7 +50,7 @@ def main():
         if '-MF'in cmd:cmd[cmd.index('-MF')+1]=str(obj.with_suffix('.d'))
         cmd=[{'-fexceptions':'-fno-exceptions','-fcxx-exceptions':'-fno-exceptions','-frtti':'-fno-rtti'}.get(x,x)for x in cmd]
         cmd[1:1]=['-I',str(a.out),'-I',str(ROOT/'native/app')];return cmd
-    sources=[ROOT/'native/qwen_flash_next'/('apr_pfs_title_probe.cpp'if a.pfs_fixture else'apr_static_title_probe.cpp'),ROOT/'native/app/native_crt.cpp']
+    sources=[ROOT/'native/qwen_flash_next'/('apr_direct_title_probe.cpp'if a.direct_pfs_control else'apr_pfs_title_probe.cpp'if a.pfs_fixture else'apr_static_title_probe.cpp'),ROOT/'native/app/native_crt.cpp']
     jobs=[compile(s,a.out/f'{i}.o')for i,s in enumerate(sources)]
     linker=Path(n['link_command'][0]);lib=sdk/'lib';native_layout=Path(n['link_command'][n['link_command'].index('-L')+1])
     libc=next(Path(x)for x in n['link_command']if x.endswith('libc.title.a'));builtins=next(Path(x)for x in n['link_command']if 'libclang_rt.builtins' in x)
@@ -60,6 +68,8 @@ def main():
         [str(tool),'self','--extract','--file',str(a.out/'eboot.bin'),'--out',str(a.out/'roundtrip.elf')]]
     frozen=[record(x)for x in sources+[ROOT/'native/app/apr_command_encoder.h',Path(__file__),a.normal,a.package,a.bindings,a.bundle_proof,*a.out.glob('*.h'),lib/'libps5platform.a',libc,builtins,*stubs,native_layout/'ps5-pie.ld',tool]]
     if a.pfs_fixture:frozen.append(record(a.pfs_fixture))
+    if a.direct_pfs_control:frozen.append(record(ROOT/'native/app/apr_direct_control.h'))
+    if a.boot_observation:frozen.append(record(a.boot_observation))
     host=Path(package['format_tool_compile'][0]).parent
     env=dict(os.environ,TMP=str(a.out/'tmp'),TEMP=str(a.out/'tmp'),PATH=str(host)+os.pathsep+str(cc.parent)+os.pathsep+os.environ.get('PATH',''))
     for i,cmd in enumerate(jobs):
@@ -84,6 +94,7 @@ def main():
         APR_read_submits=0,native_writer_dry_run=True,writer_backend='public_source',system_binary_inputs=False,context=context,control=record(a.out/'control.private.bin'),
         integrity_verified=True,roundtrip_segments_verified=checked,driver_changed=False,CI_runs=0)
     if a.pfs_fixture:result.update(PFS_prerequisite_only=True,existing_PFS_fixture=record(a.pfs_fixture),native_writer_dry_run=False)
+    if a.direct_pfs_control:result.update(PFS_prerequisite_only=True,direct_PFS_control=True,supervisor_detach_before_return=True,native_writer_dry_run=False,lifecycle_qualification_complete=False)
     (a.out/'manifest.private.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(dict(native_title_built=True,SELF_bytes=result['SELF']['bytes'],GPU_archives_linked=0,APR_read_submits=0)))
 if __name__=='__main__':main()

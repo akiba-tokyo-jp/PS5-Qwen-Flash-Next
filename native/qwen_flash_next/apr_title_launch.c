@@ -17,11 +17,22 @@ int sceUserServiceGetForegroundUser(uint32_t*);
 void sceUserServiceTerminate(void);
 int sceSystemServiceLaunchApp(const char*,char**,launch_context*);
 static int context(unsigned phase){if(!boot(phase)||!idle(phase))return 0;for(size_t i=0;i<sizeof(expected_processes)/sizeof(expected_processes[0]);++i)if(!service(expected_processes+i,phase))return 0;return boot(phase);}
+/* Read-only check used by the already qualified compatibility loader. Without
+ * its hook, the kernel returns getppid rather than a zero readiness result.
+ */
+static int compatibility_ready(void){
+    uint64_t raw=0;unsigned char carry=0;
+    register uint64_t r10 __asm__("r10")=0,r8 __asm__("r8")=0,r9 __asm__("r9")=0;
+    __asm__ __volatile__("syscall":"=a"(raw),"=@ccc"(carry),"+r"(r10),"+r"(r8),"+r"(r9)
+        :"a"(UINT64_C(0xffffffff00000027)),"D"(UINT64_C(0)),"S"(UINT64_C(0)),"d"(UINT64_C(0)):"rcx","r11","memory");
+    return report("COMPATIBILITY_READY loaded=%d raw=%llu carry=%u query_only=1",!carry&&!raw,(unsigned long long)raw,carry)&&!carry&&!raw;
+}
 int main(int argc,char**argv){
     (void)argv;if(argc!=0&&argc!=1)return 2;
     journal=open(RECOVERY_LOG,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0644);if(journal<0)return 3;int ok=0,calls=0,started=0;
     if(!report("BEGIN nonce=%s pid=%d GPU_calls=0 ordinary_launch_only=1",RECOVERY_NONCE,getpid())||getuid()!=1||geteuid()!=0||!context(1))goto done;
     for(size_t i=0;i<sizeof(files)/sizeof(files[0]);++i)if(!qwen_launch_digest_matches(files[i].path,files[i].bytes,files[i].hash))goto done;
+    if(!compatibility_ready())goto done;
     int rc=sceUserServiceInitialize(NULL);if(!report("USER_SERVICE init_rc=%d",rc)||rc)goto done;started=1;
     struct{uint64_t a;launch_context value;uint64_t b;} launch={GUARD,{0},GUARD};launch.value.size=sizeof(launch.value);
     rc=sceUserServiceGetForegroundUser(&launch.value.user_id);
