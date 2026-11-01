@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-11-01",
-  "application_source_revision": "0b38352ad2845e1cd2b923844967d694c2e582e4",
+  "application_source_revision": "a24f6da7a09859432cb9c994f221bf727441c9b5",
   "application_SELF": {
-    "bytes": 21884599,
-    "sha256": "4f5db8c1724488560a9bcb616e83f69075a650812067209f99132de5003fcdbc"
+    "bytes": 21887991,
+    "sha256": "1a76c37007962b9da767b0e70667d140bfaeb2138a4d29925245958afd84047e"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -27,34 +27,34 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "8858dd5eaa63733accabfa50b057971fa8b54c9acad4e8e6365f7b5a54b424b1",
+  "previous_production_SHA256": "4f5db8c1724488560a9bcb616e83f69075a650812067209f99132de5003fcdbc",
   "active_expert_slots": 3712,
   "physical_cache_planes": 3713,
   "expert_cache_bytes": 5703659520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 493.88654297590256,
-      "decode_ms": 1989.4835219979286,
-      "decode_tokens_per_second": 10.555503359440172,
+      "TTFT_ms": 397.1020179986954,
+      "decode_ms": 1939.7775419950485,
+      "decode_tokens_per_second": 10.82598367357199,
       "generated_tokens": 22,
-      "prefill_ms": 455.30869603157043,
+      "prefill_ms": 364.2037050127983,
       "prompt_tokens": 30,
-      "total_ms": 2590.2624430060387
+      "total_ms": 2438.065862953663
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 61.071702003479004,
-      "decode_ms": 2047.9271469712257,
-      "decode_tokens_per_second": 11.719166883204176,
-      "generated_tokens": 25,
-      "prefill_ms": 26.36937701702118,
+      "TTFT_ms": 56.91930001974106,
+      "decode_ms": 1735.6411769986153,
+      "decode_tokens_per_second": 12.099275056561275,
+      "generated_tokens": 22,
+      "prefill_ms": 24.23828798532486,
       "prompt_tokens": 30,
-      "total_ms": 2201.7381789684296
+      "total_ms": 1896.590795993805
     }
   ],
-  "normal_application_case": 50100,
-  "production_placement_case": 50200,
+  "normal_application_case": 53100,
+  "production_placement_case": 53200,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -69,8 +69,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": false,
-  "qualification_report": "docs/service-kernel-adoption-20261101.json",
-  "historical_installation": "config/production-installation-load-followup-20261101.json",
+  "qualification_report": "docs/frontier-adoption-20261101.json",
+  "historical_installation": "config/production-installation-service-kernel-20261101.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -79,7 +79,7 @@
   "private_repository": true,
   "GitHub_Actions_enabled": false,
   "original_Q4_optimized_profile_preserved": false,
-  "fixed_quality_candidate_case": 49900,
+  "fixed_quality_candidate_case": 51700,
   "finite_quality_scope": "Four fixed semantic tasks pass in complete routing/Q4 cohorts. Normal/API counting correctness and cross-prefix answer changes are reported per request without rewriting output or quarantining returned GPU work. General quality, arbitrary-prompt performance and sustained reboot-free operation are not claimed.",
   "model_receipt_SHA256": "46ceb693e8afd3c562e92532674ff16a336387da4cea91609660cc1fc58fe426",
   "expert_eviction_policy": "two_touch_probation",
@@ -111,8 +111,8 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "previous_production_source_revision": "e909298a5a240f619b249c826c21c26dcbfe48fa",
-  "normal_validation_case": 50100,
+  "previous_production_source_revision": "0b38352ad2845e1cd2b923844967d694c2e582e4",
+  "normal_validation_case": 53100,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 2,
@@ -173,10 +173,10 @@
   "non_Expert_except_output_precision_preserved": false,
   "non_Expert_except_output_and_shared_precision_preserved": false,
   "fixed_quality_cases": [
-    48100,
-    48500,
-    49000,
-    49900
+    51100,
+    51500,
+    51700,
+    52100
   ],
   "fixed_quality": {
     "requests_per_complete_comparison": 14,
@@ -198,85 +198,42 @@
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 47100,
+    "control_case": 50100,
     "control_is_sequential_not_ABBA": true,
     "cache_occupancy_held_matched": false,
     "unlike_cache_conditions_not_pooled": true,
     "causal_candidate_evidence": [
       {
-        "id": "S1",
+        "id": "F1",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "case": 51100,
         "status": "adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "case": 48100,
-        "selected": true,
-        "reason": "Repeatable whole-request improvement and exact target-output/finite-task proof.",
-        "fixed_semantic_grades": [
-          true,
-          true,
-          true,
-          true
-        ]
+        "scope": "native_verified_selected_pending_normal"
       },
       {
-        "id": "S2",
-        "status": "tested_not_selected",
+        "id": "F2",
         "verification_stage_completed": true,
         "remaining_current_plan_steps": [],
-        "case": 48500,
-        "selected": false,
-        "reason": "Whole/decode differences are within control A/A variation; all records/numerics pass but application speed is not established.",
-        "fixed_semantic_grades": [
-          true,
-          true,
-          true,
-          true
-        ]
-      },
-      {
-        "id": "S3",
+        "case": 51500,
         "status": "adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "case": 49000,
-        "selected": true,
-        "reason": "Repeatable whole-request improvement and exact target-output/finite-task proof.",
-        "fixed_semantic_grades": [
-          true,
-          true,
-          true,
-          true
-        ]
+        "scope": "native_verified_prefill_latency_selected_pending_normal"
       },
       {
-        "id": "S4",
+        "id": "F3",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "case": 51700,
         "status": "adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "case": 49900,
-        "selected": true,
-        "reason": "Accept only repeatable whole-request benefit with decode nonregression and every fixed semantic task; no arbitrary cross-control F32 threshold.",
-        "fixed_semantic_grades": [
-          true,
-          true,
-          true,
-          true
-        ]
+        "scope": "split4_selected_split8_tested_negative"
       },
       {
-        "id": "S5",
-        "status": "tested_not_selected",
+        "id": "F4",
         "verification_stage_completed": true,
         "remaining_current_plan_steps": [],
-        "case": 49700,
-        "selected": false,
-        "reason": "No repeatable speedup; candidate is internally exact but changes ordered routes and fails1/4 fixed semantic tasks.",
-        "fixed_semantic_grades": [
-          false,
-          true,
-          true,
-          true
-        ]
+        "case": 52100,
+        "status": "verified_not_selected",
+        "scope": "native_verified_negative_not_selected"
       }
     ]
   },
@@ -285,15 +242,15 @@
   "speculative_source_reads": false,
   "additional_GPU_forecast": false,
   "normal_application_speedup": {
-    "control_case": 47100,
-    "comparison": "Sequential installed47100 versus qualified50100, not ABBA; matched candidate evidence is reported separately in service-kernel adoption results",
+    "control_case": 50100,
+    "comparison": "Sequential installed50100 versus qualified53100, not ABBA; matched candidate evidence is reported separately in frontier adoption results",
     "full_vocabulary_finite": true,
-    "all_counting_tokens_and_bytes_equal": false,
+    "all_counting_tokens_and_bytes_equal": true,
     "cross_cache_exact_F32_required": false,
     "maximum_absolute_logit_error_by_request": [
       0.0,
-      9.357640713453293,
-      10.55918025970459
+      10.824426889419556,
+      8.547345638275146
     ]
   },
   "all_six_previous_memory_candidates_disposed": true,
@@ -410,7 +367,7 @@
     "loading_legacy_padding_pages": 256,
     "loading_scope_once": true,
     "PLE_convolution_BF16_preserved": true,
-    "selected_GPU_object_SHA256": "a062fc25483769d409cef5be86807daff0faf211b04c0026be2255e1bb705c90"
+    "selected_GPU_object_SHA256": "c26fadf2e7018e3ae30b8901779c1ea8a8a26961cf7280612c5f63f57182f2b3"
   },
   "additional_application_state_allowance_bytes": 130023424,
   "n_rs_seq": 1,
@@ -444,7 +401,7 @@
     "prior_sealed_pack_SHA256": "98a25de242a9862ba5ae6572d1c2f1d2bff170def03685eb6a71b526399944e8",
     "prior_sealed_pack_bytes": 1577058304,
     "fresh_whole_pack_hash_not_claimed": true,
-    "selected_GPU_object_SHA256": "a062fc25483769d409cef5be86807daff0faf211b04c0026be2255e1bb705c90",
+    "selected_GPU_object_SHA256": "c26fadf2e7018e3ae30b8901779c1ea8a8a26961cf7280612c5f63f57182f2b3",
     "output_weight_type": "Q4_0",
     "submission_node_cap": 256,
     "submission_flop_divisor": 40,
@@ -457,13 +414,18 @@
     "token_record_format": "bounded_per_request_JSONL",
     "per_token_fsync_preserved": true,
     "HC_prefill_no_split": false,
-    "HC_prefill_split_two": true,
-    "Q4_small_rows_large_workgroup": false
+    "HC_prefill_split_two": false,
+    "Q4_small_rows_large_workgroup": false,
+    "frontier_mode": 7,
+    "owner_generation_checkpoint_reuse": true,
+    "HC_joined_immutable_Q8": true,
+    "HC_prefill_split_K": 4,
+    "recorded_command_cache": false
   },
   "normal_counting_quality_by_request": [
     true,
     true,
-    false
+    true
   ],
   "approximate_model_quality_reported_separately": true
 }

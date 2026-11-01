@@ -8,56 +8,47 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-All five service/kernel categories are verified in six native comparison
-cohorts (84 requests), followed by normal50100 (three generations). Winners1/3/4
-are installed through verified placement50200. See
-[results](docs/service-kernel-results-20261101.md),
-[adoption](docs/service-kernel-adoption-20261101.json),
-[all dispositions](docs/service-kernel-worklog-20261101.json) and
-[installation](config/production-installation.json).
-The preceding [load analysis](docs/load-followup-results-20261101.md) and
-[17 post-Top2 stages](docs/post-top2-results-20261101.md) remain retained.
+The four ordered owner/HC/command categories are verified in five complete
+native comparison cohorts (70 requests), followed by normal53100 (three
+generations). Winners1/2/3 are installed through verified placement53200.
+See [results](docs/frontier-results-20261101.md),
+[adoption](docs/frontier-adoption-20261101.json),
+[all dispositions](docs/frontier-worklog-20261101.json) and
+[installation](config/production-installation.json). The preceding
+[service/kernel](docs/service-kernel-results-20261101.md),
+[load analysis](docs/load-followup-results-20261101.md) and
+[post-Top2](docs/post-top2-results-20261101.md) records remain historical controls.
 
-Selected: one bounded token ledger per request with **fsync before every token
-publication**; positive same-device/submission/worker-epoch completion reuse
-with queue locking and all ownership checks; existing HC splitK2 only for
-K>=2048/M<=512/N16-32. Mode69 keeps the unselected stage-pair and regressing
-Q4 LARGE policies disabled. Original node256/divisor40/tail batching remains.
-The monitoring pair has no repeatable speed gain. HC split-removal already
-has no extra splits; the actual splitK2 follow-up improves whole time4.1538%.
-Q4 LARGE has no speed gain and fails1/4 fixed semantic tasks, so is not adopted.
+Selected frontier mode7 adds duplicate durable owner-checkpoint reuse, checked
+adjacent Q8 HC Down/Inject weight aliases with one shared-input projection, and
+shape-limited HC split-K4. Existing service mode69 retains per-token fsync,
+positive same-generation GPU completion, all fresh owner/retirement checks,
+node256/divisor40 and the qualified tail policy. HC prefill/TTFT improves;
+recorded secondary-command reuse is measured negative and excluded. Split-K8
+has no stable whole-time gain and fails one fixed task; split-K4 passes all four.
 
-Expert Gate/Up remains Q2_K and Down Q2_0 MSE;109 resident matrices including
-output remain Q4_0, other Q8 except original F32/tiny BF16 PLE. KV/recurrent
-state stays F32. Cache3712/3713 planes and5703659520bytes; initial prefill1444
-placement keys, decode/later768. Driver872cc126/cumulative-idle and disabled
-persistent caches remain. CPU/device/single-buffer/workspace limits do not grow.
+Actual normal decode: cold8.278168, retained weights/empty request10.825984,
+exact-prefix/causal12.099275tok/s,22 generated tokens each. Retained TTFT is
+0.397102s and whole request2.438066s. All three current counting answers pass.
+Normal50100 and53100 are sequential configurations, not ABBA. Prefix output
+changed from the previous incorrect25-token answer, so its rate is not a
+same-output speed comparison. Kernel reduction order changes full F32 values
+(max9.860172510 in the split-K4 comparison); independent candidate F32/routes
+repeat exactly. Finite task passes are not unchanged general model quality.
 
-| Actual normal condition | Previous47100 tok/s | Selected50100 tok/s | Generated tokens before/after | Counting correct |
-| --- | ---: | ---: | --- | --- |
-| Cold Expert cache |7.215938|7.983627|22/22|true|
-| Independent KV reset, weights retained |9.186170|10.555503|22/22|true|
-| Exact prefix with causal reuse |10.476288|11.719167|22/25|false|
+Expert Gate/UpQ2_K and DownQ2_0 MSE,109 resident Q4 matrices including output,
+remaining Q8/original F32/tiny BF16 PLE, F32 KV/recurrent state,3712 active
+slots/3713 planes,5703659520 cache bytes and all allocation caps remain.
+Initial-prefill placement1444, later/decode768, Top2 decode and six-Expert
+prefill remain. Driver872cc126/cumulative-idle and disabled persistent caches
+remain. No CI, host inference, restart or reset is used.
 
-These normal configurations are sequential, not matched A/B. Retained whole
-time is2.590262s versus2.989163s. Isolated matched effects are separate and
-must not be added. Prefix output now repeats part of the sequence, remains
-incorrect and changes length; its rate is neither a same-output comparison nor
-correct-answer throughput. HC changes F32 values/routes relative to control:
-maximum9.662799 in its matched cohort, with exact independent full-row SHA256/
-routes and four passing fixed tasks. General model quality and sustained
-service are not established by this finite qualification.
-
-All three closed normal ledgers match actual native IDs/bytes/order; both
-streamed API outputs match their own native results and two native frames were
-viewed. Selected completion reuse and HC splitK2 execute; Q4 LARGE stays0.
-Actual CPU/device peaks503382016/6167724032bytes and workspace8MiB remain in
-budget. All source/model/device owners retire positively; ordinary close passes.
-Native whole SHA256/identity/EOF checks all12 selected/immediate8858-control
-program/settings files before and after placement. Actual current admission and
-23 refusal controls pass. Older controls remain preserved. Native/gateway/models
-are inactive;50100 is consumed and future execution requires a fresh case.
-No CI, agents, learned host inference, reboot or forced reset was used.
+SELF1a76c37007962b9da767b0e70667d140bfaeb2138a4d29925245958afd84047e
+is natively verified with the exact immediate4f5d control and five settings
+each (twelve files). Thirty rejection controls and current admission pass.
+All source/model/GPU owners positively retire; ordinary close and exact
+restoration precede verified placement. Native/gateway/models are inactive.
+Finite launch bindings are consumed; never replay them or depend on reboot.
 
 ## Historical cold and different-input campaign
 

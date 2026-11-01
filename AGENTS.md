@@ -20,27 +20,37 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-The current service/kernel campaign is complete: normal50100 and placement50200,
-SELF4f5db8c1724488560a9bcb616e83f69075a650812067209f99132de5003fcdbc,
-relink0b38352ad2845e1cd2b923844967d694c2e582e4. Use
-`service_kernel_production.py`, `docs/service-kernel-results-20261101.md` and
-`docs/service-kernel-adoption-20261101.json` for the selected current state.
-All five categories are disposed through84 matched/quality requests and3 final
-normal generations. Adopt durable per-request/per-token-synced ledger, positive
-same-generation completion reuse and bounded HC splitK2 (mode69). Stage pairing
-has no repeatable gain; Q4 LARGE regresses one semantic task and stays disabled.
-Driver872cc126/cumulative-idle, persistent caches disabled, weights/cache/caps
-remain unchanged. Actual current admission and23 refusal controls pass; both
-selected/immediate8858 programs plus five settings each are natively verified.
-Actual normal cold7.983627, retained10.555503, prefix11.719167 tok/s. Prefix is
-incorrect, repeats part of the sequence and generates25 versus previous22 tokens;
-its rate is not same-output or correct-answer throughput. HC cross-control F32
-values/routes change (max9.662799), independent candidate full-row SHA256/routes
-are exact and four fixed tasks pass; do not claim general quality equivalence.
-All owners positively retire, ordinary close and exact8858 restoration precede
+The current frontier campaign is complete: normal53100 and placement53200,
+SELF1a76c37007962b9da767b0e70667d140bfaeb2138a4d29925245958afd84047e,
+relinka24f6da7a09859432cb9c994f221bf727441c9b5. Use
+`frontier_production.py`, `docs/frontier-results-20261101.md` and
+`docs/frontier-adoption-20261101.json` for the current selected state.
+All four categories are disposed through70 complete matched/quality requests
+and3 final normal generations. Select duplicate owner/journal-generation
+checkpoint reuse, checked zero-copy weight aliases for shared-input HC
+Down/Inject projection, and shape-limited HC split-K4 (frontier mode7 plus
+existing service mode69). Source1 preserves every fresh owner/retirement check.
+The secondary-command256-entry slice executes9984 timed hits but whole time
+worsens0.429743%; it is excluded from the normal binary. Split-K8 is a completed
+negative (one task failure and unstable speed); K4 passes four fixed tasks.
+Driver872cc126/cumulative-idle, persistent caches disabled, weight precision,
+cache geometry and allocation caps remain. Thirty refusal controls, actual
+current admission, exact new/immediate4f5d programs and five settings each pass.
+Normal cold8.278168, retained10.825984, prefix12.099275tok/s,22 tokens each.
+All three current counting tasks pass. Retained TTFT0.397102s, whole2.438066s.
+Prefix differs from the prior incorrect25-token output; do not call its rate a
+same-output comparison. HC split-K4 cross-control F32/routes change
+(max9.860172510); independent candidate full-row SHA256/routes are exact.
+Do not claim general quality equivalence or sustained-service qualification.
+All owners positively retire, ordinary close and exact4f5d restoration precede
 verified placement. Native/gateway/models are inactive. All finite cases are
-consumed; never replay them or depend on reboot. Retain exact8858 rollback and
-historical2d66/5b/c2e controls. The records below are historical controls.
+consumed; never replay them or depend on reboot. Retain exact4f5d rollback and
+historical8858/2d66/5b/c2e controls. Current normal build/package are
+`D:/PS5-AI/qwen-flash-next/build/Frontier-normal-53060/receipt.private.json` and
+`D:/PS5-AI/qwen-flash-next/build/Frontier-normal-SELF-53068/receipt.private.json`.
+The previous service/kernel normal50100/placement50200 and its source
+0b38352ad2845e1cd2b923844967d694c2e582e4 remain historical controls in
+`docs/service-kernel-adoption-20261101.json`. Records below are historical.
 
 ### Historical next-five control
 
