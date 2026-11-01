@@ -1,9 +1,7 @@
 {
   "schema": "ps5-qwen-post-top2-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 21876663,
     "sha256": "2d66ba58810a7c0502564fb7c9181f25e8c2355f34925934f54f43bf20c4ecb9"
@@ -330,7 +328,7 @@
     {
       "id": "N2",
       "technology": "Submission node256/divisor40",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -345,7 +343,7 @@
     {
       "id": "N3",
       "technology": "Output Q4 projection",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -371,7 +369,7 @@
     {
       "id": "N5",
       "technology": "Observed startup and reuse of sealed read-only pack",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -476,7 +474,7 @@
     {
       "id": "C4",
       "technology": "Release obsolete synchronized scheduler before replacement",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -541,7 +539,7 @@
     {
       "id": "N2",
       "technology": "Submission node256/divisor40",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -556,7 +554,7 @@
     {
       "id": "N3",
       "technology": "Output Q4 projection",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -582,7 +580,7 @@
     {
       "id": "N5",
       "technology": "Observed startup and reuse of sealed read-only pack",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -687,7 +685,7 @@
     {
       "id": "C4",
       "technology": "Release obsolete synchronized scheduler before replacement",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -735,7 +733,22 @@
     }
   ],
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 45200,
+    "normal_case": 45100,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "application_relink": {
     "source_revision": "97de33bab429618475d250c9e0bc4a71f06469ed",
@@ -786,5 +799,51 @@
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
-  "forced_resets": 0
+  "forced_resets": 0,
+  "placement_metadata_revision": "2350c7ba4d9d1d6e7d3f42bd64e40151186e3385",
+  "host_adoption_refusal_checks": {
+    "completed": true,
+    "positive_selection_passed": true,
+    "expected_refusals": 13,
+    "refusals": [
+      "wrong_program",
+      "wrong_model",
+      "wrong_cache",
+      "lost_control",
+      "live_owner",
+      "missing_finite_proof",
+      "missing_native_frames",
+      "wrong_GPU_provider",
+      "old_node_policy",
+      "missing_seal_reuse",
+      "below_OS_minimum",
+      "missing_plan_stage",
+      "incomplete_placement"
+    ],
+    "PS5_operations": 0,
+    "CI_runs": 0,
+    "actual_current_control_admission_passed": true
+  },
+  "placement_evidence": [
+    {
+      "artifact": "before-placement-complete.private.json",
+      "bytes": 338,
+      "sha256": "73c01fd935f38e4f7dfbf4159e7a32fa0f93a500f51db618c022f30f656f673e"
+    },
+    {
+      "artifact": "after-placement-complete.private.json",
+      "bytes": 337,
+      "sha256": "44b1bc59f8711a1c42dca30288769d1bbe2aaad95754aea81532a7d639f777de"
+    },
+    {
+      "artifact": "complete.private.json",
+      "bytes": 1223,
+      "sha256": "bc2197db1ef35415bc7dbae7dca0520ecaef5c8f66ec0231f77e5743986e37bc"
+    },
+    {
+      "artifact": "host-admission-complete.private.json",
+      "bytes": 528,
+      "sha256": "c4c65919168076ef37f8334ff1da92bf6ca0beacc64ed550d1cbad0a57a49c3f"
+    }
+  ]
 }

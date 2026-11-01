@@ -1,6 +1,6 @@
 # Post-Top2 optimization results
 
-Candidate stages complete; normal45100 qualified; verified placement45200 remains pending.
+Completed: all17 planned candidate stages are disposed; normal45100 is qualified and production45200 is installed. Both complete programs and both five-setting sets passed native whole-SHA256/identity/EOF verification before and after placement. The immediate5b control is preserved. The app, gateway and models are inactive. The actual current-control admission and13 invalid-adoption refusals pass.
 
 The17 stages in `speed-opportunities-20261101.md` are explicitly disposed below. D1-D3 were scoped as initial capability/feasibility/cost slices. Their completion does not claim a full indirect backend, stateful MTP service or full-model shared-basis conversion. No unchanged failed launch was repeated. Host inference, CI, reboot, forced reset and persistent shader/pipeline caches were not used.
 
@@ -21,10 +21,10 @@ The application emits three actual API responses and two positively completed192
 | ID | Technology | Native evidence cases | Decision |
 |---|---|---|---|
 |N1|GPU greedy and full vocabulary handling|31500,33400,33900,42900|tested-not-adopted|
-|N2|Submission node256/divisor40|35100,35900,36700,37300,38300|selected; normal qualified|
-|N3|Output Q4 projection|31600,34700,35400|selected; normal qualified|
+|N2|Submission node256/divisor40|35100,35900,36700,37300,38300|adopted; production verified|
+|N3|Output Q4 projection|31600,34700,35400|adopted; production verified|
 |N4|Static/adaptive prefill Expert budgets|32500,34500,39900|tested-not-adopted|
-|N5|Observed startup and reuse of sealed read-only pack|32600,36900|selected; normal qualified|
+|N5|Observed startup and reuse of sealed read-only pack|32600,36900|adopted; production verified|
 |R1|New Top2 Gate/Up kernel|30700,39300|tested-not-adopted|
 |R2|History proposal cap8/12|31600,34000,35400|tested-not-adopted|
 |R3|Two-token GDN|33800|tested-not-adopted|
@@ -33,7 +33,7 @@ The application emits three actual API responses and two positively completed192
 |C1|GPU selection with node256 and complete logit evidence|38900,42900|tested-not-adopted|
 |C2|Cap12 plus two-token GDN plus Top2 Gate/Up|40300,41100|tested-not-adopted|
 |C3|Adaptive prefill plus phase placement plus owned ring|39900|tested-not-adopted|
-|C4|Release obsolete synchronized scheduler before replacement|40700,42900|selected; normal qualified|
+|C4|Release obsolete synchronized scheduler before replacement|40700,42900|adopted; production verified|
 |D1|GPU-generated indirect hit-path capability|selected-driver source screen|selected-driver-capability-failure|
 |D2|Matched trained MTP auxiliary first slice|40900,41900,42500,43300,43800,44100|first-slice-tested-not-adopted|
 |D3|One-layer/rank shared basis and residual|39096,41300|first-slice-completed-not-selected|
@@ -60,7 +60,7 @@ D1: pinned `driver/ps5vk_compute.c::ps5vk_CmdDispatchIndirect` reads arguments o
 
 D2: trained layer48 actually executes with a shared loaded model,10240-element HC state,1088-node auxiliary graph, no auxiliary rollback and target-verified proposals. The original `n_ubatch > n_keep_tail` assertion came from the hybrid recurrent rollback splitter, not PLE. An already mapped624.125MiB heap hit the512MiB software shader guard; explicit672MiB repricing enables completion. Case44100 completes14 requests/four semantic tasks with exact independent matched MTP full-row SHA/tokens/routes. Timed candidates make10 MTP calls each; total12 proposals accept10/reject2, including history proposals. Auxiliary work costs0.694-1.382 s in retained requests; whole time grows26.33546% and decode drops22.15224%. No unverified draft token is emitted. This stateless first slice is not selected; stateful/prewarmed alternatives were not tested and are not declared impossible.
 
-D3: the declared one-layer/rank first slice completes180 native F64/canary graphs. Shared rank32 Q8 basis/factors plus TQ1 residual reduce triplet bytes22.1667%, but GPU time is1.567-2.053 times original, with substantial weight approximation. Full-model cold-I/O tradeoffs, answer quality and speed remain unmeasured; a full-model regression is not inferred from this fixture.
+D3: the declared one-layer/rank first slice completes180 native F64/canary graphs. Shared rank32 Q8 basis/factors plus TQ1 residual reduce triplet bytes22.1667%, but GPU backend graph wall time is1.567-2.053 times original, with substantial weight approximation. Full-model cold-I/O tradeoffs, answer quality and speed remain unmeasured; a full-model regression is not inferred from this fixture.
 
 ## Memory and provenance
 

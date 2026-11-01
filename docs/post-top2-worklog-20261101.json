@@ -1,7 +1,7 @@
 {
   "schema": "ps5-qwen-post-top2-worklog-v1",
-  "completed": false,
-  "production_changed": false,
+  "completed": true,
+  "production_changed": true,
   "baseline_normal_case": 30200,
   "baseline_placement_case": 30300,
   "driver": "872cc1264ad8ba5d6b888b092968fa5858a38c58/cumulative-idle",
@@ -92,7 +92,7 @@
     "materially_changed_case37500": "five-second bounded wait at same valid OS+21 CPU floor;14 requests completed; observed no wait needed, so recovery branch not claimed as exercised",
     "thresholds_not_lowered": true
   },
-  "latest_completed_case": 44100,
+  "latest_completed_case": 45200,
   "final_dispositions": [
     {
       "id": "N1",
@@ -111,7 +111,7 @@
     {
       "id": "N2",
       "technology": "Submission node256/divisor40",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -126,7 +126,7 @@
     {
       "id": "N3",
       "technology": "Output Q4 projection",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -152,7 +152,7 @@
     {
       "id": "N5",
       "technology": "Observed startup and reuse of sealed read-only pack",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -257,7 +257,7 @@
     {
       "id": "C4",
       "technology": "Release obsolete synchronized scheduler before replacement",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -304,10 +304,7 @@
       "scope_and_result": "The declared first layer/rank slice completed:180 native F64/canary graphs;triplet bytes22.1667% smaller;GPU costs1.567x to2.053x original. Full-model speed/answer quality and cold-I/O tradeoff are unmeasured;no full-model speed regression or physical impossibility is claimed."
     }
   ],
-  "remaining": [
-    "normal_combination_API_display_qualification",
-    "verified_production_placement"
-  ],
+  "remaining": [],
   "candidate_attempt_history": {
     "N1": {
       "implementation": "full-model GPU greedy,explicit2-output capacity,complete aliased raw/sampled F32 rows,node256",
@@ -1296,7 +1293,7 @@
     "N2": {
       "id": "N2",
       "technology": "Submission node256/divisor40",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -1307,12 +1304,12 @@
         38300
       ],
       "scope_and_result": "Exact14-request controls;node256/divisor40 selected;divisor10 adds no repeatable gain. Percentage gains from stages are not summed.",
-      "adopted": false
+      "adopted": true
     },
     "N3": {
       "id": "N3",
       "technology": "Output Q4 projection",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -1321,7 +1318,7 @@
         35400
       ],
       "scope_and_result": "All4 same-cap Q4 replays faster than both bracketed Q8 groups;whole0.46125% shorter;stored output payload317849600B smaller;four finite semantic tasks pass;cross-format KL/general quality unmeasured.",
-      "adopted": false
+      "adopted": true
     },
     "N4": {
       "id": "N4",
@@ -1340,7 +1337,7 @@
     "N5": {
       "id": "N5",
       "technology": "Observed startup and reuse of sealed read-only pack",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -1348,7 +1345,7 @@
         36900
       ],
       "scope_and_result": "Three real API responses/two frames per normal run;settle5.006610326s to0.100198499s;fresh inode/descriptor/EOF bind the previous native pack SHA, not a claimed fresh whole hash.",
-      "adopted": false
+      "adopted": true
     },
     "R1": {
       "id": "R1",
@@ -1454,7 +1451,7 @@
     "C4": {
       "id": "C4",
       "technology": "Release obsolete synchronized scheduler before replacement",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "native_cases": [
@@ -1462,7 +1459,7 @@
         42900
       ],
       "scope_and_result": "Dominating same3712-slot memory point:release167837696B before replacement;CPU peak671219712B to503382016B without cache reduction or CPU-quota increase. No standalone speed gain claimed;normal composition must qualify.",
-      "adopted": false
+      "adopted": true
     },
     "D1": {
       "id": "D1",
@@ -1505,5 +1502,218 @@
       "adopted": false
     }
   },
-  "all17_candidate_stages_disposed": true
+  "all17_candidate_stages_disposed": true,
+  "results": [
+    {
+      "id": "N1",
+      "technology": "GPU greedy and full vocabulary handling",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        31500,
+        33400,
+        33900,
+        42900
+      ],
+      "scope_and_result": "Full14-request GPU selection comparison;22 real calls per timed request;exact F32/tokens/routes;whole time4.62039% longer."
+    },
+    {
+      "id": "N2",
+      "technology": "Submission node256/divisor40",
+      "status": "adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        35100,
+        35900,
+        36700,
+        37300,
+        38300
+      ],
+      "scope_and_result": "Exact14-request controls;node256/divisor40 selected;divisor10 adds no repeatable gain. Percentage gains from stages are not summed."
+    },
+    {
+      "id": "N3",
+      "technology": "Output Q4 projection",
+      "status": "adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        31600,
+        34700,
+        35400
+      ],
+      "scope_and_result": "All4 same-cap Q4 replays faster than both bracketed Q8 groups;whole0.46125% shorter;stored output payload317849600B smaller;four finite semantic tasks pass;cross-format KL/general quality unmeasured."
+    },
+    {
+      "id": "N4",
+      "technology": "Static/adaptive prefill Expert budgets",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        32500,
+        34500,
+        39900
+      ],
+      "scope_and_result": "Cold TTFT can improve, but whole/retained performance regresses;all declared static/adaptive and combination stages evaluated."
+    },
+    {
+      "id": "N5",
+      "technology": "Observed startup and reuse of sealed read-only pack",
+      "status": "adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        32600,
+        36900
+      ],
+      "scope_and_result": "Three real API responses/two frames per normal run;settle5.006610326s to0.100198499s;fresh inode/descriptor/EOF bind the previous native pack SHA, not a claimed fresh whole hash."
+    },
+    {
+      "id": "R1",
+      "technology": "New Top2 Gate/Up kernel",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        30700,
+        39300
+      ],
+      "scope_and_result": "180 fixture graphs and14 model requests;816 actual candidate dispatches per timed request;whole0.05274% longer despite faster microkernel."
+    },
+    {
+      "id": "R2",
+      "technology": "History proposal cap8/12",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        31600,
+        34000,
+        35400
+      ],
+      "scope_and_result": "Caps execute in the current controller;no repeatable whole-request improvement over6."
+    },
+    {
+      "id": "R3",
+      "technology": "Two-token GDN",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        33800
+      ],
+      "scope_and_result": "14 requests,216 actual selections per timed candidate;whole0.26195% reduction within variation;3of4 fixed semantic tasks."
+    },
+    {
+      "id": "R4",
+      "technology": "Held-out current-distribution phase placement",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        39700
+      ],
+      "scope_and_result": "Preserves348 original keys and adds50;held-out screen and14 native requests;whole0.40720% longer."
+    },
+    {
+      "id": "R5",
+      "technology": "Owned zero-extra-copy ring",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        36300
+      ],
+      "scope_and_result": "Five owned slots/four workers;14 exact requests;whole0.18724% reduction within variation."
+    },
+    {
+      "id": "C1",
+      "technology": "GPU selection with node256 and complete logit evidence",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        38900,
+        42900
+      ],
+      "scope_and_result": "Actual combined full-model candidate is slower. Full-logit transport costs0.873ms/request;even eliminating it cannot offset the measured regression. Fully deferred CPU validation is not claimed implemented. Even fully hiding the26.5ms observer and0.873ms logit transport cannot offset either114.6/177.5ms measured delay;deferred-transport subvariant screened by this measured upper bound."
+    },
+    {
+      "id": "C2",
+      "technology": "Cap12 plus two-token GDN plus Top2 Gate/Up",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        40300,
+        41100
+      ],
+      "scope_and_result": "Both14-request cohorts execute both kernels;one temporal whole-time pair regresses in each;mean gain smaller than A/A spread;3of4 semantic tasks."
+    },
+    {
+      "id": "C3",
+      "technology": "Adaptive prefill plus phase placement plus owned ring",
+      "status": "tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        39900
+      ],
+      "scope_and_result": "14 requests;whole8.72095% longer;2of4 semantic tasks."
+    },
+    {
+      "id": "C4",
+      "technology": "Release obsolete synchronized scheduler before replacement",
+      "status": "adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        40700,
+        42900
+      ],
+      "scope_and_result": "Dominating same3712-slot memory point:release167837696B before replacement;CPU peak671219712B to503382016B without cache reduction or CPU-quota increase. No standalone speed gain claimed;normal composition must qualify."
+    },
+    {
+      "id": "D1",
+      "technology": "GPU-generated indirect hit-path capability",
+      "status": "selected-driver-capability-failure",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [],
+      "scope_and_result": "First decisive source screen completed:the selected driver reads indirect arguments on CPU at record time and explicitly refuses same-command GPU-written arguments. This path requires driver/backend work;not PS5 physical impossibility."
+    },
+    {
+      "id": "D2",
+      "technology": "Matched trained MTP auxiliary first slice",
+      "status": "first-slice-tested-not-adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        40900,
+        41900,
+        42500,
+        43300,
+        43800,
+        44100
+      ],
+      "scope_and_result": "Completed14 native requests,all4 semantic tasks,actual10 MTP calls per timed candidate,exact independent candidate full-row SHA/tokens/routes. Whole26.33546% longer;decode22.15224% slower. CPU peak654442496B below672MiB explicitly repriced software quota;not physically impossible. Stateful/prewarmed auxiliary designs are outside this first slice."
+    },
+    {
+      "id": "D3",
+      "technology": "One-layer/rank shared basis and residual",
+      "status": "first-slice-completed-not-selected",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "native_cases": [
+        39096,
+        41300
+      ],
+      "scope_and_result": "The declared first layer/rank slice completed:180 native F64/canary graphs;triplet bytes22.1667% smaller;GPU costs1.567x to2.053x original. Full-model speed/answer quality and cold-I/O tradeoff are unmeasured;no full-model speed regression or physical impossibility is claimed."
+    }
+  ],
+  "normal_case": 45100,
+  "production_placement_case": 45200
 }
