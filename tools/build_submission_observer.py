@@ -12,7 +12,7 @@ WS='src/amd/vulkan/winsys/ps5/'
 NAMES=['sequence_wait_calls','sequence_wait_ns','marker_poll_calls','known_complete_returns','marker_flush_polls','snapshot_races',
        'spin_iterations','sleep_calls','sleep_ns','requested_sleep_us','submit_calls','submit_ns','submit_lock_calls','submit_lock_ns',
        'submit_lock_hold_ns','claim_calls','claim_ns','dedicated_claims','overlap_waits','record_capacity_waits','copy_calls','copy_ns',
-       'unused22','unused23','unused24','unused25','command_words','unused27','unused28','sync_wait_calls','sync_wait_ns',
+       'platform_AGC_calls','platform_AGC_call_ns','unused24','unused25','command_words','unused27','unused28','sync_wait_calls','sync_wait_ns',
        'unused31','unused32','unused33','unused34','unused35','unused36','unused37','unused38','unused39',
        'platform_flush_ns','platform_AGC_ns','platform_suspend_ns','unused43','unused44','unused45','unused46','enabled']
 
@@ -32,8 +32,7 @@ unsigned qwen_submit_timing_enabled;
 void qwen_ps5_timing_select(unsigned enabled) {p_atomic_set(&qwen_submit_timing_enabled, !!enabled);}
 void qwen_ps5_timing_snapshot(uint64_t *out) {
     for(unsigned i=0;i<48;++i)out[i]=p_atomic_read(&qwen_submit_timing[i]);
-    uint64_t platform[3];radv_ps5_submit_times(platform);
-    for(unsigned i=0;i<3;++i)out[40+i]=platform[i];out[47]=p_atomic_read(&qwen_submit_timing_enabled);
+    out[47]=p_atomic_read(&qwen_submit_timing_enabled);
 }
 '''
         text=once(text,'   const uint64_t submitted = p_atomic_read(&queue->submitted_seq);','   qwen_timing_add(2,1);\n   const uint64_t submitted = p_atomic_read(&queue->submitted_seq);')
