@@ -280,10 +280,8 @@
     "timestamp_intervals_include_fused_ranges_and_dependencies": true
   },
   "schema": "ps5-qwen-throughput-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 21915319,
     "sha256": "9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135"
@@ -878,7 +876,7 @@
   "candidate_evidence": [
     {
       "completed": true,
-      "state": "selected_pending_verified_placement",
+      "state": "adopted",
       "attempts": [
         {
           "case": 54500,
@@ -969,7 +967,7 @@
       "id": "T1",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "completed": true,
@@ -1052,7 +1050,7 @@
     },
     {
       "completed": true,
-      "state": "selected_pending_verified_placement",
+      "state": "adopted",
       "preliminary_case": 55200,
       "preliminary_retained_decode_gain_percent": 3.0979520911921243,
       "preliminary_whole_time_reduction_percent": 2.787886373140336,
@@ -1140,7 +1138,7 @@
       "id": "T3",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "completed": true,
@@ -1247,7 +1245,7 @@
   "dispositions": [
     {
       "completed": true,
-      "state": "selected_pending_verified_placement",
+      "state": "adopted",
       "attempts": [
         {
           "case": 54500,
@@ -1338,7 +1336,7 @@
       "id": "T1",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "completed": true,
@@ -1421,7 +1419,7 @@
     },
     {
       "completed": true,
-      "state": "selected_pending_verified_placement",
+      "state": "adopted",
       "preliminary_case": 55200,
       "preliminary_retained_decode_gain_percent": 3.0979520911921243,
       "preliminary_whole_time_reduction_percent": 2.787886373140336,
@@ -1509,7 +1507,7 @@
       "id": "T3",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "completed": true,
@@ -1614,7 +1612,22 @@
     }
   ],
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 56200,
+    "normal_case": 56100,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "application_relink": {
     "selected_frontend_object": {
@@ -1766,5 +1779,14 @@
     "intentional_rejections": 42,
     "PS5_operations": 0,
     "CI_runs": 0
+  },
+  "placement_metadata_revision": "4fa4e36ae3d1ff6bc52fd65365ea678a611b28ed",
+  "actual_installed_admission": {
+    "completed": true,
+    "positive_current_installation_passed": true,
+    "intentional_rejections": 42,
+    "prepare_first_case_selected_branch_passed": true,
+    "native_running": false,
+    "model_loaded": false
   }
 }

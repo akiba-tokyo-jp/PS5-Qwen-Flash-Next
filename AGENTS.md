@@ -20,10 +20,28 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-The ordered throughput comparison is complete;T1/T3 are selected andT2/T4
-are measured negatives. See `docs/throughput-results-20261101.md` and its
-worklog. Normal56100 API/display/retirement qualification has passed. Verified
-placement is pending; the installed frontier control below remains authoritative.
+The throughput campaign is complete: normal56100 and verified placement56200.
+Selected SELF9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135,
+sourcec60c1ab891dbbcf250db2bf919fa323f0ebc8727. Use `tools/throughput_production.py`,
+`docs/throughput-results-20261101.md` and `docs/throughput-adoption-20261101.json`.
+All four candidates have actual dispositions: selectT1/T3 (throughput mode5);
+T2 GDN join andT4 WAR synchronization are completed negatives and excluded.
+Six complete native cohorts total84 requests, plus60 synthetic synchronization
+graphs and3 actual normal/API generations. Current-core55900 retained decode
+11.291957 ->12.234850tok/s (+8.350123%); final normal cold9.759321,
+retained11.574572 and prefix12.801323tok/s. All3 normal counting tasks pass.
+Two actual native frames, all3 ledgers, positive ownership retirement, ordinary
+close, exact1a76 restoration,12-file native placement and42 refusal controls pass.
+Expert triplets cover22968/24576 Experts in66 immutable SSD parts;1608 retain
+original reads. Cache3712/3713, precisions, driver872cc126/cumulative-idle,
+persistent caches disabled and original memory/OS/worker/completion/durability
+controls remain. No GPU/CPU/usage values are fabricated. Native/gateway/model
+are inactive. Preserve exact1a76 immediate rollback and historical4f5d controls.
+Normal build/package are `D:/PS5-AI/qwen-flash-next/build/Throughput-normal-56080`
+and `D:/PS5-AI/qwen-flash-next/build/Throughput-normal-SELF-56088`.
+All finite cases are consumed; never replay them or depend on reboot.
+
+### Historical frontier control
 
 The current frontier campaign is complete: normal53100 and placement53200,
 SELF1a76c37007962b9da767b0e70667d140bfaeb2138a4d29925245958afd84047e,

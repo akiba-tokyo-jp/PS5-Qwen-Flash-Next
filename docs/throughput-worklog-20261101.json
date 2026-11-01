@@ -8,7 +8,7 @@
   "stages": {
     "1": {
       "completed": true,
-      "state": "selected_pending_verified_placement",
+      "state": "adopted",
       "attempts": [
         {
           "case": 54500,
@@ -174,7 +174,7 @@
     },
     "3": {
       "completed": true,
-      "state": "selected_pending_verified_placement",
+      "state": "adopted",
       "preliminary_case": 55200,
       "preliminary_retained_decode_gain_percent": 3.0979520911921243,
       "preliminary_whole_time_reduction_percent": 2.787886373140336,
@@ -405,14 +405,11 @@
   ],
   "qualified_native_requests": 84,
   "synchronization_oracle_graphs": 60,
-  "remaining": [
-    "verified_production_placement",
-    "private_repository_merge"
-  ],
+  "remaining": [],
   "final_dispositions": [
     {
       "completed": true,
-      "state": "selected_pending_normal_qualification",
+      "state": "adopted",
       "attempts": [
         {
           "case": 54500,
@@ -503,7 +500,7 @@
       "id": "T1",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "completed": true,
@@ -586,7 +583,7 @@
     },
     {
       "completed": true,
-      "state": "selected_pending_normal_qualification",
+      "state": "adopted",
       "preliminary_case": 55200,
       "preliminary_retained_decode_gain_percent": 3.0979520911921243,
       "preliminary_whole_time_reduction_percent": 2.787886373140336,
@@ -674,7 +671,7 @@
       "id": "T3",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
-      "status": "adopted_pending_verified_placement"
+      "status": "adopted"
     },
     {
       "completed": true,
@@ -860,5 +857,381 @@
   "normal_case": 56100,
   "actual_native_frames_viewed": 2,
   "normal_generations": 3,
-  "strict_rejection_controls_passed": 42
+  "strict_rejection_controls_passed": 42,
+  "completed": true,
+  "production_changed": true,
+  "results": [
+    {
+      "completed": true,
+      "state": "adopted",
+      "attempts": [
+        {
+          "case": 54500,
+          "completed": false,
+          "known_returned_failure": "Full triplet delivery preflight refused a parallel group at the existing4MiB boundary margin; no read submitted for that group",
+          "ordinary_close_and_exact_restore": true,
+          "unknown_GPU_work_not_manually_freed": true,
+          "corrective_change": "Keep the original parallel extent predicate; use one positive triplet read for incompatible groups",
+          "next_case": 54600
+        }
+      ],
+      "selected": true,
+      "case": 54600,
+      "coverage": 22968,
+      "parts": 66,
+      "all_weight_bits_preserved": true,
+      "matched_comparison": {
+        "completed": true,
+        "fixed_semantic_tasks_passed": true,
+        "independent_full_F32_routes_exact": true,
+        "cross_control_full_F32_routes_exact": true,
+        "paired_whole_time_savings_ms": [
+          89.28766798973083,
+          95.72872400283813
+        ],
+        "AA_spread_ms": 0.4034120440483093
+      },
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 9.829008555392647,
+            "total_ms": 7270.677955508232,
+            "TTFT_ms": 5017.244836986065
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5114079648,
+          "physical_read_calls": 8442
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.569391690277499,
+            "total_ms": 5198.545396476984,
+            "TTFT_ms": 3267.621447980404
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.32162942655874,
+            "total_ms": 2336.9223389923573,
+            "TTFT_ms": 362.20829048752785
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 426885120,
+          "physical_read_calls": 790
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.882037323977478,
+            "total_ms": 2244.4141429960728,
+            "TTFT_ms": 362.24112647771835
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "retained_decode_gain_percent": 4.949887302477074,
+      "retained_whole_time_reduction_percent": 3.958548149108476,
+      "id": "T1",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "adopted"
+    },
+    {
+      "completed": true,
+      "state": "completed_negative_no_repeated_speedup",
+      "selected": false,
+      "case": 54800,
+      "actual_joined_projections": 1008,
+      "all_full_F32_routes_tokens_exact": true,
+      "fixed_semantic_tasks_passed": true,
+      "retained_decode_gain_percent": 0.3433468304376408,
+      "retained_whole_time_reduction_percent": 0.13675841359983565,
+      "paired_whole_time_savings_ms": [
+        -9.146991968154907,
+        15.32591998577118
+      ],
+      "AA_spread_ms": 2.1904250383377075,
+      "reason": "One matched pair regressed; the second improved. The actual path executes with exact output but no repeated whole-request benefit. Excluded from the selected normal providers.",
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.524453102582127,
+            "total_ms": 5184.191444516182,
+            "TTFT_ms": 3246.8513795137405
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.5656089873228,
+            "total_ms": 5176.733277976513,
+            "TTFT_ms": 3245.917459487915
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.787567214124545,
+            "total_ms": 2259.066866517067,
+            "TTFT_ms": 361.3233645260334
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.828039452539947,
+            "total_ms": 2255.977402508259,
+            "TTFT_ms": 364.61581802368164
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "id": "T2",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "completed_negative"
+    },
+    {
+      "completed": true,
+      "state": "adopted",
+      "preliminary_case": 55200,
+      "preliminary_retained_decode_gain_percent": 3.0979520911921243,
+      "preliminary_whole_time_reduction_percent": 2.787886373140336,
+      "preliminary_all_full_F32_routes_tokens_exact": true,
+      "preliminary_fixed_semantic_tasks_passed": true,
+      "preliminary_reuses_in_matched_candidate_requests": 200,
+      "preliminary_not_selection_evidence": "Disabled arm added an owner snapshot; confirm against the exact original retirement/snapshot order",
+      "confirmation_case": 55300,
+      "selected": true,
+      "case": 55300,
+      "original_control_operation_order_preserved": true,
+      "extra_control_owner_snapshots": 0,
+      "actual_certificate_reuses": 199,
+      "matched_comparison": {
+        "completed": true,
+        "fixed_semantic_tasks_passed": true,
+        "independent_full_F32_routes_exact": true,
+        "cross_control_full_F32_routes_exact": true,
+        "paired_whole_time_savings_ms": [
+          60.81158006191254,
+          64.80272907018661
+        ],
+        "AA_spread_ms": 0.9276649951934814
+      },
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.592710879737178,
+            "total_ms": 5157.431965529919,
+            "TTFT_ms": 3230.806517034769
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.017499132983653,
+            "total_ms": 5083.642975986004,
+            "TTFT_ms": 3226.1011964976788
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.888499063903094,
+            "total_ms": 2246.788072526455,
+            "TTFT_ms": 364.2515349984169
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.253436506857378,
+            "total_ms": 2183.9809179604053,
+            "TTFT_ms": 359.36234948039055
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "retained_decode_gain_percent": 3.069667928580988,
+      "retained_whole_time_reduction_percent": 2.7954196185234537,
+      "id": "T3",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "adopted"
+    },
+    {
+      "completed": true,
+      "state": "completed_negative_slower",
+      "fixture_case": 55600,
+      "fixture_completed": true,
+      "fixture_graphs": 60,
+      "fixture_scenarios": 4,
+      "all_fixture_F32_bytes_and_canaries_exact": true,
+      "cross_graph_without_intermediate_tensor_readback": true,
+      "fixture_positive_retirement_and_normal_close": true,
+      "full_model_case": 55800,
+      "full_model_attempt": {
+        "case": 55700,
+        "qualified": false,
+        "model_requests_completed": 0,
+        "reason": "SSD ENOSPC: close-helper transfer failed and the native fatal report was empty during CPU source mapping with GPU_not_started=1",
+        "ordinary_close_and_exact_restore": true,
+        "all_resources_retained_for_OS_teardown": true,
+        "no_manual_GPU_release": true
+      },
+      "new_finite_comparison_case": 55800,
+      "real_writable_margin_verified_bytes": 268435456,
+      "write_margin_scope": "Two128MiB incompressible files fully written, native SHA/identity/EOF checked and positively removed",
+      "selected": false,
+      "case": 55800,
+      "actual_execution_only_barriers": 12428,
+      "actual_batch_tail_publications": 32,
+      "all_full_F32_routes_tokens_exact": true,
+      "fixed_semantic_tasks_passed": true,
+      "retained_decode_gain_percent": -0.5913619617756716,
+      "retained_whole_time_reduction_percent": -0.4831694242505957,
+      "paired_whole_time_savings_ms": [
+        -8.447453022003174,
+        -12.626156985759735
+      ],
+      "AA_spread_ms": 3.3276949524879456,
+      "cold_prefill_latency_eligible": false,
+      "reason": "Both retained pairs regressed; cold gains do not exceed A/A variation. Correct synchronization and actual path coverage do not imply a whole-request speedup.",
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.96233695341309,
+            "total_ms": 5103.480768978596,
+            "TTFT_ms": 3237.141847014427
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.945072616130156,
+            "total_ms": 5095.738586008549,
+            "TTFT_ms": 3226.4596255123615
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.269553901832618,
+            "total_ms": 2180.768168479204,
+            "TTFT_ms": 357.9923414885998
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.196996427177616,
+            "total_ms": 2191.3049734830856,
+            "TTFT_ms": 356.93481546640396
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "id": "T4",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "completed_negative"
+    }
+  ],
+  "production_placement_case": 56200,
+  "all_four_priorities_completed": true,
+  "delivery_completed": true,
+  "actual_installed_admission_passed": true,
+  "actual_refusal_controls": 42
 }

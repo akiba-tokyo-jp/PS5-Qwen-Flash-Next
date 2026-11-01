@@ -113,3 +113,14 @@ shows11.57 and12.80tok/s, with clock/CPU/GPU/memory visible and unavailable usag
 counters explicitly shown as unknown. Forty-two intentional invalid deployment
 proposals are rejected; the positive current normal proposal passes. Verified
 production placement is the remaining installation step.
+
+Verified production placement56200 is complete. Before and after replacement,
+12 native whole-file SHA256/stable-identity/EOF checks cover both actual programs
+and their five-setting sets. Exact1a76 immediate control remains preserved. The
+selected9824 program and configuration are installed, with no native/gateway/model
+owner left active. Actual installed admission and42 refusal controls pass through
+the selected `prepare_first_case` branch. All current-plan implementation, native
+verification and placement steps are disposed; no current candidate remains pending.
+CPU heap peak503382016B, device ledger peak6167724032B and workspace8388608B meet
+the original536870912/6199160832/50331648B limits. Driver/profile/cache policy and
+weight precision remain. No CI or learned host inference was used.
