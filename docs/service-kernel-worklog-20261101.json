@@ -236,20 +236,130 @@
       "all_target_F32_maximum_absolute_error": 0
     },
     "3": {
-      "completed": false,
-      "control_service_mode": 1,
-      "candidate_service_mode": 5,
-      "host_contract_passed": true
+      "completed": true,
+      "case": 49000,
+      "status": "selected_pending_normal",
+      "speed": {
+        "completed": true,
+        "case": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49000",
+        "source": {
+          "path": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49000\\native-model-terminal.private.json",
+          "bytes": 201929,
+          "sha256": "3c92e148bd9e8e0bad7cc4827dc80377f61bdb00f33cc573fb901afadf46182a"
+        },
+        "groups": {
+          "control_cold": {
+            "ordinals": [
+              2,
+              8
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.230368817181763,
+              "total_ms": 7620.570647478104,
+              "TTFT_ms": 5230.657332003117
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5177928096,
+            "physical_read_calls": 8473
+          },
+          "candidate_cold": {
+            "ordinals": [
+              4,
+              6
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.386929773857492,
+              "total_ms": 7578.974781483412,
+              "TTFT_ms": 5231.3124469816685
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5177928096,
+            "physical_read_calls": 8473
+          },
+          "control_retained": {
+            "ordinals": [
+              3,
+              9
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 10.737018261892132,
+              "total_ms": 2628.106914997101,
+              "TTFT_ms": 543.968032002449
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 431295840,
+            "physical_read_calls": 799
+          },
+          "candidate_retained": {
+            "ordinals": [
+              5,
+              7
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 10.907651956364354,
+              "total_ms": 2593.744815528393,
+              "TTFT_ms": 542.0427800118923
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 431295840,
+            "physical_read_calls": 799
+          }
+        },
+        "retained_decode_gain_percent": 1.5892093159405096,
+        "retained_whole_time_reduction_percent": 1.3074848390917104,
+        "temporal_decode_differences": [
+          0.16026881716241448,
+          0.18099857178203393
+        ],
+        "control_AA_decode_spread": 0.006231817082282376,
+        "all_fixed_semantic_tasks_passed": true,
+        "quality_grades": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "temporal_whole_time_reductions_ms": [
+          27.634220957756042,
+          41.089977979660034
+        ],
+        "control_AA_whole_time_spread_ms": 9.532924056053162,
+        "latency_with_decode_nonregression_eligible": true,
+        "cold_prefill_latency_eligible": false,
+        "temporal_cold_whole_time_reductions_ms": [
+          57.799735963344574,
+          25.391996026039124
+        ],
+        "temporal_cold_TTFT_reductions_ms": [
+          11.03888601064682,
+          -12.34911596775055
+        ],
+        "control_AA_cold_whole_time_spread_ms": 14.929162979125977,
+        "control_AA_cold_TTFT_spread_ms": 0.780925989151001,
+        "same_counting_output": true,
+        "speed_and_finite_quality_eligible": true,
+        "quality_is_reported_separately_not_an_exactness_veto": true,
+        "application_device_peak_bytes": 6046089216,
+        "retired": true,
+        "normal_and_placement_required_before_production": true
+      },
+      "host_contract_passed": true,
+      "all14_token_ledgers_readback_exact": true,
+      "all_target_F32_maximum_absolute_error": 0,
+      "positive_generation_reuses_timed": 132
     },
     "4": {
-      "completed": false
+      "completed": false,
+      "candidate": "HC_prefill_existing_matmul_without_split_K",
+      "control_service_mode": 5
     },
     "5": {
-      "completed": false
+      "completed": false,
+      "candidate": "Q4_small_rows_existing_large_workgroup",
+      "control_service_mode": 5
     }
   },
   "remaining": [
-    3,
     4,
     5,
     "normal_API_display",
@@ -265,6 +375,13 @@
       "reason": "Stats declaration preceded cstdint include; corrected before any PS5 operation",
       "PS5_launches": 0,
       "corrected_build": "Service-completion-48840"
+    },
+    {
+      "case": 48900,
+      "reason": "Missing required supplementary core-safety certificate detected during preparation; no stage/publish/launch occurred",
+      "PS5_launches": 0,
+      "next_case": 49000
     }
-  ]
+  ],
+  "selected_service_mode": 5
 }
