@@ -17,7 +17,8 @@ def main():
  seed=copy.deepcopy(n);providers=candidate['frontier'];oldgpu=n['lossless_shader_storage']['vulkan_object'];newgpu=candidate['lossless_shader_storage']['vulkan_object'];replacements={oldgpu['path']:newgpu['path']}
  for role in('lifecycle','model_graph'):
   command=providers['commands'][role];obj=command[command.index('-o')+1]
-  if role=='lifecycle':old=n['service_completion']['commands'][role];oldobj=old[old.index('-o')+1]
+  if role=='lifecycle':
+   objects=[x for x in n['link_command']if Path(x).name=='lifecycle.o'];require(len(objects)==1,'One current lifecycle provider required');oldobj=objects[0]
   else:
    objects=[x for x in n['link_command']if Path(x).name=='model_graph.o'];require(len(objects)==1,'One current model graph provider required');oldobj=objects[0]
   require(seed['link_command'].count(oldobj)==1,'One linked old provider required');replacements[oldobj]=obj
