@@ -22,6 +22,7 @@ def main():
  gpu=once(gpu,'    // the submit path below can end the command buffer, so close the region first','    load_query_end(compute_ctx,measured_slot);\n    // the submit path below can end the command buffer, so close the region first')
  gpu=once(gpu,'    ggml_vk_cleanup(ctx);\n\n    delete ctx;','    ggml_vk_cleanup(ctx);load_query_release(ctx);\n\n    delete ctx;')
  ec=n['compile_commands'][0];entry='''#include <array>
+#include <cstdint>
 extern "C" void qwen_load_gpu_probe_select(bool);
 extern "C" void qwen_load_gpu_probe_stats(std::uint64_t*);
 static std::array<std::uint64_t,26>submission_query_stats(){std::array<std::uint64_t,26>v{};qwen_load_gpu_probe_stats(v.data());return v;}
