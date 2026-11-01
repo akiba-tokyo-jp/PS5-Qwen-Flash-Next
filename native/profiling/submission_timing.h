@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 #pragma once
-/* Observation only: no allocation, visibility, timeout or completion policy changes. */
+/* Separate observation overlay; native platform source membership is unchanged. */
 #include <stdint.h>
 extern uint64_t qwen_submit_timing[48];
 extern unsigned qwen_submit_timing_enabled;

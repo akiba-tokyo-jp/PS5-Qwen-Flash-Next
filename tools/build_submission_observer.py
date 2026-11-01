@@ -78,7 +78,7 @@ def main():
                 rel=x[2:].replace('\\','/');rel='/'.join(t for t in rel.split('/')if t)
                 x='-I'+str((build_dir/rel).resolve())
             fixed.append(x)
-        fixed+=['-I'+str(ROOT/'native/driver')]
+        fixed+=['-I'+str(ROOT/'native/profiling')]
         run=subprocess.run(fixed,capture_output=True,timeout=120,env=dict(os.environ,TMP=str(a.out/'tmp'),TEMP=str(a.out/'tmp')))
         (a.out/(name+'.log')).write_bytes(run.stdout+run.stderr);require(run.returncode==0,run.stderr.decode(errors='replace')[-4000:])
         replacements[('winsys_ps5_'+name+'.o',0)]=obj;commands.append(fixed);sources.append(record(source));print('Compiled '+name,flush=True)
@@ -101,7 +101,7 @@ extern "C" void qwen_ps5_timing_snapshot(std::uint64_t*);
     from build_cache_capacity_1125 import literal
     entry=once(entry,literal(n['GDN_model_comparison']['scope']),literal(scope))
     seed['GDN_model_comparison']['scope']=scope;seed['next_five_comparison']['scope']=scope
-    seedpath=a.out/'driver-seed.private.json';write_json(seedpath,seed);out=a.out/'variant';out.mkdir();r,jobs,actual=link(seedpath,out,dict(entry=(ec,entry)),[Path(__file__),ROOT/'native/driver/submission_timing.h',*map(lambda x:Path(x['path']),sources)])
+    seedpath=a.out/'driver-seed.private.json';write_json(seedpath,seed);out=a.out/'variant';out.mkdir();r,jobs,actual=link(seedpath,out,dict(entry=(ec,entry)),[Path(__file__),ROOT/'native/profiling/submission_timing.h',*map(lambda x:Path(x['path']),sources)])
     r['submission_observer']=dict(scope=scope,counter_names=NAMES,driver_archive=record(archive),driver_sources=sources,compile_commands=commands,changed_members=[list(x)for x in replacements],unrelated_members_identical=True,ABI_unchanged=True,actual_sources=actual,commands=jobs)
     seal(r,a.workspace,a.cache,out);write_json(a.out/'observer.private.json',r['submission_observer']);print(json.dumps(dict(completed=True,receipt=str(out/'receipt.private.json'),counters=len(NAMES))))
 if __name__=='__main__':main()
