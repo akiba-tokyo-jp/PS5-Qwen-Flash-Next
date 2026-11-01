@@ -1,0 +1,128 @@
+{
+  "schema": "ps5-AMPR-Kraken-revalidation-v1",
+  "status": "blocked_console_unreachable",
+  "owner_scope": "Investigate errors, correct the implementation, complete PS5 validation for both AMPR and Kraken, and adopt only measured speed improvements.",
+  "acquisition_authorized": true,
+  "reboot_available": false,
+  "CI_enabled": false,
+  "phases": [
+    {
+      "id": "current_filesystems",
+      "status": "measured",
+      "result": "Full stable 1112-entry inventory, positive helper exit and cleanup. Current model path is nullfs over /user/data; title is a nullfs alias. No pfs/npfs named filesystem appeared among non-null mounts.",
+      "correction": "The initial substring counter included tmpfs; it is not evidence of two PFS mounts. Corrected exact classifier does not require replaying that inventory."
+    },
+    {
+      "id": "AMPR_backend",
+      "status": "measured_rejection",
+      "work": "Identify filesystem acceptance and supported image/workspace APIs; validate an owned compatible source before batch I/O. Do not repeat unchanged current-path ENOTTY calls.",
+      "result": "Owned 64 MiB classic PFS mount and full control reads succeeded. Root APR returned EOPNOTSUPP(45). Native read through an authenticated readonly PFS view matched all 16384 bytes, but APR returned ENOTTY(25) with intact outputs. The underlying PFS handler and nullfs forwarding are not isolated. No genuine file ID or APR read submission."
+    },
+    {
+      "id": "Kraken_native",
+      "status": "CPU_measured_no_benefit_hardware_unperformed",
+      "work": "Identify actual native hardware decoder access. Independently prepare a bounded software-decoder comparator using the already captured Q2 chunks; label hardware and CPU results separately.",
+      "metrics": {
+        "raw": {
+          "read_ns": 76947130,
+          "decode_ns": 0,
+          "total_ns": 76984256,
+          "bytes": 49283072,
+          "requests": 32,
+          "completed_Experts": 16,
+          "hardware_decoder": 0
+        },
+        "CPU_Kraken": {
+          "read_ns": 74607321,
+          "decode_ns": 77047451,
+          "total_ns": 151654772,
+          "bytes": 47185920,
+          "requests": 32,
+          "completed_Experts": 16,
+          "hardware_decoder": 0
+        }
+      },
+      "result": "Real Q2 entropy-only chunks: ABBA on PS5, all decoded bytes exact; 4.2553% fewer bytes, unchanged requests, approximately 97% greater total delivery latency. No CPU adoption. This is not a hardware or general LZ Kraken decoder."
+    },
+    {
+      "id": "matched_IO",
+      "status": "execution_unavailable_current_session",
+      "work": "On PS5 compare original read versus read+completion batches at 1/2/4 requests, and raw versus Kraken read+decode+delivery, with identical decoded bytes and explicit cache state."
+    },
+    {
+      "id": "model_and_adoption",
+      "status": "execution_unavailable_current_session",
+      "work": "Integrate promising candidates behind a reversible selector, run matched native model requests, and deploy only a repeatable end-to-end improvement with ordinary completion and exact source delivery."
+    }
+  ],
+  "adoption_requirements": [
+    "Actual console read/decode output is byte-identical to its original input.",
+    "All submitted work has positive completion and owned resources retire normally.",
+    "Report request count, transferred bytes, read wait, decode time and total delivery time; a single stage improvement does not establish model acceleration.",
+    "Use matched baseline/candidate reversals to distinguish a repeatable improvement from cache state and noise.",
+    "Preserve production until qualification and remove completed temporary console files."
+  ],
+  "non_blocking_findings": [
+    "Acquired decoder outputs fail their embedded ELF digest and remain unqualified for execution; static observations do not replace authenticity. Original OS libraries can still be used through the existing qualified native import path.",
+    "Older public firmware shows a filesystem-specific APR vnode request and an ENOTTY path. Its addresses are never reused on the current console."
+  ],
+  "all_requested_hardware_validation_complete": false,
+  "GPU_calls": 0,
+  "APR_read_submissions": 0,
+  "production_acceleration_adopted": false,
+  "Kraken_hardware": {
+    "status": "execution_unavailable_current_session",
+    "hardware_requests": 0,
+    "identified_Zlib_exports": [
+      "sceZlibInitialize",
+      "sceZlibFinalize",
+      "sceZlibInflate",
+      "sceZlibWaitForDone",
+      "sceZlibGetResult"
+    ],
+    "direct_Kraken_API_identified": false,
+    "direct_compressed_PFS_PPR_control_tested": false,
+    "hardware_absence_proven": false
+  },
+  "last_console_boundary": {
+    "native_positive_END_and_return": true,
+    "native_PID_absence_observed": true,
+    "view_ordinary_unmount_rc": 0,
+    "own_auth_and_parent_restored": true,
+    "original_SELF_verified_before_restore_rename": true,
+    "both_restore_rename_ACKs_received": true,
+    "interruption_phase": "Post-rename six-file whole-readback loop",
+    "post_restore_verification_complete": false,
+    "final_remote_cleanup_complete": false,
+    "owned_base_PFS_and_image_retained": true,
+    "HTTP_FTP_unavailable": true,
+    "expected_console_ICMP_reply_observed": false,
+    "discovery": "One unidentified standby PS5 at another address; no wake/launch packet sent",
+    "freeze_or_failure_cause_proven": false
+  },
+  "remaining_work": [
+    "Identify an available console channel and verify current boot, ownership, restored files and settings without depending on reboot.",
+    "Retire owned base PFS through ordinary filesystem API before deleting its backing image; finish pending probe artifact cleanup.",
+    "Redesign native-view lifetime coordination before another filesystem experiment. Asynchronous sandbox teardown is only a hypothesis.",
+    "Qualify a changed direct compatible native PFS/PPR and compressed-source prerequisite, bounded positive completion, matched I/O and model throughput; adopt only measured end-to-end improvement."
+  ],
+  "evidence_case_ids": [
+    "APR-full-filesystems-61430",
+    "APR-PFS-short-mount-61750",
+    "APR-PFS-resolve-61860",
+    "APR-PFS-native-61830",
+    "APR-PFS-native-view-61910",
+    "APR-PFS-native-role-61930",
+    "Kraken-CPU-log-recovery-61572",
+    "Kraken-CPU-closed-61574",
+    "Kraken-Zlib-analysis-61960",
+    "APR-network-61980",
+    "APR-network-discovery-62000"
+  ],
+  "driver": {
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "changed": false,
+    "persistent_caches_enabled": false
+  }
+}
