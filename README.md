@@ -8,54 +8,56 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-All three current-load priorities are natively verified. Normal47100 is installed
-by whole-file verified production placement47200. See the
-[results](docs/load-followup-results-20261101.md),
-[adoption evidence](docs/load-followup-adoption-20261101.json),
-[explicit dispositions](docs/load-followup-worklog-20261101.json) and
-[installation](config/production-installation.json). The preceding
+All five service/kernel categories are verified in six native comparison
+cohorts (84 requests), followed by normal50100 (three generations). Winners1/3/4
+are installed through verified placement50200. See
+[results](docs/service-kernel-results-20261101.md),
+[adoption](docs/service-kernel-adoption-20261101.json),
+[all dispositions](docs/service-kernel-worklog-20261101.json) and
+[installation](config/production-installation.json).
+The preceding [load analysis](docs/load-followup-results-20261101.md) and
 [17 post-Top2 stages](docs/post-top2-results-20261101.md) remain retained.
 
-The new winner removes the repeated asynchronous almost-ready notification
-trigger from the serialized Vulkan path while retaining real dependencies,
-serialized completion waits and node256/divisor40. Matched retained decode
-improves9.9784%, whole time7.7822%; actual queue submissions fall14555 ->4423.
-Both control/candidate outputs and every full target F32 row agree exactly.
-Nested CPU wall measurement is retained; diagnostic GPU queries are excluded.
+Selected: one bounded token ledger per request with **fsync before every token
+publication**; positive same-device/submission/worker-epoch completion reuse
+with queue locking and all ownership checks; existing HC splitK2 only for
+K>=2048/M<=512/N16-32. Mode69 keeps the unselected stage-pair and regressing
+Q4 LARGE policies disabled. Original node256/divisor40/tail batching remains.
+The monitoring pair has no repeatable speed gain. HC split-removal already
+has no extra splits; the actual splitK2 follow-up improves whole time4.1538%.
+Q4 LARGE has no speed gain and fails1/4 fixed semantic tasks, so is not adopted.
 
-Expert Gate/Up remains Q2_K and Down Q2_0 MSE. The109 large resident matrices,
-including output, remain Q4_0; other resident matrices Q8 except original F32
-and tiny BF16 PLE convolution. KV/recurrent state remains F32,3712 active
-Expert slots/3713 planes. Placement1444 applies only to the first prefill;
-decode/later requests use768 keys. Driver872cc126/cumulative-idle and disabled
-persistent shader/pipeline caches remain unchanged.
+Expert Gate/Up remains Q2_K and Down Q2_0 MSE;109 resident matrices including
+output remain Q4_0, other Q8 except original F32/tiny BF16 PLE. KV/recurrent
+state stays F32. Cache3712/3713 planes and5703659520bytes; initial prefill1444
+placement keys, decode/later768. Driver872cc126/cumulative-idle and disabled
+persistent caches remain. CPU/device/single-buffer/workspace limits do not grow.
 
-| Fixed30-token prompt,22 generated tokens | Previous45100 tok/s | Selected47100 tok/s | Counting correct |
-| --- | ---: | ---: | --- |
-| Cold Expert cache |6.587471|7.215938|true|
-| Independent KV reset, Expert weights retained |8.203185|9.186170|true|
-| Exact prefix plus causal reuse |9.451015|10.476288|false|
+| Actual normal condition | Previous47100 tok/s | Selected50100 tok/s | Generated tokens before/after | Counting correct |
+| --- | ---: | ---: | --- | --- |
+| Cold Expert cache |7.215938|7.983627|22/22|true|
+| Independent KV reset, weights retained |9.186170|10.555503|22/22|true|
+| Exact prefix with causal reuse |10.476288|11.719167|22/25|false|
 
-Normal configurations are sequential, not matched A/B. The selected retained
-whole request is2.989163s; the matched causal evidence is reported separately.
-Prefix still ends in7 instead of8, so its rate is not correct-answer throughput.
-Four fixed semantic tasks pass; arbitrary-input quality and sustained service
-are not established by these finite cohorts.
+These normal configurations are sequential, not matched A/B. Retained whole
+time is2.590262s versus2.989163s. Isolated matched effects are separate and
+must not be added. Prefix output now repeats part of the sequence, remains
+incorrect and changes length; its rate is neither a same-output comparison nor
+correct-answer throughput. HC changes F32 values/routes relative to control:
+maximum9.662799 in its matched cohort, with exact independent full-row SHA256/
+routes and four passing fixed tasks. General model quality and sustained
+service are not established by this finite qualification.
 
-Retained normal caller-wall shows model processing1.954398s, durable token
-persistence0.286708s and stage observation0.263894s; epochs/checkpoints are
-separately recorded. These are wall intervals, not CPU cycles, and GPU/source
-waits overlap the model span. Diagnostic GPU ranges show HC largest over the
-whole measured request, while other Q4 matrices lead accepted decode. Those
-selected ranges do not cover all GPU work.
-
-One local cold test, two actual streamed generation API requests, the finish
-POST, two viewed native frames, positive retirement and ordinary close pass.
-Native whole SHA256/identity/EOF verifies the selected program/five settings
-and immediate2d66 control/five settings. Earlier controls remain preserved.
-Actual current admission and18 rejection controls pass. Program/gateway/models
-are inactive; the finite47100 binding is consumed and a future launch needs a
-fresh case. No CI, learned host inference, reboot or forced reset was used.
+All three closed normal ledgers match actual native IDs/bytes/order; both
+streamed API outputs match their own native results and two native frames were
+viewed. Selected completion reuse and HC splitK2 execute; Q4 LARGE stays0.
+Actual CPU/device peaks503382016/6167724032bytes and workspace8MiB remain in
+budget. All source/model/device owners retire positively; ordinary close passes.
+Native whole SHA256/identity/EOF checks all12 selected/immediate8858-control
+program/settings files before and after placement. Actual current admission and
+23 refusal controls pass. Older controls remain preserved. Native/gateway/models
+are inactive;50100 is consumed and future execution requires a fresh case.
+No CI, agents, learned host inference, reboot or forced reset was used.
 
 ## Historical cold and different-input campaign
 

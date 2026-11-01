@@ -1,7 +1,7 @@
 {
   "schema": "ps5-qwen-service-kernel-worklog-v1",
-  "completed": false,
-  "production_changed": false,
+  "completed": true,
+  "production_changed": true,
   "baseline_normal": 47100,
   "baseline_placement": 47200,
   "order": [
@@ -15,7 +15,7 @@
     "1": {
       "completed": true,
       "case": 48100,
-      "normal_adoption_pending": true,
+      "normal_adoption_pending": false,
       "token_ledger_readback_complete": true,
       "speed": {
         "completed": true,
@@ -121,7 +121,7 @@
         "retired": true,
         "normal_and_placement_required_before_production": true
       },
-      "status": "selected_pending_normal"
+      "status": "adopted"
     },
     "2": {
       "completed": true,
@@ -239,7 +239,7 @@
     "3": {
       "completed": true,
       "case": 49000,
-      "status": "selected_pending_normal",
+      "status": "adopted",
       "speed": {
         "completed": true,
         "case": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49000",
@@ -352,7 +352,7 @@
     "4": {
       "completed": true,
       "case": 49900,
-      "status": "selected_pending_normal",
+      "status": "adopted",
       "initial_split_removal_case": 49300,
       "initial_result": {
         "completed": true,
@@ -694,9 +694,7 @@
       "large_Q4_choices_final": 8208
     }
   },
-  "remaining": [
-    "verified_production_placement"
-  ],
+  "remaining": [],
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
@@ -723,7 +721,7 @@
   "final_dispositions": [
     {
       "id": "S1",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 48100,
@@ -753,7 +751,7 @@
     },
     {
       "id": "S3",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 49000,
@@ -768,7 +766,7 @@
     },
     {
       "id": "S4",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 49900,
@@ -809,5 +807,84 @@
     true,
     false
   ],
-  "prefix_reuse_changed_output_reported": true
+  "prefix_reuse_changed_output_reported": true,
+  "results": [
+    {
+      "id": "S1",
+      "status": "adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 48100,
+      "selected": true,
+      "reason": "Repeatable whole-request improvement and exact target-output/finite-task proof.",
+      "fixed_semantic_grades": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "S2",
+      "status": "tested_not_selected",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 48500,
+      "selected": false,
+      "reason": "Whole/decode differences are within control A/A variation; all records/numerics pass but application speed is not established.",
+      "fixed_semantic_grades": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "S3",
+      "status": "adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 49000,
+      "selected": true,
+      "reason": "Repeatable whole-request improvement and exact target-output/finite-task proof.",
+      "fixed_semantic_grades": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "S4",
+      "status": "adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 49900,
+      "selected": true,
+      "reason": "Accept only repeatable whole-request benefit with decode nonregression and every fixed semantic task; no arbitrary cross-control F32 threshold.",
+      "fixed_semantic_grades": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "S5",
+      "status": "tested_not_selected",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 49700,
+      "selected": false,
+      "reason": "No repeatable speedup; candidate is internally exact but changes ordered routes and fails1/4 fixed semantic tasks.",
+      "fixed_semantic_grades": [
+        false,
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "production_placement_case": 50200,
+  "all_five_priorities_completed": true
 }

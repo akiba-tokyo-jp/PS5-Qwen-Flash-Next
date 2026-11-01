@@ -2,7 +2,7 @@
   "schema": "ps5-qwen-service-kernel-results-v1",
   "all_five_native_stages_completed": true,
   "completed": true,
-  "production_changed": false,
+  "production_changed": true,
   "selected_service_mode": 69,
   "stages": [
     {
@@ -15,7 +15,7 @@
       ],
       "id": 1,
       "case": 48100,
-      "status": "selected_pending_normal",
+      "status": "adopted",
       "completed": true,
       "groups": {
         "control": {
@@ -313,7 +313,7 @@
       ],
       "id": 3,
       "case": 49000,
-      "status": "selected_pending_normal",
+      "status": "adopted",
       "completed": true,
       "groups": {
         "control": {
@@ -466,7 +466,7 @@
       ],
       "id": 4,
       "case": 49900,
-      "status": "selected_pending_normal",
+      "status": "adopted",
       "completed": true,
       "groups": {
         "control": {
@@ -1108,5 +1108,12 @@
     ],
     "CPU_peak": 503382016,
     "device_peak": 6167724032
-  }
+  },
+  "all_five_priorities_completed": true,
+  "production_placement_case": 50200,
+  "production_application_SELF": {
+    "bytes": 21884599,
+    "sha256": "4f5db8c1724488560a9bcb616e83f69075a650812067209f99132de5003fcdbc"
+  },
+  "normal_source_revision": "0b38352ad2845e1cd2b923844967d694c2e582e4"
 }

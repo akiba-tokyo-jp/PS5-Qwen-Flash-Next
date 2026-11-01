@@ -10,10 +10,10 @@ Percentages below are isolated matched-cohort differences. They must not be adde
 
 | Stage | Candidate | Case | Retained decode change | Whole-time reduction | Semantic task passes | Disposition |
 | --- | --- | --- | ---: | ---: | ---: | --- |
-| 1 | Per-request durable token ledger | 48100 | +13.030957% | +9.214183% | 4/4 | selected_pending_normal |
+| 1 | Per-request durable token ledger | 48100 | +13.030957% | +9.214183% | 4/4 | adopted |
 | 2 | Paired completed/before-operation stage records | 48500 | -0.164698% | +0.075496% | 4/4 | tested_not_selected |
-| 3 | Same-generation positive idle certificate | 49000 | +1.589209% | +1.307485% | 4/4 | selected_pending_normal |
-| 4 | HC-prefill existing splitK2 pipeline | 49900 | +0.952242% | +4.153832% | 4/4 | selected_pending_normal |
+| 3 | Same-generation positive idle certificate | 49000 | +1.589209% | +1.307485% | 4/4 | adopted |
+| 4 | HC-prefill existing splitK2 pipeline | 49900 | +0.952242% | +4.153832% | 4/4 | adopted |
 | 5 | Q4 small-row existing LARGE workgroup | 49700 | -0.129924% | -0.065426% | 3/4 | tested_not_selected_speed_and_semantic_regression |
 
 Stage1 replaces per-token open/create/chmod/write/fsync/close with one bounded append-only request ledger. **Every token still completes fsync before API publication.** All candidate ledgers are read back after positive close; IDs, piece bytes, counts, order and exact lengths match actual native output. The new format is JSONL metadata, not a lossy or asynchronous log. Existing stage journals, safety admission, full F32 validation and monitoring remain enabled. Boundary-memory diagnostic mode is not active in these speed cohorts.

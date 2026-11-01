@@ -20,6 +20,30 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+The current service/kernel campaign is complete: normal50100 and placement50200,
+SELF4f5db8c1724488560a9bcb616e83f69075a650812067209f99132de5003fcdbc,
+relink0b38352ad2845e1cd2b923844967d694c2e582e4. Use
+`service_kernel_production.py`, `docs/service-kernel-results-20261101.md` and
+`docs/service-kernel-adoption-20261101.json` for the selected current state.
+All five categories are disposed through84 matched/quality requests and3 final
+normal generations. Adopt durable per-request/per-token-synced ledger, positive
+same-generation completion reuse and bounded HC splitK2 (mode69). Stage pairing
+has no repeatable gain; Q4 LARGE regresses one semantic task and stays disabled.
+Driver872cc126/cumulative-idle, persistent caches disabled, weights/cache/caps
+remain unchanged. Actual current admission and23 refusal controls pass; both
+selected/immediate8858 programs plus five settings each are natively verified.
+Actual normal cold7.983627, retained10.555503, prefix11.719167 tok/s. Prefix is
+incorrect, repeats part of the sequence and generates25 versus previous22 tokens;
+its rate is not same-output or correct-answer throughput. HC cross-control F32
+values/routes change (max9.662799), independent candidate full-row SHA256/routes
+are exact and four fixed tasks pass; do not claim general quality equivalence.
+All owners positively retire, ordinary close and exact8858 restoration precede
+verified placement. Native/gateway/models are inactive. All finite cases are
+consumed; never replay them or depend on reboot. Retain exact8858 rollback and
+historical2d66/5b/c2e controls. The records below are historical controls.
+
+### Historical next-five control
+
 The next-five campaign is complete; normal30200 and production placement30300
 are positively verified. See `docs/next-five-results-20261031.md`,
 `docs/next-five-worklog-20261031.json` and `docs/next-five-adoption-20261031.json`.

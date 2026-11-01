@@ -273,10 +273,8 @@
     "timestamp_intervals_include_fused_ranges_and_dependencies": true
   },
   "schema": "ps5-qwen-service-kernel-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 21884599,
     "sha256": "4f5db8c1724488560a9bcb616e83f69075a650812067209f99132de5003fcdbc"
@@ -775,7 +773,7 @@
   "candidate_evidence": [
     {
       "id": "S1",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 48100,
@@ -805,7 +803,7 @@
     },
     {
       "id": "S3",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 49000,
@@ -820,7 +818,7 @@
     },
     {
       "id": "S4",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 49900,
@@ -852,7 +850,7 @@
   "dispositions": [
     {
       "id": "S1",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 48100,
@@ -882,7 +880,7 @@
     },
     {
       "id": "S3",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 49000,
@@ -897,7 +895,7 @@
     },
     {
       "id": "S4",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 49900,
@@ -927,7 +925,22 @@
     }
   ],
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 50200,
+    "normal_case": 50100,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "application_relink": {
     "selected_frontend_object": {
@@ -978,5 +991,15 @@
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
-  "forced_resets": 0
+  "forced_resets": 0,
+  "placement_metadata_revision": "6d9a3d5d9ae649c2c32c14bb66599481dbf6136b",
+  "admission_validation": {
+    "completed": true,
+    "actual_current_production_admitted": true,
+    "expected_refusals": 23,
+    "evidence": {
+      "bytes": 917,
+      "sha256": "5ec88a498a781a905da589497bec1cd17c30c97b3768e6349ca0ed00e35341e5"
+    }
+  }
 }
