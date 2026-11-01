@@ -16,6 +16,10 @@ def main():
     subprocess.run([sys.executable,'-X','utf8','-B',str(ROOT/'tools/prepare_next_five_Q4_case.py'),
         '--case',str(a.case),'--build-name',a.build_name,'--package-name',a.package_name,'--publication',str(a.publication)],check=True,cwd=ROOT)
     path=ROOT/f'.local/resident_cohort_operator_{a.case}.py';source=path.read_text()
+    # MTP has an independent reference per matched proposal/cache sequence.
+    # Its first candidate pair establishes that reference; unlike target
+    # evaluation positions are not declared an exact numerical comparison.
+    source=source.replace("row['independent_repeat']","(row['MTP_independent_full_rows_and_routes_exact'] if row.get('candidate_arm')==1 and 'MTP_independent_full_rows_and_routes_exact' in row else row['independent_repeat'])")
     source=once(source,'paths=[Path(__file__),base_path,',"paths=[Path(__file__),base_path,ROOT/'tools/post_top2_close.py',")
     ast.parse(source);path.write_text(source,newline='\n')
     runner='''from pathlib import Path

@@ -10,7 +10,7 @@ SELECTION=json.loads(path.read_text())if path.is_file()else{}
 SELECTED_SELF=SELECTION.get('SELF',{}).get('sha256');SELECTED_BYTES=SELECTION.get('SELF',{}).get('bytes')
 SOURCE_REVISION=SELECTION.get('source_revision');NORMAL_CASE=SELECTION.get('normal_case');PLACEMENT_CASE=SELECTION.get('placement_case')
 MODEL_RECEIPT='46ceb693e8afd3c562e92532674ff16a336387da4cea91609660cc1fc58fe426'
-PRECISION=dict(PREVIOUS_PRECISION,other_weights='109 large resident matrices including output Q4_0; other resident Q8_0 except original BF16 PLE convolution and F32 tensors')
+PRECISION=dict(PREVIOUS_PRECISION,output_weight='Q4_0',other_weights='109 large resident matrices including output Q4_0; other resident Q8_0 except original BF16 PLE convolution and F32 tensors')
 IDS={f'N{i}'for i in range(1,6)}|{f'R{i}'for i in range(1,6)}|{f'C{i}'for i in range(1,5)}|{f'D{i}'for i in range(1,4)}
 def require_post_top2_production(installation,context,report):
  def need(v,msg):
@@ -22,6 +22,9 @@ def require_post_top2_production(installation,context,report):
  need(report.get('driver')==installation.get('driver')==DRIVER and report.get('precision')==installation.get('precision')==PRECISION,'Exact driver and109-matrix/output precision required')
  need(SELECTION.get('model_receipt_SHA256')==report.get('model_receipt_SHA256')==installation.get('model_receipt_SHA256')==context.get('selected_model_receipt_SHA256')==MODEL_RECEIPT,'Native-sealed output-Q4 receipt required')
  need(report.get('next_five_policy')==scope and scope['decode_Experts']==2 and scope['submission_node_cap']==256 and scope['submission_flop_divisor']==40 and scope['output_weight_type']=='Q4_0','Exact qualified execution composition required')
+ need(installation.get('next_five_policy')==context.get('next_five_policy')==scope,'Installed and runtime policy metadata must match the compiled scope')
+ need(installation.get('active_expert_slots')==context.get('active_cache_slots')==3712 and installation.get('physical_cache_planes')==context.get('physical_cache_planes')==3713 and installation.get('expert_cache_bytes')==context.get('expert_cache_bytes')==5703659520,'Installed/runtime cache geometry must match actual qualification')
+ need(installation.get('CPU_heap_limit_bytes')==536870912 and installation.get('postload_device_budget_bytes')==context.get('postload_device_budget_bytes')==6199160832 and installation.get('postload_single_buffer_bytes')==context.get('postload_single_buffer_bytes')==2147483648,'Qualified actual allocation budgets required')
  need(scope['active_cache_slots']==3712 and scope['physical_cache_planes']==3713 and scope['cache_bytes']==5703659520 and scope['Attention_KV']==scope['recurrent_S']=='F32'and scope['PLE_convolution']=='BF16','Exact cache and recurrent precision required')
  gpu=scope['selected_GPU_object_SHA256'];need(len(gpu)==64 and gpu==report.get('application_relink',{}).get('GPU_object_SHA256')and scope['original_GPU_object']is False,'Actual changed GPU provider must be recorded')
  need(report.get('previous_application_SELF',{}).get('sha256')==installation.get('previous_production_SHA256')==context.get('previous_production_SELF',{}).get('sha256')==CONTROL_SELF and installation.get('previous_production_rollback_preserved')is True,'Immediate exact5b control must be preserved')

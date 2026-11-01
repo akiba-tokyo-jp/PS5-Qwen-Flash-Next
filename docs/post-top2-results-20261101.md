@@ -1,96 +1,71 @@
-# Post-Top2 execution evidence
+# Post-Top2 optimization results
 
-Work in progress. Production30300 remains unchanged. Acceptance below means
-selection for the final composition; it is not a claim of completed deployment
-or completion of all17 candidates.
+Candidate stages complete; normal45100 qualified; verified placement45200 remains pending.
 
-| Candidate | Native evidence | Observation | Disposition |
-| --- | --- | --- | --- |
-| R1 Top2 Gate/Up |30700,180 graphs | Full F64 outputs, duplicate IDs, canaries and fallback pass; maximum absolute error5.100e-12. Backend time is37.8–44.0% shorter for one token and31.9–32.6% shorter for two. | Whole-model verification required.31700 stopped during loading.33300 completed14 requests but recorded zero candidate dispatches; its timing is coverage-invalid and is not a fused-kernel speed result. |
-| N1 CPU selection slice |31500,14 requests | Full F32, routes and tokens match. Retained decode−0.717%; whole time+0.431%. | Tested negative. Compact GPU selection and deferred evidence remain separate work. |
-| R2 cap6/8 |31600,14 requests | Cap8 makes7 attempts, accepting6 and rejecting1 on timed inputs; cap6 accepts6/6. Decode+0.415%, whole time+0.149%. | No adoption. Cap12 does not bind on the recorded timed proposal sequence; its separate disposition must not be called a measured speed result. |
-| N2 cost capture |32400,3 requests and normal API/display | Full numerical evidence, resource retirement, ordinary close and exact restore pass. Retained output-projection intervals total86.687ms; the other category totals1342.640ms. | Diagnostic only. Divisor40/10 comparison32800 is built; native comparison pending. |
-| N4 static Top4 prefill |32500,14 requests | Cold TTFT−24.322%, cold total source bytes−30.659%. Cold output is prematurely `1,2`; retained decode−9.361%, whole time+29.478%. Three of four semantic tasks pass. | Tested negative for deployment. Shorter incomplete answers are not equivalent completed work. Adaptive prefill remains separate work. |
-| N5 observed startup |32600,3 requests, both API streams and2 frames | Settle5.006610326→0.100198499s. All three token/byte outputs match30200, including the existing prefix-answer error. All owners retire; ordinary close and exact restore pass. | Accepted for final composition. No decode-speed gain claimed. |
+The17 stages in `speed-opportunities-20261101.md` are explicitly disposed below. D1-D3 were scoped as initial capability/feasibility/cost slices. Their completion does not claim a full indirect backend, stateful MTP service or full-model shared-basis conversion. No unchanged failed launch was repeated. Host inference, CI, reboot, forced reset and persistent shader/pipeline caches were not used.
 
-N5 first recorded stage to context-ready is26.949297476s, compared with
-34.967627542s in30200. Only the4.906411827s settle-component reduction is directly
-attributed to the changed wait. Other startup variation is not attributed to it.
+## Qualified normal application
 
-## Measurement and interruption boundaries
+| Condition | Previous normal30200 decode | New normal45100 decode | New TTFT | New whole request |
+|---|---:|---:|---:|---:|
+| Cold weights |5.537 tok/s|6.587 tok/s|6.076 s|9.388 s|
+| Retained weights, empty request state |6.539 tok/s|8.203 tok/s|0.586 s|3.287 s|
+| Exact prefix replay |7.873 tok/s|9.451 tok/s|0.062 s|2.458 s|
 
-- Timestamp intervals include barriers and possible queue/submission gaps. They
-  are not isolated shader-instruction times, and the diagnostic changes
-  scheduling. Do not subtract them from ordinary request time and call the
-  remainder pure CPU time.
--31700 completed935 fenced upload copies,2857697440 bytes, then reached the
-  application loading predicate: free1135 pages versus minimum898 plus256
-  padding pages. This is not proof of physical allocation failure. The case was
-  normally closed and the exact production/settings restored.
-- The application `statfs` addition in31100 resolved to an unqualified direct
-  syscall396 in title code. The owner exited before model load. The exact kernel
-  exit mechanism is unproven; the call was removed from every later candidate.
-- The109-tensor output-Q4 preparation reuses108 complete qualified payloads and
-  converts only the original BF16 output head. Independent whole-payload and
-  header checks pass. This saves317849600 resident bytes; it is not a speed result.
--32350 returned FTP ENOSPC after14202880 bytes although `statfs` reported about
-  1.75GB available. Both paths have the same filesystem ID. Treat that reading as
-  reported availability, not a guaranteed writable lower bound. The exact failed
-  prefix was archived, compared with its source and retired; the CPU publisher
-  and GPU never ran.
-- Obsolete source directory509cf was the unadopted Expert-Q2_0 experiment. It is
-  absent from the protected current/rollback roots. Full archival was stopped
-  before any deletion because of transfer cost. Original BF16 files76/76,
-  generation/publication recipes, metadata and all partial/completed archives
-  remain.32370 retires170 generated files,22673162481 logical bytes, with all12
-  current/rollback files verified before and after. Full archival of the old
-  generated weights is explicitly not claimed.
+These are22-output-token measurements with30 prompt tokens. Normal30200 and45100 are sequential complete product configurations, not an interleaved causal A/B test. Matched component evidence is separate; stage percentage gains must not be added. The retained whole request is16.697% shorter and decode25.458% higher in this sequential comparison. Prefix replay is a different cache condition and still answers the final number as7 instead of8; it is not correct-answer throughput. Cold/retained counting answers pass. General quality, arbitrary-prompt speed and sustained service are not established.
 
-Driver872cc126/cumulative-idle, disabled persistent caches, no reboot, no CI and
-no learned host inference remain unchanged. Live source ancestors and both
-qualified program/settings sets remain protected.
+The application emits three actual API responses and two positively completed1920x1080 VideoOut frames. Both original frames were visually inspected:8.20 and9.45 tok/s, CPU/GPU identity, synchronized UTC clock and memory are readable. Unavailable utilization counters remain `--`.
 
-Native33900 qualifies the256-thread finite-argmax variant on110 synthetic graphs, including all vocabulary values, first-index ties, invalid values and canaries. Single-row readback/selection is547.255 to375.007 microseconds; two rows1027.496 to376.781 microseconds. These are not whole-model results.
+## Stage decisions
 
-Native33800 executes216 two-token GDN selections per timed candidate request. Whole time is0.262% shorter, within variation; the quality counting answer repeats7. No adoption. Native34000 cap12 completes14 requests; whole time is0.451% slower, with all four quality tasks passing. No adoption.
+| ID | Technology | Native evidence cases | Decision |
+|---|---|---|---|
+|N1|GPU greedy and full vocabulary handling|31500,33400,33900,42900|tested-not-adopted|
+|N2|Submission node256/divisor40|35100,35900,36700,37300,38300|selected; normal qualified|
+|N3|Output Q4 projection|31600,34700,35400|selected; normal qualified|
+|N4|Static/adaptive prefill Expert budgets|32500,34500,39900|tested-not-adopted|
+|N5|Observed startup and reuse of sealed read-only pack|32600,36900|selected; normal qualified|
+|R1|New Top2 Gate/Up kernel|30700,39300|tested-not-adopted|
+|R2|History proposal cap8/12|31600,34000,35400|tested-not-adopted|
+|R3|Two-token GDN|33800|tested-not-adopted|
+|R4|Held-out current-distribution phase placement|39700|tested-not-adopted|
+|R5|Owned zero-extra-copy ring|36300|tested-not-adopted|
+|C1|GPU selection with node256 and complete logit evidence|38900,42900|tested-not-adopted|
+|C2|Cap12 plus two-token GDN plus Top2 Gate/Up|40300,41100|tested-not-adopted|
+|C3|Adaptive prefill plus phase placement plus owned ring|39900|tested-not-adopted|
+|C4|Release obsolete synchronized scheduler before replacement|40700,42900|selected; normal qualified|
+|D1|GPU-generated indirect hit-path capability|selected-driver source screen|selected-driver-capability-failure|
+|D2|Matched trained MTP auxiliary first slice|40900,41900,42500,43300,43800,44100|first-slice-tested-not-adopted|
+|D3|One-layer/rank shared basis and residual|39096,41300|first-slice-completed-not-selected|
 
-The first output-Q4 model case33600 returns before GPU because its old isolated output-Q8 two-part source has no Expert composite plan. The34120 adapter preserves both complete old parts and their trailing bytes, with16 malformed-geometry refusal controls;34200 is a fresh native test.
+The complete measured scope and disposition of each row is in `post-top2-adoption-20261101.json`. Earlier failures and refusals remain in `post-top2-worklog-20261101.json` under `candidate_attempt_history`; they are not timing samples or physical-impossibility claims.
 
-Native35100 resolves the runtime policy: the entry environment forces one node per submit, despite the provider default100. The explicitly scoped1-to4-node comparison preserves original kernels, flop cap and completion fences. All14 requests retain exact F32/routes/tokens and four semantic tasks pass. Retained throughput improves11.916%,whole time9.439%; submissions35856 to21541. Accepted for final composition, pending larger-group comparison and normal qualification/placement. Driver defaults are restored after each graph; original physical guards are unchanged.
+## Selected changes and concrete implementation
 
+- `tools/build_post_top2_submission.py`: `PostScopedNodeCap` scopes the actual selected Vulkan provider's `ggml_backend_vk_graph_compute` to256 nodes and restores the app's original1-node setting afterward. The original flop divisor40, shader math, true dependencies and completion rules remain. Cases35100/35900/37300 have14 complete requests, four fixed semantic tasks and exact full F32/routes/tokens. Actual final normal maximum is163 nodes, with44,091 candidate submissions. Divisor10 is negative and excluded.
+- `tools/build_post_top2_output_model.py`, `tools/build_post_top2_output.py`, `native/app/output_plain_segments.h`: output Q8_0 becomes Q4_0,675430400 to357580800 bytes.108 existing resident Q4 matrices are unchanged; the selected total is109. Cases31600/34700/35400 bracket four same-cap Q4 replays; every Q4 replay is faster than every Q8 group, with0.46125% mean shorter whole time. Four fixed semantic tasks pass. Cross-format full-vocabulary KL and broad quality preservation are unmeasured.
+- `tools/build_post_top2_startup.py` and `tools/build_post_top2_pack_seal_reuse.py`: require two quiet admitted startup observations rather than a fixed five-second wait; bound the wait and retain physical/OS checks. The measured settle interval drops5.006610326 to0.100198499 s. Reuse the prior native whole-pack SHA seal only after fresh read-only named-inode/descriptor/EOF admission. Final normal actually reuses one seal; a fresh whole-pack hash is explicitly not claimed. Startup savings are not advertised as decode speed.
+- `tools/reuse_post_top2_scheduler_lifetime.py` and `tools/build_post_top2_normal.py`: after existing synchronization, release the obsolete `llama_context::sched_new` scheduler and reserve graph before constructing their replacements. Case42900 shows167837696 bytes of simultaneous obsolete metadata eliminated. Its GPU-greedy experiment becomes runnable but remains slower. This is a same-cache memory improvement; no standalone speed gain or160MiB final-normal reduction is claimed.
+- `tools/build_post_top2_normal.py`: composes the actual normal API/display entry and1024-triplet sealed-pack owner from36820 with the exact selected37220 GPU object and34620 output plan. It keeps3712 active slots/3713 physical planes, F32 KV/recurrent state, BF16 PLE convolution, CPU512MiB and original physical completion rules. `tools/finalize_post_top2.py`, `tools/post_top2_production.py` and the `tools/prepare_first_case.py::qualified_control` branch admit this exact new composition without weakening the preceding production validator.
 
-### Further native results (cases34700–37500)
+## Important negative results and limits
 
-- Node16, then node256: the direct16→256 comparison37300 completed14 requests with every F32 value, route and token exact, four semantic tasks passed, positive retirement, ordinary close and exact restoration. Decode gained2.4115% and whole time fell1.1073% relative to node16. The actual maximum candidate batch was163 nodes and no node-cap event occurred;256 is nonbinding on this workload. This is separate from the earlier1→16 result; do not add percentages.
-- OutputQ4 format34700 versus bracketing unchanged cap6 Q8 controls31600/35400: all four Q4 retained replays were faster than every Q8 control. Mean whole time fell0.46125%, decode rose0.45111%, with exact routes, emitted work, source bytes/calls and controller attempts. Resident output storage falls317,849,600 bytes. Four semantic checks passed; broad quality equivalence and cross-format full-vocabulary KL are not established. Same-format internal replay variation is not called format gain.
-- Ring36300 completed14 requests and four semantic tasks but only+0.3228% decode/−0.1872% whole-time change, within A/A variation. Not selected. The explicit loading206 trial retained OS minimum898 and reservation206; actual minimum1165 never exercised the lower206-versus256 interval. This is not a measured lower-limit proof. Fifth-slot counters are added for the separate C3 combination.
-- Gate/Up37500 captured actual model metadata and still executed zero fused kernels. Its result is coverage-invalid, not a negative fused-kernel speed result. The original graph optimizer protects GDN/QSA spans but has no protection for the new Gate/Up span; the captured post-optimizer nodes are two compatible MM_ID operations followed by unrelated nodes. A new integration protects all three nodes in both pulling passes, retains external-input lifetimes, preserves patterns while control graphs are cached, and requires positive candidate dispatch.
-- CPU-only37000 stopped during whole-SELF inspection after two returned reads: free1261→754 versus unchanged919 floor. No GPU initialization occurred; ordinary close/restoration completed. Previous completed scopes recovered free pages during inspection. Candidate37500 includes a bounded same-floor wait and completed14 requests, but never needed that wait; its recovery branch is not claimed as tested by this run.
-- R4's unconstrained fixed-size refit regressed all four held-out traces. The revised phase-specific selection reuses the existing sealed1024-triplet file, preserves all348 prior keys and activates398 decode keys. Supplemental covered misses change236/10/237/148/183/230→254/42/257/148/185/233 for training cold/retained and four held-out tasks, with no regression. Native verification remains pending.
+N1/C1 actually execute22 GPU selections per timed candidate and preserve exact complete rows, but whole time grows4.62039%. Even fully hiding the measured26.5ms observer plus0.873ms full-logit transfer cannot offset either114.6/177.5ms observed delay. Fully deferred CPU validation is therefore screened by a measured upper bound, not falsely reported as implemented.
 
-Production30300 is still unchanged. Node256, outputQ4 and condition-based settling are candidates for final normal/API/display composition; no deployment is claimed yet.
+R1's180-graph fixture is faster, but the full model's816 actual dispatches per timed request produce0.05274% longer whole time. R3's216 actual two-token GDN selections give only0.26195% whole-time reduction within variation. C2 executes both kernels in two14-request cohorts, but one paired whole-time result regresses in each and mean gains remain smaller than A/A spread. Kernel-only or decoder-only eligibility flags do not override the whole-time criterion.
 
+N4, R4 and C3 complete their changed prefill/held-out placement/ring scopes; the combination is8.72095% slower. More cache slots are not separately replayed against a trace with no eviction; the same3712-slot lifetime improvement dominates increasing transient allocations for this workload.
 
-## Further completed comparisons
+D1: pinned `driver/ps5vk_compute.c::ps5vk_CmdDispatchIndirect` reads arguments on CPU at recording time and explicitly refuses GPU-written arguments in the same command. The planned GPU-generated indirect path requires driver/backend changes. This is a selected-driver limitation, not a PS5 hardware impossibility. See `post-top2-indirect-feasibility-20261101.json`.
 
-R1 finally executes816 candidate dispatches per timed request in39300. It is0.0527% slower in whole time and is not selected. Prior zero-dispatch trials are coverage failures, not fusion-speed results.
+D2: trained layer48 actually executes with a shared loaded model,10240-element HC state,1088-node auxiliary graph, no auxiliary rollback and target-verified proposals. The original `n_ubatch > n_keep_tail` assertion came from the hybrid recurrent rollback splitter, not PLE. An already mapped624.125MiB heap hit the512MiB software shader guard; explicit672MiB repricing enables completion. Case44100 completes14 requests/four semantic tasks with exact independent matched MTP full-row SHA/tokens/routes. Timed candidates make10 MTP calls each; total12 proposals accept10/reject2, including history proposals. Auxiliary work costs0.694-1.382 s in retained requests; whole time grows26.33546% and decode drops22.15224%. No unverified draft token is emitted. This stateless first slice is not selected; stateful/prewarmed alternatives were not tested and are not declared impossible.
 
-R4 phase-refit39700 completes all14 requests and four semantic checks, but whole time is0.4072% longer. C3 combination39900 is8.72095% longer with2of4 semantic checks passing. Neither is selected. C2 combination40300 executes both kernels (768 Gate/Up and252 GDN2 dispatches per timed row); initial whole time is0.65047% shorter, with3of4 semantic checks passing. Fresh replication41100 is prepared before adoption.
+D3: the declared one-layer/rank first slice completes180 native F64/canary graphs. Shared rank32 Q8 basis/factors plus TQ1 residual reduce triplet bytes22.1667%, but GPU time is1.567-2.053 times original, with substantial weight approximation. Full-model cold-I/O tradeoffs, answer quality and speed remain unmeasured; a full-model regression is not inferred from this fixture.
 
-The40700 heap diagnostic records mapped503,382,016 bytes, historical peak671,219,712 bytes, cap536,870,912 bytes and zero libc fallbacks. No actual GPU argmax ran. The mapped value is below the app quota; the historical peak is above it. This does not establish physical exhaustion. The synchronized obsolete-scheduler/replacement overlap is being removed without raising the quota or cutting Expert-cache slots.
+## Memory and provenance
 
-D3 first-layer/rank slice41300 completes180 graphs over five shapes, every representation-specific F64 output and input/output canaries, positive retirement and ordinary close/restoration. The rank32 Q8 basis plus TQ1 residual reduces Expert-triplet bytes22.1667%, but Gate/Up slice time grows56.70% (one token),67.48% (two tokens),105.30% (30-token prefill). Relative squared weight error is approximately0.66; it is not an answer-quality measurement. Full-model speed and answer quality are not measured or claimed. This representation is not advanced to full conversion after the unfavorable first-stage cost/approximation screen. The40500 source-open failure is retained;41300 changes only the title-visible app0 binding before the successful slice.
+Final normal peaks: CPU503382016 bytes, post-load GPU ledger6167724032 bytes and actual workspace8388608 bytes. The6199160832-byte post-load ledger excludes preloaded resident model weights and separate staging; it is not total physical memory. Expert cache remains5703659520 bytes. Output payload savings are not silently converted to additional cache slots.
 
+Application relink source: `97de33bab429618475d250c9e0bc4a71f06469ed`; SELF `2d66ba58810a7c0502564fb7c9181f25e8c2355f34925934f54f43bf20c4ecb9`; selected GPU object `b05d8e998a60f36b6eb40624a601d740022d921bae399eb332cd3c9ed9ce57d9`; model receipt `46ceb693e8afd3c562e92532674ff16a336387da4cea91609660cc1fc58fe426`.
 
-C2 replication41100 completes14 requests with actual dual-kernel coverage and the same3of4 semantic result. Average whole-time reductions are0.6505% and0.4727%, but paired reductions are[46.4664,−5.4199]ms and[−5.0413,34.7800]ms; control A/A spreads are29.1758ms and26.3689ms. Each cohort contains a slower candidate pairing. The decoder-only eligibility flag in the generic analyzer is insufficient for the plan's repeatable whole-time criterion. C2 is therefore not selected; no quality regression is adopted for this inconsistent result.
-
-The final node256 divisor40/10 case38300 completes14 exact requests and four semantic checks. Divisor10 gives−0.5232% decode and0.1889% shorter whole time, within variation. Node256/divisor40 remains selected.
-
-The41500 changed lifetime scope gets past the earlier explicit heap refusal, then returns a decode failure. It is ordinarily closed/restored; no GPU-selection speed claim is made. The next changed scope preserves complete F32 evidence by sharing unchanged greedy raw/sampled output views, avoiding the stale separate raw plane that the framework does not download when every sequence is backend sampled.
-
-
-N1/C1 full-model42900 completes14 requests with22 actual GPU argmax dispatches per timed candidate row; full F32/routes/tokens are exact and all four semantic tasks pass. Whole time is4.62039% longer and decode3.03014% slower, so GPU selection is not selected. This is the first qualified full-model result; preceding returned allocation/configuration failures are not speed measurements.
-
-C4 is numerically qualified by42900: scheduler replacement now releases167,837,696 bytes before allocating the new owner (486,604,800→318,767,104 bytes). Whole-process tracked CPU peak falls671,219,712→503,382,016 bytes, below the unchanged536,870,912-byte quota, without cutting3712 Expert slots. The physical raw/sampled F32 greedy views share one unchanged plane; every full row and row order remains checked. Standalone throughput improvement is not claimed for this memory-lifetime correction.
-
-MTP42500 durably identifies the41900 lost terminal as a library assertion: llama-batch.cpp:718 n_ubatch>n_keep_tail. The precise cause is the hybrid recurrent rollback splitter, not PLE: n_rs_seq1 requests a two-token trailing rollback window. A stateless one-token auxiliary needs no rollback; the public API defines n_rs_seq0 as disabled. The target keepsn_rs_seq1 and complete verification. The temporarybatch16 implementation is retained as an unlaunched control; the corrected candidate uses auxiliarybatch1/n_rs_seq0 and the actual-head graph budget.
+Driver: `akiba-tokyo-jp/PS5-Vulkan-Inference`, revision `872cc1264ad8ba5d6b888b092968fa5858a38c58`, `cumulative-idle`, archive `67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9`. Exact native source/header/object hashes and complete artifact fingerprints are retained in the linked receipt and adoption JSON.
