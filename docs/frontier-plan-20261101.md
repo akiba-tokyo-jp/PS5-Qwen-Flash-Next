@@ -89,3 +89,7 @@ projection alias and shape-limited split-K4. Existing service mode69, all weight
 precisions, Top2 decode, cache capacity, allocation limits, per-token fsync,
 monitoring and selected driver remain. Normal/API/display qualification and
 verified placement must finish before the campaign is reported delivered.
+
+Normal53100 has now passed API, viewed frames, all three counting answers,
+ledger readback, positive retirement and exact restoration. Verified placement
+53200 is the final delivery step. See frontier-adoption-20261101.json.
