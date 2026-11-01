@@ -3,6 +3,28 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Latest AMPR / Kraken state — 2026-11-02
+
+Read `docs/AMPR-Kraken-revalidation-20261102.md` and its JSON before console
+work. The PS5 CPU entropy-chunk comparator completed losslessly but total
+delivery was approximately 97% slower; this candidate is measured ineffective,
+not untested. Hardware Kraken and AMPR batch/model timing are unperformed.
+An owned classic PFS control became readable in the native probe through an
+authenticated readonly view, but APR returned ENOTTY before file-ID creation.
+Do not repeat that route or claim hardware absence.
+
+Native END/ordinary return, PID absence, helper auth/parent restoration, and
+ordinary view unmount are recorded. Both restoring SELF renames succeeded;
+communication failed in the subsequent full six-file verification. Final
+verification and cleanup are incomplete. The separate base PFS/image remains
+owned: never delete backing while possibly mounted. Private active context
+marks unknown completion and blocks more launches. HTTP/FTP are unavailable;
+an unidentified standby PS5 replied at another address. Do not target it
+without identity. Reboot remains unavailable. Rework view/sandbox lifetime
+coordination before another filesystem scope; the failure cause is unproven.
+No acceleration candidate was adopted; no driver change or CI run occurred. Finish read-only recovery,
+restoration checks and ordinary owned cleanup before any changed test scope.
+
 ### Authorized APR system-library investigation — 2026-11-01
 
 The owner subsequently authorized system-library acquisition for this APR
