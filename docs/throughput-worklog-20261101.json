@@ -1,0 +1,52 @@
+{
+  "schema": "ps5-qwen-throughput-worklog-v1",
+  "verification_completed": false,
+  "baseline_case": 53100,
+  "baseline_placement": 53200,
+  "selected_frontier_mode": 7,
+  "selected_service_mode": 69,
+  "stages": {
+    "1": {
+      "completed": false,
+      "state": "in_progress"
+    },
+    "2": {
+      "completed": false,
+      "state": "pending"
+    },
+    "3": {
+      "completed": false,
+      "state": "pending"
+    },
+    "4": {
+      "completed": false,
+      "state": "pending"
+    }
+  },
+  "CI_runs": 0,
+  "agents": 0,
+  "reboots": 0,
+  "delivery_record": "docs/throughput-adoption-20261101.json",
+  "storage_preparation": {
+    "completed": true,
+    "available_before_bytes": 24539037696,
+    "obsolete_Q4_parts_retired": 46,
+    "obsolete_bytes_retired": 14723724288,
+    "protected_source_files": 554,
+    "current_source_planner_files": 513,
+    "native_record": "Throughput-closed-source-reclaim-54070",
+    "current_and_immediate_sources_unchanged": true,
+    "CPU_Direct_positively_retired": true,
+    "original_capacity_refusal": "Throughput-full-bundles-54030",
+    "refused_payload_not_replayed": true,
+    "new_finite_pack": "Throughput-full-bundles-54090",
+    "passive_observation_only_correction": true,
+    "GPU_calls": 0
+  },
+  "owner_certificate_design": "Use the existing monotonically increasing allocation-attempt counter and exact live/physical owner snapshot; publish only across an unchanged original full retirement walk. Preserve the native allocator/archive and 72-byte ABI.",
+  "host_checks": {
+    "owner_certificate_controls": 22,
+    "passed": true,
+    "learned_host_inference": false
+  }
+}
