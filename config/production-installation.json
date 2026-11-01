@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-11-01",
-  "application_source_revision": "76870d256094c93d083aa72a45b626e1b8b04975",
+  "application_source_revision": "97de33bab429618475d250c9e0bc4a71f06469ed",
   "application_SELF": {
-    "bytes": 21868935,
-    "sha256": "5b829d396dbbf4f7b6d07b139917ee5d3740c44bbb245cf4542f24371d1e36cd"
+    "bytes": 21876663,
+    "sha256": "2d66ba58810a7c0502564fb7c9181f25e8c2355f34925934f54f43bf20c4ecb9"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -16,8 +16,8 @@
   },
   "precision": {
     "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
-    "other_weights": "108 large resident matrices Q4_0; other resident Q8_0 except original BF16 PLE convolution and F32 tensors",
-    "output_weight": "Q8_0",
+    "other_weights": "109 large resident matrices including output Q4_0; other resident Q8_0 except original BF16 PLE convolution and F32 tensors",
+    "output_weight": "Q4_0",
     "shared_Expert_weight": "Q8_0 (144 active projections)",
     "PLE_convolution": "BF16 [4,10240], 81920 bytes",
     "KV_cache": "F32",
@@ -27,34 +27,34 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "c2eafe1a5fa0726fa60fe63fa25d821f7ae50cf777dfebc51f8031c11c03f002",
+  "previous_production_SHA256": "5b829d396dbbf4f7b6d07b139917ee5d3740c44bbb245cf4542f24371d1e36cd",
   "active_expert_slots": 3712,
   "physical_cache_planes": 3713,
   "expert_cache_bytes": 5703659520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 563.9713280200958,
-      "decode_ms": 3211.6954439878464,
-      "decode_tokens_per_second": 6.538602543809402,
+      "TTFT_ms": 586.2936649918556,
+      "decode_ms": 2559.981220960617,
+      "decode_tokens_per_second": 8.203185174975573,
       "generated_tokens": 22,
-      "prefill_ms": 530.4320110082626,
+      "prefill_ms": 551.9163320064545,
       "prompt_tokens": 30,
-      "total_ms": 3945.386111021042
+      "total_ms": 3286.628719985485
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 61.08966398239136,
-      "decode_ms": 2667.4033029675484,
-      "decode_tokens_per_second": 7.872825221681705,
+      "TTFT_ms": 62.41689199209213,
+      "decode_ms": 2221.983636021614,
+      "decode_tokens_per_second": 9.451014696759776,
       "generated_tokens": 22,
-      "prefill_ms": 27.06530499458313,
+      "prefill_ms": 27.792988002300262,
       "prompt_tokens": 30,
-      "total_ms": 2937.319858968258
+      "total_ms": 2458.4077820181847
     }
   ],
-  "normal_application_case": 30200,
-  "production_placement_case": 30300,
+  "normal_application_case": 45100,
+  "production_placement_case": 45200,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -69,8 +69,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": false,
-  "qualification_report": "docs/next-five-adoption-20261031.json",
-  "historical_installation": "config/production-installation-four-next-20261031.json",
+  "qualification_report": "docs/post-top2-adoption-20261101.json",
+  "historical_installation": "config/production-installation-next-five-20261101.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -79,9 +79,9 @@
   "private_repository": true,
   "GitHub_Actions_enabled": false,
   "original_Q4_optimized_profile_preserved": false,
-  "fixed_quality_candidate_case": 24300,
+  "fixed_quality_candidate_case": 34700,
   "finite_quality_scope": "Four fixed semantic tasks pass in complete routing/Q4 cohorts. Normal/API counting correctness and cross-prefix answer changes are reported per request without rewriting output or quarantining returned GPU work. General quality, arbitrary-prompt performance and sustained reboot-free operation are not claimed.",
-  "model_receipt_SHA256": "5f991ad0e335993fd2c0d2e97d1d8925e8e95adda013f2549ea923cefd679ec9",
+  "model_receipt_SHA256": "46ceb693e8afd3c562e92532674ff16a336387da4cea91609660cc1fc58fe426",
   "expert_eviction_policy": "two_touch_probation",
   "owner_expected_quantization_loss_accepted": true,
   "original_mixed_optimized_profile_preserved": false,
@@ -111,8 +111,8 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "previous_production_source_revision": "6d899b41a2b3e492c9f3b4c166de6f7223a720b3",
-  "normal_validation_case": 30200,
+  "previous_production_source_revision": "76870d256094c93d083aa72a45b626e1b8b04975",
+  "normal_validation_case": 45100,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 2,
@@ -173,212 +173,243 @@
   "non_Expert_except_output_precision_preserved": false,
   "non_Expert_except_output_and_shared_precision_preserved": false,
   "fixed_quality_cases": [
-    21300,
-    23700,
-    22100,
-    24300,
-    27600,
-    28800
+    34700,
+    35100,
+    35900,
+    37300
   ],
   "fixed_quality": {
     "requests_per_complete_comparison": 14,
     "fixed_semantic_tasks_per_comparison": 4,
     "all_fixed_semantic_tasks_passed": true,
     "placement_F32_routes_tokens_bytes_exact": true,
-    "placement_exact_cases": [
+    "historical_geometry_exact_cases": [
       27600,
       28800
+    ],
+    "submission_exact_cases": [
+      35100,
+      35900,
+      37300
     ],
     "cross_precision_or_routing_F32_equality_claimed": false,
     "GDN_full_state_F64_case": 14800
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 19000,
+    "control_case": 30200,
     "control_is_sequential_not_ABBA": true,
-    "cache_occupancy_differs": true,
+    "cache_occupancy_held_matched": false,
     "unlike_cache_conditions_not_pooled": true,
     "causal_candidate_evidence": [
       {
-        "family": 1,
-        "candidate": "Top4",
-        "native_case": 21300,
-        "requests": 14,
-        "retained_decode_gain_percent": 7.761122069442283,
-        "retained_whole_time_reduction_percent": 9.47763040364553,
-        "fixed_semantic_tasks_passed": 4,
-        "counting_output_equal": true,
-        "positive_retirement_and_exact_restore": true,
-        "status": "measured_faster_superseded_by_Top2"
-      },
-      {
-        "family": 1,
-        "candidate": "Top2",
-        "native_case": 23700,
-        "requests": 14,
-        "retained_decode_gain_percent": 25.83487187631377,
-        "retained_whole_time_reduction_percent": 24.011449064779132,
-        "fixed_semantic_tasks_passed": 4,
-        "counting_output_equal": true,
-        "positive_retirement_and_exact_restore": true,
-        "status": "adopted"
-      },
-      {
-        "family": 1,
-        "candidate": "adaptive2_4_6",
-        "native_case": 22100,
-        "requests": 14,
-        "retained_decode_gain_percent": 13.235698329701284,
-        "retained_whole_time_reduction_percent": 8.972310595379584,
-        "fixed_semantic_tasks_passed": 4,
-        "counting_output_equal": true,
-        "positive_retirement_and_exact_restore": true,
-        "status": "measured_faster_superseded_by_fixed_Top2"
-      },
-      {
-        "family": 2,
-        "candidate": "up_to32_attempts",
-        "native_case": 21400,
-        "requests": 14,
-        "retained_decode_gain_percent": 0.38604098135779363,
-        "retained_whole_time_reduction_percent": 0.2389331461945976,
-        "fixed_semantic_tasks_passed": 4,
-        "counting_output_equal": true,
-        "positive_retirement_and_exact_restore": true,
-        "status": "measured_not_selected_within_variation_or_slower"
-      },
-      {
-        "family": 3,
-        "candidate": "Q4_cache3072_to3712",
-        "native_case": 21600,
-        "requests": 14,
-        "retained_decode_gain_percent": -1.5061007445321128,
-        "retained_whole_time_reduction_percent": 13.028052852427653,
-        "fixed_semantic_tasks_passed": 4,
-        "counting_output_equal": true,
-        "positive_retirement_and_exact_restore": true,
-        "status": "latency_gain_selected_only_in_faster_Top2_combination"
-      },
-      {
-        "family": 4,
-        "candidate": "Q4_cache3712_Top2",
-        "native_case": 24300,
-        "requests": 14,
-        "retained_decode_gain_percent": 34.08778765709688,
-        "retained_whole_time_reduction_percent": 31.250155948696722,
-        "fixed_semantic_tasks_passed": 4,
-        "counting_output_equal": true,
-        "positive_retirement_and_exact_restore": true,
-        "status": "adopted"
-      },
-      {
-        "family": 5,
-        "candidate": "early_refill_with_owned_copy",
-        "native_case": 21700,
-        "requests": 14,
-        "retained_decode_gain_percent": -0.2614070014776426,
-        "retained_whole_time_reduction_percent": -0.13969356593008797,
-        "fixed_semantic_tasks_passed": 4,
-        "counting_output_equal": true,
-        "positive_retirement_and_exact_restore": true,
-        "status": "measured_not_selected_within_variation_or_slower"
-      },
-      {
-        "family": 3,
-        "candidate": "relax_uniform_layer_floor",
-        "scope": "actual_planner_replay_seven_saved_traces",
-        "baseline_native_counts_exact": true,
-        "half_floor_miss_changes": [
-          6,
-          1320,
-          15,
-          6,
-          0,
-          0,
-          220
-        ],
-        "zero_floor_miss_changes": [
-          6,
-          1412,
-          16,
-          6,
-          0,
-          0,
-          246
-        ],
-        "native_speed_proven": false,
-        "status": "host_screen_worse_not_selected"
-      },
-      {
-        "family": 4,
-        "candidate": "Attention_KV_F16",
-        "native_case": 21800,
-        "requests": 14,
-        "all_requests_same_F16_storage": true,
-        "within_run_storage_ABBA": false,
-        "device_bytes_saved": 8388608,
-        "status": "completed_no_demonstrated_speed_gain"
-      },
-      {
-        "family": 4,
-        "candidate": "recurrent_S_F16",
+        "id": "N1",
+        "technology": "GPU greedy and full vocabulary handling",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
         "native_cases": [
-          21900,
-          24000
+          31500,
+          33400,
+          33900,
+          42900
         ],
-        "requests": 0,
-        "status": "executed_context_initialization_failure_not_selected",
-        "ordinary_OS_context_close_and_exact_restore": true,
-        "preclose_global_retirement_unproven": true,
-        "F16_SCALE_source_incompatibility_fixed_but_additional_backend_abort_remains": true
+        "scope_and_result": "Full14-request GPU selection comparison;22 real calls per timed request;exact F32/tokens/routes;whole time4.62039% longer."
       },
       {
-        "family": 2,
-        "candidate": "width_four_with_three_recurrent_slots",
-        "native_case": 22400,
-        "requests": 0,
-        "status": "executed_context_initialization_failure_not_selected",
-        "ordinary_OS_context_close_and_exact_restore": true,
-        "preclose_global_retirement_unproven": true
-      },
-      {
-        "family": 5,
-        "candidate": "768_to1444_placement",
-        "native_pack_case": 25010,
-        "new_pack_bytes": 1577058304,
-        "extra_cache_slots": 0,
-        "status": "measured_all_phase_tradeoff_superseded_by_cold_prefill_only",
-        "native_case": 27600,
-        "requests": 14,
-        "retained_decode_gain_percent": -0.9105247303958564,
-        "retained_whole_time_reduction_percent": 1.9802183545978291,
-        "retained_source_calls_control": 4440,
-        "retained_source_calls_candidate": 3007,
-        "source_call_reduction_percent": 32.27477477477477,
-        "all_full_F32_rows_routes_tokens_exact": true,
-        "actual_high512plus_bundle_index_hits": 3199,
-        "positive_retirement_and_exact_restore": true,
-        "all_phase_placement_adopted": false
-      },
-      {
-        "family": 5,
-        "candidate": "1444_keys_only_initial_prefill_Q4_Top2",
-        "native_case": 28800,
-        "requests": 14,
-        "retained_decode_gain_percent": -0.4000820140264816,
-        "retained_whole_time_reduction_percent": -0.3895642814682132,
-        "cold_whole_time_reduction_percent": 2.15839871814667,
-        "cold_TTFT_reduction_ms": 145.40403199195862,
-        "cold_source_calls_control": 8467,
-        "cold_source_calls_candidate": 7364,
-        "retained_source_calls_in_both_arms": 800,
-        "actual_high_index_hits": 1931,
-        "actual_decode_high_index_hits": 0,
-        "all_full_F32_routes_tokens_bytes_exact": true,
-        "fixed_semantic_tasks_passed": 4,
-        "positive_retirement_and_exact_restore": true,
+        "id": "N2",
+        "technology": "Submission node256/divisor40",
         "status": "adopted",
-        "retained_trial_not_adopted": true
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          35100,
+          35900,
+          36700,
+          37300,
+          38300
+        ],
+        "scope_and_result": "Exact14-request controls;node256/divisor40 selected;divisor10 adds no repeatable gain. Percentage gains from stages are not summed."
+      },
+      {
+        "id": "N3",
+        "technology": "Output Q4 projection",
+        "status": "adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          31600,
+          34700,
+          35400
+        ],
+        "scope_and_result": "All4 same-cap Q4 replays faster than both bracketed Q8 groups;whole0.46125% shorter;stored output payload317849600B smaller;four finite semantic tasks pass;cross-format KL/general quality unmeasured."
+      },
+      {
+        "id": "N4",
+        "technology": "Static/adaptive prefill Expert budgets",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          32500,
+          34500,
+          39900
+        ],
+        "scope_and_result": "Cold TTFT can improve, but whole/retained performance regresses;all declared static/adaptive and combination stages evaluated."
+      },
+      {
+        "id": "N5",
+        "technology": "Observed startup and reuse of sealed read-only pack",
+        "status": "adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          32600,
+          36900
+        ],
+        "scope_and_result": "Three real API responses/two frames per normal run;settle5.006610326s to0.100198499s;fresh inode/descriptor/EOF bind the previous native pack SHA, not a claimed fresh whole hash."
+      },
+      {
+        "id": "R1",
+        "technology": "New Top2 Gate/Up kernel",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          30700,
+          39300
+        ],
+        "scope_and_result": "180 fixture graphs and14 model requests;816 actual candidate dispatches per timed request;whole0.05274% longer despite faster microkernel."
+      },
+      {
+        "id": "R2",
+        "technology": "History proposal cap8/12",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          31600,
+          34000,
+          35400
+        ],
+        "scope_and_result": "Caps execute in the current controller;no repeatable whole-request improvement over6."
+      },
+      {
+        "id": "R3",
+        "technology": "Two-token GDN",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          33800
+        ],
+        "scope_and_result": "14 requests,216 actual selections per timed candidate;whole0.26195% reduction within variation;3of4 fixed semantic tasks."
+      },
+      {
+        "id": "R4",
+        "technology": "Held-out current-distribution phase placement",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          39700
+        ],
+        "scope_and_result": "Preserves348 original keys and adds50;held-out screen and14 native requests;whole0.40720% longer."
+      },
+      {
+        "id": "R5",
+        "technology": "Owned zero-extra-copy ring",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          36300
+        ],
+        "scope_and_result": "Five owned slots/four workers;14 exact requests;whole0.18724% reduction within variation."
+      },
+      {
+        "id": "C1",
+        "technology": "GPU selection with node256 and complete logit evidence",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          38900,
+          42900
+        ],
+        "scope_and_result": "Actual combined full-model candidate is slower. Full-logit transport costs0.873ms/request;even eliminating it cannot offset the measured regression. Fully deferred CPU validation is not claimed implemented. Even fully hiding the26.5ms observer and0.873ms logit transport cannot offset either114.6/177.5ms measured delay;deferred-transport subvariant screened by this measured upper bound."
+      },
+      {
+        "id": "C2",
+        "technology": "Cap12 plus two-token GDN plus Top2 Gate/Up",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          40300,
+          41100
+        ],
+        "scope_and_result": "Both14-request cohorts execute both kernels;one temporal whole-time pair regresses in each;mean gain smaller than A/A spread;3of4 semantic tasks."
+      },
+      {
+        "id": "C3",
+        "technology": "Adaptive prefill plus phase placement plus owned ring",
+        "status": "tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          39900
+        ],
+        "scope_and_result": "14 requests;whole8.72095% longer;2of4 semantic tasks."
+      },
+      {
+        "id": "C4",
+        "technology": "Release obsolete synchronized scheduler before replacement",
+        "status": "adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          40700,
+          42900
+        ],
+        "scope_and_result": "Dominating same3712-slot memory point:release167837696B before replacement;CPU peak671219712B to503382016B without cache reduction or CPU-quota increase. No standalone speed gain claimed;normal composition must qualify."
+      },
+      {
+        "id": "D1",
+        "technology": "GPU-generated indirect hit-path capability",
+        "status": "selected-driver-capability-failure",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [],
+        "scope_and_result": "First decisive source screen completed:the selected driver reads indirect arguments on CPU at record time and explicitly refuses same-command GPU-written arguments. This path requires driver/backend work;not PS5 physical impossibility."
+      },
+      {
+        "id": "D2",
+        "technology": "Matched trained MTP auxiliary first slice",
+        "status": "first-slice-tested-not-adopted",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          40900,
+          41900,
+          42500,
+          43300,
+          43800,
+          44100
+        ],
+        "scope_and_result": "Completed14 native requests,all4 semantic tasks,actual10 MTP calls per timed candidate,exact independent candidate full-row SHA/tokens/routes. Whole26.33546% longer;decode22.15224% slower. CPU peak654442496B below672MiB explicitly repriced software quota;not physically impossible. Stateful/prewarmed auxiliary designs are outside this first slice."
+      },
+      {
+        "id": "D3",
+        "technology": "One-layer/rank shared basis and residual",
+        "status": "first-slice-completed-not-selected",
+        "verification_stage_completed": true,
+        "remaining_current_plan_steps": [],
+        "native_cases": [
+          39096,
+          41300
+        ],
+        "scope_and_result": "The declared first layer/rank slice completed:180 native F64/canary graphs;triplet bytes22.1667% smaller;GPU costs1.567x to2.053x original. Full-model speed/answer quality and cold-I/O tradeoff are unmeasured;no full-model speed regression or physical impossibility is claimed."
       }
     ]
   },
@@ -387,15 +418,15 @@
   "speculative_source_reads": false,
   "additional_GPU_forecast": false,
   "normal_application_speedup": {
-    "control_case": 19000,
-    "comparison": "Sequential installed19000 versus qualified30200, not ABBA; matched candidate evidence is reported separately in next-five adoption results",
+    "control_case": 30200,
+    "comparison": "Sequential installed30200 versus qualified45100, not ABBA; matched candidate evidence is reported separately in post-Top2 adoption results",
     "full_vocabulary_finite": true,
     "all_counting_tokens_and_bytes_equal": false,
     "cross_cache_exact_F32_required": false,
     "maximum_absolute_logit_error_by_request": [
       0.0,
-      10.567440509796143,
-      9.080419421195984
+      10.5718355178833,
+      9.165319919586182
     ]
   },
   "all_six_previous_memory_candidates_disposed": true,
@@ -487,7 +518,7 @@
     "active_cache_slots": 3712,
     "physical_cache_planes": 3713,
     "cache_bytes": 5703659520,
-    "original_GPU_object": true,
+    "original_GPU_object": false,
     "original_single_token_GDN_fusion": true,
     "two_token_fusion_selected": false,
     "Gate_Up_fusion_selected": false,
@@ -506,12 +537,13 @@
     "benchmark_checkpoint_injections": 0,
     "persistent_caches": false,
     "automatic_retries": 0,
-    "loading_application_padding": "original256",
+    "loading_application_padding": "qualified206",
     "loading_expected_OS_minimum_pages": 898,
     "loading_expected_OS_reserved_pages": 206,
     "loading_legacy_padding_pages": 256,
     "loading_scope_once": true,
-    "PLE_convolution_BF16_preserved": true
+    "PLE_convolution_BF16_preserved": true,
+    "selected_GPU_object_SHA256": "b05d8e998a60f36b6eb40624a601d740022d921bae399eb332cd3c9ed9ce57d9"
   },
   "additional_application_state_allowance_bytes": 130023424,
   "n_rs_seq": 1,
@@ -525,13 +557,13 @@
     "cache_bytes": 5703659520,
     "placement_keys": 1444,
     "supplemental_triplets": 1024,
-    "resident_precision": "108 additional matrices Q4_0",
+    "resident_precision": "109 large matrices including output Q4_0;remaining resident Q8_0 except original PLE BF16 and F32",
     "Attention_KV": "F32",
     "recurrent_S": "F32",
     "PLE_convolution": "BF16",
     "maximum_causal_attempts": 6,
     "n_rs_seq": 1,
-    "original_GPU_object": true,
+    "original_GPU_object": false,
     "original_OS_minimum_physical_reserves_completion_and_close": true,
     "CI_runs": 0,
     "automatic_retries": 0,
@@ -540,7 +572,17 @@
     "expanded_placement_prefill_only": true,
     "decode_placement_keys": 768,
     "expanded_placement_only_first_request": true,
-    "later_request_placement_keys": 768
+    "later_request_placement_keys": 768,
+    "current_pack_integrity": "prior_native_whole_SHA_seal_with_fresh_readonly_inode_descriptor_and_EOF",
+    "prior_sealed_pack_SHA256": "98a25de242a9862ba5ae6572d1c2f1d2bff170def03685eb6a71b526399944e8",
+    "prior_sealed_pack_bytes": 1577058304,
+    "fresh_whole_pack_hash_not_claimed": true,
+    "selected_GPU_object_SHA256": "b05d8e998a60f36b6eb40624a601d740022d921bae399eb332cd3c9ed9ce57d9",
+    "output_weight_type": "Q4_0",
+    "submission_node_cap": 256,
+    "submission_flop_divisor": 40,
+    "steady_CPU_heap_limit_bytes": 536870912,
+    "obsolete_synchronized_metadata_released_before_replacement": true
   },
   "normal_counting_quality_by_request": [
     true,

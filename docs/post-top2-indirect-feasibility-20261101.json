@@ -1,0 +1,23 @@
+{
+  "completed": true,
+  "kind": "selected_driver_indirect_dispatch_feasibility",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "source": {
+    "path": "C:\\Users\\User\\ps5-ai\\driver-work\\PS5-Vulkan-Inference-qwen-872cc126\\driver\\ps5vk_compute.c",
+    "bytes": 25859,
+    "sha256": "fd88b4c8372189a0988a3e2041fc82f960cac4c0ad94639002dfd71233693b2c"
+  },
+  "function": "ps5vk_CmdDispatchIndirect",
+  "line": 502,
+  "parameters_read_on_CPU_at_recording_time": true,
+  "same_command_buffer_GPU_written_arguments_explicitly_refused": true,
+  "GPU_generated_indirect_dispatch_not_available": true,
+  "proposed_indirect_variant": "implementation-unavailable-on-selected-driver",
+  "physical_PS5_incapability_established": false,
+  "no_futile_native_refusal_probe_performed": true,
+  "driver_changed": false,
+  "PS5_operations": 0,
+  "CI_runs": 0,
+  "retest_condition": "A qualified GPU-executed indirect dispatch implementation, or a separately designed fully predicated graph with correct state ownership.",
+  "fully_predicated_alternative": "not yet implemented or natively validated; this screen does not establish its impossibility"
+}

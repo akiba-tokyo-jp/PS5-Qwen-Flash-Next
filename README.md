@@ -8,40 +8,43 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-All five software optimization families have final dispositions. The selected
-normal30200 program is installed by verified production placement30300. See the
-[results](docs/next-five-results-20261031.md),
-[adoption evidence](docs/next-five-adoption-20261031.json),
-[complete experiment dispositions](docs/next-five-worklog-20261031.json) and
+All17 post-Top2 optimization stages have explicit dispositions. The qualified
+normal45100 program is installed by verified production placement45200. See the
+[results](docs/post-top2-results-20261101.md),
+[adoption evidence](docs/post-top2-adoption-20261101.json),
+[experiment dispositions](docs/post-top2-worklog-20261101.json) and
 [installation record](config/production-installation.json).
 
-Decode uses two active Experts. Expert Gate/Up stays Q2_K and Down Q2_0 MSE;
-108 large resident matrices become Q4_0, others remain Q8 except tiny BF16 PLE
-convolution and original F32 weights/state. KV and recurrent S remain F32.
-The Expert cache grows3072 to3712 active slots,3713 physical planes. Expanded
-1444-key placement applies only to the initial prefill; decode and later
-requests use768 keys. The original qualified GPU object and driver872cc126 /
-cumulative-idle remain, with persistent caches disabled.
+The selected changes are scoped Vulkan node256/divisor40 submission, output
+Q4_0, condition-based startup, reuse of a natively sealed read-only pack and
+release of synchronized obsolete scheduler metadata before replacement. Actual
+maximum submission size is163 nodes. Decode remains Top2. Gate/Up stays Q2_K
+and Down Q2_0 MSE;109 large resident matrices including output are Q4_0, other
+resident matrices Q8 except tiny BF16 PLE convolution and original F32 tensors.
+KV/recurrent state remains F32, with3712 active Expert slots/3713 planes.
+1444-key placement applies only to the first prefill; decode/later requests
+use768 keys. Driver872cc126/cumulative-idle and disabled persistent caches remain.
 
-| Fixed30-token prompt,22 generated tokens | Previous19000 tok/s | Selected30200 tok/s | Selected counting correct |
+| Fixed30-token prompt,22 generated tokens | Previous30200 tok/s | Selected45100 tok/s | Counting correct |
 | --- | ---: | ---: | --- |
-| Cold Expert cache |4.377344|5.537146|true|
-| Independent KV reset, Expert weights retained |5.012038|6.538603|true|
-| Exact prefix plus causal reuse |7.036085|7.872825|false|
+| Cold Expert cache |5.537146|6.587471|true|
+| Independent KV reset, Expert weights retained |6.538603|8.203185|true|
+| Exact prefix plus causal reuse |7.872825|9.451015|false|
 
-These are sequential finite cohorts, not matched ABBA or general-quality
-qualification. The prefix-repeat answer repeats7 and is incorrect; its rate is
-not correct-answer throughput. Four fixed semantic tasks pass in the complete
-candidate comparisons, but unchanged answer quality is not established. Actual
-quality flags and output are preserved. A semantic misanswer no longer
-quarantines already returned GPU work.
+These complete configurations are sequential cohorts, not matched A/B. The
+retained whole request is3.287s,16.697% shorter; component evidence is separate.
+Prefix replay still ends in7 instead of8, so its rate is not correct-answer
+throughput. Four fixed semantic tasks pass in selected component cohorts;
+general answer quality and arbitrary-input performance are not established.
 
-All3 normal requests, two actual viewed native frames, zero live device ledger,
-positive model/source/GPU retirement, ordinary close and exact control restoration
-pass. Production verifies both complete programs and both five-setting sets
-with native SHA256/identity/EOF. The exact c2e control is preserved. The installed
-app/gateway/models are inactive and the30200 finite binding is consumed. CI,
-learned host inference and reboot were not used.
+Three actual API responses, two viewed native frames, positive model/source/GPU
+retirement, zero live device ledger and ordinary close pass. Native whole
+SHA256/identity/EOF verifies the new program/five settings and the immediate5b
+control/five settings. Earlier rollback files remain preserved. Actual current
+admission and13 rejection controls pass. The program/gateway/models are inactive;
+the finite45100 binding is consumed and relaunch needs a fresh qualified case.
+No CI, learned host inference, reboot or forced reset was used. D1-D3 were
+initial research slices; full redesigns are not falsely claimed implemented.
 
 ## Historical cold and different-input campaign
 

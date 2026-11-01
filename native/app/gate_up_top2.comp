@@ -1,0 +1,54 @@
+// SPDX-License-Identifier: MIT
+#version 450
+layout(local_size_x=64) in;
+layout(binding=0,std430) readonly buffer Gate { uint g[]; };
+layout(binding=1,std430) readonly buffer Up { uint u[]; };
+layout(binding=2,std430) readonly buffer Input { float x[]; };
+layout(binding=3,std430) readonly buffer Ids { int ids[]; };
+layout(binding=4,std430) writeonly buffer Output { float y[]; };
+layout(push_constant) uniform P {
+    uint go,uo,xo,io,yo,gplane,uplane,grow,urow,xstep,istep,ystep,slots,selected,tokens;
+} p;
+shared float gs[64],us[64];
+
+void main() {
+    uint row=gl_WorkGroupID.x,selection=gl_WorkGroupID.y,t=gl_WorkGroupID.z;
+    uint lane=gl_LocalInvocationID.x;
+    if(row>=640 || p.selected!=2 || selection>=2 || t>=p.tokens) return;
+    int expert=ids[p.io+t*p.istep+selection];
+    if(expert<0 || uint(expert)>=p.slots) return;
+    uint gb=4*(p.go+uint(expert)*p.gplane+row*p.grow);
+    uint ub=4*(p.uo+uint(expert)*p.uplane+row*p.urow);
+    uint half_id=lane/32,k=lane%32,si=half_id*8+k/16;
+    float a=0,b=0;
+    // Each lane unpacks one byte into four weights. Both projections reuse
+    // the activation and each block's FP16 scales, without optional subgroups.
+    for(uint block=0;block<10;++block) {
+        uint ga=gb+84*block,ua=ub+84*block;
+        uint qb=16+half_id*32+k,shift=8*(qb&3);
+        uint gq=(g[(ga+qb)>>2]>>shift)&255;
+        uint uq=(u[(ua+qb)>>2]>>shift)&255;
+        vec2 gd=unpackHalf2x16(g[(ga+80)>>2]);
+        vec2 ud=unpackHalf2x16(u[(ua+80)>>2]);
+        uint gw0=g[(ga+si)>>2],gw1=g[(ga+si+4)>>2];
+        uint uw0=u[(ua+si)>>2],uw1=u[(ua+si+4)>>2];
+        for(uint q=0;q<4;++q) {
+            uint ss=8*((si&3)+2*(q&1));
+            uint gc=((q<2?gw0:gw1)>>ss)&255;
+            uint uc=((q<2?uw0:uw1)>>ss)&255;
+            precise float gv=(gd.x*float(gc&15))*float((gq>>(2*q))&3)-gd.y*float(gc>>4);
+            precise float uv=(ud.x*float(uc&15))*float((uq>>(2*q))&3)-ud.y*float(uc>>4);
+            float v=x[p.xo+t*p.xstep+block*256+half_id*128+q*32+k];
+            a=fma(gv,v,a);b=fma(uv,v,b);
+        }
+    }
+    gs[lane]=a;us[lane]=b;barrier();
+    for(uint step=32;step>0;step>>=1) {
+        if(lane<step) { gs[lane]+=gs[lane+step];us[lane]+=us[lane+step]; }
+        barrier();
+    }
+    if(lane==0) {
+        precise float activated=gs[0]/(1+exp(-gs[0]));
+        y[p.yo+t*p.ystep+selection*640+row]=activated*us[0];
+    }
+}
