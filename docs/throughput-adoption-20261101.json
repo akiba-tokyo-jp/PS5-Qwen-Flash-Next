@@ -1,0 +1,1792 @@
+{
+  "throughput_verification": {
+    "completed": true,
+    "stages": 4,
+    "selected_semantic_tasks_passed": true
+  },
+  "selected_native_quality_case": 55900,
+  "completed_native_quality_cases": [
+    54600,
+    54800,
+    55200,
+    55300,
+    55800,
+    55900
+  ],
+  "matched_tail_comparison": {
+    "completed": true,
+    "case": 46100,
+    "all14_requests_full_F32_routes_tokens_exact": true,
+    "whole_time_reduction_percent": 7.782193198188569,
+    "decode_gain_percent": 9.978405940081746,
+    "paired_whole_time_savings_ms": [
+      260.10330295562744,
+      229.84918397665024
+    ],
+    "AA_spread_ms": 27.458615005016327,
+    "adoption_pending_normal_and_placement": true,
+    "all_full_F32_routes_tokens_exact": true,
+    "actual_queue_calls_before": 14555,
+    "actual_queue_calls_after": 4423,
+    "actual_queue_reduction_percent": 69.61181724493302,
+    "serial_wait_calls_before": 12135,
+    "serial_wait_calls_after": 2003
+  },
+  "GPU_range_validation": {
+    "completed": true,
+    "case": 46500,
+    "full_F32_routes_tokens_exact": true,
+    "query_pools_created": 1,
+    "query_pools_destroyed": 1,
+    "pending_ranges": 0,
+    "measured_ranges": 123123,
+    "timestamp_valid_bits": 64,
+    "timestamp_period_ps": 10000,
+    "no_new_queue_wait": true,
+    "ordinary_speed_comparison_valid": false,
+    "mean_selected_range_total_ms": 559.44642,
+    "groups": [
+      {
+        "group": "Expert_Q2_matmul_with_unpack",
+        "mean_total_ms": 143.2068,
+        "mean_decode_ms": 24.75624,
+        "mean_intervals": 2448,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 142897240,
+            "intervals": 2448,
+            "prefill_and_first_token_ns": 116337320,
+            "accepted_decode_ns": 24848920,
+            "EOS_and_completion_ns": 1711000
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 143516360,
+            "intervals": 2448,
+            "prefill_and_first_token_ns": 117503920,
+            "accepted_decode_ns": 24663560,
+            "EOS_and_completion_ns": 1348880
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 25.597947342303126
+      },
+      {
+        "group": "other_Q4_matmul",
+        "mean_total_ms": 84.26772,
+        "mean_decode_ms": 59.11066,
+        "mean_intervals": 1836,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 83750320,
+            "intervals": 1836,
+            "prefill_and_first_token_ns": 21685040,
+            "accepted_decode_ns": 58493200,
+            "EOS_and_completion_ns": 3572080
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 84785120,
+            "intervals": 1836,
+            "prefill_and_first_token_ns": 21592120,
+            "accepted_decode_ns": 59728120,
+            "EOS_and_completion_ns": 3464880
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 15.062697156950257
+      },
+      {
+        "group": "other_Q8_matmul",
+        "mean_total_ms": 38.2074,
+        "mean_decode_ms": 21.89952,
+        "mean_intervals": 2278,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 38125680,
+            "intervals": 2278,
+            "prefill_and_first_token_ns": 14939720,
+            "accepted_decode_ns": 21894240,
+            "EOS_and_completion_ns": 1291720
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 38289120,
+            "intervals": 2278,
+            "prefill_and_first_token_ns": 15090320,
+            "accepted_decode_ns": 21904800,
+            "EOS_and_completion_ns": 1294000
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 6.8295012058527425
+      },
+      {
+        "group": "router_F32",
+        "mean_total_ms": 22.1124,
+        "mean_decode_ms": 14.27834,
+        "mean_intervals": 1632,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 22153560,
+            "intervals": 1632,
+            "prefill_and_first_token_ns": 6893280,
+            "accepted_decode_ns": 14309440,
+            "EOS_and_completion_ns": 950840
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 22071240,
+            "intervals": 1632,
+            "prefill_and_first_token_ns": 6901520,
+            "accepted_decode_ns": 14247240,
+            "EOS_and_completion_ns": 922480
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 3.9525500940733527
+      },
+      {
+        "group": "HC_Q8",
+        "mean_total_ms": 194.68928,
+        "mean_decode_ms": 49.50782,
+        "mean_intervals": 4930,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 194137800,
+            "intervals": 4930,
+            "prefill_and_first_token_ns": 142231400,
+            "accepted_decode_ns": 48879040,
+            "EOS_and_completion_ns": 3027360
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 195240760,
+            "intervals": 4930,
+            "prefill_and_first_token_ns": 141936040,
+            "accepted_decode_ns": 50136600,
+            "EOS_and_completion_ns": 3168120
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 34.800344240293825
+      },
+      {
+        "group": "shared_Expert_Q8",
+        "mean_total_ms": 28.11818,
+        "mean_decode_ms": 16.21834,
+        "mean_intervals": 2448,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 28246560,
+            "intervals": 2448,
+            "prefill_and_first_token_ns": 10996720,
+            "accepted_decode_ns": 16386480,
+            "EOS_and_completion_ns": 863360
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 27989800,
+            "intervals": 2448,
+            "prefill_and_first_token_ns": 11070120,
+            "accepted_decode_ns": 16050200,
+            "EOS_and_completion_ns": 869480
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 5.026072023126003
+      },
+      {
+        "group": "output_Q4",
+        "mean_total_ms": 33.57,
+        "mean_decode_ms": 25.0354,
+        "mean_intervals": 221,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 33466360,
+            "intervals": 221,
+            "prefill_and_first_token_ns": 6924280,
+            "accepted_decode_ns": 25126760,
+            "EOS_and_completion_ns": 1415320
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 33673640,
+            "intervals": 221,
+            "prefill_and_first_token_ns": 7302960,
+            "accepted_decode_ns": 24944040,
+            "EOS_and_completion_ns": 1426640
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 6.00057463948022
+      },
+      {
+        "group": "GDN_SSM_ranges",
+        "mean_total_ms": 15.27464,
+        "mean_decode_ms": 12.16704,
+        "mean_intervals": 1224,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 15236040,
+            "intervals": 1224,
+            "prefill_and_first_token_ns": 2401880,
+            "accepted_decode_ns": 12134880,
+            "EOS_and_completion_ns": 699280
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 15313240,
+            "intervals": 1224,
+            "prefill_and_first_token_ns": 2414560,
+            "accepted_decode_ns": 12199200,
+            "EOS_and_completion_ns": 699480
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 2.7303132979204694
+      },
+      {
+        "group": "other_matrix",
+        "mean_total_ms": 0.0,
+        "mean_decode_ms": 0.0,
+        "mean_intervals": 0,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 0,
+            "intervals": 0,
+            "prefill_and_first_token_ns": 0,
+            "accepted_decode_ns": 0,
+            "EOS_and_completion_ns": 0
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 0,
+            "intervals": 0,
+            "prefill_and_first_token_ns": 0,
+            "accepted_decode_ns": 0,
+            "EOS_and_completion_ns": 0
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 0.0
+      }
+    ],
+    "instrumented_whole_overhead_percent": 2.4758505092203453,
+    "groups_are_role_based_not_unconditionally_single_precisions": true,
+    "output_group_includes_final_output_related_HC_projections": true,
+    "Q2_unpack_inside_matmul_not_separately_isolated": true,
+    "all_GPU_operations_not_covered": true,
+    "timestamp_intervals_include_fused_ranges_and_dependencies": true
+  },
+  "schema": "ps5-qwen-throughput-adoption-v1",
+  "completed": true,
+  "pending_steps": [],
+  "application_SELF": {
+    "bytes": 21915319,
+    "sha256": "9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135"
+  },
+  "application_source_revision": "c60c1ab891dbbcf250db2bf919fa323f0ebc8727",
+  "previous_application_SELF": {
+    "bytes": 21887991,
+    "sha256": "1a76c37007962b9da767b0e70667d140bfaeb2138a4d29925245958afd84047e"
+  },
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "precision": {
+    "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
+    "other_weights": "109 large resident matrices including output Q4_0; other resident Q8_0 except original BF16 PLE convolution and F32 tensors",
+    "output_weight": "Q4_0",
+    "shared_Expert_weight": "Q8_0 (144 active projections)",
+    "PLE_convolution": "BF16 [4,10240], 81920 bytes",
+    "KV_cache": "F32",
+    "activation_inputs": "F32",
+    "quantization": "Expert Q2 and mixed resident Q4_0/Q8_0"
+  },
+  "model_receipt_SHA256": "46ceb693e8afd3c562e92532674ff16a336387da4cea91609660cc1fc58fe426",
+  "next_five_policy": {
+    "schema": "ps5-qwen-next-five-normal-v1",
+    "maximum_requests": 3,
+    "decode_Experts": 2,
+    "prefill_routing_unchanged": true,
+    "active_cache_slots": 3712,
+    "physical_cache_planes": 3713,
+    "cache_bytes": 5703659520,
+    "placement_keys": 1444,
+    "supplemental_triplets": 1024,
+    "resident_precision": "109 large matrices including output Q4_0;remaining resident Q8_0 except original PLE BF16 and F32",
+    "Attention_KV": "F32",
+    "recurrent_S": "F32",
+    "PLE_convolution": "BF16",
+    "maximum_causal_attempts": 6,
+    "n_rs_seq": 1,
+    "original_GPU_object": false,
+    "original_OS_minimum_physical_reserves_completion_and_close": true,
+    "CI_runs": 0,
+    "automatic_retries": 0,
+    "approximate_model_quality_reported_separately": true,
+    "semantic_misanswer_does_not_quarantine_completed_GPU_work": true,
+    "expanded_placement_prefill_only": true,
+    "decode_placement_keys": 768,
+    "expanded_placement_only_first_request": true,
+    "later_request_placement_keys": 768,
+    "current_pack_integrity": "prior_native_whole_SHA_seal_with_fresh_readonly_inode_descriptor_and_EOF",
+    "prior_sealed_pack_SHA256": "98a25de242a9862ba5ae6572d1c2f1d2bff170def03685eb6a71b526399944e8",
+    "prior_sealed_pack_bytes": 1577058304,
+    "fresh_whole_pack_hash_not_claimed": true,
+    "selected_GPU_object_SHA256": "c26fadf2e7018e3ae30b8901779c1ea8a8a26961cf7280612c5f63f57182f2b3",
+    "output_weight_type": "Q4_0",
+    "submission_node_cap": 256,
+    "submission_flop_divisor": 40,
+    "steady_CPU_heap_limit_bytes": 536870912,
+    "obsolete_synchronized_metadata_released_before_replacement": true,
+    "serialized_almost_ready_tail_disabled": true,
+    "nested_CPU_measurement_enabled": true,
+    "GPU_timestamp_diagnostics_enabled": false,
+    "service_overhead_mode": 69,
+    "token_record_format": "bounded_per_request_JSONL",
+    "per_token_fsync_preserved": true,
+    "HC_prefill_no_split": false,
+    "HC_prefill_split_two": false,
+    "Q4_small_rows_large_workgroup": false,
+    "frontier_mode": 7,
+    "owner_generation_checkpoint_reuse": true,
+    "HC_joined_immutable_Q8": true,
+    "HC_prefill_split_K": 4,
+    "recorded_command_cache": false,
+    "throughput_mode": 5,
+    "immutable_Expert_bundle_coverage": 22968,
+    "uncovered_original_reads_preserved": true,
+    "GDN_common_input_Q4_join": false,
+    "empty_retirement_certificate": true,
+    "proven_WAR_execution_only": false,
+    "pending_unpublished_writes_preserved": true
+  },
+  "four_next_policy": {
+    "schema": "ps5-qwen-four-next-normal-v1",
+    "maximum_requests": 3,
+    "active_cache_slots": 3712,
+    "physical_cache_planes": 3713,
+    "cache_bytes": 5703659520,
+    "original_GPU_object": false,
+    "original_single_token_GDN_fusion": true,
+    "two_token_fusion_selected": false,
+    "Gate_Up_fusion_selected": false,
+    "supplemental_triplets": 1024,
+    "total_placement_keys": 1444,
+    "n_rs_seq": 1,
+    "complete_speculative_capture_elision": true,
+    "additional_application_state_allowance_bytes": 130023424,
+    "postload_device_budget_bytes": 6199160832,
+    "postload_single_buffer_bytes": 2147483648,
+    "original_physical_Direct_Flexible_OS_minimum_workspace_and_completion": true,
+    "checkpoint_pool_and_batch_policy_preserved": true,
+    "checkpoint_maximum_bytes": 142606336,
+    "maximum_causal_attempts": 6,
+    "original_model_and_PLE_BF16": false,
+    "benchmark_checkpoint_injections": 0,
+    "persistent_caches": false,
+    "automatic_retries": 0,
+    "loading_application_padding": "qualified206",
+    "loading_expected_OS_minimum_pages": 898,
+    "loading_expected_OS_reserved_pages": 206,
+    "loading_legacy_padding_pages": 256,
+    "loading_scope_once": true,
+    "PLE_convolution_BF16_preserved": true,
+    "selected_GPU_object_SHA256": "c26fadf2e7018e3ae30b8901779c1ea8a8a26961cf7280612c5f63f57182f2b3"
+  },
+  "strata_followup_policy": {
+    "schema": "ps5-qwen-strata-followup-normal-v1",
+    "maximum_requests": 3,
+    "active_cache_slots": 3712,
+    "physical_cache_planes": 3713,
+    "cache_bytes": 5703659520,
+    "checkpoint_pool_capacity_quantum_bytes": 2097152,
+    "checkpoint_maximum_bytes": 142606336,
+    "checkpoint_metadata_arena_reuse": true,
+    "independent_same_operation_copy_batch": true,
+    "convolution_SiLU_QK_RMS_scale_fusion": true,
+    "fusion_single_token_F32_only": true,
+    "independent_single_token_QK_normalizations_before_head_repeats": true,
+    "Vulkan_fusion_span_and_external_input_allocation_dependencies": true,
+    "original_PLE_BF16_and_all_model_payloads": true,
+    "original_driver_physical_OS_minimum_workspace_and_completion": true,
+    "unknown_owner_retention": true,
+    "persistent_caches": false,
+    "benchmark_checkpoint_injections": 0,
+    "automatic_retries": 0
+  },
+  "limit_winner_policy": {
+    "schema": "ps5-qwen-limit-winner-normal-v1",
+    "maximum_requests": 3,
+    "Expert_supplemental_triplets": 1024,
+    "total_bundled_Experts": 1444,
+    "stable_inference_padding_pages": 0,
+    "original_loading_context_and_physical_checks": true,
+    "scalar_single_token_GDN": false,
+    "cache_slots": 3712,
+    "original_model_payloads": true,
+    "automatic_retries": 0
+  },
+  "normal": {
+    "case": 56100,
+    "completed": true,
+    "requests": 3,
+    "local_cold_self_tests": 1,
+    "generation_POSTs": 2,
+    "finish_POSTs": 1,
+    "POSTs": 3,
+    "actual_native_frames_viewed": 2,
+    "all_full_vocabulary_rows_finite": true,
+    "all_counting_tokens_and_bytes_equal": true,
+    "counting_quality_by_request": [
+      true,
+      true,
+      true
+    ],
+    "all_actual_API_streams_match_native_results": true,
+    "quality_loss_reported_separately": true,
+    "complete_actual_routes_verified": true,
+    "retained_weights_and_empty_request_memory_verified": true,
+    "source_model_GPU_owners_positively_retired": true,
+    "ordinary_close_exact_restore": true,
+    "prior_native_pack_seals_reused": 1,
+    "post_top2_submission_counters": [
+      28,
+      5918,
+      255867910,
+      3817304340,
+      28,
+      425728,
+      24,
+      851,
+      0,
+      0,
+      28,
+      6767,
+      1,
+      206,
+      917056000,
+      1327256575200,
+      32761600,
+      38134502400,
+      104880,
+      25560098,
+      56,
+      16655
+    ],
+    "post_top2_loading_reservation": [
+      0,
+      1,
+      6461,
+      6461,
+      0,
+      1166
+    ],
+    "CPU_heap_peak_bytes": 503382016,
+    "device_ledger_peak_bytes": 6167724032,
+    "actual_workspace_capacity_peak_bytes": 8388608,
+    "maximum_absolute_logit_error_by_request": [
+      0.0,
+      10.824426889419556,
+      8.547345638275146
+    ],
+    "limit_margin_probe": {
+      "OS_counter_writes": 0,
+      "OS_minimum_preserved": true,
+      "active_phase": 3,
+      "application_padding_experiment": true,
+      "last_selected_padding_pages": 0,
+      "original_physical_and_completion_checks": true,
+      "phases": [
+        {
+          "admission_calls": 6461,
+          "legacy_refusals": 0,
+          "minimum_free_pages": 1166,
+          "minimum_selected_padding_pages": 206,
+          "padding_reductions": 0,
+          "phase": 1
+        },
+        {
+          "admission_calls": 7,
+          "legacy_refusals": 0,
+          "minimum_free_pages": 1346,
+          "minimum_selected_padding_pages": 64,
+          "padding_reductions": 0,
+          "phase": 2
+        },
+        {
+          "admission_calls": 18560,
+          "legacy_refusals": 0,
+          "minimum_free_pages": 994,
+          "minimum_selected_padding_pages": 0,
+          "padding_reductions": 0,
+          "phase": 3
+        },
+        {
+          "admission_calls": 0,
+          "legacy_refusals": 0,
+          "minimum_free_pages": null,
+          "minimum_selected_padding_pages": null,
+          "padding_reductions": 0,
+          "phase": 4
+        }
+      ],
+      "schema": "ps5-qwen-limit-probe-result-v1",
+      "universal_physical_limit_established": false
+    },
+    "checkpoint_pool_stats": [
+      0,
+      0,
+      2,
+      218,
+      0
+    ],
+    "GDN_pipeline_selections": 1944,
+    "additional_shaders_verified": 1,
+    "complete_captures_elided": 6,
+    "all_memory_rollbacks": 0,
+    "actual_causal_attempts": 6,
+    "actual_rejections": 0,
+    "finite_quality_scope": "Four fixed semantic tasks pass in complete routing/Q4 cohorts. Normal/API counting correctness and cross-prefix answer changes are reported per request without rewriting output or quarantining returned GPU work. General quality, arbitrary-prompt performance and sustained reboot-free operation are not claimed.",
+    "large_bundle_high_index_hits_total": 0,
+    "large_bundle_high_index_decode_hits_total": 0,
+    "cold_start": {
+      "TTFT_ms": 4183.156811952591,
+      "decode_ms": 2151.7890770435333,
+      "decode_tokens_per_second": 9.759320847958344,
+      "generated_tokens": 22,
+      "prefill_ms": 4152.418372035027,
+      "prompt_tokens": 30,
+      "total_ms": 6428.953993976116
+    },
+    "request_reset_weights_retained": {
+      "TTFT_ms": 387.49853098392487,
+      "decode_ms": 1814.321998000145,
+      "decode_tokens_per_second": 11.574571670931325,
+      "generated_tokens": 22,
+      "prefill_ms": 356.1361689567566,
+      "prompt_tokens": 30,
+      "total_ms": 2295.8684859871864
+    },
+    "exact_prefix_repeat": {
+      "TTFT_ms": 52.41336101293564,
+      "decode_ms": 1640.4553890228271,
+      "decode_tokens_per_second": 12.801323425508759,
+      "generated_tokens": 22,
+      "prefill_ms": 21.35626494884491,
+      "prompt_tokens": 30,
+      "total_ms": 1794.0880900025368
+    },
+    "service_modes": [
+      69,
+      69,
+      69
+    ],
+    "ledger_readback_complete": true,
+    "ledger_readback_count": 3,
+    "completion_generation_reuses": 88,
+    "HC_no_split_selections": 0,
+    "Q4_large_workgroup_selections": 0,
+    "HC_split_two_selections": 194,
+    "frontier_modes": [
+      7,
+      7,
+      7
+    ],
+    "owner_checkpoint_generation_reuses": 86,
+    "HC_joined_projection_selections": 2400,
+    "service_GPU_totals_by_request": [
+      [
+        194,
+        0,
+        194,
+        485,
+        1584,
+        0,
+        97,
+        0
+      ],
+      [
+        388,
+        0,
+        388,
+        970,
+        3168,
+        0,
+        194,
+        0
+      ],
+      [
+        388,
+        0,
+        388,
+        970,
+        4320,
+        0,
+        194,
+        0
+      ]
+    ],
+    "command_cache_hits": 0,
+    "CPU_nested_by_request": [
+      [
+        25,
+        38219739,
+        38219739,
+        25,
+        76239337,
+        76239337,
+        23,
+        139931260,
+        139931260,
+        148,
+        238312988,
+        238312988,
+        23,
+        112420,
+        112420,
+        23,
+        12802804,
+        12802804,
+        23,
+        2772329,
+        2772329,
+        23,
+        8387398,
+        8387398,
+        22,
+        81550,
+        81550,
+        23,
+        43461461,
+        43461461,
+        0,
+        0,
+        0,
+        23,
+        5836146464,
+        5836146464,
+        0,
+        0,
+        0,
+        1,
+        6430400859,
+        33933109
+      ],
+      [
+        25,
+        36129868,
+        36129868,
+        25,
+        75729436,
+        75729436,
+        23,
+        137427548,
+        137427548,
+        152,
+        267787231,
+        267787231,
+        24,
+        106648,
+        106648,
+        23,
+        12718048,
+        12718048,
+        23,
+        2845462,
+        2845462,
+        23,
+        15186637,
+        15186637,
+        22,
+        72407,
+        72407,
+        23,
+        44133258,
+        42495151,
+        22,
+        1638107,
+        1638107,
+        23,
+        1647695170,
+        1647695170,
+        0,
+        0,
+        0,
+        1,
+        2297318559,
+        57486846
+      ],
+      [
+        31,
+        44831828,
+        44831828,
+        31,
+        92204570,
+        92204570,
+        16,
+        91358855,
+        91358855,
+        137,
+        237277162,
+        237277162,
+        23,
+        57331,
+        57331,
+        23,
+        12630969,
+        12630969,
+        23,
+        2837202,
+        2837202,
+        23,
+        15164666,
+        15164666,
+        22,
+        106728,
+        106728,
+        23,
+        44131892,
+        42443428,
+        22,
+        1688464,
+        1688464,
+        16,
+        1216165939,
+        1216165939,
+        0,
+        0,
+        0,
+        1,
+        1795548507,
+        38781365
+      ]
+    ],
+    "queue_and_serial_wait_final": [
+      100,
+      6861622,
+      28,
+      4966765,
+      0,
+      0,
+      0,
+      0,
+      16952,
+      282753376,
+      6767,
+      1870213846,
+      0,
+      0,
+      0,
+      0
+    ],
+    "throughput_modes": [
+      5,
+      5,
+      5
+    ],
+    "throughput_totals_by_request": [
+      [
+        3031,
+        963,
+        2913,
+        0,
+        0,
+        0,
+        0,
+        104,
+        98,
+        6,
+        0,
+        0
+      ],
+      [
+        3287,
+        1194,
+        3169,
+        0,
+        0,
+        0,
+        0,
+        155,
+        148,
+        7,
+        0,
+        0
+      ],
+      [
+        3376,
+        1269,
+        3258,
+        0,
+        0,
+        0,
+        0,
+        203,
+        196,
+        7,
+        0,
+        0
+      ]
+    ],
+    "throughput_sync_tail_flushes": 0
+  },
+  "installed_comparison": [
+    {
+      "condition": "cold_start",
+      "control_case": 53100,
+      "candidate_case": 56100,
+      "matched_ABBA": false,
+      "same_generated_token_count": true,
+      "same_output_bytes": true,
+      "selected_service_or_kernel_factors_changed": true,
+      "whole_time_reduction_percent": 24.013704004613345,
+      "decode_change_percent": 17.89227610786226
+    },
+    {
+      "condition": "request_reset_weights_retained",
+      "control_case": 53100,
+      "candidate_case": 56100,
+      "matched_ABBA": false,
+      "same_generated_token_count": true,
+      "same_output_bytes": true,
+      "selected_service_or_kernel_factors_changed": true,
+      "whole_time_reduction_percent": 5.83238456053059,
+      "decode_change_percent": 6.914734216593743
+    },
+    {
+      "condition": "exact_prefix_repeat",
+      "control_case": 53100,
+      "candidate_case": 56100,
+      "matched_ABBA": false,
+      "same_generated_token_count": true,
+      "same_output_bytes": true,
+      "selected_service_or_kernel_factors_changed": true,
+      "whole_time_reduction_percent": 5.404576791566528,
+      "decode_change_percent": 5.802400273285557
+    }
+  ],
+  "candidate_evidence": [
+    {
+      "completed": true,
+      "state": "adopted",
+      "attempts": [
+        {
+          "case": 54500,
+          "completed": false,
+          "known_returned_failure": "Full triplet delivery preflight refused a parallel group at the existing4MiB boundary margin; no read submitted for that group",
+          "ordinary_close_and_exact_restore": true,
+          "unknown_GPU_work_not_manually_freed": true,
+          "corrective_change": "Keep the original parallel extent predicate; use one positive triplet read for incompatible groups",
+          "next_case": 54600
+        }
+      ],
+      "selected": true,
+      "case": 54600,
+      "coverage": 22968,
+      "parts": 66,
+      "all_weight_bits_preserved": true,
+      "matched_comparison": {
+        "completed": true,
+        "fixed_semantic_tasks_passed": true,
+        "independent_full_F32_routes_exact": true,
+        "cross_control_full_F32_routes_exact": true,
+        "paired_whole_time_savings_ms": [
+          89.28766798973083,
+          95.72872400283813
+        ],
+        "AA_spread_ms": 0.4034120440483093
+      },
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 9.829008555392647,
+            "total_ms": 7270.677955508232,
+            "TTFT_ms": 5017.244836986065
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5114079648,
+          "physical_read_calls": 8442
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.569391690277499,
+            "total_ms": 5198.545396476984,
+            "TTFT_ms": 3267.621447980404
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.32162942655874,
+            "total_ms": 2336.9223389923573,
+            "TTFT_ms": 362.20829048752785
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 426885120,
+          "physical_read_calls": 790
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.882037323977478,
+            "total_ms": 2244.4141429960728,
+            "TTFT_ms": 362.24112647771835
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "retained_decode_gain_percent": 4.949887302477074,
+      "retained_whole_time_reduction_percent": 3.958548149108476,
+      "id": "T1",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "adopted"
+    },
+    {
+      "completed": true,
+      "state": "completed_negative_no_repeated_speedup",
+      "selected": false,
+      "case": 54800,
+      "actual_joined_projections": 1008,
+      "all_full_F32_routes_tokens_exact": true,
+      "fixed_semantic_tasks_passed": true,
+      "retained_decode_gain_percent": 0.3433468304376408,
+      "retained_whole_time_reduction_percent": 0.13675841359983565,
+      "paired_whole_time_savings_ms": [
+        -9.146991968154907,
+        15.32591998577118
+      ],
+      "AA_spread_ms": 2.1904250383377075,
+      "reason": "One matched pair regressed; the second improved. The actual path executes with exact output but no repeated whole-request benefit. Excluded from the selected normal providers.",
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.524453102582127,
+            "total_ms": 5184.191444516182,
+            "TTFT_ms": 3246.8513795137405
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.5656089873228,
+            "total_ms": 5176.733277976513,
+            "TTFT_ms": 3245.917459487915
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.787567214124545,
+            "total_ms": 2259.066866517067,
+            "TTFT_ms": 361.3233645260334
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.828039452539947,
+            "total_ms": 2255.977402508259,
+            "TTFT_ms": 364.61581802368164
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "id": "T2",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "completed_negative"
+    },
+    {
+      "completed": true,
+      "state": "adopted",
+      "preliminary_case": 55200,
+      "preliminary_retained_decode_gain_percent": 3.0979520911921243,
+      "preliminary_whole_time_reduction_percent": 2.787886373140336,
+      "preliminary_all_full_F32_routes_tokens_exact": true,
+      "preliminary_fixed_semantic_tasks_passed": true,
+      "preliminary_reuses_in_matched_candidate_requests": 200,
+      "preliminary_not_selection_evidence": "Disabled arm added an owner snapshot; confirm against the exact original retirement/snapshot order",
+      "confirmation_case": 55300,
+      "selected": true,
+      "case": 55300,
+      "original_control_operation_order_preserved": true,
+      "extra_control_owner_snapshots": 0,
+      "actual_certificate_reuses": 199,
+      "matched_comparison": {
+        "completed": true,
+        "fixed_semantic_tasks_passed": true,
+        "independent_full_F32_routes_exact": true,
+        "cross_control_full_F32_routes_exact": true,
+        "paired_whole_time_savings_ms": [
+          60.81158006191254,
+          64.80272907018661
+        ],
+        "AA_spread_ms": 0.9276649951934814
+      },
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.592710879737178,
+            "total_ms": 5157.431965529919,
+            "TTFT_ms": 3230.806517034769
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.017499132983653,
+            "total_ms": 5083.642975986004,
+            "TTFT_ms": 3226.1011964976788
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.888499063903094,
+            "total_ms": 2246.788072526455,
+            "TTFT_ms": 364.2515349984169
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.253436506857378,
+            "total_ms": 2183.9809179604053,
+            "TTFT_ms": 359.36234948039055
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "retained_decode_gain_percent": 3.069667928580988,
+      "retained_whole_time_reduction_percent": 2.7954196185234537,
+      "id": "T3",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "adopted"
+    },
+    {
+      "completed": true,
+      "state": "completed_negative_slower",
+      "fixture_case": 55600,
+      "fixture_completed": true,
+      "fixture_graphs": 60,
+      "fixture_scenarios": 4,
+      "all_fixture_F32_bytes_and_canaries_exact": true,
+      "cross_graph_without_intermediate_tensor_readback": true,
+      "fixture_positive_retirement_and_normal_close": true,
+      "full_model_case": 55800,
+      "full_model_attempt": {
+        "case": 55700,
+        "qualified": false,
+        "model_requests_completed": 0,
+        "reason": "SSD ENOSPC: close-helper transfer failed and the native fatal report was empty during CPU source mapping with GPU_not_started=1",
+        "ordinary_close_and_exact_restore": true,
+        "all_resources_retained_for_OS_teardown": true,
+        "no_manual_GPU_release": true
+      },
+      "new_finite_comparison_case": 55800,
+      "real_writable_margin_verified_bytes": 268435456,
+      "write_margin_scope": "Two128MiB incompressible files fully written, native SHA/identity/EOF checked and positively removed",
+      "selected": false,
+      "case": 55800,
+      "actual_execution_only_barriers": 12428,
+      "actual_batch_tail_publications": 32,
+      "all_full_F32_routes_tokens_exact": true,
+      "fixed_semantic_tasks_passed": true,
+      "retained_decode_gain_percent": -0.5913619617756716,
+      "retained_whole_time_reduction_percent": -0.4831694242505957,
+      "paired_whole_time_savings_ms": [
+        -8.447453022003174,
+        -12.626156985759735
+      ],
+      "AA_spread_ms": 3.3276949524879456,
+      "cold_prefill_latency_eligible": false,
+      "reason": "Both retained pairs regressed; cold gains do not exceed A/A variation. Correct synchronization and actual path coverage do not imply a whole-request speedup.",
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.96233695341309,
+            "total_ms": 5103.480768978596,
+            "TTFT_ms": 3237.141847014427
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.945072616130156,
+            "total_ms": 5095.738586008549,
+            "TTFT_ms": 3226.4596255123615
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.269553901832618,
+            "total_ms": 2180.768168479204,
+            "TTFT_ms": 357.9923414885998
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.196996427177616,
+            "total_ms": 2191.3049734830856,
+            "TTFT_ms": 356.93481546640396
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "id": "T4",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "completed_negative"
+    }
+  ],
+  "dispositions": [
+    {
+      "completed": true,
+      "state": "adopted",
+      "attempts": [
+        {
+          "case": 54500,
+          "completed": false,
+          "known_returned_failure": "Full triplet delivery preflight refused a parallel group at the existing4MiB boundary margin; no read submitted for that group",
+          "ordinary_close_and_exact_restore": true,
+          "unknown_GPU_work_not_manually_freed": true,
+          "corrective_change": "Keep the original parallel extent predicate; use one positive triplet read for incompatible groups",
+          "next_case": 54600
+        }
+      ],
+      "selected": true,
+      "case": 54600,
+      "coverage": 22968,
+      "parts": 66,
+      "all_weight_bits_preserved": true,
+      "matched_comparison": {
+        "completed": true,
+        "fixed_semantic_tasks_passed": true,
+        "independent_full_F32_routes_exact": true,
+        "cross_control_full_F32_routes_exact": true,
+        "paired_whole_time_savings_ms": [
+          89.28766798973083,
+          95.72872400283813
+        ],
+        "AA_spread_ms": 0.4034120440483093
+      },
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 9.829008555392647,
+            "total_ms": 7270.677955508232,
+            "TTFT_ms": 5017.244836986065
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5114079648,
+          "physical_read_calls": 8442
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.569391690277499,
+            "total_ms": 5198.545396476984,
+            "TTFT_ms": 3267.621447980404
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.32162942655874,
+            "total_ms": 2336.9223389923573,
+            "TTFT_ms": 362.20829048752785
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 426885120,
+          "physical_read_calls": 790
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.882037323977478,
+            "total_ms": 2244.4141429960728,
+            "TTFT_ms": 362.24112647771835
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "retained_decode_gain_percent": 4.949887302477074,
+      "retained_whole_time_reduction_percent": 3.958548149108476,
+      "id": "T1",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "adopted"
+    },
+    {
+      "completed": true,
+      "state": "completed_negative_no_repeated_speedup",
+      "selected": false,
+      "case": 54800,
+      "actual_joined_projections": 1008,
+      "all_full_F32_routes_tokens_exact": true,
+      "fixed_semantic_tasks_passed": true,
+      "retained_decode_gain_percent": 0.3433468304376408,
+      "retained_whole_time_reduction_percent": 0.13675841359983565,
+      "paired_whole_time_savings_ms": [
+        -9.146991968154907,
+        15.32591998577118
+      ],
+      "AA_spread_ms": 2.1904250383377075,
+      "reason": "One matched pair regressed; the second improved. The actual path executes with exact output but no repeated whole-request benefit. Excluded from the selected normal providers.",
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.524453102582127,
+            "total_ms": 5184.191444516182,
+            "TTFT_ms": 3246.8513795137405
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.5656089873228,
+            "total_ms": 5176.733277976513,
+            "TTFT_ms": 3245.917459487915
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.787567214124545,
+            "total_ms": 2259.066866517067,
+            "TTFT_ms": 361.3233645260334
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.828039452539947,
+            "total_ms": 2255.977402508259,
+            "TTFT_ms": 364.61581802368164
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "id": "T2",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "completed_negative"
+    },
+    {
+      "completed": true,
+      "state": "adopted",
+      "preliminary_case": 55200,
+      "preliminary_retained_decode_gain_percent": 3.0979520911921243,
+      "preliminary_whole_time_reduction_percent": 2.787886373140336,
+      "preliminary_all_full_F32_routes_tokens_exact": true,
+      "preliminary_fixed_semantic_tasks_passed": true,
+      "preliminary_reuses_in_matched_candidate_requests": 200,
+      "preliminary_not_selection_evidence": "Disabled arm added an owner snapshot; confirm against the exact original retirement/snapshot order",
+      "confirmation_case": 55300,
+      "selected": true,
+      "case": 55300,
+      "original_control_operation_order_preserved": true,
+      "extra_control_owner_snapshots": 0,
+      "actual_certificate_reuses": 199,
+      "matched_comparison": {
+        "completed": true,
+        "fixed_semantic_tasks_passed": true,
+        "independent_full_F32_routes_exact": true,
+        "cross_control_full_F32_routes_exact": true,
+        "paired_whole_time_savings_ms": [
+          60.81158006191254,
+          64.80272907018661
+        ],
+        "AA_spread_ms": 0.9276649951934814
+      },
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.592710879737178,
+            "total_ms": 5157.431965529919,
+            "TTFT_ms": 3230.806517034769
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.017499132983653,
+            "total_ms": 5083.642975986004,
+            "TTFT_ms": 3226.1011964976788
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.888499063903094,
+            "total_ms": 2246.788072526455,
+            "TTFT_ms": 364.2515349984169
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.253436506857378,
+            "total_ms": 2183.9809179604053,
+            "TTFT_ms": 359.36234948039055
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "retained_decode_gain_percent": 3.069667928580988,
+      "retained_whole_time_reduction_percent": 2.7954196185234537,
+      "id": "T3",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "adopted"
+    },
+    {
+      "completed": true,
+      "state": "completed_negative_slower",
+      "fixture_case": 55600,
+      "fixture_completed": true,
+      "fixture_graphs": 60,
+      "fixture_scenarios": 4,
+      "all_fixture_F32_bytes_and_canaries_exact": true,
+      "cross_graph_without_intermediate_tensor_readback": true,
+      "fixture_positive_retirement_and_normal_close": true,
+      "full_model_case": 55800,
+      "full_model_attempt": {
+        "case": 55700,
+        "qualified": false,
+        "model_requests_completed": 0,
+        "reason": "SSD ENOSPC: close-helper transfer failed and the native fatal report was empty during CPU source mapping with GPU_not_started=1",
+        "ordinary_close_and_exact_restore": true,
+        "all_resources_retained_for_OS_teardown": true,
+        "no_manual_GPU_release": true
+      },
+      "new_finite_comparison_case": 55800,
+      "real_writable_margin_verified_bytes": 268435456,
+      "write_margin_scope": "Two128MiB incompressible files fully written, native SHA/identity/EOF checked and positively removed",
+      "selected": false,
+      "case": 55800,
+      "actual_execution_only_barriers": 12428,
+      "actual_batch_tail_publications": 32,
+      "all_full_F32_routes_tokens_exact": true,
+      "fixed_semantic_tasks_passed": true,
+      "retained_decode_gain_percent": -0.5913619617756716,
+      "retained_whole_time_reduction_percent": -0.4831694242505957,
+      "paired_whole_time_savings_ms": [
+        -8.447453022003174,
+        -12.626156985759735
+      ],
+      "AA_spread_ms": 3.3276949524879456,
+      "cold_prefill_latency_eligible": false,
+      "reason": "Both retained pairs regressed; cold gains do not exceed A/A variation. Correct synchronization and actual path coverage do not imply a whole-request speedup.",
+      "measurements": {
+        "control_cold": {
+          "ordinals": [
+            2,
+            8
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.96233695341309,
+            "total_ms": 5103.480768978596,
+            "TTFT_ms": 3237.141847014427
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "candidate_cold": {
+          "ordinals": [
+            4,
+            6
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 11.945072616130156,
+            "total_ms": 5095.738586008549,
+            "TTFT_ms": 3226.4596255123615
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 5017321472,
+          "physical_read_calls": 4276
+        },
+        "control_retained": {
+          "ordinals": [
+            3,
+            9
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.269553901832618,
+            "total_ms": 2180.768168479204,
+            "TTFT_ms": 357.9923414885998
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        },
+        "candidate_retained": {
+          "ordinals": [
+            5,
+            7
+          ],
+          "metrics": {
+            "decode_tokens_per_second": 12.196996427177616,
+            "total_ms": 2191.3049734830856,
+            "TTFT_ms": 356.93481546640396
+          },
+          "outputs_equal_to_control": true,
+          "physical_read_bytes": 417284096,
+          "physical_read_calls": 344
+        }
+      },
+      "id": "T4",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "status": "completed_negative"
+    }
+  ],
+  "placement": {
+    "completed": true,
+    "case": 56200,
+    "normal_case": 56100,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
+  },
+  "application_relink": {
+    "selected_frontend_object": {
+      "bytes": 25120,
+      "sha256": "bf66dc4a7376d2abe6be70b2a1ccb91e7c3a501b023153073e484619c606a9ea"
+    },
+    "selected_GPU_object": {
+      "bytes": 2764344,
+      "sha256": "c26fadf2e7018e3ae30b8901779c1ea8a8a26961cf7280612c5f63f57182f2b3"
+    },
+    "selected_model_graph_object": {
+      "bytes": 364888,
+      "sha256": "c3a50cfac2e789b58c00e2adbbf27ba7c35970a0f941bf2fb448a430bd7330dc"
+    },
+    "source_revision": "c60c1ab891dbbcf250db2bf919fa323f0ebc8727",
+    "image": {
+      "bytes": 101050824,
+      "sha256": "9f1c5d6799a83c42588254dd40af90cb75b730cc65a85ea84185f67b48adc62b"
+    },
+    "GPU_object_SHA256": "c26fadf2e7018e3ae30b8901779c1ea8a8a26961cf7280612c5f63f57182f2b3",
+    "actual_sources": {
+      "entry": {
+        "bytes": 242844,
+        "sha256": "f9c2384e36a3cf8b66d7e1bbdc8aec681df92259f63959bca173112bb7152c00"
+      }
+    }
+  },
+  "evidence": [
+    {
+      "bytes": 55188,
+      "sha256": "b8289ef531beaf5b297cc554116b266218e8ec15d4b8608eaf41881bfd45f4a7"
+    },
+    {
+      "bytes": 1212,
+      "sha256": "1049d24ec30f036dd06bbd6b6ace825ee150328f4e10bc6ec75e15b35533f76d"
+    },
+    {
+      "bytes": 843,
+      "sha256": "6dd09dfc8eac756446c0152278bf72810be6e5ded1655e7e4f1c2e265d3a3fd0"
+    },
+    {
+      "bytes": 1505,
+      "sha256": "c35afaedeae677344a4753a5d865d791ed28fbb03ef1e6d99dc3c1c0be4cfe1c"
+    }
+  ],
+  "limitations": [
+    "Normal53100 and this final normal cohort are sequential, not ABBA; prompt/output/reuse conditions are reported separately. Prefix output bytes, generated counts and answer quality are recorded separately; a changed output is not a same-output speed comparison.",
+    "All selected weight precisions and Top2 decode remain unchanged; selected service/kernel changes retain their explicit provenance and numerical scope; finite task passes do not establish unchanged general model quality.",
+    "Host build refusals and failed attempts remain preserved in the private build artifacts; these do not represent PS5 launch attempts or physical impossibility.",
+    "No CI, learned host inference, reboot, forced reset, persistent shader cache or persistent pipeline cache was used."
+  ],
+  "CI_runs": 0,
+  "agents": 0,
+  "reboots": 0,
+  "forced_resets": 0,
+  "owner_certificate_mutation_controls": {
+    "completed": true,
+    "checks": 22
+  },
+  "current_provider_integration": {
+    "completed": true,
+    "case": 55900,
+    "actual_installed_normal_providers_preserved": true,
+    "actual_normal_case": 53100,
+    "original_source_owner": "Post-top2-sealed-startup-36820",
+    "actual_engine": "Load-normal-CPU-47040",
+    "qualified_normal_bootstrap_preserved": true,
+    "real_current_seal_and_index_exports_preserved": true,
+    "normal_empty_vs_retained_source_policy_preserved": true,
+    "full_F32_routes_tokens_exact": true,
+    "fixed_semantic_tasks_passed": true,
+    "paired_whole_time_savings_ms": [
+      157.0311979651451,
+      147.36701095104218
+    ],
+    "AA_spread_ms": 12.750123977661133,
+    "retained_decode_gain_percent": 8.350122592928821,
+    "retained_whole_time_reduction_percent": 6.503404278914681,
+    "measurements": {
+      "control_cold": {
+        "ordinals": [
+          2,
+          8
+        ],
+        "metrics": {
+          "decode_tokens_per_second": 9.762062353914526,
+          "total_ms": 7125.75459498167,
+          "TTFT_ms": 4856.612671494484
+        },
+        "outputs_equal_to_control": true,
+        "physical_read_bytes": 5096139168,
+        "physical_read_calls": 7303
+      },
+      "candidate_cold": {
+        "ordinals": [
+          4,
+          6
+        ],
+        "metrics": {
+          "decode_tokens_per_second": 11.948802658725713,
+          "total_ms": 5123.5470505058765,
+          "TTFT_ms": 3254.877859503031
+        },
+        "outputs_equal_to_control": true,
+        "physical_read_bytes": 5017321472,
+        "physical_read_calls": 4276
+      },
+      "control_retained": {
+        "ordinals": [
+          3,
+          9
+        ],
+        "metrics": {
+          "decode_tokens_per_second": 11.291957344417458,
+          "total_ms": 2340.2989869713783,
+          "TTFT_ms": 361.18801099061966
+        },
+        "outputs_equal_to_control": true,
+        "physical_read_bytes": 426885120,
+        "physical_read_calls": 790
+      },
+      "candidate_retained": {
+        "ordinals": [
+          5,
+          7
+        ],
+        "metrics": {
+          "decode_tokens_per_second": 12.234849625817546,
+          "total_ms": 2188.0998825132847,
+          "TTFT_ms": 360.12062352895737
+        },
+        "outputs_equal_to_control": true,
+        "physical_read_bytes": 417284096,
+        "physical_read_calls": 344
+      }
+    }
+  },
+  "sealed_bundle_coverage": {
+    "completed": true,
+    "active_Experts": 22968,
+    "parts": 66,
+    "bytes": 35372924928,
+    "original_bits_preserved": true,
+    "uncovered_original_fallback": true
+  },
+  "strict_admission_controls": {
+    "completed": true,
+    "positive_actual_normal_proposal_passed": true,
+    "intentional_rejections": 42,
+    "PS5_operations": 0,
+    "CI_runs": 0
+  },
+  "placement_metadata_revision": "4fa4e36ae3d1ff6bc52fd65365ea678a611b28ed",
+  "actual_installed_admission": {
+    "completed": true,
+    "positive_current_installation_passed": true,
+    "intentional_rejections": 42,
+    "prepare_first_case_selected_branch_passed": true,
+    "native_running": false,
+    "model_loaded": false
+  }
+}

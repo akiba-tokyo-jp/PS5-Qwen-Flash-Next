@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-11-01",
-  "application_source_revision": "a24f6da7a09859432cb9c994f221bf727441c9b5",
+  "application_source_revision": "c60c1ab891dbbcf250db2bf919fa323f0ebc8727",
   "application_SELF": {
-    "bytes": 21887991,
-    "sha256": "1a76c37007962b9da767b0e70667d140bfaeb2138a4d29925245958afd84047e"
+    "bytes": 21915319,
+    "sha256": "9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -27,34 +27,34 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "4f5db8c1724488560a9bcb616e83f69075a650812067209f99132de5003fcdbc",
+  "previous_production_SHA256": "1a76c37007962b9da767b0e70667d140bfaeb2138a4d29925245958afd84047e",
   "active_expert_slots": 3712,
   "physical_cache_planes": 3713,
   "expert_cache_bytes": 5703659520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 397.1020179986954,
-      "decode_ms": 1939.7775419950485,
-      "decode_tokens_per_second": 10.82598367357199,
+      "TTFT_ms": 387.49853098392487,
+      "decode_ms": 1814.321998000145,
+      "decode_tokens_per_second": 11.574571670931325,
       "generated_tokens": 22,
-      "prefill_ms": 364.2037050127983,
+      "prefill_ms": 356.1361689567566,
       "prompt_tokens": 30,
-      "total_ms": 2438.065862953663
+      "total_ms": 2295.8684859871864
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 56.91930001974106,
-      "decode_ms": 1735.6411769986153,
-      "decode_tokens_per_second": 12.099275056561275,
+      "TTFT_ms": 52.41336101293564,
+      "decode_ms": 1640.4553890228271,
+      "decode_tokens_per_second": 12.801323425508759,
       "generated_tokens": 22,
-      "prefill_ms": 24.23828798532486,
+      "prefill_ms": 21.35626494884491,
       "prompt_tokens": 30,
-      "total_ms": 1896.590795993805
+      "total_ms": 1794.0880900025368
     }
   ],
-  "normal_application_case": 53100,
-  "production_placement_case": 53200,
+  "normal_application_case": 56100,
+  "production_placement_case": 56200,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -69,8 +69,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": false,
-  "qualification_report": "docs/frontier-adoption-20261101.json",
-  "historical_installation": "config/production-installation-service-kernel-20261101.json",
+  "qualification_report": "docs/throughput-adoption-20261101.json",
+  "historical_installation": "config/production-installation-frontier-20261101.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -79,7 +79,7 @@
   "private_repository": true,
   "GitHub_Actions_enabled": false,
   "original_Q4_optimized_profile_preserved": false,
-  "fixed_quality_candidate_case": 51700,
+  "fixed_quality_candidate_case": 55900,
   "finite_quality_scope": "Four fixed semantic tasks pass in complete routing/Q4 cohorts. Normal/API counting correctness and cross-prefix answer changes are reported per request without rewriting output or quarantining returned GPU work. General quality, arbitrary-prompt performance and sustained reboot-free operation are not claimed.",
   "model_receipt_SHA256": "46ceb693e8afd3c562e92532674ff16a336387da4cea91609660cc1fc58fe426",
   "expert_eviction_policy": "two_touch_probation",
@@ -111,8 +111,8 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "previous_production_source_revision": "0b38352ad2845e1cd2b923844967d694c2e582e4",
-  "normal_validation_case": 53100,
+  "previous_production_source_revision": "a24f6da7a09859432cb9c994f221bf727441c9b5",
+  "normal_validation_case": 56100,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 2,
@@ -173,10 +173,12 @@
   "non_Expert_except_output_precision_preserved": false,
   "non_Expert_except_output_and_shared_precision_preserved": false,
   "fixed_quality_cases": [
-    51100,
-    51500,
-    51700,
-    52100
+    54600,
+    54800,
+    55200,
+    55300,
+    55800,
+    55900
   ],
   "fixed_quality": {
     "requests_per_complete_comparison": 14,
@@ -198,42 +200,377 @@
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 50100,
+    "control_case": 53100,
     "control_is_sequential_not_ABBA": true,
     "cache_occupancy_held_matched": false,
     "unlike_cache_conditions_not_pooled": true,
     "causal_candidate_evidence": [
       {
-        "id": "F1",
+        "completed": true,
+        "state": "selected_pending_verified_placement",
+        "attempts": [
+          {
+            "case": 54500,
+            "completed": false,
+            "known_returned_failure": "Full triplet delivery preflight refused a parallel group at the existing4MiB boundary margin; no read submitted for that group",
+            "ordinary_close_and_exact_restore": true,
+            "unknown_GPU_work_not_manually_freed": true,
+            "corrective_change": "Keep the original parallel extent predicate; use one positive triplet read for incompatible groups",
+            "next_case": 54600
+          }
+        ],
+        "selected": true,
+        "case": 54600,
+        "coverage": 22968,
+        "parts": 66,
+        "all_weight_bits_preserved": true,
+        "matched_comparison": {
+          "completed": true,
+          "fixed_semantic_tasks_passed": true,
+          "independent_full_F32_routes_exact": true,
+          "cross_control_full_F32_routes_exact": true,
+          "paired_whole_time_savings_ms": [
+            89.28766798973083,
+            95.72872400283813
+          ],
+          "AA_spread_ms": 0.4034120440483093
+        },
+        "measurements": {
+          "control_cold": {
+            "ordinals": [
+              2,
+              8
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.829008555392647,
+              "total_ms": 7270.677955508232,
+              "TTFT_ms": 5017.244836986065
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5114079648,
+            "physical_read_calls": 8442
+          },
+          "candidate_cold": {
+            "ordinals": [
+              4,
+              6
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.569391690277499,
+              "total_ms": 5198.545396476984,
+              "TTFT_ms": 3267.621447980404
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5017321472,
+            "physical_read_calls": 4276
+          },
+          "control_retained": {
+            "ordinals": [
+              3,
+              9
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.32162942655874,
+              "total_ms": 2336.9223389923573,
+              "TTFT_ms": 362.20829048752785
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 426885120,
+            "physical_read_calls": 790
+          },
+          "candidate_retained": {
+            "ordinals": [
+              5,
+              7
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.882037323977478,
+              "total_ms": 2244.4141429960728,
+              "TTFT_ms": 362.24112647771835
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 417284096,
+            "physical_read_calls": 344
+          }
+        },
+        "retained_decode_gain_percent": 4.949887302477074,
+        "retained_whole_time_reduction_percent": 3.958548149108476,
+        "id": "T1",
         "verification_stage_completed": true,
         "remaining_current_plan_steps": [],
-        "case": 51100,
-        "status": "adopted",
-        "scope": "native_verified_selected_pending_normal"
+        "status": "adopted"
       },
       {
-        "id": "F2",
+        "completed": true,
+        "state": "completed_negative_no_repeated_speedup",
+        "selected": false,
+        "case": 54800,
+        "actual_joined_projections": 1008,
+        "all_full_F32_routes_tokens_exact": true,
+        "fixed_semantic_tasks_passed": true,
+        "retained_decode_gain_percent": 0.3433468304376408,
+        "retained_whole_time_reduction_percent": 0.13675841359983565,
+        "paired_whole_time_savings_ms": [
+          -9.146991968154907,
+          15.32591998577118
+        ],
+        "AA_spread_ms": 2.1904250383377075,
+        "reason": "One matched pair regressed; the second improved. The actual path executes with exact output but no repeated whole-request benefit. Excluded from the selected normal providers.",
+        "measurements": {
+          "control_cold": {
+            "ordinals": [
+              2,
+              8
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.524453102582127,
+              "total_ms": 5184.191444516182,
+              "TTFT_ms": 3246.8513795137405
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5017321472,
+            "physical_read_calls": 4276
+          },
+          "candidate_cold": {
+            "ordinals": [
+              4,
+              6
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.5656089873228,
+              "total_ms": 5176.733277976513,
+              "TTFT_ms": 3245.917459487915
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5017321472,
+            "physical_read_calls": 4276
+          },
+          "control_retained": {
+            "ordinals": [
+              3,
+              9
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.787567214124545,
+              "total_ms": 2259.066866517067,
+              "TTFT_ms": 361.3233645260334
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 417284096,
+            "physical_read_calls": 344
+          },
+          "candidate_retained": {
+            "ordinals": [
+              5,
+              7
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.828039452539947,
+              "total_ms": 2255.977402508259,
+              "TTFT_ms": 364.61581802368164
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 417284096,
+            "physical_read_calls": 344
+          }
+        },
+        "id": "T2",
         "verification_stage_completed": true,
         "remaining_current_plan_steps": [],
-        "case": 51500,
-        "status": "adopted",
-        "scope": "native_verified_prefill_latency_selected_pending_normal"
+        "status": "completed_negative"
       },
       {
-        "id": "F3",
+        "completed": true,
+        "state": "selected_pending_verified_placement",
+        "preliminary_case": 55200,
+        "preliminary_retained_decode_gain_percent": 3.0979520911921243,
+        "preliminary_whole_time_reduction_percent": 2.787886373140336,
+        "preliminary_all_full_F32_routes_tokens_exact": true,
+        "preliminary_fixed_semantic_tasks_passed": true,
+        "preliminary_reuses_in_matched_candidate_requests": 200,
+        "preliminary_not_selection_evidence": "Disabled arm added an owner snapshot; confirm against the exact original retirement/snapshot order",
+        "confirmation_case": 55300,
+        "selected": true,
+        "case": 55300,
+        "original_control_operation_order_preserved": true,
+        "extra_control_owner_snapshots": 0,
+        "actual_certificate_reuses": 199,
+        "matched_comparison": {
+          "completed": true,
+          "fixed_semantic_tasks_passed": true,
+          "independent_full_F32_routes_exact": true,
+          "cross_control_full_F32_routes_exact": true,
+          "paired_whole_time_savings_ms": [
+            60.81158006191254,
+            64.80272907018661
+          ],
+          "AA_spread_ms": 0.9276649951934814
+        },
+        "measurements": {
+          "control_cold": {
+            "ordinals": [
+              2,
+              8
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.592710879737178,
+              "total_ms": 5157.431965529919,
+              "TTFT_ms": 3230.806517034769
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5017321472,
+            "physical_read_calls": 4276
+          },
+          "candidate_cold": {
+            "ordinals": [
+              4,
+              6
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 12.017499132983653,
+              "total_ms": 5083.642975986004,
+              "TTFT_ms": 3226.1011964976788
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5017321472,
+            "physical_read_calls": 4276
+          },
+          "control_retained": {
+            "ordinals": [
+              3,
+              9
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.888499063903094,
+              "total_ms": 2246.788072526455,
+              "TTFT_ms": 364.2515349984169
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 417284096,
+            "physical_read_calls": 344
+          },
+          "candidate_retained": {
+            "ordinals": [
+              5,
+              7
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 12.253436506857378,
+              "total_ms": 2183.9809179604053,
+              "TTFT_ms": 359.36234948039055
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 417284096,
+            "physical_read_calls": 344
+          }
+        },
+        "retained_decode_gain_percent": 3.069667928580988,
+        "retained_whole_time_reduction_percent": 2.7954196185234537,
+        "id": "T3",
         "verification_stage_completed": true,
         "remaining_current_plan_steps": [],
-        "case": 51700,
-        "status": "adopted",
-        "scope": "split4_selected_split8_tested_negative"
+        "status": "adopted"
       },
       {
-        "id": "F4",
+        "completed": true,
+        "state": "completed_negative_slower",
+        "fixture_case": 55600,
+        "fixture_completed": true,
+        "fixture_graphs": 60,
+        "fixture_scenarios": 4,
+        "all_fixture_F32_bytes_and_canaries_exact": true,
+        "cross_graph_without_intermediate_tensor_readback": true,
+        "fixture_positive_retirement_and_normal_close": true,
+        "full_model_case": 55800,
+        "full_model_attempt": {
+          "case": 55700,
+          "qualified": false,
+          "model_requests_completed": 0,
+          "reason": "SSD ENOSPC: close-helper transfer failed and the native fatal report was empty during CPU source mapping with GPU_not_started=1",
+          "ordinary_close_and_exact_restore": true,
+          "all_resources_retained_for_OS_teardown": true,
+          "no_manual_GPU_release": true
+        },
+        "new_finite_comparison_case": 55800,
+        "real_writable_margin_verified_bytes": 268435456,
+        "write_margin_scope": "Two128MiB incompressible files fully written, native SHA/identity/EOF checked and positively removed",
+        "selected": false,
+        "case": 55800,
+        "actual_execution_only_barriers": 12428,
+        "actual_batch_tail_publications": 32,
+        "all_full_F32_routes_tokens_exact": true,
+        "fixed_semantic_tasks_passed": true,
+        "retained_decode_gain_percent": -0.5913619617756716,
+        "retained_whole_time_reduction_percent": -0.4831694242505957,
+        "paired_whole_time_savings_ms": [
+          -8.447453022003174,
+          -12.626156985759735
+        ],
+        "AA_spread_ms": 3.3276949524879456,
+        "cold_prefill_latency_eligible": false,
+        "reason": "Both retained pairs regressed; cold gains do not exceed A/A variation. Correct synchronization and actual path coverage do not imply a whole-request speedup.",
+        "measurements": {
+          "control_cold": {
+            "ordinals": [
+              2,
+              8
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.96233695341309,
+              "total_ms": 5103.480768978596,
+              "TTFT_ms": 3237.141847014427
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5017321472,
+            "physical_read_calls": 4276
+          },
+          "candidate_cold": {
+            "ordinals": [
+              4,
+              6
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.945072616130156,
+              "total_ms": 5095.738586008549,
+              "TTFT_ms": 3226.4596255123615
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5017321472,
+            "physical_read_calls": 4276
+          },
+          "control_retained": {
+            "ordinals": [
+              3,
+              9
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 12.269553901832618,
+              "total_ms": 2180.768168479204,
+              "TTFT_ms": 357.9923414885998
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 417284096,
+            "physical_read_calls": 344
+          },
+          "candidate_retained": {
+            "ordinals": [
+              5,
+              7
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 12.196996427177616,
+              "total_ms": 2191.3049734830856,
+              "TTFT_ms": 356.93481546640396
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 417284096,
+            "physical_read_calls": 344
+          }
+        },
+        "id": "T4",
         "verification_stage_completed": true,
         "remaining_current_plan_steps": [],
-        "case": 52100,
-        "status": "verified_not_selected",
-        "scope": "native_verified_negative_not_selected"
+        "status": "completed_negative"
       }
     ]
   },
@@ -242,8 +579,8 @@
   "speculative_source_reads": false,
   "additional_GPU_forecast": false,
   "normal_application_speedup": {
-    "control_case": 50100,
-    "comparison": "Sequential installed50100 versus qualified53100, not ABBA; matched candidate evidence is reported separately in frontier adoption results",
+    "control_case": 53100,
+    "comparison": "Sequential installed53100 versus qualified56100, not ABBA; matched candidate evidence is reported separately in throughput adoption results",
     "full_vocabulary_finite": true,
     "all_counting_tokens_and_bytes_equal": true,
     "cross_cache_exact_F32_required": false,
@@ -420,12 +757,23 @@
     "owner_generation_checkpoint_reuse": true,
     "HC_joined_immutable_Q8": true,
     "HC_prefill_split_K": 4,
-    "recorded_command_cache": false
+    "recorded_command_cache": false,
+    "throughput_mode": 5,
+    "immutable_Expert_bundle_coverage": 22968,
+    "uncovered_original_reads_preserved": true,
+    "GDN_common_input_Q4_join": false,
+    "empty_retirement_certificate": true,
+    "proven_WAR_execution_only": false,
+    "pending_unpublished_writes_preserved": true
   },
   "normal_counting_quality_by_request": [
     true,
     true,
     true
   ],
-  "approximate_model_quality_reported_separately": true
+  "approximate_model_quality_reported_separately": true,
+  "throughput_mode": 5,
+  "immutable_Expert_triplet_coverage": 22968,
+  "uncovered_original_reads_preserved": true,
+  "all_four_throughput_stages_disposed": true
 }
