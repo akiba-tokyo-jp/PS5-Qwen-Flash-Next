@@ -20,23 +20,32 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-### Latest console state: measurement follow-up57500
+### Latest console state: recovery and SSD cleanup57900
 
-Read `docs/submission-results-20261101.md` and `.json` before console work.
-Model measurement56900 and standalone slot-map fixture57400 completed and
-ordinarily restored exact9824. The subsequent single model57500 launch has
-unknown completion: file HTTP, FTP and shell transports stopped responding;
-read-only process inventory still contained the native owner. Do not infer
-idle/restored state from the older completed campaign paragraphs below.
-The last published test SELF is483ee6d86ff50f617a25828c04bd1a481b9cc6eca03c652a6df12ea8cf0e93c5.
-Post57500 ordinary close and exact9824 restoration are not verified.
-The copy-callback slot-map rebinding prototype is rejected for production;
-new full-model preparation/builds for it are explicitly refused. Preserve its
-frozen cleanup inputs, current backing and exact9824 rollback. No repeat
-launch, reboot, forced signal/reset or uncertain manual resource release.
-Only continue existing-process collection and admitted ordinary cleanup when
-the actual control/readback paths respond. See the documented pre-allocation
-storage design and scheduler-fixture criteria before any revised prototype.
+Read `docs/SSD-cleanup-20261101.md` / `.json` before console work. An external
+new boot was observed. Exact9824 and five settings are restored; PS5 verified
+11 whole SHA256/identity/EOF files and518 exact current source identities.
+59572 obsolete files and10 directories were removed; SSD free display3.1G
+became13.3G. One current program remains. Current data/startup certificates and
+all active model directories are preserved. Runtime ownership is restored.
+Native/gateway/model are inactive. No inference or GPU launch was performed.
+The optional compatibility runtime is not loaded and current-boot shader CPU/
+model admission remains pending. Do not use a previous boot's GPU admission.
+
+User retention instruction: do not retain obsolete files on PS5. Preserve the
+current program/settings and required live sources; archive historical evidence
+on the host data disk and retire completed trial copies. This supersedes older
+console rollback retention notes below. Never remove live/unresolved backing.
+Use ordinary FTP mode (explicit SELF disabled) and accept the server's positive
+226/250 acknowledgements. Verify protected files and absence after cleanup.
+
+The single model57500 cohort did not complete; numerical/GPU completion stays
+unknown for that old run. Reboot is not reclassified as ordinary close or GPU
+success. Its unsafe slot-map copy-callback rebinding is not adopted and new
+full-model preparations/builds remain refused. Do not replay its launch or its
+old-boot cleanup helpers. The selected9824 recovery is complete. See
+`docs/submission-results-20261101.md` / `.json` for the measured diagnostic
+results and the separate pre-allocation design required before reconsideration.
 
 The throughput campaign is complete: normal56100 and verified placement56200.
 Selected SELF9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135,

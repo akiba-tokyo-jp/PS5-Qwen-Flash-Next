@@ -81,20 +81,20 @@
     "last_observed_phase": "inference_before_decode_call",
     "completion_unknown": true,
     "ordinary_close_verified": false,
-    "restoration_verified": false,
+    "restoration_verified": true,
     "read_only_process_inventory_responded": true,
-    "filesystem_HTTP_FTP_and_shell_did_not_respond": true
+    "filesystem_HTTP_FTP_and_shell_did_not_respond": true,
+    "process_still_present": false,
+    "external_new_boot_recovery": true,
+    "trial_program_removed": true,
+    "old_run_not_reclassified_successful": true
   },
   "disposition": "Rejected for production: full-model qualification failed to complete; do not replay",
   "not_applicable_after_rejection": [
     "Normal/API/display qualification of this rejected prototype",
     "Production adoption of this rejected prototype"
   ],
-  "remaining_operational_work": [
-    "Collect a positive terminal for the existing process when observability returns",
-    "Admit one ordinary exact-owner close",
-    "Restore and natively verify exact9824 program and settings"
-  ],
+  "remaining_operational_work": [],
   "native_follow_up_currently_executable": false,
   "refusal_controls": {
     "completed": true,
@@ -121,5 +121,8 @@
   "CI_runs": 0,
   "reboots": 0,
   "forced_closes": 0,
-  "manual_GPU_releases": 0
+  "manual_GPU_releases": 0,
+  "current_native_restriction": "Recovery/file scope admitted; optional compatibility runtime and fresh shader CPU/model admission required before a new inference case.",
+  "recovery_and_SSD_cleanup_report": "docs/SSD-cleanup-20261101.json",
+  "console_transports_currently_responsive": true
 }

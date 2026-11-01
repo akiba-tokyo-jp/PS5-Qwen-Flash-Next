@@ -1,9 +1,9 @@
 # Submission measurements and resident slot-map outcome
 
 The requested measurements and prototype implementation were performed. The
-full task is **not complete**: model57500 stopped yielding readable progress,
-its completion is unknown, and ordinary close/restoration cannot be verified.
-The prototype is rejected for production. No new speedup is established.
+full-model numerical cohort57500 did not complete and the prototype is rejected
+for production; no new speedup is established. Console recovery and requested
+SSD cleanup are now complete in `SSD-cleanup-20261101.md` / `.json`.
 
 ## Measured results
 
@@ -114,16 +114,14 @@ The qualified production selection remains exact9824, sourcec60c1ab8, with
 normal56100 rates9.759321 cold,11.574572 retained and12.801323 prefix tok/s.
 Those are the last qualified rates, not a measurement of57500.
 
-The last published executable for the still-present test process is483ee6d8,
-not9824. Its full digest and incomplete state are in the companion JSON.
-The exact9824 rollback was preserved and natively read before57500 launch;
-restoration **after57500 has not happened and is not verified**. The committed
-production selection must not be mistaken for the current on-console file.
+At the time of the interruption the test executable was483ee6d8. After an
+externally observed new boot, exact9824 and all five settings were restored.
+PS5 itself verified11 complete file SHA256/identity/EOF checks and518 complete
+source metadata identities. The rejected trial executable and old copies were
+removed from the console. The old cohort is not declared numerically complete.
 
-Further native comparisons and verified placement are currently unexecutable
-because their control/readback paths do not respond. This is not a chosen
-memory-admission margin. When observability returns, collect the existing
-process terminal, admit one ordinary exact-owner close, and restore/verify
-the original9824 program and settings. Do not replay57500 or assume device
-completion from process presence/absence. Reboot is unavailable; none is
-requested or assumed. No CI or agents were used.
+File/control transports are responsive and native/gateway/model are inactive.
+The current optional compatibility runtime is not loaded and fresh shader CPU/
+model admission is pending. No new inference was run as part of recovery or
+cleanup. Do not replay57500 or use its previous boot's launch/close bindings.
+Reboot remains unavailable for planning; none was executed by this agent.

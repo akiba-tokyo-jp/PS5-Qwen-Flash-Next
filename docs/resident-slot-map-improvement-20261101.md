@@ -1,6 +1,7 @@
-> Status: not adopted. Standalone57400 passed, but full-model57500 has unknown
-> completion and unresponsive file/control transports. See
-> `submission-results-20261101.md` and `.json` before any console work.
+> Status: not adopted. Standalone57400 passed, but full-model57500 did not
+> complete its numerical qualification. Exact9824 is restored after an observed
+> external new boot; see `SSD-cleanup-20261101.md` / `.json`. The unsafe prototype
+> remains refused. No speedup is claimed.
 
 # Measured selection: retain GPU Expert slot maps
 
