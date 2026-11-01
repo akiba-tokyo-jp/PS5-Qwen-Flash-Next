@@ -1,0 +1,101 @@
+{
+  "completed": true,
+  "discovery": {
+    "APR_symbols_resolved": {
+      "sceKernelAprResolveFilepathsToIds": true,
+      "sceKernelAprGetFileSize": true,
+      "sceKernelAprGetFileStat": true,
+      "sceKernelAprSubmitCommandBuffer": true,
+      "sceKernelAprSubmitCommandBufferAndGetResult": true,
+      "sceKernelAprWaitCommandBuffer": true
+    },
+    "all_APR_symbols_resolved": true,
+    "module_handle_lookup_inconclusive": true,
+    "loaded_writer_symbols": 0,
+    "symbol_presence_proves_callable_backend": false
+  },
+  "path_test": {
+    "path_results": [
+      {
+        "index": "0",
+        "rc": "-1",
+        "errno": "45",
+        "canaries": "1"
+      },
+      {
+        "index": "1",
+        "rc": "-1",
+        "errno": "45",
+        "canaries": "1"
+      },
+      {
+        "index": "2",
+        "rc": "-1",
+        "errno": "45",
+        "canaries": "1"
+      }
+    ],
+    "current_paths_usable": false,
+    "current_path_backend_unsupported": true,
+    "system_wide_hardware_absence_proven": false,
+    "APR_read_submissions": 0,
+    "GPU_calls": 0
+  },
+  "chunk_tests": [
+    {
+      "samples": 16,
+      "chunk_bytes": 65536,
+      "original_padded_bytes": 24641536,
+      "compressed_padded_bytes": 23592960,
+      "raw_bytes": 24576000,
+      "compressed_payload_bytes": 23443777,
+      "physical_saving_percent": 4.255319148936165,
+      "decode_calls": 384,
+      "proposed_Expert_read_commands": 16,
+      "host_decode_ms": 154.0739,
+      "all_round_trips_exact": true,
+      "ideal_sample_bandwidth_only_gain_percent": 4.444444444444451,
+      "PS5_decode_or_model_speed_measured": false
+    },
+    {
+      "samples": 16,
+      "chunk_bytes": 131072,
+      "original_padded_bytes": 24641536,
+      "compressed_padded_bytes": 23592960,
+      "raw_bytes": 24576000,
+      "compressed_payload_bytes": 23439991,
+      "physical_saving_percent": 4.255319148936165,
+      "decode_calls": 192,
+      "proposed_Expert_read_commands": 16,
+      "host_decode_ms": 147.7875,
+      "all_round_trips_exact": true,
+      "ideal_sample_bandwidth_only_gain_percent": 4.444444444444451,
+      "PS5_decode_or_model_speed_measured": false
+    }
+  ],
+  "materialized_host_container": {
+    "bytes": 23592960,
+    "records": 16,
+    "whole_file_sha256": "731492418343c9791071640de31a003925c45a5f59d6145335f2c68e6a68d5d6",
+    "persisted_round_trip_exact": true,
+    "container_is_PFS": false,
+    "hardware_decoder_tested": false
+  },
+  "all_new_remote_artifacts_removed": true,
+  "no_native_owners": true,
+  "GPU_calls": 0,
+  "title_launches": 0,
+  "APR_read_submissions": 0,
+  "CI_runs": 0,
+  "driver_or_production_changes": 0,
+  "correction_of_initial_parser": "SDK APR symbol resolution succeeded; failed kernel module-handle lookup is inconclusive, not absence.",
+  "disposition": {
+    "AMPR": "Current three paths return EOPNOTSUPP before file-ID creation; batch reads are not executable through this observed context.",
+    "Kraken": "Host lossless chunk validation complete; PS5 hardware decoding and model speed are not established; no production adoption."
+  },
+  "production_verification": {
+    "whole_SHA256_and_EOF_files": 6,
+    "program_SHA256": "56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126",
+    "current_settings_unchanged": true
+  }
+}
