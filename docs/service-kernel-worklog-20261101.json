@@ -1,0 +1,262 @@
+{
+  "schema": "ps5-qwen-service-kernel-worklog-v1",
+  "completed": false,
+  "production_changed": false,
+  "baseline_normal": 47100,
+  "baseline_placement": 47200,
+  "order": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "stages": {
+    "1": {
+      "completed": true,
+      "case": 48100,
+      "normal_adoption_pending": true,
+      "token_ledger_readback_complete": true,
+      "speed": {
+        "completed": true,
+        "case": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-48100",
+        "source": {
+          "path": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-48100\\native-model-terminal.private.json",
+          "bytes": 200653,
+          "sha256": "a94d56783b631692a92213549ecb953cc3516e98e641b0a666e89c0105702409"
+        },
+        "groups": {
+          "control_cold": {
+            "ordinals": [
+              2,
+              8
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 8.331374584317523,
+              "total_ms": 7866.405475974083,
+              "TTFT_ms": 5214.293772995472
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5177928096,
+            "physical_read_calls": 8473
+          },
+          "candidate_cold": {
+            "ordinals": [
+              4,
+              6
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.257289495539553,
+              "total_ms": 7609.409880012274,
+              "TTFT_ms": 5227.906211018562
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5177928096,
+            "physical_read_calls": 8473
+          },
+          "control_retained": {
+            "ordinals": [
+              3,
+              9
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.471107200430943,
+              "total_ms": 2897.6976765096188,
+              "TTFT_ms": 540.0656080245972
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 431295840,
+            "physical_read_calls": 799
+          },
+          "candidate_retained": {
+            "ordinals": [
+              5,
+              7
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 10.705283110108038,
+              "total_ms": 2630.6985070109367,
+              "TTFT_ms": 540.79040402174
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 431295840,
+            "physical_read_calls": 799
+          }
+        },
+        "retained_decode_gain_percent": 13.030957031306102,
+        "retained_whole_time_reduction_percent": 9.214183096571071,
+        "temporal_decode_differences": [
+          1.1891931880573878,
+          1.2791586312968004
+        ],
+        "control_AA_decode_spread": 0.027584603854990064,
+        "all_fixed_semantic_tasks_passed": true,
+        "quality_grades": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "temporal_whole_time_reductions_ms": [
+          256.9123250246048,
+          277.08601397275925
+        ],
+        "control_AA_whole_time_spread_ms": 3.94303697347641,
+        "latency_with_decode_nonregression_eligible": true,
+        "cold_prefill_latency_eligible": false,
+        "temporal_cold_whole_time_reductions_ms": [
+          227.0277779698372,
+          286.9634139537811
+        ],
+        "temporal_cold_TTFT_reductions_ms": [
+          -23.26483803987503,
+          -3.9600380063056946
+        ],
+        "control_AA_cold_whole_time_spread_ms": 66.02788400650024,
+        "control_AA_cold_TTFT_spread_ms": 39.473358035087585,
+        "same_counting_output": true,
+        "speed_and_finite_quality_eligible": true,
+        "quality_is_reported_separately_not_an_exactness_veto": true,
+        "application_device_peak_bytes": 6046089216,
+        "retired": true,
+        "normal_and_placement_required_before_production": true
+      }
+    },
+    "2": {
+      "completed": true,
+      "case": 48500,
+      "status": "tested_not_selected",
+      "reason": "Whole/decode differences are within control A/A variation; all records/numerics pass but application speed is not established.",
+      "speed": {
+        "completed": true,
+        "case": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-48500",
+        "source": {
+          "path": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-48500\\native-model-terminal.private.json",
+          "bytes": 200776,
+          "sha256": "6e793abe0c69287a42b2d3d3cd6dab654e26db58de7bf7539f37e0a92b260a50"
+        },
+        "groups": {
+          "control_cold": {
+            "ordinals": [
+              2,
+              8
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.2228626534636,
+              "total_ms": 7611.134105980396,
+              "TTFT_ms": 5220.8248354792595
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5177928096,
+            "physical_read_calls": 8473
+          },
+          "candidate_cold": {
+            "ordinals": [
+              4,
+              6
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.305864409235326,
+              "total_ms": 7600.4377319812775,
+              "TTFT_ms": 5231.501242995262
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5177928096,
+            "physical_read_calls": 8473
+          },
+          "control_retained": {
+            "ordinals": [
+              3,
+              9
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 10.719236990402957,
+              "total_ms": 2631.7707464993,
+              "TTFT_ms": 543.6609615087509
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 431295840,
+            "physical_read_calls": 799
+          },
+          "candidate_retained": {
+            "ordinals": [
+              5,
+              7
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 10.701582662811909,
+              "total_ms": 2629.7838720083237,
+              "TTFT_ms": 539.7982295155525
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 431295840,
+            "physical_read_calls": 799
+          }
+        },
+        "retained_decode_gain_percent": -0.164697614269127,
+        "retained_whole_time_reduction_percent": 0.07549572825137352,
+        "temporal_decode_differences": [
+          -0.0814352076396041,
+          0.04612655245751007
+        ],
+        "control_AA_decode_spread": 0.046272013107031995,
+        "all_fixed_semantic_tasks_passed": true,
+        "quality_grades": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "temporal_whole_time_reductions_ms": [
+          -8.81037300825119,
+          12.784121990203857
+        ],
+        "control_AA_whole_time_spread_ms": 15.04198294878006,
+        "latency_with_decode_nonregression_eligible": false,
+        "cold_prefill_latency_eligible": false,
+        "temporal_cold_whole_time_reductions_ms": [
+          8.821198046207428,
+          12.571549952030182
+        ],
+        "temporal_cold_TTFT_reductions_ms": [
+          -15.836860001087189,
+          -5.515955030918121
+        ],
+        "control_AA_cold_whole_time_spread_ms": 14.144145965576172,
+        "control_AA_cold_TTFT_spread_ms": 6.240108966827393,
+        "same_counting_output": true,
+        "speed_and_finite_quality_eligible": false,
+        "quality_is_reported_separately_not_an_exactness_veto": true,
+        "application_device_peak_bytes": 6046089216,
+        "retired": true,
+        "normal_and_placement_required_before_production": true
+      },
+      "stage_pairs_candidate_timed": 68,
+      "all14_token_ledgers_readback_exact": true,
+      "all_target_F32_maximum_absolute_error": 0
+    },
+    "3": {
+      "completed": false,
+      "control_service_mode": 1,
+      "candidate_service_mode": 5,
+      "host_contract_passed": true
+    },
+    "4": {
+      "completed": false
+    },
+    "5": {
+      "completed": false
+    }
+  },
+  "remaining": [
+    3,
+    4,
+    5,
+    "normal_API_display",
+    "verified_production_placement"
+  ],
+  "CI_runs": 0,
+  "agents": 0,
+  "reboots": 0,
+  "legacy_48100_row_label_reconciled": "serialized_tail_disabled was a legacy candidate-arm row label. Both arms actually select true in frozen entry and use the qualified same provider; scope and actual arm1-only queue counters establish the common control. Corrected for later cohorts."
+}
