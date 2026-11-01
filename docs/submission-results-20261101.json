@@ -1,0 +1,125 @@
+{
+  "schema": "ps5-qwen-submission-measurement-and-slot-map-status-v1",
+  "date": "2026-11-01",
+  "measurement_completed": true,
+  "task_completed": false,
+  "production_adopted": false,
+  "source_revision_at_candidate_build": "61b135ee05fa162b410305e0c37251334892205e",
+  "control_SELF": "9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135",
+  "candidate_SELF": "483ee6d86ff50f617a25828c04bd1a481b9cc6eca03c652a6df12ea8cf0e93c5",
+  "driver": {
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false,
+    "base_archive_SHA256": "a325dcd4584b1f1fccc6b46e90faa081ca86d18544aca610efea9e3ca3774f32",
+    "diagnostic_archive_SHA256": "03f8370357cb05e4aa9f7ea62bb482af9cf0dd5b87a201b6535dc7a24610e392"
+  },
+  "completed_model_measurement_cases": [
+    56400,
+    56900
+  ],
+  "withdrawn_initial_platform_counter_slots": [
+    40,
+    41,
+    42
+  ],
+  "valid_monotonic_model_case": 56900,
+  "GPU_query_lifetime": {
+    "created": 1,
+    "destroyed": 1,
+    "measured_ranges": 111315,
+    "pending": 0
+  },
+  "diagnostic_overhead_percent": 4.54371440332868,
+  "retained_diagnostic_rows": [
+    {
+      "ordinal": 5,
+      "total_ms": 2300.0160769820213,
+      "decode_ms": 1809.8354630470276,
+      "source_wait_ms": 427.889685,
+      "selected_GPU_decode_ms": 212.94108,
+      "sequence_wait_ms": 653.784888,
+      "actual_sleep_ms": 8.860568,
+      "submit_lock_wait_ms": 4.061951,
+      "command_copy_ms": 6.335389,
+      "pure_AGC_syscall_ms": 25.396463,
+      "nonempty_submissions": 4423,
+      "dedicated_claims": 0,
+      "ring_overlap_waits": 0
+    },
+    {
+      "ordinal": 7,
+      "total_ms": 2288.1123909950256,
+      "decode_ms": 1796.5289329886436,
+      "source_wait_ms": 423.356089,
+      "selected_GPU_decode_ms": 209.54664,
+      "sequence_wait_ms": 650.62106,
+      "actual_sleep_ms": 7.757938,
+      "submit_lock_wait_ms": 4.07386,
+      "command_copy_ms": 6.334128,
+      "pure_AGC_syscall_ms": 25.189332,
+      "nonempty_submissions": 4423,
+      "dedicated_claims": 0,
+      "ring_overlap_waits": 0
+    }
+  ],
+  "synthetic_slot_map_fixture": {
+    "case": 57400,
+    "completed": true,
+    "graphs": 36,
+    "all_I32_bytes_and_canaries_exact": true,
+    "positive_retirement": true,
+    "ordinary_close_and_exact_control_restoration": true
+  },
+  "model_candidate": {
+    "case": 57500,
+    "launched_once": true,
+    "completed": false,
+    "speedup_established": false,
+    "output_equivalence_established": false,
+    "last_observed_phase": "inference_before_decode_call",
+    "completion_unknown": true,
+    "ordinary_close_verified": false,
+    "restoration_verified": false,
+    "read_only_process_inventory_responded": true,
+    "filesystem_HTTP_FTP_and_shell_did_not_respond": true
+  },
+  "disposition": "Rejected for production: full-model qualification failed to complete; do not replay",
+  "not_applicable_after_rejection": [
+    "Normal/API/display qualification of this rejected prototype",
+    "Production adoption of this rejected prototype"
+  ],
+  "remaining_operational_work": [
+    "Collect a positive terminal for the existing process when observability returns",
+    "Admit one ordinary exact-owner close",
+    "Restore and natively verify exact9824 program and settings"
+  ],
+  "native_follow_up_currently_executable": false,
+  "refusal_controls": {
+    "completed": true,
+    "current_original_normal_allowed": true,
+    "synthetic_fixture_allowed": true,
+    "full_model_prototype_refused": true,
+    "existing_frozen_cleanup_inputs_unchanged": true,
+    "CLI_pre_execution_refusals": [
+      {
+        "tool": "tools/build_resident_slot_maps.py",
+        "refused": true,
+        "output_created": false,
+        "console_connections": 0
+      },
+      {
+        "tool": "tools/prepare_first_case.py",
+        "refused": true,
+        "output_created": false,
+        "console_connections": 0
+      }
+    ],
+    "unused_normal_composition_draft_discarded_without_build": true
+  },
+  "CI_runs": 0,
+  "reboots": 0,
+  "forced_closes": 0,
+  "manual_GPU_releases": 0
+}

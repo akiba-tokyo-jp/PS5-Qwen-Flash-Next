@@ -13,7 +13,10 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
  p=argparse.ArgumentParser(description=__doc__)
  for k in ('parent','workspace','cache','out'):p.add_argument('--'+k,type=Path,required=True)
- a=p.parse_args();n=json.loads(a.parent.read_text());a.out.mkdir(parents=True,exist_ok=False)
+ a=p.parse_args()
+ from native_slot_map_qualification import REASON
+ p.error(REASON)
+ n=json.loads(a.parent.read_text());a.out.mkdir(parents=True,exist_ok=False)
  cc=command(n,next(x for x in n['link_command']if Path(x).name=='cache.o'));cache=Path(cc[cc.index('-c')+1]).read_text();cache='''#include "resident_slot_maps.h"
 extern "C" void qwen_slot_maps_select(bool v){qwen_app::reuse_slot_maps=v;}
 extern "C" void qwen_slot_maps_stats(std::uint64_t*out){std::copy(qwen_app::slot_map_counts.begin(),qwen_app::slot_map_counts.end(),out);}

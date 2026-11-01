@@ -348,6 +348,8 @@ def main():
             package.get("real_module_import_audit", {}).get("missing") != []):
         raise ValueError("A packaged candidate with successful native imports and SELF roundtrip is required")
     candidate = bound(package["SELF"])
+    from native_slot_map_qualification import require_qualified_slot_map_model
+    require_qualified_slot_map_model(read(bound(package["native_link_receipt"])))
     complete = read(args.data_completion)
     if (complete.get("schema") not in {"ps5-qwen-model-data-continuation-complete-v1",
                                       "ps5-qwen-model-data-continuation-complete-v2"} or
