@@ -23,8 +23,8 @@ extern "C" void qwen_load_gpu_stats(std::uint64_t*);
 static std::array<std::uint64_t,16>load_queue_report(){std::array<std::uint64_t,16>v{};qwen_load_gpu_stats(v.data());return v;}
 '''+entry
  old=n['next_five_normal']['scope'];scope=dict(old,selected_GPU_object_SHA256=g1['sha256'],serialized_almost_ready_tail_disabled=True,nested_CPU_measurement_enabled=True,GPU_timestamp_diagnostics_enabled=False)
- entry=once(entry,literal(old),literal(scope));seed['next_five_normal']['scope']=scope
- old=n['four_next_normal']['scope'];updated=dict(old,selected_GPU_object_SHA256=g1['sha256']);entry=once(entry,literal(old),literal(updated));seed['four_next_normal']['scope']=updated
+ require(entry.count(literal(old))==3,'All three normal policy/report scope copies required');entry=entry.replace(literal(old),literal(scope));seed['next_five_normal']['scope']=scope
+ old=n['four_next_normal']['scope'];updated=dict(old,selected_GPU_object_SHA256=g1['sha256']);require(entry.count(literal(old))==2,'Both four-next policy/report copies required');entry=entry.replace(literal(old),literal(updated));seed['four_next_normal']['scope']=updated
  entry=once(entry,'qwen_next_select(2);qwen_post_submit_select(true);','qwen_next_select(2);qwen_post_submit_select(true);qwen_load_tail_select(true);qwen_load::enabled=true;')
  entry=once(entry,'static void observed_inference_stage(const char *phase) {','static void observed_inference_stage(const char *phase) {qwen_load::CpuSpan measured(qwen_load::stage);')
  marker='engine->set_logits_observer([&](const float*v,std::size_t count)noexcept{';entry=once(entry,marker,marker+'qwen_load::CpuSpan measured(qwen_load::full_validation);')
@@ -32,7 +32,7 @@ static std::array<std::uint64_t,16>load_queue_report(){std::array<std::uint64_t,
  marker='            const auto &result=trial.run(request,';entry=once(entry,marker,'            qwen_load::CpuSpan measured_run(qwen_load::request_run);\n'+marker)
  marker='            },[&](const auto &token,const auto &m){';entry=once(entry,marker,marker+'qwen_load::CpuSpan measured_persistence(qwen_load::token_persistence);')
  entry=once(entry,'                    publish(event);','                    {qwen_load::CpuSpan measured(qwen_load::publication);publish(event);}')
- marker='            qwen_checkpoint_trial_stats(checkpoint_after);';entry=once(entry,marker,'            measured_run.end();\n'+marker)
+ marker='            engine->set_work_guard({});engine->set_logits_observer({});qwen_app_complete_predictive_expert();';entry=once(entry,marker,'            measured_run.end();\n'+marker)
  marker='            row["full_F32_finite"]=true;';entry=once(entry,marker,'            const auto cpu_after=qwen_load::snapshot();Json cpu_delta=Json::array();for(unsigned i=0;i<cpu_after.size();++i)cpu_delta.push_back(cpu_after[i]-cpu_before[i]);row["CPU_nested_calls_inclusive_exclusive_ns"]=cpu_delta;row["actual_queue_and_serial_wait_totals"]=load_queue_report();\n'+marker)
  en=candidate['routing_sharing']['commands'][2];engine=Path(en[en.index('-c')+1]).read_text();sig='const float *LlamaEngine::effective_logits()const {';engine=once(engine,sig,sig+'qwen_load::CpuSpan measured(qwen_load::logit_access);')
  scan='''        for (int i = 0; i < count; ++i) {
