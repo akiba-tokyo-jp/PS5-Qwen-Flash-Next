@@ -1,0 +1,217 @@
+{
+  "schema": "qwen-frontier-worklog-v1",
+  "completed": true,
+  "baseline_case": 50100,
+  "baseline_placement": 50200,
+  "stages": {
+    "1": {
+      "completed": true,
+      "state": "native_verified_selected_pending_normal",
+      "case": 51100,
+      "analysis": {
+        "retained_decode_gain_percent": 2.3920339619869058,
+        "retained_whole_time_reduction_percent": 2.0995509520711053,
+        "temporal_whole_time_reductions_ms": [
+          53.81981301307678,
+          50.86369699239731
+        ],
+        "control_AA_whole_time_spread_ms": 3.2810269594192505,
+        "same_counting_output": true,
+        "quality_grades": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "speed_and_finite_quality_eligible": true,
+        "latency_with_decode_nonregression_eligible": true,
+        "application_device_peak_bytes": 6046089216
+      },
+      "timed_checkpoint_reuses": 132,
+      "full_F32_bytes_exact": true,
+      "ordered_routes_exact": true,
+      "durable_ledgers_read_back": 14,
+      "ordinary_close_and_exact_restore": true
+    },
+    "2": {
+      "completed": true,
+      "state": "native_verified_prefill_latency_selected_pending_normal",
+      "case": 51500,
+      "initial_failed_case": 51300,
+      "failure_corrected": "explicit contiguous Down/Inject result slices",
+      "analysis": {
+        "retained_decode_gain_percent": 0.010169762753275968,
+        "retained_whole_time_reduction_percent": 3.2778853938646213,
+        "temporal_whole_time_reductions_ms": [
+          80.6774389743805,
+          82.19959795475006
+        ],
+        "control_AA_whole_time_spread_ms": 5.375711023807526,
+        "temporal_cold_TTFT_reductions_ms": [
+          80.5856260061264,
+          72.64718997478485
+        ],
+        "control_AA_cold_TTFT_spread_ms": 1.9918859601020813,
+        "cold_prefill_latency_eligible": true,
+        "latency_with_decode_nonregression_eligible": false,
+        "same_counting_output": true,
+        "quality_grades": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "full_F32_bytes_exact": true,
+      "ordered_routes_exact": true,
+      "independent_candidate_repeats_exact": true,
+      "duplicate_weight_bytes": 0,
+      "timed_joined_projection_count": 5376,
+      "durable_ledgers_read_back": 14,
+      "ordinary_close_and_exact_restore": true,
+      "selection_basis": "Both cold prefill/TTFT improvements exceed A/A spread; no decode-throughput improvement claimed. Decode pair differences have opposite signs."
+    },
+    "3": {
+      "completed": true,
+      "state": "split4_selected_split8_tested_negative",
+      "split4": {
+        "completed": true,
+        "case": 51700,
+        "analysis": {
+          "retained_decode_gain_percent": 0.25955805321500325,
+          "retained_whole_time_reduction_percent": 0.5934444864432731,
+          "temporal_decode_differences": [
+            0.028837906839246585,
+            0.029199311324955346
+          ],
+          "control_AA_decode_spread": 0.01593637076473975,
+          "temporal_whole_time_reductions_ms": [
+            12.627599954605103,
+            15.494870007038116
+          ],
+          "control_AA_whole_time_spread_ms": 6.243317008018494,
+          "quality_grades": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "speed_and_finite_quality_eligible": true,
+          "cold_prefill_latency_eligible": false
+        },
+        "durable_ledgers_read_back": 14,
+        "ordinary_close_and_exact_restore": true
+      },
+      "selected_split_K": 4,
+      "selected_frontier_mode": 7,
+      "split8": {
+        "completed": true,
+        "case": 51900,
+        "analysis": {
+          "retained_decode_gain_percent": 0.4662534571878929,
+          "retained_whole_time_reduction_percent": 1.1616485609701077,
+          "temporal_decode_differences": [
+            -0.01869501812700669,
+            0.12357631429355642
+          ],
+          "control_AA_decode_spread": 0.025437424857324586,
+          "temporal_whole_time_reductions_ms": [
+            9.645744025707245,
+            45.158182978630066
+          ],
+          "control_AA_whole_time_spread_ms": 14.731584966182709,
+          "quality_grades": [
+            false,
+            true,
+            true,
+            true
+          ],
+          "speed_and_finite_quality_eligible": false,
+          "cold_prefill_latency_eligible": false,
+          "latency_with_decode_nonregression_eligible": false
+        },
+        "durable_ledgers_read_back": 14,
+        "ordinary_close_and_exact_restore": true,
+        "disposition": "Not selected: one semantic failure and no repeated improvement beyond whole-request A/A spread"
+      }
+    },
+    "4": {
+      "completed": true,
+      "state": "native_verified_negative_not_selected",
+      "case": 52100,
+      "analysis": {
+        "retained_decode_gain_percent": -0.028376267814322897,
+        "retained_whole_time_reduction_percent": -0.4297433519184102,
+        "temporal_whole_time_reductions_ms": [
+          -34.18673300743103,
+          13.811777949333191
+        ],
+        "control_AA_whole_time_spread_ms": 35.13251996040344,
+        "quality_grades": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "speed_and_finite_quality_eligible": false,
+        "latency_with_decode_nonregression_eligible": false,
+        "same_counting_output": true
+      },
+      "full_F32_bytes_and_routes_exact": true,
+      "timed_command_cache_hits": 9984,
+      "timed_command_recordings": 256,
+      "timed_cache_limit_fallbacks": 17320,
+      "cache_capacity": 256,
+      "scope": "Resident weight matrix-vector secondary-command reuse, original barriers, immutable owned descriptors, positive-completion-only cleanup",
+      "durable_ledgers_read_back": 14,
+      "ordinary_close_and_exact_restore": true,
+      "retirement_completed_after_extended_delay": true,
+      "disposition": "Tested; no repeated end-to-end improvement. A larger primary-segment implementation is not established by this slice."
+    }
+  },
+  "CI_runs": 0,
+  "verification_completed": true,
+  "selected_frontier_mode": 7,
+  "selected_native_quality_case": 51700,
+  "completed_native_quality_cases": [
+    51100,
+    51500,
+    51700,
+    52100
+  ],
+  "final_dispositions": [
+    {
+      "id": "F1",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 51100,
+      "status": "adopted_pending_verified_placement",
+      "scope": "native_verified_selected_pending_normal"
+    },
+    {
+      "id": "F2",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 51500,
+      "status": "adopted_pending_verified_placement",
+      "scope": "native_verified_prefill_latency_selected_pending_normal"
+    },
+    {
+      "id": "F3",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 51700,
+      "status": "adopted_pending_verified_placement",
+      "scope": "split4_selected_split8_tested_negative"
+    },
+    {
+      "id": "F4",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 52100,
+      "status": "verified_not_selected",
+      "scope": "native_verified_negative_not_selected"
+    }
+  ],
+  "delivery_record": "docs/frontier-adoption-20261101.json"
+}
