@@ -3,6 +3,28 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Cross-case initializer investigation — 2026-11-02
+
+Read `docs/AMPR-initializer-external-cause-audit-20261102.md` for the latest
+evidence. The owner prohibits firmware-filtered external research. Collect
+PS5 reports/fixes across the ecosystem by symptoms, stage and mechanism;
+assess applicability from code after collecting evidence.
+
+Current-boot read-only62420/62470 completed normally: six physical production
+digests pass, four inherited bootstrap descriptors are valid, the self dynlib
+chain is private relative to seven services, and all seven ShellCore import
+locations resolve. Runtime is absent, native owners0, PFS-named mounts0. The
+title directory exists on the underlying filesystem; its volatile nullfs alias
+is not mounted. No initializer, title, APR, mount change or GPU work was
+submitted. Native launch admission is still incomplete. These current readings
+do not reconstruct the interrupted62300 process. No unchanged init replay.
+
+Latest persistent capture62500 includes a later orderly reboot entry and two
+new system-title errors, without a kernel stack. Do not apply the previous
+boot's missing-shutdown observation to every later event. Exact internal cause
+and a shared cause of both stops remain unproven. DraftPR85 is still unmerged.
+No acceleration adoption or CI. Keep raw evidence private.
+
 ### Latest abnormal-stop audit — 2026-11-02
 
 Read `docs/AMPR-recovery-runtime-boundary-20261102.md` first. Previous recovery

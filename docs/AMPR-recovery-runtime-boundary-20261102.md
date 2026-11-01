@@ -110,3 +110,9 @@ runtime-boundary-62310, runtime-power-state-62350,
 after-abnormal-exit-62370. Raw system logs, bytes, endpoints and proprietary
 module data remain private. Driver 872cc126/cumulative-idle and persistent-cache
 policy are unchanged.
+## Subsequent evidence
+
+The later [cross-case source audit](AMPR-initializer-external-cause-audit-20261102.md)
+adds completed current-boot read-only observations and persistent-log capture.
+The historical events below remain unchanged. Full native launch admission and
+the hardware campaign remain incomplete.
