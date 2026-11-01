@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Compare complete, immutable triplet coverage using the existing four read lanes."""
+"""Compare sealed immutable triplet coverage with the original uncovered fallback."""
 import argparse,json
 from pathlib import Path
 from build_next_five_comparison import update_sources
@@ -14,9 +14,9 @@ def main():
  p=argparse.ArgumentParser(description=__doc__)
  for k in('parent','workspace','cache','bundles','out'):p.add_argument('--'+k,type=Path,required=True)
  a=p.parse_args();n=json.loads(a.parent.read_text());b=json.loads(a.bundles.read_text())
- require(b['completed']and b['active_Experts']==24576 and len(b['parts'])==71 and b['per_part']==348 and b['CPU_Direct_positively_retired']and b['original_sources_preserved']and b['quantized_bits_unchanged'],'Complete positively retired native pack required')
- require(sum(x['bytes']for x in b['parts'])==37849399296,'All active Expert bytes required');a.out.mkdir(parents=True,exist_ok=False)
- old=n['GDN_model_comparison']['scope'];scope=dict(old,candidate='throughput-1-all-Expert-immutable-triplet-coverage',control_frontier_mode=7,candidate_frontier_mode=7,control_throughput_mode=0,candidate_throughput_mode=1,bundle_coverage=24576,bundle_parts=71,bundle_read_lanes=4,original_weight_payloads_and_bytes_preserved=True,extra_weight_allocations=0)
+ active=b['active_Experts'];parts=len(b['parts']);require(b['completed']and 0<active<=24576 and 1<=parts<=71 and b['per_part']==348 and b['CPU_Direct_positively_retired']and b['original_sources_preserved']and b['quantized_bits_unchanged'],'Complete positively retired native pack required')
+ require(sum(x['Experts']for x in b['parts'])==active and all(x['first_Expert']==i*348 for i,x in enumerate(b['parts']))and sum(x['bytes']for x in b['parts'])==active*1540096,'Contiguous fully sealed prefix required');a.out.mkdir(parents=True,exist_ok=False)
+ old=n['GDN_model_comparison']['scope'];scope=dict(old,candidate='throughput-1-sealed-Expert-immutable-triplet-coverage',control_frontier_mode=7,candidate_frontier_mode=7,control_throughput_mode=0,candidate_throughput_mode=1,bundle_coverage=active,bundle_parts=parts,uncovered_original_fallback=True,bundle_read_lanes=4,original_weight_payloads_and_bytes_preserved=True,extra_weight_allocations=0)
  ec=n['compile_commands'][0];entry=Path(ec[ec.index('-c')+1]).read_text();entry='#include "throughput_options.h"\n'+entry;entry=once(entry,literal(old),literal(scope));entry=once(entry,'qwen_frontier::mode=arm?11:3;','qwen_frontier::mode=7;qwen_throughput::mode=arm?1:0;')
  marker='            row["service_mode"]=qwen_service::mode.load();';entry=once(entry,marker,'            row["throughput_mode"]=qwen_throughput::mode.load();row["throughput_totals"]=std::vector<std::uint64_t>(qwen_throughput::stats,qwen_throughput::stats+12);\n'+marker)
  # This is a byte/layout-only candidate; cross-arm full F32 and routes must remain exact.
@@ -51,11 +51,25 @@ unsigned upload_throughput_bundles(unsigned layer,const unsigned*experts,unsigne
     required().require_completed_window();ops.require_metadata_idle();
     if(layer>=48||!experts||!count||count>5||!opaque||!consume)throw std::runtime_error("Full bundle demand escapes ownership");
     std::array<qwen_app::SourceReadRequest,4>requests{};std::array<qwen_app::SourceIdentity,4>identities{};
-    const unsigned n=std::min(count,4u);
+    if(experts[0]>=512)throw std::runtime_error("Unknown full bundle Expert");
+    const unsigned first=layer*512+experts[0],first_part=first/348;unsigned adjacent=1;
+    while(adjacent<count&&experts[adjacent]<512&&layer*512+experts[adjacent]==first+adjacent&&(first+adjacent)/348==first_part)++adjacent;
+    if(adjacent>1){
+        if(first_part>=71||throughput_fds[first_part]<0)throw std::runtime_error("Adjacent full bundle source unadmitted");
+        required().upload_Q2_bundle_group(throughput_fds[first_part],throughput_identities[first_part],std::uint64_t(first%348)*1540096,adjacent,
+            [&](unsigned item,unsigned role,const void*data,std::size_t bytes){consume(opaque,item,role,data,bytes);});
+        qwen_throughput::stats[0]+=adjacent;++qwen_throughput::stats[1];++qwen_throughput::stats[2];return adjacent;
+    }
+    unsigned n=std::min(count,4u);
     for(unsigned i=0;i<n;++i){if(experts[i]>=512)throw std::runtime_error("Unknown full bundle Expert");const unsigned ordinal=layer*512+experts[i],part=ordinal/348;
         if(part>=71||throughput_fds[part]<0)throw std::runtime_error("Unadmitted full bundle part");
         requests[i]={throughput_fds[part],nullptr,1540096,std::uint64_t(ordinal%348)*1540096};identities[i]=throughput_identities[part];
     }
+    // Preserve the qualified parallel extent restriction. Near a region edge,
+    // deliver one complete triplet through the same positively joined worker.
+    for(unsigned i=1;i<n;++i){bool compatible=true;for(unsigned j=0;j<i;++j)
+        compatible=compatible&&qwen_app::source_schedule_parallel(identities[i],requests[i].offset,requests[i].bytes,identities[j],requests[j].offset,requests[j].bytes);
+        if(!compatible){n=i;break;}}
     const bool used=required().upload_delivery_bundles(requests,identities,n,[&](const auto&r,unsigned number,const auto&leases,const auto&before,const auto&use){
         std::array<qwen_app::SourceReadRequest,12>expanded{};std::copy(r.begin(),r.end(),expanded.begin());ops.stream(expanded,number,leases,before,use);
     },[&](unsigned item,unsigned role,const void*data,std::size_t bytes){consume(opaque,item,role,data,bytes);});
@@ -64,12 +78,25 @@ unsigned upload_throughput_bundles(unsigned layer,const unsigned*experts,unsigne
 }
 '''
  # required() is declared below the global source state; define upload after that declaration.
- admission,upload=addition.split('unsigned upload_throughput_bundles(',1);owner=once(owner,marker,marker+admission)
- point='extern "C" int qwen_app_Q2_bundle_index(unsigned layer,unsigned expert){';owner=once(owner,point,'unsigned upload_throughput_bundles('+upload+'\n'+point)
+ admission,upload=addition.replace('71',str(parts)).split('unsigned upload_throughput_bundles(',1);owner=once(owner,marker,marker+admission)
+ single='extern "C" bool qwen_app_try_Q2_bundle(unsigned layer,unsigned expert,void*opaque,'
+ owner=once(owner,single,'unsigned upload_throughput_bundles('+upload+'\n'+single)
+ point='extern "C" int qwen_app_Q2_bundle_index(unsigned layer,unsigned expert){'
+ start=owner.index(single);stop=owner.index('\nextern "C"',start+len(single));section=owner[start:stop]
+ marker='    if(!Q2_bundle_enabled)return false;'
+ replacement='''    if(!Q2_bundle_enabled)return false;
+    if(throughput_bundle_selected()&&layer<48&&expert<512&&layer*512+expert<COVERED_EXPERTS){
+        struct Single{void*opaque;void(*consume)(void*,unsigned,const void*,std::size_t);};Single pass{opaque,consume};
+        if(!opaque||!consume)throw std::runtime_error("Owned full bundle consumer required");
+        const auto used=upload_throughput_bundles(layer,&expert,1,&pass,[](void*raw,unsigned item,unsigned role,const void*data,std::size_t bytes){
+            if(item)throw std::runtime_error("Single full bundle item out of bounds");auto&p=*static_cast<Single*>(raw);p.consume(p.opaque,role,data,bytes);
+        });Q2_bundle_hits+=used;return true;
+    }'''.replace('COVERED_EXPERTS',str(active))
+ section=once(section,marker,replacement);owner=owner[:start]+section+owner[stop:]
  owner=once(owner,'    admit_Q2_bundle(window);admit_Q2_extra(window);admit_Q2_current(window);','    admit_Q2_bundle(window);admit_Q2_extra(window);admit_Q2_current(window);admit_throughput_bundles(window);')
  owner=once(owner,'    device_budget.close_completed();\n    required().close_completed();','    device_budget.close_completed();\n    required().close_completed();\n    for(auto&fd:throughput_fds){if(fd<0||!ops.close_file(fd))throw std::runtime_error("Full bundle owner did not positively close");fd=-1;}')
- owner=once(owner,point,point+'\n    if(throughput_bundle_selected()){if(layer>=48||expert>=512)throw std::runtime_error("Full bundle index out of bounds");return 4096+int(layer*512+expert);}')
- marker='    const auto first=qwen_app_Q2_bundle_index(layer,experts[0]);';owner=once(owner,marker,'    if(throughput_bundle_selected()){const auto used=upload_throughput_bundles(layer,experts,count,opaque,consume);Q2_bundle_hits+=used;return used;}\n'+marker)
+ owner=once(owner,point,point+'\n    if(throughput_bundle_selected()&&layer<48&&expert<512&&layer*512+expert<COVERED_EXPERTS){if(layer>=48||expert>=512)throw std::runtime_error("Full bundle index out of bounds");return 4096+int(layer*512+expert);}'.replace('COVERED_EXPERTS',str(active)))
+ marker='    const auto first=qwen_app_Q2_bundle_index(layer,experts[0]);';owner=once(owner,marker,'    if(throughput_bundle_selected()&&layer<48&&experts[0]<512&&layer*512+experts[0]<COVERED_EXPERTS){unsigned covered=1;while(covered<count&&experts[covered]<512&&layer*512+experts[covered]<COVERED_EXPERTS)++covered;const auto used=upload_throughput_bundles(layer,experts,covered,opaque,consume);Q2_bundle_hits+=used;return used;}\n'.replace('COVERED_EXPERTS',str(active))+marker)
  r,jobs,sources=link(a.parent,a.out,dict(entry=(ec,entry),owner=(oc+['-I',str(ROOT/'native/app')],owner)),[Path(__file__),ROOT/'native/app/throughput_options.h',ROOT/'native/app/delivery_bundle_source.inc',a.bundles,Path(b['raw']['path']),oldreader,reader,header]);update_sources(r,jobs,sources)
  r['GDN_model_comparison']['scope']=scope;r['next_five_comparison'].update(scope=scope,actual_sources=sources,commands=jobs);r['frontier']['scope']=scope;r['frontier']['actual_sources'].update(sources);r['frontier']['commands'].update(jobs)
  r['throughput']=dict(scope=scope,actual_sources=sources,commands=jobs,bundles=record(a.bundles),reader=record(reader),plan=record(header));seal(r,a.workspace,a.cache,a.out)

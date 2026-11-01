@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
+"""Build exact native removal of already archived, closed diagnostic files."""
+import argparse,json,os,re,secrets,subprocess
+from pathlib import Path
+from expert_q4 import record,require,write_json
+ROOT=Path(__file__).resolve().parents[1];C=Path('D:/PS5-AI/qwen-flash-next');TITLE='/data/ai/native-moss-image-sft/PPSA99190'
+def main():
+ p=argparse.ArgumentParser(description=__doc__)
+ for k in('archives','parent','out'):p.add_argument('--'+k,type=Path,required=True)
+ a=p.parse_args();m=json.loads(a.archives.read_text());require(m['completed']and m['PS5_deletes']==0 and len(m['files'])==153,'All exact remaining host archives required');rows=m['files']
+ metadata_path=C/'build/Throughput-closed-metadata-54182/terminal.private.log';metadata_raw=metadata_path.read_text();require('END success=1 source_writes=0 GPU_calls=0 title_launches=0'in metadata_raw,'Positive read-only ownership observation required');observed=[dict(re.findall(r'(\w+)=([^ ]+)',line))for line in metadata_raw.splitlines()if line.startswith('CLOSED_META ')];require(len(observed)==153 and[int(x['index'])for x in observed]==list(range(153))and all(int(x['nlink'])==1 and int(x['flags'])==0 and int(x['bytes'])==row['target']['bytes']for x,row in zip(observed,rows)),'Exact observed owner/flags/size of every archived target required')
+ for x in rows:
+  require(record(x['archive']['path'])==x['archive']and x['archive']['bytes']==x['target']['bytes'],'Complete unchanged host originals required');t=x['target'];name=Path(t['path']).name
+  require((t['kind']=='closed_display'and t['path'].startswith(TITLE+'/qwen-runtime/plan-')and name.endswith('.display.bmp'))or(t['kind']=='unreferenced_bundle'and t['path']==TITLE+'/qwen-Q2-bundle-probe-3890768cf7897b4d1f98eabc0c2111ce.bin'),'Only frozen diagnostic names and the proven unused bundle permitted')
+ protected_path=C/'build/Throughput-closed-source-reclaim-54064/protected.private.json';protected=json.loads(protected_path.read_text())['physical'];protected_paths={TITLE+x['path'][5:]if x['path'].startswith('/app0/')else x['path']for x in protected};require(not{r['target']['path']for r in rows}&protected_paths,'Never delete a current or rollback model source')
+ package=C/'build/Frontier-normal-SELF-53068/receipt.private.json';control=json.loads(package.read_text())['SELF'];require(record(control['path'])==control,'Exact installed control archive required')
+ a.out.mkdir(parents=True,exist_ok=False);(a.out/'tmp').mkdir();nonce=secrets.token_hex(16);remote='/data/ai/moss-qwen-closed-artifacts-'+nonce
+ ident=lambda key:'{'+','.join(str(v)+'ULL'for v in key)+'}';canonical=lambda path:TITLE+path[5:]if path.startswith('/app0/')else path
+ h='#pragma once\nstruct Protected{const char*path;std::array<std::uint64_t,10>identity;};\nstatic const Protected protected_files[]={'+','.join('{'+json.dumps(canonical(x['path']))+','+ident(x['identity'])+'}'for x in protected)+'};\nstruct Closed{const char*path;std::uint64_t bytes;const char*sha256;unsigned uid,gid,mode,flags;};\nstatic constexpr unsigned closed_count='+str(len(rows))+';\nstatic const Closed closed_files[]={'+','.join('{'+json.dumps(x['target']['path'])+','+str(x['archive']['bytes'])+'ULL,'+json.dumps(x['archive']['sha256'])+','+','.join(meta[k]for k in('uid','gid','mode','flags'))+'}'for x,meta in zip(rows,observed))+'};\nstatic const char*control_path='+json.dumps(TITLE+'/eboot.bin')+';\nstatic constexpr std::uint64_t control_bytes='+str(control['bytes'])+'ULL;\nstatic const char*control_hash='+json.dumps(control['sha256'])+';\n';header=a.out/'closed-artifact-plan.private.h';header.write_text(h,newline='\n')
+ parent=json.loads(a.parent.read_text());base=a.parent.parent
+ for name in('CPU-only-headroom.private.c','qualified_context_guard.c','close_context.h'):(a.out/name).write_bytes((base/name).read_bytes())
+ (a.out/'source_split_context.h').write_text('#pragma once\n#define SPLIT_LOG '+json.dumps(remote+'.log')+'\n',newline='\n');source=ROOT/'native/qwen_flash_next/reclaim_closed_artifacts.cpp';commands=[[v.replace(str(base),str(a.out))for v in c]for c in parent['commands']];commands[1][commands[1].index('-c')+1]=str(source)
+ for i,c in enumerate(commands):
+  run=subprocess.run(c,capture_output=True,timeout=180,env=dict(os.environ,TMP=str(a.out/'tmp'),TEMP=str(a.out/'tmp')));(a.out/f'{i}.private.log').write_bytes(run.stdout+run.stderr);require(run.returncode==0,run.stderr.decode(errors='replace')[-3500:])
+ artifact=a.out/'source-contention.elf';nm=Path(commands[1][0]).parent/'llvm-nm.exe';names={l.split()[0]for l in subprocess.check_output([str(nm),'-D','--undefined-only','--format=posix',str(artifact)],text=True).splitlines()if l.split()};require('unlink'in names and names<=set(parent['runtime_imports'])|{'unlink'},'Only existing CPU imports and the public unlink ABI permitted');require(not any(x.startswith(('sceAgc','sceSystemServiceLaunch','sceSystemServiceKill'))or x in('chmod','fchmod','chflags','fchflags','pwrite','ftruncate')for x in names),'No permission, flag, model, GPU or title changes permitted')
+ write_json(a.out/'manifest.private.json',dict(completed_build=True,CPU_only=True,artifact=record(artifact),commands=commands,remote_elf=remote+'.elf',remote_log=remote+'.log',targets=rows,protected_sources=record(protected_path),control_SELF=control,owned_Direct_bytes=8<<20,GPU_calls=0,title_launches=0,maximum_executions=1,automatic_retries=0,permission_or_flag_changes=0,all_native_hashes_before_first_unlink=True,inputs=[record(x)for x in(Path(__file__),source,a.archives,a.parent,protected_path,package,header,metadata_path,a.out/'CPU-only-headroom.private.c',a.out/'qualified_context_guard.c',a.out/'close_context.h',a.out/'source_split_context.h')]))
+ print(json.dumps(dict(built=True,targets=len(rows),archived_bytes=m['total_bytes'],protected_files=len(protected),permission_or_flag_changes=0,GPU_calls=0)))
+if __name__=='__main__':main()

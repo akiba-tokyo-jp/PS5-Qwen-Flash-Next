@@ -8,6 +8,11 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+The ordered throughput comparison is complete;T1/T3 are selected andT2/T4
+are measured negatives. See `docs/throughput-results-20261101.md` and its
+worklog. Final normal/API/display qualification and verified placement are
+pending; the installed frontier control below remains authoritative.
+
 The four ordered owner/HC/command categories are verified in five complete
 native comparison cohorts (70 requests), followed by normal53100 (three
 generations). Winners1/2/3 are installed through verified placement53200.

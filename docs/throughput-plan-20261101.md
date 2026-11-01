@@ -9,10 +9,10 @@ No restart, force reset, learned host inference, agents or CI is used.
 
 | Order | Changed mechanism | Required evidence | State |
 | --- | --- | --- | --- |
-| 1 | Complete active-Expert triplet bundle coverage | Immutable source identity, whole output SHA/EOF, all24576 active Experts, unchanged payloads; native matched read counts and whole time | In progress |
-| 2 | Common-input GDN Q4 QKV/Gate projection | Runtime contiguous-buffer/type/bounds checks; actual selections, full F32/routes and semantic repeats | Pending |
-| 3 | Ownership mutation generation shared across checkpoint/complete | Allocate/map/retire/release invalidations; retain fresh health, positive completion and required durable records; native whole time | Pending |
-| 4 | Dependency-specific Vulkan synchronization | Model-independent producer/consumer and transfer checks, physical alias tracking, original positive fences, full native exactness | Pending |
+| 1 | Sealed active-Expert triplet bundle coverage with original fallback | Immutable source identity, whole output SHA/EOF, every sealed output part, unchanged payloads and exact uncovered fallback; native matched read counts and whole time | Selected; normal qualification pending |
+| 2 | Common-input GDN Q4 QKV/Gate projection | Runtime contiguous-buffer/type/bounds checks; actual selections, full F32/routes and semantic repeats | Complete; see worklog |
+| 3 | Ownership mutation generation shared across checkpoint/complete | Existing monotonic allocation attempts and full owner snapshot invalidation; retain fresh health, positive completion and required durable records; native whole time | Complete; see worklog |
+| 4 | Dependency-specific Vulkan synchronization | Model-independent producer/consumer and transfer checks, physical alias tracking, original positive fences, full native exactness | Complete; see worklog |
 
 Use fresh finite case identifiers and current observations. Do not replay an
 unchanged refused launch or a consumed recovery probe. Stage1 repacks existing
@@ -35,3 +35,16 @@ Finish with the selected normal API/display application, actual frames and
 streams, full retirement, exact restoration, verified production placement,
 strict current admission and private repository merge. Individual comparisons
 do not end the task.
+
+The full71-part duplicate did not fit the writable SSD: native pwrite returned
+errno28 twice in distinct finite output scopes, each with positive CPU release.
+Do not repeat the unchanged full-copy attempt. Keep66 complete native SHA-sealed
+parts covering22968/24576 Experts (93.45703125%); leave1608 Experts on the exact
+original read path. This is a storage-limited coverage test, not a precision or
+routing change. Capacity counters did not predict the writable-byte limit.
+
+All four comparison stages are complete:70 requests in five complete matched/quality
+cohorts (including the corrected-control ownership confirmation), plus60 standalone
+synchronization graphs. SelectT1 andT3 (mode5);T2 andT4 are completed negatives.
+Final normal/API/display qualification and verified placement remain separate delivery
+steps; completed comparisons alone do not establish production installation.
