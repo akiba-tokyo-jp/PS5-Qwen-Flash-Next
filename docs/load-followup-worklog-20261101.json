@@ -15,27 +15,1018 @@
       229.84918397665024
     ],
     "AA_spread_ms": 27.458615005016327,
-    "adoption_pending_normal_and_placement": true
+    "adoption_pending_normal_and_placement": true,
+    "all_full_F32_routes_tokens_exact": true,
+    "actual_queue_calls_before": 14555,
+    "actual_queue_calls_after": 4423,
+    "actual_queue_reduction_percent": 69.61181724493302,
+    "serial_wait_calls_before": 12135,
+    "serial_wait_calls_after": 2003
   },
   "P2": {
-    "completed": false,
-    "headless_nested_CPU_spans_case": 46100,
-    "normal_controller_measurement_pending": true
+    "completed": true,
+    "headless_CPU": [
+      {
+        "ordinal": 3,
+        "metrics": {
+          "TTFT_ms": 540.4908720254898,
+          "decode_ms": 2210.2430450320244,
+          "decode_tokens_per_second": 9.501217545826835,
+          "generated_tokens": 22,
+          "prefill_ms": 504.4674900174141,
+          "prompt_tokens": 30,
+          "total_ms": 2892.5009400248528
+        },
+        "groups": [
+          {
+            "group": "epoch_begin",
+            "calls": 31,
+            "inclusive_ms": 58.408988,
+            "exclusive_ms": 58.408988
+          },
+          {
+            "group": "epoch_complete",
+            "calls": 31,
+            "inclusive_ms": 226.467445,
+            "exclusive_ms": 226.467445
+          },
+          {
+            "group": "checkpoint",
+            "calls": 17,
+            "inclusive_ms": 121.27612,
+            "exclusive_ms": 121.27612
+          },
+          {
+            "group": "stage",
+            "calls": 136,
+            "inclusive_ms": 237.751781,
+            "exclusive_ms": 237.751781
+          },
+          {
+            "group": "logit_access",
+            "calls": 23,
+            "inclusive_ms": 0.064955,
+            "exclusive_ms": 0.064955
+          },
+          {
+            "group": "sampler",
+            "calls": 23,
+            "inclusive_ms": 12.824052,
+            "exclusive_ms": 12.824052
+          },
+          {
+            "group": "finite_scan",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "full_validation",
+            "calls": 23,
+            "inclusive_ms": 24.257535,
+            "exclusive_ms": 24.257535
+          },
+          {
+            "group": "token_render",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "token_persistence",
+            "calls": 22,
+            "inclusive_ms": 282.736681,
+            "exclusive_ms": 282.698674
+          },
+          {
+            "group": "publication",
+            "calls": 22,
+            "inclusive_ms": 0.038007,
+            "exclusive_ms": 0.038007
+          },
+          {
+            "group": "model_process",
+            "calls": 17,
+            "inclusive_ms": 1889.658045,
+            "exclusive_ms": 1889.658045
+          },
+          {
+            "group": "work_guard",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "request_run",
+            "calls": 1,
+            "inclusive_ms": 2893.944517,
+            "exclusive_ms": 40.498915
+          }
+        ],
+        "exclusive_partition_complete": true,
+        "inclusive_spans_must_not_be_added": true,
+        "wall_not_pure_CPU_cycles": true
+      },
+      {
+        "ordinal": 5,
+        "metrics": {
+          "TTFT_ms": 551.6519600152969,
+          "decode_ms": 2248.7610750198364,
+          "decode_tokens_per_second": 9.338475409093764,
+          "generated_tokens": 22,
+          "prefill_ms": 516.2524219751358,
+          "prompt_tokens": 30,
+          "total_ms": 2951.2103790044785
+        },
+        "groups": [
+          {
+            "group": "epoch_begin",
+            "calls": 31,
+            "inclusive_ms": 46.045274,
+            "exclusive_ms": 46.045274
+          },
+          {
+            "group": "epoch_complete",
+            "calls": 31,
+            "inclusive_ms": 227.059133,
+            "exclusive_ms": 227.059133
+          },
+          {
+            "group": "checkpoint",
+            "calls": 17,
+            "inclusive_ms": 121.272671,
+            "exclusive_ms": 121.272671
+          },
+          {
+            "group": "stage",
+            "calls": 136,
+            "inclusive_ms": 236.219506,
+            "exclusive_ms": 236.219506
+          },
+          {
+            "group": "logit_access",
+            "calls": 23,
+            "inclusive_ms": 0.063665,
+            "exclusive_ms": 0.063665
+          },
+          {
+            "group": "sampler",
+            "calls": 23,
+            "inclusive_ms": 13.046406,
+            "exclusive_ms": 13.046406
+          },
+          {
+            "group": "finite_scan",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "full_validation",
+            "calls": 23,
+            "inclusive_ms": 24.287765,
+            "exclusive_ms": 24.287765
+          },
+          {
+            "group": "token_render",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "token_persistence",
+            "calls": 22,
+            "inclusive_ms": 279.745923,
+            "exclusive_ms": 279.708077
+          },
+          {
+            "group": "publication",
+            "calls": 22,
+            "inclusive_ms": 0.037846,
+            "exclusive_ms": 0.037846
+          },
+          {
+            "group": "model_process",
+            "calls": 17,
+            "inclusive_ms": 1937.911547,
+            "exclusive_ms": 1937.911547
+          },
+          {
+            "group": "work_guard",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "request_run",
+            "calls": 1,
+            "inclusive_ms": 2956.91918,
+            "exclusive_ms": 71.26729
+          }
+        ],
+        "exclusive_partition_complete": true,
+        "inclusive_spans_must_not_be_added": true,
+        "wall_not_pure_CPU_cycles": true
+      },
+      {
+        "ordinal": 7,
+        "metrics": {
+          "TTFT_ms": 555.3125039935112,
+          "decode_ms": 2270.4058470129967,
+          "decode_tokens_per_second": 9.24944763845994,
+          "generated_tokens": 22,
+          "prefill_ms": 519.9950770139694,
+          "prompt_tokens": 30,
+          "total_ms": 2970.4116599559784
+        },
+        "groups": [
+          {
+            "group": "epoch_begin",
+            "calls": 31,
+            "inclusive_ms": 50.303683,
+            "exclusive_ms": 50.303683
+          },
+          {
+            "group": "epoch_complete",
+            "calls": 31,
+            "inclusive_ms": 226.727803,
+            "exclusive_ms": 226.727803
+          },
+          {
+            "group": "checkpoint",
+            "calls": 17,
+            "inclusive_ms": 121.248856,
+            "exclusive_ms": 121.248856
+          },
+          {
+            "group": "stage",
+            "calls": 136,
+            "inclusive_ms": 230.615191,
+            "exclusive_ms": 230.615191
+          },
+          {
+            "group": "logit_access",
+            "calls": 23,
+            "inclusive_ms": 0.063587,
+            "exclusive_ms": 0.063587
+          },
+          {
+            "group": "sampler",
+            "calls": 23,
+            "inclusive_ms": 12.751008,
+            "exclusive_ms": 12.751008
+          },
+          {
+            "group": "finite_scan",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "full_validation",
+            "calls": 23,
+            "inclusive_ms": 24.336199,
+            "exclusive_ms": 24.336199
+          },
+          {
+            "group": "token_render",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "token_persistence",
+            "calls": 22,
+            "inclusive_ms": 285.755823,
+            "exclusive_ms": 285.716934
+          },
+          {
+            "group": "publication",
+            "calls": 22,
+            "inclusive_ms": 0.038889,
+            "exclusive_ms": 0.038889
+          },
+          {
+            "group": "model_process",
+            "calls": 17,
+            "inclusive_ms": 1948.871531,
+            "exclusive_ms": 1948.871531
+          },
+          {
+            "group": "work_guard",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "request_run",
+            "calls": 1,
+            "inclusive_ms": 2971.857964,
+            "exclusive_ms": 71.184283
+          }
+        ],
+        "exclusive_partition_complete": true,
+        "inclusive_spans_must_not_be_added": true,
+        "wall_not_pure_CPU_cycles": true
+      },
+      {
+        "ordinal": 9,
+        "metrics": {
+          "TTFT_ms": 547.4201740026474,
+          "decode_ms": 2199.689763009548,
+          "decode_tokens_per_second": 9.546800804886432,
+          "generated_tokens": 22,
+          "prefill_ms": 511.4345610141754,
+          "prompt_tokens": 30,
+          "total_ms": 2886.0527480244637
+        },
+        "groups": [
+          {
+            "group": "epoch_begin",
+            "calls": 31,
+            "inclusive_ms": 46.755399,
+            "exclusive_ms": 46.755399
+          },
+          {
+            "group": "epoch_complete",
+            "calls": 31,
+            "inclusive_ms": 224.680349,
+            "exclusive_ms": 224.680349
+          },
+          {
+            "group": "checkpoint",
+            "calls": 17,
+            "inclusive_ms": 124.964247,
+            "exclusive_ms": 124.964247
+          },
+          {
+            "group": "stage",
+            "calls": 136,
+            "inclusive_ms": 227.455729,
+            "exclusive_ms": 227.455729
+          },
+          {
+            "group": "logit_access",
+            "calls": 23,
+            "inclusive_ms": 0.069444,
+            "exclusive_ms": 0.069444
+          },
+          {
+            "group": "sampler",
+            "calls": 23,
+            "inclusive_ms": 12.941045,
+            "exclusive_ms": 12.941045
+          },
+          {
+            "group": "finite_scan",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "full_validation",
+            "calls": 23,
+            "inclusive_ms": 24.319435,
+            "exclusive_ms": 24.319435
+          },
+          {
+            "group": "token_render",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "token_persistence",
+            "calls": 22,
+            "inclusive_ms": 280.419238,
+            "exclusive_ms": 280.382116
+          },
+          {
+            "group": "publication",
+            "calls": 22,
+            "inclusive_ms": 0.037122,
+            "exclusive_ms": 0.037122
+          },
+          {
+            "group": "model_process",
+            "calls": 17,
+            "inclusive_ms": 1905.328522,
+            "exclusive_ms": 1905.328522
+          },
+          {
+            "group": "work_guard",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "request_run",
+            "calls": 1,
+            "inclusive_ms": 2887.496087,
+            "exclusive_ms": 40.562679
+          }
+        ],
+        "exclusive_partition_complete": true,
+        "inclusive_spans_must_not_be_added": true,
+        "wall_not_pure_CPU_cycles": true
+      }
+    ],
+    "normal_CPU_pending": false,
+    "case": 47100,
+    "normal_CPU": [
+      {
+        "ordinal": 0,
+        "metrics": {
+          "TTFT_ms": 5988.030883014202,
+          "decode_ms": 2910.2245630025864,
+          "decode_tokens_per_second": 7.215937995634785,
+          "generated_tokens": 22,
+          "prefill_ms": 5952.369699954987,
+          "prompt_tokens": 30,
+          "total_ms": 9012.39762800932
+        },
+        "groups": [
+          {
+            "group": "epoch_begin",
+            "calls": 25,
+            "inclusive_ms": 37.66197,
+            "exclusive_ms": 37.66197
+          },
+          {
+            "group": "epoch_complete",
+            "calls": 25,
+            "inclusive_ms": 185.615859,
+            "exclusive_ms": 185.615859
+          },
+          {
+            "group": "checkpoint",
+            "calls": 23,
+            "inclusive_ms": 176.268962,
+            "exclusive_ms": 176.268962
+          },
+          {
+            "group": "stage",
+            "calls": 148,
+            "inclusive_ms": 250.08278,
+            "exclusive_ms": 250.08278
+          },
+          {
+            "group": "logit_access",
+            "calls": 23,
+            "inclusive_ms": 0.113543,
+            "exclusive_ms": 0.113543
+          },
+          {
+            "group": "sampler",
+            "calls": 23,
+            "inclusive_ms": 12.87064,
+            "exclusive_ms": 12.87064
+          },
+          {
+            "group": "finite_scan",
+            "calls": 23,
+            "inclusive_ms": 2.770243,
+            "exclusive_ms": 2.770243
+          },
+          {
+            "group": "full_validation",
+            "calls": 23,
+            "inclusive_ms": 8.690572,
+            "exclusive_ms": 8.690572
+          },
+          {
+            "group": "token_render",
+            "calls": 22,
+            "inclusive_ms": 0.091087,
+            "exclusive_ms": 0.091087
+          },
+          {
+            "group": "token_persistence",
+            "calls": 22,
+            "inclusive_ms": 536.929437,
+            "exclusive_ms": 536.929437
+          },
+          {
+            "group": "publication",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "model_process",
+            "calls": 23,
+            "inclusive_ms": 7765.276024,
+            "exclusive_ms": 7765.276024
+          },
+          {
+            "group": "work_guard",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "request_run",
+            "calls": 1,
+            "inclusive_ms": 9013.817392,
+            "exclusive_ms": 37.446275
+          }
+        ],
+        "exclusive_partition_complete": true,
+        "inclusive_spans_must_not_be_added": true,
+        "wall_not_pure_CPU_cycles": true
+      },
+      {
+        "ordinal": 1,
+        "metrics": {
+          "TTFT_ms": 574.1992190480232,
+          "decode_ms": 2286.045291006565,
+          "decode_tokens_per_second": 9.18616970652997,
+          "generated_tokens": 22,
+          "prefill_ms": 538.5222390294075,
+          "prompt_tokens": 30,
+          "total_ms": 2989.1629410386086
+        },
+        "groups": [
+          {
+            "group": "epoch_begin",
+            "calls": 25,
+            "inclusive_ms": 46.028275,
+            "exclusive_ms": 46.028275
+          },
+          {
+            "group": "epoch_complete",
+            "calls": 25,
+            "inclusive_ms": 183.414929,
+            "exclusive_ms": 183.414929
+          },
+          {
+            "group": "checkpoint",
+            "calls": 23,
+            "inclusive_ms": 164.088317,
+            "exclusive_ms": 164.088317
+          },
+          {
+            "group": "stage",
+            "calls": 152,
+            "inclusive_ms": 263.894309,
+            "exclusive_ms": 263.894309
+          },
+          {
+            "group": "logit_access",
+            "calls": 24,
+            "inclusive_ms": 0.115705,
+            "exclusive_ms": 0.115705
+          },
+          {
+            "group": "sampler",
+            "calls": 23,
+            "inclusive_ms": 12.880824,
+            "exclusive_ms": 12.880824
+          },
+          {
+            "group": "finite_scan",
+            "calls": 23,
+            "inclusive_ms": 2.831591,
+            "exclusive_ms": 2.831591
+          },
+          {
+            "group": "full_validation",
+            "calls": 23,
+            "inclusive_ms": 15.281016,
+            "exclusive_ms": 15.281016
+          },
+          {
+            "group": "token_render",
+            "calls": 22,
+            "inclusive_ms": 0.077377,
+            "exclusive_ms": 0.077377
+          },
+          {
+            "group": "token_persistence",
+            "calls": 22,
+            "inclusive_ms": 288.553735,
+            "exclusive_ms": 286.708026
+          },
+          {
+            "group": "publication",
+            "calls": 22,
+            "inclusive_ms": 1.845709,
+            "exclusive_ms": 1.845709
+          },
+          {
+            "group": "model_process",
+            "calls": 23,
+            "inclusive_ms": 1954.39815,
+            "exclusive_ms": 1954.39815
+          },
+          {
+            "group": "work_guard",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "request_run",
+            "calls": 1,
+            "inclusive_ms": 2990.573883,
+            "exclusive_ms": 59.009655
+          }
+        ],
+        "exclusive_partition_complete": true,
+        "inclusive_spans_must_not_be_added": true,
+        "wall_not_pure_CPU_cycles": true
+      },
+      {
+        "ordinal": 2,
+        "metrics": {
+          "TTFT_ms": 69.21437096595764,
+          "decode_ms": 2004.5267879962921,
+          "decode_tokens_per_second": 10.47628803254429,
+          "generated_tokens": 22,
+          "prefill_ms": 27.08960199356079,
+          "prompt_tokens": 30,
+          "total_ms": 2231.314812004566
+        },
+        "groups": [
+          {
+            "group": "epoch_begin",
+            "calls": 31,
+            "inclusive_ms": 44.775143,
+            "exclusive_ms": 44.775143
+          },
+          {
+            "group": "epoch_complete",
+            "calls": 31,
+            "inclusive_ms": 227.461979,
+            "exclusive_ms": 227.461979
+          },
+          {
+            "group": "checkpoint",
+            "calls": 16,
+            "inclusive_ms": 123.604466,
+            "exclusive_ms": 123.604466
+          },
+          {
+            "group": "stage",
+            "calls": 137,
+            "inclusive_ms": 231.215543,
+            "exclusive_ms": 231.215543
+          },
+          {
+            "group": "logit_access",
+            "calls": 23,
+            "inclusive_ms": 0.059902,
+            "exclusive_ms": 0.059902
+          },
+          {
+            "group": "sampler",
+            "calls": 23,
+            "inclusive_ms": 12.817001,
+            "exclusive_ms": 12.817001
+          },
+          {
+            "group": "finite_scan",
+            "calls": 23,
+            "inclusive_ms": 2.874728,
+            "exclusive_ms": 2.874728
+          },
+          {
+            "group": "full_validation",
+            "calls": 23,
+            "inclusive_ms": 15.244131,
+            "exclusive_ms": 15.244131
+          },
+          {
+            "group": "token_render",
+            "calls": 22,
+            "inclusive_ms": 0.092691,
+            "exclusive_ms": 0.092691
+          },
+          {
+            "group": "token_persistence",
+            "calls": 22,
+            "inclusive_ms": 272.033131,
+            "exclusive_ms": 270.200571
+          },
+          {
+            "group": "publication",
+            "calls": 22,
+            "inclusive_ms": 1.83256,
+            "exclusive_ms": 1.83256
+          },
+          {
+            "group": "model_process",
+            "calls": 16,
+            "inclusive_ms": 1258.989768,
+            "exclusive_ms": 1258.989768
+          },
+          {
+            "group": "work_guard",
+            "calls": 0,
+            "inclusive_ms": 0.0,
+            "exclusive_ms": 0.0
+          },
+          {
+            "group": "request_run",
+            "calls": 1,
+            "inclusive_ms": 2232.74532,
+            "exclusive_ms": 43.576837
+          }
+        ],
+        "exclusive_partition_complete": true,
+        "inclusive_spans_must_not_be_added": true,
+        "wall_not_pure_CPU_cycles": true
+      }
+    ]
   },
   "P3": {
-    "completed": false,
+    "completed": true,
     "case": 46500,
-    "diagnostic_running": true,
-    "query_read_after_existing_completion": true,
-    "no_additional_wait": true
+    "full_F32_routes_tokens_exact": true,
+    "query_pools_created": 1,
+    "query_pools_destroyed": 1,
+    "pending_ranges": 0,
+    "measured_ranges": 123123,
+    "timestamp_valid_bits": 64,
+    "timestamp_period_ps": 10000,
+    "no_new_queue_wait": true,
+    "ordinary_speed_comparison_valid": false,
+    "mean_selected_range_total_ms": 559.44642,
+    "groups": [
+      {
+        "group": "Expert_Q2_matmul_with_unpack",
+        "mean_total_ms": 143.2068,
+        "mean_decode_ms": 24.75624,
+        "mean_intervals": 2448,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 142897240,
+            "intervals": 2448,
+            "prefill_and_first_token_ns": 116337320,
+            "accepted_decode_ns": 24848920,
+            "EOS_and_completion_ns": 1711000
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 143516360,
+            "intervals": 2448,
+            "prefill_and_first_token_ns": 117503920,
+            "accepted_decode_ns": 24663560,
+            "EOS_and_completion_ns": 1348880
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 25.597947342303126
+      },
+      {
+        "group": "other_Q4_matmul",
+        "mean_total_ms": 84.26772,
+        "mean_decode_ms": 59.11066,
+        "mean_intervals": 1836,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 83750320,
+            "intervals": 1836,
+            "prefill_and_first_token_ns": 21685040,
+            "accepted_decode_ns": 58493200,
+            "EOS_and_completion_ns": 3572080
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 84785120,
+            "intervals": 1836,
+            "prefill_and_first_token_ns": 21592120,
+            "accepted_decode_ns": 59728120,
+            "EOS_and_completion_ns": 3464880
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 15.062697156950257
+      },
+      {
+        "group": "other_Q8_matmul",
+        "mean_total_ms": 38.2074,
+        "mean_decode_ms": 21.89952,
+        "mean_intervals": 2278,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 38125680,
+            "intervals": 2278,
+            "prefill_and_first_token_ns": 14939720,
+            "accepted_decode_ns": 21894240,
+            "EOS_and_completion_ns": 1291720
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 38289120,
+            "intervals": 2278,
+            "prefill_and_first_token_ns": 15090320,
+            "accepted_decode_ns": 21904800,
+            "EOS_and_completion_ns": 1294000
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 6.8295012058527425
+      },
+      {
+        "group": "router_F32",
+        "mean_total_ms": 22.1124,
+        "mean_decode_ms": 14.27834,
+        "mean_intervals": 1632,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 22153560,
+            "intervals": 1632,
+            "prefill_and_first_token_ns": 6893280,
+            "accepted_decode_ns": 14309440,
+            "EOS_and_completion_ns": 950840
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 22071240,
+            "intervals": 1632,
+            "prefill_and_first_token_ns": 6901520,
+            "accepted_decode_ns": 14247240,
+            "EOS_and_completion_ns": 922480
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 3.9525500940733527
+      },
+      {
+        "group": "HC_Q8",
+        "mean_total_ms": 194.68928,
+        "mean_decode_ms": 49.50782,
+        "mean_intervals": 4930,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 194137800,
+            "intervals": 4930,
+            "prefill_and_first_token_ns": 142231400,
+            "accepted_decode_ns": 48879040,
+            "EOS_and_completion_ns": 3027360
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 195240760,
+            "intervals": 4930,
+            "prefill_and_first_token_ns": 141936040,
+            "accepted_decode_ns": 50136600,
+            "EOS_and_completion_ns": 3168120
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 34.800344240293825
+      },
+      {
+        "group": "shared_Expert_Q8",
+        "mean_total_ms": 28.11818,
+        "mean_decode_ms": 16.21834,
+        "mean_intervals": 2448,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 28246560,
+            "intervals": 2448,
+            "prefill_and_first_token_ns": 10996720,
+            "accepted_decode_ns": 16386480,
+            "EOS_and_completion_ns": 863360
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 27989800,
+            "intervals": 2448,
+            "prefill_and_first_token_ns": 11070120,
+            "accepted_decode_ns": 16050200,
+            "EOS_and_completion_ns": 869480
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 5.026072023126003
+      },
+      {
+        "group": "output_Q4",
+        "mean_total_ms": 33.57,
+        "mean_decode_ms": 25.0354,
+        "mean_intervals": 221,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 33466360,
+            "intervals": 221,
+            "prefill_and_first_token_ns": 6924280,
+            "accepted_decode_ns": 25126760,
+            "EOS_and_completion_ns": 1415320
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 33673640,
+            "intervals": 221,
+            "prefill_and_first_token_ns": 7302960,
+            "accepted_decode_ns": 24944040,
+            "EOS_and_completion_ns": 1426640
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 6.00057463948022
+      },
+      {
+        "group": "GDN_SSM_ranges",
+        "mean_total_ms": 15.27464,
+        "mean_decode_ms": 12.16704,
+        "mean_intervals": 1224,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 15236040,
+            "intervals": 1224,
+            "prefill_and_first_token_ns": 2401880,
+            "accepted_decode_ns": 12134880,
+            "EOS_and_completion_ns": 699280
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 15313240,
+            "intervals": 1224,
+            "prefill_and_first_token_ns": 2414560,
+            "accepted_decode_ns": 12199200,
+            "EOS_and_completion_ns": 699480
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 2.7303132979204694
+      },
+      {
+        "group": "other_matrix",
+        "mean_total_ms": 0.0,
+        "mean_decode_ms": 0.0,
+        "mean_intervals": 0,
+        "rows": [
+          {
+            "ordinal": 5,
+            "total_ns": 0,
+            "intervals": 0,
+            "prefill_and_first_token_ns": 0,
+            "accepted_decode_ns": 0,
+            "EOS_and_completion_ns": 0
+          },
+          {
+            "ordinal": 7,
+            "total_ns": 0,
+            "intervals": 0,
+            "prefill_and_first_token_ns": 0,
+            "accepted_decode_ns": 0,
+            "EOS_and_completion_ns": 0
+          }
+        ],
+        "fraction_of_measured_selected_ranges_percent": 0.0
+      }
+    ],
+    "instrumented_whole_overhead_percent": 2.4758505092203453,
+    "groups_are_role_based_not_unconditionally_single_precisions": true,
+    "output_group_includes_final_output_related_HC_projections": true,
+    "Q2_unpack_inside_matmul_not_separately_isolated": true,
+    "all_GPU_operations_not_covered": true,
+    "timestamp_intervals_include_fused_ranges_and_dependencies": true
   },
   "remaining": [
-    "P2_normal_CPU_attribution",
-    "P3_GPU_ranges",
-    "normal_API_display_qualification",
     "verified_production_placement"
   ],
   "CI_runs": 0,
   "reboots": 0,
-  "agents": 0
+  "agents": 0,
+  "all_three_priorities_completed": true,
+  "host_only_refusals": [
+    {
+      "build": "Load-normal-CPU-47020",
+      "status": "scope_literal_count_mismatch_before_compile",
+      "PS5_launches": 0,
+      "preserved": true,
+      "corrected_build": "Load-normal-CPU-47040"
+    }
+  ],
+  "final_dispositions": [
+    {
+      "id": "P1",
+      "status": "adopted_pending_verified_placement",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 46100,
+      "normal_case": 47100,
+      "reason": "Exact target F32/routes/tokens and repeated whole-request savings exceed A/A spread; ordinary actual API/display normal qualification passed."
+    },
+    {
+      "id": "P2",
+      "status": "implemented_and_measured",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 47100,
+      "reason": "All exclusive caller-wall categories reconcile exactly with each enclosing request; cold local publication is absent and both actual API publication paths are measured."
+    },
+    {
+      "id": "P3",
+      "status": "diagnostic_completed",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 46500,
+      "reason": "123123 actual selected operator ranges, full target F32/token agreement, existing checkpoints only, one query pool created/destroyed, no pending ranges; diagnostic queries excluded from production."
+    }
+  ]
 }
