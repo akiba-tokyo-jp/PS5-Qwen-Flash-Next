@@ -17,6 +17,10 @@ def main():
     path=ROOT/f'.local/resident_cohort_operator_{a.case}.py';s=path.read_text()
     s=once(s,'paths=[Path(__file__),base_path,',"paths=[Path(__file__),base_path,ROOT/'tools/post_top2_close.py',")
     ast.parse(s);path.write_text(s,newline='\n')
+    path=ROOT/f'.local/prepared_phase_model_{a.case}.private.py';s=path.read_text()
+    marker="policy['native_next_five_normal']=actual_native['next_five_normal']['scope']"
+    s=once(s,marker,marker+"\n    if 'post_top2_loading_reserved'in actual_native:policy['native_post_top2_loading_reserved']=actual_native['post_top2_loading_reserved']['scope']")
+    ast.parse(s);path.write_text(s,newline='\n')
     runner='''from pathlib import Path
 import subprocess,sys
 R=Path(__file__).resolve().parents[1]

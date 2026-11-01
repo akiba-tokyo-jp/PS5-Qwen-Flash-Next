@@ -22,7 +22,7 @@ def main():
     require(record(header)['sha256']==proof['owned_source']['sha256'],'Tested ring bytes required')
     scope=dict(old,schema='ps5-qwen-post-top2-ring-v1',candidate='five-lease-no-copy-ring',candidate_id=1,
         control_Experts=2,candidate_Experts=2,CPU_workers=4,maximum_simultaneous_reads=4,control_leases=4,candidate_leases=5,
-        extra_owned_CPU_bytes_in_both_arms=2097152,extra_copy_bytes=0,read_alignment=16384,positive_completion_preserved=True)
+        extra_owned_CPU_bytes_in_candidate=2097152,extra_lease_allocated_only_after_model_load=True,extra_copy_bytes=0,read_alignment=16384,positive_completion_preserved=True)
     ec=n['compile_commands'][0];oc=n['all_Q2_optimized_monitor']['commands'][1]
     entry=Path(ec[ec.index('-c')+1]).read_text();owner=Path(oc[oc.index('-c')+1]).read_text()
     require('#include "speed-streaming.private.h"'in owner,'Actual streaming owner include required')

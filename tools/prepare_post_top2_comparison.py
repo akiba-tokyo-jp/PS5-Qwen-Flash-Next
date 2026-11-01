@@ -11,6 +11,7 @@ def main():
     p.add_argument('--case',type=int,required=True)
     for k in ('build-name','package-name'):p.add_argument('--'+k,required=True)
     p.add_argument('--publication',type=Path,required=True);a=p.parse_args()
+    if not a.publication.is_file():raise FileNotFoundError(a.publication)
     if a.case<31500:raise ValueError('Fresh current-comparison case required')
     subprocess.run([sys.executable,'-X','utf8','-B',str(ROOT/'tools/prepare_next_five_Q4_case.py'),
         '--case',str(a.case),'--build-name',a.build_name,'--package-name',a.package_name,'--publication',str(a.publication)],check=True,cwd=ROOT)

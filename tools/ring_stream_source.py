@@ -12,10 +12,11 @@ def transform():
     s=once(s,'void worker(unsigned lane)noexcept{','void worker(unsigned)noexcept{')
     s=once(s,'changed_.wait(lock,[&]{return stop_||slots_[lane].state==State::queued;});if(stop_)return;\n            auto&s=slots_[lane];',
         'changed_.wait(lock,[&]{return stop_||std::any_of(slots_.begin(),slots_.end(),[](const Slot&s){return s.state==State::queued;});});if(stop_)return;\n            auto&s=*std::find_if(slots_.begin(),slots_.end(),[](const Slot&s){return s.state==State::queued;});')
-    s=once(s,'        try{for(unsigned i=0;i<4;++i)',
-        '        if(posix_memalign(&spare_,16384,2u<<20)||!spare_)throw std::runtime_error("Owned spare ring lease unavailable");\n        try{for(unsigned i=0;i<4;++i)')
     s=once(s,'pending_=true;maximum_=0;',
-        'const unsigned capacity=qwen_post_ring_enabled()?5:4;const std::array<void*,5>ring={leases[0],leases[1],leases[2],leases[3],spare_};\n        pending_=true;maximum_=0;')
+        '''const unsigned capacity=qwen_post_ring_enabled()?5:4;
+        if(capacity==5&&!spare_&&(posix_memalign(&spare_,16384,2u<<20)||!spare_))throw std::runtime_error("Owned spare ring lease unavailable");
+        const std::array<void*,5>ring={leases[0],leases[1],leases[2],leases[3],spare_};
+        pending_=true;maximum_=0;''')
     s=once(s,'s.request.target=leases[lane];','s.request.target=ring[lane];')
     s=once(s,'unsigned lane=4;for(unsigned i=0;i<4;++i)if(slots_[i].state==State::ready&&(lane==4||slots_[i].order<slots_[lane].order))lane=i;',
         'unsigned lane=5;for(unsigned i=0;i<capacity;++i)if(slots_[i].state==State::ready&&(lane==5||slots_[i].order<slots_[lane].order))lane=i;')

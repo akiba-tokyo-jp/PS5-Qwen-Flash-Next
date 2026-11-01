@@ -74,6 +74,11 @@ def main():
     for text in ['row["output_weight_type"]="Q8_0"','{"output_weight_type","Q8_0"}']:
         entry=entry.replace(text,text.replace('Q8_0','Q4_0'))
     entry=reporting(entry)
+    entry=once(entry,'const auto header=qwen_app::receipt_integer(file,"header_bytes");',
+        '''const auto header=file.contains("header_bytes")?qwen_app::receipt_integer(file,"header_bytes"):
+                        (file_index==76&&file.at("path")=="qwen-flash-next-bf16-00076-of-00076.gguf"&&
+                         !plan->segments.empty()&&plan->segments.front().bytes==160?160ull:
+                         throw std::runtime_error("Exact isolated output header boundary required"));''')
     r,jobs,sources=link(a.parent,a.out,dict(entry=(ec+['-I',str(ROOT/'native/app')],entry)),
         [Path(__file__),a.preparation,a.publication_plan,header,typed_header,rh,ROOT/'native/app/output_plain_segments.h',ROOT/'native/app/post_top2_causal.h',ROOT/'tools/qualify_post_top2_reporting.py'])
     update_sources(r,jobs,sources);r['GDN_model_comparison']['scope']=scope
