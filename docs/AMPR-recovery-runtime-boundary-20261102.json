@@ -1,0 +1,40 @@
+{
+  "status": "investigation_after_owner_reported_abnormal_exit",
+  "all_hardware_validation_complete": false,
+  "earlier_recovery_complete": true,
+  "current_boot_readmission_complete": false,
+  "previous_stop_boundary": "Post-native-return PFS view cleanup, restoring rename, then host file-readback timeout",
+  "current_stop_boundary": "BEFORE upstream_kernel_entry is the last recovered marker; no return or ready END",
+  "common_cause_proven": false,
+  "exact_kernel_failure_proven": false,
+  "setup_order_difference": {
+    "historical": "Compatibility runtime58010 then existing title alias58202",
+    "current": "Alias62152 then OS-rejected launch62280 then compatibility request62300",
+    "cause_proven": false
+  },
+  "direct_PFS_native_execution": false,
+  "direct_supervisor_execution": false,
+  "OS_rejected_candidate": true,
+  "candidate_original_restored": true,
+  "compatibility_initialization_requests": 1,
+  "compatibility_reentries": 0,
+  "GPU_calls": 0,
+  "APR_read_submissions": 0,
+  "hardware_Kraken_requests": 0,
+  "prototype": {
+    "PR": 85,
+    "draft": true,
+    "merged": false,
+    "host_cross_build_passed": true,
+    "native_lifecycle_qualified": false
+  },
+  "production_acceleration_adopted": false,
+  "CI_runs": 0,
+  "source_handling": "Raw logs, proprietary module bytes and endpoints stay private",
+  "driver": {
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "changed": false,
+    "persistent_caches_enabled": false
+  }
+}

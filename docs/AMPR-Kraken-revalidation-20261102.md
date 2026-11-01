@@ -1,5 +1,12 @@
 # AMPR and Kraken revalidation — 2026-11-02
 
+Latest status: [recovery and separate initialization boundary](AMPR-recovery-runtime-boundary-20261102.md).
+The earlier post-restoration verification/cleanup was completed after the owner
+restarted. A later request to restore the existing compatibility runtime ended
+without a return record and the owner confirmed another abnormal termination.
+The measurements below describe the preceding scope, not the latest boot's
+admission. Hardware/model validation is still incomplete.
+
 The CPU entropy-chunk comparator completed on PS5 and was slower. AMPR read
 submission and hardware Kraken timing remain unqualified. Communication was
 lost during post-restoration readback; this campaign is **not complete**.
