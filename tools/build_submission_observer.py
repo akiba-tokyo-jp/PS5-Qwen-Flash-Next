@@ -103,5 +103,7 @@ extern "C" void qwen_ps5_timing_snapshot(std::uint64_t*);
     seed['GDN_model_comparison']['scope']=scope;seed['next_five_comparison']['scope']=scope
     seedpath=a.out/'driver-seed.private.json';write_json(seedpath,seed);out=a.out/'variant';out.mkdir();r,jobs,actual=link(seedpath,out,dict(entry=(ec,entry)),[Path(__file__),ROOT/'native/profiling/submission_timing.h',*map(lambda x:Path(x['path']),sources)])
     r['submission_observer']=dict(scope=scope,counter_names=NAMES,driver_archive=record(archive),driver_sources=sources,compile_commands=commands,changed_members=[list(x)for x in replacements],unrelated_members_identical=True,ABI_unchanged=True,actual_sources=actual,commands=jobs)
-    seal(r,a.workspace,a.cache,out);write_json(a.out/'observer.private.json',r['submission_observer']);print(json.dumps(dict(completed=True,receipt=str(out/'receipt.private.json'),counters=len(NAMES))))
+    seal(r,a.workspace,a.cache,out);write_json(a.out/'observer.private.json',r['submission_observer'])
+    write_json(out/'core-safety.private.json',dict(completed=True,scope=scope,host_source_and_link_checks_only=True,ABI_unchanged=True,unrelated_driver_members_identical=True,original_synchronization_timeouts_allocator_and_owner_checks_preserved=True,native_qualification_claimed=False,PS5_operations=0,CI_runs=0))
+    print(json.dumps(dict(completed=True,receipt=str(out/'receipt.private.json'),counters=len(NAMES))))
 if __name__=='__main__':main()

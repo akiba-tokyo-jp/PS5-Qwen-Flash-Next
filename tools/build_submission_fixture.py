@@ -42,5 +42,6 @@ def main():
  entry=once(entry,'        screen.state="loading original BF16 model";',branch+'        screen.state="loading original BF16 model";')
  r,jobs,sources=link(a.parent,a.out,dict(entry=(ec,entry)),[Path(__file__),original,header]);r['GDN_model_comparison']['scope']=scope;r['next_five_comparison']['scope']=scope
  r['submission_fixture']=dict(scope=scope,actual_sources=sources,commands=jobs);seal(r,a.workspace,a.cache,a.out)
+ write_json(a.out/'core-safety.private.json',dict(completed=True,scope=scope,host_source_and_link_checks_only=True,model_loads=0,synthetic_full_output_and_canary_oracle=True,positive_retirement_required=True,native_qualification_claimed=False,PS5_operations=0,CI_runs=0))
  print(json.dumps(dict(completed=True,model_loads=0,graphs=36)))
 if __name__=='__main__':main()

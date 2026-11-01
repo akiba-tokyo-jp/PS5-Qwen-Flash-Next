@@ -45,5 +45,6 @@ static std::array<std::uint64_t,26>submission_query_stats(){std::array<std::uint
  seed=a.out/'linked-seed.private.json';write_json(seed,r)
  subprocess.run([sys.executable,'-X','utf8','-B',str(ROOT/'tools/rebind_gpu_provenance.py'),'--linked',str(seed),'--out',str(a.out/'GPU-provenance')],check=True)
  r=json.loads((a.out/'GPU-provenance/receipt.private.json').read_text());seal(r,a.workspace,a.cache,a.out)
+ write_json(a.out/'core-safety.private.json',dict(completed=True,scope=scope,host_source_and_link_checks_only=True,query_result_retrieval_requires_existing_positive_completion=True,new_queue_waits=0,original_weight_bits_and_routing_policy_preserved=True,native_qualification_claimed=False,PS5_operations=0,CI_runs=0))
  print(json.dumps(dict(completed=True,GPU_role_groups=len(GROUPS),new_queue_waits=0)))
 if __name__=='__main__':main()
