@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
   "date": "2026-11-01",
-  "application_source_revision": "97de33bab429618475d250c9e0bc4a71f06469ed",
+  "application_source_revision": "e909298a5a240f619b249c826c21c26dcbfe48fa",
   "application_SELF": {
-    "bytes": 21876663,
-    "sha256": "2d66ba58810a7c0502564fb7c9181f25e8c2355f34925934f54f43bf20c4ecb9"
+    "bytes": 21881847,
+    "sha256": "8858dd5eaa63733accabfa50b057971fa8b54c9acad4e8e6365f7b5a54b424b1"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -27,34 +27,34 @@
   "canonical_startup_SELF_full_readback_verified": true,
   "installed_configuration_full_readback_verified": true,
   "previous_production_rollback_preserved": true,
-  "previous_production_SHA256": "5b829d396dbbf4f7b6d07b139917ee5d3740c44bbb245cf4542f24371d1e36cd",
+  "previous_production_SHA256": "2d66ba58810a7c0502564fb7c9181f25e8c2355f34925934f54f43bf20c4ecb9",
   "active_expert_slots": 3712,
   "physical_cache_planes": 3713,
   "expert_cache_bytes": 5703659520,
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 586.2936649918556,
-      "decode_ms": 2559.981220960617,
-      "decode_tokens_per_second": 8.203185174975573,
+      "TTFT_ms": 574.1992190480232,
+      "decode_ms": 2286.045291006565,
+      "decode_tokens_per_second": 9.18616970652997,
       "generated_tokens": 22,
-      "prefill_ms": 551.9163320064545,
+      "prefill_ms": 538.5222390294075,
       "prompt_tokens": 30,
-      "total_ms": 3286.628719985485
+      "total_ms": 2989.1629410386086
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 62.41689199209213,
-      "decode_ms": 2221.983636021614,
-      "decode_tokens_per_second": 9.451014696759776,
+      "TTFT_ms": 69.21437096595764,
+      "decode_ms": 2004.5267879962921,
+      "decode_tokens_per_second": 10.47628803254429,
       "generated_tokens": 22,
-      "prefill_ms": 27.792988002300262,
+      "prefill_ms": 27.08960199356079,
       "prompt_tokens": 30,
-      "total_ms": 2458.4077820181847
+      "total_ms": 2231.314812004566
     }
   ],
-  "normal_application_case": 45100,
-  "production_placement_case": 45200,
+  "normal_application_case": 47100,
+  "production_placement_case": 47200,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -69,8 +69,8 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": false,
-  "qualification_report": "docs/post-top2-adoption-20261101.json",
-  "historical_installation": "config/production-installation-next-five-20261101.json",
+  "qualification_report": "docs/load-followup-adoption-20261101.json",
+  "historical_installation": "config/production-installation-post-top2-20261101.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
   "relaunch_requires_fresh_case": true,
@@ -79,7 +79,7 @@
   "private_repository": true,
   "GitHub_Actions_enabled": false,
   "original_Q4_optimized_profile_preserved": false,
-  "fixed_quality_candidate_case": 34700,
+  "fixed_quality_candidate_case": 46100,
   "finite_quality_scope": "Four fixed semantic tasks pass in complete routing/Q4 cohorts. Normal/API counting correctness and cross-prefix answer changes are reported per request without rewriting output or quarantining returned GPU work. General quality, arbitrary-prompt performance and sustained reboot-free operation are not claimed.",
   "model_receipt_SHA256": "46ceb693e8afd3c562e92532674ff16a336387da4cea91609660cc1fc58fe426",
   "expert_eviction_policy": "two_touch_probation",
@@ -111,8 +111,8 @@
     "independent_TTFT_reduction_fraction": 0.16984702295372733,
     "independent_whole_time_reduction_fraction": 0.10595415501857519
   },
-  "previous_production_source_revision": "76870d256094c93d083aa72a45b626e1b8b04975",
-  "normal_validation_case": 45100,
+  "previous_production_source_revision": "97de33bab429618475d250c9e0bc4a71f06469ed",
+  "normal_validation_case": 47100,
   "selected_routing_policy": 14,
   "prefill_Experts": 6,
   "decode_Experts": 2,
@@ -173,10 +173,8 @@
   "non_Expert_except_output_precision_preserved": false,
   "non_Expert_except_output_and_shared_precision_preserved": false,
   "fixed_quality_cases": [
-    34700,
-    35100,
-    35900,
-    37300
+    46100,
+    46500
   ],
   "fixed_quality": {
     "requests_per_complete_comparison": 14,
@@ -197,219 +195,35 @@
   },
   "historical_profiles_storage": "verified_host_artifacts; obsolete_console_paths_are_not_controls",
   "optimized_normal_comparison": {
-    "control_case": 30200,
+    "control_case": 45100,
     "control_is_sequential_not_ABBA": true,
     "cache_occupancy_held_matched": false,
     "unlike_cache_conditions_not_pooled": true,
     "causal_candidate_evidence": [
       {
-        "id": "N1",
-        "technology": "GPU greedy and full vocabulary handling",
-        "status": "tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          31500,
-          33400,
-          33900,
-          42900
-        ],
-        "scope_and_result": "Full14-request GPU selection comparison;22 real calls per timed request;exact F32/tokens/routes;whole time4.62039% longer."
-      },
-      {
-        "id": "N2",
-        "technology": "Submission node256/divisor40",
+        "id": "P1",
         "status": "adopted",
         "verification_stage_completed": true,
         "remaining_current_plan_steps": [],
-        "native_cases": [
-          35100,
-          35900,
-          36700,
-          37300,
-          38300
-        ],
-        "scope_and_result": "Exact14-request controls;node256/divisor40 selected;divisor10 adds no repeatable gain. Percentage gains from stages are not summed."
+        "case": 46100,
+        "normal_case": 47100,
+        "reason": "Exact target F32/routes/tokens and repeated whole-request savings exceed A/A spread; ordinary actual API/display normal qualification passed."
       },
       {
-        "id": "N3",
-        "technology": "Output Q4 projection",
-        "status": "adopted",
+        "id": "P2",
+        "status": "implemented_and_measured",
         "verification_stage_completed": true,
         "remaining_current_plan_steps": [],
-        "native_cases": [
-          31600,
-          34700,
-          35400
-        ],
-        "scope_and_result": "All4 same-cap Q4 replays faster than both bracketed Q8 groups;whole0.46125% shorter;stored output payload317849600B smaller;four finite semantic tasks pass;cross-format KL/general quality unmeasured."
+        "case": 47100,
+        "reason": "All exclusive caller-wall categories reconcile exactly with each enclosing request; cold local publication is absent and both actual API publication paths are measured."
       },
       {
-        "id": "N4",
-        "technology": "Static/adaptive prefill Expert budgets",
-        "status": "tested-not-adopted",
+        "id": "P3",
+        "status": "diagnostic_completed",
         "verification_stage_completed": true,
         "remaining_current_plan_steps": [],
-        "native_cases": [
-          32500,
-          34500,
-          39900
-        ],
-        "scope_and_result": "Cold TTFT can improve, but whole/retained performance regresses;all declared static/adaptive and combination stages evaluated."
-      },
-      {
-        "id": "N5",
-        "technology": "Observed startup and reuse of sealed read-only pack",
-        "status": "adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          32600,
-          36900
-        ],
-        "scope_and_result": "Three real API responses/two frames per normal run;settle5.006610326s to0.100198499s;fresh inode/descriptor/EOF bind the previous native pack SHA, not a claimed fresh whole hash."
-      },
-      {
-        "id": "R1",
-        "technology": "New Top2 Gate/Up kernel",
-        "status": "tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          30700,
-          39300
-        ],
-        "scope_and_result": "180 fixture graphs and14 model requests;816 actual candidate dispatches per timed request;whole0.05274% longer despite faster microkernel."
-      },
-      {
-        "id": "R2",
-        "technology": "History proposal cap8/12",
-        "status": "tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          31600,
-          34000,
-          35400
-        ],
-        "scope_and_result": "Caps execute in the current controller;no repeatable whole-request improvement over6."
-      },
-      {
-        "id": "R3",
-        "technology": "Two-token GDN",
-        "status": "tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          33800
-        ],
-        "scope_and_result": "14 requests,216 actual selections per timed candidate;whole0.26195% reduction within variation;3of4 fixed semantic tasks."
-      },
-      {
-        "id": "R4",
-        "technology": "Held-out current-distribution phase placement",
-        "status": "tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          39700
-        ],
-        "scope_and_result": "Preserves348 original keys and adds50;held-out screen and14 native requests;whole0.40720% longer."
-      },
-      {
-        "id": "R5",
-        "technology": "Owned zero-extra-copy ring",
-        "status": "tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          36300
-        ],
-        "scope_and_result": "Five owned slots/four workers;14 exact requests;whole0.18724% reduction within variation."
-      },
-      {
-        "id": "C1",
-        "technology": "GPU selection with node256 and complete logit evidence",
-        "status": "tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          38900,
-          42900
-        ],
-        "scope_and_result": "Actual combined full-model candidate is slower. Full-logit transport costs0.873ms/request;even eliminating it cannot offset the measured regression. Fully deferred CPU validation is not claimed implemented. Even fully hiding the26.5ms observer and0.873ms logit transport cannot offset either114.6/177.5ms measured delay;deferred-transport subvariant screened by this measured upper bound."
-      },
-      {
-        "id": "C2",
-        "technology": "Cap12 plus two-token GDN plus Top2 Gate/Up",
-        "status": "tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          40300,
-          41100
-        ],
-        "scope_and_result": "Both14-request cohorts execute both kernels;one temporal whole-time pair regresses in each;mean gain smaller than A/A spread;3of4 semantic tasks."
-      },
-      {
-        "id": "C3",
-        "technology": "Adaptive prefill plus phase placement plus owned ring",
-        "status": "tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          39900
-        ],
-        "scope_and_result": "14 requests;whole8.72095% longer;2of4 semantic tasks."
-      },
-      {
-        "id": "C4",
-        "technology": "Release obsolete synchronized scheduler before replacement",
-        "status": "adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          40700,
-          42900
-        ],
-        "scope_and_result": "Dominating same3712-slot memory point:release167837696B before replacement;CPU peak671219712B to503382016B without cache reduction or CPU-quota increase. No standalone speed gain claimed;normal composition must qualify."
-      },
-      {
-        "id": "D1",
-        "technology": "GPU-generated indirect hit-path capability",
-        "status": "selected-driver-capability-failure",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [],
-        "scope_and_result": "First decisive source screen completed:the selected driver reads indirect arguments on CPU at record time and explicitly refuses same-command GPU-written arguments. This path requires driver/backend work;not PS5 physical impossibility."
-      },
-      {
-        "id": "D2",
-        "technology": "Matched trained MTP auxiliary first slice",
-        "status": "first-slice-tested-not-adopted",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          40900,
-          41900,
-          42500,
-          43300,
-          43800,
-          44100
-        ],
-        "scope_and_result": "Completed14 native requests,all4 semantic tasks,actual10 MTP calls per timed candidate,exact independent candidate full-row SHA/tokens/routes. Whole26.33546% longer;decode22.15224% slower. CPU peak654442496B below672MiB explicitly repriced software quota;not physically impossible. Stateful/prewarmed auxiliary designs are outside this first slice."
-      },
-      {
-        "id": "D3",
-        "technology": "One-layer/rank shared basis and residual",
-        "status": "first-slice-completed-not-selected",
-        "verification_stage_completed": true,
-        "remaining_current_plan_steps": [],
-        "native_cases": [
-          39096,
-          41300
-        ],
-        "scope_and_result": "The declared first layer/rank slice completed:180 native F64/canary graphs;triplet bytes22.1667% smaller;GPU costs1.567x to2.053x original. Full-model speed/answer quality and cold-I/O tradeoff are unmeasured;no full-model speed regression or physical impossibility is claimed."
+        "case": 46500,
+        "reason": "123123 actual selected operator ranges, full target F32/token agreement, existing checkpoints only, one query pool created/destroyed, no pending ranges; diagnostic queries excluded from production."
       }
     ]
   },
@@ -418,8 +232,8 @@
   "speculative_source_reads": false,
   "additional_GPU_forecast": false,
   "normal_application_speedup": {
-    "control_case": 30200,
-    "comparison": "Sequential installed30200 versus qualified45100, not ABBA; matched candidate evidence is reported separately in post-Top2 adoption results",
+    "control_case": 45100,
+    "comparison": "Sequential installed45100 versus qualified47100, not ABBA; matched candidate evidence is reported separately in load-followup adoption results",
     "full_vocabulary_finite": true,
     "all_counting_tokens_and_bytes_equal": false,
     "cross_cache_exact_F32_required": false,
@@ -543,7 +357,7 @@
     "loading_legacy_padding_pages": 256,
     "loading_scope_once": true,
     "PLE_convolution_BF16_preserved": true,
-    "selected_GPU_object_SHA256": "b05d8e998a60f36b6eb40624a601d740022d921bae399eb332cd3c9ed9ce57d9"
+    "selected_GPU_object_SHA256": "9c14cd692c048af032b826d8c35777af301a7d1b0cb6c6742f5e8166ba750ebd"
   },
   "additional_application_state_allowance_bytes": 130023424,
   "n_rs_seq": 1,
@@ -577,12 +391,15 @@
     "prior_sealed_pack_SHA256": "98a25de242a9862ba5ae6572d1c2f1d2bff170def03685eb6a71b526399944e8",
     "prior_sealed_pack_bytes": 1577058304,
     "fresh_whole_pack_hash_not_claimed": true,
-    "selected_GPU_object_SHA256": "b05d8e998a60f36b6eb40624a601d740022d921bae399eb332cd3c9ed9ce57d9",
+    "selected_GPU_object_SHA256": "9c14cd692c048af032b826d8c35777af301a7d1b0cb6c6742f5e8166ba750ebd",
     "output_weight_type": "Q4_0",
     "submission_node_cap": 256,
     "submission_flop_divisor": 40,
     "steady_CPU_heap_limit_bytes": 536870912,
-    "obsolete_synchronized_metadata_released_before_replacement": true
+    "obsolete_synchronized_metadata_released_before_replacement": true,
+    "serialized_almost_ready_tail_disabled": true,
+    "nested_CPU_measurement_enabled": true,
+    "GPU_timestamp_diagnostics_enabled": false
   },
   "normal_counting_quality_by_request": [
     true,

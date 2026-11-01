@@ -1,7 +1,7 @@
 {
   "schema": "ps5-qwen-load-followup-results-v1",
   "completed": true,
-  "production_changed": false,
+  "production_changed": true,
   "P1": {
     "completed": true,
     "case": 46100,
@@ -1120,5 +1120,12 @@
     7.215937995634785,
     9.18616970652997,
     10.47628803254429
-  ]
+  ],
+  "production_placement_case": 47200,
+  "all_three_priorities_completed": true,
+  "production_application_SELF": {
+    "bytes": 21881847,
+    "sha256": "8858dd5eaa63733accabfa50b057971fa8b54c9acad4e8e6365f7b5a54b424b1"
+  },
+  "normal_source_revision": "e909298a5a240f619b249c826c21c26dcbfe48fa"
 }

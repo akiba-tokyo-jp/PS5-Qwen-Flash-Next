@@ -1,7 +1,7 @@
 {
   "schema": "ps5-qwen-load-followup-worklog-v1",
-  "completed": false,
-  "production_changed": false,
+  "completed": true,
+  "production_changed": true,
   "baseline_normal": 45100,
   "baseline_production": 45200,
   "P1": {
@@ -15,13 +15,14 @@
       229.84918397665024
     ],
     "AA_spread_ms": 27.458615005016327,
-    "adoption_pending_normal_and_placement": true,
+    "adoption_pending_normal_and_placement": false,
     "all_full_F32_routes_tokens_exact": true,
     "actual_queue_calls_before": 14555,
     "actual_queue_calls_after": 4423,
     "actual_queue_reduction_percent": 69.61181724493302,
     "serial_wait_calls_before": 12135,
-    "serial_wait_calls_after": 2003
+    "serial_wait_calls_after": 2003,
+    "adopted": true
   },
   "P2": {
     "completed": true,
@@ -986,9 +987,7 @@
     "all_GPU_operations_not_covered": true,
     "timestamp_intervals_include_fused_ranges_and_dependencies": true
   },
-  "remaining": [
-    "verified_production_placement"
-  ],
+  "remaining": [],
   "CI_runs": 0,
   "reboots": 0,
   "agents": 0,
@@ -1005,7 +1004,7 @@
   "final_dispositions": [
     {
       "id": "P1",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 46100,
@@ -1028,5 +1027,34 @@
       "case": 46500,
       "reason": "123123 actual selected operator ranges, full target F32/token agreement, existing checkpoints only, one query pool created/destroyed, no pending ranges; diagnostic queries excluded from production."
     }
-  ]
+  ],
+  "results": [
+    {
+      "id": "P1",
+      "status": "adopted",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 46100,
+      "normal_case": 47100,
+      "reason": "Exact target F32/routes/tokens and repeated whole-request savings exceed A/A spread; ordinary actual API/display normal qualification passed."
+    },
+    {
+      "id": "P2",
+      "status": "implemented_and_measured",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 47100,
+      "reason": "All exclusive caller-wall categories reconcile exactly with each enclosing request; cold local publication is absent and both actual API publication paths are measured."
+    },
+    {
+      "id": "P3",
+      "status": "diagnostic_completed",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 46500,
+      "reason": "123123 actual selected operator ranges, full target F32/token agreement, existing checkpoints only, one query pool created/destroyed, no pending ranges; diagnostic queries excluded from production."
+    }
+  ],
+  "normal_case": 47100,
+  "production_placement_case": 47200
 }

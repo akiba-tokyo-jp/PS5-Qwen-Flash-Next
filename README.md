@@ -8,43 +8,54 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-All17 post-Top2 optimization stages have explicit dispositions. The qualified
-normal45100 program is installed by verified production placement45200. See the
-[results](docs/post-top2-results-20261101.md),
-[adoption evidence](docs/post-top2-adoption-20261101.json),
-[experiment dispositions](docs/post-top2-worklog-20261101.json) and
-[installation record](config/production-installation.json).
+All three current-load priorities are natively verified. Normal47100 is installed
+by whole-file verified production placement47200. See the
+[results](docs/load-followup-results-20261101.md),
+[adoption evidence](docs/load-followup-adoption-20261101.json),
+[explicit dispositions](docs/load-followup-worklog-20261101.json) and
+[installation](config/production-installation.json). The preceding
+[17 post-Top2 stages](docs/post-top2-results-20261101.md) remain retained.
 
-The selected changes are scoped Vulkan node256/divisor40 submission, output
-Q4_0, condition-based startup, reuse of a natively sealed read-only pack and
-release of synchronized obsolete scheduler metadata before replacement. Actual
-maximum submission size is163 nodes. Decode remains Top2. Gate/Up stays Q2_K
-and Down Q2_0 MSE;109 large resident matrices including output are Q4_0, other
-resident matrices Q8 except tiny BF16 PLE convolution and original F32 tensors.
-KV/recurrent state remains F32, with3712 active Expert slots/3713 planes.
-1444-key placement applies only to the first prefill; decode/later requests
-use768 keys. Driver872cc126/cumulative-idle and disabled persistent caches remain.
+The new winner removes the repeated asynchronous almost-ready notification
+trigger from the serialized Vulkan path while retaining real dependencies,
+serialized completion waits and node256/divisor40. Matched retained decode
+improves9.9784%, whole time7.7822%; actual queue submissions fall14555 ->4423.
+Both control/candidate outputs and every full target F32 row agree exactly.
+Nested CPU wall measurement is retained; diagnostic GPU queries are excluded.
 
-| Fixed30-token prompt,22 generated tokens | Previous30200 tok/s | Selected45100 tok/s | Counting correct |
+Expert Gate/Up remains Q2_K and Down Q2_0 MSE. The109 large resident matrices,
+including output, remain Q4_0; other resident matrices Q8 except original F32
+and tiny BF16 PLE convolution. KV/recurrent state remains F32,3712 active
+Expert slots/3713 planes. Placement1444 applies only to the first prefill;
+decode/later requests use768 keys. Driver872cc126/cumulative-idle and disabled
+persistent shader/pipeline caches remain unchanged.
+
+| Fixed30-token prompt,22 generated tokens | Previous45100 tok/s | Selected47100 tok/s | Counting correct |
 | --- | ---: | ---: | --- |
-| Cold Expert cache |5.537146|6.587471|true|
-| Independent KV reset, Expert weights retained |6.538603|8.203185|true|
-| Exact prefix plus causal reuse |7.872825|9.451015|false|
+| Cold Expert cache |6.587471|7.215938|true|
+| Independent KV reset, Expert weights retained |8.203185|9.186170|true|
+| Exact prefix plus causal reuse |9.451015|10.476288|false|
 
-These complete configurations are sequential cohorts, not matched A/B. The
-retained whole request is3.287s,16.697% shorter; component evidence is separate.
-Prefix replay still ends in7 instead of8, so its rate is not correct-answer
-throughput. Four fixed semantic tasks pass in selected component cohorts;
-general answer quality and arbitrary-input performance are not established.
+Normal configurations are sequential, not matched A/B. The selected retained
+whole request is2.989163s; the matched causal evidence is reported separately.
+Prefix still ends in7 instead of8, so its rate is not correct-answer throughput.
+Four fixed semantic tasks pass; arbitrary-input quality and sustained service
+are not established by these finite cohorts.
 
-Three actual API responses, two viewed native frames, positive model/source/GPU
-retirement, zero live device ledger and ordinary close pass. Native whole
-SHA256/identity/EOF verifies the new program/five settings and the immediate5b
-control/five settings. Earlier rollback files remain preserved. Actual current
-admission and13 rejection controls pass. The program/gateway/models are inactive;
-the finite45100 binding is consumed and relaunch needs a fresh qualified case.
-No CI, learned host inference, reboot or forced reset was used. D1-D3 were
-initial research slices; full redesigns are not falsely claimed implemented.
+Retained normal caller-wall shows model processing1.954398s, durable token
+persistence0.286708s and stage observation0.263894s; epochs/checkpoints are
+separately recorded. These are wall intervals, not CPU cycles, and GPU/source
+waits overlap the model span. Diagnostic GPU ranges show HC largest over the
+whole measured request, while other Q4 matrices lead accepted decode. Those
+selected ranges do not cover all GPU work.
+
+One local cold test, two actual streamed generation API requests, the finish
+POST, two viewed native frames, positive retirement and ordinary close pass.
+Native whole SHA256/identity/EOF verifies the selected program/five settings
+and immediate2d66 control/five settings. Earlier controls remain preserved.
+Actual current admission and18 rejection controls pass. Program/gateway/models
+are inactive; the finite47100 binding is consumed and a future launch needs a
+fresh case. No CI, learned host inference, reboot or forced reset was used.
 
 ## Historical cold and different-input campaign
 

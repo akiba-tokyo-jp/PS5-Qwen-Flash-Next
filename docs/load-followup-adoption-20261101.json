@@ -266,10 +266,8 @@
     "timestamp_intervals_include_fused_ranges_and_dependencies": true
   },
   "schema": "ps5-qwen-load-followup-adoption-v1",
-  "completed": false,
-  "pending_steps": [
-    "verified_production_placement"
-  ],
+  "completed": true,
+  "pending_steps": [],
   "application_SELF": {
     "bytes": 21881847,
     "sha256": "8858dd5eaa63733accabfa50b057971fa8b54c9acad4e8e6365f7b5a54b424b1"
@@ -739,7 +737,7 @@
   "candidate_evidence": [
     {
       "id": "P1",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 46100,
@@ -766,7 +764,7 @@
   "dispositions": [
     {
       "id": "P1",
-      "status": "adopted_pending_verified_placement",
+      "status": "adopted",
       "verification_stage_completed": true,
       "remaining_current_plan_steps": [],
       "case": 46100,
@@ -791,7 +789,22 @@
     }
   ],
   "placement": {
-    "completed": false
+    "completed": true,
+    "case": 47200,
+    "normal_case": 47100,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 5,
+    "verified_control_settings": 5,
+    "verification_files": 12,
+    "immediate_control_preserved": true,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "application_relink": {
     "source_revision": "e909298a5a240f619b249c826c21c26dcbfe48fa",
@@ -838,5 +851,16 @@
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
-  "forced_resets": 0
+  "forced_resets": 0,
+  "placement_metadata_revision": "fccee5cd8302d54766de1f578b28f875bd4332d7",
+  "admission_validation": {
+    "completed": true,
+    "positive_selection_passed": true,
+    "expected_refusals": 18,
+    "actual_current_production_admitted": true,
+    "evidence": {
+      "bytes": 764,
+      "sha256": "f88dd000e183221c2498d7548fadfe5c4fb771a6e82092c3aa294921eeb1e383"
+    }
+  }
 }
