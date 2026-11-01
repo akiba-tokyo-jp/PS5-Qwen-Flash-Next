@@ -349,7 +349,7 @@
       "positive_generation_reuses_timed": 132
     },
     "4": {
-      "completed": true,
+      "completed": false,
       "case": 49300,
       "status": "tested_no_additional_split_K_to_remove",
       "reason": "All1160 eligible HC choices in timed candidate groups already use splitK1; forced-change selections are0. Independent candidate full target F32 SHA256/routes and control F32/tokens are exact. No causal speedup is attributed to this null intervention.",
@@ -460,16 +460,243 @@
       "eligible_HC_timed_choices": 1160,
       "forced_no_split_selections": 0,
       "all_target_F32_maximum_absolute_error": 0,
-      "independent_candidate_full_F32_routes_exact": true
+      "independent_candidate_full_F32_routes_exact": true,
+      "initial_split_removal_case": 49300,
+      "initial_result": {
+        "completed": true,
+        "case": 49300,
+        "status": "tested_no_additional_split_K_to_remove",
+        "reason": "All1160 eligible HC choices in timed candidate groups already use splitK1; forced-change selections are0. Independent candidate full target F32 SHA256/routes and control F32/tokens are exact. No causal speedup is attributed to this null intervention.",
+        "speed": {
+          "completed": true,
+          "case": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49300",
+          "source": {
+            "path": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49300\\native-model-terminal.private.json",
+            "bytes": 204375,
+            "sha256": "8427512090fe0257adda854b9d60c35d3534ebc0b2e0fef61f893c6d49ba80f2"
+          },
+          "groups": {
+            "control_cold": {
+              "ordinals": [
+                2,
+                8
+              ],
+              "metrics": {
+                "decode_tokens_per_second": 9.389571194047807,
+                "total_ms": 7566.211948513985,
+                "TTFT_ms": 5218.504148513079
+              },
+              "outputs_equal_to_control": true,
+              "physical_read_bytes": 5177928096,
+              "physical_read_calls": 8473
+            },
+            "candidate_cold": {
+              "ordinals": [
+                4,
+                6
+              ],
+              "metrics": {
+                "decode_tokens_per_second": 9.370179796014865,
+                "total_ms": 7576.459485024214,
+                "TTFT_ms": 5225.452857524157
+              },
+              "outputs_equal_to_control": true,
+              "physical_read_bytes": 5177928096,
+              "physical_read_calls": 8473
+            },
+            "control_retained": {
+              "ordinals": [
+                3,
+                9
+              ],
+              "metrics": {
+                "decode_tokens_per_second": 10.941988172951383,
+                "total_ms": 2589.3656089901924,
+                "TTFT_ms": 543.6671760082245
+              },
+              "outputs_equal_to_control": true,
+              "physical_read_bytes": 431295840,
+              "physical_read_calls": 799
+            },
+            "candidate_retained": {
+              "ordinals": [
+                5,
+                7
+              ],
+              "metrics": {
+                "decode_tokens_per_second": 10.93180482791524,
+                "total_ms": 2587.760296523571,
+                "TTFT_ms": 540.2842729985714
+              },
+              "outputs_equal_to_control": true,
+              "physical_read_bytes": 431295840,
+              "physical_read_calls": 799
+            }
+          },
+          "retained_decode_gain_percent": -0.09306667924680045,
+          "retained_whole_time_reduction_percent": 0.06199636162030897,
+          "temporal_decode_differences": [
+            -0.006164545181178482,
+            -0.014202144891106272
+          ],
+          "control_AA_decode_spread": 0.03395733573885096,
+          "all_fixed_semantic_tasks_passed": true,
+          "quality_grades": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "temporal_whole_time_reductions_ms": [
+            -1.2255540490150452,
+            4.436178982257843
+          ],
+          "control_AA_whole_time_spread_ms": 0.7089200019836426,
+          "latency_with_decode_nonregression_eligible": false,
+          "cold_prefill_latency_eligible": false,
+          "temporal_cold_whole_time_reductions_ms": [
+            -6.552030980587006,
+            -13.943042039871216
+          ],
+          "temporal_cold_TTFT_reductions_ms": [
+            5.476983964443207,
+            -19.37440198659897
+          ],
+          "control_AA_cold_whole_time_spread_ms": 4.038938999176025,
+          "control_AA_cold_TTFT_spread_ms": 3.227945029735565,
+          "same_counting_output": true,
+          "speed_and_finite_quality_eligible": false,
+          "quality_is_reported_separately_not_an_exactness_veto": true,
+          "application_device_peak_bytes": 6046089216,
+          "retired": true,
+          "normal_and_placement_required_before_production": true
+        },
+        "eligible_HC_timed_choices": 1160,
+        "forced_no_split_selections": 0,
+        "all_target_F32_maximum_absolute_error": 0,
+        "independent_candidate_full_F32_routes_exact": true,
+        "initial_split_removal_case": 49300
+      },
+      "additional_case": 49900,
+      "additional_candidate": "HC_prefill_low_rank_split_two_with_existing_pipeline"
     },
     "5": {
-      "completed": false,
-      "candidate": "Q4_small_rows_existing_large_workgroup",
-      "control_service_mode": 5
+      "completed": true,
+      "case": 49700,
+      "status": "tested_not_selected_speed_and_semantic_regression",
+      "speed": {
+        "completed": true,
+        "case": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49700",
+        "source": {
+          "path": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49700\\native-model-terminal.private.json",
+          "bytes": 205395,
+          "sha256": "e0cb457c595e5378bd25d596993b0dfd9b0d44e0153f342a65dfe3d621ab7614"
+        },
+        "groups": {
+          "control_cold": {
+            "ordinals": [
+              2,
+              8
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.380304366929977,
+              "total_ms": 7566.697751998901,
+              "TTFT_ms": 5217.576122969389
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5177928096,
+            "physical_read_calls": 8473
+          },
+          "candidate_cold": {
+            "ordinals": [
+              4,
+              6
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.211925552208946,
+              "total_ms": 7624.102574497461,
+              "TTFT_ms": 5233.247721999884
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5176355232,
+            "physical_read_calls": 8472
+          },
+          "control_retained": {
+            "ordinals": [
+              3,
+              9
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 10.906394005352876,
+              "total_ms": 2586.1281230151653,
+              "TTFT_ms": 535.9668100178242
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 431295840,
+            "physical_read_calls": 799
+          },
+          "candidate_retained": {
+            "ordinals": [
+              5,
+              7
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 10.892223991245597,
+              "total_ms": 2587.8201154768467,
+              "TTFT_ms": 536.1900459825993
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 432622944,
+            "physical_read_calls": 793
+          }
+        },
+        "retained_decode_gain_percent": -0.12992391527689717,
+        "retained_whole_time_reduction_percent": -0.06542570132637149,
+        "temporal_decode_differences": [
+          -0.05705923858178963,
+          0.028719210367235348
+        ],
+        "control_AA_decode_spread": 0.037046885819231434,
+        "all_fixed_semantic_tasks_passed": false,
+        "quality_grades": [
+          false,
+          true,
+          true,
+          true
+        ],
+        "temporal_whole_time_reductions_ms": [
+          -7.441367983818054,
+          4.057383060455322
+        ],
+        "control_AA_whole_time_spread_ms": 4.447966039180756,
+        "latency_with_decode_nonregression_eligible": false,
+        "cold_prefill_latency_eligible": false,
+        "temporal_cold_whole_time_reductions_ms": [
+          -99.82772099971771,
+          -14.981923997402191
+        ],
+        "temporal_cold_TTFT_reductions_ms": [
+          -8.800109028816223,
+          -22.543089032173157
+        ],
+        "control_AA_cold_whole_time_spread_ms": 4.526066064834595,
+        "control_AA_cold_TTFT_spread_ms": 4.614270031452179,
+        "same_counting_output": true,
+        "speed_and_finite_quality_eligible": false,
+        "quality_is_reported_separately_not_an_exactness_veto": true,
+        "application_device_peak_bytes": 6046089216,
+        "retired": true,
+        "normal_and_placement_required_before_production": true
+      },
+      "reason": "No repeatable speedup; candidate is internally exact but changes ordered routes and fails1/4 fixed semantic tasks.",
+      "all14_token_ledgers_readback_exact": true,
+      "maximum_cross_control_F32_error": 7.871416091918945,
+      "independent_candidate_full_F32_routes_exact": true,
+      "large_Q4_choices_final": 8208
     }
   },
   "remaining": [
-    5,
+    "4_additional_HC_parallelism",
     "normal_API_display",
     "verified_production_placement"
   ],
