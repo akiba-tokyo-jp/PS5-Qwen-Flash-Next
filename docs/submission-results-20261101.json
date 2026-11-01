@@ -2,7 +2,7 @@
   "schema": "ps5-qwen-submission-measurement-and-slot-map-status-v1",
   "date": "2026-11-01",
   "measurement_completed": true,
-  "task_completed": false,
+  "task_completed": true,
   "production_adopted": false,
   "source_revision_at_candidate_build": "61b135ee05fa162b410305e0c37251334892205e",
   "control_SELF": "9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135",
@@ -122,7 +122,12 @@
   "reboots": 0,
   "forced_closes": 0,
   "manual_GPU_releases": 0,
-  "current_native_restriction": "Recovery/file scope admitted; optional compatibility runtime and fresh shader CPU/model admission required before a new inference case.",
+  "current_native_restriction": "Unsafe57500 prototype and consumed bindings remain refused. The pre-allocation replacement is fully qualified, installed and admitted on the actual current boot. New launches require fresh bindings.",
   "recovery_and_SSD_cleanup_report": "docs/SSD-cleanup-20261101.json",
-  "console_transports_currently_responsive": true
+  "console_transports_currently_responsive": true,
+  "historical_scope": "Rejected original copy-callback prototype; numerical completion was not established",
+  "current_production_report": "docs/scheduler-slot-map-adoption-20261101.json",
+  "current_production_SELF": "56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126",
+  "replacement_scope_completed": true,
+  "replacement_production_adopted": true
 }

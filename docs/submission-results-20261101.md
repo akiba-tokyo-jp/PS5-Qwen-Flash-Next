@@ -1,4 +1,9 @@
-# Submission measurements and resident slot-map outcome
+# Historical submission measurements and rejected callback prototype
+
+The replacement architecture is now implemented, fully qualified and installed;
+see `scheduler-slot-map-results-20261101.md` and its adoption JSON. This document
+preserves the original measurements and rejected57500 prototype, not the current
+production selection. The old incomplete GPU result remains incomplete.
 
 The requested measurements and prototype implementation were performed. The
 full-model numerical cohort57500 did not complete and the prototype is rejected
@@ -108,11 +113,12 @@ must exceed control A/A spread. Finally compare the actual normal/API/display
 app against the original9824 program, including cold, retained and prefix cases.
 These are new-design admission criteria, not pending tests of a selected winner.
 
-## Current installed state and outstanding recovery
+## Historical recovery snapshot before the replacement
 
-The qualified production selection remains exact9824, sourcec60c1ab8, with
+At that snapshot the qualified selection was exact9824, sourcec60c1ab8, with
 normal56100 rates9.759321 cold,11.574572 retained and12.801323 prefix tok/s.
-Those are the last qualified rates, not a measurement of57500.
+Those were the qualified rates then, not a measurement of57500 or a comparison
+against the current boot's new original-normal ABBA.
 
 At the time of the interruption the test executable was483ee6d8. After an
 externally observed new boot, exact9824 and all five settings were restored.
@@ -121,7 +127,13 @@ source metadata identities. The rejected trial executable and old copies were
 removed from the console. The old cohort is not declared numerically complete.
 
 File/control transports are responsive and native/gateway/model are inactive.
-The current optional compatibility runtime is not loaded and fresh shader CPU/
-model admission is pending. No new inference was run as part of recovery or
+At that snapshot the optional runtime was not loaded and fresh shader CPU/
+model admission was pending. No new inference was run as part of that recovery or
 cleanup. Do not replay57500 or use its previous boot's launch/close bindings.
 Reboot remains unavailable for planning; none was executed by this agent.
+
+That recovery restriction is resolved for the replacement on the actual current
+boot. Scheduler58400, model58800 and normal59000/59200/59400/59600 finish with
+ordinary close and exact original restoration. New production59800 and final
+cleanup/readback59840/59860 are complete. The old callback prototype is never
+replayed or retrospectively classified as successful.
