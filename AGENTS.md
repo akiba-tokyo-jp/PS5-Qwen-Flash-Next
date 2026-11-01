@@ -20,6 +20,24 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
+### Latest console state: measurement follow-up57500
+
+Read `docs/submission-results-20261101.md` and `.json` before console work.
+Model measurement56900 and standalone slot-map fixture57400 completed and
+ordinarily restored exact9824. The subsequent single model57500 launch has
+unknown completion: file HTTP, FTP and shell transports stopped responding;
+read-only process inventory still contained the native owner. Do not infer
+idle/restored state from the older completed campaign paragraphs below.
+The last published test SELF is483ee6d86ff50f617a25828c04bd1a481b9cc6eca03c652a6df12ea8cf0e93c5.
+Post57500 ordinary close and exact9824 restoration are not verified.
+The copy-callback slot-map rebinding prototype is rejected for production;
+new full-model preparation/builds for it are explicitly refused. Preserve its
+frozen cleanup inputs, current backing and exact9824 rollback. No repeat
+launch, reboot, forced signal/reset or uncertain manual resource release.
+Only continue existing-process collection and admitted ordinary cleanup when
+the actual control/readback paths respond. See the documented pre-allocation
+storage design and scheduler-fixture criteria before any revised prototype.
+
 The throughput campaign is complete: normal56100 and verified placement56200.
 Selected SELF9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135,
 sourcec60c1ab891dbbcf250db2bf919fa323f0ebc8727. Use `tools/throughput_production.py`,
