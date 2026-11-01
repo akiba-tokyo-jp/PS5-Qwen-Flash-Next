@@ -2,9 +2,10 @@
 
 The replacement passes an actual 48-graph CPU/Vulkan scheduler fixture, 14 matched
 model requests and 12 normal/API requests in original/candidate/candidate/original
-order. Generation speed is selected as the endpoint. Production placement and
-current-only SSD cleanup are tracked separately in the adoption JSON; they must
-finish before this program is described as installed.
+order. The measured winner is installed and admitted as production59800;
+current-only SSD cleanup59840 and final native verification59860 are complete.
+Generation speed is selected as the endpoint. All cases are consumed; a new
+launch requires a fresh binding. Native/gateway/model are currently inactive.
 
 | Normal condition | Original mean tok/s | Candidate mean tok/s | Change |
 | --- | ---: | ---: | ---: |
@@ -78,3 +79,29 @@ Its failure is not reclassified as successful GPU completion or a proven driver
 fault. All new GPU lifetimes positively retire and ordinarily close before exact
 control restoration. No reboot, force signal, manual GPU release/reset, CI or
 agent delegation was used. Raw private evidence remains on the host data disk.
+
+## Production placement and console retention
+
+Placement59800 verifies both the original and candidate programs and five
+settings each by complete native SHA256/identity/EOF before and after the
+rename. The selected59400 program/settings are current. The old9824 program
+and configuration remain archived on the host; no console rollback copy remains.
+
+Cleanup59840 removes653 closed trial artifacts plus10 completed cleanup/readback
+helpers and logs:663 files,244886177 logical bytes. Every file is durably archived
+before deletion, and absence is verified. UID1 mode0600 diagnostic logs require
+the existing `read_owned_logs.c` owner-UID behavior: PS5's root-effective helper
+has no DAC override. Only the cleanup helper's effective UID is temporarily
+changed; exact closed targets are made archivable and runtime ownership is
+restored. Current protected files, model directories and other processes'
+credentials are unchanged. The initial access refusals are preserved; acknowledged
+deletions and consumed native helpers are not replayed.
+
+Final59860 verifies11 whole files (current program, five settings and five source
+certificates),518 unchanged source identities and stable snapshots in both
+namespaces. Its process is observed absent before its own archived ELF/log are
+removed. No extra model/GPU launch is used for cleanup or placement. One current
+program and five settings remain. All current native/model/source owners are
+retired, ordinary closes pass, and23 invalid installation/owner/profile states
+are refused while the actual installed control is admitted. Private repository
+visibility and disabled GitHub Actions are verified before publication.

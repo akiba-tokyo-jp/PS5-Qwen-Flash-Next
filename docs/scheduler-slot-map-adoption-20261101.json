@@ -1,13 +1,10 @@
 {
   "schema": "ps5-qwen-scheduler-slot-map-adoption-v1",
   "date": "2026-11-01",
-  "completed": false,
+  "completed": true,
   "measured_qualification_completed": true,
   "selected": true,
-  "pending_steps": [
-    "verified production placement",
-    "current-only SSD cleanup"
-  ],
+  "pending_steps": [],
   "selection_priority": "Generation speed with explicit initial TTFT tradeoff",
   "application_SELF": {
     "bytes": 21921847,
@@ -389,16 +386,75 @@
   "normal_cross_program_full_F32_rows_not_recorded": true,
   "broad_reasoning_and_sustained_service_qualified": false,
   "placement": {
-    "completed": false,
+    "completed": true,
     "case": 59800,
-    "normal_case": 59400
+    "normal_case": 59400,
+    "native_whole_SHA256_identity_EOF_verified": true,
+    "verified_programs": 2,
+    "verified_settings": 10,
+    "verification_files": 12,
+    "fresh_idle_confirmed": true,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "title_launches": 0,
+    "GPU_calls": 0
   },
   "cleanup": {
-    "completed": false
+    "completed": true,
+    "case": 59840,
+    "deleted_files": 663,
+    "closed_trial_files": 653,
+    "own_helper_files": 10,
+    "logical_bytes": 244886177,
+    "archives_durable": true,
+    "all_target_absence_verified": true,
+    "current_program_copies": 1,
+    "current_settings": 5,
+    "obsolete_backups_remaining": 0,
+    "console_retention": "current-only-host-archives",
+    "final_native_current_files_verified": true,
+    "native_source_identities_verified": 518,
+    "native_whole_hash_files_verified": 11,
+    "runtime_ownership_restored": true,
+    "native_title_running": false,
+    "gateway_running": false,
+    "model_loaded": false,
+    "unknown_completion": false,
+    "GPU_calls": 0,
+    "title_launches": 0,
+    "PC_files_deleted": 0
   },
   "CI_runs": 0,
   "agents": 0,
   "reboot_calls": 0,
   "forced_Unix_signals": 0,
-  "manual_GPU_releases": 0
+  "manual_GPU_releases": 0,
+  "final_native_verification": {
+    "case": 59860,
+    "completed": true,
+    "complete_SHA256_identity_EOF_files": 11,
+    "current_program_and_settings": 6,
+    "unchanged_source_file_identities": 518,
+    "double_directory_snapshot_exact": true,
+    "helper_exited": true,
+    "native_owners": 0,
+    "GPU_calls": 0,
+    "title_launches": 0
+  },
+  "refusal_controls": {
+    "completed": true,
+    "actual_installed_control_passed": true,
+    "negative_cases": 23,
+    "all_refused": true,
+    "checks": [
+      "incomplete native placement/cleanup",
+      "changed binary/source/driver/precision/cache/budgets",
+      "missing exact numerical work or scheduler lifetime proof",
+      "live or uncertain owners",
+      "missing host control or final native integrity"
+    ],
+    "console_launches": 0
+  }
 }

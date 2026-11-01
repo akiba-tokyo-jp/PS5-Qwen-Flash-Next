@@ -20,7 +20,44 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 ## Current plan navigation
 
-### Latest console state: recovery and SSD cleanup57900
+### Current production: scheduler-owned maps59800 / cleanup59840
+
+The replacement is implemented, measured, installed and admitted. Read
+`docs/scheduler-slot-map-results-20261101.md` / adoption JSON and
+`config/production-installation.json`. Current SELF is
+56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126,
+compiled source2b683814c9b6ed18c13352963c0a989f9e4d0b15. Register cache-owned
+input-copy storage before scheduler allocation; never change a live tensor
+address in the MoE copy callback. The unsafe57500 prototype remains refused.
+
+Actual48-graph CPU/Vulkan scheduler,14 matched model requests and12 original/
+candidate/candidate/original normal requests pass. Model full F32/routes/tokens
+are exact; normal outputs, ordered routes and source demand are exact. Eight
+actual native frames were viewed. Cross-program full normal F32 row hashes
+were not recorded. Original-normal retained mean11.273628 ->11.366228 tok/s;
+prefix12.334864 ->12.500280. Initial TTFT costs172.346 ms on average and cold
+whole time regresses; generation priority is explicit. Additional actual device
+peak is2 MiB, not the125440 logical map bytes. Original caps remain unchanged.
+
+Placement59800 natively verifies both programs and five settings each before/
+after installation. Cleanup59840 removes663 closed trial/helper files,
+244886177 logical bytes, with durable host archives and verified absence.
+Final59860 verifies11 whole SHA256/identity/EOF files,518 unchanged source
+identities, stable double directory snapshots and its own process exit.
+One current program and five current settings remain; no obsolete backups.
+Historical programs/evidence are retained on the host, not the console.
+Twenty-three invalid production states are refused; actual admission passes.
+
+The compatibility runtime is loaded and the current-boot shader CPU proof and
+Qwen model admission are complete. Native/gateway/model are inactive with zero
+owners and no unknown current completion. Keep driver872cc126/cumulative-idle
+and persistent caches disabled. All cases are consumed: prepare a fresh binding
+for a new scope. Reboot remains unavailable. No CI, force close/reset, manual
+GPU release or agent delegation was used. Normal build/package are
+`D:/PS5-AI/qwen-flash-next/build/Scheduler-slot-map-normal-59100` and
+`D:/PS5-AI/qwen-flash-next/build/Scheduler-slot-map-normal-SELF-59108`.
+
+### Historical recovery and SSD cleanup57900
 
 Read `docs/SSD-cleanup-20261101.md` / `.json` before console work. An external
 new boot was observed. Exact9824 and five settings are restored; PS5 verified
@@ -29,8 +66,8 @@ new boot was observed. Exact9824 and five settings are restored; PS5 verified
 became13.3G. One current program remains. Current data/startup certificates and
 all active model directories are preserved. Runtime ownership is restored.
 Native/gateway/model are inactive. No inference or GPU launch was performed.
-The optional compatibility runtime is not loaded and current-boot shader CPU/
-model admission remains pending. Do not use a previous boot's GPU admission.
+That cleanup snapshot preceded runtime loading and the new qualifications above.
+Do not use a previous boot's GPU admission.
 
 User retention instruction: do not retain obsolete files on PS5. Preserve the
 current program/settings and required live sources; archive historical evidence

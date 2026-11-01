@@ -1,13 +1,15 @@
-> Status: not adopted. Standalone57400 passed, but full-model57500 did not
-> complete its numerical qualification. Exact9824 is restored after an observed
-> external new boot; see `SSD-cleanup-20261101.md` / `.json`. The unsafe prototype
-> remains refused. No speedup is claimed.
+> Historical rejected design. Standalone57400 passed, but full-model57500 did
+> not complete. That unsafe callback-rebinding prototype remains refused.
+> Its replacement binds storage before scheduler allocation, passes actual
+> scheduler/model/original-normal comparisons and is installed. See
+> `scheduler-slot-map-results-20261101.md` / adoption JSON for current production.
 
 # Measured selection: retain GPU Expert slot maps
 
 The owner authorized measurement, selection and implementation. Current production
-remains SELF9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135.
-No measured winner has yet been placed by this follow-up.
+was SELF9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135
+when this original design was evaluated. The separate replacement report
+supersedes the implementation and remaining-work text below.
 
 ## Completed diagnosis
 
