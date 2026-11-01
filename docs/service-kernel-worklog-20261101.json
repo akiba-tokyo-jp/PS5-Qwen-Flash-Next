@@ -120,7 +120,8 @@
         "application_device_peak_bytes": 6046089216,
         "retired": true,
         "normal_and_placement_required_before_production": true
-      }
+      },
+      "status": "selected_pending_normal"
     },
     "2": {
       "completed": true,
@@ -349,118 +350,9 @@
       "positive_generation_reuses_timed": 132
     },
     "4": {
-      "completed": false,
-      "case": 49300,
-      "status": "tested_no_additional_split_K_to_remove",
-      "reason": "All1160 eligible HC choices in timed candidate groups already use splitK1; forced-change selections are0. Independent candidate full target F32 SHA256/routes and control F32/tokens are exact. No causal speedup is attributed to this null intervention.",
-      "speed": {
-        "completed": true,
-        "case": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49300",
-        "source": {
-          "path": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49300\\native-model-terminal.private.json",
-          "bytes": 204375,
-          "sha256": "8427512090fe0257adda854b9d60c35d3534ebc0b2e0fef61f893c6d49ba80f2"
-        },
-        "groups": {
-          "control_cold": {
-            "ordinals": [
-              2,
-              8
-            ],
-            "metrics": {
-              "decode_tokens_per_second": 9.389571194047807,
-              "total_ms": 7566.211948513985,
-              "TTFT_ms": 5218.504148513079
-            },
-            "outputs_equal_to_control": true,
-            "physical_read_bytes": 5177928096,
-            "physical_read_calls": 8473
-          },
-          "candidate_cold": {
-            "ordinals": [
-              4,
-              6
-            ],
-            "metrics": {
-              "decode_tokens_per_second": 9.370179796014865,
-              "total_ms": 7576.459485024214,
-              "TTFT_ms": 5225.452857524157
-            },
-            "outputs_equal_to_control": true,
-            "physical_read_bytes": 5177928096,
-            "physical_read_calls": 8473
-          },
-          "control_retained": {
-            "ordinals": [
-              3,
-              9
-            ],
-            "metrics": {
-              "decode_tokens_per_second": 10.941988172951383,
-              "total_ms": 2589.3656089901924,
-              "TTFT_ms": 543.6671760082245
-            },
-            "outputs_equal_to_control": true,
-            "physical_read_bytes": 431295840,
-            "physical_read_calls": 799
-          },
-          "candidate_retained": {
-            "ordinals": [
-              5,
-              7
-            ],
-            "metrics": {
-              "decode_tokens_per_second": 10.93180482791524,
-              "total_ms": 2587.760296523571,
-              "TTFT_ms": 540.2842729985714
-            },
-            "outputs_equal_to_control": true,
-            "physical_read_bytes": 431295840,
-            "physical_read_calls": 799
-          }
-        },
-        "retained_decode_gain_percent": -0.09306667924680045,
-        "retained_whole_time_reduction_percent": 0.06199636162030897,
-        "temporal_decode_differences": [
-          -0.006164545181178482,
-          -0.014202144891106272
-        ],
-        "control_AA_decode_spread": 0.03395733573885096,
-        "all_fixed_semantic_tasks_passed": true,
-        "quality_grades": [
-          true,
-          true,
-          true,
-          true
-        ],
-        "temporal_whole_time_reductions_ms": [
-          -1.2255540490150452,
-          4.436178982257843
-        ],
-        "control_AA_whole_time_spread_ms": 0.7089200019836426,
-        "latency_with_decode_nonregression_eligible": false,
-        "cold_prefill_latency_eligible": false,
-        "temporal_cold_whole_time_reductions_ms": [
-          -6.552030980587006,
-          -13.943042039871216
-        ],
-        "temporal_cold_TTFT_reductions_ms": [
-          5.476983964443207,
-          -19.37440198659897
-        ],
-        "control_AA_cold_whole_time_spread_ms": 4.038938999176025,
-        "control_AA_cold_TTFT_spread_ms": 3.227945029735565,
-        "same_counting_output": true,
-        "speed_and_finite_quality_eligible": false,
-        "quality_is_reported_separately_not_an_exactness_veto": true,
-        "application_device_peak_bytes": 6046089216,
-        "retired": true,
-        "normal_and_placement_required_before_production": true
-      },
-      "eligible_HC_timed_choices": 1160,
-      "forced_no_split_selections": 0,
-      "all_target_F32_maximum_absolute_error": 0,
-      "independent_candidate_full_F32_routes_exact": true,
+      "completed": true,
+      "case": 49900,
+      "status": "selected_pending_normal",
       "initial_split_removal_case": 49300,
       "initial_result": {
         "completed": true,
@@ -577,8 +469,115 @@
         "independent_candidate_full_F32_routes_exact": true,
         "initial_split_removal_case": 49300
       },
-      "additional_case": 49900,
-      "additional_candidate": "HC_prefill_low_rank_split_two_with_existing_pipeline"
+      "speed": {
+        "completed": true,
+        "case": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49900",
+        "source": {
+          "path": "D:\\PS5-AI\\qwen-flash-next\\hardware-first-generation-49900\\native-model-terminal.private.json",
+          "bytes": 205335,
+          "sha256": "0f01b1cc9a0acd736086cb99f0e830031d51ab0861bdd88db8a0c694714e2d45"
+        },
+        "groups": {
+          "control_cold": {
+            "ordinals": [
+              2,
+              8
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.35506601358702,
+              "total_ms": 7571.513487488031,
+              "TTFT_ms": 5216.307028025389
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5177928096,
+            "physical_read_calls": 8473
+          },
+          "candidate_cold": {
+            "ordinals": [
+              4,
+              6
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 9.420603842657767,
+              "total_ms": 7443.2755100131035,
+              "TTFT_ms": 5102.927008539438
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 5138033312,
+            "physical_read_calls": 8471
+          },
+          "control_retained": {
+            "ordinals": [
+              3,
+              9
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 10.920588799307096,
+              "total_ms": 2590.9811045229435,
+              "TTFT_ms": 541.5377315282822
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 431295840,
+            "physical_read_calls": 799
+          },
+          "candidate_retained": {
+            "ordinals": [
+              5,
+              7
+            ],
+            "metrics": {
+              "decode_tokens_per_second": 11.02457923373068,
+              "total_ms": 2483.3561130166054,
+              "TTFT_ms": 456.98585399985313
+            },
+            "outputs_equal_to_control": true,
+            "physical_read_bytes": 414121984,
+            "physical_read_calls": 766
+          }
+        },
+        "retained_decode_gain_percent": 0.9522420112565877,
+        "retained_whole_time_reduction_percent": 4.153831585975776,
+        "temporal_decode_differences": [
+          0.1420098742932474,
+          0.06597099455392375
+        ],
+        "control_AA_decode_spread": 0.03294941861611278,
+        "all_fixed_semantic_tasks_passed": true,
+        "quality_grades": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "temporal_whole_time_reductions_ms": [
+          115.68967998027802,
+          99.56030303239822
+        ],
+        "control_AA_whole_time_spread_ms": 6.612971007823944,
+        "latency_with_decode_nonregression_eligible": true,
+        "cold_prefill_latency_eligible": true,
+        "temporal_cold_whole_time_reductions_ms": [
+          127.98050200939178,
+          128.49545294046402
+        ],
+        "temporal_cold_TTFT_reductions_ms": [
+          108.69775199890137,
+          118.06228697299957
+        ],
+        "control_AA_cold_whole_time_spread_ms": 11.440854966640472,
+        "control_AA_cold_TTFT_spread_ms": 12.18216997385025,
+        "same_counting_output": true,
+        "speed_and_finite_quality_eligible": true,
+        "quality_is_reported_separately_not_an_exactness_veto": true,
+        "application_device_peak_bytes": 6046089216,
+        "retired": true,
+        "normal_and_placement_required_before_production": true
+      },
+      "independent_candidate_full_F32_routes_exact": true,
+      "HC_split_two_choices_final": 1158,
+      "maximum_cross_control_F32_error": 9.662798643112183,
+      "all14_token_ledgers_readback_exact": true,
+      "reason": "Accept only repeatable whole-request benefit with decode nonregression and every fixed semantic task; no arbitrary cross-control F32 threshold."
     },
     "5": {
       "completed": true,
@@ -696,7 +695,6 @@
     }
   },
   "remaining": [
-    "4_additional_HC_parallelism",
     "normal_API_display",
     "verified_production_placement"
   ],
@@ -718,5 +716,86 @@
       "next_case": 49000
     }
   ],
-  "selected_service_mode": 5
+  "selected_service_mode": 69,
+  "selected_native_quality_case": 49900,
+  "selected_prototype": "D:\\PS5-AI\\qwen-flash-next\\build\\Service-HC-split-two-49820\\receipt.private.json",
+  "all_five_native_stages_completed": true,
+  "native_comparison_requests": 84,
+  "final_dispositions": [
+    {
+      "id": "S1",
+      "status": "adopted_pending_verified_placement",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 48100,
+      "selected": true,
+      "reason": "Repeatable whole-request improvement and exact target-output/finite-task proof.",
+      "fixed_semantic_grades": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "S2",
+      "status": "status_tested_not_selected",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 48500,
+      "selected": false,
+      "reason": "Whole/decode differences are within control A/A variation; all records/numerics pass but application speed is not established.",
+      "fixed_semantic_grades": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "S3",
+      "status": "adopted_pending_verified_placement",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 49000,
+      "selected": true,
+      "reason": "Repeatable whole-request improvement and exact target-output/finite-task proof.",
+      "fixed_semantic_grades": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "S4",
+      "status": "adopted_pending_verified_placement",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 49900,
+      "selected": true,
+      "reason": "Accept only repeatable whole-request benefit with decode nonregression and every fixed semantic task; no arbitrary cross-control F32 threshold.",
+      "fixed_semantic_grades": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "S5",
+      "status": "status_tested_not_selected",
+      "verification_stage_completed": true,
+      "remaining_current_plan_steps": [],
+      "case": 49700,
+      "selected": false,
+      "reason": "No repeatable speedup; candidate is internally exact but changes ordered routes and fails1/4 fixed semantic tasks.",
+      "fixed_semantic_grades": [
+        false,
+        true,
+        true,
+        true
+      ]
+    }
+  ]
 }

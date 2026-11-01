@@ -54,6 +54,7 @@ def require_service_kernel_production(installation,context,report):
  need(normal.get('service_modes')==[scope['service_overhead_mode']]*3 and normal.get('ledger_readback_complete')is True and normal.get('ledger_readback_count')==3,'All three actual normal ledgers and execution modes must match')
  if scope['service_overhead_mode']&4:need(normal.get('completion_generation_reuses',0)>0,'Selected completion cache must execute in the actual normal application')
  if scope['service_overhead_mode']&16:need(normal.get('HC_no_split_selections',0)>0,'Selected HC kernel path must execute')
+ if scope['service_overhead_mode']&64:need(normal.get('HC_split_two_selections',0)>0,'Selected HC parallel split path must execute')
  if scope['service_overhead_mode']&32:need(normal.get('Q4_large_workgroup_selections',0)>0,'Selected Q4 kernel path must execute')
  rows=report.get('dispositions',[]);need(len(rows)==5 and {x['id']for x in rows}==IDS and all(x.get('verification_stage_completed')is True and not x.get('remaining_current_plan_steps')for x in rows),'All five service/kernel stages must be explicitly disposed')
  need(placement.get('completed')and placement.get('case')==installation.get('production_placement_case')==context.get('normal_performance_placement_case')==PLACEMENT_CASE and placement.get('normal_case')==NORMAL_CASE and placement.get('verification_files')==12 and placement.get('verified_programs')==2 and placement.get('verified_settings')==placement.get('verified_control_settings')==5,'Whole current/immediate-control program and settings required')
