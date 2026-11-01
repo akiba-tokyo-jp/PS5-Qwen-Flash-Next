@@ -8,7 +8,7 @@
   "stages": {
     "1": {
       "completed": true,
-      "state": "selected_pending_normal_qualification",
+      "state": "selected_pending_verified_placement",
       "attempts": [
         {
           "case": 54500,
@@ -174,7 +174,7 @@
     },
     "3": {
       "completed": true,
-      "state": "selected_pending_normal_qualification",
+      "state": "selected_pending_verified_placement",
       "preliminary_case": 55200,
       "preliminary_retained_decode_gain_percent": 3.0979520911921243,
       "preliminary_whole_time_reduction_percent": 2.787886373140336,
@@ -406,7 +406,6 @@
   "qualified_native_requests": 84,
   "synchronization_oracle_graphs": 60,
   "remaining": [
-    "normal_API_display_retirement_qualification",
     "verified_production_placement",
     "private_repository_merge"
   ],
@@ -856,5 +855,10 @@
         "physical_read_calls": 344
       }
     }
-  }
+  },
+  "normal_qualified": true,
+  "normal_case": 56100,
+  "actual_native_frames_viewed": 2,
+  "normal_generations": 3,
+  "strict_rejection_controls_passed": 42
 }

@@ -22,8 +22,8 @@ Do not spawn agents or delegate without the owner's explicit authorization.
 
 The ordered throughput comparison is complete;T1/T3 are selected andT2/T4
 are measured negatives. See `docs/throughput-results-20261101.md` and its
-worklog. Final normal/API/display qualification and verified placement are
-pending; the installed frontier control below remains authoritative.
+worklog. Normal56100 API/display/retirement qualification has passed. Verified
+placement is pending; the installed frontier control below remains authoritative.
 
 The current frontier campaign is complete: normal53100 and placement53200,
 SELF1a76c37007962b9da767b0e70667d140bfaeb2138a4d29925245958afd84047e,

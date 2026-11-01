@@ -95,3 +95,21 @@ spread. Empty-cache whole time7125.754595 ->5123.547051ms. The six complete
 comparison cohorts total84 requests, separately from the60 synthetic graphs.
 The first normal host link56060 exposed the provider mismatch and was never
 launched; preserve the actual current sealed owner in the final normal relink.
+
+Normal56100 completes one local cold generation, two actual generation API streams,
+a finish POST, three exact ledgers and two actually viewed native frames. All three
+counting answers pass with22 generated tokens. Cold9.759321, retained11.574572 and
+exact-prefix12.801323tok/s are actual normal measurements. Retained TTFT0.387499s,
+whole2.295868s; prefix TTFT0.052413s, whole1.794088s. These final normal conditions
+are reported separately from the matched55900 protocol.
+
+Sourcec60c1ab891dbbcf250db2bf919fa323f0ebc8727 binds SELF
+9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135.
+The normal collector retained its frozen source; a narrow adapter replaced only the
+obsolete retained legacy-bundle-hit predicate with the actual selected path counts
+3031/3287/3376. All other guards, graph reuse, positive retirement, ordinary close
+and exact1a76 restoration passed; no inference was replayed. Actual native GUI
+shows11.57 and12.80tok/s, with clock/CPU/GPU/memory visible and unavailable usage
+counters explicitly shown as unknown. Forty-two intentional invalid deployment
+proposals are rejected; the positive current normal proposal passes. Verified
+production placement is the remaining installation step.
