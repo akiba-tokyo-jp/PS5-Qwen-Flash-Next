@@ -258,5 +258,13 @@
   "CI_runs": 0,
   "agents": 0,
   "reboots": 0,
-  "legacy_48100_row_label_reconciled": "serialized_tail_disabled was a legacy candidate-arm row label. Both arms actually select true in frozen entry and use the qualified same provider; scope and actual arm1-only queue counters establish the common control. Corrected for later cohorts."
+  "legacy_48100_row_label_reconciled": "serialized_tail_disabled was a legacy candidate-arm row label. Both arms actually select true in frozen entry and use the qualified same provider; scope and actual arm1-only queue counters establish the common control. Corrected for later cohorts.",
+  "host_only_failures": [
+    {
+      "build": "Service-completion-48820",
+      "reason": "Stats declaration preceded cstdint include; corrected before any PS5 operation",
+      "PS5_launches": 0,
+      "corrected_build": "Service-completion-48840"
+    }
+  ]
 }
