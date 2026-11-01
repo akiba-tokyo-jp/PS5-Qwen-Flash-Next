@@ -1,0 +1,164 @@
+{
+  "schema": "ps5-APR-native-recheck-v1",
+  "date": "2026-11-01",
+  "scope": "Recheck native APR prerequisites without GPU/model execution",
+  "diagnostic": {
+    "native_scope_passed": true,
+    "files": [
+      {
+        "role": "program",
+        "ordinary_read_passed": true,
+        "ordinary_read_bytes": 16,
+        "APR_return": -1,
+        "APR_errno": 25,
+        "APR_file_ID_valid": false
+      },
+      {
+        "role": "control",
+        "ordinary_read_passed": true,
+        "ordinary_read_bytes": 16,
+        "APR_return": -1,
+        "APR_errno": 25,
+        "APR_file_ID_valid": false
+      },
+      {
+        "role": "Expert",
+        "ordinary_read_passed": true,
+        "ordinary_read_bytes": 16,
+        "APR_return": -1,
+        "APR_errno": 25,
+        "APR_file_ID_valid": false
+      }
+    ],
+    "all_three_files_visible": true,
+    "readable_files_rejected_with_ENOTTY": true,
+    "public_command_construction_passed": true,
+    "synthetic_ID_used": true,
+    "APR_read_submissions": 0,
+    "GPU_calls": 0,
+    "native_IO_speed_measured": false,
+    "model_tokens_per_second_measured": false,
+    "hardware_absence_proven": false
+  },
+  "stages": [
+    {
+      "case": "60210",
+      "status": "failed_closed",
+      "scope": "Initial read-only binding helper ended without END before first binding journal; PID absence and artifact removal confirmed."
+    },
+    {
+      "case": "60230",
+      "status": "refused_closed",
+      "scope": "Historical websrv parent expectation changed before API lookup; no APR call."
+    },
+    {
+      "case": "60250",
+      "status": "passed",
+      "scope": "Exact-NID kernel bindings and current services; six native APR addresses match SDK, writer exports absent from loaded scope."
+    },
+    {
+      "case": "60320",
+      "status": "staging_refused_closed",
+      "scope": "Control upload denied before program replacement or launch; pending program reused by the documented continuation."
+    },
+    {
+      "case": "60340/60360",
+      "status": "failed_closed",
+      "scope": "Registered native title entered main but ended before environment record. No APR call; original restored and cleanup completed."
+    },
+    {
+      "case": "60430",
+      "status": "negative_closed",
+      "scope": "Normal native return; VSH app-ID query is not a valid prerequisite inside this title."
+    },
+    {
+      "case": "60530",
+      "status": "negative_closed",
+      "scope": "Normal native return; payload fixed handles do not provide native APR dynamic lookup."
+    },
+    {
+      "case": "60630",
+      "status": "negative_closed",
+      "scope": "Normal native return; public module enumeration does not expose core APR, direct system-path module load returns ENOENT."
+    },
+    {
+      "case": "60830",
+      "status": "passed_prerequisite_only",
+      "scope": "Static native APR calls return failure for three paths; public read/completion command construction passes. No actual APR read."
+    },
+    {
+      "case": "60930",
+      "status": "passed_diagnostic",
+      "scope": "Program/control POSIX reads pass while APR returns ENOTTY; physical Expert path is not visible in title."
+    },
+    {
+      "case": "61030",
+      "status": "passed_diagnostic",
+      "scope": "Correct /app0 Expert path: all three POSIX reads pass, all three native APR resolves return ENOTTY. Positive END and ordinary return."
+    }
+  ],
+  "registered_title_launches": 7,
+  "abnormal_CPU_probe_exits": 2,
+  "kernel_APR_symbols_exact_NID_verified": 6,
+  "public_encoder_host_check_passed": true,
+  "focused_Python_tests_passed": 5,
+  "production": {
+    "changed": false,
+    "program_SHA256": "56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126",
+    "whole_SHA256_and_EOF_files": 6,
+    "mounted_alias_verified": true,
+    "native_owner_absent": true,
+    "data_directory_owner_restored": true,
+    "all_trial_artifacts_absent": true,
+    "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "persistent_caches": false
+  },
+  "automatic_review": {
+    "rejected_action": "Transfer console system AMPR binary to host",
+    "reason": "Specific system-binary payload and host destination were not explicitly authorized.",
+    "transfer_executed": false,
+    "safer_alternative": "Static native APR imports and a public-source command encoder; no system AMPR binary transferred or copied and no native AMPR module successfully loaded."
+  },
+  "disposition": {
+    "current_backend": "Cannot execute APR batch reads for these current files: native file-ID resolution fails with ENOTTY despite successful ordinary reads.",
+    "native_read_and_completion_IO_test": "Not executable through the observed current file backend; zero APR submissions.",
+    "speed_comparison": "Not measured; no claim that APR is faster or slower.",
+    "production_adoption": false,
+    "reopening_condition": "A current title-visible source must obtain a genuine native APR file ID and matching file size; then qualify one bounded read and completion before 1/2/4-read comparisons."
+  },
+  "inferences": [
+    "ENOTTY is consistent with a missing filesystem/file-backend operation; the precise ioctl/backend requirement has not been traced.",
+    "A different PFS-backed arrangement is a future candidate, not a demonstrated fix."
+  ],
+  "source_references": {
+    "public_encoder": {
+      "repository": "drakmor/ampr_emu",
+      "revision": "cfa85df379f6eeeb165d7badf9b648e266fe77b7",
+      "files": [
+        "src/ampr_emu_command_packing.cpp",
+        "include/ampr.h",
+        "include/ampr_emu_command_buffer_types.h"
+      ]
+    },
+    "SDK": {
+      "repository": "ps5-payload-dev/sdk",
+      "revision": "a7685ce8e97ce1f8a4f38253a41d54241c9124f1",
+      "files": [
+        "crt/rtld_sprx.c",
+        "crt/nid.c"
+      ]
+    },
+    "native_module_enumeration": {
+      "repository": "drakmor/backport-helper",
+      "revision": "b4987fcadaa65f62a8de8637a5d29dc0e339ef82",
+      "file": "hooks.cpp"
+    }
+  },
+  "GPU_calls": 0,
+  "APR_read_submissions": 0,
+  "CI_runs": 0,
+  "reboots": 0,
+  "force_close_calls": 0,
+  "system_registration_changes": 0
+}

@@ -3,6 +3,32 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Native APR title recheck — 2026-11-01
+
+Read `docs/APR-native-recheck-20261101.json` before reopening APR work. Exact NID
+lookup confirms six payload kernel APR bindings. The final native test uses
+ordinary registered-title launch and static APR imports, not payload handles.
+All three title-visible files (program, control, actual Expert) pass ordinary
+16-byte reads, while native APR file-ID resolution returns -1/ENOTTY(25), with
+intact outputs. Public-source read/completion encoding passes host boundary
+checks and native CPU construction (two commands,32 bytes). Synthetic IDs are
+never submitted. No APR read, GPU/model execution or speed comparison occurred.
+
+The prerequisite campaign is closed for this backend, not evidence of hardware
+absence. A genuine native file ID and matching size are required before a
+bounded read/completion and 1/2/4-read comparison. PFS is a candidate, not a
+verified fix. Do not repeat unchanged ENOTTY calls. Root physical paths must be
+rebased to the existing /app0 mount inside the title. VSH-only app-ID lookup and
+payload fixed module handles are not title admission conditions.
+
+Two early CPU diagnostics ended without positive END; their PIDs retired and
+their exact records remain failed. The final test has positive END and ordinary
+return. The original program and five settings are fully restored/verified;
+all trial files are absent and the data directory owner is restored. GPU is idle.
+Automatic review denied transferring the system AMPR binary to the host because
+that specific transfer lacked explicit authorization. No transfer occurred;
+the final implementation uses public source and no system AMPR module.
+
 ### Latest AMPR / Kraken candidate validation — 2026-11-01
 
 Read `docs/AMPR-Kraken-validation-20261101.md` / `.json` for the closed current
