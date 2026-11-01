@@ -1,0 +1,130 @@
+{
+  "schema": "ps5-APR-system-library-analysis-v1",
+  "recorded_at": "2026-11-01T23:54:32.290136+09:00",
+  "scope": "Authorized private acquisition and offline analysis; no new APR runtime test",
+  "authorization": {
+    "AMPR_acquisition": true,
+    "additional_native_and_payload_library_acquisition": true,
+    "existing_decoder_temporary_kernel_pager_risk": true,
+    "standing_needed_acquisition": true,
+    "additional_transfer_initially_rejected": true,
+    "rejection_resolved_by_explicit_owner_approval": true
+  },
+  "libraries": [
+    {
+      "name": "libSceAmpr.sprx",
+      "raw_bytes": 17196,
+      "decoded_bytes": 91364,
+      "container_digest_matches": false
+    },
+    {
+      "name": "libkernel.sprx",
+      "raw_bytes": 201835,
+      "decoded_bytes": 563688,
+      "container_digest_matches": false
+    },
+    {
+      "name": "libkernel_sys.sprx",
+      "raw_bytes": 215833,
+      "decoded_bytes": 592204,
+      "container_digest_matches": false
+    }
+  ],
+  "source_originals_identical_after": true,
+  "FTP_mode_restored": true,
+  "proprietary_inputs_committed": false,
+  "decoded_integrity": {
+    "embedded_digest_passed": false,
+    "ELF_and_program_headers_match": true,
+    "common_zero_tail_alignments_explain_mismatch": false,
+    "trailing_48_byte_NOTE_zero_for_all": true,
+    "mismatch_cause_proven": false,
+    "execution_qualified": false
+  },
+  "observations": {
+    "resolver_wrappers": [
+      {
+        "library": "libkernel",
+        "resolver_RVA": "0x41b50",
+        "resolver_bytes": 47,
+        "resolver_syscall_stub_RVA": "0x2ae0",
+        "resolver_syscall": 701,
+        "size_function_RVA": "0x41dc0",
+        "size_syscall": 702,
+        "argument_order": [
+          "paths",
+          "count_u32",
+          "file_ID_output",
+          "failed_index_output"
+        ],
+        "error_translation": "Store syscall errno, return -1"
+      },
+      {
+        "library": "libkernel_sys",
+        "resolver_RVA": "0x44ac0",
+        "resolver_bytes": 47,
+        "resolver_syscall_stub_RVA": "0x3610",
+        "resolver_syscall": 701,
+        "size_function_RVA": "0x44d30",
+        "size_syscall": 702,
+        "argument_order": [
+          "paths",
+          "count_u32",
+          "file_ID_output",
+          "failed_index_output"
+        ],
+        "error_translation": "Store syscall errno, return -1"
+      }
+    ],
+    "prior_probe_argument_order_matches": true,
+    "user_space_ioctl_in_resolve_path": false,
+    "AMPR_writer_library_does_not_supply_file_ID_resolver": true,
+    "interpretation_limited_to_acquired_copies": true
+  },
+  "conclusions": [
+    "The acquired wrappers corroborate the existing four-argument native probe ABI.",
+    "The observed resolve path goes through syscall701, not through the AMPR command writer.",
+    "Prior ENOTTY is consistent with a failure returned by that kernel boundary; its internal branch remains untraced.",
+    "A userspace writer replacement is not an evidenced remedy for file-ID rejection.",
+    "PFS/backend changes remain hypotheses and no APR speed comparison was performed."
+  ],
+  "next_prerequisites": [
+    "Establish the kernel/backend acceptance requirement through a distinct, justified diagnostic or compatible current source.",
+    "Obtain a genuine APR file ID and matching size before one bounded read/completion test.",
+    "Only after positive read/completion, measure matched 1/2/4-read cohorts and inference."
+  ],
+  "production": {
+    "changed": false,
+    "current_SELF_full_SHA256_verified_after_transfer": true,
+    "native_owner_absent": true,
+    "settings_write_calls": 0,
+    "driver_changed": false,
+    "persistent_caches_changed": false
+  },
+  "failed_scopes": [
+    {
+      "case": "61210",
+      "reason": "MDTM unsupported; stopped before decoding"
+    },
+    {
+      "case": "61220",
+      "reason": "Decoded ELF digest mismatch; no execution"
+    }
+  ],
+  "public_decoder_reference": {
+    "repository": "ps5-payload-dev/ftpsrv",
+    "revision": "35bae1312b14840c0f95fab93be73d6daaa93bae",
+    "files": [
+      "cmd.c",
+      "self.c",
+      "self-prospero.c"
+    ],
+    "installed_server_revision_verified": false
+  },
+  "title_launches": 0,
+  "GPU_calls": 0,
+  "APR_read_submissions": 0,
+  "library_execution": false,
+  "CI_runs": 0,
+  "reboots": 0
+}
