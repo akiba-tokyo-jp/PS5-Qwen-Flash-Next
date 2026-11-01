@@ -134,15 +134,27 @@
   "postload_quota_transfer_bytes": 4190089216,
   "resident_output_payload_saving_bytes": 595968000,
   "console_retention": {
-    "policy": "current-and-immediate-control-host-archives",
+    "schema": "ps5-qwen-console-retention-v1",
+    "policy": "current-only-host-archives",
+    "cleanup_case": 57900,
+    "completed": true,
+    "owner_authorized": true,
+    "application_SELF": {
+      "bytes": 21915319,
+      "sha256": "9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135"
+    },
     "current_programs": 1,
-    "immediate_control_programs": 1,
     "current_settings": 5,
-    "immediate_control_settings": 5,
+    "protected_files_verified": 6,
     "host_archives_preserved": true,
-    "qualified_host_rollback_programs_verified": 13
+    "obsolete_console_versions_removed": true,
+    "current_files_full_readback_verified": true,
+    "runtime_ownership_restored": true,
+    "model_assets_preserved": true,
+    "deleted_file_count": 59572,
+    "deleted_file_bytes": 6275375538
   },
-  "retention_report": "docs/cold-request-adoption-20261030.json",
+  "retention_report": "docs/SSD-cleanup-20261101.json",
   "historical_placement_programs_verified": 13,
   "historical_cache_same_model_ABBA_case": 8900,
   "historical_cache_same_model_decode_speedup_fraction": 0.09506953699578458,

@@ -1,0 +1,73 @@
+{
+  "schema": "ps5-qwen-SSD-cleanup-v1",
+  "date": "2026-11-01",
+  "completed": true,
+  "case": 57900,
+  "scope": "PS5 SSD; Qwen project only",
+  "owner_authorized": true,
+  "PC_files_deleted": 0,
+  "deleted_files": 59572,
+  "obsolete_directories_removed": 10,
+  "logical_file_bytes_removed": 6275375538,
+  "free_space_display_before": "3.1G",
+  "free_space_display_after": "13.3G",
+  "capacity_basis": "Completed PS5 df captures; displayed units and filesystem allocation differ from logical file lengths.",
+  "current_program_copies_on_console": 1,
+  "current_SELF": {
+    "bytes": 21915319,
+    "sha256": "9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135"
+  },
+  "current_application_source_revision": "c60c1ab891dbbcf250db2bf919fa323f0ebc8727",
+  "original_five_settings_restored": true,
+  "obsolete_setting_backups_remaining": 0,
+  "current_model_data_unchanged": true,
+  "source_protection": {
+    "actual_current_planner_replayed": true,
+    "physical_files": 513,
+    "backing_files": 5,
+    "all518_native_metadata_identities_exact": true,
+    "current_backing_file_hashes_exact": true,
+    "active_model_directories_protected_whole": true
+  },
+  "native_verification": {
+    "completed": true,
+    "full_SHA256_identity_EOF_files": 11,
+    "native_owner_count": 0,
+    "GPU_calls": 0,
+    "title_launches": 0
+  },
+  "runtime_ownership_restored": true,
+  "retention_policy": "current-only-on-console; historical evidence on host data disk",
+  "external_reboot_observed": true,
+  "reboot_requested_or_executed_by_cleanup": false,
+  "old57500_result": "Failed full-model qualification; no complete model result or speedup; not adopted; not replayed.",
+  "old57500_GPU_completion_not_inferred_from_reboot": true,
+  "new_boot_model_inference_admitted": false,
+  "optional_native_compatibility_runtime_loaded": false,
+  "current_boot_shader_CPU_proof_pending": true,
+  "CI_runs": 0,
+  "agents": 0,
+  "PS5_force_signals": 0,
+  "manual_GPU_releases": 0,
+  "console_retention": {
+    "schema": "ps5-qwen-console-retention-v1",
+    "policy": "current-only-host-archives",
+    "cleanup_case": 57900,
+    "completed": true,
+    "owner_authorized": true,
+    "application_SELF": {
+      "bytes": 21915319,
+      "sha256": "9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135"
+    },
+    "current_programs": 1,
+    "current_settings": 5,
+    "protected_files_verified": 6,
+    "host_archives_preserved": true,
+    "obsolete_console_versions_removed": true,
+    "current_files_full_readback_verified": true,
+    "runtime_ownership_restored": true,
+    "model_assets_preserved": true,
+    "deleted_file_count": 59572,
+    "deleted_file_bytes": 6275375538
+  }
+}
