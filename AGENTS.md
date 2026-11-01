@@ -3,6 +3,21 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Latest AMPR / Kraken candidate validation — 2026-11-01
+
+Read `docs/AMPR-Kraken-validation-20261101.md` / `.json` for the closed current
+scope. APR kernel symbols resolve through SDK lookup; failed own-module handle
+lookup is inconclusive. Three current paths each returned EOPNOTSUPP(45) before
+file-ID creation. Do not replay those unchanged calls or claim hardware absence.
+No APR reads, model/title/GPU launch or driver changes occurred. Sixteen actual
+Q2 Expert samples passed host lossless Kraken checks; the materialized envelope
+is 23,592,960 bytes versus 24,641,536 original padded bytes (4.2553% smaller).
+This is not a PFS/hardware qualification or a PS5 speed measurement. No candidate
+was adopted. Final60130 verifies the current program and five settings by full
+SHA256/EOF, all five temporary remote files removed, and zero native owners.
+Reopen hardware timing only with a changed usable APR/decoder prerequisite;
+retain the existing production and driver/cache policy below.
+
 The baseline is original-precision Qwen3.8-Flash-Next inference on one PS5.
 The authorized Expert-only Q4 and subsequent Q2 exceptions are described below.
 For the original-precision control, use the pinned original BF16 weights. Do not substitute a quantized checkpoint,
