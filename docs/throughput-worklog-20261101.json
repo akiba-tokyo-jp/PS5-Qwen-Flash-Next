@@ -393,16 +393,17 @@
     "learned_host_inference": false
   },
   "selected_throughput_mode": 5,
-  "selected_prototype": "build/Throughput-owner-fair-55220/receipt.private.json",
-  "selected_native_quality_case": 55300,
+  "selected_prototype": "build/Throughput-current-55860/variant/receipt.private.json",
+  "selected_native_quality_case": 55900,
   "completed_native_quality_cases": [
     54600,
     54800,
     55200,
     55300,
-    55800
+    55800,
+    55900
   ],
-  "qualified_native_requests": 70,
+  "qualified_native_requests": 84,
   "synchronization_oracle_graphs": 60,
   "remaining": [
     "normal_API_display_retirement_qualification",
@@ -777,5 +778,83 @@
       "remaining_current_plan_steps": [],
       "status": "completed_negative"
     }
-  ]
+  ],
+  "current_provider_integration": {
+    "completed": true,
+    "case": 55900,
+    "actual_installed_normal_providers_preserved": true,
+    "actual_normal_case": 53100,
+    "original_source_owner": "Post-top2-sealed-startup-36820",
+    "actual_engine": "Load-normal-CPU-47040",
+    "qualified_normal_bootstrap_preserved": true,
+    "real_current_seal_and_index_exports_preserved": true,
+    "normal_empty_vs_retained_source_policy_preserved": true,
+    "full_F32_routes_tokens_exact": true,
+    "fixed_semantic_tasks_passed": true,
+    "paired_whole_time_savings_ms": [
+      157.0311979651451,
+      147.36701095104218
+    ],
+    "AA_spread_ms": 12.750123977661133,
+    "retained_decode_gain_percent": 8.350122592928821,
+    "retained_whole_time_reduction_percent": 6.503404278914681,
+    "measurements": {
+      "control_cold": {
+        "ordinals": [
+          2,
+          8
+        ],
+        "metrics": {
+          "decode_tokens_per_second": 9.762062353914526,
+          "total_ms": 7125.75459498167,
+          "TTFT_ms": 4856.612671494484
+        },
+        "outputs_equal_to_control": true,
+        "physical_read_bytes": 5096139168,
+        "physical_read_calls": 7303
+      },
+      "candidate_cold": {
+        "ordinals": [
+          4,
+          6
+        ],
+        "metrics": {
+          "decode_tokens_per_second": 11.948802658725713,
+          "total_ms": 5123.5470505058765,
+          "TTFT_ms": 3254.877859503031
+        },
+        "outputs_equal_to_control": true,
+        "physical_read_bytes": 5017321472,
+        "physical_read_calls": 4276
+      },
+      "control_retained": {
+        "ordinals": [
+          3,
+          9
+        ],
+        "metrics": {
+          "decode_tokens_per_second": 11.291957344417458,
+          "total_ms": 2340.2989869713783,
+          "TTFT_ms": 361.18801099061966
+        },
+        "outputs_equal_to_control": true,
+        "physical_read_bytes": 426885120,
+        "physical_read_calls": 790
+      },
+      "candidate_retained": {
+        "ordinals": [
+          5,
+          7
+        ],
+        "metrics": {
+          "decode_tokens_per_second": 12.234849625817546,
+          "total_ms": 2188.0998825132847,
+          "TTFT_ms": 360.12062352895737
+        },
+        "outputs_equal_to_control": true,
+        "physical_read_bytes": 417284096,
+        "physical_read_calls": 344
+      }
+    }
+  }
 }

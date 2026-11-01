@@ -13,6 +13,7 @@ def check(installation,context,report):
  if mode&1:variants.extend([('missing_sealed_coverage',2,('sealed_bundle_coverage','completed'),False),('wrong_coverage_count',2,('sealed_bundle_coverage','active_Experts'),24576)])
  if mode&4:variants.extend([('biased_owner_control',2,('dispositions',2,'extra_control_owner_snapshots'),1),('missing_owner_mutation_controls',2,('owner_certificate_mutation_controls','checks'),0),('missing_retirement_certificate_use',2,('normal','throughput_totals_by_request',2,8),0)])
  if mode&8:variants.extend([('missing_cross_graph_oracle',2,('synchronization_fixture','completed'),False),('missing_cross_graph_publication',2,('synchronization_fixture','actual_cross_submission_publications'),0),('missing_WAR_execution',2,('normal','throughput_totals_by_request',2,11),0)])
+ variants.extend([('missing_current_provider_integration',2,('current_provider_integration','completed'),False),('lost_current_seal_exports',2,('current_provider_integration','real_current_seal_and_index_exports_preserved'),False)])
  variants.extend([('missing_exact_selected_source_proof',2,('dispositions',0,'matched_comparison','cross_control_full_F32_routes_exact'),False),('unproven_selected_speedup',2,('dispositions',0,'matched_comparison','paired_whole_time_savings_ms',0),0)])
  refused=[]
  for name,index,keys,value in variants:

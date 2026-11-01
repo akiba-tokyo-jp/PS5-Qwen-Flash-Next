@@ -11,6 +11,12 @@ The GDN join and WAR synchronization are excluded from the selected normal link.
 | T3: Empty retirement certificate; original control | 55300 | 11.888499 -> 12.253437 tok/s (+3.070%) | 2246.788073 -> 2183.980918 ms | Selected |
 | T4: WAR execution-only synchronization | 55800 | 12.269554 -> 12.196996 tok/s (-0.591%) | 2180.768168 -> 2191.304973 ms | Completed negative |
 
+The initial candidate harness is51820 with frontier7/service69, GPUc26 and the
+matched older source owner20700/engine46020. Final installed-provider integration
+uses actual owner36820/engine47040 and the qualified normal bootstrap, retains
+real native pack-seal/index counters, and uses the original disabled retirement
+order. Individual observations are not mislabeled as the exact installed core.
+
 The matched protocol is control/control/candidate/candidate/control, with separate
 empty-Expert-cache and retained-weight requests, then four fixed semantic tasks.
 T1,T3,T4 require full cross-control F32 vocabulary rows and ordered routes to be
@@ -78,3 +84,14 @@ counter assumptions. All active and immediate-control model sources remain intac
 Final normal/API/display qualification, verified production placement and source
 merge will be appended after their actual evidence is admitted. No CI, agents,
 learned host inference, reboot, force/reset or uncertain manual GPU release is used.
+
+Final installed-provider integration55900 completes14 requests with all current
+normal53060 core objects, source owner36820, engine47040 and qualified bootstrap.
+No seal/index counter is stubbed. Candidate5 versus original0 is full-F32/routes/
+tokens exact; independent repeats and all four fixed tasks pass. Retained decode
+is11.291957 ->12.234850tok/s (+8.350123%); whole time2340.298987 ->2188.099883ms
+(-6.503404%). Paired whole savings157.031198/147.367011ms exceed12.750124ms A/A
+spread. Empty-cache whole time7125.754595 ->5123.547051ms. The six complete
+comparison cohorts total84 requests, separately from the60 synthetic graphs.
+The first normal host link56060 exposed the provider mismatch and was never
+launched; preserve the actual current sealed owner in the final normal relink.

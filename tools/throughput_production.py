@@ -94,6 +94,9 @@ def require_throughput_production(installation,context,report):
   need(owner.get('original_control_operation_order_preserved')is True and owner.get('extra_control_owner_snapshots')==0,'Ownership selection must use the original control operation order')
   need(checks.get('completed')is True and checks.get('checks')==22,'Allocation, retirement, ABA, fault and owner mutation controls required')
  selected={row['id'] for row in rows if row.get('selected')is True}
+ integration=report.get('current_provider_integration',{})
+ need(integration.get('completed')is True and integration.get('actual_installed_normal_providers_preserved')is True and integration.get('real_current_seal_and_index_exports_preserved')is True,'Actual installed normal provider integration must be qualified')
+ need(integration.get('full_F32_routes_tokens_exact')is True and integration.get('fixed_semantic_tasks_passed')is True and min(integration.get('paired_whole_time_savings_ms',[0]))>integration.get('AA_spread_ms',float('inf')),'Actual installed-provider composition must show exact repeated whole-request improvement')
  need(selected=={'T'+str(i+1)for i in range(4)if mode&(1<<i)},'Disposed selected rows and compiled feature mask differ')
  for row in rows:
   if row.get('selected')is True:

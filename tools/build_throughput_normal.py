@@ -14,6 +14,7 @@ def main():
  for k in('normal','prototype','workspace','cache','out','worklog'):p.add_argument('--'+k,type=Path,required=True)
  p.add_argument('--throughput-mode',type=int,required=True);a=p.parse_args();n=json.loads(a.normal.read_text());candidate=json.loads(a.prototype.read_text());w=json.loads(a.worklog.read_text())
  require(0<a.throughput_mode<16 and all(w['stages'][str(i)]['completed']for i in range(1,5)),'All four dispositions and a positive selected feature set required')
+ require(candidate.get('current_installed_provider_integration',{}).get('normal')==record(a.normal)and w.get('current_provider_integration',{}).get('completed')is True,'Actual installed-provider matched integration required before normal relink')
  require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT).strip(),'Commit the exact implementation before normal relink');revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip();a.out.mkdir(parents=True,exist_ok=False)
  seed=copy.deepcopy(n);providers=candidate['frontier'];selected={};replacements={}
  for role,bit in(('owner',1),('model_graph',2),('lifecycle',4),('gpu',8)):
@@ -44,7 +45,7 @@ def main():
  r['strata_followup_normal'].update(actual_entry=sources['entry'],command=jobs['entry'],source_revision=revision)
  for key in('post_top2_normal','load_followup_normal','service_normal','frontier_normal'):r[key].update(scope=scope,source_revision=revision,actual_sources=sources,commands=jobs)
  r['frontier']['actual_sources'].update(sources);r['frontier']['commands'].update(jobs);r['post_top2_normal']['GPU_object']=newgpu
- r['throughput_normal']=dict(scope=scope,source_revision=revision,actual_sources=sources,commands=jobs,selected_providers=selected,worklog=record(a.worklog),baseline=record(a.normal),qualified_prototype=record(a.prototype))
+ r['throughput_normal']=dict(scope=scope,source_revision=revision,actual_sources=sources,commands=jobs,selected_providers=selected,worklog=record(a.worklog),baseline=record(a.normal),qualified_prototype=record(a.prototype),current_installed_provider_integration=candidate['current_installed_provider_integration'])
  raw=a.out/'linked-seed.private.json';write_json(raw,r);subprocess.run([sys.executable,'-X','utf8','-B',str(ROOT/'tools/rebind_gpu_provenance.py'),'--linked',str(raw),'--out',str(a.out/'GPU-provenance')],check=True);r=json.loads((a.out/'GPU-provenance/receipt.private.json').read_text());seal(r,a.workspace,a.cache,a.out)
  write_json(a.out/'core-safety.private.json',dict(completed=True,scope=scope,normal_API_display_and_retirement_preserved=True,all_prior_frontier_winners_preserved=True,per_token_sync_preserved=True,only_measured_throughput_winners_selected=True,source_revision=revision,PS5_operations=0,CI_runs=0))
 if __name__=='__main__':main()

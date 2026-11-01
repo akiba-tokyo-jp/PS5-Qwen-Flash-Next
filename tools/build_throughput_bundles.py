@@ -13,11 +13,12 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
  p=argparse.ArgumentParser(description=__doc__)
  for k in('parent','workspace','cache','bundles','out'):p.add_argument('--'+k,type=Path,required=True)
+ p.add_argument('--candidate-throughput-mode',type=int,choices=(1,5),default=1)
  a=p.parse_args();n=json.loads(a.parent.read_text());b=json.loads(a.bundles.read_text())
  active=b['active_Experts'];parts=len(b['parts']);require(b['completed']and 0<active<=24576 and 1<=parts<=71 and b['per_part']==348 and b['CPU_Direct_positively_retired']and b['original_sources_preserved']and b['quantized_bits_unchanged'],'Complete positively retired native pack required')
  require(sum(x['Experts']for x in b['parts'])==active and all(x['first_Expert']==i*348 for i,x in enumerate(b['parts']))and sum(x['bytes']for x in b['parts'])==active*1540096,'Contiguous fully sealed prefix required');a.out.mkdir(parents=True,exist_ok=False)
- old=n['GDN_model_comparison']['scope'];scope=dict(old,candidate='throughput-1-sealed-Expert-immutable-triplet-coverage',control_frontier_mode=7,candidate_frontier_mode=7,control_throughput_mode=0,candidate_throughput_mode=1,bundle_coverage=active,bundle_parts=parts,uncovered_original_fallback=True,bundle_read_lanes=4,original_weight_payloads_and_bytes_preserved=True,extra_weight_allocations=0)
- ec=n['compile_commands'][0];entry=Path(ec[ec.index('-c')+1]).read_text();entry='#include "throughput_options.h"\n'+entry;entry=once(entry,literal(old),literal(scope));entry=once(entry,'qwen_frontier::mode=arm?11:3;','qwen_frontier::mode=7;qwen_throughput::mode=arm?1:0;')
+ old=n['GDN_model_comparison']['scope'];scope=dict(old,candidate='throughput-1-sealed-Expert-immutable-triplet-coverage',control_frontier_mode=7,candidate_frontier_mode=7,control_throughput_mode=0,candidate_throughput_mode=a.candidate_throughput_mode,bundle_coverage=active,bundle_parts=parts,uncovered_original_fallback=True,bundle_read_lanes=4,original_weight_payloads_and_bytes_preserved=True,extra_weight_allocations=0)
+ ec=n['compile_commands'][0];entry=Path(ec[ec.index('-c')+1]).read_text();entry='#include "throughput_options.h"\n'+entry;entry=once(entry,literal(old),literal(scope));entry=once(entry,'qwen_frontier::mode=arm?11:3;','qwen_frontier::mode=7;qwen_throughput::mode=arm?'+str(a.candidate_throughput_mode)+':0;')
  marker='            row["service_mode"]=qwen_service::mode.load();';entry=once(entry,marker,'            row["throughput_mode"]=qwen_throughput::mode.load();row["throughput_totals"]=std::vector<std::uint64_t>(qwen_throughput::stats,qwen_throughput::stats+12);\n'+marker)
  # This is a byte/layout-only candidate; cross-arm full F32 and routes must remain exact.
  entry=once(entry,'if(compare&&arm==0&&(io_max_error!=0||bitwise_error))','if(compare&&(io_max_error!=0||bitwise_error))');entry=once(entry,'if(compare&&arm==0&&!same_routes)','if(compare&&!same_routes)')
