@@ -33,7 +33,7 @@ def digest_expression(row,path=None):
     return 'qwen_launch_digest_matches('+json.dumps(path or row['remote'])+','+str(row['bytes'])+'ULL,'+json.dumps(row['sha256'])+')'
 
 
-def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None):
+def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None):
     workspace=Path(workspace);out=Path(out);out.mkdir(parents=True,exist_ok=False)
     base_plan=load(mount_plan);base=base_plan['controller'];need(record(base['path'])==base,'Successful controller input changed')
     text=Path(base['path']).read_text();prefix='/data/ai/moss-qwen-case-'+secrets.token_hex(16)
@@ -58,7 +58,7 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
 '''
     text+='static int old_files_valid(void){return '+'&&'.join(digest_expression(r) for r in old_files)+';}\n'
     text+='static int pending_valid(void){return '+('&&'.join(digest_expression(r) for r in pending) or '0')+';}\n'
-    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12};need(operation in numbers,'One known operation required')
+    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13};need(operation in numbers,'One known operation required')
     if operation!='restore-bundle':
         text=text.replace('#include "launch_integrity_native.h"','#define QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS 1\n#include "launch_integrity_native.h"',1)
     need(len(old_files)==len(new_files)==7 and all(r['remote'].startswith(PHYSICAL+'/') for r in old_files+new_files),
@@ -75,6 +75,9 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
     if operation in ('export-activation','retire-activation'):
         need(isinstance(activation_export_context,str) and activation_export_context,'Exact completed activation output context required')
         context+=activation_export_context+'\n#include "'+('activation_capture_retire.h' if operation=='retire-activation' else 'activation_capture_export.h')+'"\n'
+    if operation=='publish-component':
+        need(isinstance(component_publish_context,str) and component_publish_context,'One exact bounded component publication required')
+        context+=component_publish_context+'\n#include "component_pack_publish.h"\n'
     if operation=='restore-bundle':
         need(bundle_link and bundle_link['CPU_only'] is True and bundle_link['source_writes']==0 and
              bundle_link['GPU_calls']==0 and bundle_link['Direct_CPU_bytes'] in (4<<20,8<<20),'Bounded successful CPU packer required')
@@ -118,7 +121,8 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         CPU_closed=close and close.get('CPU_only') is True and close.get('all_CPU_IO_returned') is True
         model_closed=close and close.get('completed') is True and close.get('all_model_source_device_owners_positively_retired') is True and close.get('device_ledger_live_bytes')==0
         pre_GPU=close and close.get('known_returned_pre_GPU_exception') is True and close.get('native_resources_started') is False and close.get('model_loaded') is False and close.get('CPU_worker_completion_unknown') is False and close.get('all_probe_ranges_unmapped') is True
-        need(CPU_closed or model_closed or pre_GPU,'Positive CPU-only, returned pre-GPU exception, or retired model completion required')
+        unloaded=close and close.get('known_IQ2_CPU_teardown_failure') is True and close.get('model_loaded') is False and close.get('GPU_graphs_positively_completed')==72 and close.get('all_GGML_backends_retired') is True and close.get('final_driver_producer_completed') is True and close.get('all_source_IO_completed') is True and close.get('CPU_worker_completion_unknown') is False and close.get('source_audit_SHA256')=='002b695b4896bfea2d540055656adf5aacd56832b5964cd2ed129b8d04de2150'
+        need(CPU_closed or model_closed or pre_GPU or unloaded,'Positive CPU-only, returned scoped exception, or retired model completion required')
         need(close['pid']>0 and close['app_id']>0,'Exact native PID and application ID required')
         need(len(close.get('reports',[]))>=2,'Two immutable completed native reports required')
         for needle in ('    for(size_t i=0;i<n;i+=sizeof(struct kinfo_proc)){',
@@ -173,10 +177,11 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
     save(out/'plan.private.json',plan);return plan
 
 
-def execute(lan,plan,out):
+def execute(lan,plan,out,observation_seconds=45):
     out=Path(out)
+    need(type(observation_seconds) is int and 1<=observation_seconds<=60,'The existing transport permits at most60 observation seconds')
     raw=lan.execute_once(Path(plan['artifact']['path']),plan['artifact']['sha256'],'--'+plan['operation'],
-                         plan['remote'],plan['log'],out/'execution',45)
+                         plan['remote'],plan['log'],out/'execution',observation_seconds)
     return complete(lan,plan,out,raw)
 
 

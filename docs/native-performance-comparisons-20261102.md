@@ -8,11 +8,75 @@ The existing mount63133 remains. Reboot and recovery are unavailable.
 The selected deployment is now R1 SELFa786b8ad, installed on both PC and PS5
 through positive seven-file publication64181. Matched native comparisons use
 the same three restored encoded inputs and authenticated identity-data provider
-63800. Every finished case releases model/source/device owners, reaches zero
+63800. Every successfully completed model case releases model/source/device owners, reaches zero
 live device bytes, ordinarily closes and restores/natively hashes all seven
 selected files. Driver872cc126/cumulative-idle and disabled persistent caches
 remain unchanged. R1 is adopted after the combined native proofs below; the
 other candidates retain their stated limits.
+
+## IQ2 operator and paired-row continuation
+
+Unloaded native64420 passes all72 graphs across three real-weight groups at
+width1/2, with Top2 selection, actual integrated Vulkan buffers, independent
+F64 references for each separately decoded format, and unchanged canaries.
+Maximum absolute GPU-reference error is1.6546991554733381e-9. Native owners
+retire, ordinary close succeeds, and all seven selected R1 files are restored
+and natively hashed. The entire component lies inside the calibrated host-quiet
+window, including clock uncertainty. This qualifies these operator geometries;
+it does not qualify a complete IQ2 model, Gate calibration or answer quality.
+
+The initial timing intervals include the device/worker completion checks and
+their journal synchronization. No case establishes both paired compute gains
+beyond its control spread. They must not be described as raw GPU kernel times.
+Changed scope64460 records returned pread, copy/fence, compute/fence and guard
+intervals separately, and adds widths30/32 with ten selected physical planes.
+Three real matrices are explicitly replicated across those planes; this is
+operator geometry coverage, not ten independently calibrated original Experts.
+Scope64460 ends after25 returned graphs. The first width30 Q2_K control has
+73401 values outside the independent decoded-F64 tolerance, maximum error
+1.416096684337953e-4. No width30 IQ2 or width32 graph runs. All owners retire,
+ordinary close succeeds and R1 is restored. The negative is not attributed to
+IQ2. Larger-width kernels select their own internal arithmetic; disabling the
+vector MMVQ path does not independently establish F32 prefill arithmetic. No
+tolerance is relaxed and no unchanged failed scope is replayed.
+
+The two completed layer0 vector cases in64460 have separately recorded compute/
+fence means: width1 control78.782/72.408us vs IQ271.004/69.4005us; width2 control
+76.8975/78.6615us vs IQ273.3695/72.7285us. Mean reductions are7.133739% and
+6.081937%, respectively; only width2 exceeds AA spread in both pairs. These
+individual component results do not establish all-layer or whole-model benefit.
+
+Earlier scope64395 returns all72 GPU graphs and all GGML backend frees, then
+fails at CPU source teardown because its device ledger was never enabled.
+The source-bound audit64400 verifies the complete accepted entry/runtime hashes,
+all72 returned graph calls, returned reads and the final positive device/worker/
+producer boundary before the parked CPU exception. Ordinary application close
+reclaims the remaining CPU source window and idle worker, and restores R1.
+No zero-ledger claim, numerical success or speed result is manufactured. The
+changed source enables the original ledger before backend allocation and saves
+its completed component report before final source teardown. No init/reboot,
+forced termination or GPU recovery is used.
+
+Q3 host encoding64430 uses independently observed Down moments and original
+BF16 for nine actually visited matrices. Pairing two original640-column rows
+allows five IQ2 blocks per pair, preserving1280 decoded values without padding.
+Per-Expert payload falls460800 ->422400 bytes,8.333333%. Independent C/Python
+IQ2 and MSE-Q2_0 decodes agree. Weight NRMSE ranges are0.360205–0.552800 for IQ2
+and0.350610–0.359977 for MSE-Q2_0; every selected IQ2 sample is worse. These are
+weight errors, not answer-quality results. A native640-column paired-row
+operator and full-model admission remain unimplemented; Q3 is not adopted.
+
+Bootstrap reconstruction64440 reproduces the complete current source and
+object byte-for-byte. Additional R1 candidates64443/64470/64471 keep all
+before-operation, unknown, fatal and memory-probe stages durable. Only seven
+exact completed inference phases may skip their immediate fsync inside a
+request; request-end journal fsync occurs before the published result and is
+inside the complete request time. Host boundary/refusal controls and matched
+target packages pass. Native64480/64481 match all69 complete248320-column F32
+rows, all ordered routes, tokens and output bytes exactly. Both ordinary closes
+and seven-file restores pass. These qualification timings are not performance
+measurements. ABBA64500–64503 removes the full-F32 copy observer; matched benefit
+remains a prerequisite for adoption. Production remains admitted R1a786b8ad.
 
 ## R1: completed token-ledger durability
 

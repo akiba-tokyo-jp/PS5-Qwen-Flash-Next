@@ -135,6 +135,9 @@ int main(int argc,char **argv){
 #elif CASE_OPERATION == 12
     if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("retire-activation"))goto done;
     success=case_retire_activation(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
+#elif CASE_OPERATION == 13
+    if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("publish-component"))goto done;
+    success=case_publish_component(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
 #else
 #error A single scoped operation must be selected
 #endif

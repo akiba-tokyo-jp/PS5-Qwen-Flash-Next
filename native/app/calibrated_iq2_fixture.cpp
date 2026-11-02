@@ -36,6 +36,7 @@ float input(unsigned column,unsigned token){return float(int((column+3*token)%13
 struct Pack {
     int fd=-1;void*scratch=nullptr;struct stat original{};
     std::uint64_t reads=0,physical=0;void(*stage)(const char*);
+    double last_pread_us=0;
     explicit Pack(void(*s)(const char*)):stage(s){
         qwen_app::verify_native_startup_file_direct(iq2_pack_path,iq2_pack_bytes,iq2_pack_sha256,60);
         fd=open(iq2_pack_path,O_RDONLY|O_NOFOLLOW|O_DIRECT);
@@ -56,7 +57,7 @@ struct Pack {
         need(part.offset%16384==0&&part.offset+bytes<=iq2_pack_bytes&&bytes<=4u<<20,
              "IQ2 component extent invalid");
         (void)qwen_app::admit_native_system_memory();stage("IQ2_component_Direct_read_before_native_call");
-        const auto actual=pread(fd,scratch,bytes,off_t(part.offset));++reads;physical+=bytes;
+        const auto begin=Clock::now();const auto actual=pread(fd,scratch,bytes,off_t(part.offset));last_pread_us=us(begin);++reads;physical+=bytes;
         stage("IQ2_component_Direct_read_returned");need(actual==ssize_t(bytes)&&stable(),"IQ2 source read or identity failed; retain owner");
         return scratch;
     }
@@ -70,15 +71,16 @@ struct Fixture {
     std::array<ggml_tensor*,2> weights{},outputs{};std::array<ggml_cgraph*,2> graphs{};
     ggml_tensor *x=nullptr,*ids=nullptr,*canary=nullptr;
     std::array<std::vector<double>,2> expected;
-    unsigned group,width;bool supported=true,valid=true;
+    unsigned group,width,selected_count;bool supported=true,valid=true;
     std::uint64_t completed=0,mismatches=0;double maximum_error=0;
+    double last_pread_us=0,last_copy_fence_us=0,last_compute_fence_us=0;
     void(*checkpoint)();void(*stage)(const char*);Clock::time_point deadline;
     Fixture(unsigned g,unsigned w,Pack&pack,void(*c)(),void(*s)(const char*),Clock::time_point end):
-        group(g),width(w),checkpoint(c),stage(s),deadline(end){
+        group(g),width(w),selected_count(w>2?10:2),checkpoint(c),stage(s),deadline(end){
         backend=ggml_backend_vk_init(0);need(backend,"Native IQ2 Vulkan backend unavailable");
         ggml_init_params params{};params.no_alloc=true;params.mem_size=64*ggml_tensor_overhead()+2*ggml_graph_overhead_custom(32,false);
         ctx=ggml_init(params);need(ctx,"IQ2 component CPU metadata unavailable");
-        x=ggml_new_tensor_3d(ctx,GGML_TYPE_F32,2560,1,width);ids=ggml_new_tensor_2d(ctx,GGML_TYPE_I32,2,width);
+        x=ggml_new_tensor_3d(ctx,GGML_TYPE_F32,2560,1,width);ids=ggml_new_tensor_2d(ctx,GGML_TYPE_I32,selected_count,width);
         canary=ggml_new_tensor_1d(ctx,GGML_TYPE_F32,128);ggml_set_input(x);ggml_set_input(ids);ggml_set_input(canary);ggml_set_output(canary);
         for(unsigned format=0;format<2;++format){
             weights[format]=ggml_new_tensor_3d(ctx,format?GGML_TYPE_IQ2_XXS:GGML_TYPE_Q2_K,2560,640,10);
@@ -93,8 +95,9 @@ struct Fixture {
         const auto device=ggml_backend_buft_get_device(ggml_backend_buffer_get_type(buffer));
         need(device&&ggml_backend_dev_type(device)==GGML_BACKEND_DEVICE_TYPE_IGPU,"The actual integrated Vulkan result buffer is required");
         std::array<float,128>guard;guard.fill(42.125f);ggml_backend_tensor_set(canary,guard.data(),0,sizeof(guard));
-        constexpr unsigned positions[3]={0,4,9};std::vector<std::int32_t>selected(2*width);
-        for(unsigned token=0;token<width;++token)for(unsigned slot=0;slot<2;++slot)selected[2*token+slot]=positions[(slot+token)%3];
+        std::vector<std::int32_t>selected(selected_count*width);
+        for(unsigned token=0;token<width;++token)for(unsigned slot=0;slot<selected_count;++slot)
+            selected[selected_count*token+slot]=physical_slot(slot,token);
         ggml_backend_tensor_set(ids,selected.data(),0,selected.size()*4);
         std::vector<float>values(2560*width);for(unsigned token=0;token<width;++token)for(unsigned col=0;col<2560;++col)
             values[token*2560+col]=input(col,token);
@@ -110,26 +113,33 @@ struct Fixture {
                         sums[(expert*640+row)*13+col%13]+=double(decoded[col]);}
                 }
             }
-            expected[format].resize(640*2*width);
-            for(unsigned token=0;token<width;++token)for(unsigned slot=0;slot<2;++slot)for(unsigned row=0;row<640;++row){
+            expected[format].resize(640*selected_count*width);
+            for(unsigned token=0;token<width;++token)for(unsigned slot=0;slot<selected_count;++slot)for(unsigned row=0;row<640;++row){
                 double value=0;for(unsigned residue=0;residue<13;++residue)
-                    value+=sums[(((slot+token)%3)*640+row)*13+residue]*double(input(residue,token));
-                expected[format][(token*2+slot)*640+row]=value;
+                    value+=sums[(owner(physical_slot(slot,token))*640+row)*13+residue]*double(input(residue,token));
+                expected[format][(token*selected_count+slot)*640+row]=value;
             }
         }
     }
+    static unsigned owner(unsigned plane){return plane==9?2:plane%3;}
+    unsigned physical_slot(unsigned slot,unsigned token)const{
+        constexpr unsigned positions[3]={0,4,9};return selected_count==2?positions[(slot+token)%3]:(slot+token)%10;
+    }
     double load(Pack&pack,unsigned format){
         constexpr unsigned positions[3]={0,4,9};double elapsed=0;
-        for(unsigned i=0;i<3;++i){const auto matrix=group*3+i;const auto begin=Clock::now();const auto*raw=pack.read(matrix,format);
-            ggml_backend_tensor_set(weights[format],raw,positions[i]*weights[format]->nb[2],iq2_matrices[matrix].encoded[format].bytes);
-            ggml_backend_synchronize(backend);checkpoint();elapsed+=us(begin);pack.verify(matrix,format);}
+        last_pread_us=0;last_copy_fence_us=0;
+        for(unsigned i=0;i<(selected_count==2?3u:10u);++i){const auto plane=selected_count==2?positions[i]:i;
+            const auto matrix=group*3+owner(plane);const auto begin=Clock::now();const auto*raw=pack.read(matrix,format);
+            last_pread_us+=pack.last_pread_us;const auto copy_begin=Clock::now();
+            ggml_backend_tensor_set(weights[format],raw,plane*weights[format]->nb[2],iq2_matrices[matrix].encoded[format].bytes);
+            ggml_backend_synchronize(backend);last_copy_fence_us+=us(copy_begin);checkpoint();elapsed+=us(begin);pack.verify(matrix,format);}
         return elapsed;
     }
     double compute(unsigned format){
         need(completed<12&&Clock::now()<deadline,"IQ2 finite graph/deadline bound reached before submission");
         (void)qwen_app::admit_native_system_memory();stage("IQ2_component_graph_before_native_call");const auto begin=Clock::now();
         need(ggml_backend_graph_compute(backend,graphs[format])==GGML_STATUS_SUCCESS,"IQ2 graph completion unknown; retain all owners");
-        ggml_backend_synchronize(backend);checkpoint();++completed;const auto elapsed=us(begin);
+        ggml_backend_synchronize(backend);last_compute_fence_us=us(begin);checkpoint();++completed;const auto elapsed=us(begin);
         stage("IQ2_component_graph_positively_completed");need(std::isfinite(elapsed)&&elapsed>0,"IQ2 component clock invalid");return elapsed;
     }
     bool verify(unsigned format){
@@ -147,7 +157,9 @@ struct Fixture {
             for(unsigned i=0;i<4&&valid;++i){load(pack,i%2);compute(i%2);verify(i%2);}
             for(unsigned arm=0;arm<4&&valid;++arm){const unsigned format=arm==1||arm==2?1:0;Json samples=Json::array();
                 for(unsigned i=0;i<2&&valid;++i){const auto delivery=load(pack,format),kernel=compute(format);verify(format);
-                    samples.push_back({{"delivery_us",delivery},{"compute_us",kernel},{"delivery_and_compute_us",delivery+kernel}});}
+                    samples.push_back({{"delivery_us",delivery},{"compute_us",kernel},{"delivery_and_compute_us",delivery+kernel},
+                        {"pread_us",last_pread_us},{"copy_fence_us",last_copy_fence_us},{"compute_fence_us",last_compute_fence_us},
+                        {"delivery_guard_us",delivery-last_pread_us-last_copy_fence_us},{"compute_guard_us",kernel-last_compute_fence_us}});}
                 arms.push_back({{"format",format?"IQ2_XXS":"Q2_K"},{"samples",samples}});
             }
             // A returned numerical negative still has positive GPU completion.
@@ -156,7 +168,8 @@ struct Fixture {
         }
         ggml_free(ctx);ctx=nullptr;ggml_backend_free(backend);backend=nullptr;checkpoint();
         return {{"group",group},{"layer",iq2_matrices[group*3].layer},{"width",width},{"columns",2560},{"rows",640},
-            {"selected_Experts",2},{"unique_original_Experts",3},{"supported",supported},{"all_outputs_and_canaries_passed",supported&&valid},
+            {"selected_Experts",selected_count},{"unique_original_Experts",3},{"prefill_replicated_original_weights",selected_count==10},
+            {"supported",supported},{"all_outputs_and_canaries_passed",supported&&valid},
             {"reference","F64 of each separately decoded format"},{"maximum_absolute_GPU_reference_error",maximum_error},
             {"mismatches",mismatches},{"arms",arms},{"GPU_graphs",completed},{"backends_positively_retired",true}};
     }
@@ -168,7 +181,7 @@ nlohmann::json run_calibrated_iq2_fixture(void(*checkpoint)(),void(*stage)(const
          "Explicit original F32 activation policy required before backend creation");
     Pack pack(stage);const auto deadline=Clock::now()+std::chrono::seconds(240);Json cases=Json::array();bool valid=true;
     std::uint64_t graphs=0;
-    for(unsigned group=0;group<3&&valid;++group)for(unsigned width:{1u,2u}){
+    for(unsigned group=0;group<3&&valid;++group)for(unsigned width:iq2_widths){
         Fixture fixture(group,width,pack,checkpoint,stage,deadline);auto row=fixture.measure(pack);
         valid=valid&&row.at("all_outputs_and_canaries_passed").get<bool>();graphs+=row.at("GPU_graphs").get<std::uint64_t>();cases.push_back(row);
         if(!valid)break;
@@ -178,7 +191,10 @@ nlohmann::json run_calibrated_iq2_fixture(void(*checkpoint)(),void(*stage)(const
         {"all_outputs_reference_valid",valid},{"all_backends_positively_retired",true},{"source_descriptor_and_scratch_retired",true},
         {"complete_pack_SHA256_verified",true},{"Direct_reads",reads},{"physical_read_bytes",bytes},
         {"real_weight_calibration",true},{"component_inputs","Synthetic periodic F32 vectors, not model inference"},
-        {"component_fixture_not_model_speed",true},{"model_loads",0},{"activation_quantization_disabled",true},
-        {"prefill_width30_qualified",false},{"timed_digest_work",false},{"automatic_retries",0}};
+        {"component_fixture_not_model_speed",true},{"model_loads",0},{"input_tensor_type","F32"},
+        {"vector_MMVQ_disabled",true},{"larger_width_internal_arithmetic_independently_qualified",false},
+        {"prefill_width30_qualified",valid&&std::find(std::begin(iq2_widths),std::end(iq2_widths),30u)!=std::end(iq2_widths)},
+        {"fence_timings_exclude_separately_recorded_completion_guard",true},
+        {"timed_digest_work",false},{"automatic_retries",0}};
 }
 }

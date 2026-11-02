@@ -3,6 +3,48 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### IQ2 and completed-stage continuation — 2026-11-02
+
+Native IQ2 component64420 completes72 graphs, all six width1/2 cases, separate
+decoded-F64 references and canaries; maximum absolute error1.6546992e-9.
+All original physical/completion guards, ordinary close and exact seven-file R1
+restore pass. Its timed compute/delivery intervals include completion-journal
+guards, so they are not raw kernel measurements or a whole-model speed win.
+The changed timing/prefill scope64460 separates fence intervals and adds width30/32
+with ten physical slots containing three explicitly replicated real matrices.
+Do not call those ten distinct calibrated Experts or claim full-model quality.
+Scope64460 normally closes/restores after25 graphs: its first width30 Q2_K
+control differs from the decoded-F64 reference in73401 values, max1.4161e-4.
+No width30 IQ2 or width32 executes. Do not repeat that unchanged scope or call
+the negative an IQ2 failure. The larger-width kernel's internal arithmetic is
+independently unqualified; disabling MMVQ does not prove F32 prefill arithmetic.
+The two layer0 width1/2 fence comparisons remain valid individual cases:
+IQ2 compute-fence mean gains7.133739%/6.081937%; only width2 clears AA spread
+in both pairs. All-three-layer separated fence timing remains pending.
+The prior64395 performs72 returned graphs but fails during CPU teardown because
+the unloaded fixture omitted device-ledger initialization. Source-bound close
+64400 proves every GGML backend and the final device/worker/producer boundary
+returned, then ordinarily closes the exact parked PID and restores R1. It does
+not fabricate a zero ledger or a successful numerical report. Never replay it.
+
+Q3 paired-row encoding64430 independently encodes nine original BF16 Down
+matrices with actual Down moments:640-column row pairs become1280-value IQ2
+encoding rows. Payload460800 ->422400 bytes per Expert,8.333333% smaller.
+C/Python IQ2 and MSE-Q2_0 decodes match. IQ2 weight NRMSE0.360205–0.552800
+exceeds current-family MSE-Q2_0's0.350610–0.359977 in this cohort. This is not
+answer quality or a native640-column operator; the custom format/operator is
+still pending. Gate input sharing remains independently unqualified.
+
+The original bootstrap source and complete object reproduce byte-exactly in
+64440. Completed-stage sync candidates64443/64470/64471 preserve every before,
+unknown, fatal and probe fsync, defer seven exact completed inference phases
+only inside a request, and fsync the journal before completed request reporting.
+Host refusal controls and target compilation/package checks pass. Native
+F32 cases64480/64481 now match all69 complete248320-column rows, ordered routes
+and tokens exactly; both ordinary closes/restorations pass. Matched ABBA64500–
+64503 is the next performance scope; timing and adoption remain pending. All eight
+candidates stay in scope; this checkpoint does not complete the campaign.
+
 ### Latest native comparison checkpoint — 2026-11-02
 
 R1 is now adopted on PC and PS5: SELFa786b8adfe2fe0bbfb196fe696f644024bb3d090734f97a5533a6d6845ee415e,

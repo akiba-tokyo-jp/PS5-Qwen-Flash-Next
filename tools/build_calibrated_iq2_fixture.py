@@ -19,6 +19,7 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','base-entry','samples','out'):parser.add_argument('--'+name,type=Path,required=True)
+    parser.add_argument('--prefill',action='store_true',help='Also qualify widths 30/32 with ten selected physical slots and three replicated real matrices')
     args=parser.parse_args();base=load(args.base_entry);samples=load(args.samples)
     need(base['completed'] and base['CPU_minimum_plus_21_unchanged'] and samples['completed'] and
          len(samples['matrices'])==9 and samples['all_nine_Experts_actually_visited'] and not samples['synthetic_uniform_importance_used'],
@@ -28,13 +29,17 @@ def main():
     args.out.mkdir(parents=True,exist_ok=False)
     for header in Path(profile['source']['path']).parent.glob('*.h'):shutil.copyfile(header,args.out/header.name)
     remote='/app0/qwen-runtime/iq2-Up-'+samples['pack']['sha256'][:24]+'.bin'
-    scope=dict(schema='ps5-qwen-calibrated-IQ2-component-v1',model_loads=0,widths=[1,2],selected_Experts=2,
-        original_Up_matrices=9,groups=3,cases=6,maximum_GPU_graphs=72,CPU_deadline_seconds=240,
+    widths=[1,2,30,32] if args.prefill else [1,2];cases=3*len(widths)
+    scope=dict(schema='ps5-qwen-calibrated-IQ2-component-v1',model_loads=0,widths=widths,decode_selected_Experts=2,
+        prefill_selected_slots=10 if args.prefill else None,prefill_unique_original_Experts_per_layer=3 if args.prefill else None,
+        prefill_replicated_weights_explicit=bool(args.prefill),original_Up_matrices=9,groups=3,cases=cases,maximum_GPU_graphs=12*cases,CPU_deadline_seconds=240,
         formats=['Q2_K','IQ2_XXS'],original_weight_source='BF16',real_PS5_importance=True,
-        synthetic_component_inputs=True,component_not_model_speed=True,activation_quantization=False,
+        synthetic_component_inputs=True,component_not_model_speed=True,activation_input_tensor_type='F32',
+        vector_MMVQ_disabled=True,larger_width_internal_arithmetic_independently_qualified=False,
         backend_environment=dict(GGML_VK_DISABLE_MMVQ='1'),pack_bytes=samples['pack']['bytes'],pack_sha256=samples['pack']['sha256'],
         HTTP_requests=0,VideoOut_starts=0,automatic_retries=0)
     header=args.out/'calibrated_iq2_assets.h';text='#pragma once\n#include <cstdint>\n'
+    text+='inline constexpr unsigned iq2_widths[]={'+','.join(map(str,widths))+'};\n'
     text+='inline constexpr const char*iq2_pack_path='+json.dumps(remote)+';\n'
     text+='inline constexpr std::uint64_t iq2_pack_bytes='+str(samples['pack']['bytes'])+'ULL;\n'
     text+='inline constexpr const char*iq2_pack_sha256='+json.dumps(samples['pack']['sha256'])+';\n'
@@ -56,13 +61,18 @@ def main():
     marker='\n        qwen_native_gpu_initialize((startup.admission_report+".driver.log").c_str());\n'
     text=once(text,marker,'\n        if(setenv("GGML_VK_DISABLE_MMVQ","1",1))throw std::runtime_error("F32 component activation policy unavailable");'+marker)
     start=text.index(marker)+len(marker);end=text.index('    }catch(const std::exception &e){',start)
-    text=text[:start]+'''        qwen_native_driver_begin();llama_backend_init();
+    text=text[:start]+'''        qwen_app::enforce_native_model_compute_limits();
+        if(qwen_app::native_model_device_stats().live)throw std::runtime_error("Empty IQ2 component device ledger required");
+        qwen_native_driver_begin();llama_backend_init();
         const auto component_started_epoch_ms=qwen_app::monitor_clock().now();
         auto component=qwen_app::run_calibrated_iq2_fixture(qwen_native_driver_checkpoint,qwen_native_stage);
         const auto component_completed_epoch_ms=qwen_app::monitor_clock().now();
         component.update({{"started_epoch_ms",component_started_epoch_ms},{"completed_epoch_ms",component_completed_epoch_ms},
             {"clock_calibrated",qwen_app::monitor_clock().calibrated()},
             {"clock_uncertainty_ms",qwen_app::monitor_clock().initial_uncertainty_ms().value_or(5000)}});
+        const auto run=policy.at("native_first_generation_validation").at("run_id").get<std::string>();
+        component.update({{"pid",getpid()},{"run_id",run},{"candidate_SELF_sha256",policy.at("native_first_generation_validation").at("candidate_SELF_sha256")}});
+        write_fresh_report(startup.admission_report+".IQ2-component",component);
         if(!component.at("all_backends_positively_retired").get<bool>()||!component.at("source_descriptor_and_scratch_retired").get<bool>())
             throw std::runtime_error("Positive IQ2 component retirement required");
         qwen_native_driver_complete();
@@ -70,9 +80,6 @@ def main():
         if(source.chunks!=source.completed_windows)throw std::runtime_error("Original source windows remain incomplete");
         qwen_app::stop_native_model_sources();const auto ledger=qwen_app::native_model_device_stats();
         if(ledger.live)throw std::runtime_error("IQ2 component device owners remain live");
-        const auto run=policy.at("native_first_generation_validation").at("run_id").get<std::string>();
-        component.update({{"pid",getpid()},{"run_id",run},{"candidate_SELF_sha256",policy.at("native_first_generation_validation").at("candidate_SELF_sha256")}});
-        write_fresh_report(startup.admission_report+".IQ2-component",component);
         struct ps5_heap_stats heap{};ps5_heap_stats(&heap);
         write_fresh_report(startup.admission_report,{{"schema","ps5-qwen-unloaded-IQ2-completion-v1"},{"kind","Q2-IQ2-fixture"},
             {"completed",true},{"pid",getpid()},{"run_id",run},{"candidate_SELF_sha256",policy.at("native_first_generation_validation").at("candidate_SELF_sha256")},
@@ -113,8 +120,8 @@ def main():
     path=args.out/'application-policy.private.json';save(path,policy)
     save(args.out/'result.private.json',dict(completed=True,application_policy=record(path),entry=record(obj),reader=base['reader'],
         provider=record(provider),samples=record(args.samples),source=record(source),runtime=record(runtime),header=record(header),
-        commands=[C,command],model_loads=0,maximum_GPU_graphs=72,native_operator_qualified=False,PS5_operations=0,production_adopted=False))
-    print(json.dumps(dict(completed=True,target_compiled=True,model_loads=0,maximum_GPU_graphs=72,PS5_operations=0)))
+        commands=[C,command],model_loads=0,maximum_GPU_graphs=12*cases,native_operator_qualified=False,PS5_operations=0,production_adopted=False))
+    print(json.dumps(dict(completed=True,target_compiled=True,model_loads=0,maximum_GPU_graphs=12*cases,PS5_operations=0)))
 
 
 if __name__=='__main__':main()

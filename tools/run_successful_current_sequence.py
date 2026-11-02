@@ -24,7 +24,7 @@ def main():
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--package',action='append',type=Path,required=True)
     parser.add_argument('--clock',type=Path,help='Historical receipt compatibility only; each case always creates a fresh calibration')
-    parser.add_argument('--scope',choices=('P1','R1','R1-direct','G1-shadow','G1','F32','Q1','calibration'),required=True)
+    parser.add_argument('--scope',choices=('P1','R1','R1-direct','R1-stage','G1-shadow','G1','F32','Q1','calibration'),required=True)
     parser.add_argument('--case-base',type=int,required=True)
     args=parser.parse_args();need(1<=len(args.package)<=4,'One explicit scope of at most four packages required')
     args.out.mkdir(parents=True,exist_ok=False)
@@ -53,6 +53,10 @@ def main():
         while True:
             script('observe_successful_model_start.py',['--case-plan',case/'plan.private.json'],
                 args.out/('read-'+str(current_case)+'-'+str(poll)+'.private.log'));poll+=1
+            if (case/'host-early-self-refusal.private.json').exists():
+                script('close_successful_early_self_refusal.py',common+['--case-plan',case/'plan.private.json','--out',closed],
+                       args.out/('early-SELF-close-'+str(current_case)+'.private.log'))
+                raise RuntimeError('Returned CPU SELF refusal closed; sequence stopped without retry')
             if (case/'native.failure.private.json').exists():
                 failure=load(case/'native.failure.private.json')
                 if failure.get('native_resources_started') is False and failure.get('model_loaded') is False and failure.get('CPU_worker_completion_unknown') is False:
@@ -100,6 +104,16 @@ def main():
                 r['complete_request_span_ms']>=r['metrics']['total_ms'] and
                 abs(r['complete_request_span_ms']-r['CPU_nested_calls_inclusive_exclusive_ns'][40]/1e6)<1
                 for r in native['requests'])
+        elif args.scope=='R1-stage':
+            native=load(case/'passive-observer/native.private.bin')
+            scope=load(package)['effective_application_policy']['overrides']['native_next_five_normal']
+            enabled=scope['completed_stage_deferral_enabled']
+            events=[[int(enabled),*r['stage_journal_write_sync_deferred_request_flush_calls']] for r in native['requests']]
+            exercised=len(events)==3 and all(r[1]>0 and r[1]==r[2]+r[3] and
+                (r[3]>0 and r[4]==1 if enabled else r[3]==r[4]==0) for r in events)
+            exercised=exercised and scope['all_before_operation_stages_synced'] and scope['completed_request_stage_journal_synced_before_result'] and all(
+                r['token_record_sync_policy']=='request_end' and r['token_ledger_sync_calls']==1 and
+                r['complete_request_span_ms']>=r['metrics']['total_ms'] for r in native['requests'])
         elif args.scope=='Q1':
             native=load(case/'passive-observer/native.private.bin');selected=load(package)
             changed=selected.get('effective_application_policy',{}).get('kind')=='Q1-shared'

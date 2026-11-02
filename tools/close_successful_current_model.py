@@ -34,11 +34,12 @@ def main():
     if args.IQ2_fixture:
         package=load(case['package']['path']);effective=package['effective_application_policy'];profile=load(effective['profile']['path'])
         component=terminal['component']
+        scope=profile['overrides']['native_IQ2_fixture'];case_bound=scope['cases'];graph_bound=scope['maximum_GPU_graphs']
         need(record(effective['profile']['path'])==effective['profile'] and effective['kind']=='Q2-IQ2-fixture' and
              profile['unloaded_GPU_fixture'] and terminal['kind']=='Q2-IQ2-fixture' and terminal['model_loads']==0 and
              component['completed'] and component['model_loads']==0 and component['all_backends_positively_retired'] and
-             component['source_descriptor_and_scratch_retired'] and 1<=len(component['cases'])<=6 and
-             0<=component['GPU_graphs']<=72 and type(component['all_outputs_reference_valid']) is bool and
+             component['source_descriptor_and_scratch_retired'] and case_bound in (6,12) and graph_bound==12*case_bound and
+             1<=len(component['cases'])<=case_bound and 0<=component['GPU_graphs']<=graph_bound and type(component['all_outputs_reference_valid']) is bool and
              all(r['backends_positively_retired'] for r in component['cases']) and completed['unloaded_IQ2_fixture'],
              'Positive finite unloaded IQ2 owner retirement required; a numerical negative may close normally')
         need(load(observer/'native.IQ2-component.private.json')==component,'The two native component reports differ')

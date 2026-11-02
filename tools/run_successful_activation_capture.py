@@ -24,42 +24,52 @@ def main():
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--readiness-pages',type=int,required=True,help='Explicit application readiness margin, not a physical OS limit')
     parser.add_argument('--IQ2-fixture',action='store_true',help='Run the distinct unloaded IQ2 component scope instead of activation capture')
+    parser.add_argument('--resume-published-component',action='store_true',help='Continue an unlaunched scope after its prepared CPU publication positively completed')
+    parser.add_argument('--published-component',type=Path,help='Reuse an existing sealed immutable pack with exactly the same bytes; native startup hashes it again')
     args=parser.parse_args();package=load(args.package);effective=package['effective_application_policy']
+    need(not(args.resume_published_component and args.published_component),'One component publication source required')
     if args.IQ2_fixture:
         profile=load(effective['profile']['path'])
         need(effective['kind']=='Q2-IQ2-fixture' and record(effective['profile']['path'])==effective['profile'] and
              profile['unloaded_GPU_fixture'],'One explicitly compiled unloaded IQ2 program is required')
     else:need(effective['kind']=='Q2-calibration' and effective['overrides']['native_activation_capture']['headless'],
               'One explicitly compiled headless activation program is required')
-    args.out.mkdir(parents=True,exist_ok=False);case=args.out/'case';closed=args.out/'closed';clock=args.out/'clock'
+    case=args.out/'case';closed=args.out/'closed';clock=args.out/'clock'
+    if args.resume_published_component:
+        need(args.IQ2_fixture and not case.exists() and not clock.exists() and
+             load(args.out/'intent.private.json')['package']==record(args.package),
+             'Only the exact still-unlaunched scope can continue after a completed component publication')
+        publication=args.out/'component-publication';published=load(publication/'result.private.json')
+        need(published['completed'] and published['profile']==effective['profile'] and published['current_seven_unchanged_and_native_hashed'],
+             'The exact positive new-only publication must already be complete')
+        save(args.out/'resume-after-published-component.private.json',dict(completed=True,publication=record(publication/'result.private.json'),
+            native_launch_calls_before_resume=0,component_publication_resubmitted=False))
+    else:args.out.mkdir(parents=True,exist_ok=False)
+    if args.published_component:
+        published=load(args.published_component)
+        need(args.IQ2_fixture and published['completed'] and published['whole_physical_and_alias_SHA256_EOF'] and
+             published['helper_retired'] and published['pack']==profile['component_pack']['local'],
+             'Only the exact previously sealed immutable pack may be reused')
+        publication=args.published_component.parent
+        save(args.out/'reused-component-publication.private.json',dict(completed=True,publication=record(args.published_component),
+            pack=published['pack'],new_publication_calls=0,native_full_pack_hash_required=True))
     common=['--workspace',args.workspace,'--current',args.current,'--mount-plan',args.mount_plan]
-    save(args.out/'intent.private.json',dict(package=record(args.package),maximum_native_requests=0 if args.IQ2_fixture else 1,HTTP_requests=0,
-        VideoOut_starts=0,automatic_retries=0,effect_validation_after_positive_retirement_and_ordinary_restore=True))
+    if not args.resume_published_component:
+        save(args.out/'intent.private.json',dict(package=record(args.package),maximum_native_requests=0 if args.IQ2_fixture else 1,HTTP_requests=0,
+            VideoOut_starts=0,automatic_retries=0,effect_validation_after_positive_retirement_and_ordinary_restore=True))
     state=load(args.current/'active-console.private.json')
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and not state['unknown_completion'],
          'Completed idle state required before readiness observation')
-    vm=args.out/'VM-before';vm.mkdir();values=query(lan_module().HOST,vm)
+    vm=args.out/'VM-before'
+    if args.resume_published_component:values=load(vm/'result.private.json')['observations']
+    else:vm.mkdir();values=query(lan_module().HOST,vm)
     need(values['boot_before']==values['boot_after']==state['current_boot'] and args.readiness_pages>=values['minimum']+21,
          'The exact boot and unchanged original CPU floor are required')
     ready=min(values['free_first'],values['free_last'])>=args.readiness_pages
-    save(vm/'result.private.json',dict(completed=True,observations=values,selected_readiness_pages=args.readiness_pages,
-        application_readiness_policy_not_physical_OS_limit=True,may_start_changed_scope=ready,title_launches=0,GPU_calls=0))
+    if not args.resume_published_component:
+        save(vm/'result.private.json',dict(completed=True,observations=values,selected_readiness_pages=args.readiness_pages,
+            application_readiness_policy_not_physical_OS_limit=True,may_start_changed_scope=ready,title_launches=0,GPU_calls=0))
     need(ready,'Changed headless calibration readiness margin is insufficient; no staging or launch')
-    if args.IQ2_fixture:
-        local=profile['component_pack']['local'];remote=PHYSICAL+profile['component_pack']['application_path'][5:]
-        need(record(local['path'])==local and remote.startswith(PHYSICAL+'/qwen-runtime/iq2-Up-') and
-             local['bytes']<=16<<20,'Exact bounded prepared component pack required')
-        lan=lan_module()
-        with lan.ftplib.FTP() as ftp:
-            ftp.connect(lan.HOST,2121,timeout=20);ftp.login()
-            need(ftp.sendcmd('SELF')=='226 SELF transfer mode disabled' and ftp.size(remote)==(1<<64)-1,
-                 'Raw transfer mode and an absent unique fixture pack are required')
-            save(args.out/'pack-upload.once.private.json',dict(local=local,remote=remote,automatic_retries=0))
-            with Path(local['path']).open('rb') as stream:reply=ftp.storbinary('STOR '+remote,stream,65536)
-            need(reply.startswith(('226 ','250 ')) and ftp.size(remote)==local['bytes'],'Component upload did not complete')
-        raw=lan.web('/fs'+urllib.parse.quote(remote,safe='/'),16<<20)
-        need(len(raw)==local['bytes'] and hashlib.sha256(raw).hexdigest()==local['sha256'],'Whole uploaded component digest differs')
-        save(args.out/'pack-readback.private.json',dict(completed=True,remote=remote,bytes=len(raw),sha256=local['sha256']))
     def script(name,arguments,label):
         with (args.out/(label+'.private.log')).open('xb') as stream:
             child=subprocess.Popen([sys.executable,'-B',str(ROOT/'tools'/name),*map(str,arguments)],cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT)
@@ -69,6 +79,11 @@ def main():
                     print(json.dumps(dict(phase=name,host_child_running=True)),flush=True);notice=time.monotonic()+30
                 time.sleep(1)
         return child.returncode
+    if args.IQ2_fixture and not args.resume_published_component and not args.published_component:
+        publication=args.out/'component-publication'
+        need(script('publish_native_component_pack.py',common+['--profile',effective['profile']['path'],'--out',publication],
+                    'publish-component')==0,'Component publication stopped; collect its same journal if needed, never resubmit it')
+        need(load(publication/'result.private.json')['completed'],'Positive immutable component publication required')
     need(script('refresh_successful_clock.py',common+['--out',clock,'--execute'],'clock')==0,'Fresh clock failed; stop without replay')
     need(script('run_successful_model_case.py',common+['--model-proof',args.model_proof,'--clock',clock/'clock.private.json',
         '--package',args.package,'--out',case,'--execute'],'start')==0,'Startup submission stopped; never resubmit')
@@ -117,12 +132,14 @@ def main():
         closure['ordinary_exit_observed'] and not closure['unknown_completion'],'Positive ordinary restoration is required')
     if args.IQ2_fixture:
         component=load(observer/'native.IQ2-component.private.json')
-        qualified=component['all_outputs_reference_valid'] and len(component['cases'])==6 and component['GPU_graphs']==72
+        scope=profile['overrides']['native_IQ2_fixture']
+        qualified=component['all_outputs_reference_valid'] and len(component['cases'])==scope['cases'] and component['GPU_graphs']==scope['maximum_GPU_graphs']
         quiet=load(args.out/'quiet-window.private.json');uncertainty=component['clock_uncertainty_ms']
         quiet_qualified=component['clock_calibrated'] and component['started_epoch_ms']-uncertainty>=quiet['start_epoch_ms'] and \
             component['completed_epoch_ms']+uncertainty<=quiet['end_epoch_ms']
         save(args.out/'result.private.json',dict(completed=True,case=record(case/'plan.private.json'),closure=record(closed/'result.private.json'),
             component=record(observer/'native.IQ2-component.private.json'),native_operator_numerics_qualified=qualified,
+            component_publication=record(publication/'result.private.json'),
             component_timing_window_free_of_host_PS5_requests=quiet_qualified,quiet_window=record(args.out/'quiet-window.private.json'),
             matched_component_timing_analysis_pending=True,full_model_quality_or_speed_qualified=False,model_loads=0,automatic_retries=0,production_adopted=False))
         print(json.dumps(dict(completed=True,model_loads=0,GPU_graphs=component['GPU_graphs'],native_operator_numerics_qualified=qualified,current_restored=True)),flush=True)
