@@ -15,14 +15,46 @@ static uint64_t qwen_launch_now(void *unused) {
        (uint64_t)t.tv_sec>(UINT64_MAX-999999999ull)/1000000000ull)return 0;
     return (uint64_t)t.tv_sec*1000000000ull+(uint64_t)t.tv_nsec;
 }
-static int qwen_launch_headroom(void *unused) {
+static int qwen_launch_headroom_sample(void *unused) {
     (void)unused;uint32_t v[7]={0};
     const char *names[]={"vm.stats.vm0.v_free_count","hw.pagesize","vm.stats.vm0.v_page_count",
         "vm.stats.vm0.v_free_min","vm.stats.vm0.v_free_target","vm.stats.vm0.v_free_reserved","vm.stats.vm0.v_free_count"};
     for(unsigned i=0;i<7;++i){size_t n=4;if(sysctlbyname(names[i],v+i,&n,NULL,0)||n!=4)return 0;}
+#ifdef QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES
+    /* Match the current qualified CPU-only metadata phase. No GPU/model
+     * implementation is linked to this opt-in payload. OS counters stay read-only. */
+    const uint64_t reserve=(uint64_t)v[5]+QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES;
+#else
     const uint64_t reserve=v[5]>256?v[5]:256;
-    return v[1]==16384&&v[2]&&v[5]&&v[5]<=v[3]&&v[3]<v[4]&&v[4]<=v[2]&&
+#endif
+    int qualified=v[1]==16384&&v[2]&&v[5]&&v[5]<=v[3]&&v[3]<v[4]&&v[4]<=v[2]&&
         v[0]<=v[2]&&v[6]<=v[2]&&(uint64_t)v[0]>=v[3]+reserve&&(uint64_t)v[6]>=v[3]+reserve;
+#ifdef QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES
+    static int pressure_reported;
+    if(!qualified&&!pressure_reported++)
+        (void)report("CPU_METADATA_PRESSURE free_before=%u free_after=%u OS_minimum=%u OS_reserved=%u selected_margin=%u required=%llu",
+            v[0],v[6],v[3],v[5],QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES,(unsigned long long)(v[3]+reserve));
+#endif
+    return qualified;
+}
+static int qwen_launch_headroom(void *unused) {
+#ifdef QWEN_LAUNCH_CPU_HEADROOM_WAIT
+    static uint64_t total_wait_ns=0;
+    if(qwen_launch_headroom_sample(unused))return 1;
+    const uint64_t begun=qwen_launch_now(NULL);if(!begun)return 0;
+    for(;;){
+        uint64_t now=qwen_launch_now(NULL);
+        if(now<begun||now-begun>UINT64_C(20000000000)||total_wait_ns>UINT64_C(60000000000)-(now-begun))return 0;
+        if(qwen_launch_headroom_sample(unused)){
+            total_wait_ns+=now-begun;
+            return report("CPU_COPY_HEADROOM_WAIT waited_ms=%llu total_ms=%llu IO_retries=0 OS_predicate_unchanged=1",
+                (unsigned long long)((now-begun)/1000000),(unsigned long long)(total_wait_ns/1000000));
+        }
+        usleep(250000);
+    }
+#else
+    return qwen_launch_headroom_sample(unused);
+#endif
 }
 static int qwen_launch_marker(void *unused,int before) {
     (void)unused;return report(before?"LAUNCH_INTEGRITY_READ_BEFORE":"LAUNCH_INTEGRITY_READ_RETURNED");

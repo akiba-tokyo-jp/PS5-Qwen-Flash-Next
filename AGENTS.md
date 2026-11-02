@@ -3,6 +3,68 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Renewed successful-route verification — 2026-11-02
+
+After automatic review rejected the broad performance authorization as unclear,
+the owner explicitly authorized the kernel/ShellCore initialization itself,
+with a maximum of one request and no retry, acknowledging that recovery/reboot
+is unavailable. Keep the one-request limit across errors and later turns.
+The owner then granted standing permission for the preparation, launch and
+verification operations used in the successful route. Do not repeatedly ask
+for those same operations. This does not waive exact identity, positive
+completion, the one-initialization limit, or the prohibition on reboot/retry.
+The owner explicitly selected the previously successful startup route and then
+renewed verification of all performance candidates and implementation of winners.
+Use a fresh scope and the successful order: unchanged known runtime ready,
+existing title mount, current-source/readiness proof, ordinary native launch.
+Do not use the closed APR/PFS launch chain. Scope63101 positively observes the
+pre-mount state: no title/backing mount, no native owner, stable namespace and
+boot, and the current source directory. The unchanged successful runtime and24
+source/build inputs match. A separately bound initialization-before-mount scope
+may use this owner-selected order once after fresh integrity/service/VM checks;
+this is not permission to replay an old case or assume that ordering fixes a
+kernel fault. Require explicit ready return and exact resident owner before
+any mount or title launch. Ambiguity stops the chain; no retries, restart or
+forced cleanup. All eight candidates remain in scope; native benefit and quality
+are still prerequisites for adoption. Keep driver/cache policy unchanged.
+
+Current successful-route progress: runtime63121 positively returned with loaded
+query1 and the exact resident owner; the single initialization allowance is
+consumed. Do not initialize again. Mount63133 completed one existing-title
+nullfs mount, checked all seven physical/mounted file hashes, and ordinarily
+retired/removed its helper. CPU-only title63380 completed all1527 original
+shader assets and382 lookups on this boot, then ordinarily closed with the
+selected seven files restored and natively hashed. Readmission63410 verified
+518 source identities, five complete backing hashes and stable directories.
+Normal current-SELF63510 returned a known pre-GPU exception: "Immutable Direct
+bundle source required". Close63514 ordinarily retired PID171 and restored
+the exact seven selected files. No GPU/model initialization has run. Native
+lstat63530 finds three missing legacy bundle files required unconditionally
+by the actual current owner; all66 full-bundle parts remain present. FTP SIZE
+uses UINT64_MAX for missing files; never classify that sentinel as existence.
+Restore the same encoded bytes with their original whole digests, and bind
+new native identities through an explicit source/relink proof. Do not bypass
+bundle admission or repeat the unchanged refused launch. Keep all69 required
+bundle dependencies in current-only retention; they are application inputs,
+despite the older three files' probe-derived names.
+CPU payload restoration63610/63630/63650/63680 did not complete. Only63610
+and63680 copied partial new outputs; both returned known memory refusals,
+positively released CPU Direct memory and ordinarily retired. Their partial
+outputs and helper files are removed. The latter's outer END was recovered
+by reading the same journal after the host deadline; it was not resubmitted.
+The original source payloads/current seven files were not written. Current
+completion is known and idle. All three required bundle files remain absent.
+No further unchanged payload-copy attempt is allowed. Recorded pressure1079
+free pages is below the unchanged OS minimum898 plus reserved206. Reducing
+software margin is not a remedy for that observation. Use the already proven
+native CPU title/managed CPU heap for a separately implemented scope, or host
+data preparation, while preserving positive completion and source digests.
+The current PC/PS5 application remains56c29e9c. Host63200/63202 reproduce its
+native ELF and SELF byte-for-byte from91 retained inputs. CPU-only63300/63301
+reuses11 actual current CPU providers and has no GPU/model code/imports.
+Full prefill providers63211, control relink63212 and candidate SELF63401
+are built but unqualified. See `docs/success-route-performance-progress-20261102.md`.
+
 ### New hardware-bound application performance campaign — 2026-11-02
 
 The owner authorized verification and implementation of beneficial quantization
