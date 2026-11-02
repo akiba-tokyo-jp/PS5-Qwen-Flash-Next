@@ -18,12 +18,26 @@ def main():
     for name in ('workspace','current','relink','out'):
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--formatter-from',type=Path,help='Reuse a verified formatter from a completed retained package')
+    parser.add_argument('--identity-provider',type=Path,help='Audit restored-input data definitions in the actual linked ELF')
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
     load=lambda p:json.loads(Path(p).read_text(encoding='utf-8-sig'))
     package=load(args.current/'provenance/receipt.private.json')
     prior=load(args.current/'provenance/native-link.receipt.private.json')
     relink=load(args.relink);image=Path(relink['artifact']['path'])
     if record(image)!=relink['artifact']:raise ValueError('Relinked image changed')
+    identity_audit=None
+    if args.identity_provider:
+        from native_dispatch import ELF
+        provider=load(args.identity_provider)
+        if not provider['completed'] or provider['executable_bytes'] or provider['artifact'] not in relink['new_inputs']:
+            raise ValueError('Exact data-only identity provider must be part of the actual relink')
+        if record(provider['artifact']['path'])!=provider['artifact']:raise ValueError('Identity provider changed')
+        linked=ELF(image)
+        for row in provider['inputs']:
+            if linked.symbol_data(row['symbol'])!=struct.pack('<10Q',*row['identity']):
+                raise ValueError('Actual linked identity data differs from the finalized native input')
+        identity_audit=dict(provider=record(args.identity_provider),linked_definitions_verified=3,
+                            original_owner_unchanged=provider['original_owner_unchanged'])
     actual_sources=[];source_dir=args.workspace/'driver-work/PS5-Vulkan-Inference/tooling/native'
     for row in package['format_tool_sources']:
         path=source_dir/Path(row['path']).name;value=record(path)
@@ -91,6 +105,8 @@ def main():
                 preferred_formatter_sources=actual_sources,formatter=record(tool),commands=jobs,
                 driver_table_geometry=geometry,driver_revision=relink['driver_revision'],driver_profile=relink['driver_profile'],
                 persistent_caches=False,PS5_operations=0,native_quality_or_speed_measured=False,production_adopted=False)
+    if relink.get('required_bundle_restore'):report['required_bundle_restore']=relink['required_bundle_restore']
+    if identity_audit:report['required_bundle_identity_audit']=identity_audit
     (args.out/'result.private.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in report.items() if k not in ('relink','SELF','preferred_formatter_sources','formatter','commands','driver_table_geometry')}))
 

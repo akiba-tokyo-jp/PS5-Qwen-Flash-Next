@@ -52,11 +52,13 @@ and63680 copied partial new outputs; both returned known memory refusals,
 positively released CPU Direct memory and ordinarily retired. Their partial
 outputs and helper files are removed. The latter's outer END was recovered
 by reading the same journal after the host deadline; it was not resubmitted.
-The original source payloads/current seven files were not written. Current
-completion is known and idle. All three required bundle files remain absent.
+The original source payloads/current seven files were not written. Those
+payload attempts have known completion and are closed. They do not describe
+the later successful native-title restoration recorded below.
 No further unchanged payload-copy attempt is allowed. Recorded pressure1079
-free pages is below the unchanged OS minimum898 plus reserved206. Reducing
-software margin is not a remedy for that observation. Use the already proven
+free pages is below that payload's additive minimum898 plus reserved206 policy.
+That sum is an application policy, not a demonstrated physical OS threshold.
+Use the already proven
 native CPU title/managed CPU heap for a separately implemented scope, or host
 data preparation, while preserving positive completion and source digests.
 The current PC/PS5 application remains56c29e9c. Host63200/63202 reproduce its
@@ -64,6 +66,34 @@ native ELF and SELF byte-for-byte from91 retained inputs. CPU-only63300/63301
 reuses11 actual current CPU providers and has no GPU/model code/imports.
 Full prefill providers63211, control relink63212 and candidate SELF63401
 are built but unqualified. See `docs/success-route-performance-progress-20261102.md`.
+
+Latest successful native work: CPU titles63760/63770/63780 restore all three
+missing live inputs with the original whole SHA256, EOF, padding and Expert
+order. Their4MiB scratch is charged to the tracked CPU heap; they use no GPU,
+model or native statfs call. Each positively finishes, ordinarily closes and
+restores/hashes the selected seven files. Root finalizations63775/63776/63785
+preserve payloads and inode/mtime while changing only the observed UID1 to0.
+Native and root observations reported different UIDs; their cause is unproven.
+All69 actual owner dependencies pass138 physical/mounted observations63810
+and are retained in `current/provenance/required-bundle-inputs.private.json`.
+Do not delete the three legacy inputs because their names contain "probe".
+Read-only data provider63800 defines the three real fresh identities; it has
+zero instructions/imports/relocations and leaves the actual owner unchanged.
+Relink63801 and SELF63802 verify those actual linked80-byte definitions and
+the six-segment SELF roundtrip. Normal63830 positively completes all three
+requests, two passive frames, full finite F32/routes, source/device retirement,
+ordinary OS close63831 and exact current-seven restoration. The two external
+decode rates are11.855287 and12.912904 token/s; this is startup readmission,
+not a new optimization win. Original56c29e9c remains selected pending adoption.
+P1 paired providers are rebuilt with the same common identity repair; compare
+their native state/quality and matched timings before adopting either arm.
+
+Small CPU-control helpers now use the independent max(minimum,reserved)+21
+application policy,128 complete process slots and16KiB hash windows. All51
+host guard controls pass. OS counters and native model/GPU guards are unchanged;
+the closed root data-copy payload keeps its old additive policy. An upstream
+FreeBSD allocator comparison informs the distinction but does not prove PS5
+fork semantics or a GPU performance benefit. No initializer replay or CI.
 
 ### New hardware-bound application performance campaign — 2026-11-02
 

@@ -46,6 +46,8 @@ def main():
         native_shader_storage=storage,native_first_generation_validation=dict(run_id=run,
             candidate_SELF_bytes=candidate['bytes'],candidate_SELF_sha256=candidate['sha256'],
             model_receipt_bytes=gate['model_receipt_bytes'],model_receipt_sha256=gate['model_receipt_sha256']))
+    bundle=package.get('required_bundle_restore')
+    if bundle:new_policy['native_required_bundle_restore']=bundle['scope']
     new_app=dict(schema='ps5-qwen-app-v1',development_policy='/app0/qwen-runtime/development.json',
                  model_receipt=app['model_receipt'],web_assets=app['web_assets'],port=app['port'],
                  native_display=False,mode='first-generation-validation',admission_report=report)
@@ -66,6 +68,7 @@ def main():
               old_files=old,new_files=new,pending=pending,report=report,
               publication=record(args.out/'publication/plan.private.json'),launch=record(args.out/'launch/plan.private.json'),
               GPU_calls=0,initializer_requests=0,maximum_title_launches=1,ordinary_close_and_current_restore_required=True)
+    if bundle:plan['required_bundle_restore']=bundle
     save(args.out/'plan.private.json',plan)
     if not args.execute:
         print(json.dumps(dict(CPU_case_prepared=True,publication_and_launch_built=True,PS5_operations=0)));return
@@ -92,11 +95,19 @@ def main():
                     sha256=capture['sha256'],bytes=capture['bytes'],published_after_native_verification=True,
                     proof=record(args.out/'publication/result.private.json'))
     upload(candidate,pending[0]['remote'],args.out/'SELF-transfer',lan,verified_publication)
+    if bundle:
+        log=(args.out/'publication/execution/console.private.log').read_bytes()
+        capacity=re.findall(rb'OWNED_TITLE_CAPACITY block_bytes=(\d+) available_blocks=(\d+)',log)
+        need(capacity and min(int(a)*int(b) for a,b in capacity)>=bundle['scope']['bytes']+65536,
+             'Fresh external owned-filesystem capacity must admit the complete original output')
     state['state']='CPU_shader_bootstrap_published_launch_pending';state['active_successful_native_case']['phase']='launch'
     state['original_restored']=False;state['temporary_installed_SELF']=candidate
     context_path.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
     started=execute(lan,launch,args.out/'launch')
     need(started['operation_calls']==1 and started['app_id']>0,'One accepted ordinary application launch required')
+    state.update(native_running=True,unknown_completion=True)
+    state['active_successful_native_case'].update(phase='native-start-pending',app_id=started['app_id'])
+    context_path.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
     return finish(args,plan,state,lan,context_path,started)
 
 
@@ -158,13 +169,23 @@ def finish(args,plan,state,lan,context_path,started):
          asset_data['CPU_verified_lookups']==382 and not asset_data['active_lease'] and not asset_data['failed'] and
          asset_data['GPU_calls']==0 and not asset_data['Vulkan_initialized'] and not asset_data['model_loaded'] and
          not asset_data['external_read_pending'] and not asset_data['external_source_failed'],'Complete current shader bytes required')
-    close_reports=[]
+    close_reports=[];restored_bundle=None
     report_rows=(('.first.start',start_raw),('.stages',stage)) if refused else (('.CPU-bootstrap',cpu),('.shader-assets.CPU',assets))
+    if not refused and plan.get('required_bundle_restore'):
+        scope=plan['required_bundle_restore']['scope']
+        bundle_raw=lan.web('/fs'+urllib.parse.quote(remote_report+'.required-bundle',safe='/'),16384)
+        restored_bundle=json.loads(bundle_raw)
+        need(restored_bundle['completed'] and restored_bundle['pid']==native_pid and restored_bundle['run_id']==run and
+             restored_bundle['scope']==scope and restored_bundle['full_original_SHA256_and_EOF_readback'] is True and
+             restored_bundle['tracked_CPU_heap_free_returned'] is True and restored_bundle['all_started_input_calls_returned'] is True and
+             restored_bundle['source_payloads_unchanged'] is True and restored_bundle['GPU_calls']==0 and not restored_bundle['model_loaded'],
+             'Positive original-digest-bound copy and tracked CPU retirement required')
+        report_rows=(*report_rows,('.required-bundle',bundle_raw))
     for suffix,raw in report_rows:
         path=args.out/('native'+suffix+'.private.json');path.write_bytes(raw)
         remote=stage_remote if suffix=='.stages' else remote_report+suffix
         close_reports.append(dict(record(path),remote=remote))
-    state['state']='CPU_shader_bootstrap_completed_ordinary_close_pending';state.update(native_running=True,observed_native_pid=native_pid,native_owners=1)
+    state['state']='CPU_shader_bootstrap_completed_ordinary_close_pending';state.update(native_running=True,observed_native_pid=native_pid,native_owners=1,unknown_completion=False)
     state['active_successful_native_case'].update(phase='ordinary-close',native_pid=native_pid,app_id=app_id)
     context_path.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
     close_plan=build(args.workspace,args.mount_plan,new,new,[],'close',args.out/'ordinary-close',
@@ -190,8 +211,12 @@ def finish(args,plan,state,lan,context_path,started):
     upload(original,restore_pending[0]['remote'],args.out/'restore-SELF-transfer',lan,verified_restore)
     state.update(state='runtime_mount_and_current_boot_shader_CPU_ready_original_restored',native_running=False,
                  native_owners=0,model_loaded=False,gateway_running=False,unknown_completion=False,original_restored=True,
-                 current_boot_shader_CPU_proof_pending=refused,current_boot_Qwen_model_admitted=False,current_boot_readmission_pending=True)
+                 current_boot_shader_CPU_proof_pending=state.get('current_boot_shader_CPU_proof_pending',True) if refused else False,
+                 current_boot_Qwen_model_admitted=False,current_boot_readmission_pending=True)
     state['active_successful_native_case']['phase']='CPU-complete-original-restored'
+    if restored_bundle:
+        state.setdefault('native_required_bundle_restorations',[]).append(dict(report=record(args.out/'native.required-bundle.private.json'),
+            ordinary_close_completed=True,current_original_restored=True,root_ownership_finalization_pending=True))
     if not refused:
         state['successful_route_20261102']['current_boot_shader_CPU']=dict(path=str(args.out/'native.shader-assets.CPU.private.json'),
             report_path='/app0'+remote_report[len(PHYSICAL):]+'.shader-assets.CPU',pid=native_pid,run_id=run,
@@ -205,6 +230,7 @@ def finish(args,plan,state,lan,context_path,started):
                 native_title_launches=1,ordinary_OS_closes=1,ordinary_exit_observed=True,
                 current_original_restored=True,current_seven_file_native_hashes_pass=True,
                 fresh_shader_report=state['successful_route_20261102'].get('current_boot_shader_CPU'),
+                required_bundle_restored=restored_bundle is not None,
                 full_model_speed_or_quality_measured=False)
     save(args.out/'result.private.json',result)
     print(json.dumps({k:v for k,v in result.items() if k!='fresh_shader_report'}))

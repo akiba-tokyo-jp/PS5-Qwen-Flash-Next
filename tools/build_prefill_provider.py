@@ -66,6 +66,7 @@ def main():
     report=dict(completed=True,prepared=record(args.prepared),unchanged_model_group_inputs=inputs,
                 all_original_external_model_definitions_preserved=True,artifacts=artifacts,commands=commands,
                 link_replacement_basename='model_graph.o',extra_link_flag='--wrap=llama_process',
+                extra_link_flags=['--wrap=llama_process','--wrap=llama_sampler_apply','--wrap=llama_sampler_sample'],
                 candidate_output_selection_integrated=True,default_compile_selection=False,
                 PS5_operations=0,native_app_relinked=False,native_state_quality_or_speed_validated=False,
                 production_adopted=False)

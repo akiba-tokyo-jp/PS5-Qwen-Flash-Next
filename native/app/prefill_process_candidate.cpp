@@ -3,17 +3,36 @@
 // exact pinned batch ABI and never changes decode/speculative output selection.
 #include "llama.h"
 #include "llama-batch.h"
+#include <cstdio>
 #include <stdexcept>
 
 #ifndef QWEN_PERF_PREFILL_POST_TRUNK
 #define QWEN_PERF_PREFILL_POST_TRUNK 0
 #endif
-extern "C" bool qwen_app_route_is_decode();
 extern "C" void qwen_native_stage(const char*);
 extern "C" int32_t __real_llama_process(llama_context*,llama_process_type,llama_batch_ext*);
+extern "C" void __real_llama_sampler_apply(llama_sampler*,llama_token_data_array*);
+extern "C" llama_token __real_llama_sampler_sample(llama_sampler*,llama_context*,int32_t);
+
+namespace {
+// This finite comparison has one target context and one synchronous evaluator.
+// Position zero begins prefill; the first sampling call ends it. The routing
+// callback's phase is updated inside processing and can be stale at entry.
+llama_context*prefill_context=nullptr;
+}
+
+extern "C" void __wrap_llama_sampler_apply(llama_sampler*sampler,llama_token_data_array*data){
+    prefill_context=nullptr;__real_llama_sampler_apply(sampler,data);
+}
+extern "C" llama_token __wrap_llama_sampler_sample(llama_sampler*sampler,llama_context*ctx,int32_t index){
+    if(prefill_context==ctx)prefill_context=nullptr;
+    return __real_llama_sampler_sample(sampler,ctx,index);
+}
 
 extern "C" int32_t __wrap_llama_process(llama_context*ctx,llama_process_type type,llama_batch_ext*batch){
-    if(type!=LLAMA_PROCESS_TYPE_DECODE||qwen_app_route_is_decode())return __real_llama_process(ctx,type,batch);
+    if(type!=LLAMA_PROCESS_TYPE_DECODE)return __real_llama_process(ctx,type,batch);
+    if(batch&&!batch->tokens.empty()&&batch->tokens.front().pos[0]==0)prefill_context=ctx;
+    if(prefill_context!=ctx)return __real_llama_process(ctx,type,batch);
     if(!batch||batch->tokens.empty()||batch->tokens.size()>32)
         throw std::runtime_error("Prefill candidate requires the current bounded nonempty batch");
     for(const auto&token:batch->tokens)if(!token.output)
@@ -24,7 +43,10 @@ extern "C" int32_t __wrap_llama_process(llama_context*ctx,llama_process_type typ
             if(!llama_batch_ext_set_output_logits(batch,int32_t(i),i+1==count))
                 throw std::runtime_error("Prefill output selection failed before model processing");
     }
-    qwen_native_stage(QWEN_PERF_PREFILL_POST_TRUNK?"P1_prefill_outputs_last":"P1_prefill_outputs_all");
+    char stage[160];std::snprintf(stage,sizeof(stage),"P1_prefill_selected last_only=%u tokens=%u first_pos=%d output_rows=%u",
+        unsigned(QWEN_PERF_PREFILL_POST_TRUNK),unsigned(count),int(batch->tokens.front().pos[0]),
+        unsigned(QWEN_PERF_PREFILL_POST_TRUNK?1:count));
+    qwen_native_stage(stage);
     // The synchronous API captures the input batch before returning. Restore
     // caller-owned output flags on both return and exception paths.
     const auto restore=[&]{

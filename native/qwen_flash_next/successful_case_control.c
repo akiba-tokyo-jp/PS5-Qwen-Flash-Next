@@ -20,7 +20,9 @@ static int release_directory(const char *path,unsigned expected_mode,unsigned ow
 }
 static int own_title_mount(void){
     struct statfs s;return !statfs(MOUNT,&s)&&!strcmp(s.f_fstypename,"nullfs")&&
-        !strcmp(s.f_mntonname,MOUNT)&&!strcmp(s.f_mntfromname,NEW_STAGE);
+        !strcmp(s.f_mntonname,MOUNT)&&!strcmp(s.f_mntfromname,NEW_STAGE)&&s.f_bsize>0&&s.f_bavail>0&&
+        report("OWNED_TITLE_CAPACITY block_bytes=%llu available_blocks=%llu",
+            (unsigned long long)s.f_bsize,(unsigned long long)s.f_bavail);
 }
 #if CASE_OPERATION == 8
 int split_report_line(const char*line){return report("%s",line);}
@@ -113,14 +115,17 @@ int main(int argc,char **argv){
     if(!idle())goto done;success=1;
     for(unsigned i=0;i<CASE_DEPENDENCY_COUNT;++i){
         struct stat s={0};errno=0;int rc=lstat(case_dependencies[i],&s),saved=errno;
-        if(!report("DEPENDENCY index=%u lstat_rc=%d errno=%d inode=%llu mode=%u uid=%u gid=%u bytes=%llu mtime_sec=%lld mtime_nsec=%lld ctime_sec=%lld ctime_nsec=%lld",
-            i,rc,saved,(unsigned long long)s.st_ino,(unsigned)s.st_mode,(unsigned)s.st_uid,(unsigned)s.st_gid,
+        if(!report("DEPENDENCY index=%u lstat_rc=%d errno=%d device=%llu inode=%llu mode=%u uid=%u gid=%u bytes=%llu mtime_sec=%lld mtime_nsec=%lld ctime_sec=%lld ctime_nsec=%lld",
+            i,rc,saved,(unsigned long long)s.st_dev,(unsigned long long)s.st_ino,(unsigned)s.st_mode,(unsigned)s.st_uid,(unsigned)s.st_gid,
             (unsigned long long)s.st_size,(long long)s.st_mtim.tv_sec,(long long)s.st_mtim.tv_nsec,(long long)s.st_ctim.tv_sec,(long long)s.st_ctim.tv_nsec))success=0;
     }
 #elif CASE_OPERATION == 8
     if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("restore-bundle"))goto done;
     calls=1;success=qwen_bundle_payload_main(1,argv)==0;
     if(!new_files_valid()||!new_mounted_valid()||!live_context()||!idle())success=0;
+#elif CASE_OPERATION == 9
+    if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("finalize-bundle"))goto done;
+    success=case_finalize_bundle(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
 #else
 #error A single scoped operation must be selected
 #endif

@@ -43,5 +43,9 @@ int main(int argc,char **argv) {
             {"source_workers",0},{"automatic_retries",0},{"ordinary_OS_close_required",true}});
         qwen_native_stage("mini_shader_bootstrap_CPU_completed_GPU_not_started_waiting_for_ordinary_close");
         for(;;)(void)usleep(1000000);
+    }catch(const std::exception&e){
+        char message[768];std::snprintf(message,sizeof(message),"mini_shader_bootstrap_CPU_returned_exception reason=%.680s",e.what());
+        qwen_native_stage(message);
+        qwen_native_stage("mini_shader_bootstrap_CPU_known_returned_refusal_GPU_not_started");qwen_native_halt("mini_shader_bootstrap_CPU_admission_refused");
     }catch(...){qwen_native_stage("mini_shader_bootstrap_CPU_known_returned_refusal_GPU_not_started");qwen_native_halt("mini_shader_bootstrap_CPU_admission_refused");}
 }

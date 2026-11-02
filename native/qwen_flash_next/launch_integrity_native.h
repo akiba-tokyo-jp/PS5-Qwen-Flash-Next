@@ -21,19 +21,26 @@ static int qwen_launch_headroom_sample(void *unused) {
         "vm.stats.vm0.v_free_min","vm.stats.vm0.v_free_target","vm.stats.vm0.v_free_reserved","vm.stats.vm0.v_free_count"};
     for(unsigned i=0;i<7;++i){size_t n=4;if(sysctlbyname(names[i],v+i,&n,NULL,0)||n!=4)return 0;}
 #ifdef QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES
-    /* Match the current qualified CPU-only metadata phase. No GPU/model
-     * implementation is linked to this opt-in payload. OS counters stay read-only. */
+    /* CPU-only application policy; this does not write either OS threshold.
+     * The independent-threshold experiment is limited to tiny control metadata.
+     * The default and the data-copy payload retain the additive policy. */
+#ifdef QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS
+    const uint64_t required=(uint64_t)(v[3]>v[5]?v[3]:v[5])+QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES;
+#else
     const uint64_t reserve=(uint64_t)v[5]+QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES;
+    const uint64_t required=(uint64_t)v[3]+reserve;
+#endif
 #else
     const uint64_t reserve=v[5]>256?v[5]:256;
+    const uint64_t required=(uint64_t)v[3]+reserve;
 #endif
     int qualified=v[1]==16384&&v[2]&&v[5]&&v[5]<=v[3]&&v[3]<v[4]&&v[4]<=v[2]&&
-        v[0]<=v[2]&&v[6]<=v[2]&&(uint64_t)v[0]>=v[3]+reserve&&(uint64_t)v[6]>=v[3]+reserve;
+        v[0]<=v[2]&&v[6]<=v[2]&&(uint64_t)v[0]>=required&&(uint64_t)v[6]>=required;
 #ifdef QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES
     static int pressure_reported;
     if(!qualified&&!pressure_reported++)
         (void)report("CPU_METADATA_PRESSURE free_before=%u free_after=%u OS_minimum=%u OS_reserved=%u selected_margin=%u required=%llu",
-            v[0],v[6],v[3],v[5],QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES,(unsigned long long)(v[3]+reserve));
+            v[0],v[6],v[3],v[5],QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES,(unsigned long long)required);
 #endif
     return qualified;
 }

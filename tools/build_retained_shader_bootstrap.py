@@ -20,6 +20,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','cache','current','out'):
         parser.add_argument('--'+name,type=Path,required=True)
+    parser.add_argument('--bundle-plan',type=Path)
+    parser.add_argument('--model-proof',type=Path)
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
     prior=load(args.current/'provenance/native-link.receipt.private.json')
     retained=load(args.current/'provenance/retained-relink-inputs.private.json')
@@ -59,6 +61,11 @@ def main():
     mini=ROOT/'native/app/mini_shader_bootstrap.cpp'
     entry='#include <cstdint>\nextern "C" void qwen_app_select_resident_CPU_metadata_scope(bool);\n'+mini.read_text()
     entry=entry.replace('int main(int argc,char **argv) {','int main(int argc,char **argv) {\n    qwen_app_select_resident_CPU_metadata_scope(true);',1)
+    bundle=None;extra_inputs=[]
+    if args.bundle_plan or args.model_proof:
+        if not(args.bundle_plan and args.model_proof):raise ValueError('Original bundle plan and current model proof are both required')
+        from native_bundle_restore_entry import compose
+        entry,bundle,extra_inputs=compose(entry,args.bundle_plan,args.model_proof,args.out)
     source=args.out/'bootstrap.cpp';source.write_text(entry,encoding='utf-8',newline='\n')
     up=args.cache/('upstream/llama.cpp-'+REVISION);sdk=args.workspace/'toolchain/ps5-sdk-radv/ps5-payload-sdk'
     obj=args.out/'bootstrap.o'
@@ -117,12 +124,17 @@ def main():
     forbidden=re.compile(r'^(?:vk[A-Z]|radv_|aco_|llama_|ggml_(?:backend|vk)_|qwen_native_gpu_)')
     if any(forbidden.match(line.split()[0]) for line in symbols.splitlines() if line.split()):raise ValueError('GPU/model implementation leaked into the CPU bootstrap')
     if any(n.startswith(('sceAgc','sceVideoOut')) for n in imports['resolved']):raise ValueError('GPU/display API in the CPU bootstrap')
+    entry_imports=subprocess.check_output([str(llvm/'llvm-nm.exe'),'--undefined-only',str(obj)],text=True)
+    if bundle and ('statfs' in imports['resolved'] or re.search(r'\b(?:lstat|statfs)\b',entry_imports)):
+        raise ValueError('New native copy entry must use descriptor identity and external capacity observation')
+    if bundle:bundle['new_entry_path_stat_imports']=0
     report=dict(completed=True,baseline_relink=False,artifact=record(image),CPU_only=True,driver_code_linked=False,
                 model_engine_linked=False,actual_current_CPU_providers={k:record(r['path']) for k,r in providers.items()},
                 inputs_before=used,real_module_import_audit=imports,commands=jobs,
-                source_inputs=[record(p) for p in (Path(__file__),source,public_main,mini,args.out/'mini_shader_boundaries.inc',args.out/'mini_shader_admission.inc')],
+                source_inputs=[record(p) for p in (Path(__file__),source,public_main,mini,args.out/'mini_shader_boundaries.inc',args.out/'mini_shader_admission.inc')]+extra_inputs,
                 driver_revision='872cc1264ad8ba5d6b888b092968fa5858a38c58',driver_profile='cumulative-idle',
                 current_run_all_asset_bootstrap=True,PS5_operations=0,native_execution=False,production_adopted=False)
+    if bundle:report['required_bundle_restore']=bundle
     save_path.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     (args.out/'result.private.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(dict(CPU_only_link_passed=True,actual_CPU_providers=len(providers),GPU_or_model_symbols=0,

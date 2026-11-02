@@ -44,6 +44,20 @@ def start(args):
     if args.package:
         package=load(args.package);need(package['completed'] and package['normalized_SELF_roundtrip_equal'],'Qualified host SELF package required')
         image=package['SELF']
+    dependency_proof=None
+    if state.get('restored_required_bundle_inputs'):
+        need(args.package and len(state['restored_required_bundle_inputs'])==3,
+             'All restored live inputs and an explicitly rebound SELF are required')
+        identity_audit=package.get('required_bundle_identity_audit',{})
+        need(identity_audit.get('linked_definitions_verified')==3 and identity_audit.get('original_owner_unchanged') is True,
+             'The actual linked SELF must contain the three authenticated fresh identities')
+        dependency_proof=state['required_bundle_inputs']
+        need(record(dependency_proof['path'])==dependency_proof,'Required live-input proof changed')
+        dependencies=load(dependency_proof['path'])
+        need(dependencies['completed'] and dependencies['live_native_metadata_verified'] and
+             dependencies['physical_and_mounted_observations']==138 and
+             dependencies['identity_provider']==identity_audit['provider'],
+             'The same linked data provider must match all 69 physically observed inputs')
     need(record(image['path'])==image,'Selected SELF changed')
     run=secrets.token_hex(16);nonce=secrets.token_hex(16);report='/app0/qwen-runtime/plan-'+run+'.json'
     policy=load(args.current/'qwen-runtime/development.json');app=load(args.current/'qwen-runtime/app.json')
@@ -67,6 +81,7 @@ def start(args):
     launcher=build(args.workspace,args.mount_plan,new,new,[],'launch',args.out/'launch',resident=resident)
     plan=dict(completed=True,run_id=run,SELF=image,old_files=old,new_files=new,pending=pending,report=report,
         model_proof=record(args.model_proof),shader_CPU_proof=shader,clock=record(args.clock),
+        required_bundle_inputs=dependency_proof,
         publication=record(args.out/'publication/plan.private.json'),launch=record(args.out/'launch/plan.private.json'),
         title_launches_maximum=1,initializer_requests=0,automatic_retries=0,ordinary_close_and_original_restore_required=True)
     save(args.out/'plan.private.json',plan)

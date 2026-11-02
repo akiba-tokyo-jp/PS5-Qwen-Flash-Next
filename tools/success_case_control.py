@@ -33,11 +33,15 @@ def digest_expression(row,path=None):
     return 'qwen_launch_digest_matches('+json.dumps(path or row['remote'])+','+str(row['bytes'])+'ULL,'+json.dumps(row['sha256'])+')'
 
 
-def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None):
+def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None):
     workspace=Path(workspace);out=Path(out);out.mkdir(parents=True,exist_ok=False)
     base_plan=load(mount_plan);base=base_plan['controller'];need(record(base['path'])==base,'Successful controller input changed')
     text=Path(base['path']).read_text();prefix='/data/ai/moss-qwen-case-'+secrets.token_hex(16)
     text,n=re.subn(r'^#define LAUNCH_LOG_PREFIX .*$', '#define LAUNCH_LOG_PREFIX '+json.dumps(prefix),text,flags=re.M);need(n==1,'One scoped journal prefix required')
+    marker='#include "launch_integrity_native.h"'
+    need(text.count(marker)==1 and text.count('512*sizeof(struct kinfo_proc)')==1,'Exact complete process enumeration and integrity window required')
+    text=text.replace(marker,'#define QWEN_LAUNCH_WINDOW 16384u\n#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u\n'+marker,1)
+    text=text.replace('512*sizeof(struct kinfo_proc)','128*sizeof(struct kinfo_proc)',1)
     for name,rows,mounted in (('new_files_valid',new_files,False),('new_mounted_valid',new_files,True)):
         expression='&&'.join(digest_expression(r,ALIAS+r['remote'][len(PHYSICAL):] if mounted else None) for r in rows)
         text,n=re.subn(r'static int '+name+r'\(void\)\{[^\n]*\}',lambda m:'static int '+name+'(void){return '+expression+';}',text)
@@ -54,12 +58,17 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
 '''
     text+='static int old_files_valid(void){return '+'&&'.join(digest_expression(r) for r in old_files)+';}\n'
     text+='static int pending_valid(void){return '+('&&'.join(digest_expression(r) for r in pending) or '0')+';}\n'
-    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8};need(operation in numbers,'One known operation required')
+    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9};need(operation in numbers,'One known operation required')
+    if operation!='restore-bundle':
+        text=text.replace('#include "launch_integrity_native.h"','#define QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS 1\n#include "launch_integrity_native.h"',1)
     need(len(old_files)==len(new_files)==7 and all(r['remote'].startswith(PHYSICAL+'/') for r in old_files+new_files),
          'Exactly the seven current owned application files are required')
     if operation=='publish':need(len(pending)==3,'One SELF and two startup files are required')
     context='#define CASE_OPERATION '+str(numbers[operation])+'\n#define CASE_ARGUMENT '+json.dumps('--'+operation)+'\n#define CASE_LOG '+json.dumps(prefix+'.log')+'\n'
     context+='int sceSystemServiceKillApp(int,int,int,int);\n'
+    if operation=='finalize-bundle':
+        need(isinstance(finalize_context,str) and finalize_context,'Exact completed native CPU output context required')
+        context+=finalize_context+'\n#include "required_bundle_finalize.h"\n'
     if operation=='restore-bundle':
         need(bundle_link and bundle_link['CPU_only'] is True and bundle_link['source_writes']==0 and
              bundle_link['GPU_calls']==0 and bundle_link['Direct_CPU_bytes'] in (4<<20,8<<20),'Bounded successful CPU packer required')
@@ -67,14 +76,13 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
             need(record(row['path'])==row,'CPU pack input changed')
         context+='int qwen_bundle_payload_main(int,char**);\n'
         marker='#include "launch_integrity_native.h"'
-        need(text.count(marker)==1 and text.count('512*sizeof(struct kinfo_proc)')==1,'Exact bounded CPU helper metadata required')
-        text=text.replace(marker,'#define QWEN_LAUNCH_WINDOW (256u<<10)\n#define QWEN_LAUNCH_CPU_HEADROOM_WAIT 1\n#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u\n'+marker,1)
+        need(text.count(marker)==1,'Exact bounded CPU helper metadata required')
+        text=text.replace(marker,'#define QWEN_LAUNCH_CPU_HEADROOM_WAIT 1\n'+marker,1)
         # This still collects every process or refuses the scope; it never
         # truncates enumeration. The complete boot/service/native guards stay.
-        text=text.replace('512*sizeof(struct kinfo_proc)','256*sizeof(struct kinfo_proc)',1)
     if operation=='dependencies':
-        need(dependencies and len(dependencies)<=128 and len(set(dependencies))==len(dependencies) and
-             all(p.startswith(PHYSICAL+'/') and '..' not in p.split('/') for p in dependencies),'Exact distinct owned dependency paths required')
+        need(dependencies and len(dependencies)<=256 and len(set(dependencies))==len(dependencies) and
+             all(p.startswith((PHYSICAL+'/',ALIAS+'/')) and '..' not in p.split('/') for p in dependencies),'Exact distinct owned dependency paths required')
         context+='#define CASE_DEPENDENCY_COUNT '+str(len(dependencies))+'u\n'
         context+='static const char*case_dependencies[]={'+','.join(map(json.dumps,dependencies))+'};\n'
     if resident:
@@ -152,7 +160,10 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
               context=record(out/'case_context.h'),source=record(source),imports=imports,commands=jobs,
               original_mount_plan=record(mount_plan),old_files=old_files,new_files=new_files,pending=pending,
               close_admission=close,bundle_link=bundle_link,remote=prefix+'.elf',log=prefix+'.log',claim=prefix+'-'+operation+'.once',
-              initializer_requests=0,mount_calls=0,GPU_calls=0,automatic_retries=0)
+              initializer_requests=0,mount_calls=0,GPU_calls=0,automatic_retries=0,
+              maximum_complete_process_rows=128,whole_integrity_window_bytes=16384,
+              CPU_metadata_margin_pages=21,OS_minimum_and_reserved_read_only=True)
+    plan['CPU_control_independent_thresholds']=operation!='restore-bundle'
     save(out/'plan.private.json',plan);return plan
 
 
