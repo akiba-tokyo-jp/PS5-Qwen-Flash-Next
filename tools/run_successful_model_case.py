@@ -67,10 +67,20 @@ def start(args):
         effective=package['effective_application_policy'];profile=effective['profile']
         need(record(profile['path'])==profile,'Compiled effective application policy changed')
         keys={'native_next_five_normal'} if effective['kind']=='R1-direct' else {'native_next_five_normal','native_resident_main_SELF'}
-        need(effective['kind'] in ('R1-direct','CPU-SELF-window') and set(effective['overrides'])==keys,
+        if effective['kind']=='Q1-shared':keys.add('native_shared_Q4')
+        need(effective['kind'] in ('R1-direct','CPU-SELF-window','Q1-shared') and set(effective['overrides'])==keys,
              'Only an explicitly compiled token-durability or smaller CPU SELF scope is admitted here')
         policy.update(effective['overrides'])
     gate=rebind_directory(policy['native_first_generation_validation'],proof,proof['current_boot'])
+    if args.package and package.get('effective_application_policy',{}).get('kind')=='Q1-shared':
+        layer=package['effective_application_policy']['model_layer'];publication=layer['publication']
+        need(record(publication['path'])==publication and load(publication['path'])['completed'] and
+             layer['parent_recipe_sha256']==gate['model_receipt_sha256'] and
+             record(layer['model_receipt']['path'])==layer['model_receipt'],
+             'The exact sealed additional layer over the admitted current model is required')
+        gate.update(model_receipt_bytes=layer['model_receipt']['bytes'],model_receipt_sha256=layer['model_receipt']['sha256'],
+                    shared_Q4_source_integrity=layer['source_policy'])
+        app['model_receipt']=layer['application_model_receipt']
     gate.update(run_id=run,candidate_SELF_bytes=image['bytes'],candidate_SELF_sha256=image['sha256'])
     policy['native_first_generation_validation']=gate
     shader=state['successful_route_20261102']['current_boot_shader_CPU']
@@ -81,7 +91,12 @@ def start(args):
     resident=policy['native_resident_launch_integrity'];resident.update(run_id=run,nonce=nonce,receipt_path='/app0/qwen-runtime/resident-launch-'+run+'.json')
     app.update(admission_report=report,clock_calibration=load(args.clock))
     app_path=args.out/'app.json';policy_path=args.out/'development.json'
-    save(app_path,app);save(policy_path,policy)
+    save(app_path,app)
+    if args.package and package.get('effective_application_policy',{}).get('kind')=='Q1-shared':
+        with policy_path.open('x',encoding='utf-8',newline='\n') as stream:
+            stream.write(json.dumps(policy,separators=(',',':'))+'\n')
+    else:save(policy_path,policy)
+    need(policy_path.stat().st_size<=1<<20,'The complete startup policy must fit the unchanged native metadata bound')
     updates=[dict(image,remote=old[0]['remote']),dict(record(app_path),remote=old[1]['remote']),dict(record(policy_path),remote=old[2]['remote'])]
     selected={r['remote']:r for r in updates};new=[selected.get(r['remote'],r) for r in old]
     staging='/data/ai/moss-qwen-case-'+run

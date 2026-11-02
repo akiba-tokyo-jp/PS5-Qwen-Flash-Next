@@ -94,10 +94,11 @@ that every prefill optimization is impossible.
 ## G1: actual ranking state and GPU implementation
 
 The actual selected graph provider is reconstructed byte-for-byte, including
-its complete object SHA2567dedd212. The application now has an experimental
-GGML F32 multiply ranking path with a2KiB per-layer cache coefficient input,
-latched across both verification rows. Existing GGML input/reuse lifetime hooks
-are used. It requires no new indirect-dispatch primitive or driver change.
+its complete object SHA2567dedd212. Two experimental GGML F32 multiply ranking
+paths latch the cache state across both verification rows. The first publishes
+a2KiB coefficient input per layer. The revised path publishes one96KiB matrix
+per graph evaluation and takes48 layer views. Existing GGML input/reuse lifetime
+hooks are used. Neither requires a new indirect-dispatch primitive or driver change.
 The separate all-hit continuation remains unimplemented.
 
 Observational native scope64110 keeps the original graph/arithmetic and checks
@@ -112,8 +113,24 @@ A qualification-only observer hashes each existing248320-column F32 CPU row
 after the original observer. It adds no GPU download, full-row copy or retained
 row buffer. Independent host SHA256, callback forwarding/clear and diagnostic
 geometry controls pass. The R1 matched full-row qualification passes as above;
-G1 GPU rows remain unqualified. Its instrumented timings must not be used for
-speed claims.
+G1 numerical64200/64201 and backend-qualified64220 match all69 complete rows,
+routes and tokens. The revised batched path64270 also matches those69 rows.
+Its result buffer is observed on Vulkan0, device type2 (integrated GPU), for
+both one- and two-row graphs. Instrumented timings are excluded from speed claims.
+
+Both matched ABBA comparisons complete12 requests, with exact tokens, ordered
+routes, source demand and durable ledger payloads, finite/counting/reset checks,
+positive retirement and ordinary seven-file restoration.
+
+| GPU ranking implementation | Native ABBA | Cold regression | Retained regression | Prefix regression |
+| --- | --- | ---: | ---: | ---: |
+| Per-layer coefficient input | 64230–64233 | 2.190791% | 6.393600% | 6.104284% |
+| Single coefficient matrix | 64290–64293 | 2.119455% | 6.857214% | 6.695289% |
+
+Neither measured ranking-only implementation is adopted. Reducing the last
+request's input publications from1824 to38 does not improve the measured warm
+cost. This does not establish transfer count as the cause of the regression.
+Ranking/top-k fusion and the separate all-hit continuation remain open work.
 
 G1 numerical launch64152 stops before main/configuration/model/GPU entry. Its
 first synchronous1MiB Direct SELF read returns, then the original CPU scope
@@ -125,7 +142,9 @@ application allocation remains owned until that ordinary OS close; no pre-close
 unmap/release is claimed. There is no unchanged launch retry or initializer.
 This is a startup-pressure result, not a GPU numerical or speed result.
 A separately compiled64KiB SELF window preserves minimum+21, full whole-SHA/
-inode/EOF binding and all model/GPU guards; its new native scope is pending.
+inode/EOF binding and all model/GPU guards. All subsequent Q1/G1 numerical and
+timing cases above complete using that changed startup scope. The selected
+production R1 application retains its separately qualified original reader.
 
 ## Reproducible current source
 
@@ -148,10 +167,26 @@ matrices and composes144 shared Q4 matrices:253 in total. New-only publication
 unchanged parent identities and stable directory snapshots, with positive helper
 retirement/removal. The first host collector's1MiB journal limit is exceeded;
 the same positive journal is collected with a larger bound, without resubmission.
-No old weight pack is copied or changed; no model or GPU is launched. The new
-layer's native model-source integration, quality and speed remain pending.
+No old weight pack is copied or changed by publication. Entry64240 integrates
+the complete parent and new layer, validates144 additional tensor types/shapes
+and adjusts the actual device-weight accounting by117964800 bytes. Normal
+native64250 completes three finite counting requests with positive retirement.
+Its CPU heap peak is503382016 bytes (about480MiB), not503MiB; the reported
+CPU_Direct_heap_bytes is mapped capacity rather than live allocation usage.
 
-Q1/Q2/Q3/I1/S1 retain the outstanding work in the
+Matched Q1 ABBA64280–64283 completes12 requests and all ordinary restores.
+All22-token answers and durable payloads match, but ordered routes and source
+demand differ with the changed approximate weights. Cold complete time worsens
+1.017555%. Retained mean reduction is only0.080833%, with paired savings
+-5.355023/+8.949735ms against7.635015ms control spread. Prefix complete time
+worsens1.071170%, with14.914809/22.548862ms regressions. This measured profile
+is not adopted. It does not pass a broad answer-quality or cross-precision F32
+qualification; within-program cache comparisons are not cross-precision errors.
+The tested binary's legacy shared_Expert_weight_type field incorrectly says
+Q8_0 although its typed model and layer contract use Q4_0. The builder corrects
+that metadata for future builds; no corrected binary is claimed to have run.
+
+Q2/Q3/G1-continuation/I1/S1 retain the outstanding work in the
 [campaign plan](hardware-bound-performance-plan-20261102.md). In particular,
 synthetic IQ2 codec fixtures are not real PS5 activation calibration, and Q3's
 direct/padded geometry negatives do not dispose of a new cross-row format.

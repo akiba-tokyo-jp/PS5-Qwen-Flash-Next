@@ -22,8 +22,17 @@ application policy. Exact source audit and ordinary OS close64154 positively
 retire the owner/owned backing and restore all seven files. Do not retry that
 unchanged SELF. A new64KiB-window scope keeps min+21 and all model/GPU guards.
 Q1 new-layer publication64167 positively seals53 new files and all518 parent
-identities/snapshots, then retires/removes its helper. Those new active candidate
-assets must survive until Q1 disposition; no Q1 model inference has run yet.
+identities/snapshots. Native64250 and ABBA64280–64283 complete normally; the
+additional144 shared Q4 matrices yield no consistent retained gain and worsen
+prefix time1.071170%, so the measured profile is not adopted. Its53 disjoint
+new source files can now be retired with an exact manifest while idle; protect
+all518 parent identities and all69 required production bundle inputs.
+G1 per-layer and single-matrix GPU ranking both pass all69 full F32 rows and
+actual integrated-GPU placement. ABBA64230–64233 and64290–64293 are negative:
+retained/prefix regressions about6.1–6.9%. Neither ranking-only profile is adopted.
+The batched source reduces48 input publications to1 per graph evaluation;
+do not mislabel that as a measured speed improvement. All-hit continuation,
+Q2 real activation calibration/native IQ2, Q3 cross-row format, I1 and S1 remain.
 
 Read `docs/native-performance-comparisons-20261102.md` before using older
 pending/absent-runtime wording. Runtime63121 and mount63133 remain admitted;
@@ -35,7 +44,8 @@ adoption; truthful direct-entry R1 ABBA64130–64133 and adoption are recorded a
 ABBA64030–64033 has no consistent retained whole gain and worsens prefix time;
 do not adopt that measured profile. G1 original-arithmetic shadow64110 passes
 all three requests/actual ranking rows and ordinary restoration; actual GPU
-ranking and full-vocabulary cross-program qualification remain pending.
+ranking and full-vocabulary cross-program qualification subsequently pass as
+recorded above, with negative matched ranking-only performance.
 Entry64063 and graph64020 reproduce their complete original objects byte-for-
 byte. Missing generated views are no longer a source compilation blocker.
 All eight candidates remain in scope. Never treat this checkpoint as completion.

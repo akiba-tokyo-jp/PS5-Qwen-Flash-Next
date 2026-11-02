@@ -37,6 +37,9 @@ extern "C" void __wrap_qwen_app_routing_event_begin(){
 extern "C" void qwen_gpu_cache_rank_coefficients(unsigned layer,float*out,std::size_t count){
     std::lock_guard<std::mutex> lock(mutex);snapshot.coefficients(layer,out,count);++GPU_input_publications;
 }
+extern "C" void qwen_gpu_cache_rank_coefficients_all(float*out,std::size_t count){
+    std::lock_guard<std::mutex> lock(mutex);snapshot.coefficients_all(out,count);++GPU_input_publications;
+}
 extern "C" void __wrap_qwen_app_route_rank(ggml_tensor*dst,const ggml_tensor*src,int ith,int nth,void*opaque){
     std::lock_guard<std::mutex> lock(mutex);__real_qwen_app_route_rank(dst,src,ith,nth,opaque);++CPU_rank_calls;
     if(QWEN_GPU_RANK_VALIDATE_SHADOW){

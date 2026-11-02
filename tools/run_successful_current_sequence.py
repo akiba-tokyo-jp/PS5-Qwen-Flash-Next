@@ -9,6 +9,7 @@ import subprocess
 import sys
 import time
 import urllib.parse
+import urllib.error
 
 from build_performance_quantizer import record
 from start_success_route import load,need,save
@@ -23,7 +24,7 @@ def main():
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--package',action='append',type=Path,required=True)
     parser.add_argument('--clock',type=Path,help='Historical receipt compatibility only; each case always creates a fresh calibration')
-    parser.add_argument('--scope',choices=('P1','R1','R1-direct','G1-shadow','G1','F32'),required=True)
+    parser.add_argument('--scope',choices=('P1','R1','R1-direct','G1-shadow','G1','F32','Q1'),required=True)
     parser.add_argument('--case-base',type=int,required=True)
     args=parser.parse_args();need(1<=len(args.package)<=4,'One explicit scope of at most four packages required')
     args.out.mkdir(parents=True,exist_ok=False)
@@ -68,14 +69,20 @@ def main():
         script('observe_successful_model_start.py',['--case-plan',case/'plan.private.json'],args.out/('terminal-'+str(current_case)+'.private.log'))
         plan=load(case/'plan.private.json');lan=lan_module();remote=PHYSICAL+plan['report'][5:]
         for ordinal in range(3):
-            for suffix,limit in (('routes',4<<20),('token-ledger',128<<10)):
-                raw=lan.web('/fs'+urllib.parse.quote(remote+'.arm'+str(ordinal)+'.'+suffix,safe='/'),limit)
+            for suffix,limit in (('routes',4<<20),('token-ledger',2<<20)):
+                try:raw=lan.web('/fs'+urllib.parse.quote(remote+'.arm'+str(ordinal)+'.'+suffix,safe='/'),limit)
+                except urllib.error.HTTPError as error:
+                    actual=load(case/'passive-observer/native.private.bin')['requests'][ordinal]
+                    need(error.code==404 and suffix=='token-ledger' and actual['metrics']['generated_tokens']==0 and
+                         actual['token_ids']==actual['output_bytes']==[], 'Only a completed empty output can have no ledger file')
+                    raw=b''
                 (case/('native-arm'+str(ordinal)+'.'+suffix+'.private.bin')).write_bytes(raw)
         script('close_successful_current_model.py',common+['--case-plan',case/'plan.private.json','--out',closed],
             args.out/('close-'+str(current_case)+'.private.log'))
         result=load(closed/'result.private.json');need(result['completed'] and result['current_seven_restored_and_native_hashed'] and
             result['ordinary_exit_observed'] and not result['unknown_completion'],'Positive ordinary restore required before the next package')
         journal=(case/'native-stages.private.log').read_bytes()
+        G1_stats=None
         if args.scope=='P1':
             events=[list(map(int,r)) for r in re.findall(rb'P1_prefill_selected last_only=(\d+) tokens=(\d+) first_pos=(\d+) output_rows=(\d+)',journal)]
             exercised=len(events)==2 and all(r[1:3]==[30,0] and r[3]==(1 if r[0] else 30) for r in events)
@@ -93,6 +100,14 @@ def main():
                 r['complete_request_span_ms']>=r['metrics']['total_ms'] and
                 abs(r['complete_request_span_ms']-r['CPU_nested_calls_inclusive_exclusive_ns'][40]/1e6)<1
                 for r in native['requests'])
+        elif args.scope=='Q1':
+            native=load(case/'passive-observer/native.private.bin');selected=load(package)
+            changed=selected.get('effective_application_policy',{}).get('kind')=='Q1-shared'
+            events=[[int(changed),144 if changed else 0,r['metrics']['generated_tokens'],r['token_ledger_sync_calls']] for r in native['requests']]
+            exercised=len(events)==3 and all(r.get('additional_shared_Q4_candidate',False)==changed and
+                r['full_F32_finite'] and r['request_reset_completed'] and r['token_ledger_records']==r['metrics']['generated_tokens'] and
+                r['token_record_sync_policy']=='request_end' and r['token_ledger_sync_calls']==int(r['metrics']['generated_tokens']>0)
+                for r in native['requests'])
         elif args.scope=='F32':
             events=[list(map(int,r)) for r in re.findall(rb'F32_request_completed request=(\d+) rows=(\d+) failures=(\d+)',journal)]
             rows=re.findall(rb'F32_row request=(\d+) row=(\d+) columns=(\d+) sha256=([0-9a-f]{64})',journal)
@@ -104,10 +119,13 @@ def main():
             if args.scope=='G1-shadow':
                 exercised=len(events)>=6 and events[-1][1]>0 and events[-1][2]>=events[-1][1] and all(r[3]==0 and r[4]==1 and r[5:]==[0,0,0] for r in events)
             else:
-                exercised=len(events)>=6 and events[-1][3]>0 and all(r[1]==r[2]==0 and r[4]==0 and r[5:]==[0,0,0] for r in events)
+                GPU=len(events)>=6 and events[-1][3]>0 and all(r[1]==r[2]==0 and r[4]==0 and r[5:]==[0,0,0] for r in events)
+                CPU=len(events)>=6 and events[-1][1]>0 and all(r[2]==r[3]==r[4]==0 and r[5:]==[0,0,0] for r in events)
+                exercised=GPU or CPU;G1_stats=events
+                events=[[int(GPU),events[-1][0],events[-1][1],events[-1][3]]] if events else []
         row=dict(case=current_case,package=record(package),case_plan=record(case/'plan.private.json'),
             close=record(closed/'result.private.json'),scope_events=events,all_intended_events_exercised=exercised,
-            native_terminal=record(case/'passive-observer/native.private.bin'))
+            native_terminal=record(case/'passive-observer/native.private.bin'),G1_native_stats=G1_stats)
         save(args.out/('case-'+str(current_case)+'.complete.private.json'),row);records.append(row)
         print(json.dumps(dict(case=current_case,completed=True,current_restored=True,all_intended_events_exercised=exercised,events=events)),flush=True)
         need(exercised,'Scope effect was incomplete; original restored and remaining sequence stopped')

@@ -43,16 +43,21 @@ def main():
     application_policy=None
     if args.application_policy:
         policy=load(args.application_policy)
-        if not policy['completed'] or policy['kind'] not in ('R1-direct','CPU-SELF-window') or not policy['model_and_GPU_topology_unchanged']:
+        if not policy['completed'] or policy['kind'] not in ('R1-direct','CPU-SELF-window','Q1-shared') or not policy['model_and_GPU_topology_unchanged']:
             raise ValueError('A completed scoped direct-entry policy is required')
         if policy['entry_artifact'] not in new or record(policy['entry_artifact']['path'])!=policy['entry_artifact']:
             raise ValueError('The effective policy must belong to the actual replaced entry')
-        if policy['kind']=='CPU-SELF-window':
+        if policy['kind'] in ('CPU-SELF-window','Q1-shared'):
             reader=policy['CPU_SELF_provider']['artifact']
             if reader not in new or record(reader['path'])!=reader or not policy['CPU_SELF_provider']['OS_minimum_plus_21_unchanged']:
                 raise ValueError('The smaller SELF window must use the actual audited CPU-only replacement provider')
         application_policy=dict(profile=record(args.application_policy),overrides=policy['overrides'],kind=policy['kind'],
                                 token_sync_policy=policy['token_sync_policy'])
+        if policy['kind']=='Q1-shared':
+            layer=policy['model_layer']
+            if record(layer['publication']['path'])!=layer['publication'] or not load(layer['publication']['path'])['completed']:
+                raise ValueError('A positively completed new-only source publication is required')
+            application_policy['model_layer']=layer
     tables=original['lossless_driver_tables'];script=args.out/'tables.ld'
     script.write_text(TABLE_SCRIPT,encoding='utf-8',newline='\n')
     if record(script)['sha256']!=tables['linker_script']['sha256']:raise ValueError('Exact selected table script was not reconstructed')

@@ -18,6 +18,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','prepared','out'):
         parser.add_argument('--'+name,type=Path,required=True)
+    parser.add_argument('--backend-qualification',action='store_true')
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
     prepared=load(args.prepared)
     need(prepared['completed'] and prepared['selected_object_byte_exact'] and not prepared['section_differences'],
@@ -53,6 +54,7 @@ def main():
                    'selection_probs=qwen_app::build_gpu_cache_rank(ctx0,res,selection_probs,unsigned(il));')
     graph.write_text(text,encoding='utf-8',newline='\n')
     command=prepared['command'].copy();command[command.index('-c')+1]=str(graph);command[command.index('-o')+1]=str(obj)
+    command[1:1]=['-DQWEN_GPU_RANK_VALIDATE_BACKEND='+str(int(args.backend_qualification))]
     command[1:1]=['-I',str(ROOT/'native/app')]
     if '-MF' in command:command[command.index('-MF')+1]=str(folder/'graph.private.d')
     run(command,'candidate-graph');artifacts['candidate']['graph']=record(obj)
@@ -60,11 +62,13 @@ def main():
     report=dict(completed=True,prepared=record(args.prepared),artifacts=artifacts,commands=commands,inputs=inputs,
         control_graph_is_original_retained_provider=True,latched_state_host_fault_and_arithmetic_controls_passed=True,
         native_shadow_qualification_required=True,original_nonnegative_score_multiplication_preserved=True,
-        GPU_coefficients_per_layer_bytes=2048,maximum_decode_rows=2,fixed_Top2_scope_only=True,
+        GPU_coefficients_per_layer_bytes=2048,GPU_coefficients_per_graph_bytes=98304,
+        GPU_input_publications_per_graph_evaluation=1,maximum_decode_rows=2,fixed_Top2_scope_only=True,
         GGML_input_lifetime_and_graph_reuse_hooks_used=True,source_weight_or_driver_changes=0,
         link_flags=['--wrap=qwen_app_route_begin','--wrap=qwen_app_route_resident','--wrap=qwen_app_routing_event_begin',
                     '--wrap=qwen_app_route_rank','--wrap=qwen_app_route_stats'],
-        GPU_ranking_source_implemented=True,all_hit_continuation_implemented=False,PS5_operations=0,
+        GPU_ranking_source_implemented=True,backend_result_buffer_diagnostics=bool(args.backend_qualification),
+        all_hit_continuation_implemented=False,PS5_operations=0,
         native_GPU_numerics_or_speed_qualified=False,production_adopted=False)
     save(args.out/'result.private.json',report)
     print(json.dumps({k:v for k,v in report.items() if k not in ('prepared','artifacts','commands','inputs','link_flags')}))

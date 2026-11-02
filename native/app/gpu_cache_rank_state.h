@@ -22,5 +22,9 @@ public:
         if(!latched_||layer>=48||!out||count!=512)throw std::invalid_argument("One latched complete GPU rank layer is required");
         for(unsigned i=0;i<512;++i)out[i]=event_[layer*512+i]?1.5f:1.0f;
     }
+    void coefficients_all(float*out,std::size_t count)const{
+        if(!latched_||!out||count!=48*512)throw std::invalid_argument("One complete latched trunk ranking matrix is required");
+        for(unsigned i=0;i<48*512;++i)out[i]=event_[i]?1.5f:1.0f;
+    }
 };
 }

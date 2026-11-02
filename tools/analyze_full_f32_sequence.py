@@ -16,6 +16,7 @@ def main():
     args=parser.parse_args();sequence=load(args.sequence)
     need(sequence['completed'] and sequence['scope']=='F32' and sequence['all_ordinary_closes_and_exact_restores'],
          'A completed closed numerical qualification sequence required')
+    need(2<=len(sequence['cases'])<=4,'At least two completed programs are required for a matched comparison')
     evidence=[record(args.sequence)];cases=[]
     for case in sequence['cases']:
         need(case['all_intended_events_exercised'],'Every original completed row must be observed')

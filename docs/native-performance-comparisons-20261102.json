@@ -21,7 +21,12 @@
   },
   "R1": {
     "status": "adopted",
-    "ABBA_cases": [64130, 64131, 64132, 64133],
+    "ABBA_cases": [
+      64130,
+      64131,
+      64132,
+      64133
+    ],
     "native_requests": 12,
     "actual_control_syncs_per_request": 22,
     "actual_candidate_syncs_per_request": 1,
@@ -31,7 +36,10 @@
     "both_warm_pairs_exceed_control_variation": true,
     "consistent_cold_gain_established": false,
     "tokens_routes_source_demand_and_durable_payloads_exact": true,
-    "numerical_cases": [64150, 64151],
+    "numerical_cases": [
+      64150,
+      64151
+    ],
     "whole_F32_rows_per_case": 69,
     "vocabulary_columns": 248320,
     "F32_bytes_hashed_per_case": 68536320,
@@ -44,20 +52,32 @@
   },
   "P1": {
     "status": "measured_profile_not_adopted",
-    "latest_ABBA_cases": [64030, 64031, 64032, 64033],
+    "latest_ABBA_cases": [
+      64030,
+      64031,
+      64032,
+      64033
+    ],
     "native_requests": 12,
     "both_prefills_actually_selected_each_case": true,
     "tokens_routes_sources_and_ledger_payloads_exact": true,
     "consistent_retained_whole_gain": false,
-    "prefix_whole_paired_regressions_ms": [31.729, 22.979],
+    "prefix_whole_paired_regressions_ms": [
+      31.729,
+      22.979
+    ],
     "all_prompt_lengths_or_boundary_states_disposed": false
   },
   "G1": {
-    "status": "shadow_passed_changed_startup_scope_pending",
+    "status": "two_GPU_ranking_profiles_measured_not_adopted",
     "native_shadow_case": 64110,
-    "original_ranking_rows_checked_per_request": [1056, 1056, 2112],
+    "original_ranking_rows_checked_per_request": [
+      1056,
+      1056,
+      2112
+    ],
     "shadow_geometry_or_variant_failures": 0,
-    "GPU_model_execution_qualified": false,
+    "GPU_model_execution_qualified": true,
     "pre_main_SELF_refusal_case": 64152,
     "synchronous_CPU_read_returned": true,
     "free_pages_after_read": 828,
@@ -65,10 +85,40 @@
     "ordinary_close_and_seven_file_restore": 64154,
     "changed_CPU_SELF_window_bytes": 65536,
     "changed_CPU_threshold_or_GPU_guards": false,
-    "all_hit_continuation_implemented": false
+    "all_hit_continuation_implemented": false,
+    "whole_F32_rows_per_case": 69,
+    "vocabulary_columns": 248320,
+    "all_full_rows_SHA256_exact": true,
+    "actual_result_buffer": "Vulkan0",
+    "actual_device_type": 2,
+    "per_layer_ABBA_cases": [
+      64230,
+      64231,
+      64232,
+      64233
+    ],
+    "batched_ABBA_cases": [
+      64290,
+      64291,
+      64292,
+      64293
+    ],
+    "per_layer_complete_regression_percent": {
+      "cold": 2.1907906,
+      "retained": 6.3936003,
+      "prefix": 6.104284
+    },
+    "batched_complete_regression_percent": {
+      "cold": 2.11945524,
+      "retained": 6.85721414,
+      "prefix": 6.69528898
+    },
+    "batched_publications_per_graph": 1,
+    "tokens_routes_sources_and_durable_payloads_exact": true,
+    "all_ordinary_closes_and_exact_restores": true
   },
   "Q1": {
-    "status": "new_layer_published_native_model_integration_pending",
+    "status": "measured_profile_not_adopted",
     "additional_shared_tensors": 144,
     "total_selected_Q4_matrices": 253,
     "source_encoding": "original_BF16_to_Q4_0_replacing_current_Q8_0",
@@ -79,12 +129,43 @@
     "unchanged_parent_source_identities": 518,
     "saved_device_weight_bytes": 117964800,
     "old_weight_packs_copied_or_modified": 0,
-    "native_model_quality_or_speed_measured": false
+    "native_model_quality_or_speed_measured": true,
+    "native_model_case": 64250,
+    "ABBA_cases": [
+      64280,
+      64281,
+      64282,
+      64283
+    ],
+    "native_requests": 12,
+    "all_counting_token_bytes_and_durable_payloads_exact": true,
+    "ordered_routes_and_source_demand_exact": false,
+    "cold_complete_regression_percent": 1.0175553,
+    "retained_complete_mean_reduction_percent": 0.0808327,
+    "retained_paired_savings_ms": [
+      -5.355023,
+      8.949735
+    ],
+    "retained_control_spread_ms": 7.635015,
+    "prefix_complete_regression_percent": 1.0711696,
+    "broad_answer_quality_qualified": false,
+    "cross_precision_full_F32_qualified": false,
+    "all_ordinary_closes_and_exact_restores": true,
+    "tested_legacy_type_metadata_incorrect": true,
+    "builder_metadata_corrected_but_not_rerun": true
   },
-  "Q2": {"status": "real_activation_calibration_and_native_indexed_shader_pending"},
-  "Q3": {"status": "direct_and_padded_format_rejected_cross_row_format_pending"},
-  "I1": {"status": "staging_leases_useful_prefetch_and_native_overlap_pending"},
-  "S1": {"status": "persistent_incremental_auxiliary_state_and_native_full_cost_verification_pending"},
+  "Q2": {
+    "status": "real_activation_calibration_and_native_indexed_shader_pending"
+  },
+  "Q3": {
+    "status": "direct_and_padded_format_rejected_cross_row_format_pending"
+  },
+  "I1": {
+    "status": "staging_leases_useful_prefetch_and_native_overlap_pending"
+  },
+  "S1": {
+    "status": "persistent_incremental_auxiliary_state_and_native_full_cost_verification_pending"
+  },
   "initializer_scope_consumed": 63121,
   "initializer_repeated": false,
   "existing_mount": 63133,

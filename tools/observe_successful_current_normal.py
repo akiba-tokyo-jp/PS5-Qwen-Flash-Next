@@ -15,10 +15,11 @@ from start_success_route import load,need,save
 from success_case_control import current_files,lan_module,PHYSICAL
 
 
-def retained_row(row,ordinal):
+def retained_row(row,ordinal,weight_candidate=False):
     return (row['full_F32_finite'] and math.isfinite(row['maximum_absolute_logit_error']) and
         row.get('Expert_weight_retention_enabled') is True and row.get('cross_cache_F32_exact_required') is False and
-        (row['same_tokens_as_independent'] and 0<row['full_F32_logit_rows_compared']<=33 if ordinal==1 else True))
+        ((row['same_tokens_as_independent'] or (weight_candidate and row.get('additional_shared_Q4_candidate') is True)) and
+         0<row['full_F32_logit_rows_compared']<=33 if ordinal==1 else True))
 
 
 def observer_source():
@@ -68,7 +69,8 @@ def main():
     save(binding_path,binding)
     source=observer_source()
     (args.case_plan.parent/'normal-observer-source.private.py').write_text(source,encoding='utf-8',newline='\n')
-    env=dict(ordinary.__dict__,retained_row=retained_row)
+    weight_candidate='shared_Q4_source_integrity' in gate
+    env=dict(ordinary.__dict__,retained_row=lambda row,ordinal:retained_row(row,ordinal,weight_candidate))
     sys.argv=[sys.argv[0],'--binding',str(binding_path),'--out',str(args.out)]
     exec(compile(source,__file__+'#current-normal','exec'),env);env['main']()
 
