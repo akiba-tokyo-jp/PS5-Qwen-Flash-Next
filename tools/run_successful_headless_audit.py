@@ -27,7 +27,9 @@ def main():
     need(effective['kind']=='headless-model-audit' and record(effective['profile']['path'])==effective['profile'] and
          profile['headless_model_audit'] and profile['model_and_GPU_guards_preserved'],'One explicitly compiled headless audit required')
     scope=profile['overrides']['native_headless_model_audit'];count=profile['headless_requests']
-    need(count==scope['requests'] and count in (1,3) and scope['HTTP_requests']==scope['VideoOut_starts']==0,'Explicit finite headless request count required')
+    unloaded=profile.get('unloaded_CPU_fixture') is True
+    need(count==scope['requests'] and (count in (1,3) or (count==0 and unloaded and scope['model_loads']==scope['GPU_calls']==0)) and
+         scope['HTTP_requests']==scope['VideoOut_starts']==0,'Explicit finite headless request count required')
     a.out.mkdir(parents=True,exist_ok=False)
     save(a.out/'intent.private.json',dict(package=record(a.package),native_requests=count,HTTP_requests=0,VideoOut_starts=0,
         automatic_retries=0,require_positive_retirement_before_close=True))
@@ -77,7 +79,8 @@ def main():
     terminal=load(case/'native.result.private.json');first=load(case/'native-first-start.private.json');plan=load(case/'plan.private.json')
     need(terminal['completed'] and terminal['pid']==first['pid'] and terminal['run_id']==plan['run_id'] and
          terminal['kind']==profile['headless_audit_kind'] and terminal['all_model_source_device_owners_positively_retired'] and
-         terminal['device_ledger_live_bytes']==0 and len(terminal['requests'])==count,'Exact positive finite model/source/device retirement required')
+         terminal['device_ledger_live_bytes']==0 and terminal['model_loads']==(0 if unloaded else 1) and
+         len(terminal['requests'])==count,'Exact positive finite model/source/device retirement required')
     observer=case/'headless-observer';observer.mkdir();(observer/'native.private.bin').write_bytes((case/'native.result.private.json').read_bytes())
     lan=lan_module();remote=PHYSICAL+plan['report'][5:]
     outputs=[('.audit','native.audit.private.json')]

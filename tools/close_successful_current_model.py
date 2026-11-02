@@ -28,14 +28,21 @@ def main():
     completed=load(observer/'complete.private.json');terminal_path=observer/'native.private.bin';terminal=load(terminal_path)
     first=load(args.case_plan.parent/'native-first-start.private.json');launch=load(args.case_plan.parent/'launch/result.private.json')
     count=0 if args.IQ2_fixture else (1 if args.headless_calibration else 3)
+    unloaded_CPU=False
     if args.headless_audit:
         package=load(case['package']['path']);effective=package['effective_application_policy'];profile=load(effective['profile']['path'])
         count=profile['headless_requests']
+        unloaded_CPU=profile.get('unloaded_CPU_fixture') is True
         need(record(effective['profile']['path'])==effective['profile'] and effective['kind']=='headless-model-audit' and
-             profile['headless_model_audit'] and profile['model_and_GPU_guards_preserved'] and count in (1,3) and
-             terminal['kind']==profile['headless_audit_kind'] and terminal['model_loads']==1 and
+             profile['headless_model_audit'] and profile['model_and_GPU_guards_preserved'] and
+             (count in (1,3) or (count==0 and unloaded_CPU and profile['headless_audit_kind']=='I1-span-fixture')) and
+             terminal['kind']==profile['headless_audit_kind'] and terminal['model_loads']==(0 if unloaded_CPU else 1) and
              completed['headless_model_audit'] and terminal['audit']==load(observer/'native.audit.private.json'),
              'One explicitly compiled completed headless model audit is required')
+        if unloaded_CPU:
+            need(terminal['audit']['completed'] and terminal['audit']['source_descriptor_worker_and_scratch_retired'] and
+                 terminal['audit']['model_loads']==terminal['audit']['GPU_calls']==0,
+                 'Positive unloaded CPU source/worker/allocation retirement required')
     if args.headless_calibration:
         package=load(case['package']['path']);effective=package['effective_application_policy'];profile=load(effective['profile']['path'])
         need(record(effective['profile']['path'])==effective['profile'] and effective['kind']=='Q2-calibration' and
@@ -72,10 +79,12 @@ def main():
     remote=PHYSICAL+case['report'][5:]
     arm=count-1 if finite and not args.IQ2_fixture else 2
     reports=[dict(record(terminal_path),remote=remote)]
-    if args.IQ2_fixture:
+    if unloaded_CPU:
+        reports.append(dict(record(observer/'native.audit.private.json'),remote=remote+'.audit'))
+    elif args.IQ2_fixture:
         reports.append(dict(record(observer/'native.IQ2-component.private.json'),remote=remote+'.IQ2-component'))
     else:reports.append(dict(record(observer/('native.arm'+str(arm)+'.result.private.bin')),remote=remote+'.arm'+str(arm)+'.result'))
-    if args.headless_calibration or args.headless_audit:
+    if args.headless_calibration or (args.headless_audit and not unloaded_CPU):
         route_path=observer/('native.arm'+str(arm)+'.routes.private.json');routes=load(route_path)
         need(routes['complete'] and not routes['capture_failed'] and routes['sidecar_written_after_model_and_source_retirement'] and
              routes['pid']==first['pid'] and routes['run_id']==case['run_id'],'Complete original headless route evidence required')
@@ -135,7 +144,7 @@ def main():
         native_running=False,model_loaded=False,gateway_running=False,native_owners=0,unknown_completion=False,original_restored=True)
     state.pop('temporary_installed_SELF',None)
     state['active_successful_native_case'].update(phase='model-complete-ordinary-close-original-restored',native_pid=first['pid'])
-    if not args.IQ2_fixture:
+    if not args.IQ2_fixture and not unloaded_CPU:
         state.update(current_boot_Qwen_model_admitted=True,current_boot_readmission_pending=False)
         state['successful_route_20261102']['native_model_admission_complete']=True
         state['successful_route_20261102']['current_boot_model_proof']=dict(native_terminal=record(terminal_path),

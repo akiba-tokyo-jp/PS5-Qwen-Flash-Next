@@ -12,12 +12,12 @@ struct FakeIO {
     std::mutex mutex;
     std::map<int,ImmutableSpanIdentity> descriptors;
     int next=100,duplicates=0,closes=0;
-    bool admitted=true,short_prediction=false;
+    bool admitted=true,short_prediction=false,descriptor_refused=false;
     FakeIO(){ImmutableSpanIdentity i;i.device=4;i.inode=7;i.bytes=128ull<<20;i.mode=0100444;i.links=1;descriptors.emplace(3,i);}
     static unsigned char value(const ImmutableSpanIdentity&i,std::uint64_t offset,std::size_t n){return unsigned((i.inode+offset/16384+n*7)%256);}
     ImmutableSpanHooks hooks(const std::shared_ptr<FakeIO>&self){return {
         [self](int fd,ImmutableSpanIdentity&i){std::lock_guard<std::mutex>g(self->mutex);auto p=self->descriptors.find(fd);if(p==self->descriptors.end())return false;i=p->second;return true;},
-        [self](int fd){std::lock_guard<std::mutex>g(self->mutex);const auto n=self->next++;self->descriptors.emplace(n,self->descriptors.at(fd));++self->duplicates;return n;},
+        [self](int fd){std::lock_guard<std::mutex>g(self->mutex);if(self->descriptor_refused)return -1;const auto n=self->next++;self->descriptors.emplace(n,self->descriptors.at(fd));++self->duplicates;return n;},
         [self](int fd,void*p,std::size_t n,std::uint64_t offset)->std::ptrdiff_t{
             ImmutableSpanIdentity i;bool short_read;
             {std::lock_guard<std::mutex>g(self->mutex);i=self->descriptors.at(fd);short_read=self->short_prediction&&fd>=100;}
@@ -52,6 +52,7 @@ int main(){
         f.read(2*span);f.reader.finish_request();auto s=f.reader.snapshot();assert(s.hits==0&&s.unused==1&&s.foreground_calls==3);}
     {Fixture f;f.io->short_prediction=true;f.reader.begin_request(true,1);f.read(0);f.read(span);f.read(2*span);f.reader.finish_request();auto s=f.reader.snapshot();assert(s.hits==0&&s.invalid==1&&s.foreground_calls==3&&s.prefetch_calls==1);}
     {Fixture f;f.io->admitted=false;f.reader.begin_request(true);for(unsigned i=0;i<4;++i)f.read(i*span);f.reader.finish_request();auto s=f.reader.snapshot();assert(s.declined==3&&s.prefetch_calls==0&&f.io->duplicates==0);}
+    {Fixture f;f.io->descriptor_refused=true;f.reader.begin_request(true);for(unsigned i=0;i<4;++i)f.read(i*span);f.reader.finish_request();auto s=f.reader.snapshot();assert(s.declined==1&&s.descriptor_declines==1&&s.admission_declines==0&&s.prefetch_calls==0&&s.foreground_calls==4);}
     {Fixture f;f.reader.begin_request(true);f.read(0);f.read(span);f.read(5*span);f.reader.finish_request();auto s=f.reader.snapshot();assert(s.hits==0&&s.unused==2&&s.foreground_calls==3);}
     {Fixture f;f.reader.begin_request(true);f.read(0);f.read(span);bool refused=false;
         std::thread other([&]{try{f.reader.snapshot();}catch(const std::runtime_error&){refused=true;}});other.join();assert(refused);

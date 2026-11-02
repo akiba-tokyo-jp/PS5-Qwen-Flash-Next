@@ -417,3 +417,57 @@ speculative reads, admission refusal and producer affinity. One persistent CPU
 worker retains its descriptor and owned allocation on uncertain completion;
 six predictions per request is an explicit experimental bound. Native typed-Q2
 byte delivery, model integration and whole-request performance are still pending.
+
+I1 CPU scope64605 completes64 logical reads and64 independent Direct reference
+reads across540672/557056/475136/491520-byte envelopes. All33030144 logical
+bytes and every canary agree; the source, scratch and idle worker positively
+retire, with no model/GPU operation and ordinary947a07fd restoration. However,
+all28 speculative preparation attempts decline and prefetch_calls/hits remain0.
+The original counter combines admission and descriptor refusal; it does not
+prove which check refused. This qualifies foreground delivery and retirement,
+not actual speculative I/O or a speed gain. The changed implementation obtains
+a separately opened read-only source lease after comparing complete descriptor
+identity, records separate refusal causes, and stops repeated same-request
+descriptor acquisition after its first refusal.
+
+The title's file namespace reports link count0 and a per-launch device number.
+The earlier positive-link-count assumption caused64561's returned pre-worker
+exception. Source-bound ordinary close64562 binds its complete source, accepted
+SELF and final stable journal. Physical-path64581 then records a normal negative
+with ENOENT, and descriptor-only64585 confirms the title attributes without a
+payload read or additional worker. SELF-based namespace check64600 is also a
+returned pre-worker exception: title /app0/eboot.bin lstat is denied. Source-bound
+close64601 restores947. The successful64605 instead binds the descriptor's device
+to stat("/app0/.") and preserves every original nondevice identity field from the
+whole-sealed source, plus full stable descriptor metadata across each operation.
+Neither consumed exception is replayed; none initializes a GPU or runtime.
+
+Native image retirement64560 removes the last two closed64503 frames with whole
+native/PC digest equality and unchanged selected seven. Host64570–64572 remove
+the six corresponding already retired64501–64503 BMP copies,49766724 bytes;
+all108 selected application/compiler/stub/formatter digests remain exact.
+
+S1 now has a causal cursor with host controls for ordinary consumption, rejection
+using the first target hidden row, acceptance followed by auxiliary catch-up,
+queued bonus observation, end of generation and invalid transitions. The new
+shadow captures actual ordinary target token/position/10240-element hidden
+inputs, then replays them through stateless and stateful MTP contexts sequentially,
+with at most one auxiliary context live. Predictions never choose output. Setup,
+clear, compute/fence, complete proposal, retirement and complete replay costs are
+separate. The entry loads the trained MTP layer48, keeps the48 trunk Expert CPU
+placements and excludes layer48 from trunk cache ranking. Its672MiB CPU quota is
+an explicit software policy already sufficient for the historical654442496-byte
+MTP peak; physical Direct/Flexible/OS reserves and completion checks remain.
+Host state tests and target compilation pass. Native memory geometry, prediction
+quality, online accept/reject integration and whole-request speed remain open.
+
+Changed I1 scope64623 executes24 useful prefetches /12386304 bytes, six for each
+envelope, with no refusal, invalid delivery or wasted read. Every candidate
+serves six of eight spans from the completed worker and two from foreground
+I/O. All64 logical spans /33030144 bytes match64 independent Direct reference
+reads and all canaries. All24 separately opened immutable descriptor leases
+close positively; source/worker/scratch retirement and ordinary947 restoration
+pass. Host finalizer64624 validates the exact compiled inputs, complete stage
+counts and all completed records. The references deliberately run between
+logical reads, so this does not qualify real model demand coverage or overlap
+speed. Integration and matched whole-model timing remain necessary.

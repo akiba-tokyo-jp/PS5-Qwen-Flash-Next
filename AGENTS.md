@@ -3,6 +3,37 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest I1 scope64623 now executes24 useful CPU prefetches,12386304 bytes, six
+per actual Q2 envelope. All64 logical reads /33030144 bytes and64 independent
+references/canaries match. All24 independently reopened source leases close,
+the one persistent worker joins, owners retire and ordinary947 restore passes.
+Finalizer64624 binds all source/object/output hashes and exact stage counts.
+This is actual native byte delivery, not a model trace, integration or speed
+qualification. Keep those remaining I1 scopes open. Do not reuse the earlier
+zero-hit64605 result as proof of speculative I/O.
+
+I1 continuation64605 positively closes/restores947 after all64 logical spans
+and64 independent Direct references match, but prefetch_calls/hits are0 and
+28 preparation attempts decline. This does not qualify prefetch execution or
+speed. The next scope replaces title-sandbox FD duplication with a separate
+read-only open and exact full descriptor identity, and distinguishes admission
+from descriptor refusal. Never replay64561/64600 or change an uncertain owner.
+Their source-bound ordinary closes64562/64601 prove CPU source admission failed
+before additional allocations/workers or GPU initialization. Physical-path64581
+is a completed negative (ENOENT in the title), and descriptor-only64585 observes
+the title's link count0, dynamic mount device and denied /app0/eboot.bin lstat.
+Use stat("/app0/.") for the title-directory device binding; source inode, mode,
+UID/GID, size and both timestamps must still match the prior whole-sealed file.
+Keep full descriptor metadata stable across each read and separate source lease.
+
+S1 causal cursor host64580/64591 and the sequential shadow provider compile;
+actual target inputs are retained for later stateless/stateful auxiliary replay,
+with at most one auxiliary context live. No auxiliary prediction selects output.
+Its entry explicitly prices the previously qualified672MiB CPU application
+quota and preserves original physical pool/OS/completion guards. This is not
+native context geometry, proposal quality, online scheduling or whole speed
+qualification. All eight candidates remain active.
+
 Latest Gate/Up audit64543 observes1200 identical input/ID pairs across all48
 layers at widths1/2/30/32, without added GPU/graph operations. All three model
 requests and owner retirement complete. The first close helper refuses with

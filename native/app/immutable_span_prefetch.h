@@ -21,6 +21,9 @@ struct ImmutableSpanHooks {
     // inspect also enforces a read-only regular O_DIRECT source and immutable
     // permissions. The caller retains its original source and destination gates.
     std::function<bool(int,ImmutableSpanIdentity&)> inspect;
+    // Obtain a separately owned descriptor to the same immutable source.
+    // This may reopen and compare full identity when descriptor duplication
+    // is unavailable in the title sandbox.
     std::function<int(int)> duplicate;
     std::function<std::ptrdiff_t(int,void*,std::size_t,std::uint64_t)> read;
     std::function<bool(int)> close;
@@ -30,6 +33,7 @@ struct ImmutableSpanHooks {
 struct ImmutableSpanStats {
     std::uint64_t foreground_calls=0,foreground_bytes=0,prefetch_calls=0,prefetch_bytes=0;
     std::uint64_t hits=0,hit_bytes=0,unused=0,declined=0,invalid=0,waits=0;
+    std::uint64_t admission_declines=0,descriptor_declines=0;
 };
 
 // A bounded byte-span predictor. It has no BF16, Expert count, cache-plane or
@@ -49,7 +53,7 @@ class ImmutableSpanPrefetch {
         unsigned maximum=0,submitted=0;
         int descriptor=-1;
         const std::thread::id producer=std::this_thread::get_id();
-        bool active=false,enabled=false,have_previous=false,pending=false,valid=false,close_returned=true,unknown=false;
+        bool active=false,enabled=false,have_previous=false,pending=false,valid=false,close_returned=true,unknown=false,descriptor_refused=false;
         State(ImmutableSpanHooks h,void*p,std::size_t n,std::shared_ptr<void>lease):
             hooks(std::move(h)),scratch(p),capacity(n),allocation(std::move(lease)){}
     };
@@ -89,7 +93,7 @@ public:
     void begin_request(bool enabled,unsigned maximum_predictions=6) {
         auto&s=state();
         if(s.unknown||s.active||s.pending||maximum_predictions>6)throw std::runtime_error("Completed bounded prefetch request required");
-        s.active=true;s.enabled=enabled;s.maximum=maximum_predictions;s.submitted=0;s.have_previous=false;
+        s.active=true;s.enabled=enabled;s.maximum=maximum_predictions;s.submitted=0;s.have_previous=false;s.descriptor_refused=false;
     }
     std::ptrdiff_t read(int fd,void*destination,std::size_t bytes,std::uint64_t offset) {
         auto&s=state();
@@ -115,14 +119,14 @@ public:
         if(!supported||result!=std::ptrdiff_t(bytes)||!s.hooks.inspect(fd,after)||!(before==after)){
             s.have_previous=false;return result;
         }
-        if(s.have_previous&&s.previous==before&&s.previous_bytes==bytes&&offset>s.previous_offset&&s.submitted<s.maximum){
+        if(s.have_previous&&s.previous==before&&s.previous_bytes==bytes&&offset>s.previous_offset&&s.submitted<s.maximum&&!s.descriptor_refused){
             const auto stride=offset-s.previous_offset;
             if(stride<=std::numeric_limits<std::uint64_t>::max()-offset&&geometry(s,before,bytes,offset+stride)){
-                if(!s.hooks.admit(bytes)){++s.stats.declined;}
+                if(!s.hooks.admit(bytes)){++s.stats.declined;++s.stats.admission_declines;}
                 else {
                     s.hooks.stage("immutable_span_prefetch_before_descriptor_duplicate");
                     const int copy=s.hooks.duplicate(fd);
-                    if(copy<0){++s.stats.declined;}
+                    if(copy<0){++s.stats.declined;++s.stats.descriptor_declines;s.descriptor_refused=true;}
                     else {
                         s.descriptor=copy;s.predicted=before;s.predicted_bytes=bytes;s.predicted_offset=offset+stride;
                         s.valid=false;s.close_returned=false;s.pending=true;

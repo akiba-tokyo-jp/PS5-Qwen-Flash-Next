@@ -141,6 +141,23 @@ int main(int argc,char **argv){
 #elif CASE_OPERATION == 14
     if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("retire-completed-images"))goto done;
     success=case_retire_completed_images(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
+#elif CASE_OPERATION == 15
+    if(!idle()||!new_files_valid()||!new_mounted_valid())goto done;
+    success=1;
+    for(unsigned i=0;i<CASE_DEPENDENCY_COUNT;++i){
+        errno=0;int fd=open(case_dependencies[i],O_RDONLY|O_NOFOLLOW|O_DIRECT),open_error=errno;
+        if(!report("DESCRIPTOR_OPEN index=%u fd=%d errno=%d",i,fd,open_error)){success=0;break;}
+        if(fd<0){success=0;continue;}
+        struct stat s={0};errno=0;int flags=fcntl(fd,F_GETFL),flag_error=errno;
+        errno=0;int rc=fstat(fd,&s),stat_error=errno;
+        if(!report("DESCRIPTOR_METADATA index=%u flags=%d flags_errno=%d readonly_bits=%d Direct_bits=%d fstat_rc=%d stat_errno=%d device=%llu inode=%llu mode=%u uid=%u gid=%u bytes=%llu nlink=%llu st_flags=%u mtime_sec=%lld mtime_nsec=%lld ctime_sec=%lld ctime_nsec=%lld",
+            i,flags,flag_error,flags&O_ACCMODE,flags&O_DIRECT,rc,stat_error,(unsigned long long)s.st_dev,(unsigned long long)s.st_ino,
+            (unsigned)s.st_mode,(unsigned)s.st_uid,(unsigned)s.st_gid,(unsigned long long)s.st_size,(unsigned long long)s.st_nlink,
+            (unsigned)s.st_flags,(long long)s.st_mtim.tv_sec,(long long)s.st_mtim.tv_nsec,(long long)s.st_ctim.tv_sec,(long long)s.st_ctim.tv_nsec))success=0;
+        errno=0;int closed=close(fd),close_error=errno;
+        if(!report("DESCRIPTOR_CLOSE index=%u rc=%d errno=%d",i,closed,close_error)||closed)success=0;
+    }
+    if(!new_files_valid()||!new_mounted_valid()||!live_context()||!idle())success=0;
 #else
 #error A single scoped operation must be selected
 #endif

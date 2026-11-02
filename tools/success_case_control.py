@@ -58,7 +58,7 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
 '''
     text+='static int old_files_valid(void){return '+'&&'.join(digest_expression(r) for r in old_files)+';}\n'
     text+='static int pending_valid(void){return '+('&&'.join(digest_expression(r) for r in pending) or '0')+';}\n'
-    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14};need(operation in numbers,'One known operation required')
+    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14,'inspect-descriptors':15};need(operation in numbers,'One known operation required')
     if operation!='restore-bundle':
         text=text.replace('#include "launch_integrity_native.h"','#define QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS 1\n#include "launch_integrity_native.h"',1)
     need(len(old_files)==len(new_files)==7 and all(r['remote'].startswith(PHYSICAL+'/') for r in old_files+new_files),
@@ -92,7 +92,7 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         text=text.replace(marker,'#define QWEN_LAUNCH_CPU_HEADROOM_WAIT 1\n'+marker,1)
         # This still collects every process or refuses the scope; it never
         # truncates enumeration. The complete boot/service/native guards stay.
-    if operation=='dependencies':
+    if operation in ('dependencies','inspect-descriptors'):
         need(dependencies and len(dependencies)<=256 and len(set(dependencies))==len(dependencies) and
              all(p.startswith((PHYSICAL+'/',ALIAS+'/')) and '..' not in p.split('/') for p in dependencies),'Exact distinct owned dependency paths required')
         context+='#define CASE_DEPENDENCY_COUNT '+str(len(dependencies))+'u\n'
