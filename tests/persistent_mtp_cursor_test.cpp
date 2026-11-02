@@ -21,4 +21,12 @@ int main(){
     {Cursor c;c.reset(30,prompt);c.first_sample(100);c.proposal_input();c.auxiliary_pending_completed();c.target_single_completed(-1,first,true);
         assert(!c.has_pending());refused([&]{c.proposal_input();});refused([&]{c.first_sample(5);});c.reset(40,last);c.first_sample(42);auto p=c.proposal_input();assert(p.position==40&&p.hidden==last);}
     {Cursor c;refused([&]{c.first_sample(1);});c.reset(254,prompt);c.first_sample(1);c.proposal_input();c.auxiliary_pending_completed();refused([&]{c.target_pair_completed(2,true,3,first,last);});}
+    {Cursor c;c.reset(30,prompt);c.first_sample(100);c.proposal_input();c.auxiliary_pending_completed();
+        c.target_pair_accepted_await_bonus(200,first,last);assert(c.bonus_pending()&&c.catchup_required()&&!c.has_pending());
+        refused([&]{c.queued_bonus_observed(201);});const auto catchup=c.accepted_draft_catchup_input();
+        assert(catchup.token==200&&catchup.position==31&&catchup.hidden==first);c.accepted_draft_catchup_completed();
+        c.queued_bonus_observed(201);const auto next=c.proposal_input();assert(next.token==201&&next.position==32&&next.hidden==last);}
+    {Cursor c;c.reset(30,prompt);c.first_sample(100);c.proposal_input();c.auxiliary_pending_completed();
+        c.target_pair_accepted_await_bonus(200,first,last);c.accepted_draft_catchup_completed();c.queued_bonus_observed(201,true);
+        assert(!c.has_pending()&&!c.bonus_pending());refused([&]{c.proposal_input();});}
 }

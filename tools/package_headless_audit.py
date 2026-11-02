@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 from build_performance_quantizer import record
-from mtp_shadow_host_check import require_profile as require_shadow_host_check
+from mtp_shadow_host_check import require_profile as require_shadow_host_check,require_target_capture_profile,require_online_profile
 from start_success_route import load,need,save
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -25,6 +25,8 @@ def main():
         require_shadow_host_check(policy)
         need(policy.get('successful_MTP_contract_verified') is True and policy.get('actual_legacy_policy_validator_passed') is True,
              'Bind successful MTP providers and the actual legacy policy host check before packaging')
+    if policy['headless_audit_kind']=='S1-target-hidden-capture-audit':require_target_capture_profile(policy)
+    if policy['headless_audit_kind']=='S1-persistent-MTP-online':require_online_profile(policy)
     for key in ('entry','reader','provider','source','application_policy'):
         need(record(compiled[key]['path'])==compiled[key],'A compiled audit provider changed')
     a.out.mkdir(parents=True,exist_ok=False)
@@ -36,8 +38,17 @@ def main():
              compiled['required_link_flags']==['--undefined='+name for name in ('qwen_driver_table_storage','Q2_bundle_expected_identity','Q2_extra_expected_identity','Q2_current_expected_identity')])
         original_reads=(policy['headless_audit_kind']=='I1-model-pread-observation' and
              compiled.get('host_multithread_errno_short_read_identity_and_overflow_controls_passed') is True and compiled['required_link_flags']==['--wrap=pread'])
-        need(early or original_reads,'Only explicitly bound early CPU data preservation or original pread observation flags are admitted')
+        target_capture=(policy['headless_audit_kind'] in ('S1-target-hidden-capture-audit','S1-persistent-MTP-online') and compiled['required_link_flags']==
+            ['--wrap='+name for name in ('llama_batch_ext_init','llama_batch_ext_free','llama_batch_ext_clear','llama_batch_ext_add_token','llama_process','llama_synchronize')])
+        need(early or original_reads or target_capture,'Only explicitly bound data preservation or observation flags are admitted')
         arguments+=['--link-flag='+flag for flag in compiled['required_link_flags']]
+    if compiled.get('required_additional_objects'):
+        need(policy['headless_audit_kind']=='S1-persistent-MTP-online' and
+             compiled['required_additional_objects']==[policy['native_target_capture_provider']],
+             'Only the previously qualified original target capture provider may accompany online MTP')
+        for row in compiled['required_additional_objects']:
+            need(record(row['path'])==row,'Qualified target capture provider changed')
+            arguments+=['--add-object',row['path']]
     if 'graph' in compiled:
         need(record(compiled['graph']['path'])==compiled['graph'],'Compiled graph changed')
         arguments+=['--replace','graph.o='+compiled['graph']['path']]

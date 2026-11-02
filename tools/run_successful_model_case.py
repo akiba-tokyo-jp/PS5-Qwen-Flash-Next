@@ -10,7 +10,7 @@ import urllib.parse
 
 from build_performance_quantizer import record
 from model_directory_readmission import rebind_directory
-from mtp_shadow_host_check import require_profile as require_shadow_host_check
+from mtp_shadow_host_check import require_profile as require_shadow_host_check,require_target_capture_profile,require_online_profile
 from staged_self_upload import upload
 from start_success_route import load,need,save
 from success_case_control import build,current_files,execute,lan_module,PHYSICAL
@@ -80,6 +80,8 @@ def start(args):
             need(compiled_profile.get('successful_MTP_contract_verified') is True and
                  compiled_profile.get('actual_legacy_policy_validator_passed') is True,
                  'Unqualified MTP context/rollback/CPU-check providers must not launch')
+        if compiled_profile.get('headless_audit_kind')=='S1-target-hidden-capture-audit':require_target_capture_profile(compiled_profile)
+        if compiled_profile.get('headless_audit_kind')=='S1-persistent-MTP-online':require_online_profile(compiled_profile)
         keys={'native_next_five_normal'} if effective['kind']=='R1-direct' else {'native_next_five_normal','native_resident_main_SELF'}
         if effective['kind']=='Q1-shared':keys.add('native_shared_Q4')
         if effective['kind']=='Q2-calibration':keys.add('native_activation_capture')

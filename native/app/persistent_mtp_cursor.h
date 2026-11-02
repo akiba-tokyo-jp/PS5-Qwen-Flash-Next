@@ -18,13 +18,13 @@ private:
     Hidden live_{},accepted_first_{};
     std::int32_t position_=0,auxiliary_next_=0,pending_=-1,accepted_draft_=-1;
     bool ready_=false,sampled_=false,pending_valid_=false,proposal_=false,auxiliary_pending_done_=false;
-    bool catchup_=false,bonus_=false;
+    bool catchup_=false,bonus_=false,awaiting_bonus_token_=false;
     static void require(bool condition){if(!condition)throw std::logic_error("Inconsistent persistent MTP causal transition");}
 public:
     void reset(std::int32_t prompt_tokens,const Hidden&hidden){
         require(prompt_tokens>0&&prompt_tokens<256&&!proposal_&&!catchup_);
         live_=hidden;position_=auxiliary_next_=prompt_tokens;pending_=-1;accepted_draft_=-1;
-        ready_=true;sampled_=false;pending_valid_=false;auxiliary_pending_done_=false;bonus_=false;
+        ready_=true;sampled_=false;pending_valid_=false;auxiliary_pending_done_=false;bonus_=false;awaiting_bonus_token_=false;
     }
     void first_sample(std::int32_t token,bool end=false){
         require(ready_&&!sampled_&&!pending_valid_&&!proposal_&&!catchup_&&!bonus_&&(end||token>=0));
@@ -54,6 +54,14 @@ public:
             ++position_;live_=first_hidden;require(auxiliary_next_==position_);
         }
     }
+    // The existing target API emits the accepted draft first and samples its
+    // queued bonus on the next call. Never guess that future target token.
+    void target_pair_accepted_await_bonus(std::int32_t draft,const Hidden&first_hidden,const Hidden&last_hidden){
+        require(proposal_&&auxiliary_pending_done_&&!catchup_&&!bonus_&&draft>=0&&position_<254);
+        proposal_=false;auxiliary_pending_done_=false;pending_=-1;pending_valid_=false;
+        position_+=2;live_=last_hidden;accepted_first_=first_hidden;accepted_draft_=draft;
+        catchup_=true;bonus_=true;awaiting_bonus_token_=true;require(auxiliary_next_==position_-1);
+    }
     Input accepted_draft_catchup_input()const{
         require(catchup_&&!proposal_&&auxiliary_next_==position_-1);
         return {accepted_draft_,position_-1,accepted_first_};
@@ -62,7 +70,9 @@ public:
         require(catchup_&&!proposal_&&auxiliary_next_==position_-1);++auxiliary_next_;catchup_=false;accepted_draft_=-1;
     }
     void queued_bonus_observed(std::int32_t token,bool end=false){
-        require(bonus_&&!catchup_&&!proposal_&&auxiliary_next_==position_&&token==pending_&&pending_valid_==!end);
+        require(bonus_&&!catchup_&&!proposal_&&auxiliary_next_==position_&&(end||token>=0));
+        if(awaiting_bonus_token_){pending_=token;pending_valid_=!end;awaiting_bonus_token_=false;}
+        else require(token==pending_&&pending_valid_==!end);
         bonus_=false;
     }
     bool has_pending()const noexcept{return pending_valid_;}

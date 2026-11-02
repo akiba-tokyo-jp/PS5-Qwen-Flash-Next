@@ -3,6 +3,32 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest native S1 online case64732/finalizer64733 completes six actual MTP
+target verifications: five accepted, one deliberately wrong draft rejected,
+five actual auxiliary catch-ups and five target-sampled queued bonuses.
+All eleven actual auxiliary token/position/hidden-hash inputs reconcile
+independently. Target calls fall from23 to18; all22 target tokens/output bytes
+match R1 and all23 full-vocabulary rows are finite (unlike-width rows2–23 are
+not byte-identical). One auxiliary context and one KV clear, CPU/device peaks
+553779200/6104809472 bytes. All owners retire, ordinary close restores947.
+This qualifies the finite online causal protocol, not matched whole speed or
+broader quality. Diagnostic stage/hash costs are enabled; do not compare its
+single8009.685998ms request directly with old controls for an adoption decision.
+
+Latest native case64723/finalizer64725 positively exercises one accepted and
+one rejected original target draft, with retained10240-element NextN rows inside
+the original target epoch. Queued bonus adds no target process. Compact rejection
+retains first/last rows before rollback invalidates them. All22 target tokens
+and output bytes match R1; all23 F32 rows are finite, but22 rows differ in bytes
+after changing width1 to2. Do not claim unlike-width bit equality. Target calls22,
+CPU/device peaks385941504/6048186368, all owners retire and ordinary947 restore
+completes. No auxiliary context or actual MTP proposal is used in that scope.
+The subsequent64732 scope above now qualifies finite online MTP catch-up.
+New host64724 supports the actual future queued bonus ID; never guess
+that token or consume the pending token twice. The online FirstGeneration host
+controls also cover30/33/64-token prompts and use the final prefill batch's row.
+Do not replay a package whose bound host inputs have changed.
+
 S1 case64662 is a consumed CPU wrapper failure after all five GPU upload
 epochs positively completed (1444 copies,4519798432 bytes), before target
 prefill or auxiliary creation. FirstGeneration passes context capacity256 to
@@ -41,6 +67,27 @@ Do not call this an overall speedup or reject all S1 designs from these costs.
 Screen64693 derives7374 prelaunch pages from the actual prior5246-page global
 reduction, unchanged1104-page OS floor and1024 extra pages. It is an empirical
 screen, not a physical guarantee. Native memory/completion guards are unchanged.
+
+Reverse-order S1 case64711/finalizer64712 also passes22/22 predictions per arm,
+all23 full F32 rows and exact actual routes, with the same553779200/6104809472
+CPU/device peaks, positive retirement and ordinary947 restoration. First arm
+is now persistent. Warm compute means are2682.038/2474.64625us (stateless/stateful)
+and complete proposal means16587.71735/16495.6206us. Whole speed stays unqualified.
+
+I1 original model trace64708/finalizer64710 retains all4336 original pread calls
+from six producers,3456 large aligned candidates, no overflow and unchanged
+original calls/results/errno. Four original short reads return errno0. Every
+large candidate has the same full descriptor stamp before/after. All23 F32 rows
+and actual routes are exact; CPU/device peaks385941504/6048186368, owners retire,
+ordinary close restores947. PC raw1265152 bytes SHAe2f09dae... is protected.
+Screen64718 tests six causal per-source variants with6/32/128 predictions per
+producer and optional32-call retention. Optimistic hits remain2–11 with large
+wasted bytes; no speculative I/O is submitted or whole speed claimed. Current
+single-producer prefetch is not a transparent six-producer model integration.
+
+Console trace64708 is retired exactly once by64722 after full native/PC SHA
+verification. Both console namespaces are absent and original directory ownership
+and current files remain exact. Keep the complete PC trace and screen64718.
 
 S1 case64655 is a consumed returned legacy-policy CPU refusal before model,
 source workers or GPU initialization. Repricing the shared CPU header changed

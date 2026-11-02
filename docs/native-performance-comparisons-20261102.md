@@ -557,3 +557,91 @@ any native admission or establish a hardware limit. Earlier8098/7586 screens
 64687/64690 refuse before staging/launch. Exact cleanup64685/64688/64691 removes
 six obsolete G1 BMPs /49766724 bytes from the console;64686/64689/64692 removes
 the six matched PC copies and proves all108 selected inputs unchanged.
+
+Reverse S1 order64711/finalizer64712 puts the persistent arm first. Both arms
+again predict22/22 actual target tokens; all23 F32 rows and complete actual
+routes remain exact. CPU/device peaks and positive owner retirement match the
+forward run, followed by ordinary current947 restoration. After the first two
+proposals, stateless/persistent GPU compute means are2682.038/2474.64625us and
+complete proposal means16587.71735/16495.6206us. The persistent GPU saving holds
+in both orders; complete proposal cost varies across them. No online MTP,
+accepted-draft catch-up, rejection or whole-model speed is qualified by replay.
+
+I1 changed native64708 observes one ordinary target request with no added
+worker, source open, prediction, payload inspection or GPU process. All4336
+original pread calls from six producers are retained with original arguments,
+results and errno, including unsupported reads that reset a predictor. There
+are3456 large aligned candidates, each with stable full before/after descriptor
+identity, and zero overflow. Four original small reads are short with errno0;
+their returned counts are preserved. All23 F32 rows and actual target routes
+remain exact. CPU/device peaks are385941504/6048186368 bytes. All original and
+diagnostic owners retire, ordinary close restores947, and host finalizer64710
+exports the1265152-byte stream with native-generated/PC SHA256
+e2f09daef934992c852d1cc7cdacf0726c1419b69ab2a6d61634ea8df2c8a960.
+
+The current stride screen permits six hypothetical predictions per original
+producer:30 total predictions,3 matches,4620288 useful bytes from55443456 predicted
+bytes. These are optimistic coverage observations, not actual prefetch results;
+the overlapping matched read-wall sum is not application wait or a speedup.
+The real model has six producers, whereas the existing delivery-qualified
+adapter admits one producer and one persistent worker.
+
+Host screen64718 also preserves separate histories per immutable source/size,
+tests6/32/128 predictions per producer, and optionally retains a pending range
+across32 intervening calls. Without retention, those limits predict55443456,
+295698432 and913997824 bytes for3/5/11 hits and4620288/7700480/15417344 useful
+bytes. Retention yields2/3/3 hits. Predictions use only completed prior calls;
+future calls grade the already chosen ranges. Source admission, read completion
+latency and contention are not simulated. These finite screens do not support
+adoption of these stride policies or reject all other I1 scheduling designs.
+
+Trace retirement64722 verifies the complete console/PC SHA again, removes only
+the1265152-byte obsolete console raw file from both namespaces, and restores
+the original runtime-directory owner. The complete PC data, current seven files,
+all model sources and latest completed real-model proof remain protected.
+
+Controlled target scope64723/finalizer64725 qualifies the next S1 prerequisite
+without an auxiliary context. Original-target draft11 is accepted; its queued
+bonus consumes no additional target process. Controlled draft42 is rejected by
+the original verifier. The10240-element first and last NextN rows are retained
+inside the original target synchronization epoch before compact rollback can
+invalidate them. Both target decisions and all23 capture checks pass. The target
+uses22 process calls instead of23, emits the exact independent22 tokens/output
+bytes, retires all owners and ordinarily restores947. CPU/device peaks remain
+385941504/6048186368 bytes.
+
+All23 existing full-vocabulary rows remain finite. Only the first row is
+byte-identical to width-one R1: rows2–23 differ after the width-two calculation.
+This is an unlike-width numerical difference with exact observed greedy output,
+not a new bit-equality qualification or broader answer-quality result. The capture
+hook adds no target process calls. No actual MTP proposal or auxiliary catch-up
+is exercised by this controlled target test.
+
+Host cursor64724 now supports accepted-draft catch-up followed by the target's
+actual future queued-bonus sample, including EOS. Online adapter controls use
+the real FirstGeneration caller with a mocked pinned llama API, covering accepted
+and rejected decisions, compact output invalidation, consecutive causal auxiliary
+inputs, no duplicate bonus consumption, EOS, attempt-bound fallback and prompts
+of30/33/64 tokens. These host controls do not establish native online geometry,
+proposal quality or speed. Native online MTP remains a separate finite scope.
+
+Online scope64732/finalizer64733 now completes that finite causal integration.
+Six actual persistent MTP proposals reach the original target verifier; five
+are accepted and one deliberately changed draft is rejected. The accepted five
+drafts enter auxiliary KV with their saved target row0 before further proposals.
+Five queued bonuses are sampled only by the target and are not consumed twice.
+The host independently reconstructs all eleven actual auxiliary token/position/
+hidden-SHA inputs from the qualified prompt row and native target completions.
+The original target process count falls from23 to18. All22 target tokens/output
+bytes match R1, and all23 full248320-column rows remain finite; unlike-width
+rows2–23 are not byte-identical. One auxiliary context is live at most, with
+one KV clear. CPU/device peaks are553779200/6104809472 bytes. All owners retire,
+ordinary close completes, and all seven current947 files are restored and hashed.
+
+The8009.685998ms request still includes diagnostic hashes/stages,281875.73us
+context setup,465880.823us total proposals,92558.19us catch-up and97053.707us
+auxiliary retirement. This is not a matched speed cohort; comparing it directly
+with a historical cold control would conflate conditions. Native per-model
+prewarming/lifetime, complete cost comparison and broader response checks remain
+necessary. The finite online implementation is available for further validation
+and has not replaced the selected production executable.

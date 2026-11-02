@@ -11,7 +11,7 @@ import urllib.parse
 
 from build_performance_quantizer import record
 from kernel_vm_preflight import query
-from mtp_shadow_host_check import require_profile as require_shadow_host_check
+from mtp_shadow_host_check import require_profile as require_shadow_host_check,require_target_capture_profile,require_online_profile
 from start_success_route import load,need,save
 from success_case_control import PHYSICAL,lan_module
 
@@ -34,6 +34,8 @@ def main():
         check=profile['legacy_policy_host_check']
         need(record(check['path'])==check and load(check['path'])['actual_legacy_validator_passed'],
              'Exact successful legacy policy host-check receipt required')
+    if profile['headless_audit_kind']=='S1-target-hidden-capture-audit':require_target_capture_profile(profile)
+    if profile['headless_audit_kind']=='S1-persistent-MTP-online':require_online_profile(profile)
     scope=profile['overrides']['native_headless_model_audit'];count=profile['headless_requests']
     unloaded=profile.get('unloaded_CPU_fixture') is True
     need(count==scope['requests'] and (count in (1,3) or (count==0 and unloaded and scope['model_loads']==scope['GPU_calls']==0)) and
