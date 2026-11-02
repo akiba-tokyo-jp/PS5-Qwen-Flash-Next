@@ -132,6 +132,14 @@ request's input publications from1824 to38 does not improve the measured warm
 cost. This does not establish transfer count as the cause of the regression.
 Ranking/top-k fusion and the separate all-hit continuation remain open work.
 
+A further partial-TopK numerical scope64330 completes all three requests and
+ordinary restoration. All69 whole F32 rows and token bytes match the original
+control64200. Ordered routes do not match:554/528/459 route records differ in
+the three conditions, often by swapping the same selected pair. The pinned
+GGML API explicitly leaves TopK output order unspecified. This candidate is
+not advanced to timing or adoption; a corrected implementation must preserve
+the required selection order. Identical answers alone do not qualify it.
+
 G1 numerical launch64152 stops before main/configuration/model/GPU entry. Its
 first synchronous1MiB Direct SELF read returns, then the original CPU scope
 samples828 free pages against its minimum898+21 policy and returns a known
@@ -185,9 +193,85 @@ qualification; within-program cache comparisons are not cross-precision errors.
 The tested binary's legacy shared_Expert_weight_type field incorrectly says
 Q8_0 although its typed model and layer contract use Q4_0. The builder corrects
 that metadata for future builds; no corrected binary is claimed to have run.
+New-only retirement64315 then removes exactly53 rejected remote source files
+and the empty directory. The selected seven whole digests match before/after;
+all518 parent source paths and69 required bundle inputs are protected.
+
+## Q2/Q3: real activation calibration
+
+The first full-API calibration program64310 stops before main/configuration,
+model or GPU entry. Its seven synchronous64KiB reads all return, but sampled
+free pages fall from2222 to882 below the unchanged919-page CPU policy. The
+exact CPU reader is audited and ordinary close64314 restores all seven files.
+That program is not replayed. Deferring the diagnostic state reduces its
+initialized object data from62316 to420 bytes. A separate readiness64347
+refuses without staging or launch; that selected readiness margin is an
+application policy, not a demonstrated physical OS limit.
+
+A distinct one-request headless entry removes API/display references and the
+33-row full-logit reference copy. Compared with the refused program, its ELF
+loadable file bytes decrease477504 and loadable memory size decreases480896.
+All original model memory, source identity, reset and GPU completion guard
+bodies remain intact. It keeps the same model, encoded weights, driver and
+disabled persistent caches. Native64360 passes one22-token counting request
+and full finite vocabulary scans,23 graph evaluations and ordinary retirement.
+Its CPU heap peak is385941504 bytes and device ledger peak6048186368 bytes.
+These single-request diagnostic measurements are not matched performance gains.
+
+The bounded4MiB CPU scratch records actual indexed-matmul Up/Down operands,
+original Expert IDs before slot remapping, and actual physical slot IDs. It
+adds synchronous scheduler boundaries, so its times are excluded from speed
+comparisons. Returned diagnostic failures do not truncate scheduler splits or
+interrupt healthy inference. No tensor pointer survives a graph evaluation.
+The stream is synchronized, closed, fully read back and SHA256/EOF verified
+after all model/source/device owners retire. Ordinary OS close restores R1.
+
+The108544000-byte stream contains2208 records (both operands for48 layers in
+all23 evaluations), SHA25689b1fe0568fed4d46ddead6963450f1359d345ad6dd66990d9ba9552acdf152b.
+Its initial0600 file mode prevents HTTP/FTP collection. CPU-only export64361
+changes just that completed file to0644, preserving bytes/inode/size/mtime and
+UID/GID, and fully verifies SHA256/EOF in both console namespaces. The helper's
+1.26MiB journal exceeds the original1MiB host collector; its same END success=1
+journal is collected and the helper retired without resubmission. Host download
+then matches the complete native digest. Future capture source uses0644.
+
+Independent analysis64362 checks every record's binding, geometry, original
+IDs, slot mapping, zero padding, finite values and complete48-layer coverage.
+It creates96 sparse F64 second-moment files. Each role visits3267/24576 Experts;
+per-layer coverage ranges42–120/512. Unvisited Experts have an explicitly
+disclosed measured real per-layer mean-square fallback, not invented uniform
+importance. Gate/Up input sharing is not independently qualified by this stream.
+The first headless row's legacy comparison fields are self-comparisons; they
+are not a cross-program F32 or cross-precision error measurement. This single
+counting prompt does not establish broad calibration or answer-quality coverage.
+
+Nine actually visited Up samples64380 are independently encoded from original
+BF16 into Q2_K control and IQ2_XXS using their measured per-Expert importance.
+All three complete original sources (10740534112 bytes) hash correctly, and
+all nine actual IQ2 matrices have byte-exact independent C/Python F32 decoding.
+The prepared aligned pack is8699904 bytes. Per-matrix payload decreases from
+537600 to422400 bytes. Weight NRMSE is0.296399–0.316675 for Q2_K and
+0.353832–0.570498 for IQ2, with only1–28 observed activation samples per selected
+Expert. These weight errors are not answer-quality scores. This component
+preparation does not constitute a full IQ2 model or
+native IQ2 operator qualification. The actual retained GPU objectc26fadf2 has
+the IQ2 indexed-vector pipeline identifiers; that is source/object capability
+evidence, not a completed runtime operator test or a hardware absence claim.
+
+The unloaded operator SELF64386 is target-compiled and six-segment verified.
+Its initial readiness64390 stops before staging or launch: free2422/2423 pages,
+with inactive pages increased after raw collection. No IQ2 GPU graph has run.
+Completed raw-data retirement64392 first returns a known permission failure,
+with the helper exited/removed and no deleted file. Changed CPU-only64393 uses
+the same temporary runtime-directory owner lease as successful publication,
+deletes just the PC-verified108544000-byte stream and restores the directory
+owner. Both namespace absences and unchanged current seven files pass. Its
+same late positive journal is collected without resubmission. Fresh fixed VM
+observations then show9003 free pages and unchanged OS minimum898/reserved206;
+no cache-flush syscall, GPU recovery, application launch or initializer is used.
 
 Q2/Q3/G1-continuation/I1/S1 retain the outstanding work in the
 [campaign plan](hardware-bound-performance-plan-20261102.md). In particular,
-synthetic IQ2 codec fixtures are not real PS5 activation calibration, and Q3's
+synthetic IQ2 codec fixtures alone are not real PS5 activation calibration, and Q3's
 direct/padded geometry negatives do not dispose of a new cross-row format.
 No campaign-wide success, hardware impossibility or completion is claimed.

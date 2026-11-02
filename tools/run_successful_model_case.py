@@ -68,7 +68,9 @@ def start(args):
         need(record(profile['path'])==profile,'Compiled effective application policy changed')
         keys={'native_next_five_normal'} if effective['kind']=='R1-direct' else {'native_next_five_normal','native_resident_main_SELF'}
         if effective['kind']=='Q1-shared':keys.add('native_shared_Q4')
-        need(effective['kind'] in ('R1-direct','CPU-SELF-window','Q1-shared') and set(effective['overrides'])==keys,
+        if effective['kind']=='Q2-calibration':keys.add('native_activation_capture')
+        if effective['kind']=='Q2-IQ2-fixture':keys.add('native_IQ2_fixture')
+        need(effective['kind'] in ('R1-direct','CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture') and set(effective['overrides'])==keys,
              'Only an explicitly compiled token-durability or smaller CPU SELF scope is admitted here')
         policy.update(effective['overrides'])
     gate=rebind_directory(policy['native_first_generation_validation'],proof,proof['current_boot'])

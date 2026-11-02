@@ -33,6 +33,27 @@ retained/prefix regressions about6.1–6.9%. Neither ranking-only profile is ado
 The batched source reduces48 input publications to1 per graph evaluation;
 do not mislabel that as a measured speed improvement. All-hit continuation,
 Q2 real activation calibration/native IQ2, Q3 cross-row format, I1 and S1 remain.
+Subsequent partial-TopK64330 matches all69 F32 rows and token bytes but reverses
+many selected Expert pairs. GGML TopK is explicitly unordered. Do not advance
+that implementation to timing/adoption without preserving the required order.
+Q1 new-only source retirement64315 removes all53 rejected remote files and its
+empty directory; the selected seven whole digests match before/after.
+
+Real Up/Down activation capture64360 now completes one22-token counting
+request,23 evaluations and2208 records across all48 layers. A smaller headless
+entry removes API/display work and the33-row reference copy; CPU peak385941504
+bytes, device peak6048186368, all original memory/identity/reset guards retained.
+All model/source/device owners retire, ordinary close restores R1, and the
+108544000-byte stream has equal full native/host SHA256. Importance64362 has96
+sparse files,3267/24576 visited Experts per role, explicit real per-layer fallback.
+Gate input sharing remains independently unqualified. Do not call this broad
+calibration, a full IQ2 model, native IQ2 operator qualification or a speed win.
+The earlier full-API diagnostic64310 is a consumed pre-main CPU refusal:
+seven reads returned, free882<919, no model/GPU; ordinary close64314 restores R1.
+Do not replay it. Deferred-state readiness64347 refuses without a launch; the
+later headless program is a distinct smaller scope. Export64361 changes only
+the completed capture's0600 mode to0644 and verifies full bytes in both console
+namespaces; its1.26MiB positive journal is collected without resubmission.
 
 Read `docs/native-performance-comparisons-20261102.md` before using older
 pending/absent-runtime wording. Runtime63121 and mount63133 remain admitted;

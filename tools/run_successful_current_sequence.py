@@ -24,7 +24,7 @@ def main():
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--package',action='append',type=Path,required=True)
     parser.add_argument('--clock',type=Path,help='Historical receipt compatibility only; each case always creates a fresh calibration')
-    parser.add_argument('--scope',choices=('P1','R1','R1-direct','G1-shadow','G1','F32','Q1'),required=True)
+    parser.add_argument('--scope',choices=('P1','R1','R1-direct','G1-shadow','G1','F32','Q1','calibration'),required=True)
     parser.add_argument('--case-base',type=int,required=True)
     args=parser.parse_args();need(1<=len(args.package)<=4,'One explicit scope of at most four packages required')
     args.out.mkdir(parents=True,exist_ok=False)
@@ -108,6 +108,14 @@ def main():
                 r['full_F32_finite'] and r['request_reset_completed'] and r['token_ledger_records']==r['metrics']['generated_tokens'] and
                 r['token_record_sync_policy']=='request_end' and r['token_ledger_sync_calls']==int(r['metrics']['generated_tokens']>0)
                 for r in native['requests'])
+        elif args.scope=='calibration':
+            raw=lan.web('/fs'+urllib.parse.quote(remote+'.activation-capture',safe='/'),1<<20)
+            capture=case/'activation-capture.private.json';capture.write_bytes(raw);diagnostic=load(capture)
+            events=[[diagnostic['evaluations'],diagnostic['records'],diagnostic['bytes']]]
+            exercised=diagnostic['completed'] and not diagnostic['diagnostic_failed'] and diagnostic['all_file_calls_returned'] and \
+                diagnostic['full_native_SHA256_and_EOF_verified'] and not diagnostic['scratch_retained_until_ordinary_close'] and \
+                1<=diagnostic['evaluations']<=33 and diagnostic['records']==96*diagnostic['evaluations'] and \
+                16384<diagnostic['bytes']<=256<<20 and len(diagnostic['sha256'])==64
         elif args.scope=='F32':
             events=[list(map(int,r)) for r in re.findall(rb'F32_request_completed request=(\d+) rows=(\d+) failures=(\d+)',journal)]
             rows=re.findall(rb'F32_row request=(\d+) row=(\d+) columns=(\d+) sha256=([0-9a-f]{64})',journal)

@@ -19,6 +19,7 @@ def main():
     for name in ('workspace','current','prepared','out'):
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--backend-qualification',action='store_true')
+    parser.add_argument('--partial-top-k',action='store_true',help='Use native TopK instead of a complete512-index sort only for the changed one/two-row ranking path')
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
     prepared=load(args.prepared)
     need(prepared['completed'] and prepared['selected_object_byte_exact'] and not prepared['section_differences'],
@@ -52,6 +53,14 @@ def main():
     text='#include "gpu_cache_rank_graph.h"\n'+text
     text=once(text,'selection_probs=ggml_map_custom1(ctx0,selection_probs,qwen_app_route_rank,1,reinterpret_cast<void*>(std::uintptr_t(il)));',
                    'selection_probs=qwen_app::build_gpu_cache_rank(ctx0,res,selection_probs,unsigned(il));')
+    if args.partial_top_k:
+        text=once(text,'        selected_experts = ggml_argsort_top_k(ctx0, selection_probs, n_expert_used); // [n_expert_used, n_tokens]\n        cb(selected_experts->src[0], "ffn_moe_argsort", il);',
+            '        if(n_expert==512&&n_tokens<=2&&qwen_app_route_is_decode()&&qwen_app::routing_policy(qwen_app_route_mode()).cache_rank){\n'
+            '            selected_experts=ggml_top_k(ctx0,selection_probs,n_expert_used);\n'
+            '        }else{\n'
+            '            selected_experts=ggml_argsort_top_k(ctx0,selection_probs,n_expert_used);\n'
+            '            cb(selected_experts->src[0],"ffn_moe_argsort",il);\n'
+            '        }')
     graph.write_text(text,encoding='utf-8',newline='\n')
     command=prepared['command'].copy();command[command.index('-c')+1]=str(graph);command[command.index('-o')+1]=str(obj)
     command[1:1]=['-DQWEN_GPU_RANK_VALIDATE_BACKEND='+str(int(args.backend_qualification))]
@@ -68,6 +77,7 @@ def main():
         link_flags=['--wrap=qwen_app_route_begin','--wrap=qwen_app_route_resident','--wrap=qwen_app_routing_event_begin',
                     '--wrap=qwen_app_route_rank','--wrap=qwen_app_route_stats'],
         GPU_ranking_source_implemented=True,backend_result_buffer_diagnostics=bool(args.backend_qualification),
+        partial_native_TopK=bool(args.partial_top_k),all_tie_boundary_states_natively_qualified=False,
         all_hit_continuation_implemented=False,PS5_operations=0,
         native_GPU_numerics_or_speed_qualified=False,production_adopted=False)
     save(args.out/'result.private.json',report)

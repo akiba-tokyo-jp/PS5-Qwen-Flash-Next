@@ -49,7 +49,7 @@ def main():
     if case.get('package'):
         need(record(case['package']['path'])==case['package'],'The actual accepted package changed')
         package=load(case['package']['path']);effective=package.get('effective_application_policy',{})
-        if effective.get('kind')=='CPU-SELF-window':
+        if effective.get('kind') in ('CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture'):
             profile=load(effective['profile']['path']);need(record(effective['profile']['path'])==effective['profile'],'Compiled startup scope changed')
             provider=profile['CPU_SELF_provider'];window=provider['window_bytes']
             need(window==65536 and provider['parent_source']==expected and provider['OS_minimum_plus_21_unchanged'],

@@ -115,7 +115,18 @@
     },
     "batched_publications_per_graph": 1,
     "tokens_routes_sources_and_durable_payloads_exact": true,
-    "all_ordinary_closes_and_exact_restores": true
+    "all_ordinary_closes_and_exact_restores": true,
+    "partial_TopK_case": 64330,
+    "partial_TopK_all_69_F32_rows_exact": true,
+    "partial_TopK_tokens_exact": true,
+    "partial_TopK_ordered_routes_exact": false,
+    "partial_TopK_differing_route_records": [
+      554,
+      528,
+      459
+    ],
+    "partial_TopK_API_order_unspecified": true,
+    "partial_TopK_advanced_to_timing_or_adoption": false
   },
   "Q1": {
     "status": "measured_profile_not_adopted",
@@ -152,13 +163,81 @@
     "cross_precision_full_F32_qualified": false,
     "all_ordinary_closes_and_exact_restores": true,
     "tested_legacy_type_metadata_incorrect": true,
-    "builder_metadata_corrected_but_not_rerun": true
+    "builder_metadata_corrected_but_not_rerun": true,
+    "new_source_retirement_case": 64315,
+    "retired_remote_files": 53,
+    "retired_empty_directories": 1,
+    "protected_current_seven_whole_digests_equal": true
   },
   "Q2": {
-    "status": "real_activation_calibration_and_native_indexed_shader_pending"
+    "status": "real_moments_and_nine_calibrated_Up_samples_complete_native_operator_pending",
+    "pre_main_refusal_case": 64310,
+    "returned_CPU_reads": 7,
+    "refused_free_pages": 882,
+    "unchanged_CPU_floor_pages": 919,
+    "ordinary_refusal_close": 64314,
+    "deferred_readiness_case": 64347,
+    "deferred_readiness_launched": false,
+    "headless_native_case": 64360,
+    "headless_native_requests": 1,
+    "actual_generated_tokens": 22,
+    "counting_finite_reset_and_positive_retirement_passed": true,
+    "all_original_model_memory_identity_and_completion_guards_preserved": true,
+    "ordinary_close_and_current_restored": true,
+    "CPU_heap_peak_bytes": 385941504,
+    "device_ledger_peak_bytes": 6048186368,
+    "real_activation_evaluations": 23,
+    "real_activation_records": 2208,
+    "raw_bytes": 108544000,
+    "raw_sha256": "89b1fe0568fed4d46ddead6963450f1359d345ad6dd66990d9ba9552acdf152b",
+    "native_and_host_full_SHA256_equal": true,
+    "CPU_only_read_permission_export_case": 64361,
+    "CPU_only_helper_resubmitted": false,
+    "real_sparse_importance_files": 96,
+    "visited_Experts_per_role": 3267,
+    "total_Experts_per_role": 24576,
+    "visited_Experts_per_layer_range": [
+      42,
+      120
+    ],
+    "unvisited_fallback": "Measured real per-layer mean square; coverage explicit",
+    "synthetic_uniform_importance_used": false,
+    "Gate_Up_input_sharing_independently_qualified": false,
+    "broad_calibration_coverage_qualified": false,
+    "full_IQ2_model_encoded": false,
+    "native_IQ2_indexed_operator_qualified": false,
+    "diagnostic_times_usable_for_performance": false,
+    "calibrated_Up_sample_matrices": 9,
+    "sample_pack_bytes": 8699904,
+    "whole_original_BF16_sources_hashed": 3,
+    "whole_original_BF16_source_bytes": 10740534112,
+    "Q2_K_weight_NRMSE_range": [
+      0.2963985262323974,
+      0.3166754585223855
+    ],
+    "IQ2_weight_NRMSE_range": [
+      0.35383169344838816,
+      0.5704980392518901
+    ],
+    "actual_sample_counts_range": [
+      1,
+      28
+    ],
+    "all_nine_C_Python_decodes_exact": true,
+    "operator_SELF_prepared": 64386,
+    "operator_initial_readiness": 64390,
+    "operator_initial_staging_or_launches": 0,
+    "console_raw_retirement": 64393,
+    "raw_retirement_uses_verified_temporary_directory_owner_lease": true,
+    "console_raw_bytes_removed": 108544000,
+    "post_retirement_free_pages": 9003,
+    "unchanged_OS_minimum_pages": 898,
+    "unchanged_OS_reserved_pages": 206
   },
   "Q3": {
-    "status": "direct_and_padded_format_rejected_cross_row_format_pending"
+    "status": "direct_and_padded_format_rejected_cross_row_format_pending",
+    "real_Down_activation_moments_available": true,
+    "cross_row_format_implemented": false
   },
   "I1": {
     "status": "staging_leases_useful_prefetch_and_native_overlap_pending"

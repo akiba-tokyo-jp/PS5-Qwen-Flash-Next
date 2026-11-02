@@ -129,6 +129,12 @@ int main(int argc,char **argv){
 #elif CASE_OPERATION == 10
     if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("seal-shared-Q4"))goto done;
     success=case_seal_shared_Q4(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
+#elif CASE_OPERATION == 11
+    if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("export-activation"))goto done;
+    success=case_export_activation(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
+#elif CASE_OPERATION == 12
+    if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("retire-activation"))goto done;
+    success=case_retire_activation(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
 #else
 #error A single scoped operation must be selected
 #endif
