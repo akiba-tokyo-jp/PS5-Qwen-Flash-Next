@@ -26,6 +26,12 @@ def main():
     package=load(a.package);effective=package['effective_application_policy'];profile=load(effective['profile']['path'])
     need(effective['kind']=='headless-model-audit' and record(effective['profile']['path'])==effective['profile'] and
          profile['headless_model_audit'] and profile['model_and_GPU_guards_preserved'],'One explicitly compiled headless audit required')
+    if profile['headless_audit_kind']=='S1-MTP-shadow':
+        need(profile.get('successful_MTP_contract_verified') is True and profile.get('actual_legacy_policy_validator_passed') is True,
+             'Successful MTP providers and the actual legacy policy host check must be bound before launch')
+        check=profile['legacy_policy_host_check']
+        need(record(check['path'])==check and load(check['path'])['actual_legacy_validator_passed'],
+             'Exact successful legacy policy host-check receipt required')
     scope=profile['overrides']['native_headless_model_audit'];count=profile['headless_requests']
     unloaded=profile.get('unloaded_CPU_fixture') is True
     need(count==scope['requests'] and (count in (1,3) or (count==0 and unloaded and scope['model_loads']==scope['GPU_calls']==0)) and

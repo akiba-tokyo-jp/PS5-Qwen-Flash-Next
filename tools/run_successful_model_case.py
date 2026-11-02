@@ -66,6 +66,11 @@ def start(args):
     if args.package and package.get('effective_application_policy'):
         effective=package['effective_application_policy'];profile=effective['profile']
         need(record(profile['path'])==profile,'Compiled effective application policy changed')
+        compiled_profile=load(profile['path'])
+        if compiled_profile.get('headless_audit_kind')=='S1-MTP-shadow':
+            need(compiled_profile.get('successful_MTP_contract_verified') is True and
+                 compiled_profile.get('actual_legacy_policy_validator_passed') is True,
+                 'Unqualified MTP context/rollback/CPU-check providers must not launch')
         keys={'native_next_five_normal'} if effective['kind']=='R1-direct' else {'native_next_five_normal','native_resident_main_SELF'}
         if effective['kind']=='Q1-shared':keys.add('native_shared_Q4')
         if effective['kind']=='Q2-calibration':keys.add('native_activation_capture')

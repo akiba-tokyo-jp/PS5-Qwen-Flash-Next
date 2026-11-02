@@ -5,8 +5,22 @@ import json
 from build_speculative_batch_probe import once
 
 
-def headless_entry(text,kind,requests,report_expression):
+def headless_entry(text,kind,requests,report_expression,retain_reference=True):
     if requests not in (1,3):raise ValueError('One or three explicit finite requests required')
+    if not retain_reference:
+        if requests!=1:raise ValueError('Cross-request reference may be removed only from a one-request scope')
+        text=once(text,'        std::vector<float> reference_logits(resident_reference_rows*columns);',
+            '        // One request scans existing full rows without retaining an unused cross-request copy.')
+        start=text.index('            engine->set_logits_observer([&](const float*v,std::size_t count)noexcept{')
+        end=text.index('            qwen_app::CausalExpertSharingEngine causal',start)
+        text=text[:start]+'''            engine->set_logits_observer([&](const float*v,std::size_t count)noexcept{
+                qwen_load::CpuSpan measured(qwen_load::full_validation);
+                if(!v||count!=columns||rows>=resident_reference_rows){geometry_error=true;return;}
+                for(std::size_t i=0;i<count;++i)if(!std::isfinite(v[i]))value_error=true;
+                ++rows;if(!ordinal)++reference_rows;
+            });
+'''+text[end:]
+        if 'reference_logits' in text:raise ValueError('An unhandled cross-request reference consumer remains')
     text=once(text,'        const unsigned request_count=3;','        const unsigned request_count='+str(requests)+';')
     start=text.index('                if(ordinal){\n                    Json event')
     end=text.index('            },observed_inference_stage);',start)

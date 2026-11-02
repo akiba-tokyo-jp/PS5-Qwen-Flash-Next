@@ -471,3 +471,29 @@ pass. Host finalizer64624 validates the exact compiled inputs, complete stage
 counts and all completed records. The references deliberately run between
 logical reads, so this does not qualify real model demand coverage or overlap
 speed. Integration and matched whole-model timing remain necessary.
+
+S1's provisional8098-page screens64635/64647 refuse at7887 and7849 pages before
+staging or launch. That margin is application policy, not a physical minimum.
+Current-context reconstruction64650 reproduces the complete selected object
+2ebde88e... with no section difference. Shader reconstruction64652 reproduces
+both complete original sources and selected budget5/budget6 objects exactly.
+The successful historical43800/44100 MTP implementation uses auxiliary rollback0,
+head-specific graph capacity1088 from34 actual tensors, and three672MiB CPU
+checks. Initial S1 preparation omitted those complete support settings, so all
+old S1 packages are now forbidden by an explicit contract gate; none launched.
+Corrected64653/64654 binds all three support replacements, target rollback1,
+the observed MTP rule, unchanged physical/OS guards and removal of32778240 bytes
+of unused cross-request F32 copies. The finite changed native scope remains
+necessary; compiler success alone does not qualify geometry, F32 or performance.
+
+S1 first launch64655 returns before model/source-worker/GPU setup because
+changing the shared CPU-budget header also changes the exact legacy512MiB
+first-generation policy identity. All three native resource flags are false;
+source/policy-bound ordinary close64656 restores947. The corrected64660 follows
+the successful historical implementation: retain the legacy header/gate and
+change only the entry and two shader runtime checks to672MiB. A host executable
+now runs the actual first-generation validator against the candidate header
+view and canonical fixed policy fields, and passes. Its identity placeholders
+test format only; native SELF/model admission remains a separate runtime gate.
+Packaging and both launch paths reject S1 without the provider contract and
+the actual host-validator receipt. Earlier prepared packages cannot relaunch.

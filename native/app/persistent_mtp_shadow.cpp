@@ -50,7 +50,7 @@ struct PersistentMtpShadow::State {
             need(!aux[0]&&!aux[1],"Only one auxiliary context may be live in this replay scope");
             const auto start=Clock::now();begin("S1_shadow_before_auxiliary_context_creation");
             auto p=llama_context_default_params();p.ctx_type=LLAMA_CONTEXT_TYPE_MTP;p.n_ctx=256;p.n_batch=p.n_ubatch=1;
-            p.n_seq_max=p.n_rs_seq=1;p.n_threads=p.n_threads_batch=6;p.offload_kqv=p.op_offload=true;
+            p.n_seq_max=1;p.n_rs_seq=0;p.n_threads=p.n_threads_batch=6;p.offload_kqv=p.op_offload=true;
             p.moe_cache_size=0;p.type_k=p.type_v=GGML_TYPE_F32;p.no_perf=false;
             aux[arm]=llama_init_from_model(model,p);need(aux[arm],"Shared-model MTP context unavailable; retain owner");
             batch[arm]=llama_batch_ext_init(aux[arm]);need(batch[arm],"MTP batch unavailable; retain owner");

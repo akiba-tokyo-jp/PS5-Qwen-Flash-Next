@@ -61,6 +61,7 @@ def main():
     for name in ('workspace','current','mount-plan','case-plan','out'):
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--source-bound-span-open-refusal',type=Path)
+    parser.add_argument('--early-S1-policy-refusal',type=Path,help='Exact consumed S1 build receipt for a returned legacy-policy mismatch')
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
     case=load(args.case_plan);start_path=args.case_plan.parent/'native-first-start.private.json'
     launch=load(args.case_plan.parent/'launch/result.private.json')
@@ -97,7 +98,26 @@ def main():
         need(lan.web('/fs'+urllib.parse.quote(remote,safe='/'),8<<20)==stages,'The source-bound CPU journal must be parked')
         save(args.out/'source-audit.private.json',audited)
     if early:
-        need(failure['message']=='Monitor clock calibration is stale or inconsistent' and
+        early_message=failure['message']=='Monitor clock calibration is stale or inconsistent'
+        if args.early_S1_policy_refusal:
+            package=load(case['package']['path']);effective=package['effective_application_policy'];profile=load(effective['profile']['path'])
+            need(record(case['package']['path'])==case['package'] and record(effective['profile']['path'])==effective['profile'] and
+                 effective['kind']=='headless-model-audit' and profile['headless_audit_kind']=='S1-MTP-shadow' and
+                 profile['successful_MTP_contract_verified'] and failure['message']=='First-generation policy exceeds its exact admitted scope',
+                 'Only the returned S1 legacy-policy mismatch before resource setup is admitted')
+            entry=load(args.early_S1_policy_refusal)
+            need(entry['application_policy']==effective['profile'] and record(entry['source']['path'])==entry['source'] and
+                 record(entry['entry']['path'])==entry['entry'],'Exact consumed S1 entry required')
+            CPU=next(row for row in entry['inputs'] if Path(row['path']).name=='model_cpu_budget.h')
+            policy=load(args.case_plan.parent/'development.json')
+            policy_binding=next(row for row in case['new_files'] if row['remote'].endswith('/qwen-runtime/development.json'))
+            need(record(args.case_plan.parent/'development.json')=={k:policy_binding[k] for k in ('path','bytes','sha256')},
+                 'The consumed native policy changed')
+            need(record(CPU['path'])==CPU and 'model_CPU_budget_bytes = 672ull << 20;' in Path(CPU['path']).read_text(encoding='utf-8') and
+                 policy['native_first_generation_validation']['CPU_budget_bytes']==512<<20,
+                 'The old quota header must explain the exact legacy-policy mismatch')
+            early_message=True
+        need(early_message and
              b'CXX_initializers_completed' in stages and b'early_SELF_whole_Direct_hash_completed_at_main_entry_after_CXX' in stages and
              b'configuration_read GPU_not_started=1 model_loaded=0' in stages and
              b'resident_additional_exception_work_stopped' in stages and b'model_mapping_' not in stages and

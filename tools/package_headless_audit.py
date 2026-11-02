@@ -20,6 +20,9 @@ def main():
     a=p.parse_args();compiled=load(a.build);policy=load(compiled['application_policy']['path'])
     need(compiled['completed'] and policy['completed'] and policy['kind']=='headless-model-audit' and
          policy['headless_model_audit'] and policy['model_and_GPU_guards_preserved'],'Exact guarded headless audit required')
+    if policy['headless_audit_kind']=='S1-MTP-shadow':
+        need(policy.get('successful_MTP_contract_verified') is True and policy.get('actual_legacy_policy_validator_passed') is True,
+             'Bind successful MTP providers and the actual legacy policy host check before packaging')
     for key in ('entry','reader','provider','source','application_policy'):
         need(record(compiled[key]['path'])==compiled[key],'A compiled audit provider changed')
     a.out.mkdir(parents=True,exist_ok=False)
@@ -29,6 +32,9 @@ def main():
     if 'graph' in compiled:
         need(record(compiled['graph']['path'])==compiled['graph'],'Compiled graph changed')
         arguments+=['--replace','graph.o='+compiled['graph']['path']]
+    for name,row in compiled.get('required_replacements',{}).items():
+        need(record(row['path'])==row,'A required MTP support provider changed')
+        arguments+=['--replace',name+'='+row['path']]
     if a.full_F32_observer:
         observer=load(a.full_F32_observer)
         need(observer['completed'] and observer['qualification_only'] and observer['extra_GPU_downloads']==0 and

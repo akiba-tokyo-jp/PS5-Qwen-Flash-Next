@@ -3,6 +3,39 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+S1 case64655 is a consumed returned legacy-policy CPU refusal before model,
+source workers or GPU initialization. Repricing the shared CPU header changed
+the legacy first-generation512MiB identity; ordinary close64656 restores947.
+Never replay that SELF. Corrected64660 leaves the legacy512MiB header/gate
+unchanged and reprices only the three actual runtime checks to672MiB, as in
+successful43800/44100. It executes the actual legacy validator on the host
+with the candidate header view and canonical fixed policy values; this passes.
+Format-only placeholder identity fields are not native integrity evidence.
+All S1 launch/package paths now require both the successful MTP provider
+contract and this actual host-validator receipt; earlier packages are denied.
+The full F32 observer still downloads no extra GPU rows. New native memory,
+causal replay, F32 and speed remain pending until the changed scope completes.
+
+S1 prelaunch64635/64647 stages and launches nothing below its provisional8098
+pages. Do not infer a hardware limit from that software margin. Audit of the
+actual successful43800/44100 MTP path finds auxiliary n_rs_seq0, head-specific
+graph capacity1088 (34 active tensors), and672MiB checks in entry plus both
+shader providers. Earlier prepared S1 files omitted these support corrections;
+all S1 launch/package paths now require successful_MTP_contract_verified.
+No S1 title or GPU launch occurred during those preflight refusals.
+
+Context64650 reproduces selected2ebde88e... byte-exact from pinned source,
+pooled checkpoints and the selected scheduler resets. Shader checks64652
+reproduce the complete original source hashes and both selected objects.
+Candidate64653/64654 binds auxiliary rollback0, unchanged target rollback1,
+the MTP-only1088-node rule, all three672MiB CPU checks and the unused32778240-byte
+cross-request copy removal. Its graph/context/shader replacement objects are
+explicit package inputs. Native memory, F32, state and speed remain unqualified
+until a finite changed scope completes. The earlier unqualified packages must
+not launch. Source helpers resident_shader_integrity.session_source preserves
+the complete measured output exactly; no source/driver/caches were replaced
+in production947a07fd by this host preparation.
+
 Latest I1 scope64623 now executes24 useful CPU prefetches,12386304 bytes, six
 per actual Q2 envelope. All64 logical reads /33030144 bytes and64 independent
 references/canaries match. All24 independently reopened source leases close,
