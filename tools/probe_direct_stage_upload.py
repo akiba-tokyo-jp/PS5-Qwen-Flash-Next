@@ -6,6 +6,7 @@ import concurrent.futures
 import json
 from pathlib import Path
 import secrets
+import re
 import socket
 import struct
 import time
@@ -22,6 +23,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','mount-plan','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--host-check',type=Path,required=True)
+    p.add_argument('--assigned-port-host-check',type=Path)
     p.add_argument('--execute',action='store_true');p.add_argument('--collect',action='store_true');a=p.parse_args()
     need(not(a.execute and a.collect),'Submit once or collect the same operation')
     state=load(a.current/'active-console.private.json');need(state['original_restored'] and not state['native_running'] and
@@ -34,13 +36,18 @@ def main():
          all(record(row['path'])==row for row in check['inputs']),
          'Exact current receiver, real SHA and returned-failure host controls required before staging')
     lan=lan_module()
+    endpoint=None
+    if a.assigned_port_host_check:
+        endpoint=load(a.assigned_port_host_check)
+        need(endpoint['completed'] and endpoint['cases']==10 and endpoint['actual_adapter_tested'] and endpoint['OS_objects']==0 and
+             all(record(r['path'])==r for r in endpoint['inputs']),'Exact assigned-port host controls required')
     if a.collect:
         intent=load(a.out/'intent.private.json');plan=load(a.out/'native/plan.private.json')
         need((a.out/'native/execution/execution.once.private.json').exists(),'Only collect the consumed native helper')
         raw=lan.web('/fs'+urllib.parse.quote(plan['log'],safe='/'),64<<20);path=a.out/'native/collected-native.private.log';path.write_bytes(raw)
         native=complete(lan,plan,a.out/'native',raw,path)
     else:
-        a.out.mkdir(parents=True,exist_ok=False);port=40000+secrets.randbelow(20000);nonce=secrets.token_hex(16)
+        a.out.mkdir(parents=True,exist_ok=False);port=0 if endpoint else 40000+secrets.randbelow(20000);nonce=secrets.token_hex(16)
         with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as route:
             route.connect((lan.HOST,8080));peer=route.getsockname()[0]
         remote='/data/ai/moss-direct-stage-'+secrets.token_hex(16)+'.bin'
@@ -49,9 +56,11 @@ def main():
         context+='#define DIRECT_STAGE_CONSOLE_IP '+str(ip(lan.HOST))+'u\n#define DIRECT_STAGE_PEER_IP '+str(ip(peer))+'u\n'
         context+='#define DIRECT_STAGE_BYTES '+str(source['bytes'])+'ULL\n#define DIRECT_STAGE_SHA256 '+json.dumps(source['sha256'])+'\n'
         context+='#define DIRECT_STAGE_NONCE '+json.dumps(nonce)+'\n'
+        if endpoint:context+='#include "direct_stage_assigned_port.h"\n'
         plan=build(a.workspace,a.mount_plan,selected,selected,[],'receive-direct-stage',a.out/'native',direct_stage_context=context)
         intent=dict(source=source,remote=remote,port=port,nonce=nonce,peer=peer,native=record(a.out/'native/plan.private.json'),
             host_fault_check=record(a.host_check),
+            assigned_port_host_check=record(a.assigned_port_host_check) if endpoint else None,
             current_files=selected,maximum_connections=1,payload_window_bytes=16384,receive_buffer_bytes=32768,
             publication_calls=0,existing_file_writes=0,GPU_calls=0,title_launches=0,initializer_requests=0,automatic_retries=0)
         save(a.out/'intent.private.json',intent)
@@ -77,6 +86,9 @@ def main():
             if future.done():future.result();raise RuntimeError('Native helper ended without one transport admission')
             time.sleep(1)
         need(ready,'Native receive admission unknown; no connection or launch retry')
+        if endpoint:
+            matched=re.findall(rb'DIRECT_STAGE_READY [^\n]* port=(\d+)\n',raw)
+            need(len(matched)==1 and 1024<=int(matched[0])<=65535,'One exact OS-assigned endpoint required');port=int(matched[0])
         sent=0;header=struct.pack('<8s32sQ64s16s',b'QWENDIR1',nonce.encode('ascii'),source['bytes'],source['sha256'].encode('ascii'),bytes(16))
         with socket.create_connection((lan.HOST,port),timeout=20) as channel:
             channel.settimeout(20);channel.setsockopt(socket.SOL_SOCKET,socket.SO_SNDBUF,32768);channel.sendall(header)
@@ -118,7 +130,7 @@ def main():
         stream_and_independent_Direct_readback_SHA256_exact=True,temporary_file_retired=True,PC_and_console_current_seven_unchanged=True,
         VM_before=record(a.out/'VM-before/result.private.json'),VM_after=record(after/'result.private.json'),
         existing_file_writes=0,publication_calls=0,connections=1,GPU_calls=0,title_launches=0,initializer_requests=0,automatic_retries=0,
-        application_launch_memory_saving_qualified=False))
+        application_launch_memory_saving_qualified=False,OS_assigned_port=bool(endpoint)))
     print(json.dumps(dict(completed=True,bytes=source['bytes'],temporary_copy_retired=True,original_current_seven_unchanged=True,GPU_calls=0)))
 
 

@@ -90,15 +90,15 @@
   "production_optimization_change": false,
   "initializer_repeated": false,
   "latest_resource_screen": {
-    "case": 64801,
-    "free_pages": 6988,
+    "case": 64822,
+    "free_pages": 5696,
     "model_screen_pages": 7374,
     "new_model_launch_admitted": false,
     "native_owners": 0,
     "unknown_completion": false,
     "result": {
-      "bytes": 900,
-      "sha256": "958a2a918cc358072c7441e8ccb6683a19cda1cd0d0ac84e1a1b1f87c41ad519"
+      "bytes": 887,
+      "sha256": "5f02a2a34ea56f4535a1312d65914ab8f66266d96bc401a7ec55976576c620c8"
     }
   },
   "superseded_unlaunched_CPU_retirement": {
@@ -114,5 +114,13 @@
     "latest_CPU_and_MTP_packages_preserved": true,
     "sources_and_receipts_preserved": true,
     "PS5_operations": 0
+  },
+  "new_assigned_port_qualification": {
+    "host_case": 64817,
+    "host_controls": 10,
+    "native_opaque_copy": 64818,
+    "native_component_and_restoration": 64820,
+    "original_receiver_and_14_host_inputs_unchanged": true,
+    "inference_or_RAM_gain_qualified": false
   }
 }

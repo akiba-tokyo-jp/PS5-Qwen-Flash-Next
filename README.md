@@ -16,6 +16,10 @@ R1 is adopted after complete-request ABBA gains and exact whole-vocabulary F32
 comparison. The measured P1, Q1 and two G1 ranking profiles are not adopted.
 Finite native IQ2 vector, immutable I/O delivery and online MTP causal checks
 pass, with their quality, integration and whole-speed limits recorded separately.
+The explicit F32-arithmetic IQ2 component now also passes all12 cases/144 graphs
+at widths1/2/30/32. One-token compute/fence improves4.5–7.2%; prefill-shaped
+compute/fence takes51–55% longer. These component results do not qualify
+full-model adoption. See the [F32 component results](docs/iq2-explicit-F32-prefill-20261103.json).
 The single runtime initialization is consumed and must not be repeated.
 
 The owner closed every current AMPR/APR/PFS, Kraken, compatibility-initializer
@@ -59,8 +63,14 @@ restoration. It starts no model/source/GPU work. Bounded Direct staging is now
 an opt-in successful-route transport, with the existing whole-SHA publisher.
 The [startup qualification](docs/Direct-startup-qualification-20261103.json)
 records the measurements and the separately consumed passive-settle refusal.
-The latest PS5 observation64801 records6988 free pages against the7374 model
-screen; no new model launch is admitted. Reboot and another initializer are unavailable.
+The latest PS5 observation64822 records5696 free pages after positive F32
+component retirement, ordinary close and exact current restoration, against
+the7374 ordinary-model screen. The source-bound model-free6736 screen admitted
+that distinct test without changing native guards. Reboot and another initializer
+are unavailable. OS-assigned-port Direct staging is qualified by an opaque SELF
+copy and actual component/restoration. The17 old private logs are fully archived
+and retired under the owner's log-handling authorization; see the
+[follow-up record](docs/log-retirement-and-prefill-followup-20261103.json).
 
 ### Historical throughput control
 

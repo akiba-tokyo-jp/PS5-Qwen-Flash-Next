@@ -698,13 +698,13 @@
     "all_other_campaign_candidates_complete": false
   },
   "current_resource_screen": {
-    "case": 64801,
-    "free_pages": 6988,
+    "case": 64822,
+    "free_pages": 5696,
     "selected_model_launch_screen_pages": 7374,
     "model_launch_admitted": false,
     "title_or_GPU_owner": false,
     "initializer_repeated": false,
-    "read_only_observation": "After positively completed whole-SELF CPU measurement, ordinary close and exact selected-file restoration"
+    "read_only_observation": "After positively completed model-free F32 IQ2 component, ordinary close and exact selected-file restoration"
   },
   "latest_closed_output_cleanup": {
     "case": 64747,
@@ -719,6 +719,12 @@
       "PC_files_retired": 20,
       "bytes": 209697335,
       "all108_selected_inputs_exact": true
-    }
+    },
+    "private_driver_logs_archived_and_retired": 17,
+    "private_driver_log_bytes": 1161178,
+    "private_driver_log_retirement_case": 64807,
+    "owner_log_handling_authorized": true,
+    "unreadable_old_driver_logs_preserved_is_64747_snapshot": true,
+    "latest_remaining_private_logs": 0
   }
 }

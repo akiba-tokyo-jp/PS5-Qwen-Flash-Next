@@ -3,6 +3,22 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest native64820 explicitly disables F16 shader arithmetic for the model-free
+Up component: all12 cases/144 GPU graphs, layers0/23/47 and widths1/2/30/32,
+pass original F64 references/tolerance and unchanged canaries. Maximum error
+2.4925405305714632e-8. CPU/device peaks64/60MiB. All source/backend/device owners
+retire, one ordinary close restores and natively hashes the exact seven947
+production files; host64824 verifies all108 inputs. No initializer or reboot.
+Do not replay this completed scope. Analysis64823 finds one-token compute/fence
+reductions4.546–7.242%, all3 pairs beyond A/A spread. Width2 gains stay within
+variation; widths30/32 take50.806–54.709% longer, all6 slower pairs beyond A/A
+spread. These are synthetic component intervals, not complete-model speed.
+Earlier heldout Up quality improves0/9; no full-model IQ2 adoption follows.
+Current R1 production947/sourcea543 and driver872/cumulative-idle/cache-off stay.
+Read-only64822 after restoration records5696 free pages, below ordinary-model
+7374. No native owner/unknown completion remains. F32 qualification does not
+qualify the old default-arithmetic prefill negative64460 or all other designs.
+
 Latest native CPU scope64800 completes the original selected64KiB SELF reader:
 336 reads, exact whole SHA/identity/EOF, minimum1525 pages >=919, no model,
 source worker/payload or GPU work. Host closure first waits for the wrong model
@@ -27,14 +43,46 @@ binaries64784/64785/64787 are retired by64802:20 files/209697335 bytes, with all
 production inputs and latest CPU/MTP packages exact. Sources/receipts remain.
 Historical64788 builder bytes are frozen and SHA-bound in host proof64799.
 
-CPU-only obsolete0600 driver-log exporter64783 is compiled and import-audited,
-but unsubmitted. It covers17 closed-case logs/1161178 bytes and leaves original
-permissions/current seven unchanged. Automatic approval review refused sensitive
-log export because it requires explicit payload/destination authorization. The
-owner has been asked about this exact scope and PC destination64783/export/archives.
-Do not submit/export/retire those17 logs until that specific authorization arrives;
-general successful-route authorization does not clear this review rejection.
-Scope64782 is an unlaunched formatter-bound preparation superseded by64783.
+The owner explicitly authorized log handling on2026-11-03. The old17 private
+driver logs/1161178 bytes are now independently archived on PC and retired from
+the console by64807, with complete native/PC SHA and EOF checks and all108
+selected inputs exact. No log permission remains pending. Export64783 returns
+EACCES before any payload read and exits positively;64804 confirms both paths.
+Inverse ownership precondition64805 refuses before any changes. Corrected64806
+transfers exactly17 closed logs from UID1 to the helper's effective UID0,
+preserving0600, inode, size, mtime and payload. Export/retirement64807 then
+completes; the runtime directory owner is restored. Do not replay64783/64804/
+64805. Older entries below describe earlier retention, superseded by64807.
+
+Read-only64808 archives successful S1 and IQ2 numeric memory reports by raw FTP
+after the HTTP404 path returns. Before-GPU free2451/2907/2570 and required1185
+are empirical phase observations, not hardware bounds. Audit64810 decodes eight
+currently linked original SPIR-V assets; it does not observe pipeline selection.
+Simple F16 weight/input rounding64811 predicts zero old-tolerance mismatches,
+so it does not explain the old73401-value prefill negative. Do not alter the
+reference or tolerance on that hypothesis.
+
+New explicitly F32 shader entry64812/package64813 uses the existing
+GGML_VK_DISABLE_F16 option, all original weights/F32 inputs/tolerance, widths
+1/2/30/32 and144 maximum GPU graphs, with zero model loads. Pricing64814 binds
+actual Direct startup64800, successful GPU-prefix measurements and positively
+retired component allocations. The model-free screen is6736, native CPU919 and
+before-GPU1185 remain, with30 constructors and zero additional ELF LOAD pages.
+This does not lower the ordinary-model7374 screen or qualify full-model work.
+
+F32 case64815 returns from receive setup before READY: zero connections, file
+opens, publications or title/GPU launches, positive helper exit/removal. Exact
+pending metadata2 files are natively hashed then retired by64819; original seven
+remain exact. Do not resubmit that consumed receiver. Changed CPU diagnostic64816
+passes socket creation/options, OS-selected unused-port bind/listen/close without
+accept/payload. It does not isolate the old refusal cause. Assigned-port adapter
+64817 passes10 host controls; unchanged receiver/14 original fault inputs remain
+exact. Native64818 copies production SELF as opaque data, verifies complete
+stream/native Direct SHA, exits, removes its exact temporary copy and hashes all
+seven current files. This qualifies the new endpoint, not inference/RAM benefit.
+New64820 completes that distinct F32 component and its restoration through the
+qualified endpoint. Keep the adapter and all10 host inputs exact while using
+proof64818. Do not infer that the original random-port refusal was a collision.
 
 Latest CPU-only Direct staging64779 copies the selected SELF as opaque data
 once into a fresh nonce-bound temporary file, with16KiB O_DIRECT writes, exact

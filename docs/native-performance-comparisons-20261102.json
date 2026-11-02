@@ -17,7 +17,7 @@
     "retained_current_inputs": 93,
     "formatter_import_stubs": 7,
     "canonical_entry_ELF_and_SELF_byte_exact": true,
-    "latest_current_seven_native_integrity": 64800,
+    "latest_current_seven_native_integrity": 64820,
     "source_overlay_historical": "9601f9048dc943cf28705f3e8ec784d8d91ca54a",
     "source_overlay": "a543eac4fdeb59b4ecadf50725b12bd9ece9689f",
     "actual_application_linked_driver_archive_sha256": "a325dcd4584b1f1fccc6b46e90faa081ca86d18544aca610efea9e3ca3774f32"
@@ -306,6 +306,15 @@
       "same_prompt": true,
       "independent_prompts": 0,
       "full_model_quality_qualified": false
+    },
+    "explicit_F32_prefill_component": {
+      "native": 64820,
+      "analysis": 64823,
+      "results": "iq2-explicit-F32-prefill-20261103.json",
+      "GPU_graphs": 144,
+      "all12_numerics_and_canaries_passed": true,
+      "full_model_quality_or_speed_qualified": false,
+      "production_adopted": false
     }
   },
   "Q3": {
@@ -554,8 +563,8 @@
     "complete_PC_archive_preserved": true,
     "unreadable_driver_logs_retained": 17,
     "current_selected_files_protected": 108,
-    "latest_readonly_VM": 64801,
-    "free_pages_after": 6988,
+    "latest_readonly_VM": 64822,
+    "free_pages_after": 5696,
     "model_launch_screen_pages": 7374,
     "model_launch_permitted": false,
     "initializer_requests": 0,
@@ -577,13 +586,19 @@
       "PS5_operations": 0
     },
     "remaining_private_logs": {
-      "count": 17,
-      "bytes": 1161178,
+      "count": 0,
+      "bytes": 0,
       "prepared_CPU_exporter": 64783,
-      "native_submissions": 0,
+      "native_submissions": 6,
       "permission_changes": 0,
       "automatic_approval_review_refused_sensitive_export": true,
-      "explicit_payload_and_PC_destination_permission_pending": true
+      "explicit_payload_and_PC_destination_permission_pending": false,
+      "archived_and_retired": 17,
+      "archived_bytes": 1161178,
+      "owner_handoff_case": 64806,
+      "archive_retirement_case": 64807,
+      "owner_authorization_received": true,
+      "prepared_exporter_native_submissions": 1
     },
     "superseded_unlaunched_CPU": {
       "case": 64802,
@@ -592,7 +607,9 @@
       "protected_current_inputs_exact": 108,
       "sources_and_receipts_preserved": true,
       "PS5_operations": 0
-    }
+    },
+    "unreadable_driver_logs_retained_is_original_64747_snapshot": true,
+    "latest_remaining_private_logs": 0
   },
   "checked_source_and_package_review": {
     "case": 64781,
@@ -603,13 +620,14 @@
   },
   "Direct_startup_qualification": {
     "record": "Direct-startup-qualification-20261103.json",
-    "latest_completed_native_case": 64800,
+    "latest_completed_native_case": 64820,
     "CPU_original_reader_whole_SELF_SHA_identity_EOF_passed": true,
     "ordinary_exit_and_exact_current_restoration": true,
-    "latest_readonly_VM_case": 64801,
-    "free_pages_after": 6988,
+    "latest_readonly_VM_case": 64822,
+    "free_pages_after": 5696,
     "model_launch_screen_pages_unchanged": 7374,
     "model_launch_admitted": false,
-    "inference_gain_qualified": false
+    "inference_gain_qualified": false,
+    "new_assigned_port_native_qualification": 64818
   }
 }

@@ -30,6 +30,15 @@ def qualification(path):
     need(tested['completed'] and tested['returned_transport_and_file_cases']==14 and tested['actual_receiver_control_flow_unchanged'] and
         tested['host_window_still_16384_aligned'] and all(record(row['path'])==row for row in tested['inputs']),
         'Actual receiver and all returned-failure controls must remain exact')
+    if proof.get('OS_assigned_port'):
+        endpoint=intent['assigned_port_host_check'];need(record(endpoint['path'])==endpoint,'Assigned-port host receipt changed');checked=load(endpoint['path'])
+        need(checked['completed'] and checked['cases']==10 and checked['actual_adapter_tested'] and checked['OS_objects']==0 and
+             all(record(r['path'])==r for r in checked['inputs']),'Actual OS-assigned endpoint adapter must remain exact')
+        plan=load(Path(proof['native']['path']).parent/'plan.private.json')
+        need(record(intent['native']['path'])==intent['native'] and
+             Path(plan['context']['path']).read_text().count('#include "direct_stage_assigned_port.h"')==1 and
+             len(re.findall(rb'DIRECT_STAGE_READY [^\n]* port=\d+\n',Path(native['raw']['path']).read_bytes()))==1,
+             'The positively completed native control must actually bind the assigned-port adapter')
     return record(path)
 
 
@@ -46,13 +55,15 @@ def upload(capture,remote,out,lan,native_verify,*,workspace,mount_plan,current_r
     need(target_ok and type(capture['bytes']) is int and 0<capture['bytes']<=32<<20 and record(source)==capture,
         'Exact new owned SELF, local whole SHA and mandatory native publisher required')
     lan.allowed(remote);lan.absent(remote);out.mkdir(parents=True,exist_ok=False)
-    before=source.stat();port=40000+secrets.randbelow(20000);nonce=secrets.token_hex(16)
+    before=source.stat();assigned=load(qualified).get('OS_assigned_port') is True
+    port=0 if assigned else 40000+secrets.randbelow(20000);nonce=secrets.token_hex(16)
     with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as route:
         route.connect((lan.HOST,8080));peer=route.getsockname()[0]
     ip=lambda value:int.from_bytes(socket.inet_aton(value),'little')
     context=''.join('#define '+key+' '+value+'\n' for key,value in dict(DIRECT_STAGE_PATH=json.dumps(remote),
         DIRECT_STAGE_PORT=str(port)+'u',DIRECT_STAGE_CONSOLE_IP=str(ip(lan.HOST))+'u',DIRECT_STAGE_PEER_IP=str(ip(peer))+'u',
         DIRECT_STAGE_BYTES=str(capture['bytes'])+'ULL',DIRECT_STAGE_SHA256=json.dumps(capture['sha256']),DIRECT_STAGE_NONCE=json.dumps(nonce)).items())
+    if assigned:context+='#include "direct_stage_assigned_port.h"\n'
     native_out=out/'receiver';plan=build(workspace,mount_plan,current_rows,current_rows,[],'receive-direct-stage',native_out,direct_stage_context=context)
     save(out/'intent.json',dict(SELF=capture,kind=kind,remote=remote,qualification=proof,receiver=record(native_out/'plan.private.json'),
         nonce=nonce,port=port,peer=peer,payload_window_bytes=16384,receive_buffer_bytes=32768,
@@ -72,6 +83,9 @@ def upload(capture,remote,out,lan,native_verify,*,workspace,mount_plan,current_r
             if future.done():future.result();raise RuntimeError('Receiver ended without transport admission')
             time.sleep(1)
         need(ready,'Receiver admission unknown; never connect or launch again')
+        if assigned:
+            matched=re.findall(rb'DIRECT_STAGE_READY [^\n]* port=(\d+)\n',raw)
+            need(len(matched)==1 and 1024<=int(matched[0])<=65535,'One exact OS-assigned endpoint required');port=int(matched[0])
         sent=0;digest=hashlib.sha256();header=struct.pack('<8s32sQ64s16s',b'QWENDIR1',nonce.encode('ascii'),capture['bytes'],capture['sha256'].encode('ascii'),bytes(16))
         with socket.create_connection((lan.HOST,port),timeout=20) as channel:
             channel.settimeout(20);channel.setsockopt(socket.SOL_SOCKET,socket.SO_SNDBUF,32768);channel.sendall(header)

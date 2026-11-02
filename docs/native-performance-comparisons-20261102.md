@@ -908,3 +908,88 @@ files/209697335 bytes from64784/64785/64787, retaining sources/receipts, all108
 production inputs and latest CPU/MTP packages. This PC cleanup claims no PS5 RAM
 recovery. The17 private console logs above remain untouched pending their exact
 payload/destination authorization.
+
+## Authorized log retirement and prefill precision follow-up, 2026-11-03
+
+The owner subsequently authorizes log handling. The17 obsolete private driver
+logs are now fully archived and retired by64807:1161178 bytes, independent whole
+native/PC SHA and EOF, original0600 mode,108 selected inputs exact, current seven
+natively hashed and runtime directory owner restored. The first64783 read returns
+EACCES before payload I/O;64804 confirms both namespaces. An inverse owner
+precondition64805 stops before any changes. Actual metadata identifies UID1;
+corrected64806 hands exactly these files to effective reader UID0, preserving
+payload, inode, size and mtime. All17 private PC archives remain. Permission is
+resolved; the earlier pending statement above is historical.
+
+Successful numeric memory reports64808 show before-GPU free2451/2907/2570 pages
+and required1185 for S1 forward64694, online64732 and vector IQ264523. Raw FTP
+reads the verified0644 metadata; the HTTP404 path is not repeated. These remain
+global empirical observations. After log retirement free pages are6832; no causal
+RAM recovery is established.
+
+Host64810 extracts eight original SPIR-V assets directly from the currently
+linked external tokens and unchanged storage. All validate, with typed F16/F32
+conversions and accumulation variants recorded. This does not identify the actual
+native pipeline. Host64811 independently decodes the first failed Q2_K control
+and evaluates F16 rounding of weights, inputs, or both. All three predict zero
+mismatches at the unchanged tolerance; maximum error2.7165531263e-6 is far below
+the actual1.4160966843e-4 with73401 mismatches. Simple rounding is insufficient;
+neither the CPU reference nor the original tolerance is changed.
+
+New64812/64813 explicitly disables F16 shader arithmetic through the existing
+backend option, retaining original weights/F32 inputs/reference and widths
+1/2/30/32,12 cases/144 graphs, with no model load. Source-bound pricing64814
+combines the completed Direct CPU startup and successful GPU-prefix observations
+with separate operational reserves and measured retired component allocations.
+CPU/GPU phase screens are6736/6671; constructor count30 and ELF LOAD pages do not
+increase. Every native guard remains unchanged, including CPU919 and before-GPU
+1185. This limited model-free admission does not lower ordinary-model7374 or
+establish a universal safe bound.
+
+First staging64815 observes6821 pages but returns before socket READY, with zero
+connections, file opens, publications and title/GPU launches. The helper exits
+and removes its own files. Cleanup64819 hashes then retires its two pending
+metadata files, preserving the selected seven. No unchanged receiver is replayed.
+CPU diagnostic64816 successfully creates/configures one socket, binds an
+OS-selected unused port, listens and closes without accept/payload/file calls.
+The old refusal cause remains unisolated.
+
+The assigned-port adapter changes only bind and READY reporting around the
+unchanged qualified receiver. Ten host controls64817 cover returned failures,
+invalid geometry/address/port and unchanged ordinary reporting, complementing
+the unchanged14 original receiver controls. Native opaque-copy64818 positively
+transfers all21927687 selected SELF bytes, checks stream and independent native
+Direct readback SHA, exits, removes the exact copy and natively hashes the seven
+current files. It supplies no inference or RAM gain. The qualified new endpoint
+is used by the new F32 component scope64820. See the
+[follow-up record](log-retirement-and-prefill-followup-20261103.json).
+
+Native64820 positively completes all12 explicit-F32 cases and144 GPU graphs.
+Every original F64 reference and canary passes, including widths30/32, with
+maximum absolute error2.4925405306e-8 and no tolerance/reference change. All
+source/backend/device owners retire; CPU/device peaks are64/60MiB. One ordinary
+close and the qualified assigned-port restoration recover the exact selected
+seven947 files in both namespaces. Host64824 verifies all108 current inputs.
+No model load, initializer or reboot occurs. This completed scope is not replayed.
+
+Analysis64823 validates the host-quiet timing interval and compares identical
+Q2_K/IQ2_XXS shapes in ABBA. One-token compute/fence reductions are7.242%,4.649%
+and4.546% for layers0/23/47; both pairs beat A/A spread in all three. Two-token
+mean reductions2.854–8.587% do not beat A/A spread in both pairs, so those gains
+remain uncertain. Width30/32 compute/fence takes50.806–54.709% longer, with both
+slower pairs exceeding control spread in all six cases. Delivery-plus-compute
+intervals vary substantially and do not establish complete-model benefit. The
+[full numerical/timing record](iq2-explicit-F32-prefill-20261103.json) includes
+each pair and its spread. Nine real Up matrices are replicated across prefill
+slots; inputs remain synthetic periodic vectors. Earlier heldout Up quality
+improves0/9; complete-model quality and speed remain unqualified. No blanket IQ2
+production adoption follows these component results.
+
+Additional64821 validates the original `matmul_id_f16_f32_f16acc` asset with four
+typed F16 FMA instructions. The pinned upstream default selector is a source
+reference, not reconstructed current GPU source or an observed native pipeline.
+It supports a precision-selection investigation without changing the reference.
+The old default-arithmetic64460 prefill negative remains distinct from the newly
+qualified explicit-F32 profile. Read-only64822 after restoration observes5696
+pages, below ordinary-model7374. Current R1 and all original physical/native
+completion guards remain selected, with no owner or unknown completion left.

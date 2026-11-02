@@ -26,12 +26,19 @@ def main():
     parser.add_argument('--IQ2-fixture',action='store_true',help='Run the distinct unloaded IQ2 component scope instead of activation capture')
     parser.add_argument('--resume-published-component',action='store_true',help='Continue an unlaunched scope after its prepared CPU publication positively completed')
     parser.add_argument('--published-component',type=Path,help='Reuse an existing sealed immutable pack with exactly the same bytes; native startup hashes it again')
+    parser.add_argument('--direct-staging-proof',type=Path)
+    parser.add_argument('--model-free-pricing',type=Path)
     args=parser.parse_args();package=load(args.package);effective=package['effective_application_policy']
     need(not(args.resume_published_component and args.published_component),'One component publication source required')
     if args.IQ2_fixture:
         profile=load(effective['profile']['path'])
         need(effective['kind']=='Q2-IQ2-fixture' and record(effective['profile']['path'])==effective['profile'] and
              profile['unloaded_GPU_fixture'],'One explicitly compiled unloaded IQ2 program is required')
+        if profile['overrides']['native_IQ2_fixture'].get('F32_shader_arithmetic_explicit'):
+            from price_unloaded_iq2_startup import require_pricing
+            need(args.direct_staging_proof and args.model_free_pricing,'Exact Direct transport and source-bound model-free pricing required')
+            price=require_pricing(args.model_free_pricing,args.package)
+            need(args.readiness_pages==price['selected_model_free_readiness_pages'],'Exact model-free readiness screen required')
     else:need(effective['kind']=='Q2-calibration' and effective['overrides']['native_activation_capture']['headless'],
               'One explicitly compiled headless activation program is required')
     case=args.out/'case';closed=args.out/'closed';clock=args.out/'clock'
@@ -54,6 +61,7 @@ def main():
         save(args.out/'reused-component-publication.private.json',dict(completed=True,publication=record(args.published_component),
             pack=published['pack'],new_publication_calls=0,native_full_pack_hash_required=True))
     common=['--workspace',args.workspace,'--current',args.current,'--mount-plan',args.mount_plan]
+    transport=['--direct-staging-proof',args.direct_staging_proof] if args.direct_staging_proof else []
     if not args.resume_published_component:
         save(args.out/'intent.private.json',dict(package=record(args.package),maximum_native_requests=0 if args.IQ2_fixture else 1,HTTP_requests=0,
             VideoOut_starts=0,automatic_retries=0,effect_validation_after_positive_retirement_and_ordinary_restore=True))
@@ -85,7 +93,7 @@ def main():
                     'publish-component')==0,'Component publication stopped; collect its same journal if needed, never resubmit it')
         need(load(publication/'result.private.json')['completed'],'Positive immutable component publication required')
     need(script('refresh_successful_clock.py',common+['--out',clock,'--execute'],'clock')==0,'Fresh clock failed; stop without replay')
-    need(script('run_successful_model_case.py',common+['--model-proof',args.model_proof,'--clock',clock/'clock.private.json',
+    need(script('run_successful_model_case.py',common+transport+['--model-proof',args.model_proof,'--clock',clock/'clock.private.json',
         '--package',args.package,'--out',case,'--execute'],'start')==0,'Startup submission stopped; never resubmit')
     if args.IQ2_fixture:
         # Numerical/model capture may poll; a microbenchmark must not compete
@@ -100,14 +108,14 @@ def main():
     while True:
         code=script('observe_successful_model_start.py',['--case-plan',case/'plan.private.json'],'read-'+str(poll));poll+=1
         if (case/'host-early-self-refusal.private.json').exists():
-            need(script('close_successful_early_self_refusal.py',common+['--case-plan',case/'plan.private.json','--out',closed],'early-close')==0,
+            need(script('close_successful_early_self_refusal.py',common+transport+['--case-plan',case/'plan.private.json','--out',closed],'early-close')==0,
                  'Known CPU refusal close did not positively finish; no retry')
             raise RuntimeError('Returned pre-main CPU refusal closed and current restored; no repeated launch')
         need(code==0,'Read-only observation failed; stop without replay')
         if (case/'native.failure.private.json').exists():
             failure=load(case/'native.failure.private.json')
             if failure.get('native_resources_started') is False and failure.get('model_loaded') is False and failure.get('CPU_worker_completion_unknown') is False:
-                need(script('close_successful_model_failure.py',common+['--case-plan',case/'plan.private.json','--out',closed],'pre-GPU-close')==0,
+                need(script('close_successful_model_failure.py',common+transport+['--case-plan',case/'plan.private.json','--out',closed],'pre-GPU-close')==0,
                      'Known pre-GPU refusal close did not finish')
             raise RuntimeError('Native failure observed; stop without retry')
         need(not(case/'native.fatal.private.json').exists(),'Native fatal; retain owner without recovery')
@@ -126,7 +134,7 @@ def main():
     save(observer/'complete.private.json',dict(completed=True,headless_calibration=not args.IQ2_fixture,unloaded_IQ2_fixture=bool(args.IQ2_fixture),POSTs=0,automatic_retries=0,
         model_source_GPU_owners_positively_retired=True,native_binding=first))
     close_mode='--IQ2-fixture' if args.IQ2_fixture else '--headless-calibration'
-    need(script('close_successful_current_model.py',common+['--case-plan',case/'plan.private.json','--out',closed,close_mode],'close')==0,
+    need(script('close_successful_current_model.py',common+transport+['--case-plan',case/'plan.private.json','--out',closed,close_mode],'close')==0,
          'Ordinary close/restoration did not positively finish; no retry')
     closure=load(closed/'result.private.json');need(closure['completed'] and closure['current_seven_restored_and_native_hashed'] and
         closure['ordinary_exit_observed'] and not closure['unknown_completion'],'Positive ordinary restoration is required')

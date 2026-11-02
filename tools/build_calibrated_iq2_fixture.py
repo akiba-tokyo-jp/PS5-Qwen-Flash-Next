@@ -20,6 +20,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','base-entry','samples','out'):parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--prefill',action='store_true',help='Also qualify widths 30/32 with ten selected physical slots and three replicated real matrices')
+    parser.add_argument('--F32-shader-arithmetic',action='store_true',help='Use the existing backend F16-disable option for a distinct numerical profile')
     args=parser.parse_args();base=load(args.base_entry);samples=load(args.samples)
     need(base['completed'] and base['CPU_minimum_plus_21_unchanged'] and samples['completed'] and
          len(samples['matrices'])==9 and samples['all_nine_Experts_actually_visited'] and not samples['synthetic_uniform_importance_used'],
@@ -36,7 +37,8 @@ def main():
         formats=['Q2_K','IQ2_XXS'],original_weight_source='BF16',real_PS5_importance=True,
         synthetic_component_inputs=True,component_not_model_speed=True,activation_input_tensor_type='F32',
         vector_MMVQ_disabled=True,larger_width_internal_arithmetic_independently_qualified=False,
-        backend_environment=dict(GGML_VK_DISABLE_MMVQ='1'),pack_bytes=samples['pack']['bytes'],pack_sha256=samples['pack']['sha256'],
+        backend_environment=dict(GGML_VK_DISABLE_MMVQ='1',**({'GGML_VK_DISABLE_F16':'1'} if args.F32_shader_arithmetic else {})),
+        F32_shader_arithmetic_explicit=args.F32_shader_arithmetic,pack_bytes=samples['pack']['bytes'],pack_sha256=samples['pack']['sha256'],
         HTTP_requests=0,VideoOut_starts=0,automatic_retries=0)
     header=args.out/'calibrated_iq2_assets.h';text='#pragma once\n#include <cstdint>\n'
     text+='inline constexpr unsigned iq2_widths[]={'+','.join(map(str,widths))+'};\n'
@@ -60,6 +62,8 @@ def main():
     text=once(text,marker,marker+'\n        if(policy.at("native_IQ2_fixture")!=Json::parse('+json.dumps(json.dumps(scope,separators=(',',':')))+'))throw std::runtime_error("Exact calibrated IQ2 component scope required");')
     marker='\n        qwen_native_gpu_initialize((startup.admission_report+".driver.log").c_str());\n'
     text=once(text,marker,'\n        if(setenv("GGML_VK_DISABLE_MMVQ","1",1))throw std::runtime_error("F32 component activation policy unavailable");'+marker)
+    if args.F32_shader_arithmetic:
+        text=once(text,marker,'\n        if(setenv("GGML_VK_DISABLE_F16","1",1))throw std::runtime_error("Explicit component F32 shader profile unavailable");'+marker)
     start=text.index(marker)+len(marker);end=text.index('    }catch(const std::exception &e){',start)
     text=text[:start]+'''        qwen_app::enforce_native_model_compute_limits();
         if(qwen_app::native_model_device_stats().live)throw std::runtime_error("Empty IQ2 component device ledger required");
@@ -100,7 +104,12 @@ def main():
     command=[str(args.out) if v==old_view else v for v in command];command[command.index('-ivfsoverlay')+1]=str(selected)
     obj=args.out/'entry.o';command[command.index('-c')+1]=str(source);command[command.index('-o')+1]=str(obj)
     if '-MF' in command:command[command.index('-MF')+1]=str(args.out/'entry.private.d')
-    runtime=args.out/'calibrated_iq2_fixture.cpp';shutil.copyfile(ROOT/'native/app/calibrated_iq2_fixture.cpp',runtime)
+    runtime=args.out/'calibrated_iq2_fixture.cpp';runtime_text=(ROOT/'native/app/calibrated_iq2_fixture.cpp').read_text(encoding='utf-8')
+    if args.F32_shader_arithmetic:
+        runtime_text=once(runtime_text,'    Pack pack(stage);',
+            '    need(getenv("GGML_VK_DISABLE_F16")&&std::strcmp(getenv("GGML_VK_DISABLE_F16"),"1")==0,"Exact F32 shader environment required");\n    Pack pack(stage);')
+        runtime_text=once(runtime_text,'{"vector_MMVQ_disabled",true},','{"vector_MMVQ_disabled",true},{"F32_shader_arithmetic_explicit",true},')
+    runtime.write_text(runtime_text,encoding='utf-8',newline='\n')
     shutil.copyfile(ROOT/'native/app/calibrated_iq2_fixture.h',args.out/'calibrated_iq2_fixture.h')
     sdk=args.workspace/'toolchain/ps5-sdk-radv/ps5-payload-sdk/target/include'
     up=args.current.parent/'upstream/llama.cpp-0a1ef309cdbb9f2024f58a38fb4c42352c5db569'
