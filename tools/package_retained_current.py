@@ -107,8 +107,9 @@ def main():
                 persistent_caches=False,PS5_operations=0,native_quality_or_speed_measured=False,production_adopted=False)
     if relink.get('required_bundle_restore'):report['required_bundle_restore']=relink['required_bundle_restore']
     if identity_audit:report['required_bundle_identity_audit']=identity_audit
+    if relink.get('effective_application_policy'):report['effective_application_policy']=relink['effective_application_policy']
     (args.out/'result.private.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
-    print(json.dumps({k:v for k,v in report.items() if k not in ('relink','SELF','preferred_formatter_sources','formatter','commands','driver_table_geometry')}))
+    print(json.dumps({k:v for k,v in report.items() if k not in ('relink','SELF','preferred_formatter_sources','formatter','commands','driver_table_geometry','effective_application_policy')}))
 
 
 if __name__=='__main__':main()

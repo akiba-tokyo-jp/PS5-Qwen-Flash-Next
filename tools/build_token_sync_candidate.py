@@ -54,6 +54,7 @@ def main():
         link_flags=['--wrap=open','--wrap=fsync','--wrap=close'],exact_three_owned_ledger_names_only=True,
         candidate_durability='request_end',control_durability='per_token',close_flush_before_success=True,
         descriptor_isolation_reuse_capacity_and_fault_injection_passed=True,
+        unrelated_descriptor_syscalls_outside_token_ledger_lock=True,
         interrupted_request_tail_may_be_lost=True,PS5_operations=0,native_speed_or_quality_measured=False,production_adopted=False)
     save(args.out/'result.private.json',report)
     print(json.dumps({k:v for k,v in report.items() if k not in ('artifacts','commands','inputs','actual_entry','link_flags')}))

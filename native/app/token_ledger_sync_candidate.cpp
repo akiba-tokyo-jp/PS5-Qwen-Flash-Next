@@ -54,10 +54,15 @@ extern "C" int __wrap_open(const char*path,int flags,...){
     }
     return fd;
 }
-extern "C" int __wrap_fsync(int fd){Lock lock;return gate.sync(fd);}
+extern "C" int __wrap_fsync(int fd){
+    {Lock lock;if(gate.tracks(fd))return gate.sync(fd);}
+    // Unrelated source/report I/O never waits under the token-ledger lock.
+    return __real_fsync(fd);
+}
 extern "C" int __wrap_close(int fd){
     decltype(gate)::Closed result;
-    {Lock lock;result=gate.close(fd);}
+    {Lock lock;if(gate.tracks(fd))result=gate.close(fd);}
+    if(!result.matched)return __real_close(fd);
     const int saved=errno;
     if(result.matched){
         char text[192];

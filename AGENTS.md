@@ -3,6 +3,23 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Latest native comparison checkpoint — 2026-11-02
+
+Read `docs/native-performance-comparisons-20261102.md` before using older
+pending/absent-runtime wording. Runtime63121 and mount63133 remain admitted;
+the initialization allowance is consumed. Normal inference and repeated
+ordinary model/source/device retirement and exact seven-file restore succeed.
+R1 prototype ABBA63970–63973 has measured complete warm-request benefits,
+including final fsync/close. Its inherited policy metadata is not suitable for
+adoption; truthful direct-entry R1 ABBA64130–64133 is in progress. P1's latest
+ABBA64030–64033 has no consistent retained whole gain and worsens prefix time;
+do not adopt that measured profile. G1 original-arithmetic shadow64110 passes
+all three requests/actual ranking rows and ordinary restoration; actual GPU
+ranking and full-vocabulary cross-program qualification remain pending.
+Entry64063 and graph64020 reproduce their complete original objects byte-for-
+byte. Missing generated views are no longer a source compilation blocker.
+All eight candidates remain in scope. Never treat this checkpoint as completion.
+
 ### Renewed successful-route verification — 2026-11-02
 
 After automatic review rejected the broad performance authorization as unclear,

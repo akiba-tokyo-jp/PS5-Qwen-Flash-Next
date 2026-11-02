@@ -8,6 +8,15 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+The new hardware-bound performance campaign is active. The owner-authorized
+successful startup route now positively completes current-model inference on
+this boot, with ordinary closure and exact selected-file restoration. Read the
+[latest native comparisons](docs/native-performance-comparisons-20261102.md).
+R1 has measured warm complete-request gains; its formal direct implementation
+is being qualified. P1's measured profile is not adopted. G1's observational
+state qualification passes; GPU numerics/speed and other candidates remain.
+The single runtime initialization is consumed and must not be repeated.
+
 The owner closed every current AMPR/APR/PFS, Kraken, compatibility-initializer
 and runtime-entry investigation as failed on2026-11-02. No candidate from that
 campaign is adopted and no remaining validation is queued. See the
@@ -19,8 +28,9 @@ application source `2b683814c9b6ed18c13352963c0a989f9e4d0b15`.
 The PC package is `D:/PS5-AI/qwen-flash-next/current`; PS5 retains this same
 program, five settings and required model/startup assets. Historical trial
 files and older deployed programs are retired. Driver872cc126/cumulative-idle
-and disabled persistent caches remain. Current-boot inference is unqualified;
-file integrity and cleanup do not authorize replay of the failed initializer.
+and disabled persistent caches remain. Current-boot inference succeeds with
+the explicitly repaired dependency identities. The original56c deployment
+remains selected pending formal adoption; it is not evidence of a speed gain.
 
 ### Historical throughput control
 

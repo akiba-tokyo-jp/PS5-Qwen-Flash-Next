@@ -23,18 +23,18 @@ def once(source,old,new):
 
 
 def post_trunk_crop(source):
-    start=source.index('        if (il == n_layer - 1 && crop_before_nextn(inp_out_ids)) {')
-    end=source.index('        res_hc = build_hc_combine(res_hc, cur, inject, il);',start)
-    source=source[:start]+'''        // Keep the full final FFN and its Expert-cache dependencies. Output
-        // selection occurs only after the complete trunk has been constructed.
-'''+source[end:]
+    # Keep the original graph when every input requests output, including both
+    # verification rows. Only narrowed prefill output selection moves the crop.
+    source=once(source,'        if (il == n_layer - 1 && crop_before_nextn(inp_out_ids)) {',
+        '        if (il == n_layer - 1 && crop_before_nextn(inp_out_ids) && n_outputs >= n_tokens) {')
     source=once(source,'    // the MTP head reads the hc-wide residual, before the final mixer',
-                '''    const bool crop_hidden = inp_out_ids && (!cparams.embeddings_nextn || cparams.embeddings_nextn_masked);
+                '''    const bool crop_hidden = inp_out_ids && n_outputs < n_tokens && (!cparams.embeddings_nextn || cparams.embeddings_nextn_masked);
     // The full residual keeps every trunk/cache dependency in the graph.
     // the MTP head reads the hc-wide residual, before the final mixer''')
     source=once(source,'    cb(res->t_h_nextn, "h_nextn", -1);',
                 '    cb(res->t_h_nextn, crop_hidden ? "h_nextn_full" : "h_nextn", -1);')
-    source=once(source,'    if (crop_after_nextn(inp_out_ids)) {','    if (inp_out_ids) {')
+    source=once(source,'    if (crop_after_nextn(inp_out_ids)) {',
+                '    if (crop_after_nextn(inp_out_ids) || (inp_out_ids && n_outputs < n_tokens)) {')
     marker='''        res_hc = ggml_reshape_3d(ctx0, res_hc, n_embd, hc, res_hc->ne[1]);
     }
 
@@ -94,6 +94,8 @@ def main():
                 control_source=record(control),candidate_source=record(candidate),
                 PS5_target_objects=[record(args.out/(name+'.o')) for name in ('control','candidate')],
                 commands=commands,full_final_FFN_preserved=True,output_selection_after_trunk=True,
+                changed_graph_only_when_output_count_is_narrowed=True,
+                all_output_decode_and_verification_crop_order_preserved=True,
                 engine_selection_integrated=False,native_relink=False,native_model_validation=False,
                 native_speed_measured=False,production_adopted=False,PS5_operations=0,
                 required_boundary_lengths=[1,2,31,32,33,63,64,65],

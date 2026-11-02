@@ -1,0 +1,107 @@
+# Native performance comparisons, 2026-11-02
+
+The new eight-candidate campaign remains active. Successful startup, current
+model inference and ordinary closure are now positively observed on this boot.
+The one authorized runtime initialization63121 is consumed; it is not repeated.
+The existing mount63133 remains. Reboot and recovery are unavailable.
+
+The selected deployment is still SELF56c29e9c. Matched native comparisons use
+the same three restored encoded inputs and authenticated identity-data provider
+63800. Every finished case releases model/source/device owners, reaches zero
+live device bytes, ordinarily closes and restores/natively hashes all seven
+selected files. Driver872cc126/cumulative-idle and disabled persistent caches
+remain unchanged. No result below adopts an optimization by itself.
+
+## R1: completed token-ledger durability
+
+Prototype ABBA63970–63973 completes12 native requests. Each control request
+actually calls fsync22 times; each candidate calls it once, before close returns.
+All corresponding22-token payloads, output bytes, ordered Expert routes and
+source read bytes/calls match. Counting answers, finite F32 and request resets
+pass. Both passive frames and all four ordinary closes/restorations pass.
+
+The original result.metrics.total_ms ends before token-ledger close. Performance
+qualification therefore uses the existing native request_run span, including
+the final synchronization and close, rather than that incomplete total.
+
+| Condition | Control complete span ms | Candidate complete span ms | Mean reduction |
+| --- | --- | --- | ---: |
+| Retained weights | 2259.497743, 2259.732766 | 2237.780964, 2223.371324 | 1.285135% |
+| Exact prefix | 1763.506733, 1771.264833 | 1751.010156, 1757.742443 | 0.736086% |
+
+Both paired warm savings exceed the corresponding control-to-control spread.
+Cold complete time is mixed: one pair saves23.918ms and the other loses6.936ms.
+There is no established consistent cold benefit. These are the measured fixed
+counting workload, not a general throughput or answer-quality guarantee.
+
+The syscall prototype inherits an obsolete per-token-policy metadata field.
+It is not adopted with that misleading contract. A direct source implementation
+replaces the actual entry provider, reports per_token/request_end truthfully,
+counts actual synchronizations and records an explicit post-close full span.
+Direct paired entry build64122 and SELF64125/64126 pass host/target compilation,
+identity and SELF roundtrip checks. Native direct ABBA64130–64133 is pending.
+Request-end durability can lose the unsynced ledger tail if interrupted; a
+completed request must synchronize and close before publishing its result.
+
+## P1: final-output-only prefill
+
+The first selector affected only the initial prefill because it read the prior
+routing phase before that phase was updated. It is not an all-prefill result.
+The revised selector reaches both30-token prefills in every case, with host
+boundary/sampling/exception controls and native effect markers.
+
+ABBA63930–63933 reduces retained prefill by3.652/3.625ms, but does not establish
+consistent complete-request savings and worsens exact-prefix complete time.
+A further implementation limits the moved crop to narrowed output rows,
+preserving the original full-output/decode graph. ABBA64030–64033 again completes
+12 requests with exact tokens, ordered routes, source demand and ledger payloads.
+
+In that latter comparison, retained complete spans change by -5.099/+5.116ms
+of paired savings: effectively no consistent gain. Prefix complete spans worsen
+by31.729/22.979ms against7.026ms of control variation. This implementation is
+not adopted for the measured30-token profile. Other prompt lengths and all
+boundary states have not been natively qualified; this result is not a claim
+that every prefill optimization is impossible.
+
+## G1: actual ranking state and GPU implementation
+
+The actual selected graph provider is reconstructed byte-for-byte, including
+its complete object SHA2567dedd212. The application now has an experimental
+GGML F32 multiply ranking path with a2KiB per-layer cache coefficient input,
+latched across both verification rows. Existing GGML input/reuse lifetime hooks
+are used. It requires no new indirect-dispatch primitive or driver change.
+The separate all-hit continuation remains unimplemented.
+
+Observational native scope64110 keeps the original graph/arithmetic and checks
+the mirrored state against every original512-score ranking row. All three
+requests pass. Completed per-request counts are1056/1056/2112 rows, including
+two-row speculative verification; shadow, geometry and variant failures are
+zero. It completes both frames, positive retirement, ordinary close and exact
+seven-file restoration. This qualifies the observed state/geometry, not GPU
+numerics or speed. The GPU path has not yet been executed.
+
+A qualification-only observer hashes each existing248320-column F32 CPU row
+after the original observer. It adds no GPU download, full-row copy or retained
+row buffer. Independent host SHA256, callback forwarding/clear and diagnostic
+geometry controls pass. Native matched full-row qualification remains pending;
+its instrumented timings must not be used for speed claims.
+
+## Reproducible current source
+
+Complete embedded parent/current receipts and selected generated headers are
+recovered from the actual retained inputs. Entry reconstruction64063 reproduces
+the entire original entry.o byte-for-byte, with zero changed text sections.
+Graph reconstruction64020 likewise reproduces the original selected graph.o.
+These are host reproducibility proofs; they do not replace native validation.
+They remove the missing-generated-view implementation obstacle without changing
+the original model, source guards, memory policy or driver.
+
+Each new native case refreshes the application-local clock calibration before
+publication. A known stale-clock refusal63920 ordinarily closes without GPU or
+model initialization; it is not replayed. No system clock is written.
+
+Q1/Q2/Q3/I1/S1 retain the outstanding work in the
+[campaign plan](hardware-bound-performance-plan-20261102.md). In particular,
+synthetic IQ2 codec fixtures are not real PS5 activation calibration, and Q3's
+direct/padded geometry negatives do not dispose of a new cross-row format.
+No campaign-wide success, hardware impossibility or completion is claimed.

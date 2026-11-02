@@ -27,7 +27,13 @@ def main():
         if target.exists():need(target.read_bytes()==raw,'Previously captured native evidence changed')
         else:target.write_bytes(raw)
     first_raw=get(remote+'.first.start')
-    if first_raw is None:print(json.dumps(dict(native_first_start_pending=True,automatic_retries=0)));return
+    if first_raw is None:
+        state=dict(native_first_start_pending=True,automatic_retries=0)
+        for suffix in ('failure','fatal'):
+            raw=get(remote+'.'+suffix)
+            if raw is not None:
+                immutable('native.'+suffix+'.private.json',raw);state[suffix]=json.loads(raw)
+        print(json.dumps(state));return
     first=json.loads(first_raw);pid=first['pid']
     need(first['run_id']==case['run_id'] and first['candidate_SELF_sha256']==case['SELF']['sha256'],
          'Exact native run and linked SELF required')

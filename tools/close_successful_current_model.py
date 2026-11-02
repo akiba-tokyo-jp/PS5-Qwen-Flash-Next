@@ -5,6 +5,7 @@ import argparse
 import json
 from pathlib import Path
 import time
+import urllib.parse
 
 from build_performance_quantizer import record
 from run_successful_model_case import publish
@@ -41,7 +42,16 @@ def main():
     need(state['active_successful_native_case']['run_id']==case['run_id'] and state['native_running'], 'Exact active native case required')
     state.update(model_loaded=False,unknown_completion=False,state='current_model_positively_retired_ordinary_close_pending')
     state_path.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
-    lan=lan_module();plan=build(args.workspace,args.mount_plan,case['new_files'],case['new_files'],[],'close',args.out/'ordinary-close',close=close)
+    lan=lan_module();boot=load(case['model_proof']['path'])['current_boot']
+    journal=PHYSICAL+'/qwen-runtime/entry-b'+str(boot[0])+'-'+str(boot[1])+'-'+str(first['pid'])+'.stages'
+    deadline=time.monotonic()+5
+    while True:
+        stages=lan.web('/fs'+urllib.parse.quote(journal,safe='/'),8<<20)
+        if b'resident_additional_completed_waiting_for_ordinary_close' in stages:break
+        need(time.monotonic()<deadline,'Complete native terminal journal is pending; retain owner');time.sleep(.1)
+    stage_path=args.out/'completed-native-stages.private.log';stage_path.write_bytes(stages)
+    reports.append(dict(record(stage_path),remote=journal))
+    plan=build(args.workspace,args.mount_plan,case['new_files'],case['new_files'],[],'close',args.out/'ordinary-close',close=close)
     execute(lan,plan,args.out/'ordinary-close')
     deadline=time.monotonic()+15
     while True:

@@ -11,6 +11,7 @@ template<class Hooks,bool RequestEnd> class TokenLedgerSyncGate {
 public:
     struct Closed { int rc=0;bool matched=false;unsigned requests=0,syncs=0; };
     explicit TokenLedgerSyncGate(Hooks& hooks):hooks_(hooks){}
+    bool tracks(int fd)const{for(const auto&row:rows_)if(row.fd==fd&&fd>=0)return true;return false;}
     bool track(int fd) {
         if(fd<0)return false;
         for(const auto&row:rows_)if(row.fd==fd)return false;

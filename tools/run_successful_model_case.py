@@ -61,6 +61,12 @@ def start(args):
     need(record(image['path'])==image,'Selected SELF changed')
     run=secrets.token_hex(16);nonce=secrets.token_hex(16);report='/app0/qwen-runtime/plan-'+run+'.json'
     policy=load(args.current/'qwen-runtime/development.json');app=load(args.current/'qwen-runtime/app.json')
+    if args.package and package.get('effective_application_policy'):
+        effective=package['effective_application_policy'];profile=effective['profile']
+        need(record(profile['path'])==profile,'Compiled effective application policy changed')
+        need(effective['kind']=='R1-direct' and set(effective['overrides'])=={'native_next_five_normal'},
+             'Only the explicit compiled token-durability scope is admitted here')
+        policy.update(effective['overrides'])
     gate=rebind_directory(policy['native_first_generation_validation'],proof,proof['current_boot'])
     gate.update(run_id=run,candidate_SELF_bytes=image['bytes'],candidate_SELF_sha256=image['sha256'])
     policy['native_first_generation_validation']=gate

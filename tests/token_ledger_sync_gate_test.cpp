@@ -15,12 +15,12 @@ struct Hooks {
 
 template<bool Deferred>void normal(){
     Hooks hooks;qwen_service::TokenLedgerSyncGate<Hooks,Deferred> gate(hooks);
-    assert(!gate.track(-1));assert(gate.track(9));assert(!gate.track(9));
+    assert(!gate.track(-1)&&!gate.tracks(-1));assert(gate.track(9)&&gate.tracks(9));assert(!gate.track(9));
     for(unsigned i=0;i<22;++i)assert(gate.sync(9)==0);
     assert(hooks.synced.size()==(Deferred?0:22));
     const auto result=gate.close(9);
     assert(result.matched&&result.rc==0&&result.requests==22&&result.syncs==(Deferred?1:22));
-    assert(hooks.closed==std::vector<int>{9});assert(hooks.synced.size()==(Deferred?1:22));
+    assert(hooks.closed==std::vector<int>{9});assert(hooks.synced.size()==(Deferred?1:22));assert(!gate.tracks(9));
     assert(gate.track(9));const auto reused=gate.close(9);
     assert(reused.matched&&reused.requests==0&&reused.syncs==0);
 }

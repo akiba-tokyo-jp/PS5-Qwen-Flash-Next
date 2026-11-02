@@ -18,11 +18,21 @@ def main():
     for name in ('workspace','current','mount-plan','case-plan','out'):
         parser.add_argument('--'+name,type=Path,required=True)
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
-    case=load(args.case_plan);start=load(args.case_plan.parent/'native-first-start.private.json')
-    launch=load(args.case_plan.parent/'launch/result.private.json');pid=start['pid']
-    need(launch['completed'] and launch['operation_calls']==1 and start['run_id']==case['run_id'] and
-         start['candidate_SELF_sha256']==case['SELF']['sha256'],'Exact positively observed native owner required')
-    lan=lan_module();base=PHYSICAL+case['report'][5:]
+    case=load(args.case_plan);start_path=args.case_plan.parent/'native-first-start.private.json'
+    launch=load(args.case_plan.parent/'launch/result.private.json')
+    need(launch['completed'] and launch['operation_calls']==1,'One accepted native launch required')
+    lan=lan_module();base=PHYSICAL+case['report'][5:];early=not start_path.exists()
+    if not early:
+        start=load(start_path);pid=start['pid']
+        need(start['run_id']==case['run_id'] and start['candidate_SELF_sha256']==case['SELF']['sha256'],
+             'Exact positively observed native owner required')
+    else:
+        with lan.OPENER.open('http://'+lan.HOST+':8084/processes_list',timeout=8) as response:
+            owners=[r for r in json.loads(response.read())['processes'] if r['name']=='eboot.bin']
+        need(len(owners)==1,'Exactly one accepted native owner required for early CPU refusal')
+        pid=int(owners[0]['pid'])
+        try:lan.absent(base+'.first.start')
+        except Exception:raise ValueError('Early refusal already reached model-start scope; retain owner')
     prior=(args.case_plan.parent/'native.failure.private.json').read_bytes()
     failure_raw=lan.web('/fs'+urllib.parse.quote(base+'.failure',safe='/'),1<<20)
     need(prior==failure_raw,'The completed native failure changed')
@@ -34,13 +44,22 @@ def main():
     boot=re.search(r'boot.tv_sec!=(\d+)LL\|\|boot.tv_usec!=(\d+)LL',controller)
     remote=PHYSICAL+'/qwen-runtime/entry-b'+boot[1]+'-'+boot[2]+'-'+str(pid)+'.stages'
     stages=lan.web('/fs'+urllib.parse.quote(remote,safe='/'),8<<20)
-    need(b'model_mapping_all_completed_ranges_unmapped mapped_files=76 unmapped_files=76 GPU_not_started=1 model_loaded=0' in stages and
-         b'resident_additional_exception_work_stopped' in stages,'Positive complete probe release and returned exception required')
+    if early:
+        need(failure['message']=='Monitor clock calibration is stale or inconsistent' and
+             b'CXX_initializers_completed' in stages and b'early_SELF_whole_Direct_hash_completed_at_main_entry_after_CXX' in stages and
+             b'configuration_read GPU_not_started=1 model_loaded=0' in stages and
+             b'resident_additional_exception_work_stopped' in stages and b'model_mapping_' not in stages and
+             b'inference_before_' not in stages and b'native_GPU_initialize' not in stages,
+             'Only the exact returned pre-model clock refusal with zero started probe ranges is admitted')
+    else:
+        need(b'model_mapping_all_completed_ranges_unmapped mapped_files=76 unmapped_files=76 GPU_not_started=1 model_loaded=0' in stages and
+             b'resident_additional_exception_work_stopped' in stages,'Positive complete probe release and returned exception required')
     reports=[]
     for name,raw,path in (('failure',failure_raw,base+'.failure'),('stages',stages,remote)):
         target=args.out/(name+'.private.log');target.write_bytes(raw);reports.append(dict(record(target),remote=path))
     close=dict(known_returned_pre_GPU_exception=True,native_resources_started=False,model_loaded=False,
                CPU_worker_completion_unknown=False,all_probe_ranges_unmapped=True,pid=pid,app_id=launch['app_id'],reports=reports)
+    close['probe_ranges_started']=0 if early else 76
     plan=build(args.workspace,args.mount_plan,case['new_files'],case['new_files'],[],'close',args.out/'ordinary-close',close=close)
     execute(lan,plan,args.out/'ordinary-close')
     deadline=time.monotonic()+15
@@ -62,6 +81,7 @@ def main():
     state['active_successful_native_case'].update(phase='known-pre-GPU-exception-closed-original-restored',failure_message=failure['message'])
     path.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
     result=dict(completed=True,known_pre_GPU_exception=True,exception=failure['message'],GPU_initializations=0,
+                model_probe_ranges_started=0 if early else 76,
                 ordinary_OS_closes=1,ordinary_exit_observed=True,current_seven_restored_and_native_hashed=True,
                 native_owners=0,initializer_requests=0,title_launches=0,automatic_retries=0)
     save(args.out/'result.private.json',result);print(json.dumps(result))
