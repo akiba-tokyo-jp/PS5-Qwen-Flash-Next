@@ -14,6 +14,13 @@ this boot, with ordinary closure and exact selected-file restoration. Read the
 [latest native comparisons](docs/native-performance-comparisons-20261102.md).
 R1 is adopted after complete-request ABBA gains and exact whole-vocabulary F32
 comparison. The measured P1, Q1 and two G1 ranking profiles are not adopted.
+The primary speed metric remains complete-model decode tok/s. Matched R1 mean
+rates improve10.075792->10.214440 cold,11.952293->12.142559 retained, and
+13.031378->13.255748 with exact-prefix reuse:1.376%,1.592% and1.722%.
+These are distinct from complete-request duration reductions. Unadopted means
+the tested configuration is not selected; further refinements remain open.
+New I1 absolute-history and relative-delta screens and Q1 cache reinvestment
+are recorded in the [refinement follow-up](docs/refinement-followup-20261103.json).
 Finite native IQ2 vector, immutable I/O delivery and online MTP causal checks
 pass, with their quality, integration and whole-speed limits recorded separately.
 The explicit F32-arithmetic IQ2 component now also passes all12 cases/144 graphs

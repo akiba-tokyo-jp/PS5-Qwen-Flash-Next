@@ -3,6 +3,36 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+The owner clarified the primary speed metric on2026-11-03: complete-model
+decode tok/s, using (generated_tokens-1)/decode_seconds. Keep cold, retained
+weights and exact-prefix conditions separate. Report actual matched control
+and candidate rates; complete-request time, component intervals, hit counts
+and target-call counts are additional observations, not substitute speedups.
+Matched R1 stage64500–64503 mean rates are10.075792->10.214440,
+11.952293->12.142559 and13.031378->13.255748tok/s, gains1.376/1.592/1.722%.
+These are cohort-local, not cumulative gains from the historical baseline.
+
+The owner requires at least two distinct refinement checks before closing a
+candidate. Reuse completed immutable evidence; do not repeatedly rerun passed
+checks or unchanged native scopes. Record each actual implementation change,
+scope and outcome. Two checks do not qualify unrun model integration or make
+an entire design impossible. Native startup refusal does not block independent
+host implementation. No log or runtime permission remains pending.
+
+New host64826 screens exact-span successor and two-span context predictors on
+the completed4336-call I1 stream; neither emits a prediction. Changed64827
+learns relative-offset transitions instead:9 predictions/2 matches,
+12943360 predicted bytes/2162688 matched bytes, one pending span per producer
+and the original maximum6 predictions per producer. Eighteen distinct host
+controls pass across the two implementations. No actual prefetch I/O or new
+model tok/s is measured. Original stride and absolute screens are not replayed.
+Host64828 tests a different Q1 refinement: reinvest112.5MiB shared-Q4 savings
+in64 additional cache slots. All3 actual Q4 baseline counters reproduce, but
+3712->3776 slots avoids zero fills on the fixed captured routes. Cache-dependent
+ranking and allocation geometry remain unqualified; this is not model speed
+or a rejection of other formats/workloads. Production947 remains unchanged.
+See docs/refinement-followup-20261103.json for outstanding integration work.
+
 Latest native64820 explicitly disables F16 shader arithmetic for the model-free
 Up component: all12 cases/144 GPU graphs, layers0/23/47 and widths1/2/30/32,
 pass original F64 references/tolerance and unchanged canaries. Maximum error

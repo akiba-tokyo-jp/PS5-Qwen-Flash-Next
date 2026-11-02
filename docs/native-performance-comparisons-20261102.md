@@ -15,6 +15,63 @@ selected files. Driver872cc126/cumulative-idle and disabled persistent caches
 remain unchanged. R1 is adopted after the combined native proofs below; the
 other candidates retain their stated limits.
 
+## Primary metric and refinement scope, 2026-11-03
+
+The primary speed metric is complete-model decode tok/s:
+`(generated_tokens - 1) / decode_seconds`, measured from first to last generated
+token. It excludes the first token's prefill wait. Complete-request time, TTFT,
+component compute/fence intervals and operation counts remain separate metrics.
+The table below uses the original actual rates, not an inverse conversion of
+complete-request or component time. Each arm is the mean of its two native
+ABBA observations. Each comparison has its own matched control; these gains
+are not cumulative from the historical production baseline.
+
+| Candidate | Cold control -> candidate tok/s | Retained control -> candidate tok/s | Exact prefix control -> candidate tok/s |
+| --- | ---: | ---: | ---: |
+| Adopted R1 completed-stage sync |10.075792 ->10.214440 (+1.376%) |11.952293 ->12.142559 (+1.592%) |13.031378 ->13.255748 (+1.722%) |
+| P1 narrowed-output post-trunk crop |9.922700 ->10.201818 (+2.813%) |11.803556 ->11.780988 (-0.191%) |12.980358 ->12.771386 (-1.610%) |
+| Q1 additional shared Q4 |10.034906 ->9.778851 (-2.552%) |11.997715 ->12.076353 (+0.655%) |13.117661 ->12.983439 (-1.023%) |
+| G1 per-layer coefficients |9.999300 ->9.413819 (-5.855%) |11.934757 ->11.088216 (-7.093%) |13.029635 ->12.262222 (-5.890%) |
+| G1 batched coefficients |10.009280 ->9.468476 (-5.403%) |11.945037 ->11.022863 (-7.720%) |13.095655 ->12.255242 (-6.417%) |
+
+All six paired R1 rate gains exceed their own control A/A spread. P1 cold
+decode gains also exceed that spread, but prefix decode regresses; retained
+changes have opposite signs. Q1's retained mean increase does not exceed
+control spread in both pairs. All G1 rate regressions exceed control spread.
+Q2/Q3/I1 lack integrated-model rate comparisons. S1 online diagnostic execution
+does not provide a matched native speed comparison. Do not substitute any
+component result or target-call reduction for those missing model rates.
+
+The owner requires at least two distinct refinement checks for each candidate
+and efficient reuse of already completed evidence. A measured non-winner closes
+only its tested configuration. It does not close unimplemented fusion, cache,
+format, phase-specific, or lifetime improvements. Two checks also do not replace
+the remaining model-quality/integration/speed qualifications.
+
+New offline I1 scope64826 checks exact-span successor and two-span context
+learning on all4336 actual calls, with no predictions emitted. Scope64827 uses
+relative-offset transitions instead of requiring exact offsets to recur. It
+chooses9 spans/12943360 bytes and matches2/2162688 bytes;7 are unused. Both retain
+one hypothetical pending span per original producer and at most6 predictions
+per producer. Ten original and eight changed-implementation host controls pass.
+The first host attempt64825 stops at a test argument-binding error before any
+trace screening; the corrected64826 performs that screen once. No unchanged
+native test or previous stride screen is replayed. Read completion is optimistically
+instantaneous; source admission, latency and contention are not simulated.
+These observations do not support production adoption or a model tok/s claim.
+
+New Q1 scope64828 tests reinvesting the112.5MiB shared-Q4 saving into64 additional
+Expert slots. Added payload is98304000 bytes, with an explicit6291456-byte
+three-bank rounding allowance, below the117964800-byte saving. All three actual
+Q4 baseline counters reproduce, but3712->3776 slots leaves misses3286/259/104
+unchanged on those captured routes. The source is the pinned base planner with
+explicit indexed-policy/protection updates, not a byte reconstruction of the
+complete selected provider. Larger-cache ranking is not recomputed; allocation
+geometry and model quality/rate remain unqualified. This rejects no broader
+cache/format idea. No console operation, source/driver/model modification or
+production replacement occurs in these host scopes. See the
+[refinement record](refinement-followup-20261103.json) for provenance and open work.
+
 ## Adopted R1: completed-stage journal synchronization
 
 ABBA64500–64503 completes12 requests. All token IDs/bytes, ordered routes,
