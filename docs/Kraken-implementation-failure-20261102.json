@@ -1,0 +1,19 @@
+{
+  "status": "implementation_failed_not_adopted",
+  "implementation_added": false,
+  "engine_paths_changed": false,
+  "production_acceleration_adopted": false,
+  "hardware_absence_claimed": false,
+  "new_console_measurement": false,
+  "prior_cpu_kraken_disposition": "measured_ineffective_retained",
+  "hardware_Kraken_requests": 0,
+  "APR_read_submissions": 0,
+  "title_launches": 0,
+  "GPU_calls": 0,
+  "mount_changes": 0,
+  "initializer_requests": 0,
+  "binary_a53_elf_fetched": false,
+  "CI_runs": 0,
+  "driver_changed": false,
+  "draft_PR85_merged": false
+}

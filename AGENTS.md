@@ -3,6 +3,14 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Kraken implementation failure — 2026-11-02
+
+Read `docs/Kraken-implementation-failure-20261102.md`. The implementation
+failed and is closed. No decoder or engine path was added. This is not a
+hardware-absence result and not a new console measurement. The earlier CPU
+comparison stays the measured rejection. Do not implement Kraken from this
+record. Production and driver `872cc126`/cumulative-idle are unchanged.
+
 ### Cross-case initializer investigation — 2026-11-02
 
 Read `docs/AMPR-initializer-external-cause-audit-20261102.md` for the latest
