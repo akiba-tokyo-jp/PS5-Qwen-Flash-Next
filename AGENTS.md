@@ -3,6 +3,33 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### New hardware-bound application performance campaign — 2026-11-02
+
+The owner authorized verification and implementation of beneficial quantization
+and non-quantization changes. Read `docs/hardware-bound-performance-plan-20261102.md`.
+All listed candidates need actual dispositions; do not narrow this task to
+quantization. Software budgets and instrumentation are revisable implementation
+choices, not physical limits. Preserve factual quality/completion distinctions.
+This new campaign does not replay the closed APR/PFS/Kraken or interrupted kernel
+initializer. Observe current runtime/boot admission before new GPU work, keep
+the pinned driver and disabled caches unless separately qualified, and adopt
+only a positively completed beneficial native comparison. No restart or CI.
+
+Host checkpoint: read `docs/hardware-bound-performance-results-20261102.md`
+and its JSON. Scope63000 positively observed runtime absent, with zero native
+owners and its own ordinary retirement/removal; no initializer/title/GPU call.
+The owner confirms no recovery procedure exists and requests caution. Do not
+replay initialization or launch to rediscover that unchanged prerequisite.
+Q1 encoding/header checks, IQ2 synthetic/geometry controls, R1 fault injection
+and P1 exact-source reconstruction/target compilation pass. They do not qualify
+native speed or adoption. Q3 direct IQ2 is incompatible with width640; padded
+width768 increases its payload10%. G1's old lightweight-driver capability screen
+does not apply to the actual linked RADV archive. G1/I1/S1 remain unimplemented
+native candidates; the complete campaign is explicitly unfinished.
+The153 generated host trial files (141415585 logical bytes) are retired; seven
+current PC deployment files retain identical whole SHA256 before/after. Keep
+only reproducible candidate source and sanitized results, not these old binaries.
+
 ### Owner closure and current-only retention — 2026-11-02
 
 All current AMPR/APR/PFS, Kraken, compatibility-initializer and runtime-entry
