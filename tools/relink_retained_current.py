@@ -45,11 +45,12 @@ def main():
         policy=load(args.application_policy)
         guarded_headless=policy['kind']=='Q2-calibration' and policy.get('headless_calibration') and policy.get('model_and_GPU_guards_preserved')
         guarded_fixture=policy['kind']=='Q2-IQ2-fixture' and policy.get('unloaded_GPU_fixture') and policy.get('model_and_GPU_guards_preserved')
-        if not policy['completed'] or policy['kind'] not in ('R1-direct','CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture') or not (policy['model_and_GPU_topology_unchanged'] or guarded_headless or guarded_fixture):
+        guarded_audit=policy['kind']=='headless-model-audit' and policy.get('headless_model_audit') and policy.get('model_and_GPU_guards_preserved')
+        if not policy['completed'] or policy['kind'] not in ('R1-direct','CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture','headless-model-audit') or not (policy['model_and_GPU_topology_unchanged'] or guarded_headless or guarded_fixture or guarded_audit):
             raise ValueError('A completed scoped direct-entry policy is required')
         if policy['entry_artifact'] not in new or record(policy['entry_artifact']['path'])!=policy['entry_artifact']:
             raise ValueError('The effective policy must belong to the actual replaced entry')
-        if policy['kind'] in ('CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture'):
+        if policy['kind'] in ('CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture','headless-model-audit'):
             reader=policy['CPU_SELF_provider']['artifact']
             if reader not in new or record(reader['path'])!=reader or not policy['CPU_SELF_provider']['OS_minimum_plus_21_unchanged']:
                 raise ValueError('The smaller SELF window must use the actual audited CPU-only replacement provider')

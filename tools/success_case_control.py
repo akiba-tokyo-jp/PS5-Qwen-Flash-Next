@@ -33,7 +33,7 @@ def digest_expression(row,path=None):
     return 'qwen_launch_digest_matches('+json.dumps(path or row['remote'])+','+str(row['bytes'])+'ULL,'+json.dumps(row['sha256'])+')'
 
 
-def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None):
+def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None):
     workspace=Path(workspace);out=Path(out);out.mkdir(parents=True,exist_ok=False)
     base_plan=load(mount_plan);base=base_plan['controller'];need(record(base['path'])==base,'Successful controller input changed')
     text=Path(base['path']).read_text();prefix='/data/ai/moss-qwen-case-'+secrets.token_hex(16)
@@ -58,7 +58,7 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
 '''
     text+='static int old_files_valid(void){return '+'&&'.join(digest_expression(r) for r in old_files)+';}\n'
     text+='static int pending_valid(void){return '+('&&'.join(digest_expression(r) for r in pending) or '0')+';}\n'
-    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13};need(operation in numbers,'One known operation required')
+    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14};need(operation in numbers,'One known operation required')
     if operation!='restore-bundle':
         text=text.replace('#include "launch_integrity_native.h"','#define QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS 1\n#include "launch_integrity_native.h"',1)
     need(len(old_files)==len(new_files)==7 and all(r['remote'].startswith(PHYSICAL+'/') for r in old_files+new_files),
@@ -78,6 +78,9 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
     if operation=='publish-component':
         need(isinstance(component_publish_context,str) and component_publish_context,'One exact bounded component publication required')
         context+=component_publish_context+'\n#include "component_pack_publish.h"\n'
+    if operation=='retire-completed-images':
+        need(isinstance(completed_images_context,str) and completed_images_context,'Two exact independently copied images from one closed case required')
+        context+=completed_images_context+'\n'
     if operation=='restore-bundle':
         need(bundle_link and bundle_link['CPU_only'] is True and bundle_link['source_writes']==0 and
              bundle_link['GPU_calls']==0 and bundle_link['Direct_CPU_bytes'] in (4<<20,8<<20),'Bounded successful CPU packer required')

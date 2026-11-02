@@ -1,0 +1,126 @@
+{
+  "schema": "ps5-qwen-completed-stage-sync-adoption-v1",
+  "decision": "adopted",
+  "selected_SELF": {
+    "bytes": 21927687,
+    "sha256": "947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7"
+  },
+  "selected_native_ELF": {
+    "bytes": 101070432,
+    "sha256": "9879d713197c417742022efdc3a069093367ab6d4c13025142616fe2551b7c37"
+  },
+  "source_overlay_commit": "a543eac4fdeb59b4ecadf50725b12bd9ece9689f",
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "persistent_caches": false,
+  "native_ABBA": {
+    "cases": [
+      64500,
+      64501,
+      64502,
+      64503
+    ],
+    "requests": 12,
+    "tokens_routes_source_demand_and_durable_payloads_exact": true,
+    "conditions": [
+      {
+        "condition": "ordinary-warmup",
+        "complete_request_span_ms": {
+          "control": [
+            6297.350152,
+            6291.114372
+          ],
+          "candidate": [
+            6211.815241,
+            6254.12564
+          ],
+          "paired_savings_ms": [
+            85.53491099999974,
+            36.9887319999998
+          ],
+          "control_AA_spread_ms": 6.235779999999977,
+          "both_pairs_exceed_control_spread": true,
+          "mean_reduction_percent": 0.9733009356812872
+        }
+      },
+      {
+        "condition": "ordinary-prefix-capture",
+        "complete_request_span_ms": {
+          "control": [
+            2235.533929,
+            2231.737229
+          ],
+          "candidate": [
+            2200.915958,
+            2197.091755
+          ],
+          "paired_savings_ms": [
+            34.617971000000125,
+            34.64547399999992
+          ],
+          "control_AA_spread_ms": 3.796700000000328,
+          "both_pairs_exceed_control_spread": true,
+          "mean_reduction_percent": 1.550464311439037
+        }
+      },
+      {
+        "condition": "exact-prefix-and-causal-Expert-sharing",
+        "complete_request_span_ms": {
+          "control": [
+            1761.080964,
+            1759.883474
+          ],
+          "candidate": [
+            1731.5862,
+            1727.555439
+          ],
+          "paired_savings_ms": [
+            29.494764000000032,
+            32.328035
+          ],
+          "control_AA_spread_ms": 1.1974900000000162,
+          "both_pairs_exceed_control_spread": true,
+          "mean_reduction_percent": 1.7558484355245874
+        }
+      }
+    ]
+  },
+  "whole_F32_qualification": {
+    "cases": [
+      64480,
+      64481
+    ],
+    "rows_per_case": 69,
+    "columns": 248320,
+    "bytes_hashed_per_case": 68536320,
+    "all_rows_routes_tokens_exact": true
+  },
+  "canonical_reproduction": {
+    "retained_inputs": 93,
+    "entry_bootstrap_and_SELF_reader_byte_exact": true,
+    "native_ELF_and_SELF_byte_exact": true,
+    "cases": [
+      64510,
+      64511,
+      64512,
+      64513
+    ]
+  },
+  "durability": {
+    "before_unknown_fatal_and_probe_stages_synced": true,
+    "request_end_journal_and_token_sync_before_result": true,
+    "complete_request_timings_include_final_sync": true,
+    "interruption_may_lose_unsynced_completed_stage_and_token_tail": true
+  },
+  "current_campaign": {
+    "R1": "adopted",
+    "P1": "measured final-output-only profile not adopted",
+    "Q1": "measured additional shared Q4 profile not adopted",
+    "G1": "two GPU ranking profiles not adopted; all-hit continuation pending",
+    "Q2": "real-calibrated vector operator numerics qualified; full-model quality and speed pending",
+    "Q3": "paired-row Down codec host-qualified; native operator pending",
+    "I1": "new current-format persistent prefetch adapter pending",
+    "S1": "persistent MTP auxiliary-state path pending"
+  },
+  "all_eight_candidates_complete": false
+}

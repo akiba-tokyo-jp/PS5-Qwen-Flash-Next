@@ -63,6 +63,7 @@ def main():
     a=p.parse_args();base=load(a.base_entry);boot=load(a.bootstrap)
     need(base['completed'] and base['CPU_minimum_plus_21_unchanged'] and boot['completed'],'Exact admitted inputs required')
     profile=load(base['application_policy']['path'])
+    need('completed_stage_deferral_enabled' not in profile,'Completed-stage sync is already selected; do not apply the transformation twice')
     for row in (profile['source'],boot['source'],boot['exact_object']['artifact']):need(record(row['path'])==row,'Selected source or object changed')
     a.out.mkdir(parents=True,exist_ok=False)
     env=dict(os.environ,TMP=str(a.out),TEMP=str(a.out))

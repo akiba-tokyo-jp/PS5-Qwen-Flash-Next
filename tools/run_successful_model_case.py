@@ -70,7 +70,8 @@ def start(args):
         if effective['kind']=='Q1-shared':keys.add('native_shared_Q4')
         if effective['kind']=='Q2-calibration':keys.add('native_activation_capture')
         if effective['kind']=='Q2-IQ2-fixture':keys.add('native_IQ2_fixture')
-        need(effective['kind'] in ('R1-direct','CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture') and set(effective['overrides'])==keys,
+        if effective['kind']=='headless-model-audit':keys.add('native_headless_model_audit')
+        need(effective['kind'] in ('R1-direct','CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture','headless-model-audit') and set(effective['overrides'])==keys,
              'Only an explicitly compiled token-durability or smaller CPU SELF scope is admitted here')
         policy.update(effective['overrides'])
     gate=rebind_directory(policy['native_first_generation_validation'],proof,proof['current_boot'])

@@ -3,6 +3,48 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest Gate/Up audit64543 observes1200 identical input/ID pairs across all48
+layers at widths1/2/30/32, without added GPU/graph operations. All three model
+requests and owner retirement complete. The first close helper refuses with
+zero OS calls because of an arm2-digest/arm0-path host bug; corrected proof64545
+ordinarily closes the same completed owner once and restores selected947a07fd.
+Finalizer64546 reproduces the complete observer object. Never replay64543 or
+the refused close. The current boot model proof now points to this headless
+case; it has no BMPs. All eight candidates remain active. I1 host64550 passes
+byte-span predictor controls; native delivery and performance remain pending.
+
+### Selected completed-stage R1 deployment — 2026-11-02
+
+R1 completed-stage sync is now adopted on PC/PS5: SELF
+947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7,
+21927687 bytes; native ELF9879d713197c417742022efdc3a069093367ab6d4c13025142616fe2551b7c37.
+ABBA64500–64503 passes all12 requests and exact tokens/routes/source demand/
+durable payloads. Complete warm gains are1.550464%/1.755848%, cold0.973301%,
+including request-end journal/token synchronization. All69 full F32 rows match
+in64480/64481. Adoption64510 hashes all seven files in both console namespaces;
+canonical bootstrap64511,93-input ELF64512 and SELF64513 reproduce byte-exactly.
+The prior a786 R1 is superseded. Use
+`current/provenance/selected-entry-build.private.json` as the current entry/reader
+build input for new model work, preserving the adopted stage synchronization.
+The bootstrap receipt explicitly distinguishes its historical base and actual
+selected provider. Driver/profile and disabled persistent caches are unchanged.
+
+Unloaded vector-fence scope64523 completes all72 graphs with exact independent
+references/canaries and restores947a07fd. Compute-fence mean IQ2 gains across
+layer0/23/47,width1/2 are6.0398/4.0603/1.2848/6.0519/1.0576/4.4930 percent;
+three of six cases clear AA spread in both pairs. This is not whole-model
+quality/speed or prefill qualification. Q3/Gate/all-hit/I1/S1 remain pending.
+
+Readiness64520 launches nothing at6493<7074 pages. Exact image retirement64521
+then deletes two closed64500 BMPs,16588908 bytes, with equal native/PC SHA,
+restored directory UID and unchanged selected seven; free becomes7482 pages.
+The changed scope64523 then passes readiness and runs. Never call the margin a
+hardware minimum or replay the unchanged failed prefill scope64460. Host64524
+removes four unselected predecessor objects and those two retired BMP copies,
+31389540 bytes; all108 selected application/compiler/stub/formatter files have
+equal before/after whole digests. No recursive deletion or recovery is used.
+The initialization allowance remains consumed; all eight candidates stay active.
+
 ### IQ2 and completed-stage continuation — 2026-11-02
 
 Native IQ2 component64420 completes72 graphs, all six width1/2 cases, separate

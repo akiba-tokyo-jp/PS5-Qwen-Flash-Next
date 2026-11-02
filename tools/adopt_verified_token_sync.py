@@ -25,6 +25,18 @@ def atomic_json(path,value):
     save(pending,value);os.replace(pending,path)
 
 
+def refresh_production_fields(state,selected_SELF,revision,publication_path):
+    publication=load(publication_path)
+    need(publication['completed'] and publication['helper_exited'],'Positive selected seven-file publication required')
+    state.setdefault('base_production_merge_PR',state.get('production_merge_PR'))
+    state.update(production_SELF=selected_SELF,production_deployment_completed=True,
+        production_SELF_full_readback_verified=True,native_production_readback=publication['raw'],
+        production_application_source_revision=revision,production_metadata_revision=revision,
+        production_merge_PR=None,production_acceleration_adopted=True,production_file_maintenance_only=False,
+        production_restore_status='Selected accelerated baseline: all seven whole SHA256 values verified in both console namespaces.',
+        production_publication=record(publication_path),original_title_SELF_is_historical=True)
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','mount-plan','package','entry-build','analysis','numerics','out'):
@@ -190,8 +202,15 @@ def main():
         selected_R1_application_layer=dict(profile=record(profile_path),performance=record(args.analysis),whole_F32=record(args.numerics),
             base_application_source='2b683814c9b6ed18c13352963c0a989f9e4d0b15',source_overlay_commit=revision))
     if stage_sync:
+        canonical_build=dict(completed=True,application_policy=record(profile_path),entry=record(canonical_obj),
+            reader=canonical_CPU['artifact'],commands=[extra_commands[1],command],
+            prior_pure_C_reader_byte_exact=True,early_CPU_window_bytes=canonical_CPU['window_bytes'],
+            CPU_minimum_plus_21_unchanged=True,model_GPU_memory_and_completion_guards_unchanged=True,
+            full_SELF_hash_identity_EOF_requirements_preserved=True,native_qualified=True,
+            production_adopted=True,source_overlay_commit=revision)
+        build_path=current/'provenance/selected-entry-build.private.json';atomic_json(build_path,canonical_build)
         full_native['selected_completed_stage_sync']=dict(provider=canonical_bootstrap,CPU_SELF_provider=canonical_CPU,
-            performance=record(args.analysis),whole_F32=record(args.numerics),source_overlay_commit=revision)
+            entry_build=record(build_path),performance=record(args.analysis),whole_F32=record(args.numerics),source_overlay_commit=revision)
         full_native['resident_bootstrap_namespace'].update(historical_base_provider=True,actual_selected_provider=canonical_bootstrap)
     atomic_json(current/'provenance/native-link.receipt.private.json',full_native)
     atomic_json(current/'provenance/retained-relink-inputs.private.json',new_inputs)
@@ -222,7 +241,8 @@ def main():
         gateway_running=False,native_owners=0,unknown_completion=False,current_boot_Qwen_model_admitted=True,
         current_boot_readmission_pending=False,selected_current_SELF=selected_SELF)
     state['selected_R1_adoption']=dict(package=record(package_path),publication=record(args.out/'publication/result.private.json'),
-        performance=record(args.analysis),whole_F32=record(args.numerics));atomic_json(state_path,state)
+        performance=record(args.analysis),whole_F32=record(args.numerics))
+    refresh_production_fields(state,selected_SELF,revision,args.out/'publication/result.private.json');atomic_json(state_path,state)
     result=dict(completed=True,production_adopted=True,SELF=selected_SELF,retained_inputs=len(new_inputs),
         PC_and_PS5_same_selected_current=True,all_seven_console_files_native_hashed_both_namespaces=True,
         canonical_entry_and_ELF_byte_exact=True,driver_and_model_unchanged=True,persistent_caches=False,

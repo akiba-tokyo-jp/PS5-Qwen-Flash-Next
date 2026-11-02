@@ -5,14 +5,65 @@ model inference and ordinary closure are now positively observed on this boot.
 The one authorized runtime initialization63121 is consumed; it is not repeated.
 The existing mount63133 remains. Reboot and recovery are unavailable.
 
-The selected deployment is now R1 SELFa786b8ad, installed on both PC and PS5
-through positive seven-file publication64181. Matched native comparisons use
+The selected deployment is now completed-stage R1 SELF947a07fd, installed on
+both PC and PS5 through positive seven-file publication64510. It supersedes
+the earlier request-end token-ledger R1a786b8ad. Matched native comparisons use
 the same three restored encoded inputs and authenticated identity-data provider
 63800. Every successfully completed model case releases model/source/device owners, reaches zero
 live device bytes, ordinarily closes and restores/natively hashes all seven
 selected files. Driver872cc126/cumulative-idle and disabled persistent caches
 remain unchanged. R1 is adopted after the combined native proofs below; the
 other candidates retain their stated limits.
+
+## Adopted R1: completed-stage journal synchronization
+
+ABBA64500–64503 completes12 requests. All token IDs/bytes, ordered routes,
+source demand and durable token payloads agree. Counting, finite F32, complete
+resets, owner retirement, ordinary closes and seven-file restores all pass.
+The candidate defers49/49/42 exact completed-stage syncs for the three requests
+and flushes once at each request end. Before-operation, unknown, fatal and
+memory-probe synchronization remains intact. A completed request's token ledger
+and stage journal are synchronized before its result is published. Interruption
+can lose an unsynced completed-stage or token tail.
+
+| Condition | Control complete span ms | Candidate complete span ms | Mean reduction |
+| --- | --- | --- | ---: |
+| Cold | 6297.350152, 6291.114372 | 6211.815241, 6254.125640 | 0.973301% |
+| Retained weights | 2235.533929, 2231.737229 | 2200.915958, 2197.091755 | 1.550464% |
+| Exact prefix | 1761.080964, 1759.883474 | 1731.586200, 1727.555439 | 1.755848% |
+
+All paired complete-request savings exceed their control AA spread. These
+spans include final journal and token synchronization. Separate64480/64481
+qualification matches all69 whole248320-column F32 rows, ordered routes and
+tokens exactly;68536320 bytes are hashed per case. Those observer timings are
+not used for performance. Adoption64510 rebuilds the complete entry, bootstrap
+and64KiB SELF reader byte-for-byte, then reproduces the measured native ELF
+from exactly93 canonical inputs before publication. All seven selected console
+files are natively hashed in both namespaces. Fresh canonical64511–64513
+reproduce the selected bootstrap, complete ELF and SELF exactly.
+
+Selected SELF:947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7,
+21927687 bytes. Selected ELF:9879d713197c417742022efdc3a069093367ab6d4c13025142616fe2551b7c37.
+Source overlay:a543eac. Driver872cc126/cumulative-idle, model payloads and
+disabled persistent caches are preserved. New model variants should derive
+their entry and reader from the canonical selected-entry-build receipt and
+preserve this adopted synchronization behavior in both comparison arms.
+
+Unloaded64523 adds independently timed vector-fence results for all six cases:
+mean IQ2 reductions6.0398/4.0603/1.2848/6.0519/1.0576/4.4930 percent for
+layer0/23/47 at widths1/2. Three of six clear AA spread in both pairs; all72
+graphs pass independent references/canaries and normally restore947a07fd.
+These are operator results with synthetic input vectors and real calibrated
+weights, not whole-model quality/speed or prefill qualification.
+
+Readiness64520 has no launch at6493<7074 pages. Completed-image retirement64521
+removes two exact closed64500 BMPs,16588908 bytes, only after full native/PC SHA
+equality. Runtime directory ownership and all seven selected digests are
+preserved; free pages become7482 with unchanged boot/minimum/reserved values.
+The changed64523 scope then qualifies readiness. Host cleanup64524 removes
+four unselected predecessor objects and those retired image copies,31389540
+bytes; all108 selected application/compiler/stub/formatter digests stay equal.
+There is no recursive deletion, threshold change, forced cleanup or recovery.
 
 ## IQ2 operator and paired-row continuation
 
@@ -75,10 +126,10 @@ inside the complete request time. Host boundary/refusal controls and matched
 target packages pass. Native64480/64481 match all69 complete248320-column F32
 rows, all ordered routes, tokens and output bytes exactly. Both ordinary closes
 and seven-file restores pass. These qualification timings are not performance
-measurements. ABBA64500–64503 removes the full-F32 copy observer; matched benefit
-remains a prerequisite for adoption. Production remains admitted R1a786b8ad.
+measurements. ABBA64500–64503 subsequently removes the full-F32 copy observer
+and qualifies the adopted947a07fd deployment described above.
 
-## R1: completed token-ledger durability
+## Earlier R1: completed token-ledger durability
 
 Prototype ABBA63970–63973 completes12 native requests. Each control request
 actually calls fsync22 times; each candidate calls it once, before close returns.
@@ -339,3 +390,30 @@ Q2/Q3/G1-continuation/I1/S1 retain the outstanding work in the
 synthetic IQ2 codec fixtures alone are not real PS5 activation calibration, and Q3's
 direct/padded geometry negatives do not dispose of a new cross-row format.
 No campaign-wide success, hardware impossibility or completion is claimed.
+# Gate/Up input identity and bounded byte-span prefetch
+
+Gate/Up metadata audit64543 completes all three counting requests with finite
+full-vocabulary outputs, positive model/source/device retirement and zero live
+device bytes. All1200 observed graph-construction pairs have identical F32
+input tensors and I32 Expert-ID tensors. Widths1/2/30/32 cover all48 layers,
+with720/288/96/96 pairs respectively and no unsupported geometry or mismatch.
+The observer reads no values, retains no tensor pointers and adds no GGML
+operation, GPU call or scheduler split. Previously captured Up moments therefore
+cover Gate only within this observed unchanged input/graph scope; full quantized
+model quality and speed remain unqualified.
+
+The first close helper refuses before any OS close because the host tool pairs
+the third-arm route digest with the first-arm remote path. Its helper exits and
+is removed, with operation_calls0. Corrected close64545 changes that path only,
+requires the same byte-exact completed reports/journal and exact owner, then
+ordinarily closes once and restores/hashes all seven selected947a07fd files.
+There is no model relaunch, initialization or GPU recovery. Finalization64546
+recompiles the observer and matches its complete measured object byte-exactly.
+
+I1's new byte-span predictor uses actual aligned immutable descriptor ranges,
+not the historical53-slot BF16 geometry. Host64550 verifies all returned bytes
+and canaries, useful and unused predictions, descriptor-identity changes, short
+speculative reads, admission refusal and producer affinity. One persistent CPU
+worker retains its descriptor and owned allocation on uncertain completion;
+six predictions per request is an explicit experimental bound. Native typed-Q2
+byte delivery, model integration and whole-request performance are still pending.
