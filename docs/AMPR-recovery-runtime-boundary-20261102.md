@@ -1,5 +1,11 @@
 # Recovery and the separate runtime initialization failure
 
+**Final disposition: failed and closed by the owner on2026-11-02.**
+No continuation is queued. Trial artifacts and old rollback copies are retired.
+The [current closure and cleanup record](current-validation-closure-20261102.md)
+supersedes pending-work and retention statements below. Earlier observations
+remain historical partial results.
+
 The owner confirmed an abnormal console termination and powered it on again.
 The interrupted compatibility initializer's journal was recovered afterward.
 It stops at `BEFORE upstream_kernel_entry`; there is no matching RETURN or

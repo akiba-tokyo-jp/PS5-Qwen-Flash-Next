@@ -1,5 +1,5 @@
 {
-  "status": "investigation_after_owner_reported_abnormal_exit",
+  "status": "failed_closed_by_owner_20261102",
   "all_hardware_validation_complete": false,
   "earlier_recovery_complete": true,
   "current_boot_readmission_complete": false,
@@ -45,5 +45,9 @@
     "profile": "cumulative-idle",
     "changed": false,
     "persistent_caches_enabled": false
-  }
+  },
+  "historical_status_before_owner_closure": "investigation_after_owner_reported_abnormal_exit",
+  "continuation_allowed": false,
+  "pending_steps": [],
+  "superseded_by": "current-validation-closure-20261102.json"
 }

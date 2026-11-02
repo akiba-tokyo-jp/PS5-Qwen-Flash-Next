@@ -3,6 +3,30 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+### Owner closure and current-only retention — 2026-11-02
+
+All current AMPR/APR/PFS, Kraken, compatibility-initializer and runtime-entry
+investigations are failed and closed at the owner's instruction. Do not resume
+their remaining steps or replay their initialization, launch or recovery cases.
+Host checks and completed read-only observations remain historical facts; they
+do not make any closed candidate successful or adopted. Draft PR85 is rejected.
+Read `docs/current-validation-closure-20261102.md` / `.json` for maintenance.
+
+Retain only the selected current application on PC and PS5, its exact five
+settings, shader source storage and required live model/startup assets. The PC
+package is `D:/PS5-AI/qwen-flash-next/current`. Obsolete executables, trial
+builds, generated test files and rollback archives are deleted, not archived
+again. This supersedes older host/console rollback-retention instructions.
+Source and sanitized historical measurements remain in Git.
+
+Current application source is2b683814c9b6ed18c13352963c0a989f9e4d0b15;
+SELF56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126.
+Keep driver872cc1264ad8ba5d6b888b092968fa5858a38c58/cumulative-idle and
+persistent shader/pipeline caches disabled. File cleanup does not qualify
+inference on this boot or clear the historical initializer's missing return.
+No restart, runtime initialization, title/model/GPU execution or CI is required
+for this maintenance. All continuation wording below is historical.
+
 ### Kraken implementation failure — 2026-11-02
 
 Read `docs/Kraken-implementation-failure-20261102.md`. The implementation

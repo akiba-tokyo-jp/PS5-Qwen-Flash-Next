@@ -8,6 +8,22 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
+The owner closed every current AMPR/APR/PFS, Kraken, compatibility-initializer
+and runtime-entry investigation as failed on2026-11-02. No candidate from that
+campaign is adopted and no remaining validation is queued. See the
+[closure and current-only cleanup record](docs/current-validation-closure-20261102.md).
+
+The selected current application is the scheduler-owned-map program:
+SELF `56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126`,
+application source `2b683814c9b6ed18c13352963c0a989f9e4d0b15`.
+The PC package is `D:/PS5-AI/qwen-flash-next/current`; PS5 retains this same
+program, five settings and required model/startup assets. Historical trial
+files and older deployed programs are retired. Driver872cc126/cumulative-idle
+and disabled persistent caches remain. Current-boot inference is unqualified;
+file integrity and cleanup do not authorize replay of the failed initializer.
+
+### Historical throughput control
+
 The throughput campaign is complete: normal56100 and verified placement56200.
 Selected SELF9824030372e2eed7204275209a9bb6a6700a385ced8f9ca6e40d22fae258c135,
 sourcec60c1ab891dbbcf250db2bf919fa323f0ebc8727. Use `tools/throughput_production.py`,

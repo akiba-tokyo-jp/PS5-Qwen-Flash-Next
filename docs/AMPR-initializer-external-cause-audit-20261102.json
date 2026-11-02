@@ -1,5 +1,5 @@
 {
-  "status": "cross_case_research_and_readonly_observation_complete_internal_cause_unproven",
+  "status": "failed_closed_by_owner_20261102",
   "research_scope": "PS5 ecosystem, symptoms and source mechanisms, no firmware filter",
   "current_readonly_observation": {
     "complete": true,
@@ -36,7 +36,10 @@
   "drakmor_compared_core_file_blobs_equal": 9,
   "historical_alternative_test9_binary_qualified": false,
   "current_platform_log_includes_later_orderly_reboot": true,
-  "new_system_title_error_codes": ["0x80020008", "0x80ba0013"],
+  "new_system_title_error_codes": [
+    "0x80020008",
+    "0x80ba0013"
+  ],
   "kernel_stack_recovered": false,
   "exact_failure_instruction_proven": false,
   "common_cause_of_two_stops_proven": false,
@@ -53,5 +56,9 @@
     "post-initializer-readonly-62420",
     "initializer-readonly-62470",
     "post-initializer-platform-62500"
-  ]
+  ],
+  "historical_status_before_owner_closure": "cross_case_research_and_readonly_observation_complete_internal_cause_unproven",
+  "continuation_allowed": false,
+  "pending_steps": [],
+  "superseded_by": "current-validation-closure-20261102.json"
 }

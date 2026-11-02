@@ -1,5 +1,18 @@
 # PS5 Flash Next plan status
 
+The owner closed all current AMPR/APR/PFS, Kraken, compatibility-initializer
+and runtime-entry work as failed on2026-11-02. There are no queued continuation
+steps for those investigations. The [closure and cleanup record](current-validation-closure-20261102.md)
+supersedes earlier pending-work and rollback-retention instructions.
+
+The selected current program is scheduler-owned-map SELF56c29e9c..., application
+source2b683814.... Its canonical PC package is
+`D:/PS5-AI/qwen-flash-next/current`. Keep its five settings, required model and
+startup assets, driver872cc126/cumulative-idle and disabled persistent caches.
+No current-boot inference qualification follows from this file maintenance.
+
+## Historical plans and observations
+
 The [current speed analysis](current-speed-analysis-20261031.json) reuses
 closed normal12220 and replays the frozen3072-slot planner on the host. All
 three native hit/miss/upload sequences reconcile. It identifies524 future

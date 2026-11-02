@@ -1,6 +1,6 @@
 {
   "schema": "ps5-AMPR-Kraken-revalidation-v1",
-  "status": "superseded_by_recovery_runtime_boundary",
+  "status": "failed_closed_by_owner_20261102",
   "owner_scope": "Investigate errors, correct the implementation, complete PS5 validation for both AMPR and Kraken, and adopt only measured speed improvements.",
   "acquisition_authorized": true,
   "reboot_available": false,
@@ -125,5 +125,9 @@
     "expected_console_ICMP_reply_observed": false,
     "discovery": "One unidentified standby PS5 at another address; no wake/launch packet sent",
     "freeze_or_failure_cause_proven": false
-  }
+  },
+  "historical_status_before_owner_closure": "superseded_by_recovery_runtime_boundary",
+  "continuation_allowed": false,
+  "pending_steps": [],
+  "superseded_by": "current-validation-closure-20261102.json"
 }

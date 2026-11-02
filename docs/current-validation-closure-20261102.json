@@ -1,0 +1,94 @@
+{
+  "schema": "ps5-qwen-owner-validation-closure-v1",
+  "date": "2026-11-02",
+  "status": "all_current_validations_failed_and_closed_by_owner",
+  "failed_current_work": [
+    "AMPR/APR backend qualification",
+    "direct-PFS native lifetime and APR reads",
+    "Kraken acceleration and implementation",
+    "compatibility-initializer recovery and cause investigation",
+    "runtime-entry ABI/source-to-binary follow-up"
+  ],
+  "continuation_allowed": false,
+  "pending_validation_steps": [],
+  "historical_partial_observations_preserved": true,
+  "new_acceleration_adopted": false,
+  "historical_partial_checks": {
+    "host_C11_case62620_checks": 244,
+    "host_CXX17_case62620_checks": 244,
+    "runtime_entry_ABI_host_case62702_checks": 25,
+    "read_only_case62600_runtime_loaded": false,
+    "runtime_only_case62630_title_launch_calls": 0,
+    "direct_PFS_native_qualification_completed": false
+  },
+  "uncommitted_direct_PFS_implementation_removed": true,
+  "draft_PR85_disposition": "rejected_closed_without_merge",
+  "current_application_source_revision": "2b683814c9b6ed18c13352963c0a989f9e4d0b15",
+  "current_application_SELF": {
+    "bytes": 21921847,
+    "sha256": "56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126"
+  },
+  "driver": {
+    "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
+    "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "persistent_shader_cache": false,
+    "persistent_pipeline_cache": false
+  },
+  "application_relink_provenance": {
+    "actual_final_driver_archive_sha256": "a325dcd4584b1f1fccc6b46e90faa081ca86d18544aca610efea9e3ca3774f32",
+    "actual_final_driver_archive_bytes": 264340688,
+    "retained_final_link_inputs": 91,
+    "rebuilt_or_relinked_during_cleanup": false
+  },
+  "PC": {
+    "canonical_package": "D:/PS5-AI/qwen-flash-next/current",
+    "obsolete_roots_and_root_files_removed": 3867,
+    "additional_generated_files_removed": 50,
+    "obsolete_worktrees_removed": 1,
+    "remaining_worktrees": 1,
+    "current_program_copies": 1,
+    "current_program_and_five_settings_full_SHA256_verified": true,
+    "current_link_inputs_and_source_provenance_preserved": true,
+    "old_rollback_archives_retained": false,
+    "generated_validation_files_retained": false,
+    "retention": "current-only-with-required-model-and-build-inputs"
+  },
+  "PS5": {
+    "completed": true,
+    "deleted_files": 2253,
+    "deleted_directories": 2,
+    "deleted_logical_bytes": 4510608085,
+    "obsolete_notice_backups_deleted": 21,
+    "current_program_copies": 1,
+    "current_settings": 5,
+    "current_files_full_raw_SHA256_verified": 6,
+    "shader_full_raw_SHA256_verified": true,
+    "model_source_lengths_verified": 513,
+    "model_backing_lengths_verified": 5,
+    "all_planned_trial_targets_absent": true,
+    "native_owners": 0,
+    "runtime_initializers": 0,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "maintenance_helper_final_native_check_failed": true,
+    "maintenance_helper_exited": true,
+    "maintenance_helper_files_absent": true
+  },
+  "execution": {
+    "restarts_requested": 0,
+    "compatibility_initializers": 0,
+    "title_launches": 0,
+    "model_executions": 0,
+    "GPU_calls": 0,
+    "current_boot_inference_qualified": false,
+    "historical_initializer_missing_return_cleared": false,
+    "maintenance_cleanup_helper_final_postcheck": "failed_after_all_187_unlinks",
+    "maintenance_helper_completion": "returned_failure_then_process_absence_verified",
+    "independent_raw_FTP_file_integrity_and_target_absence_verified": true,
+    "CI_runs": 0,
+    "agents_used": 0
+  },
+  "privacy": "Only sanitized counts and public application provenance are committed; endpoints, credentials, binaries and raw console records remain outside Git."
+}

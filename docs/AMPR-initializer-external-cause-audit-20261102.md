@@ -1,5 +1,11 @@
 # Initializer failure: cross-case source audit
 
+**Final disposition: failed and closed by the owner on2026-11-02.**
+No continuation is queued. Trial artifacts and old rollback copies are retired.
+The [current closure and cleanup record](current-validation-closure-20261102.md)
+supersedes pending-work and retention statements below. Earlier observations
+remain historical partial results.
+
 Scope: investigate PS5 abnormal termination using reports, fixes and source
 across the PS5 ecosystem. The owner explicitly prohibited filtering information
 collection by firmware. Search by symptoms, failure stage, implementation and

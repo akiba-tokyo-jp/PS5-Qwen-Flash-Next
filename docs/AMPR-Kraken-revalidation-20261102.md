@@ -1,5 +1,11 @@
 # AMPR and Kraken revalidation — 2026-11-02
 
+**Final disposition: failed and closed by the owner on2026-11-02.**
+No continuation is queued. Trial artifacts and old rollback copies are retired.
+The [current closure and cleanup record](current-validation-closure-20261102.md)
+supersedes pending-work and retention statements below. Earlier observations
+remain historical partial results.
+
 Latest status: [recovery and separate initialization boundary](AMPR-recovery-runtime-boundary-20261102.md).
 The earlier post-restoration verification/cleanup was completed after the owner
 restarted. A later request to restore the existing compatibility runtime ended
