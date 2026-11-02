@@ -31,7 +31,14 @@ def main():
     generated='#include "bootstrap_journal_path.h"\n'+text[:begin]+replacements[0]+text[end:]
     need(hashlib.sha256(generated.encode()).hexdigest()==selected['generated']['sha256'],
          'Complete boot-qualified source must reproduce its recorded SHA256')
-    a.out.mkdir(parents=True,exist_ok=False);path=a.out/'native-bootstrap-boot-qualified.private.cpp'
+    actual=selected.get('actual_selected_provider')
+    if actual:
+        from build_completed_stage_sync import transform_bootstrap
+        generated=transform_bootstrap(generated)
+        need(hashlib.sha256(generated.encode()).hexdigest()==actual['source']['sha256'],
+             'The complete selected completed-stage source differs')
+    a.out.mkdir(parents=True,exist_ok=False)
+    path=a.out/(Path(actual['source']['path']).name if actual else 'native-bootstrap-boot-qualified.private.cpp')
     path.write_text(generated,encoding='utf-8',newline='\n')
     sdk=a.workspace/'toolchain/ps5-sdk-radv/ps5-payload-sdk'
     compiler=a.workspace/'toolchain/llvm-mingw-20261006-ucrt-x86_64/bin/clang++.exe'
@@ -40,16 +47,19 @@ def main():
         '-fexceptions','-fcxx-exceptions','-frtti','-nostdinc++','-isystem',str(sdk/'target/include/c++/v1'),
         '-isystem',str(sdk/'target/include'),'-I',str(ROOT/'native/app'),'-DQWEN_NATIVE_PLATFORM=1']
     attempts=[];found=None
-    for opt in ('-O1','-O2','-O3'):
+    expected_object=actual['artifact'] if actual else selected['object']
+    for opt in (('-O1',) if actual else ('-O1','-O2','-O3')):
         for sections in ([],['-ffunction-sections','-fdata-sections']):
             current=[opt if x=='-O1' else x for x in flags]+sections
             obj=a.out/('bootstrap-'+str(len(attempts))+'.o')
             command=[str(compiler),*current,'-c',str(path),'-o',str(obj)]
+            if actual:
+                command=actual['command'].copy();command[command.index('-c')+1]=str(path);command[command.index('-o')+1]=str(obj)
             result=subprocess.run(command,capture_output=True,timeout=120,env=dict(os.environ,TMP=str(a.out),TEMP=str(a.out)))
             (a.out/(str(len(attempts))+'.private.log')).write_bytes(result.stdout+result.stderr)
             need(result.returncode==0,result.stderr.decode(errors='replace')[-2500:])
             value=record(obj);attempts.append(dict(command=command,artifact=value))
-            if value['sha256']==selected['object']['sha256']:found=attempts[-1];break
+            if value['sha256']==expected_object['sha256']:found=attempts[-1];break
         if found:break
     save(a.out/'result.private.json',dict(completed=bool(found),source=record(path),expected=selected,
         attempts=attempts,exact_object=found,PS5_operations=0,production_adopted=False))

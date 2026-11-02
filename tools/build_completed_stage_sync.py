@@ -42,6 +42,21 @@ extern "C" void qwen_native_completed_stage_sync_stats(std::uint64_t*);
 '''
 
 
+def transform_bootstrap(text):
+    marker='extern "C" void qwen_native_stage(const char * stage) {'
+    text=once(text,marker,PREFIX+'\n'+marker)
+    old='    if(fsync(journal))stop_bootstrap("bootstrap_stage_persist_failed");'
+    replacement='''    const bool deferred=completed_stage_deferral.load(std::memory_order_acquire)&&
+        !probe_enabled.load(std::memory_order_acquire)&&qwen_app::completed_inference_stage(stage);
+    completed_stage_totals[0].fetch_add(1);
+    if(deferred)completed_stage_totals[2].fetch_add(1);
+    else {
+        if(fsync(journal))stop_bootstrap("bootstrap_stage_persist_failed");
+        completed_stage_totals[1].fetch_add(1);
+    }'''
+    return once(text,old,replacement)
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','base-entry','bootstrap','out'):p.add_argument('--'+name,type=Path,required=True)
@@ -58,19 +73,7 @@ def main():
     (a.out/'host-compile.private.log').write_bytes(result.stdout+result.stderr);need(result.returncode==0,result.stderr.decode(errors='replace')[-2500:])
     need(subprocess.run([str(test)],env=dict(env,PATH=str(host)+os.pathsep+os.environ.get('PATH','')),timeout=30).returncode==0,'Durable-boundary refusal controls failed')
     text=Path(boot['source']['path']).read_text(encoding='utf-8')
-    # Insert after existing includes and the private journal's declarations.
-    marker='extern "C" void qwen_native_stage(const char * stage) {'
-    text=once(text,marker,PREFIX+'\n'+marker)
-    old='    if(fsync(journal))stop_bootstrap("bootstrap_stage_persist_failed");'
-    replacement='''    const bool deferred=completed_stage_deferral.load(std::memory_order_acquire)&&
-        !probe_enabled.load(std::memory_order_acquire)&&qwen_app::completed_inference_stage(stage);
-    completed_stage_totals[0].fetch_add(1);
-    if(deferred)completed_stage_totals[2].fetch_add(1);
-    else {
-        if(fsync(journal))stop_bootstrap("bootstrap_stage_persist_failed");
-        completed_stage_totals[1].fetch_add(1);
-    }'''
-    text=once(text,old,replacement)
+    text=transform_bootstrap(text)
     boot_source=a.out/'native-bootstrap-completed-stage.private.cpp';boot_source.write_text(text,encoding='utf-8',newline='\n')
     bc=boot['exact_object']['command'].copy();bo=a.out/'native-bootstrap-completed-stage.o'
     bc[bc.index('-c')+1]=str(boot_source);bc[bc.index('-o')+1]=str(bo)
