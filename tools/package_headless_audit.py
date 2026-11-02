@@ -34,7 +34,7 @@ def main():
         '--replace','early-SELF.o='+compiled['reader']['path'],'--add-object',compiled['provider']['path'],
         '--application-policy',compiled['application_policy']['path']]
     if compiled.get('required_link_flags'):
-        early=(policy['headless_audit_kind']=='CPU-Direct-readmission' and policy.get('unloaded_CPU_fixture') and
+        early=(policy['headless_audit_kind'] in ('CPU-Direct-readmission','CPU-startup-staging-memory') and policy.get('unloaded_CPU_fixture') and
              compiled['required_link_flags']==['--undefined='+name for name in ('qwen_driver_table_storage','Q2_bundle_expected_identity','Q2_extra_expected_identity','Q2_current_expected_identity')])
         original_reads=(policy['headless_audit_kind']=='I1-model-pread-observation' and
              compiled.get('host_multithread_errno_short_read_identity_and_overflow_controls_passed') is True and compiled['required_link_flags']==['--wrap=pread'])

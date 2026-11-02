@@ -698,13 +698,13 @@
     "all_other_campaign_candidates_complete": false
   },
   "current_resource_screen": {
-    "case": 64779,
-    "free_pages": 5800,
+    "case": 64801,
+    "free_pages": 6988,
     "selected_model_launch_screen_pages": 7374,
     "model_launch_admitted": false,
     "title_or_GPU_owner": false,
     "initializer_repeated": false,
-    "read_only_observation": "After positively closed CPU-only Direct staging test"
+    "read_only_observation": "After positively completed whole-SELF CPU measurement, ordinary close and exact selected-file restoration"
   },
   "latest_closed_output_cleanup": {
     "case": 64747,
@@ -713,6 +713,12 @@
     "PC_archive_preserved": true,
     "selected_files_unchanged": 108,
     "unreadable_old_driver_logs_preserved": 17,
-    "owned_directory_fsync_case": 64754
+    "owned_directory_fsync_case": 64754,
+    "superseded_unlaunched_CPU_retirement": {
+      "case": 64802,
+      "PC_files_retired": 20,
+      "bytes": 209697335,
+      "all108_selected_inputs_exact": true
+    }
   }
 }

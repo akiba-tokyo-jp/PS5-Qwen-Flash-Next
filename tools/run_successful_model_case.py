@@ -6,6 +6,7 @@ import copy
 import json
 from pathlib import Path
 import secrets
+import time
 import urllib.parse
 
 from build_performance_quantizer import record
@@ -13,7 +14,7 @@ from model_directory_readmission import rebind_directory
 from mtp_shadow_host_check import require_profile as require_shadow_host_check,require_target_capture_profile,require_online_profile
 from staged_self_upload import upload
 from start_success_route import load,need,save
-from success_case_control import build,current_files,execute,lan_module,PHYSICAL
+from success_case_control import build,complete,current_files,execute,lan_module,PHYSICAL
 
 
 def metadata(lan,rows):
@@ -26,14 +27,28 @@ def metadata(lan,rows):
             need(reply.startswith(('226 ','250 ')),'Metadata transfer incomplete')
 
 
-def publish(lan,rows,plan,out):
+def publish(lan,rows,plan,out,direct_staging=None):
     metadata(lan,rows[1:])
     def verify(capture,remote):
         need(remote==rows[0]['remote'],'Exact pending SELF required')
-        result=execute(lan,plan,out);need(result['operation_calls']==3,'All three startup publications required')
+        need(not (out/'execution/execution.once.private.json').exists(),'A publication operation is never resubmitted')
+        try:result=execute(lan,plan,out,60)
+        except Exception:
+            need((out/'execution/execution.once.private.json').exists(),'No submitted publication exists to collect')
+            expected='/fs'+urllib.parse.quote(plan['log'],safe='/');deadline=time.monotonic()+90
+            while True:
+                raw=lan.web(expected,64<<20,8)
+                if b'\nEND ' in raw:break
+                need(time.monotonic()<deadline,'Publication completion unknown; retain the exact pending/canonical files');time.sleep(1)
+            path=out/'collected-native.private.log';path.write_bytes(raw);result=complete(lan,plan,out,raw,path)
+        need(result['operation_calls']==3,'All three startup publications required')
         return dict(whole_native_SHA256_identity_EOF_verified=True,all_reads_returned=True,
                     sha256=capture['sha256'],bytes=capture['bytes'])
-    upload({k:rows[0][k] for k in ('path','bytes','sha256')},rows[0]['remote'],out/'SELF-transfer',lan,verify)
+    capture={k:rows[0][k] for k in ('path','bytes','sha256')}
+    if direct_staging:
+        from direct_self_staging import upload as direct_upload
+        direct_upload(capture,rows[0]['remote'],out/'SELF-transfer',lan,verify,current_rows=plan['old_files'],**direct_staging)
+    else:upload(capture,rows[0]['remote'],out/'SELF-transfer',lan,verify)
 
 
 def start(args):
@@ -132,7 +147,8 @@ def start(args):
     if not args.execute:print('Normal model case prepared; PS5 operations=0');return
     state['active_successful_native_case']=dict(plan=record(args.out/'plan.private.json'),run_id=run,phase='publication')
     state['state']='normal_model_case_publication_in_progress';state_path.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
-    lan=lan_module();publish(lan,pending,publication,args.out/'publication')
+    direct=dict(workspace=args.workspace,mount_plan=args.mount_plan,qualified=args.direct_staging_proof) if getattr(args,'direct_staging_proof',None) else None
+    lan=lan_module();publish(lan,pending,publication,args.out/'publication',direct_staging=direct)
     state.update(state='normal_model_case_published_launch_pending',original_restored=False,temporary_installed_SELF=image)
     state['active_successful_native_case']['phase']='launch';state_path.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
     result=execute(lan,launcher,args.out/'launch')
@@ -149,6 +165,7 @@ def main():
     for name in ('workspace','current','mount-plan','model-proof','clock','out'):
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--package',type=Path)
+    parser.add_argument('--direct-staging-proof',type=Path,help='Opt in to a separately qualified bounded Direct SELF receiver')
     parser.add_argument('--execute',action='store_true')
     start(parser.parse_args())
 

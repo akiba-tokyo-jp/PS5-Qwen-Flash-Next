@@ -53,8 +53,14 @@ paired Down shader pass software SPIR-V execution at widths1/2/30/32,960 positiv
 fences, with exact canaries. The historical constant-codebook variant also passes
 24 shapes/960 fences, giving48/1920 total. Physical GPU execution and PS5 speed
 stay unqualified.
-The latest PS5 observation records5800 free pages against the7374 model screen;
-no new model launch is attempted. Reboot and another initializer are unavailable.
+CPU-only64800 completes the unchanged whole-SELF64KiB reader:336 reads,
+full SHA/identity/EOF, minimum1525 free pages, ordinary exit and exact seven-file
+restoration. It starts no model/source/GPU work. Bounded Direct staging is now
+an opt-in successful-route transport, with the existing whole-SHA publisher.
+The [startup qualification](docs/Direct-startup-qualification-20261103.json)
+records the measurements and the separately consumed passive-settle refusal.
+The latest PS5 observation64801 records6988 free pages against the7374 model
+screen; no new model launch is admitted. Reboot and another initializer are unavailable.
 
 ### Historical throughput control
 

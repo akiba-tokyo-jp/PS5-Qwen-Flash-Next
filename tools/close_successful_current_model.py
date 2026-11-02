@@ -13,6 +13,18 @@ from start_success_route import load,need,save
 from success_case_control import build,current_files,execute,lan_module,PHYSICAL
 
 
+def completed_terminal_journal(stages,CPU_startup=False):
+    marker=(b'CPU_startup_memory_completed_waiting_for_ordinary_close' if CPU_startup else
+            b'resident_additional_completed_waiting_for_ordinary_close')
+    if marker not in stages:return False
+    if CPU_startup:
+        need(stages.splitlines()[-1]==marker and stages.count(marker)==1 and
+             b'early_SELF_whole_Direct_hash_completed_at_main_entry_after_CXX' in stages and
+             all(value not in stages for value in (b'model_mapping_',b'native_GPU_initialize',b'inference_before_')),
+             'Only the exact parked CPU completion before model/source/GPU work is admitted')
+    return True
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','mount-plan','case-plan','out'):
@@ -20,6 +32,7 @@ def main():
     parser.add_argument('--headless-calibration',action='store_true')
     parser.add_argument('--IQ2-fixture',action='store_true')
     parser.add_argument('--headless-audit',action='store_true')
+    parser.add_argument('--direct-staging-proof',type=Path)
     parser.add_argument('--prior-refused-close',type=Path,
         help='An exited zero-operation helper whose headless route proof used the wrong arm')
     args=parser.parse_args();need(sum((args.headless_calibration,args.IQ2_fixture,args.headless_audit))<=1,'One explicit completed scope is required')
@@ -35,7 +48,7 @@ def main():
         unloaded_CPU=profile.get('unloaded_CPU_fixture') is True
         need(record(effective['profile']['path'])==effective['profile'] and effective['kind']=='headless-model-audit' and
              profile['headless_model_audit'] and profile['model_and_GPU_guards_preserved'] and
-             (count in (1,3) or (count==0 and unloaded_CPU and profile['headless_audit_kind'] in ('I1-span-fixture','CPU-Direct-readmission'))) and
+             (count in (1,3) or (count==0 and unloaded_CPU and profile['headless_audit_kind'] in ('I1-span-fixture','CPU-Direct-readmission','CPU-startup-staging-memory'))) and
              terminal['kind']==profile['headless_audit_kind'] and terminal['model_loads']==(0 if unloaded_CPU else 1) and
              completed['headless_model_audit'] and terminal['audit']==load(observer/'native.audit.private.json'),
              'One explicitly compiled completed headless model audit is required')
@@ -91,6 +104,19 @@ def main():
         reports.append(dict(record(route_path),remote=remote+'.arm'+str(arm)+'.routes'))
     close=dict(completed=True,all_model_source_device_owners_positively_retired=True,device_ledger_live_bytes=0,
         pid=first['pid'],app_id=launch['app_id'],reports=reports)
+    CPU_startup=False
+    if args.headless_audit and profile['headless_audit_kind']=='CPU-startup-staging-memory':
+        from price_cpu_startup_original_reader import require_CPU_profile
+        require_CPU_profile(Path(case['package']['path']))
+        self_read=terminal['audit']['main_SELF']
+        need(unloaded_CPU and count==0 and not terminal['audit']['model_sources_initialized'] and
+             terminal['audit']['source_workers_created']==terminal['audit']['source_payload_reads']==0 and
+             self_read['completed'] and self_read['full_current_SELF_SHA256_passed'] and
+             self_read['SELF_sha256']==case['SELF']['sha256'] and self_read['SELF_bytes']==case['SELF']['bytes'] and
+             self_read['minimum_sampled_free']>=self_read['selected_CPU_floor']==919,
+             'Exact positive original-reader CPU startup completion required')
+        CPU_startup=True
+        close['source_bound_CPU_startup_profile']=package['effective_application_policy']['profile']
     state_path=args.current/'active-console.private.json';state=load(state_path)
     need(state['active_successful_native_case']['run_id']==case['run_id'] and state['native_running'], 'Exact active native case required')
     state.update(model_loaded=False,unknown_completion=False,state='current_model_positively_retired_ordinary_close_pending')
@@ -100,7 +126,7 @@ def main():
     deadline=time.monotonic()+5
     while True:
         stages=lan.web('/fs'+urllib.parse.quote(journal,safe='/'),8<<20)
-        if b'resident_additional_completed_waiting_for_ordinary_close' in stages:break
+        if completed_terminal_journal(stages,CPU_startup):break
         need(time.monotonic()<deadline,'Complete native terminal journal is pending; retain owner');time.sleep(.1)
     stage_path=args.out/'completed-native-stages.private.log';stage_path.write_bytes(stages)
     reports.append(dict(record(stage_path),remote=journal))
@@ -139,7 +165,8 @@ def main():
     pending=[dict(row,target=row['remote'],remote=prefix+('-restore-SELF.bin' if i==0 else '-restore-'+str(i)+'.json'))
              for i,row in enumerate(old[:3])]
     restoration=build(args.workspace,args.mount_plan,case['new_files'],old,pending,'publish',args.out/'restore')
-    publish(lan,pending,restoration,args.out/'restore')
+    direct=dict(workspace=args.workspace,mount_plan=args.mount_plan,qualified=args.direct_staging_proof) if args.direct_staging_proof else None
+    publish(lan,pending,restoration,args.out/'restore',direct_staging=direct)
     state.update(state='unloaded_GPU_fixture_completed_ordinarily_closed_current_restored' if args.IQ2_fixture else 'current_model_completed_ordinarily_closed_original_restored',
         native_running=False,model_loaded=False,gateway_running=False,native_owners=0,unknown_completion=False,original_restored=True)
     state.pop('temporary_installed_SELF',None)

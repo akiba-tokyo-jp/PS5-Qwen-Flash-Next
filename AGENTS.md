@@ -3,6 +3,30 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest native CPU scope64800 completes the original selected64KiB SELF reader:
+336 reads, exact whole SHA/identity/EOF, minimum1525 pages >=919, no model,
+source worker/payload or GPU work. Host closure first waits for the wrong model
+terminal marker and submits zero close operations. The corrected source-bound
+CPU terminal check ordinarily closes that SAME process once and restores/native
+hashes all seven production files in closed-CPU-terminal. No title relaunch.
+Selected production947 and sourcea543 remain unchanged. Read-only64801 records
+6988 pages, below the unchanged7374 model screen. No native owner or unknown
+completion remains; do not repeat unchanged refused model scopes.
+
+Direct staging is opt-in through --direct-staging-proof64779, including ordinary
+restoration. Existing whole native SHA publication remains mandatory. Identical
+SELF/app/shader publication64795 preserves all seven payloads and108 PC inputs;
+standard shader data mode is0644, fresh physical/alias descriptors agree, and
+the prior1527/382 CPU content proof is preserved for identical bytes and decoder.
+Each launch still binds fresh inode identity. No causal RAM gain is established.
+Consumed CPU settle scope64792 returns before SELF data I/O and ordinarily closes
+once; never replay it. Its failure cause and elapsed wait are not isolated.
+New original-reader entry64796/package64797 and CPU-only6329-page pricing64798
+are a separate completed scope, not a reduced model floor. Old unlaunched CPU
+binaries64784/64785/64787 are retired by64802:20 files/209697335 bytes, with all108
+production inputs and latest CPU/MTP packages exact. Sources/receipts remain.
+Historical64788 builder bytes are frozen and SHA-bound in host proof64799.
+
 CPU-only obsolete0600 driver-log exporter64783 is compiled and import-audited,
 but unsubmitted. It covers17 closed-case logs/1161178 bytes and leaves original
 permissions/current seven unchanged. Automatic approval review refused sensitive

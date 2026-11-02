@@ -846,3 +846,65 @@ That authorization has been requested. Neither original log permissions nor
 contents are changed, and the logs remain on the console. Prepared64782 is
 superseded before launch. The new builder freezes each controller source beside
 its exact object, preserving future source provenance independently of edits.
+
+## Direct publication and bounded CPU startup measurement, 2026-11-03
+
+The qualified Direct receiver64779 is now available as an explicit
+`--direct-staging-proof` option in the successful case runner and its ordinary
+closure/restoration paths. The normal default stays unchanged. A Direct upload
+still requires the existing native whole-SHA publisher; transport acknowledgement
+alone cannot publish a SELF. Initial collector expiry collects only the same
+consumed operation. It does not submit another operation or terminate an owner.
+
+CPU-only entry64788/package64789 retains the entire original main path and
+links a separate constant-one gate, returning before model/source/GPU startup.
+Its extra pre-read settle requires1152 working pages above the original919
+CPU floor, with at most five seconds inside the original30-second deadline.
+Native64792 returns a known refusal after all C++ initializers: the settle event
+records1086 free pages and no completed poll; the final CPU observation records
+1261 pages and zero SELF data reads. This does not isolate the settle failure's
+cause or establish that its full wait elapsed. The exact synchronous CPU source
+admits ordinary closure, which completes once; all seven original files are
+restored and natively hashed. No model/source/GPU work occurs. This consumed
+program is not retried. Read-only64793 subsequently records7187 free pages.
+
+Identical publication64795 then uses the existing three-target publisher for
+the selected SELF, app settings and encoded shader storage. All payload bytes
+remain unchanged, with independent whole native SHA in both namespaces and
+all108 protected PC inputs exact. Standard publication sets shader data mode0644;
+fresh physical/alias descriptors agree. The prior1527-asset/382-lookup CPU
+content proof remains valid for identical bytes and the unchanged per-use
+decoder. Each launch still checks its fresh inode identity. No shader CPU replay,
+title launch, GPU operation or initializer is performed. Free pages7055 ->7077
+do not establish a meaningful or causal RAM recovery. The model screen remains
+7374 pages.
+
+Separate entry64796/package64797 uses the byte-identical selected64KiB SELF
+reader without that extra settle. CPU-only pricing64798 uses the completed
+Direct constructor observation, the successful64694 SELF transient, any added
+ELF LOAD pages, the original919 floor and256 slack pages:6329 pages. Global
+observations are not exclusive allocation bounds; no hypothetical transport
+RAM gain is subtracted. The model screen remains7374. Host64799 reconstructs
+the complete reader and entry, verifies the linked constant-one gate and
+preserves the historical builder bytes under their original SHA.
+
+Native64800 observes7086 pages before staging and successfully reads the entire
+21938599-byte CPU SELF in336 calls/1.221970244 seconds. Whole SHA, original inode
+identity and EOF checks pass; free2296 -> minimum1525 ->2274, retaining the919
+floor. CPU heap peak is16MiB with zero libc fallbacks. No model, model-source
+worker, source payload or GPU work starts. The host closure initially expects
+the model terminal marker and stops before creating/submitting any close
+operation. Its source-bound CPU marker fix then ordinarily closes the same
+completed process once and restores all seven selected files with native SHA.
+There is no title relaunch or initializer. The exact success and closure are
+recorded in [startup qualification](Direct-startup-qualification-20261103.json).
+This is CPU startup qualification, not an inference-speed improvement.
+
+Read-only64801 after restoration records6988 pages, below7374. All native owners
+are closed and no completion is unknown. Pending full-model S1 and quantized
+operator/model checks remain unqualified; this resource screen does not reject
+their designs. CPU-only retirement64802 removes20 unlaunched predecessor binary
+files/209697335 bytes from64784/64785/64787, retaining sources/receipts, all108
+production inputs and latest CPU/MTP packages. This PC cleanup claims no PS5 RAM
+recovery. The17 private console logs above remain untouched pending their exact
+payload/destination authorization.

@@ -61,6 +61,7 @@ def main():
     for name in ('workspace','current','mount-plan','case-plan','out'):
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--source-bound-span-open-refusal',type=Path)
+    parser.add_argument('--direct-staging-proof',type=Path)
     parser.add_argument('--early-S1-policy-refusal',type=Path,help='Exact consumed S1 build receipt for a returned legacy-policy mismatch')
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
     case=load(args.case_plan);start_path=args.case_plan.parent/'native-first-start.private.json'
@@ -99,6 +100,27 @@ def main():
         save(args.out/'source-audit.private.json',audited)
     if early:
         early_message=failure['message']=='Monitor clock calibration is stale or inconsistent'
+        if case.get('package'):
+            package=load(case['package']['path']);effective=package.get('effective_application_policy',{})
+            profile=load(effective['profile']['path']) if effective.get('profile') else {}
+            if profile.get('headless_audit_kind')=='CPU-startup-staging-memory':
+                from build_cpu_startup_memory import BLOCK
+                from build_speculative_batch_probe import once
+                need(record(case['package']['path'])==case['package'] and record(effective['profile']['path'])==effective['profile'] and
+                    profile['unloaded_CPU_fixture'] and profile['headless_requests']==0 and profile['overrides']['native_headless_model_audit']['GPU_calls']==0,
+                    'Only the exact fixed CPU-only startup profile may broaden a known pre-model refusal')
+                for key in ('source','entry_artifact','CPU_startup_gate_source','CPU_startup_gate_provider','CPU_startup_original_entry'):
+                    need(record(profile[key]['path'])==profile[key],'CPU-only source/constant gate changed')
+                original=Path(profile['CPU_startup_original_entry']['path']).read_text(encoding='utf-8');scope=profile['overrides']['native_headless_model_audit']
+                marker='        qwen_app::require_first_generation_policy(policy,false);'
+                expected='extern "C" int qwen_cpu_startup_memory_only();\n'+once(original,marker,marker+BLOCK.replace('SCOPE',json.dumps(json.dumps(scope,separators=(',',':')))))
+                need(Path(profile['source']['path']).read_text(encoding='utf-8')==expected and
+                    'int qwen_cpu_startup_memory_only(void) { return 1; }' in Path(profile['CPU_startup_gate_source']['path']).read_text(encoding='utf-8'),
+                    'The entire original entry plus its exact early CPU block and constant-one provider must match')
+                linked=load(package['relink']['path']);need(record(package['relink']['path'])==package['relink'] and
+                    profile['CPU_startup_gate_provider'] in linked['new_inputs'] and profile['entry_artifact'] in linked['new_inputs'],
+                    'The actual accepted SELF must link the exact CPU-only gate and entry')
+                early_message=True
         if args.early_S1_policy_refusal:
             package=load(case['package']['path']);effective=package['effective_application_policy'];profile=load(effective['profile']['path'])
             need(record(case['package']['path'])==case['package'] and record(effective['profile']['path'])==effective['profile'] and
@@ -147,7 +169,8 @@ def main():
     for i,row in enumerate(old[:3]):
         pending.append(dict(row,target=row['remote'],remote=prefix+('-restore-SELF.bin' if i==0 else '-restore-'+str(i)+'.json')))
     restoration=build(args.workspace,args.mount_plan,case['new_files'],old,pending,'publish',args.out/'restore')
-    publish(lan,pending,restoration,args.out/'restore')
+    direct=dict(workspace=args.workspace,mount_plan=args.mount_plan,qualified=args.direct_staging_proof) if args.direct_staging_proof else None
+    publish(lan,pending,restoration,args.out/'restore',direct_staging=direct)
     path=args.current/'active-console.private.json';state=load(path)
     state.update(state='known_pre_GPU_model_exception_ordinarily_closed_current_restored',native_running=False,
                  model_loaded=False,gateway_running=False,native_owners=0,unknown_completion=False,original_restored=True,
