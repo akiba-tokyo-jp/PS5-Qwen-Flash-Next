@@ -3,6 +3,45 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+S1 case64662 is a consumed CPU wrapper failure after all five GPU upload
+epochs positively completed (1444 copies,4519798432 bytes), before target
+prefill or auxiliary creation. FirstGeneration passes context capacity256 to
+Engine.prefill, not the30 prompt-token count. The corrected wrapper forwards
+capacity256 and initializes its causal position from the actual prompt count.
+Host64671 links the actual FirstGeneration caller and shadow implementation;
+capacity/positions, forward/reverse replay, rollback0, single-live auxiliary,
+clear counts and positive retirement pass. Packaging and both launch paths
+must bind this exact host receipt and all five candidate caller/provider inputs.
+Never replay the old64660/64661 package or reinterpret the failure as an MTP
+numerical result. Source-bound ordinary close64664 closes the known-idle owner
+once and restores all seven current947 files. Root-context Direct query returns
+total0 and exits with no operations;64665 records capacity readmission pending.
+Only the early CPU-only title query is admitted until its positive capacity,
+ordinary exit and exact restoration are finalized. No initializer, reset,
+forced termination or repeated consumed query is permitted.
+
+Early CPU-only title64680 positively observes Direct total12280922112 and
+available12262047744 bytes, above the exact12184453120-byte pre-model baseline.
+It creates no model/source worker/GPU object, with zero CPU libc fallbacks.
+Ordinary close/restoration completes; finalizer64681 verifies same boot,
+no title owner and the exact seven current files, then clears the pending
+Direct-capacity gate. Numerical model admission remains a distinct scope.
+
+S1 changed native64694 now completes one ordinary target request and both
+sequential auxiliary arms, with at most one auxiliary context live. All22
+proposals match the target in each arm; KV clear counts are23/1. All23 existing
+248320-column F32 rows and actual target routes match selected R1 reference
+64480 exactly. CPU peak553779200 and device peak6104809472 bytes; all owners
+retire, ordinary close restores947. Finalizer64695 binds these observations.
+This narrow causal replay does not qualify online verification, accepted-draft
+catch-up/rejection, broader answer quality or whole-model speed. Warm GPU-only
+means2710.43965/2412.0416us exclude each arm's first two proposals, while complete
+proposal means16942.85465/17566.4486us include CPU cost; arm order is confounded.
+Do not call this an overall speedup or reject all S1 designs from these costs.
+Screen64693 derives7374 prelaunch pages from the actual prior5246-page global
+reduction, unchanged1104-page OS floor and1024 extra pages. It is an empirical
+screen, not a physical guarantee. Native memory/completion guards are unchanged.
+
 S1 case64655 is a consumed returned legacy-policy CPU refusal before model,
 source workers or GPU initialization. Repricing the shared CPU header changed
 the legacy first-generation512MiB identity; ordinary close64656 restores947.

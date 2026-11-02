@@ -90,8 +90,8 @@ std::uint32_t PersistentMtpShadow::tokenize(const std::string&text){
     need(s.prompt>0&&s.prompt<=64,"Bounded actual target prompt required");return s.prompt;
 }
 void PersistentMtpShadow::prefill(std::uint32_t n){
-    auto&s=*state_;s.guard();need(n==s.prompt&&!s.prefilled,"One exact target prefill required");
-    s.target.prefill(n);s.prompt_hidden=s.live=s.hidden();s.position=n;s.prefilled=true;
+    auto&s=*state_;s.guard();need(n==llama_n_ctx(s.context)&&s.prompt>0&&!s.prefilled,"One exact target context-capacity prefill required");
+    s.target.prefill(n);s.prompt_hidden=s.live=s.hidden();s.position=s.prompt;s.prefilled=true;
 }
 Token PersistentMtpShadow::next(){
     auto&s=*state_;s.guard();need(s.prefilled&&s.outputs<32&&s.proposals<24,"Finite ordinary MTP shadow bound required");

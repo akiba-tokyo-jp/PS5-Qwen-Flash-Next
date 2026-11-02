@@ -35,7 +35,7 @@ def main():
         unloaded_CPU=profile.get('unloaded_CPU_fixture') is True
         need(record(effective['profile']['path'])==effective['profile'] and effective['kind']=='headless-model-audit' and
              profile['headless_model_audit'] and profile['model_and_GPU_guards_preserved'] and
-             (count in (1,3) or (count==0 and unloaded_CPU and profile['headless_audit_kind']=='I1-span-fixture')) and
+             (count in (1,3) or (count==0 and unloaded_CPU and profile['headless_audit_kind'] in ('I1-span-fixture','CPU-Direct-readmission'))) and
              terminal['kind']==profile['headless_audit_kind'] and terminal['model_loads']==(0 if unloaded_CPU else 1) and
              completed['headless_model_audit'] and terminal['audit']==load(observer/'native.audit.private.json'),
              'One explicitly compiled completed headless model audit is required')

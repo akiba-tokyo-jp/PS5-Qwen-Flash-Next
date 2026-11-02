@@ -497,3 +497,63 @@ view and canonical fixed policy fields, and passes. Its identity placeholders
 test format only; native SELF/model admission remains a separate runtime gate.
 Packaging and both launch paths reject S1 without the provider contract and
 the actual host-validator receipt. Earlier prepared packages cannot relaunch.
+
+S1 case64662 loads the model and completes all five GPU upload epochs,
+1444 copies /4519798432 bytes. The CPU shadow wrapper then rejects the actual
+FirstGeneration prefill argument: the caller supplies the256-token context
+capacity, while the wrapper incorrectly expects the30-token prompt length.
+No target prefill, NextN download or auxiliary context is created. This is an
+implementation failure, not a numerical or performance rejection of MTP.
+The corrected wrapper forwards the context capacity and starts causal replay
+at the observed prompt length. Host64671 links the real FirstGeneration and
+shadow implementations against a mocked pinned llama API; both arm orders,
+actual hidden/token/position frames, auxiliary rollback0, single-live context,
+clear counts and retirement pass. Candidate source hashes and this host result
+are now required by the builder, packager and both launch paths.
+
+Source-bound close64664 verifies the exact failed source/SELF, stable journal,
+five completed GPU epochs and absent target/auxiliary GPU work. It requests
+ordinary OS close once, observes process exit and restores current947 in both
+namespaces. It honestly retains the idle model resources until OS exit rather
+than claiming that application destructors ran. The subsequent read-only
+Direct query returns total0 outside a title; that returned API limitation is
+not interpreted as available capacity. Record64665 preserves the known GPU
+completion and ordinary exit while requiring a CPU-only title-context capacity
+query before any further GPU scope. The original initializer is not repeated.
+
+Early CPU-only title64680 returns a valid12280922112-byte Direct pool and
+12262047744 available bytes, exceeding the exact12184453120-byte pre-model
+baseline. CPU heap is16777216 bytes with zero libc fallbacks; no model/source
+worker, payload read, device ledger or GPU object is initialized. The ordinary
+close and exact seven-file restoration complete. Finalizer64681 binds the
+native query, prior source-bound exit, unchanged boot and absent title owner,
+then clears the pending Direct-capacity gate. This establishes recovered
+capacity, not new numerical model qualification or a performance benefit.
+
+S1 changed scope64694 successfully completes an ordinary22-token target
+request, then sequential stateless/stateful auxiliary replay of the22 actual
+causal input frames. Both arms predict22/22 next target tokens, with KV clear
+counts23/1 and at most one auxiliary context live. All23 existing248320-column
+F32 rows are byte-exact against selected R1 reference64480; all actual target
+routes match. CPU heap peak is553779200 bytes and device peak6104809472 bytes.
+Both auxiliary contexts and all original model/source/device owners retire;
+ordinary close restores current947. Finalizer64695 binds the native receipts,
+reference hashes, independently counted matches and full routes.
+
+After excluding each arm's first two proposals, GPU compute/fence means are
+2710.43965us (stateless) and2412.0416us (persistent), an11.009% reduction.
+Complete proposal means, including CPU cost, are16942.85465us and17566.4486us,
+so those warm complete proposals are3.681% slower. The initial arm order also
+confounds compilation/cache cost. These are component observations on the
+counting cohort, not online acceptance, rejection/catch-up qualification,
+broad quality, or a whole-model speed result. Reverse order and actual target
+verification remain necessary before an adoption decision.
+
+The successful scope uses recorded empirical screen64693: prior S1 model
+loading reduces observed global free pages from7812 to2566 (5246 pages).
+Adding the unchanged observed898+206 OS floor and another1024 operational
+pages yields7374. Inactive pages are not counted. This screen does not replace
+any native admission or establish a hardware limit. Earlier8098/7586 screens
+64687/64690 refuse before staging/launch. Exact cleanup64685/64688/64691 removes
+six obsolete G1 BMPs /49766724 bytes from the console;64686/64689/64692 removes
+the six matched PC copies and proves all108 selected inputs unchanged.

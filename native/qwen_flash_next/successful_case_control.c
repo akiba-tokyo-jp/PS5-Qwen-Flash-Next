@@ -93,6 +93,9 @@ int main(int argc,char **argv){
     if(!case_CPU_close_proof()||!claim("close"))goto done;
     app_id=sceSystemServiceGetAppIdOfRunningBigApp();
     if(app_id!=CASE_CLOSE_APP_ID||!report("BEFORE ordinary_OS_close app_id=%d maximum_calls=1 positive_owner_completion_bound=1",app_id))goto done;
+#ifdef CASE_RETAINED_IDLE_MTP_CLOSE
+    if(!report("RETAINED_IDLE_MODEL all5_GPU_epochs_completed=1 target_prefill_GPU_calls=0 auxiliary_contexts=0 resources_retained_until_ordinary_OS_exit=1 preclose_zero_ledger_claimed=0"))goto done;
+#endif
     calls=1;int rc=sceSystemServiceKillApp(app_id,-1,0,0);
     success=report("RETURN ordinary_OS_close rc=%d",rc)&&rc==0;
 #elif CASE_OPERATION == 4
@@ -156,6 +159,18 @@ int main(int argc,char **argv){
             (unsigned)s.st_flags,(long long)s.st_mtim.tv_sec,(long long)s.st_mtim.tv_nsec,(long long)s.st_ctim.tv_sec,(long long)s.st_ctim.tv_nsec))success=0;
         errno=0;int closed=close(fd),close_error=errno;
         if(!report("DESCRIPTOR_CLOSE index=%u rc=%d errno=%d",i,closed,close_error)||closed)success=0;
+    }
+    if(!new_files_valid()||!new_mounted_valid()||!live_context()||!idle())success=0;
+#elif CASE_OPERATION == 16
+    if(!idle()||!new_files_valid()||!new_mounted_valid())goto done;
+    {
+        int64_t sceKernelGetDirectMemorySize(void);
+        int sceKernelAvailableDirectMemorySize(int64_t,int64_t,size_t,int64_t*,size_t*);
+        const int64_t total=sceKernelGetDirectMemorySize();int64_t start=-1;size_t available=0;
+        const int rc=total>0?sceKernelAvailableDirectMemorySize(0,total,65536,&start,&available):-1;
+        success=report("DIRECT_POOL total=%lld query_rc=%d largest_start=%lld largest_available=%llu query_only=1",
+            (long long)total,rc,(long long)start,(unsigned long long)available)&&total>0&&rc==0&&start>=0&&
+            (uint64_t)start<=(uint64_t)total&&available>0&&available<=(uint64_t)total-(uint64_t)start;
     }
     if(!new_files_valid()||!new_mounted_valid()||!live_context()||!idle())success=0;
 #else

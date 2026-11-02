@@ -14,6 +14,7 @@ from build_performance_quantizer import record
 from build_speculative_batch_probe import once
 from headless_current_entry import headless_entry
 from check_headless_legacy_policy import check as check_legacy_policy
+from mtp_shadow_host_check import verify as verify_host_check
 from start_success_route import load,need,save
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -21,7 +22,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    for name in ('workspace','current','base-entry','graph','context','shader-checks','out'):p.add_argument('--'+name,type=Path,required=True)
+    for name in ('workspace','current','base-entry','graph','context','shader-checks','host-check','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--reverse',action='store_true');a=p.parse_args()
     base=load(a.base_entry);graph=load(a.graph);profile=load(base['application_policy']['path'])
     need(base['completed'] and base['CPU_minimum_plus_21_unchanged'] and graph['selected_object_byte_exact'],
@@ -41,6 +42,8 @@ def main():
     for header in Path(profile['source']['path']).parent.glob('*.h'):shutil.copyfile(header,a.out/header.name)
     names=('persistent_mtp_cursor.h','persistent_mtp_shadow.h','persistent_mtp_shadow.cpp')
     for name in names:shutil.copyfile(ROOT/'native/app'/name,a.out/name)
+    host_inputs=[record(a.out/name) for name in names]+[record(ROOT/'native/app'/name) for name in ('session.h','first_generation.h')]
+    verify_host_check(record(a.host_check),host_inputs)
     # This explicit application quota was already sufficient for the historical
     # one-context MTP slice (654442496-byte peak). Fresh physical/OS admission,
     # allocation accounting and all original reserves remain active.
@@ -112,6 +115,7 @@ def main():
     view=a.out/'selected-view.private.json';save(view,overlay)
     legacy_check=check_legacy_policy(a.workspace,a.current,view,a.out/'legacy-policy-host-check')
     ec=[str(a.out) if x==old_view else x for x in ec];ec[ec.index('-ivfsoverlay')+1]=str(view)
+    ec[1:1]=['-I',str(a.out),'-I',str(ROOT/'native/app')]
     ec[ec.index('-c')+1]=str(source);ec[ec.index('-o')+1]=str(entry)
     if '-MF'in ec:ec[ec.index('-MF')+1]=str(a.out/'entry.private.d')
     gs=a.out/'graph.private.cpp';gt=Path(graph['source']['path']).read_text(encoding='utf-8')
@@ -165,6 +169,8 @@ def main():
         CPU_heap_quota_explicitly_repriced=True,headless_audit_kind=scope['kind'],headless_requests=1,
         successful_MTP_contract_verified=True,
         actual_legacy_policy_validator_passed=True,legacy_policy_host_check=record(a.out/'legacy-policy-host-check/result.private.json'),
+        actual_FirstGeneration_host_controls_passed=True,actual_FirstGeneration_host_check=record(a.host_check),
+        actual_FirstGeneration_provider_inputs=host_inputs,
         successful_MTP_contract=dict(auxiliary_rollback_snapshots=0,target_rollback_snapshots=1,
             active_MTP_tensors=34,MTP_graph_capacity=1088,CPU_heap_quota_bytes=672<<20,
             CPU_heap_check_provider_count=3,source_before_changes_byte_exact=True,

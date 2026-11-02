@@ -11,6 +11,7 @@ import urllib.parse
 
 from build_performance_quantizer import record
 from kernel_vm_preflight import query
+from mtp_shadow_host_check import require_profile as require_shadow_host_check
 from start_success_route import load,need,save
 from success_case_control import PHYSICAL,lan_module
 
@@ -27,6 +28,7 @@ def main():
     need(effective['kind']=='headless-model-audit' and record(effective['profile']['path'])==effective['profile'] and
          profile['headless_model_audit'] and profile['model_and_GPU_guards_preserved'],'One explicitly compiled headless audit required')
     if profile['headless_audit_kind']=='S1-MTP-shadow':
+        require_shadow_host_check(profile)
         need(profile.get('successful_MTP_contract_verified') is True and profile.get('actual_legacy_policy_validator_passed') is True,
              'Successful MTP providers and the actual legacy policy host check must be bound before launch')
         check=profile['legacy_policy_host_check']

@@ -10,6 +10,7 @@ import urllib.parse
 
 from build_performance_quantizer import record
 from model_directory_readmission import rebind_directory
+from mtp_shadow_host_check import require_profile as require_shadow_host_check
 from staged_self_upload import upload
 from start_success_route import load,need,save
 from success_case_control import build,current_files,execute,lan_module,PHYSICAL
@@ -46,6 +47,13 @@ def start(args):
     if args.package:
         package=load(args.package);need(package['completed'] and package['normalized_SELF_roundtrip_equal'],'Qualified host SELF package required')
         image=package['SELF']
+    if state.get('GPU_retirement_readmission_pending'):
+        effective=package.get('effective_application_policy',{}) if args.package else {}
+        audit_profile=load(effective['profile']['path']) if effective.get('profile') else {}
+        need(audit_profile.get('headless_audit_kind')=='CPU-Direct-readmission' and audit_profile.get('unloaded_CPU_fixture') and
+             audit_profile['overrides']['native_headless_model_audit']['early_return_before_model_source_initialization'] and
+             audit_profile['overrides']['native_headless_model_audit']['GPU_calls']==0,
+             'Only a source-bound early CPU Direct readmission may launch while GPU memory retirement admission is pending')
     dependency_proof=None
     if state.get('restored_required_bundle_inputs'):
         need(args.package and len(state['restored_required_bundle_inputs'])==3,
@@ -68,6 +76,7 @@ def start(args):
         need(record(profile['path'])==profile,'Compiled effective application policy changed')
         compiled_profile=load(profile['path'])
         if compiled_profile.get('headless_audit_kind')=='S1-MTP-shadow':
+            require_shadow_host_check(compiled_profile)
             need(compiled_profile.get('successful_MTP_contract_verified') is True and
                  compiled_profile.get('actual_legacy_policy_validator_passed') is True,
                  'Unqualified MTP context/rollback/CPU-check providers must not launch')

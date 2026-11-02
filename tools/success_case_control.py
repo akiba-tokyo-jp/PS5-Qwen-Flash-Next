@@ -58,7 +58,7 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
 '''
     text+='static int old_files_valid(void){return '+'&&'.join(digest_expression(r) for r in old_files)+';}\n'
     text+='static int pending_valid(void){return '+('&&'.join(digest_expression(r) for r in pending) or '0')+';}\n'
-    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14,'inspect-descriptors':15};need(operation in numbers,'One known operation required')
+    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14,'inspect-descriptors':15,'observe-direct':16};need(operation in numbers,'One known operation required')
     if operation!='restore-bundle':
         text=text.replace('#include "launch_integrity_native.h"','#define QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS 1\n#include "launch_integrity_native.h"',1)
     need(len(old_files)==len(new_files)==7 and all(r['remote'].startswith(PHYSICAL+'/') for r in old_files+new_files),
@@ -125,7 +125,9 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         model_closed=close and close.get('completed') is True and close.get('all_model_source_device_owners_positively_retired') is True and close.get('device_ledger_live_bytes')==0
         pre_GPU=close and close.get('known_returned_pre_GPU_exception') is True and close.get('native_resources_started') is False and close.get('model_loaded') is False and close.get('CPU_worker_completion_unknown') is False and close.get('all_probe_ranges_unmapped') is True
         unloaded=close and close.get('known_IQ2_CPU_teardown_failure') is True and close.get('model_loaded') is False and close.get('GPU_graphs_positively_completed')==72 and close.get('all_GGML_backends_retired') is True and close.get('final_driver_producer_completed') is True and close.get('all_source_IO_completed') is True and close.get('CPU_worker_completion_unknown') is False and close.get('source_audit_SHA256')=='002b695b4896bfea2d540055656adf5aacd56832b5964cd2ed129b8d04de2150'
-        need(CPU_closed or model_closed or pre_GPU or unloaded,'Positive CPU-only, returned scoped exception, or retired model completion required')
+        idle_MTP=close and close.get('known_MTP_returned_prefill_scope_failure') is True and close.get('model_loaded') is True and close.get('all_GPU_epochs_positively_completed')==5 and close.get('target_prefill_GPU_calls')==0 and close.get('auxiliary_contexts_created')==0 and close.get('all_source_IO_completed') is True and close.get('CPU_worker_completion_unknown') is False and close.get('source_audit_SHA256')=='16e60fcc805ace70534fe4b2efeaa17b924d0535034d639123521fc8c9a03af9'
+        need(CPU_closed or model_closed or pre_GPU or unloaded or idle_MTP,'Positive returned work and exact scoped owner completion required')
+        if idle_MTP:context+='#define CASE_RETAINED_IDLE_MTP_CLOSE 1\n'
         need(close['pid']>0 and close['app_id']>0,'Exact native PID and application ID required')
         need(len(close.get('reports',[]))>=2,'Two immutable completed native reports required')
         for needle in ('    for(size_t i=0;i<n;i+=sizeof(struct kinfo_proc)){',
