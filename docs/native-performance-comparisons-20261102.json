@@ -3,52 +3,85 @@
   "date": "2026-11-02",
   "campaign_complete": false,
   "production": {
-    "SELF_bytes": 21925463,
-    "SELF_sha256": "a786b8adfe2fe0bbfb196fe696f644024bb3d090734f97a5533a6d6845ee415e",
+    "SELF_bytes": 21927687,
+    "SELF_sha256": "947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7",
     "base_source": "2b683814c9b6ed18c13352963c0a989f9e4d0b15",
-    "source_overlay": "9601f9048dc943cf28705f3e8ec784d8d91ca54a",
     "driver": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
     "driver_profile": "cumulative-idle",
     "persistent_caches": false,
     "PC_and_PS5_same_selected_current": true,
-    "native_placement": 64181,
+    "native_placement": 64510,
     "seven_files_hashed_in_both_namespaces": true,
-    "canonical_relink": 64182,
-    "canonical_SELF": 64184,
+    "canonical_relink": 64512,
+    "canonical_SELF": 64513,
     "retained_current_inputs": 93,
     "formatter_import_stubs": 7,
-    "canonical_entry_ELF_and_SELF_byte_exact": true
+    "canonical_entry_ELF_and_SELF_byte_exact": true,
+    "latest_current_seven_native_integrity": 64779,
+    "source_overlay_historical": "9601f9048dc943cf28705f3e8ec784d8d91ca54a",
+    "source_overlay": "a543eac4fdeb59b4ecadf50725b12bd9ece9689f",
+    "actual_application_linked_driver_archive_sha256": "a325dcd4584b1f1fccc6b46e90faa081ca86d18544aca610efea9e3ca3774f32"
   },
   "R1": {
-    "status": "adopted",
+    "status": "adopted_completed_stage_and_request_end_token_sync",
     "ABBA_cases": [
-      64130,
-      64131,
-      64132,
-      64133
+      64500,
+      64501,
+      64502,
+      64503
     ],
     "native_requests": 12,
-    "actual_control_syncs_per_request": 22,
-    "actual_candidate_syncs_per_request": 1,
-    "final_sync_and_close_included": true,
-    "retained_complete_request_mean_reduction_percent": 1.223742698062602,
-    "prefix_complete_request_mean_reduction_percent": 1.6438812708000072,
-    "both_warm_pairs_exceed_control_variation": true,
-    "consistent_cold_gain_established": false,
-    "tokens_routes_source_demand_and_durable_payloads_exact": true,
-    "numerical_cases": [
-      64150,
-      64151
+    "whole_F32_cases": [
+      64480,
+      64481
     ],
-    "whole_F32_rows_per_case": 69,
-    "vocabulary_columns": 248320,
-    "F32_bytes_hashed_per_case": 68536320,
-    "all_full_rows_SHA256_exact": true,
-    "finite_counting_reset_and_ordinary_closes_passed": true,
-    "token_record_sync_policy": "request_end",
-    "completed_ledger_synced_before_request_result": true,
-    "interrupted_request_may_lose_unsynced_tail": true,
-    "all_other_boundary_states_qualified": false
+    "all69_full_vocab_rows_exact": true,
+    "deferrable_completed_stage_names": 7,
+    "completed_stage_deferrals_per_request": [
+      49,
+      49,
+      42
+    ],
+    "before_unknown_fatal_and_probe_syncs_preserved": true,
+    "request_end_token_and_stage_sync_in_complete_span": true,
+    "cold_complete_span_mean_reduction_percent": 0.973301,
+    "retained_complete_span_mean_reduction_percent": 1.550464,
+    "prefix_complete_span_mean_reduction_percent": 1.755848,
+    "all_paired_savings_exceed_AA_spread": true,
+    "tokens_routes_source_demand_and_durable_payloads_exact": true,
+    "ordinary_closes_and_exact_current_restores": true,
+    "interrupted_request_can_lose_unsynced_completed_stage_and_token_tail": true,
+    "previous_token_ledger_only_result": {
+      "status": "previously_adopted_and_superseded_by_completed_stage_R1",
+      "ABBA_cases": [
+        64130,
+        64131,
+        64132,
+        64133
+      ],
+      "native_requests": 12,
+      "actual_control_syncs_per_request": 22,
+      "actual_candidate_syncs_per_request": 1,
+      "final_sync_and_close_included": true,
+      "retained_complete_request_mean_reduction_percent": 1.223742698062602,
+      "prefix_complete_request_mean_reduction_percent": 1.6438812708000072,
+      "both_warm_pairs_exceed_control_variation": true,
+      "consistent_cold_gain_established": false,
+      "tokens_routes_source_demand_and_durable_payloads_exact": true,
+      "numerical_cases": [
+        64150,
+        64151
+      ],
+      "whole_F32_rows_per_case": 69,
+      "vocabulary_columns": 248320,
+      "F32_bytes_hashed_per_case": 68536320,
+      "all_full_rows_SHA256_exact": true,
+      "finite_counting_reset_and_ordinary_closes_passed": true,
+      "token_record_sync_policy": "request_end",
+      "completed_ledger_synced_before_request_result": true,
+      "interrupted_request_may_lose_unsynced_tail": true,
+      "all_other_boundary_states_qualified": false
+    }
   },
   "P1": {
     "status": "measured_profile_not_adopted",
@@ -126,7 +159,30 @@
       459
     ],
     "partial_TopK_API_order_unspecified": true,
-    "partial_TopK_advanced_to_timing_or_adoption": false
+    "partial_TopK_advanced_to_timing_or_adoption": false,
+    "cached_run_host_replay": {
+      "case": 64773,
+      "decision_screen": 64774,
+      "actual_three_request_cache_counters_exact": true,
+      "all_hit_layers": [
+        895,
+        821,
+        688
+      ],
+      "decode_layers": [
+        1056,
+        1056,
+        768
+      ],
+      "maximum_initial_prefix": [
+        37,
+        24,
+        40
+      ],
+      "full48_layer_hit_processes": 0,
+      "GPU_continuation_implemented": false,
+      "counts_are_not_latency": true
+    }
   },
   "Q1": {
     "status": "measured_profile_not_adopted",
@@ -170,7 +226,7 @@
     "protected_current_seven_whole_digests_equal": true
   },
   "Q2": {
-    "status": "real_moments_and_nine_calibrated_Up_samples_complete_native_operator_pending",
+    "status": "native_decode_vector_components_qualified_full_model_and_prefill_pending",
     "pre_main_refusal_case": 64310,
     "returned_CPU_reads": 7,
     "refused_free_pages": 882,
@@ -232,15 +288,101 @@
     "console_raw_bytes_removed": 108544000,
     "post_retirement_free_pages": 9003,
     "unchanged_OS_minimum_pages": 898,
-    "unchanged_OS_reserved_pages": 206
+    "unchanged_OS_reserved_pages": 206,
+    "real_operand_output_reference": {
+      "case": 64752,
+      "matrices": 9,
+      "actual_input_vectors": 70,
+      "IQ2_lower_output_NRMSE_than_Q2_K": 1,
+      "in_sample_only": true,
+      "full_model_quality_qualified": false
+    },
+    "prefill_fit_decode_holdout": {
+      "case": 64772,
+      "matrices": 9,
+      "IQ2_lower_output_NRMSE": 0,
+      "fit_vectors": 28,
+      "heldout_vectors": 33,
+      "same_prompt": true,
+      "independent_prompts": 0,
+      "full_model_quality_qualified": false
+    }
   },
   "Q3": {
     "status": "direct_and_padded_format_rejected_cross_row_format_pending",
     "real_Down_activation_moments_available": true,
-    "cross_row_format_implemented": false
+    "cross_row_format_implemented": false,
+    "real_operand_output_reference": {
+      "case": 64752,
+      "matrices": 9,
+      "actual_input_vectors": 70,
+      "IQ2_lower_output_NRMSE_than_Q2_0": 9,
+      "relative_output_NRMSE_reduction_percent_range": [
+        7.771633179744864,
+        44.57393047427851
+      ],
+      "in_sample_only": true,
+      "full_model_quality_qualified": false
+    },
+    "paired_640_operator": {
+      "build": 64756,
+      "full_F32_values_decoded_byte_exact": 14745600,
+      "original_matrices": 9,
+      "PS5_CPU_decoder_compile": true,
+      "SPIRV_profiles_validated": [
+        64,
+        128
+      ],
+      "GPU_cases_prepared": 12,
+      "formats_and_cache_geometry_not_yet_integrated": true,
+      "native_GPU_execution": false,
+      "desktop_first_case": 64757,
+      "desktop_instance_creation_failed_before_dispatch": true,
+      "desktop_GPU_dispatches": 0
+    },
+    "prefill_fit_decode_holdout": {
+      "case": 64772,
+      "matrices": 9,
+      "IQ2_lower_output_NRMSE": 2,
+      "fit_vectors": 28,
+      "heldout_vectors": 33,
+      "same_prompt": true,
+      "independent_prompts": 0,
+      "full_model_quality_qualified": false
+    },
+    "paired_software_SPIRV": {
+      "case": 64771,
+      "build": 64769,
+      "shapes": 24,
+      "widths": [
+        1,
+        2,
+        30,
+        32
+      ],
+      "workgroups": [
+        64,
+        128
+      ],
+      "positive_dispatches": 960,
+      "all_outputs_and_canaries_passed": true,
+      "physical_GPU": false,
+      "PS5_operations": 0,
+      "model_cache_integration": false,
+      "whole_speed_qualified": false,
+      "historical_constant_shader": {
+        "case": 64762,
+        "build": 64756,
+        "shapes": 24,
+        "positive_dispatches": 960,
+        "all_outputs_and_canaries_passed": true,
+        "physical_GPU": false,
+        "PS5_operations": 0
+      }
+    }
   },
   "I1": {
-    "status": "native_delivery_and_actual_model_trace_qualified_stride_screens_no_adoption_integration_pending",
+    "status": "native_delivery_and_original_model_trace_qualified_no_stride_policy_adopted",
     "native_delivery_case": 64623,
     "finalizer": 64624,
     "useful_prefetch_reads": 24,
@@ -265,10 +407,24 @@
     "console_raw_bytes_retired": 1265152,
     "complete_PC_raw_preserved": true,
     "actual_speculative_IO_submitted_by_trace_or_screens": 0,
-    "model_integration_or_speed_qualified": false
+    "model_integration_or_speed_qualified": false,
+    "Direct_stage_transport": {
+      "case": 64779,
+      "host_faults": 64778,
+      "bytes": 21927687,
+      "positive_stream_and_native_Direct_readback_SHA": true,
+      "temporary_file_retired": true,
+      "current_seven_unchanged": true,
+      "free_before": 5808,
+      "free_after": 5800,
+      "GPU_calls": 0,
+      "model_launches": 0,
+      "application_launch_RAM_gain_qualified": false,
+      "inference_speed_gain_qualified": false
+    }
   },
   "S1": {
-    "status": "native_online_causal_protocol_qualified_matched_whole_speed_and_broader_quality_pending",
+    "status": "finite_native_online_causal_protocol_qualified_model_lifetime_and_matched_speed_pending",
     "consumed_legacy_policy_refusal": 64655,
     "consumed_context_capacity_wrapper_failure": 64662,
     "wrapper_failure_completed_GPU_epochs": 5,
@@ -287,7 +443,10 @@
     "native_causal_replay_finalizer": 64695,
     "reverse_order_native_case": 64711,
     "reverse_order_finalizer": 64712,
-    "reverse_order_prediction_matches": [22,22],
+    "reverse_order_prediction_matches": [
+      22,
+      22
+    ],
     "reverse_order_all23_F32_rows_and_actual_routes_exact": true,
     "controlled_original_target_capture_case": 64723,
     "controlled_original_target_capture_finalizer": 64725,
@@ -316,8 +475,14 @@
     "actual_online_diagnostic_stages_and_hashes_enabled": true,
     "matched_whole_speed_qualified": false,
     "actual_causal_proposals_per_arm": 22,
-    "actual_target_prediction_matches": [22,22],
-    "KV_clear_counts": [23,1],
+    "actual_target_prediction_matches": [
+      22,
+      22
+    ],
+    "KV_clear_counts": [
+      23,
+      1
+    ],
     "maximum_simultaneous_auxiliary_contexts": 1,
     "all23_F32_rows_248320_columns_byte_exact": true,
     "all_actual_target_routes_exact": true,
@@ -326,12 +491,106 @@
     "component_timings_order_and_cache_confounded": true,
     "actual_online_accept_reject_catchup_qualified": true,
     "ordinary_close_and_current_restored": true,
-    "broader_MTP_quality_or_whole_speed_qualified": false
+    "broader_MTP_quality_or_whole_speed_qualified": false,
+    "single_completion_contract": {
+      "source_and_selected_object_byte_exact_case": 64735,
+      "same_full_positive_device_worker_owner_journal_boundary": true,
+      "mandatory_completion_retained": true,
+      "shared_driver_archive_unchanged": true,
+      "native_qualified": false,
+      "prelaunch_refusals": [
+        64738,
+        64742
+      ],
+      "last_refusal_free_pages": 6860,
+      "unchanged_screen_pages": 7374,
+      "staging_and_title_launches": 0
+    },
+    "retained_owner_host_controls": {
+      "case": 64758,
+      "single_requests": 12,
+      "retained_groups": 4,
+      "retained_requests": 12,
+      "exactly_one_context_per_group": true,
+      "one_clear_per_request": true,
+      "wrong_model_and_fourth_request_refused": true,
+      "unknown_boundary_retains_exact_owned_input": true,
+      "native_multi_request_entry_integrated": true,
+      "native_lifetime_or_matched_speed_qualified": false,
+      "native_entry_is_host_built_only": true,
+      "fresh_entry_and_package": [
+        64764,
+        64765
+      ],
+      "retained_entry_and_package": [
+        64766,
+        64767
+      ],
+      "requests": 3,
+      "maximum_verifications": 18,
+      "maximum_auxiliary_steps": 96,
+      "causal_reconciler_control": 64768
+    }
   },
   "initializer_scope_consumed": 63121,
   "initializer_repeated": false,
   "existing_mount": 63133,
   "reboot_available": false,
   "automatic_retries": 0,
-  "CI_runs": 0
+  "CI_runs": 0,
+  "latest_update": "2026-11-03",
+  "closed_artifact_retirement": {
+    "image_batches": [
+      64740,
+      64744
+    ],
+    "images_per_platform": 34,
+    "bytes_per_platform": 282011436,
+    "unsubmitted_host_argument_refusal": 64741,
+    "host_error_corrected_before_new_scope": true,
+    "report_archive": 64747,
+    "console_reports_retired": 901,
+    "report_bytes": 16148207,
+    "complete_PC_archive_preserved": true,
+    "unreadable_driver_logs_retained": 17,
+    "current_selected_files_protected": 108,
+    "latest_readonly_VM": 64779,
+    "free_pages_after": 5800,
+    "model_launch_screen_pages": 7374,
+    "model_launch_permitted": false,
+    "initializer_requests": 0,
+    "GPU_calls": 0,
+    "owned_directory_positive_fsync": 64754,
+    "exact_superseded_PC_retirement": 64753,
+    "superseded_PC_files": 31,
+    "superseded_PC_bytes": 168402828,
+    "superseded_unlaunched_MTP": {
+      "case": 64780,
+      "scopes": [
+        64759,
+        64763
+      ],
+      "files": 17,
+      "bytes": 199989314,
+      "current_selected108_exact": true,
+      "source_and_receipts_retained": true,
+      "PS5_operations": 0
+    },
+    "remaining_private_logs": {
+      "count": 17,
+      "bytes": 1161178,
+      "prepared_CPU_exporter": 64783,
+      "native_submissions": 0,
+      "permission_changes": 0,
+      "automatic_approval_review_refused_sensitive_export": true,
+      "explicit_payload_and_PC_destination_permission_pending": true
+    }
+  },
+  "checked_source_and_package_review": {
+    "case": 64781,
+    "unique_exact_inputs": 29,
+    "historical_shader_snapshot_separately_bound": true,
+    "latest_MTP_packages_and_current_buffer_shader_exact": true,
+    "PS5_operations": 0
+  }
 }

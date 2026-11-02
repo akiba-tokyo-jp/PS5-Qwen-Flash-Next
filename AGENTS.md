@@ -3,6 +3,103 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CPU-only obsolete0600 driver-log exporter64783 is compiled and import-audited,
+but unsubmitted. It covers17 closed-case logs/1161178 bytes and leaves original
+permissions/current seven unchanged. Automatic approval review refused sensitive
+log export because it requires explicit payload/destination authorization. The
+owner has been asked about this exact scope and PC destination64783/export/archives.
+Do not submit/export/retire those17 logs until that specific authorization arrives;
+general successful-route authorization does not clear this review rejection.
+Scope64782 is an unlaunched formatter-bound preparation superseded by64783.
+
+Latest CPU-only Direct staging64779 copies the selected SELF as opaque data
+once into a fresh nonce-bound temporary file, with16KiB O_DIRECT writes, exact
+stream and independent native readback SHA, positive helper exit and exact
+temporary retirement. Current seven files stay exact. Host64778 passes14 actual
+receiver fault controls with no OS objects. Free pages5808 ->5800; no RAM gain,
+model-launch admission or inference speed is established. The existing uploader
+already disables whole HTTP payload readbacks. No model/title/GPU work or new
+initialization occurs. Do not lower7374 from this transport result alone.
+
+Separate fit/test64772 now fits only actual evaluation1 prefill operands and
+scores evaluation2–23 decode operands: IQ2 lowers output NRMSE for0/9 Up and2/9
+Down matrices, versus the earlier in-sample1/9 and9/9. Each role has28 fit/33
+heldout vectors. Selection uses heldout visitation counts (most/median/least),
+without heldout values/errors. One prompt only; no full-model quality. Preserve
+operand references64752/64772 and original BF16. No blanket IQ2 adoption.
+Codebook-buffer paired Down64769 reproduces all14745600 decoded F32 bytes.
+Software SPIRV64771 passes all24 shapes/960 positive tiled dispatches, widths
+1/2/30/32, both workgroups, F64 references and canaries; resources retire.
+SwiftShader is CPU execution, not physical GPU/PS5 speed. Constant-table64762
+also completes24 shapes/960 positive fences and retires all resources. Its old
+shader snapshot is bound separately from the current buffer-descriptor source;
+both variants total48 shapes/1920 dispatches. Do not replay either completed scope.
+
+G1 host64773 reproduces all three actual3712-slot cache hit/miss counters from
+an explicitly updated pinned base planner, without claiming full selected-object
+reconstruction. All-hit layers895/821/688 of1056/1056/768; no full48-layer decode
+process, but maximum initial cached prefix37/24/40. Fixed-window64774 counts
+hypothetical decisions/resumes only. Predicated state, exact miss resume and
+actual GPU-generated RADV indirect execution remain unqualified. Do not reject
+all bounded G1 continuation because no complete48-layer hit process occurs.
+
+Latest CPU-only retirement64747 archives901 exact reports (16148207 bytes)
+from17 positively closed cases, verifies each whole native/PC SHA before
+unlink, restores the runtime directory owner, and preserves all108 selected
+production/compiler/formatter inputs. Complete PC archives remain. Seventeen
+unreadable0600 driver logs are explicitly retained. Image batches64740/64744
+remove34 obsolete BMPs/282011436 bytes per platform. Scope64741 is a proven
+host argument-binding failure before HTTP launch; its exact unsubmitted helper
+is removed. Neither it nor any unknown native operation is resubmitted.
+
+S1 single-positive-boundary scope64742 refuses before staging at6860 free
+pages versus7374. Read-only64749 after the changed report-retirement scope
+observes5841 pages, still below7374. Do not repeat an unchanged refused launch,
+lower the screen without a newly justified scope, or infer that file deletion
+recovers RAM. No title/GPU owner or unknown completion remains. Production947
+and driver872/cumulative-idle with persistent caches disabled remain selected.
+
+Latest owned-directory sync64754 returns fsync/close positively without owner,
+identity or payload changes. Read-only64755 observes5830 pages, below7374;
+no new model launch is admitted. PC-only retirement64753 removes31 exact
+duplicates/superseded binaries (168402828 bytes), preserving all108 selected
+inputs, complete report archives, source recipes and latest64758 providers.
+
+Real-operand reference64752 scores18 separately quantized original BF16
+matrices against70 actual selected input vectors per role. All actual F64
+moments reproduce exactly. IQ2 lowers output NRMSE for9/9 Down and1/9 Up
+matrices. Down reduction7.771633–44.573930%; these are reused calibration
+operands from one prompt, not held-out or full-model quality. Do not reject
+Down solely because its weight-space NRMSE is worse. Paired operator64756
+matches all14745600 decoded F32 values/bytes for nine Down matrices, compiles
+for PS5 and validates SPIR-V workgroups64/128. Twelve GPU cases are prepared;
+the shader is not integrated into the model/cache yet. Desktop64757 returns
+an instance-creation failure before device creation/dispatch; zero GPU work,
+ordinary process exit and no retry. No physical PC GPU or PS5 shader execution
+is claimed; the subsequent software64771 result is recorded above.
+
+Source/object reconstruction64735 exactly recovers the selected lifecycle
+provider: complete and checkpoint share the full device/worker/owner/journal
+boundary; complete additionally releases the producer. The optional online MTP
+single-completion mode preserves that mandatory full callback. New host64758
+passes12 single-request controls and four retained three-request groups
+(12 more requests), both completion modes,30/33/64-token prompts, actual
+FirstGeneration, acceptance/rejection/catch-up/bonus, same-model ownership,
+one clear per request, fourth-request refusal and explicit final retirement.
+Unfinished-request rebinding is also refused; an injected unknown mandatory
+boundary retains the auxiliary context, batch and exact owned input pointer,
+including after adapter destruction. All target compilation passes.
+This is a mocked-llama host lifetime proof,
+not native model-lifetime, exact-prefix or matched speed qualification. Fresh
+and retained three-ordinary-request entries64764/64766 and packages64765/64767
+are now host-built, with93-input relinks and complete SELF roundtrips. Total
+bounds18 verifications/96 auxiliary steps, per request6/32, final retirement
+included. They have not been staged or launched. Superseded64759/64763 carry
+old one-request metadata and are denied by the current host gate. Reconciler
+64768 checks the actual64732 native causal chain and rejects a mutated input.
+Old unlaunched packages
+64736/64737/64748 bind superseded host inputs and must not be launched.
+
 Latest native S1 online case64732/finalizer64733 completes six actual MTP
 target verifications: five accepted, one deliberately wrong draft rejected,
 five actual auxiliary catch-ups and five target-sampled queued bonuses.

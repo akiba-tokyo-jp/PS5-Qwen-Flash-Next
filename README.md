@@ -13,8 +13,9 @@ successful startup route now positively completes current-model inference on
 this boot, with ordinary closure and exact selected-file restoration. Read the
 [latest native comparisons](docs/native-performance-comparisons-20261102.md).
 R1 is adopted after complete-request ABBA gains and exact whole-vocabulary F32
-comparison. P1's measured profile is not adopted. G1's observational
-state qualification passes; GPU numerics/speed and other candidates remain.
+comparison. The measured P1, Q1 and two G1 ranking profiles are not adopted.
+Finite native IQ2 vector, immutable I/O delivery and online MTP causal checks
+pass, with their quality, integration and whole-speed limits recorded separately.
 The single runtime initialization is consumed and must not be repeated.
 
 The owner closed every current AMPR/APR/PFS, Kraken, compatibility-initializer
@@ -23,18 +24,37 @@ campaign is adopted and no remaining validation is queued. See the
 [closure and current-only cleanup record](docs/current-validation-closure-20261102.md).
 
 The selected current application is the scheduler-owned-map program:
-SELF `a786b8adfe2fe0bbfb196fe696f644024bb3d090734f97a5533a6d6845ee415e`,
-application source overlay `9601f9048dc943cf28705f3e8ec784d8d91ca54a` over
+SELF `947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7`,
+canonical reconstruction source `a543eac4fdeb59b4ecadf50725b12bd9ece9689f` over
 the retained base `2b683814c9b6ed18c13352963c0a989f9e4d0b15`.
 The PC package is `D:/PS5-AI/qwen-flash-next/current`; PS5 retains this same
-program, five settings and required model/startup assets. Historical trial
-files and older deployed programs are retired. Driver872cc126/cumulative-idle
+program, five settings and required model/startup assets. Completed trial images
+and enumerated reports are retired with independent whole-file archives;
+remaining protected or unreadable evidence is disclosed. Driver872cc126/cumulative-idle
 and disabled persistent caches remain. Current-boot inference succeeds with
 the explicitly repaired dependency identities. The original56c deployment
-is replaced by the qualified R1 application on both PC and PS5. Completed token
-ledgers synchronize before the request result; an interrupted request can lose
-its unsynced ledger tail. Retained/prefix complete spans improve1.22%/1.64% in
-the matched fixed workload, including final sync and close; no cold gain is claimed.
+is replaced by the qualified completed-stage R1 application on both PC and PS5.
+Completed token ledgers and the stage journal synchronize before the request
+result; interruption can lose their unsynced completed tails. Cold, retained
+and prefix complete spans improve0.97%/1.55%/1.76% in the matched fixed workload,
+including final sync and close. All69 full-vocabulary F32 rows match exactly.
+
+Actual calibration-operand checks on2026-11-03 find lower IQ2 output error for
+all nine sampled Down matrices and one of nine Up matrices. The paired640-column
+Down decoder matches14745600 independent F32 values; both shader workgroups
+pass SPIR-V validation. The subsequent prefill-fit/decode-holdout check finds
+lower error for only2/9 Down and0/9 Up matrices; calibration reuse had overstated
+the result. These are separate operands from the same prompt, with no full-model
+quality qualification. See the
+[complete component measurements](docs/iq2-real-operand-components-20261103.json).
+The [heldout measurements](docs/iq2-prefill-fit-decode-holdout-20261103.json)
+record the separate fit/test and coverage-based selection. All24 shapes of the
+paired Down shader pass software SPIR-V execution at widths1/2/30/32,960 positive
+fences, with exact canaries. The historical constant-codebook variant also passes
+24 shapes/960 fences, giving48/1920 total. Physical GPU execution and PS5 speed
+stay unqualified.
+The latest PS5 observation records5800 free pages against the7374 model screen;
+no new model launch is attempted. Reboot and another initializer are unavailable.
 
 ### Historical throughput control
 

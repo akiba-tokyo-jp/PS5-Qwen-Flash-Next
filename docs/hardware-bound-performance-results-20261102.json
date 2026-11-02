@@ -160,5 +160,6 @@
     "current_deployment_before_after_SHA256_equal": true,
     "current_SELF_expected_SHA256": true,
     "PS5_operations": 0
-  }
+  },
+  "snapshot_scope": "Initial host-only 2026-11-02 evidence; superseded for current status by docs/native-performance-comparisons-20261102.json"
 }

@@ -4,9 +4,10 @@ The owner authorized implementation, verification and adoption of beneficial
 performance changes on 2026-11-02, explicitly including non-quantization work.
 This is a new application campaign. Closed APR/PFS/Kraken and compatibility
 initialization attempts are not reopened or replayed. Restart is unavailable.
-The selected current application remains SELF56c29e9c..., source2b683814...,
-with driver872cc126/cumulative-idle and disabled persistent caches until a
-separate qualified result changes a particular component.
+The initial campaign baseline was SELF56c29e9c..., source2b683814.... The
+[current measured deployment](native-performance-comparisons-20261102.md) is
+completed-stage R1 SELF947a07fd..., reconstructed from source a543eac over that
+baseline. Driver872cc126/cumulative-idle and disabled persistent caches remain.
 
 ## Independently controlled candidates
 

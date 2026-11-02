@@ -49,6 +49,13 @@ disabled persistent caches are preserved. New model variants should derive
 their entry and reader from the canonical selected-entry-build receipt and
 preserve this adopted synchronization behavior in both comparison arms.
 
+The selected application actually links the264340688-byte cold-table archive
+SHA256a325dcd4584b1f1fccc6b46e90faa081ca86d18544aca610efea9e3ca3774f32.
+The installation manifest now distinguishes that final archive from its
+cumulative-idle profile archive67fe76cc... and native-platform archiveb57fe26e....
+These are existing composition layers, not a driver replacement. Source872cc126,
+Mesa1ba9874f, disabled caches and the93-input relink provenance are unchanged.
+
 Unloaded64523 adds independently timed vector-fence results for all six cases:
 mean IQ2 reductions6.0398/4.0603/1.2848/6.0519/1.0576/4.4930 percent for
 layer0/23/47 at widths1/2. Three of six clear AA spread in both pairs; all72
@@ -114,8 +121,9 @@ allows five IQ2 blocks per pair, preserving1280 decoded values without padding.
 Per-Expert payload falls460800 ->422400 bytes,8.333333%. Independent C/Python
 IQ2 and MSE-Q2_0 decodes agree. Weight NRMSE ranges are0.360205–0.552800 for IQ2
 and0.350610–0.359977 for MSE-Q2_0; every selected IQ2 sample is worse. These are
-weight errors, not answer-quality results. A native640-column paired-row
-operator and full-model admission remain unimplemented; Q3 is not adopted.
+weight errors, not answer-quality results. At scope64430 the640-column paired
+operator was unimplemented. Host64756/64769 and software64771 below now verify
+the operator; native model/cache integration remains pending. Q3 is not adopted.
 
 Bootstrap reconstruction64440 reproduces the complete current source and
 object byte-for-byte. Additional R1 candidates64443/64470/64471 keep all
@@ -645,3 +653,196 @@ with a historical cold control would conflate conditions. Native per-model
 prewarming/lifetime, complete cost comparison and broader response checks remain
 necessary. The finite online implementation is available for further validation
 and has not replaced the selected production executable.
+
+## Positive boundaries and retained MTP ownership, 2026-11-03
+
+Reconstruction64735 recovers the complete12676-byte selected lifecycle source
+and reproduces its actual linked object byte-for-byte. Both checkpoint and
+complete enter the same full positive device/worker/owner/journal boundary;
+complete also releases the producer. The optional online adapter can omit the
+immediately preceding duplicate checkpoint while retaining mandatory complete.
+The shared driver archive, visibility rules and all owner checks are unchanged.
+Scope64742 refuses before staging at6860 free pages against the unchanged7374
+screen. No new native performance or numerical result is claimed.
+
+Host64758 exercises12 ordinary single-request controls and four groups of
+three retained-owner requests, using the actual FirstGeneration caller and
+mocked pinned llama APIs. Both completion modes,30/33/64-token prompts, original
+acceptance/rejection/queued bonus and auxiliary catch-up pass. Each group creates
+one auxiliary context, clears it exactly once per request and explicitly retires
+it after the third. Another model and a fourth request are rejected. While the
+auxiliary is retained, reports correctly say its resources are still live;
+unknown completion retains the state and owned input storage. PS5 compilation
+passes. The new finite three-request entries64764/64766 and packages64765/64767
+wire fresh versus retained auxiliary ownership into three ordinary target-context
+recreations. Both bind93 canonical relink inputs and pass SELF roundtrip checks.
+The total bounds are18 target verifications and96 auxiliary steps, with6/32 per
+request. Final retained retirement is included in the complete sequence span.
+These packages have not been staged or launched. Superseded64759/64763 carry
+old one-request metadata bounds and must not launch. Native multi-request
+lifetime, exact-prefix interaction and matched whole performance are unqualified.
+
+## Exact closed-output retirement, 2026-11-03
+
+CPU-only batches64740/64744 remove34 old displayed BMPs,282011436 bytes from
+each of PC and PS5. Archive64747 saves901 exact reports/16148207 bytes from17
+positively closed cases on PC, then verifies their complete native SHA256 before
+unlinking only the enumerated console copies. Every directory-owner lease is
+restored; all108 selected production/compiler/formatter inputs remain exact.
+The latest model proof, original shader proof, model inputs and complete PC
+calibration/trace evidence are protected. Seventeen0600 driver logs remain
+because the ordinary export service cannot read them. No permission broadening,
+GPU work or initializer is used.
+
+Scope64741 has a host wrapper signature error: the missing third timeout
+argument fails binding before the HTTP launch call. The absent native log/claim,
+idle process list and exact staged helper are checked; that unsubmitted helper
+is removed and the corrected cleanup uses a new scope. Native64740/64744/64747
+may outlast their first60-second collector: only their same journals are
+collected, with no native resubmission. Every cleanup finishes positively and
+the helpers exit and are removed. These storage retirements do not establish a
+RAM gain. Read-only64749 observes5841 free pages, below7374, so no further model
+launch is admitted in that state. Kernel/ShellCore initialization63121 remains
+consumed and is never repeated.
+
+The owned runtime-directory fsync/close in64754 also finishes positively, with
+its identity, mode and owner unchanged. Read-only64755 observes5830 pages,
+still below7374. No new model launch occurs. PC retirement64753 removes31
+exact duplicate or superseded artifacts (168402828 bytes), preserving the108
+selected inputs, complete archives and latest source/provider evidence.
+PC-only retirement64780 also removes17 binary files/199989314 bytes from the
+unlaunched superseded64759/64763 packages after checking the new64764–64767
+providers have no references to them. Sources, receipts and maps stay available;
+all108 selected whole-file digests remain exact.
+
+## Quantization output reference and paired Down operator, 2026-11-03
+
+Reference64752 evaluates18 isolated original BF16 matrices, independently
+encoded into the current Q2 format and calibrated IQ2. Its70 actually selected
+input vectors per role reproduce the original F64 second moments exactly.
+All original source files, encoded extents and complete capture hashes match.
+The CPU reference uses F64 matrix products, without full-model inference.
+
+| Role | Matrices with lower IQ2 output NRMSE | Current Q2 NRMSE range | IQ2 NRMSE range |
+| --- | ---: | ---: | ---: |
+| Up, Q2_K control | 1/9 | 0.219312–0.329341 | 0.248719–0.393901 |
+| Down, signed FP16 MSE Q2_0 control | 9/9 | 0.300874–0.376120 | 0.192935–0.324632 |
+
+Down's output error falls7.771633–44.573930% relative to Q2_0 in these samples,
+despite its greater weight-space error. This supports continuing its separate
+paired-row operator; it does not establish held-out answer quality. The same
+single-prompt operands were used to fit importance, and some Experts have one
+sample. The [complete18-matrix record](iq2-real-operand-components-20261103.json)
+retains this limitation and every measured value.
+
+Operator64756 implements direct640-column reads from paired1280-element IQ2
+rows. The block crossing the original row boundary is preserved; no per-row
+padding or mixed old cache format is introduced. All14745600 decoded F32 values
+from nine real matrices match the independent pinned decoder byte-for-byte.
+The CPU decoder compiles for PS5; portable32-bit Vulkan shaders with workgroups
+64/128 pass SPIR-V validation. Twelve prepared cases cover widths1/2/30/32,
+physical Expert slots0/4/9 and all ten slots, using repeated real operands and
+independent F64 outputs. The shader/cache/model integration remains pending.
+
+Desktop64757 cannot create its Vulkan instance, exits before device creation
+or dispatch, and is not retried. This is an environment refusal with zero GPU
+work, not a shader numerical negative. There is no new PC/PS5 kernel-speed
+claim. Both new operators and retained MTP stay outside production947.
+
+Final host64758 extends the24 successful MTP request controls with refusal of
+unfinished-request rebinding and an injected failed mandatory completion. The
+exact owned input storage, batch and auxiliary context survive adapter
+destruction; finish/free/retry are not called. The actual FirstGeneration caller
+and target compilation pass. This host failure control does not establish native
+multi-request model ownership or exact-prefix compatibility.
+
+## Separate fit/test quantization and shader execution, 2026-11-03
+
+Scope64772 fits importance using only evaluation1's actual30-token prefill
+operands, then scores only evaluation2–23 decode operands. Both formats are
+encoded independently from original BF16; complete C/Python decodes agree.
+Three Experts per role/layer are selected by most, median and least heldout
+visitation coverage among Experts present in both phases. Selection uses heldout
+coverage counts, without using heldout values or errors to fit or select. This
+is one prompt, not an independent-prompt answer-quality test. Each role has28
+fit vectors and33 heldout vectors across the nine selected matrices.
+
+| Role | Matrices with lower IQ2 heldout output NRMSE | Current Q2 range | IQ2 range |
+| --- | ---: | ---: | ---: |
+| Up | 0/9 | 0.155396–0.322855 | 0.238698–0.471066 |
+| Down | 2/9 | 0.311890–0.394301 | 0.283422–0.513545 |
+
+The [complete heldout record](iq2-prefill-fit-decode-holdout-20261103.json)
+shows that the earlier in-sample Down result does not generalize consistently
+even to these separate decode operands. It does not support blanket IQ2
+adoption. Broader calibration, Gate/Up separation and full-model quality remain
+distinct work; these component errors do not establish an inference-speed loss.
+
+Paired Down build64769 adds a2560-byte readonly codebook descriptor to the
+original shader64756, preserving the paired640-column addressing. Both decoder
+variants match all14745600 F32 values/bytes. Software64771 executes24 shapes:
+layers0/23/47, widths1/2/30/32 and workgroups64/128,40 positively completed row
+tiles per shape. All960 dispatches pass independent F64 output references and
+unchanged canaries, and all Vulkan resources retire positively. The
+[per-shape record](iq2-paired-down-software-20261103.json) excludes execution
+times: SwiftShader runs on the PC CPU and supplies no physical GPU or PS5 speed
+measurement. The original constant-codebook sweep64762 also completes all24
+shapes/960 positive dispatches, exact canaries and positive resource retirement.
+Its immutable original shader snapshot is distinct from current source's new
+buffer descriptor branch. Both variants total48 shapes/1920 dispatches; neither
+completed scope is resubmitted.
+
+## Cached layer runs and bounded continuation opportunity, 2026-11-03
+
+Replay64773 starts from the pinned base planner and explicitly applies the
+selected indexed probation/protection updates. All three actual native3712-slot
+cache hit/miss counters match. This does not reconstruct the complete selected
+provider source/object. Cold/retained/prefix decode has895/1056,821/1056 and
+688/768 all-hit layer positions. None of60 decode processes hits all48 layers,
+but maximum initial cached prefixes are37/24/40 layers. Fixed windows therefore
+remain an opportunity; the absence of whole48-layer hits does not reject G1.
+
+Screen64774 counts hypothetical fixed-window decisions plus ordinary miss
+resumes. Eight-layer windows produce392/533/234 decisions versus1056/1056/768
+original layer decisions;16-layer windows produce352/499/197. Predicated-off
+dispatch positions also increase. These are coverage/counts, not latency or an
+implemented GPU continuation. Cache/rank/normalization/state writes, exact miss
+resume and the real GPU-generated indirect argument path remain unqualified.
+The [complete replay/screen](gpu-cached-run-screen-20261103.json) preserves this
+limit. The selected RADV GPU-address indirect implementation remains the source;
+the old CPU-reading ps5vk control is not an applicable rejection.
+
+## CPU-only Direct staging resource experiment, 2026-11-03
+
+Host64778 exercises the actual receiver control flow against14 returned fault
+cases, including fragmented header/body, wrong peer/nonce/size, truncated or
+corrupted data, short writes, failed sync/readback/close and a short ACK. The
+host replaces only system declarations and PE static-alignment storage; its
+actual test window remains16384-byte aligned. No OS transport/file object is
+created by those controls. Native64779 then copies only the selected21927687-byte
+SELF as opaque data into one fresh, nonce-bound temporary file using O_DIRECT,
+a16KiB window and32KiB requested socket receive buffer. Stream SHA and independent
+whole native Direct readback SHA match. The helper exits positively, its exact
+temporary file is removed, and all seven current files remain exact. No title,
+model, GPU, initializer or publication operation is submitted.
+
+Free pages are5808 before and5800 after. This qualifies bounded native delivery,
+not RAM recovery, an inference gain or model-launch admission. The existing
+SELF uploader already avoids full HTTP payload readback; the new experiment
+addresses buffered FTP writes. Recent successful native startup64694 samples
+as low as1292 free pages during the SELF read, so removing a staging buffer alone
+is not a proven basis to lower the7374 model screen at5800. All original native
+physical/completion guards and production947 remain selected. The native MTP
+and model integration checks above have not been declared failed or completed
+from this resource limitation.
+
+The remaining17 obsolete0600 driver logs total1161178 bytes. CPU-only
+exporter64783 is now host-compiled with a16KiB Direct window and448-byte hex
+rows fitting the actual1024-byte journal formatter. Its imports include no
+GPU, launch, initialization, permission-change or source-deletion API. The
+prepared artifact is unsubmitted: automatic approval review requires explicit
+authorization naming the private payload and PC destination before export.
+That authorization has been requested. Neither original log permissions nor
+contents are changed, and the logs remain on the console. Prepared64782 is
+superseded before launch. The new builder freezes each controller source beside
+its exact object, preserving future source provenance independently of edits.

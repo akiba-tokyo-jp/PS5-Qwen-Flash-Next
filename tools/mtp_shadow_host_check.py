@@ -55,3 +55,17 @@ def require_online_profile(profile):
     need(native['completed'] and native['accepted']==native['rejected']==1 and native['queued_bonus_without_new_process'] and
          native['compact_rejection_first_hidden_retained'] and native['full_target_tokens_and_output_bytes_exact'] and
          native['native_owners']==0,'Actual target acceptance, rejection and hidden retention must precede online MTP')
+    if profile['overrides']['native_headless_model_audit'].get('single_native_completion'):
+        receipt=profile['single_native_completion_contract'];need(record(receipt['path'])==receipt,'Positive completion provider proof changed')
+        proof=load(receipt['path'])
+        need(proof['completed'] and proof['selected_object_byte_exact'] and proof['complete_and_checkpoint_use_same_positive_boundary'] and
+             proof['mandatory_device_worker_owner_journal_checks_preserved'] and record(proof['actual_provider']['path'])==proof['actual_provider'],
+             'The exact selected mandatory completion must retain the full positive boundary')
+    scope=profile['overrides']['native_headless_model_audit']
+    if scope.get('three_ordinary_requests'):
+        need(scope['requests']==profile['headless_requests']==3 and scope.get('exact_prefix_restore_and_existing_model_free_sharing_in_this_scope') is False and
+             scope['maximum_target_verifications']==18 and scope['maximum_auxiliary_steps']==96 and
+             scope['maximum_target_verifications_per_request']==6 and scope['maximum_auxiliary_steps_per_request']==32 and
+             check.get('model_bound_three_request_owner_reuse_passed') and check.get('different_model_and_fourth_request_refused') and
+             check.get('unknown_completion_retains_exact_owned_input_and_auxiliary'),
+             'Finite ordinary three-request reuse, failure retention and separate exact-prefix scope required')

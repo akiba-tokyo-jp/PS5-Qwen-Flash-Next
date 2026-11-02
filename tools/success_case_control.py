@@ -33,7 +33,7 @@ def digest_expression(row,path=None):
     return 'qwen_launch_digest_matches('+json.dumps(path or row['remote'])+','+str(row['bytes'])+'ULL,'+json.dumps(row['sha256'])+')'
 
 
-def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None):
+def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None,direct_stage_context=None,closed_log_export_context=None):
     workspace=Path(workspace);out=Path(out);out.mkdir(parents=True,exist_ok=False)
     base_plan=load(mount_plan);base=base_plan['controller'];need(record(base['path'])==base,'Successful controller input changed')
     text=Path(base['path']).read_text();prefix='/data/ai/moss-qwen-case-'+secrets.token_hex(16)
@@ -58,7 +58,9 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
 '''
     text+='static int old_files_valid(void){return '+'&&'.join(digest_expression(r) for r in old_files)+';}\n'
     text+='static int pending_valid(void){return '+('&&'.join(digest_expression(r) for r in pending) or '0')+';}\n'
-    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14,'inspect-descriptors':15,'observe-direct':16};need(operation in numbers,'One known operation required')
+    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14,'inspect-descriptors':15,'observe-direct':16,'receive-direct-stage':17,'export-closed-logs':18};need(operation in numbers,'One known operation required')
+    if operation in ('receive-direct-stage','export-closed-logs'):
+        text=text.replace('#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u','#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 37u',1)
     if operation!='restore-bundle':
         text=text.replace('#include "launch_integrity_native.h"','#define QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS 1\n#include "launch_integrity_native.h"',1)
     need(len(old_files)==len(new_files)==7 and all(r['remote'].startswith(PHYSICAL+'/') for r in old_files+new_files),
@@ -81,6 +83,12 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
     if operation=='retire-completed-images':
         need(isinstance(completed_images_context,str) and completed_images_context,'Two exact independently copied images from one closed case required')
         context+=completed_images_context+'\n'
+    if operation=='receive-direct-stage':
+        need(isinstance(direct_stage_context,str) and direct_stage_context,'One exact bounded Direct staging protocol required')
+        context+=direct_stage_context+'\n#include "direct_stage_receive.h"\n'
+    if operation=='export-closed-logs':
+        need(isinstance(closed_log_export_context,str) and closed_log_export_context,'Exact obsolete closed-log read-only scope required')
+        context+=closed_log_export_context+'\n#include "closed_log_export.h"\n'
     if operation=='restore-bundle':
         need(bundle_link and bundle_link['CPU_only'] is True and bundle_link['source_writes']==0 and
              bundle_link['GPU_calls']==0 and bundle_link['Direct_CPU_bytes'] in (4<<20,8<<20),'Bounded successful CPU packer required')
@@ -146,7 +154,8 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         context+='static int case_CPU_close_proof(void){return '+ '&&'.join(digest_expression(r) for r in close['reports'])+';}\n'
     controller=out/'controller.c';controller.write_text(text,encoding='utf-8',newline='\n')
     (out/'case_context.h').write_text(context,encoding='utf-8',newline='\n')
-    source=ROOT/'native/qwen_flash_next/successful_case_control.c';obj=out/'control.o';artifact=out/'control.elf'
+    project_source=ROOT/'native/qwen_flash_next/successful_case_control.c';source=out/'case_main.private.c'
+    source.write_bytes(project_source.read_bytes());obj=out/'control.o';artifact=out/'control.elf'
     tools=workspace/'toolchain/fast/llvm-mingw-20261006-ucrt-x86_64/bin';sdk=workspace/'toolchain/ps5-payload-sdk'
     old=Path('D:/PS5-AI/archives/c-drive-cleanup-20261019/build/gpu_probe');crt=old/'credential-preserving-crt'
     common=[str(tools/'clang.exe'),'--no-default-config','--target=x86_64-sie-ps5','-isystem',str(sdk/'target/include'),
@@ -172,13 +181,15 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
     need(operation=='launch' or 'sceSystemServiceLaunchApp' not in imports,'Launch API in a non-launch helper')
     need(operation=='close' or 'sceSystemServiceKillApp' not in imports,'Close API in a non-close helper')
     plan=dict(completed=True,operation=operation,artifact=record(artifact),controller=record(controller),
-              context=record(out/'case_context.h'),source=record(source),imports=imports,commands=jobs,
+              context=record(out/'case_context.h'),source=record(source),project_source=record(project_source),imports=imports,commands=jobs,
               original_mount_plan=record(mount_plan),old_files=old_files,new_files=new_files,pending=pending,
               close_admission=close,bundle_link=bundle_link,remote=prefix+'.elf',log=prefix+'.log',claim=prefix+'-'+operation+'.once',
               initializer_requests=0,mount_calls=0,GPU_calls=0,automatic_retries=0,
               maximum_complete_process_rows=128,whole_integrity_window_bytes=16384,
-              CPU_metadata_margin_pages=21,OS_minimum_and_reserved_read_only=True)
+              CPU_metadata_margin_pages=37 if operation in ('receive-direct-stage','export-closed-logs') else 21,OS_minimum_and_reserved_read_only=True)
     plan['CPU_control_independent_thresholds']=operation!='restore-bundle'
+    if operation=='receive-direct-stage':plan['receiver_source']=record(ROOT/'native/qwen_flash_next/direct_stage_receive.h')
+    if operation=='export-closed-logs':plan['exporter_source']=record(ROOT/'native/qwen_flash_next/closed_log_export.h')
     save(out/'plan.private.json',plan);return plan
 
 

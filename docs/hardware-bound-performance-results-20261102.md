@@ -1,5 +1,10 @@
 # Hardware-bound performance host checkpoint
 
+This is the initial host-only snapshot from2026-11-02. It is preserved as
+historical evidence. Subsequent native comparisons, the adopted R1 deployment,
+and open qualifications are in the
+[current campaign results](native-performance-comparisons-20261102.md).
+
 The campaign is **incomplete**. No new optimization has been adopted, and no new
 PS5 speed or model-quality comparison has run. The owner confirms that recovery
 is unavailable and asks for caution. Current production remains source

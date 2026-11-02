@@ -1,0 +1,907 @@
+{
+  "schema": "qwen-prefill-fit-decode-holdout-v1",
+  "date": "2026-11-03",
+  "case": 64772,
+  "original_weight_source": "Original BF16 independently encoded into current Q2 and IQ2",
+  "fit": "Actual evaluation1 prefill operands only",
+  "heldout": "Actual evaluations2 through23 decode operands; never used for fitting",
+  "same_prompt": true,
+  "independent_heldout_prompts": 0,
+  "selection": "Three Experts per role/layer with most, median and least heldout visitation coverage among Experts present in both phases",
+  "heldout_coverage_counts_used_for_selection": true,
+  "heldout_values_and_errors_not_used_for_fitting_or_selection": true,
+  "layers": [
+    0,
+    23,
+    47
+  ],
+  "fit_vectors_per_role": 28,
+  "heldout_vectors_per_role": 33,
+  "eligible_coverage": [
+    {
+      "layer": 0,
+      "role": "up",
+      "Experts_with_both_phases": 11
+    },
+    {
+      "layer": 0,
+      "role": "down",
+      "Experts_with_both_phases": 11
+    },
+    {
+      "layer": 23,
+      "role": "up",
+      "Experts_with_both_phases": 15
+    },
+    {
+      "layer": 23,
+      "role": "down",
+      "Experts_with_both_phases": 15
+    },
+    {
+      "layer": 47,
+      "role": "up",
+      "Experts_with_both_phases": 7
+    },
+    {
+      "layer": 47,
+      "role": "down",
+      "Experts_with_both_phases": 7
+    }
+  ],
+  "matrices": [
+    {
+      "layer": 0,
+      "role": "up",
+      "expert": 356,
+      "fit_input_vectors": 1,
+      "heldout_input_vectors": 7,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_K": {
+          "output_NRMSE": 0.24735270952366967,
+          "maximum_absolute_output_error": 0.28930833867222805,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.3444568399598355,
+          "maximum_absolute_output_error": 0.4003646486022871,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 0,
+      "role": "up",
+      "expert": 436,
+      "fit_input_vectors": 2,
+      "heldout_input_vectors": 3,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_K": {
+          "output_NRMSE": 0.26545513087257594,
+          "maximum_absolute_output_error": 0.294485817048844,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.3581031842355984,
+          "maximum_absolute_output_error": 0.3673655405201134,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 0,
+      "role": "up",
+      "expert": 84,
+      "fit_input_vectors": 2,
+      "heldout_input_vectors": 1,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_K": {
+          "output_NRMSE": 0.261088662884824,
+          "maximum_absolute_output_error": 0.30994841918691884,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.33664429513087146,
+          "maximum_absolute_output_error": 0.32913325796011295,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 0,
+      "role": "down",
+      "expert": 356,
+      "fit_input_vectors": 1,
+      "heldout_input_vectors": 7,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_0": {
+          "output_NRMSE": 0.31188977539189805,
+          "maximum_absolute_output_error": 0.05843027111964588,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.3989200631684794,
+          "maximum_absolute_output_error": 0.10724410939538734,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 0,
+      "role": "down",
+      "expert": 436,
+      "fit_input_vectors": 2,
+      "heldout_input_vectors": 3,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_0": {
+          "output_NRMSE": 0.32065922750211306,
+          "maximum_absolute_output_error": 0.04679739500833809,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.3398978367830981,
+          "maximum_absolute_output_error": 0.04200176733171908,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 0,
+      "role": "down",
+      "expert": 84,
+      "fit_input_vectors": 2,
+      "heldout_input_vectors": 1,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": true,
+      "formats": {
+        "Q2_0": {
+          "output_NRMSE": 0.3166667397629844,
+          "maximum_absolute_output_error": 0.05839593399667803,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.2834217417780709,
+          "maximum_absolute_output_error": 0.05099600997600781,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 23,
+      "role": "up",
+      "expert": 62,
+      "fit_input_vectors": 14,
+      "heldout_input_vectors": 10,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_K": {
+          "output_NRMSE": 0.29284397551574654,
+          "maximum_absolute_output_error": 0.5794715964606681,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.3311876165704034,
+          "maximum_absolute_output_error": 0.7807603939040266,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 23,
+      "role": "up",
+      "expert": 389,
+      "fit_input_vectors": 1,
+      "heldout_input_vectors": 1,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_K": {
+          "output_NRMSE": 0.2932230012233026,
+          "maximum_absolute_output_error": 0.524792585928012,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.47106560662514646,
+          "maximum_absolute_output_error": 0.8594688975162312,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 23,
+      "role": "up",
+      "expert": 120,
+      "fit_input_vectors": 4,
+      "heldout_input_vectors": 1,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_K": {
+          "output_NRMSE": 0.3228551872339102,
+          "maximum_absolute_output_error": 0.5597724590191331,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.3531703576173237,
+          "maximum_absolute_output_error": 0.6343270152916495,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 23,
+      "role": "down",
+      "expert": 62,
+      "fit_input_vectors": 14,
+      "heldout_input_vectors": 10,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": true,
+      "formats": {
+        "Q2_0": {
+          "output_NRMSE": 0.3513667272571332,
+          "maximum_absolute_output_error": 0.0825867685488314,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.2931559912197066,
+          "maximum_absolute_output_error": 0.06646916882135964,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 23,
+      "role": "down",
+      "expert": 389,
+      "fit_input_vectors": 1,
+      "heldout_input_vectors": 1,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_0": {
+          "output_NRMSE": 0.35002322228433547,
+          "maximum_absolute_output_error": 0.061228546296076436,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.5135453714835246,
+          "maximum_absolute_output_error": 0.07871530588351972,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 23,
+      "role": "down",
+      "expert": 120,
+      "fit_input_vectors": 4,
+      "heldout_input_vectors": 1,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_0": {
+          "output_NRMSE": 0.34446725559763713,
+          "maximum_absolute_output_error": 0.058017124074312865,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.3605005757454888,
+          "maximum_absolute_output_error": 0.06554474890251394,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 47,
+      "role": "up",
+      "expert": 467,
+      "fit_input_vectors": 2,
+      "heldout_input_vectors": 7,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_K": {
+          "output_NRMSE": 0.22298736633952088,
+          "maximum_absolute_output_error": 1.0592755503173905,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.2874174437133039,
+          "maximum_absolute_output_error": 1.199313906768144,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 47,
+      "role": "up",
+      "expert": 416,
+      "fit_input_vectors": 1,
+      "heldout_input_vectors": 2,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_K": {
+          "output_NRMSE": 0.220285098054327,
+          "maximum_absolute_output_error": 0.911457674897258,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.3314619433494271,
+          "maximum_absolute_output_error": 1.6264153110394162,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 47,
+      "role": "up",
+      "expert": 127,
+      "fit_input_vectors": 1,
+      "heldout_input_vectors": 1,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_K": {
+          "output_NRMSE": 0.1553955832708915,
+          "maximum_absolute_output_error": 0.6612891114326165,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.2386977205761549,
+          "maximum_absolute_output_error": 1.1266960184287989,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 47,
+      "role": "down",
+      "expert": 467,
+      "fit_input_vectors": 2,
+      "heldout_input_vectors": 7,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_0": {
+          "output_NRMSE": 0.3468958528342108,
+          "maximum_absolute_output_error": 0.24888440856484717,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.40342896619526314,
+          "maximum_absolute_output_error": 0.26349541288999234,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 47,
+      "role": "down",
+      "expert": 416,
+      "fit_input_vectors": 1,
+      "heldout_input_vectors": 2,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_0": {
+          "output_NRMSE": 0.37020165166697067,
+          "maximum_absolute_output_error": 0.2708811704987705,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.4705673229140628,
+          "maximum_absolute_output_error": 0.2232063999256651,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    },
+    {
+      "layer": 47,
+      "role": "down",
+      "expert": 127,
+      "fit_input_vectors": 1,
+      "heldout_input_vectors": 1,
+      "fit_evaluations": [
+        1
+      ],
+      "heldout_evaluations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "IQ2_heldout_output_NRMSE_lower": false,
+      "formats": {
+        "Q2_0": {
+          "output_NRMSE": 0.3943008859016075,
+          "maximum_absolute_output_error": 0.1652435281800188,
+          "all_C_and_Python_F32_bytes_exact": true
+        },
+        "IQ2_XXS": {
+          "output_NRMSE": 0.4966224393457423,
+          "maximum_absolute_output_error": 0.22863038930503923,
+          "all_C_and_Python_F32_bytes_exact": true
+        }
+      }
+    }
+  ],
+  "Up_IQ2_lower_NRMSE": 0,
+  "Down_IQ2_lower_NRMSE": 2,
+  "full_model_inference": false,
+  "broader_answer_quality_qualified": false,
+  "GPU_speed_qualified": false,
+  "production_adopted": false,
+  "PS5_operations": 0
+}
