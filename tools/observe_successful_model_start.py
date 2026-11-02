@@ -7,7 +7,8 @@ from pathlib import Path
 import urllib.error
 import urllib.parse
 
-from start_success_route import load,need
+from build_performance_quantizer import record
+from start_success_route import load,need,save
 from success_case_control import lan_module,PHYSICAL
 
 
@@ -33,6 +34,20 @@ def main():
             raw=get(remote+'.'+suffix)
             if raw is not None:
                 immutable('native.'+suffix+'.private.json',raw);state[suffix]=json.loads(raw)
+        if 'failure' not in state and 'fatal' not in state:
+            with lan.OPENER.open('http://'+lan.HOST+':8084/processes_list',timeout=8) as response:
+                owners=[r for r in json.loads(response.read())['processes'] if r['name']=='eboot.bin']
+            if len(owners)==1:
+                pid=int(owners[0]['pid']);boot=load(case['model_proof']['path'])['current_boot']
+                path=PHYSICAL+'/qwen-runtime/entry-b'+str(boot[0])+'-'+str(boot[1])+'-'+str(pid)+'.stages'
+                raw=get(path,8<<20)
+                if raw and raw.endswith(b'fatal_operation=main_SELF_Direct_integrity_returned_refusal\n'):
+                    target=out/'early-boot-stages.private.log';target.write_bytes(raw)
+                    observed=out/'host-early-self-refusal.private.json'
+                    if not observed.exists():save(observed,dict(schema='ps5-qwen-host-observed-early-self-refusal-v1',
+                        case_plan=record(args.case_plan),pid=pid,boot=boot,journal=dict(record(target),remote=path),
+                        native_failure_JSON_present=False,source_audit_and_ordinary_close_still_required=True))
+                    raise RuntimeError('Observed returned early SELF refusal; stop without replay and audit ordinary CPU close')
         print(json.dumps(state));return
     first=json.loads(first_raw);pid=first['pid']
     need(first['run_id']==case['run_id'] and first['candidate_SELF_sha256']==case['SELF']['sha256'],

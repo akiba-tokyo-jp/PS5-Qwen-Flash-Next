@@ -1,10 +1,10 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
-  "date": "2026-11-01",
-  "application_source_revision": "2b683814c9b6ed18c13352963c0a989f9e4d0b15",
+  "date": "2026-11-02",
+  "application_source_revision": "9601f9048dc943cf28705f3e8ec784d8d91ca54a",
   "application_SELF": {
-    "bytes": 21921847,
-    "sha256": "56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126"
+    "bytes": 21925463,
+    "sha256": "a786b8adfe2fe0bbfb196fe696f644024bb3d090734f97a5533a6d6845ee415e"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
@@ -53,8 +53,8 @@
       "total_ms": 1835.6631880002096
     }
   ],
-  "normal_application_case": 59400,
-  "production_placement_case": 59800,
+  "normal_application_case": 64131,
+  "production_placement_case": 64181,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -561,7 +561,7 @@
     "GPU_timestamp_diagnostics_enabled": false,
     "service_overhead_mode": 69,
     "token_record_format": "bounded_per_request_JSONL",
-    "per_token_fsync_preserved": true,
+    "per_token_fsync_preserved": false,
     "HC_prefill_no_split": false,
     "HC_prefill_split_two": false,
     "Q4_small_rows_large_workgroup": false,
@@ -576,7 +576,10 @@
     "GDN_common_input_Q4_join": false,
     "empty_retirement_certificate": true,
     "proven_WAR_execution_only": false,
-    "pending_unpublished_writes_preserved": true
+    "pending_unpublished_writes_preserved": true,
+    "token_record_sync_policy": "request_end",
+    "completed_token_ledger_synced_before_request_result": true,
+    "interrupted_request_may_lose_unsynced_tail": true
   },
   "normal_counting_quality_by_request": [
     true,
@@ -603,24 +606,53 @@
   "obsolete_backups_remaining": 0,
   "current_program_copies": 1,
   "current_settings": 5,
-  "final_native_verification_case": 59860,
+  "final_native_verification_case": 64181,
   "previous_production_backup_on_console": false,
   "previous_production_archive_on_host": false,
   "historical_retention_report": "docs/SSD-cleanup-20261101.json",
   "maintenance_date": "2026-11-02",
-  "current_validation_status": "failed_closed_by_owner",
-  "current_validation_continuation_allowed": false,
-  "current_validation_report": "docs/current-validation-closure-20261102.json",
+  "current_validation_status": "R1-native-ABBA-and-full-F32-qualified-adopted",
+  "current_validation_continuation_allowed": true,
+  "current_validation_report": "docs/native-performance-comparisons-20261102.md",
   "PC_package": "D:/PS5-AI/qwen-flash-next/current",
   "host_retention": "current-only",
   "old_host_rollback_archives_retained": false,
-  "current_boot_inference_qualified": false,
-  "current_boot_readmission_required": true,
-  "current_boot_compatibility_runtime_loaded": false,
+  "current_boot_inference_qualified": true,
+  "current_boot_readmission_required": false,
+  "current_boot_compatibility_runtime_loaded": true,
   "current_file_maintenance": {
     "completed": true,
     "program_and_settings_full_raw_SHA256_verified": 6,
     "shader_storage_full_raw_SHA256_verified": true,
     "native_inference_admission_implied": false
+  },
+  "previous_application_before_R1": {
+    "application_source_revision": "2b683814c9b6ed18c13352963c0a989f9e4d0b15",
+    "application_SELF": {
+      "bytes": 21921847,
+      "sha256": "56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126"
+    },
+    "normal_application_case": 59400,
+    "production_placement_case": 59800,
+    "current_validation_status": "failed_closed_by_owner"
+  },
+  "R1_adoption": {
+    "native_ABBA_cases": [
+      64130,
+      64131,
+      64132,
+      64133
+    ],
+    "matched_requests": 12,
+    "retained_complete_request_reduction_percent": 1.223742698062602,
+    "prefix_complete_request_reduction_percent": 1.6438812708000072,
+    "final_fsync_and_close_included": true,
+    "cold_gain_established": false,
+    "whole_F32_rows_compared": 69,
+    "vocabulary_columns": 248320,
+    "whole_F32_SHA256_routes_and_tokens_exact": true,
+    "canonical_relink_and_SELF_byte_exact": true,
+    "source_guards_model_and_driver_unchanged": true,
+    "all_other_campaign_candidates_complete": false
   }
 }

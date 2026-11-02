@@ -12,8 +12,8 @@ The new hardware-bound performance campaign is active. The owner-authorized
 successful startup route now positively completes current-model inference on
 this boot, with ordinary closure and exact selected-file restoration. Read the
 [latest native comparisons](docs/native-performance-comparisons-20261102.md).
-R1 has measured warm complete-request gains; its formal direct implementation
-is being qualified. P1's measured profile is not adopted. G1's observational
+R1 is adopted after complete-request ABBA gains and exact whole-vocabulary F32
+comparison. P1's measured profile is not adopted. G1's observational
 state qualification passes; GPU numerics/speed and other candidates remain.
 The single runtime initialization is consumed and must not be repeated.
 
@@ -23,14 +23,18 @@ campaign is adopted and no remaining validation is queued. See the
 [closure and current-only cleanup record](docs/current-validation-closure-20261102.md).
 
 The selected current application is the scheduler-owned-map program:
-SELF `56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126`,
-application source `2b683814c9b6ed18c13352963c0a989f9e4d0b15`.
+SELF `a786b8adfe2fe0bbfb196fe696f644024bb3d090734f97a5533a6d6845ee415e`,
+application source overlay `9601f9048dc943cf28705f3e8ec784d8d91ca54a` over
+the retained base `2b683814c9b6ed18c13352963c0a989f9e4d0b15`.
 The PC package is `D:/PS5-AI/qwen-flash-next/current`; PS5 retains this same
 program, five settings and required model/startup assets. Historical trial
 files and older deployed programs are retired. Driver872cc126/cumulative-idle
 and disabled persistent caches remain. Current-boot inference succeeds with
 the explicitly repaired dependency identities. The original56c deployment
-remains selected pending formal adoption; it is not evidence of a speed gain.
+is replaced by the qualified R1 application on both PC and PS5. Completed token
+ledgers synchronize before the request result; an interrupted request can lose
+its unsynced ledger tail. Retained/prefix complete spans improve1.22%/1.64% in
+the matched fixed workload, including final sync and close; no cold gain is claimed.
 
 ### Historical throughput control
 

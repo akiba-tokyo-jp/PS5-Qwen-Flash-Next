@@ -33,7 +33,7 @@ def digest_expression(row,path=None):
     return 'qwen_launch_digest_matches('+json.dumps(path or row['remote'])+','+str(row['bytes'])+'ULL,'+json.dumps(row['sha256'])+')'
 
 
-def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None):
+def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None):
     workspace=Path(workspace);out=Path(out);out.mkdir(parents=True,exist_ok=False)
     base_plan=load(mount_plan);base=base_plan['controller'];need(record(base['path'])==base,'Successful controller input changed')
     text=Path(base['path']).read_text();prefix='/data/ai/moss-qwen-case-'+secrets.token_hex(16)
@@ -58,7 +58,7 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
 '''
     text+='static int old_files_valid(void){return '+'&&'.join(digest_expression(r) for r in old_files)+';}\n'
     text+='static int pending_valid(void){return '+('&&'.join(digest_expression(r) for r in pending) or '0')+';}\n'
-    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9};need(operation in numbers,'One known operation required')
+    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10};need(operation in numbers,'One known operation required')
     if operation!='restore-bundle':
         text=text.replace('#include "launch_integrity_native.h"','#define QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS 1\n#include "launch_integrity_native.h"',1)
     need(len(old_files)==len(new_files)==7 and all(r['remote'].startswith(PHYSICAL+'/') for r in old_files+new_files),
@@ -66,6 +66,9 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
     if operation=='publish':need(len(pending)==3,'One SELF and two startup files are required')
     context='#define CASE_OPERATION '+str(numbers[operation])+'\n#define CASE_ARGUMENT '+json.dumps('--'+operation)+'\n#define CASE_LOG '+json.dumps(prefix+'.log')+'\n'
     context+='int sceSystemServiceKillApp(int,int,int,int);\n'
+    if operation=='seal-shared-Q4':
+        need(isinstance(source_seal_context,str) and source_seal_context,'Exact new-only source seal context required')
+        context+=source_seal_context+'\n#include "shared_q4_publication.h"\n'
     if operation=='finalize-bundle':
         need(isinstance(finalize_context,str) and finalize_context,'Exact completed native CPU output context required')
         context+=finalize_context+'\n#include "required_bundle_finalize.h"\n'

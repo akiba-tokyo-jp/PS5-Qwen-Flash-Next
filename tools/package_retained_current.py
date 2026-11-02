@@ -29,7 +29,9 @@ def main():
     if args.identity_provider:
         from native_dispatch import ELF
         provider=load(args.identity_provider)
-        if not provider['completed'] or provider['executable_bytes'] or provider['artifact'] not in relink['new_inputs']:
+        linked_inputs=relink['new_inputs']+relink.get('inputs',[])
+        same_provider=any(all(row[k]==provider['artifact'][k] for k in ('bytes','sha256')) for row in linked_inputs)
+        if not provider['completed'] or provider['executable_bytes'] or not same_provider:
             raise ValueError('Exact data-only identity provider must be part of the actual relink')
         if record(provider['artifact']['path'])!=provider['artifact']:raise ValueError('Identity provider changed')
         linked=ELF(image)
@@ -58,7 +60,7 @@ def main():
     mapping={r['original_path']:r for r in retained}
     stubs=args.out/'stubs';stubs.mkdir();imports=[]
     used_CPU_stubs={r['sha256'] for r in relink.get('inputs_before',[]) if r['path'].endswith('.so')}
-    for row in prior['inputs_before']:
+    for row in prior.get('formatter_stubs',prior['inputs_before']):
         if row['path'].endswith('.so') and not Path(row['path']).name.endswith('_stub_weak.so'):
             if relink.get('CPU_only') and row['sha256'] not in used_CPU_stubs:continue
             existing=mapping.get(row['path'],row);checked=record(existing['path'])

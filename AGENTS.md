@@ -5,13 +5,33 @@ Keep conversation in the owner's preferred language.
 
 ### Latest native comparison checkpoint — 2026-11-02
 
+R1 is now adopted on PC and PS5: SELFa786b8adfe2fe0bbfb196fe696f644024bb3d090734f97a5533a6d6845ee415e,
+21925463 bytes. Direct ABBA64130–64133 completes12 requests, with complete
+warm gains1.223743%/1.643881% including final fsync/close. Numerical64150/64151
+matches all69 whole248320-column F32 rows, routes and tokens exactly. Placement
+64181 natively hashes all seven files in both namespaces; canonical93-input
+ELF64182 and SELF64184 are byte-exact. The original56c application is superseded.
+The current native receipt has a logical retained_link_command in addition to
+the actual link command, plus seven formatter_stubs kept separately from the
+93 compiler/linker/source inputs. Use these current interfaces for new builds.
+R1 request-end sync is explicit; interruption can lose the unsynced ledger tail.
+
+G1 GPU launch64152 is a consumed pre-main CPU SELF-read refusal, not a GPU
+execution. Its single synchronous1MiB read returns; free828 is below its919-page
+application policy. Exact source audit and ordinary OS close64154 positively
+retire the owner/owned backing and restore all seven files. Do not retry that
+unchanged SELF. A new64KiB-window scope keeps min+21 and all model/GPU guards.
+Q1 new-layer publication64167 positively seals53 new files and all518 parent
+identities/snapshots, then retires/removes its helper. Those new active candidate
+assets must survive until Q1 disposition; no Q1 model inference has run yet.
+
 Read `docs/native-performance-comparisons-20261102.md` before using older
 pending/absent-runtime wording. Runtime63121 and mount63133 remain admitted;
 the initialization allowance is consumed. Normal inference and repeated
 ordinary model/source/device retirement and exact seven-file restore succeed.
 R1 prototype ABBA63970–63973 has measured complete warm-request benefits,
 including final fsync/close. Its inherited policy metadata is not suitable for
-adoption; truthful direct-entry R1 ABBA64130–64133 is in progress. P1's latest
+adoption; truthful direct-entry R1 ABBA64130–64133 and adoption are recorded above. P1's latest
 ABBA64030–64033 has no consistent retained whole gain and worsens prefix time;
 do not adopt that measured profile. G1 original-arithmetic shadow64110 passes
 all three requests/actual ranking rows and ordinary restoration; actual GPU

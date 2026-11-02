@@ -5,12 +5,14 @@ model inference and ordinary closure are now positively observed on this boot.
 The one authorized runtime initialization63121 is consumed; it is not repeated.
 The existing mount63133 remains. Reboot and recovery are unavailable.
 
-The selected deployment is still SELF56c29e9c. Matched native comparisons use
+The selected deployment is now R1 SELFa786b8ad, installed on both PC and PS5
+through positive seven-file publication64181. Matched native comparisons use
 the same three restored encoded inputs and authenticated identity-data provider
 63800. Every finished case releases model/source/device owners, reaches zero
 live device bytes, ordinarily closes and restores/natively hashes all seven
 selected files. Driver872cc126/cumulative-idle and disabled persistent caches
-remain unchanged. No result below adopts an optimization by itself.
+remain unchanged. R1 is adopted after the combined native proofs below; the
+other candidates retain their stated limits.
 
 ## R1: completed token-ledger durability
 
@@ -39,7 +41,33 @@ It is not adopted with that misleading contract. A direct source implementation
 replaces the actual entry provider, reports per_token/request_end truthfully,
 counts actual synchronizations and records an explicit post-close full span.
 Direct paired entry build64122 and SELF64125/64126 pass host/target compilation,
-identity and SELF roundtrip checks. Native direct ABBA64130–64133 is pending.
+identity and SELF roundtrip checks. Native direct ABBA64130–64133 completes12
+requests with22/1 actual synchronizations in the control/candidate, exact token
+payloads, ordered routes and source demand, all finite/counting checks and all
+ordinary closes/restorations. Including final fsync and close, retained complete
+spans improve1.223743% and prefix complete spans improve1.643881%. Both paired
+savings exceed the respective control spreads. Cold time has no consistent gain.
+
+| Direct implementation | Control complete span ms | Candidate complete span ms |
+| --- | --- | --- |
+| Retained weights | 2269.050472, 2259.010295 | 2227.097220, 2245.551734 |
+| Exact prefix | 1781.023799, 1789.431321 | 1756.513923, 1755.247154 |
+
+Separate numerical scopes64150/64151 each complete all three conditions. All69
+F32 rows,248320 columns per row, have identical whole-row SHA256 across programs:
+68536320 bytes per case. Ordered routes, tokens/output bytes, counting/finite
+checks and ordinary closes/restorations also pass. These instrumented times
+are excluded from performance qualification; other boundary states remain
+unqualified.
+
+Adoption64181 reproduces the complete qualified entry.o and native ELF from
+canonical source/header views byte-for-byte, then positively publishes and
+hashes all seven selected files in both console namespaces. Both PC and PS5
+select SELFa786b8ad,21925463 bytes, with truthful v2 durability metadata. Its93
+retained inputs reproduce the full ELF again in64182 and the exact selected
+SELF in64184, with all six normalized segments and restored identities checked.
+Seven exact formatter import stubs are retained separately from linker inputs.
+Native/gateway/model owners are idle; no new title launch is needed for placement.
 Request-end durability can lose the unsynced ledger tail if interrupted; a
 completed request must synchronize and close before publishing its result.
 
@@ -78,13 +106,26 @@ requests pass. Completed per-request counts are1056/1056/2112 rows, including
 two-row speculative verification; shadow, geometry and variant failures are
 zero. It completes both frames, positive retirement, ordinary close and exact
 seven-file restoration. This qualifies the observed state/geometry, not GPU
-numerics or speed. The GPU path has not yet been executed.
+numerics or speed.
 
 A qualification-only observer hashes each existing248320-column F32 CPU row
 after the original observer. It adds no GPU download, full-row copy or retained
 row buffer. Independent host SHA256, callback forwarding/clear and diagnostic
-geometry controls pass. Native matched full-row qualification remains pending;
-its instrumented timings must not be used for speed claims.
+geometry controls pass. The R1 matched full-row qualification passes as above;
+G1 GPU rows remain unqualified. Its instrumented timings must not be used for
+speed claims.
+
+G1 numerical launch64152 stops before main/configuration/model/GPU entry. Its
+first synchronous1MiB Direct SELF read returns, then the original CPU scope
+samples828 free pages against its minimum898+21 policy and returns a known
+refusal. The exact6066-byte current C reader is reconstructed and hash-matched;
+no asynchronous reader or model probe has started. Ordinary close64154 retires
+the exact owner and restores/natively hashes all seven selected files. The1MiB
+application allocation remains owned until that ordinary OS close; no pre-close
+unmap/release is claimed. There is no unchanged launch retry or initializer.
+This is a startup-pressure result, not a GPU numerical or speed result.
+A separately compiled64KiB SELF window preserves minimum+21, full whole-SHA/
+inode/EOF binding and all model/GPU guards; its new native scope is pending.
 
 ## Reproducible current source
 
@@ -99,6 +140,16 @@ the original model, source guards, memory policy or driver.
 Each new native case refreshes the application-local clock calibration before
 publication. A known stale-clock refusal63920 ordinarily closes without GPU or
 model initialization; it is not replayed. No system clock is written.
+
+Q1 regenerates all144 original-BF16 encodings with independent encoder equality
+and independent prefix/extent checks. A new layer preserves the current109 Q4
+matrices and composes144 shared Q4 matrices:253 in total. New-only publication
+64167 verifies all53 new files' complete physical/mounted SHA256 and EOF, all518
+unchanged parent identities and stable directory snapshots, with positive helper
+retirement/removal. The first host collector's1MiB journal limit is exceeded;
+the same positive journal is collected with a larger bound, without resubmission.
+No old weight pack is copied or changed; no model or GPU is launched. The new
+layer's native model-source integration, quality and speed remain pending.
 
 Q1/Q2/Q3/I1/S1 retain the outstanding work in the
 [campaign plan](hardware-bound-performance-plan-20261102.md). In particular,

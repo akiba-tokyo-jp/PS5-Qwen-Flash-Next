@@ -36,6 +36,8 @@ def publish(lan,rows,plan,out):
 
 
 def start(args):
+    if not args.package and (args.current/'provenance/current-package.private.json').is_file():
+        args.package=args.current/'provenance/current-package.private.json'
     args.out.mkdir(parents=True,exist_ok=False)
     old=current_files(args.current);proof=load(args.model_proof);state_path=args.current/'active-console.private.json';state=load(state_path)
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and
@@ -64,8 +66,9 @@ def start(args):
     if args.package and package.get('effective_application_policy'):
         effective=package['effective_application_policy'];profile=effective['profile']
         need(record(profile['path'])==profile,'Compiled effective application policy changed')
-        need(effective['kind']=='R1-direct' and set(effective['overrides'])=={'native_next_five_normal'},
-             'Only the explicit compiled token-durability scope is admitted here')
+        keys={'native_next_five_normal'} if effective['kind']=='R1-direct' else {'native_next_five_normal','native_resident_main_SELF'}
+        need(effective['kind'] in ('R1-direct','CPU-SELF-window') and set(effective['overrides'])==keys,
+             'Only an explicitly compiled token-durability or smaller CPU SELF scope is admitted here')
         policy.update(effective['overrides'])
     gate=rebind_directory(policy['native_first_generation_validation'],proof,proof['current_boot'])
     gate.update(run_id=run,candidate_SELF_bytes=image['bytes'],candidate_SELF_sha256=image['sha256'])
@@ -86,6 +89,7 @@ def start(args):
     publication=build(args.workspace,args.mount_plan,old,new,pending,'publish',args.out/'publication')
     launcher=build(args.workspace,args.mount_plan,new,new,[],'launch',args.out/'launch',resident=resident)
     plan=dict(completed=True,run_id=run,SELF=image,old_files=old,new_files=new,pending=pending,report=report,
+        package=record(args.package) if args.package else None,
         model_proof=record(args.model_proof),shader_CPU_proof=shader,clock=record(args.clock),
         required_bundle_inputs=dependency_proof,
         publication=record(args.out/'publication/plan.private.json'),launch=record(args.out/'launch/plan.private.json'),
