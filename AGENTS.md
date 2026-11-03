@@ -3,6 +3,46 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+IMPORTANT65365:source review found a REAL full-cache Down overflow. The cache
+has3713 planes/6083379200 logical scalar weights. Old custom shader callers
+multiply global packed indices by4 or64 into uint32 before plane division.
+That wraps above2^32 even though the physical1710950400 carrier bytes fit.
+Do NOT launch the old65343 F16 package in GPU mode or build a full Down model
+from the old15/17-resource low-index qualifications.65343 remains valid only
+as the CPU startup/capacity control queued in19016; it executes no shader.
+Up uses the original IQ2 resources and its workflow is unaffected.
+
+Index-safe shaders65358 are complete: all17 compile and pass SPIRV validation.
+The decoder splits vec4/64-value block indices BEFORE expansion,retains exact
+original byte loads/precise floating expressions,and adds no64-bit operation.
+Host controls65359 pass24,457,996 cases over all3713 planes,including13,075,116
+negative counterexamples for the old overflowing form. Provider65360,
+fixture65361,SELF65362 and actual linked17-resource/nine-pair audit65365 are
+complete,PC-only. No corrected CPU/GPU scope has run. Down qualification must
+cover ALL12 changed native graphs,not reuse the six old decode graphs:their
+addressing code has changed too. Carrier bytes,Down metadata65348 and prepared
+source publication65355 remain reusable. No source data needs retransmission.
+Do not modify the queued ten tools until19016 retires. New Down integration
+and admission guards must then require the corrected large-cache proof and
+12-graph native result. Keep all native work behind the existing IO owners.
+
+CURRENT SOURCE OWNER65363:the original uploader25865/PID11252 terminated
+after29 positive stores with ConnectionResetError during file30. Its terminal
+output and prefix are preserved in65334/interrupted-transfer.private.json.
+The former functionsg10:1887 monitor has ended; do not wait on or restart it.
+Suffix uploader session58437/out65363 preserves all29 completed files and
+restarts only the exact owned partial file30(119341056 observed bytes),then
+uploads the remaining suffix. It persists each positive reply atomically.
+No whole completed file is resent,no new native scope runs during transfer.
+Reserved host handoff58989/out65364 waits locally for65363/result,submits
+qualified sealer65340 once,and collects quietly after350/180 seconds. Its
+finish_iq2_source_seal.py hash is frozen; do not edit that finalizer while
+pending. Its successful source receipt and owner retirement release existing
+queued Up workflow19016/out65352. Do not start another console IO operation.
+The original Up workflow's ten tool inputs remain frozen. Gate encoding and
+combined full48+48 metadata65351 are COMPLETE,zero PS5 operations/re-encodes.
+The preceding29-file interruption is source placement,not a native/math test.
+
 Checkpoint65356:the controlled held-out source65353 compiles against the
 actual selected PS5 ABI in65356,zero native replays/PS5 calls. It is not a
 quality result or a model launch. Gate has26/48 complete,zero failures at

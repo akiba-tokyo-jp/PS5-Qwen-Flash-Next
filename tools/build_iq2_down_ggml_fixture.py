@@ -27,6 +27,10 @@ def main():
     p.add_argument('--F16-operands',type=Path,help='Only six changed wide FP16-domain cases; reuse six native decode cases')
     a=p.parse_args();base,native,provider=map(load,(a.component_link,a.native_proof,a.provider))
     F16=provider.get('F16_arithmetic_only') is True
+    large=provider.get('large_cache_index_safe') is True
+    need(not large or (F16 and provider.get('changed_decode_addressing') and
+         provider.get('required_new_native_graphs')==12 and not a.completed_GGML_prefix),
+         'All twelve changed graphs are required after correcting the full-cache decoder addressing')
     need(bool(a.F16_operands)==F16,'The F16 provider must have its exact changed operand pack')
     operands=load(a.F16_operands) if F16 else None
     if F16:
@@ -121,6 +125,7 @@ def main():
     header+='static constexpr const char*iq2_original_registry_SHA256='+json.dumps(receipt['registry_sha256'])+';\n'
     header+='static constexpr unsigned iq2_completed_GGML_prefix='+str(completed_prefix)+';\n'
     header+='#define IQ2_DOWN_F16_REFERENCE '+str(int(F16))+'\n'
+    header+='#define IQ2_DOWN_INDEX_SAFE '+str(int(large))+'\n'
     header+='#define IQ2_DOWN_GPU_RESOURCE_TRACE '+str(int(provider.get('GPU_resource_trace') is True))+'\n'
     if provider.get('GPU_resource_trace'):header+='extern "C" void qwen_iq2_down_begin_GPU_resource_trace();\n'
     (a.out/'iq2_down_resource_checks.h').write_text(header,newline='\n')
@@ -187,11 +192,12 @@ def main():
         original_case_geometry=load(operands['GPU_cases']['path']) if F16 else base['original_case_geometry'],
         component=base['component'],software_proof=base['software_proof'],model_resource_provider=record(a.provider),
         GGML_carrier_ABI=True,GGML_operator_linked=True,model_engine_linked=True,model_loads=0,
-        CPU_startup_only_mode=True,driver_code_linked=True,maximum_GPU_dispatches=None,maximum_GGML_graphs=6 if F16 else 12-completed_prefix,
+        CPU_startup_only_mode=True,driver_code_linked=True,maximum_GPU_dispatches=None,maximum_GGML_graphs=12 if large else (6 if F16 else 12-completed_prefix),
         completed_GGML_case_prefix=completed_prefix,
         completed_GGML_prefix_proof=record(a.completed_GGML_prefix) if a.completed_GGML_prefix else None,
         F16_arithmetic_only=F16,F16_operand_reference=record(a.F16_operands) if F16 else None,
-        unchanged_native_decode_cases_reused=6 if F16 else completed_prefix,
+        large_cache_index_safe=large,large_cache_index_proof=provider.get('large_cache_index_proof'),
+        changed_decode_addressing=large,unchanged_native_decode_cases_reused=0 if large else (6 if F16 else completed_prefix),
         CPU_heap_cap=64<<20,device_owner_cap=128<<20,new_post_device_controls=0,retained_device_controls=19,
         retained_idle_device_until_ordinary_close=True,paired_down_carrier=True,
         unchanged_retirement_controls_reused=retained,actual_physical_dispatch_audit=callbacks,
@@ -206,8 +212,8 @@ def main():
     result_path.write_text(json.dumps(result,indent=2)+'\n')
     save(a.out/'result.private.json',dict(completed=True,relink=record(result_path),source=record(source),
         compile_command=command,reused_pack=base['component_pack'] if not F16 else None,
-        new_pack=operands['component_pack'] if F16 else None,new_GPU_graphs=6 if F16 else 12-completed_prefix,PS5_operations=0))
-    print(json.dumps(dict(completed=True,GGML_carrier_ABI=True,new_GPU_graphs=6 if F16 else 12-completed_prefix,PS5_operations=0)))
+        new_pack=operands['component_pack'] if F16 else None,new_GPU_graphs=12 if large else (6 if F16 else 12-completed_prefix),PS5_operations=0))
+    print(json.dumps(dict(completed=True,GGML_carrier_ABI=True,new_GPU_graphs=12 if large else (6 if F16 else 12-completed_prefix),PS5_operations=0)))
 
 
 if __name__=='__main__':main()

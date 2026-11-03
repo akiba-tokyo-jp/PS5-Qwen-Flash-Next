@@ -26,25 +26,42 @@ def main():
     p.add_argument('--generic-software-proof',type=Path)
     p.add_argument('--F16-Up-proof',type=Path)
     p.add_argument('--F16-operands',type=Path)
+    p.add_argument('--large-cache-index-proof',type=Path)
     a=p.parse_args();built,software,lease=load(a.shaders),load(a.software_proof),load(a.lease_proof)
     packed=built.get('packed_half_dequant_refinement') is True
     generic=built.get('generic_indexed_refinement') is True
     F16=built.get('generic_indexed_F16_refinement') is True
+    large=built.get('large_cache_index_safe') is True
+    F16_base=built;F16_base_row=record(a.shaders)
+    if large:
+        need(F16 and a.large_cache_index_proof is not None and a.caller_arrays,
+             'The full-cache index refinement requires exact uint32 domain controls and original startup arrays')
+        index=load(a.large_cache_index_proof);F16_base_row=built['ancestor'];F16_base=load(F16_base_row['path'])
+        need(record(F16_base_row['path'])==F16_base_row and F16_base['generic_indexed_F16_refinement'] and
+             len(F16_base['shaders'])==len(built['shaders'])==17 and index['completed'] and
+             index['shaders']==record(a.shaders) and index['decoder']==built['carrier_decoder'] and
+             index['actual_GLSL_helper_extracted'] and index['independent_uint64_reference'] and
+             index['all3713_planes_checked'] and index['all_physical_addresses_below_2GiB'] and
+             index['cases']>=20000000 and index['old_overflow_negatives']>0 and
+             built['original_float_decoder_expression_preserved'] and
+             all(new['name']==old['name'] and new['recipe']==old['recipe'] and new['previous_artifact']==old['artifact']
+                 for new,old in zip(built['shaders'],F16_base['shaders'])),
+             'All seventeen unchanged recipes and exact large-cache address controls must remain bound')
     if F16:
         from iq2_up_model_scope import require_arithmetic_qualification,require_down_qualification
         need(a.F16_Up_proof is not None and a.F16_operands is not None,
              'The completed F16 storage prerequisite and six changed operand references are required')
         require_arithmetic_qualification(record(a.F16_Up_proof))
-        parent=load(built['ancestor']['path']);native=load(built['native_selection_evidence']['path'])
+        parent=load(F16_base['ancestor']['path']);native=load(built['native_selection_evidence']['path'])
         previous_provider=load(load(native['package']['path'])['relink']['path'])['model_resource_provider']
         require_down_qualification(built['native_selection_evidence'],previous_provider)
-        need(record(built['ancestor']['path'])==built['ancestor'] and parent['generic_indexed_refinement'] and
-             len(parent['shaders'])==15 and built['shaders'][:15]==parent['shaders'] and
-             load(previous_provider['path'])['shaders']==built['ancestor'],
+        need(record(F16_base['ancestor']['path'])==F16_base['ancestor'] and parent['generic_indexed_refinement'] and
+             len(parent['shaders'])==15 and F16_base['shaders'][:15]==parent['shaders'] and
+             load(previous_provider['path'])['shaders']==F16_base['ancestor'],
              'The fifteen unchanged native-qualified F32 resources must remain exact')
         for file in ('mul_mm.comp','mul_mm_funcs.glsl','mul_mm_id_funcs.glsl'):
-            need((Path(built['ancestor']['path']).parent/'shaders'/file).read_bytes()==
-                 (Path(a.shaders).parent/'shaders'/file).read_bytes(),
+            need((Path(F16_base['ancestor']['path']).parent/'shaders'/file).read_bytes()==
+                 (Path(F16_base_row['path']).parent/'shaders'/file).read_bytes(),
                  'F16 specialization may change only generator storage defines, not the qualified source')
         operands=load(a.F16_operands)
         need(operands['completed'] and operands['native_F32_proof']==built['native_selection_evidence'] and
@@ -74,7 +91,7 @@ def main():
              load(built['packed_half_software_proof']['path'])['completed'] and new.keys()==old.keys() and
              all(new[k]==old[k] for k in old if k!='dequant_q2_0'),
              'Only one fully qualified packed-half resource may differ from the twelve immutable resources')
-    software_build=load(built['ancestor']['path'])['ancestor'] if F16 else (built['ancestor'] if generic else record(a.shaders))
+    software_build=load(F16_base['ancestor']['path'])['ancestor'] if F16 else (built['ancestor'] if generic else record(a.shaders))
     need(built['completed'] and (built['all_non_declaration_words_byte_exact'] or packed or generic or F16) and
          software['completed'] and software['build']==software_build and
          software['actual_model_matvec_shaders']==6 and software['shape_cases']==18 and software['F32_input_only'] and
@@ -234,6 +251,8 @@ extern "C" const void*__wrap_qwen_app_prepare_shader_code(const void*storage,std
         generic_indexed_refinement=generic,generic_software_proof=record(a.generic_software_proof) if generic else None,
         F16_arithmetic_only=F16,F16_Up_prerequisite=record(a.F16_Up_proof) if F16 else None,
         F16_operands=record(a.F16_operands) if F16 else None,
+        large_cache_index_safe=large,large_cache_index_proof=record(a.large_cache_index_proof) if large else None,
+        changed_decode_addressing=large,required_new_native_graphs=12 if large else (6 if F16 else None),
         link_flags=['--wrap=qwen_app_prepare_shader_code'],commands=commands,
         required_converted_Down_layers=list(range(48)),all_Q2_0_tensors_must_be_IQ2_carriers=True,
         model_profile_requires_MMVQ_and_F16_disabled=not F16,descriptor_plane_origin_and_cache_view_qualified=False,

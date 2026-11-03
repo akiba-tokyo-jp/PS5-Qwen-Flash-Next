@@ -33,10 +33,23 @@ def main():
          all(record(backup)[k]==old['artifact'][k] for k in ('bytes','sha256')),
          'The old local helper must remain quarantined and never submitted')
     transfer=load(a.transfer_proof);rows=sorted(transfer['rows'],key=lambda r:r['uploaded_file'])
-    need(transfer['complete'] and transfer['exit_code']==1 and transfer['expected_quarantined_helper_error'] and
+    resumed=transfer.get('resumed_after_source_disconnect',False)
+    terminal_ok=transfer['exit_code']==1 and transfer['expected_quarantined_helper_error']
+    if resumed:
+        interrupted=load(transfer['interruption']['path']);prefix=transfer['preserved_positive_files']
+        need(record(transfer['interruption']['path'])==transfer['interruption'] and
+             transfer['publication']==record(a.publication/'plan.private.json') and
+             interrupted['complete'] and interrupted['exit_code']!=0 and
+             'ConnectionResetError' in interrupted['terminal_output'] and
+             interrupted['rows']==rows[:prefix] and 0<prefix<len(rows) and
+             transfer['completed_payload_retransmissions']==transfer['native_submissions']==0 and
+             transfer['interrupted_file_restarts'] in (0,1),
+             'The disconnected original prefix and one uncompleted suffix must remain exact')
+        terminal_ok=transfer['exit_code']==0
+    need(transfer['complete'] and terminal_ok and
          [r['uploaded_file'] for r in rows]==list(range(1,len(publication['files'])+1)) and
          all(r['total']==len(rows) and r['bytes']==f['local']['bytes'] for r,f in zip(rows,publication['files'])),
-         'Every original positive whole-file store and the expected pre-submission host exit are required')
+         'Every positive whole-file store and the exact pre-submission host handoff are required')
     need(plan['old_files']==plan['new_files']==old['old_files']==old['new_files']==current_files(a.current),
          'The selected current seven files must remain exact')
     state_path=a.current/'active-console.private.json';state=load(state_path)
@@ -48,7 +61,9 @@ def main():
         need(not once.exists() and result is None,'Never repeat the native sealing submission')
         save(a.sealer/'transfer-handoff.private.json',dict(completed=True,transfer=record(a.transfer_proof),
             publication=record(a.publication/'plan.private.json'),handoff=record(handoff_path),
-            payload_retransmissions=0,old_native_submissions=0,new_native_submissions=1))
+            payload_retransmissions=0,completed_payload_retransmissions=0,
+            interrupted_file_restarts=transfer.get('interrupted_file_restarts',0),
+            old_native_submissions=0,new_native_submissions=1))
         state['CPU_source_seal_owner']=dict(plan=record(plan_path),publication=str(a.publication),
             GPU_calls=0,title_launches=0,ordinary_helper_completion_pending=True)
         state_path.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')

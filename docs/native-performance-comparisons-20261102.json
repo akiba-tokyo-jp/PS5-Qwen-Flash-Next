@@ -596,7 +596,27 @@
       "actual_binding": 65344,
       "CPU_host_pricing": 65349,
       "native_executed": false,
-      "model_qualified": false
+      "model_qualified": false,
+      "old_six_graph_GPU_plan_superseded_by_large_cache_index_correction": true
+    },
+    "large_cache_index_correction": {
+      "PC_only_Down": true,
+      "all17_corrected_shaders_compiled_and_validated": 65358,
+      "host_index_controls": 65359,
+      "actual_helper_cases": 24457996,
+      "old_overflow_negative_counterexamples": 13075116,
+      "cache_planes": 3713,
+      "logical_scalar_weights": 6083379200,
+      "physical_carrier_bytes": 1710950400,
+      "new_64_bit_shader_operations": false,
+      "provider": 65360,
+      "fixture": 65361,
+      "SELF": 65362,
+      "linked_binding": 65365,
+      "required_new_native_graphs": 12,
+      "unchanged_decode_GPU_results_reused": 0,
+      "corrected_native_CPU_or_GPU_submitted": false,
+      "full_model_speed_or_quality_qualified": false
     }
   },
   "I1": {
@@ -775,7 +795,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "65356",
+  "latest_update": "Full-cache Down index correction prepared; interrupted Up source suffix resumed; full-model IQ2 speed and quality remain unqualified",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -869,16 +889,13 @@
     "latest_failure_classification": 65264
   },
   "current_console_execution": {
-    "scope": "Q2-completed-whole-Up-prefix-publication-65334",
-    "active": true,
-    "host_session": 25865,
-    "title_running": false,
-    "GPU_calls": 0,
-    "original_P1_restored": true,
-    "new_files": 108,
-    "new_bytes": 9323037975,
-    "retained_whole_Up_layers": 1,
-    "source_admission_pending": true
+    "owner": "source suffix65363, then sealer handoff65364, then existing Up workflow65352",
+    "original_FTP_session_25865": "terminated after29 positive stores with ConnectionResetError; no native submission",
+    "active_suffix_session": 58437,
+    "active_handoff_session": 58989,
+    "queued_Up_session": 19016,
+    "completed_file_retransmissions": 0,
+    "independent_console_operation_permitted": false
   },
   "latest_checkpoint_65281": {
     "campaign_complete": false,
@@ -1073,5 +1090,32 @@
     "estimate_includes_Gate_and_Down": true,
     "unchanged_native_benchmark_replays": 0,
     "campaign_complete": false
+  },
+  "latest_checkpoint_65365": {
+    "PC_only_Down": true,
+    "all17_corrected_shaders_compiled_and_validated": 65358,
+    "host_index_controls": 65359,
+    "actual_helper_cases": 24457996,
+    "old_overflow_negative_counterexamples": 13075116,
+    "cache_planes": 3713,
+    "logical_scalar_weights": 6083379200,
+    "physical_carrier_bytes": 1710950400,
+    "new_64_bit_shader_operations": false,
+    "provider": 65360,
+    "fixture": 65361,
+    "SELF": 65362,
+    "linked_binding": 65365,
+    "required_new_native_graphs": 12,
+    "unchanged_decode_GPU_results_reused": 0,
+    "corrected_native_CPU_or_GPU_submitted": false,
+    "Up_original_positive_stores_before_disconnect": 29,
+    "Up_source_suffix": 65363,
+    "Up_partial_file_observed_bytes": 119341056,
+    "completed_payload_retransmissions": 0,
+    "source_seal_handoff": 65364,
+    "reserved_Up_workflow": 65352,
+    "Gate_all48_encoding_complete": true,
+    "Gate_Up_full_metadata": 65351,
+    "full_model_speed_or_quality_qualified": false
   }
 }

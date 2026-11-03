@@ -19,6 +19,37 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Checkpoint65365 supersedes the earlier partial progress below. All Gate
+encoding and uniform48+48 Gate/Up metadata65351 are complete. No full IQ2
+model rate or held-out answer quality is qualified yet.
+
+Source review identified a real full-cache Down addressing overflow:
+3713 planes contain6,083,379,200 scalar weights,although the physical carrier
+is only1,710,950,400 bytes. Expanding global packed indices into uint32 before
+plane division wraps above2^32. The corrected helper divides packed indices
+first,preserves original floating expressions and introduces no64-bit shader
+operation. All17 shader families compile/validate in65358. The extracted
+actual helper matches independent uint64 references in24,457,996 host cases
+across all3713 planes,with13,075,116 negative counterexamples for the old form.
+Corrected provider65360,all12-graph fixture65361,SELF65362 and actual linked
+17-resource/nine-caller-pair binding65365 are prepared. These are PC results.
+All12 changed native graphs now require new qualification,including decode;
+the old six-case F16 GPU plan must not run. Old SELF65343 is retained only
+for the queued CPU startup control. Down carrier bytes and metadata65348
+are unaffected and reused. Model admission guards will require this corrected
+lineage after the frozen Up workflow retires.
+
+The original Up FTP source upload ended with ConnectionResetError after29
+positive whole-file stores,during file30. No native sealing was submitted.
+The exact terminal evidence is retained; completed files are not retransmitted.
+Suffix placement65363 restarts only the owned incomplete file30(observed
+119,341,056 bytes) and uploads the uncompleted suffix. Each positive store is
+recorded durably. Local coordinator65364 then submits qualified source sealer
+65340 once and collects after quiet350/180-second intervals. Full physical
+and alias SHA256/EOF and parent checks remain required. The queued Up
+continuation65352 still owns the following model capacity and original-cohort
+ABBA comparison. No independent PS5 operation overlaps this chain.
+
 Checkpoint65356 compiles the controlled quality source against the selected
 PS5 ABI without linking or running a model. Full Down source plan65355 is
 also prepared on the PC,101 files,zero uploads/native submissions. Gate is

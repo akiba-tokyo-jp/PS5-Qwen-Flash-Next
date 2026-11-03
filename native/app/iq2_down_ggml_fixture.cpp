@@ -16,6 +16,9 @@ static nlohmann::json qwen_paired_down_prepare_CPU();
 #ifndef IQ2_DOWN_F16_REFERENCE
 #define IQ2_DOWN_F16_REFERENCE 0
 #endif
+#ifndef IQ2_DOWN_INDEX_SAFE
+#define IQ2_DOWN_INDEX_SAFE 0
+#endif
 
 static NativeJson qwen_paired_down_prepare_CPU(){
     native_guard(31);qwen_native_stage("IQ2_Down_shader_CPU_admission_before_GPU");
@@ -169,10 +172,11 @@ int qwen_paired_down_component(int argc,char**argv){
         {"GGML_backend_free_calls",0},{"persistent_pipeline_cache",false}};
     result["completed_GGML_case_prefix"]=iq2_completed_GGML_prefix;
     result["F16_storage_FP32_accumulation"]=bool(IQ2_DOWN_F16_REFERENCE);
-    result["reused_decode_cases"]=IQ2_DOWN_F16_REFERENCE?6:0;
+    result["large_cache_index_safe"]=bool(IQ2_DOWN_INDEX_SAFE);
+    result["reused_decode_cases"]=IQ2_DOWN_F16_REFERENCE&&!IQ2_DOWN_INDEX_SAFE?6:0;
     unsigned case_index=0;
     for(const auto&c:cases.at("cases")){
-        if(IQ2_DOWN_F16_REFERENCE&&c.at("width").get<unsigned>()<=2)continue;
+        if(IQ2_DOWN_F16_REFERENCE&&!IQ2_DOWN_INDEX_SAFE&&c.at("width").get<unsigned>()<=2)continue;
         if(case_index++<iq2_completed_GGML_prefix)continue;
         const auto row=fixture_case(c);result["cases"].push_back(row);native_save(argv[2],result);
         if(!row.at("all_outputs_passed").get<bool>()){result["all_outputs_passed"]=false;break;}
