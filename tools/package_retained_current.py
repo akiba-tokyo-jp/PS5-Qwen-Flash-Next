@@ -91,6 +91,18 @@ def main():
              ('extract',[str(tool),'self','--extract','--file',str(executable),'--out',str(roundtrip)])]
     libc_parameter_policy=None
     bounded_startup_policy=None
+    early_model=bool(relink.get('early_model_CPU_tables'))
+    early_tables=relink.get('early_CPU_tables') or relink.get('early_model_CPU_tables')
+    if early_model:
+        from early_model_table_scope import require as require_early_model
+        require_early_model(relink)
+    elif early_tables:
+        from price_cpu_startup_original_reader import require_CPU_profile
+        CPU_control,CPU_profile=require_CPU_profile(early_tables['original_CPU_package']['path'])
+        if record(early_tables['original_CPU_package']['path'])!=early_tables['original_CPU_package'] or \
+           relink['effective_application_policy']!=CPU_control['effective_application_policy'] or \
+           not early_tables['strict_failure_park_before_original_application_CXX']:
+            raise ValueError('Only the original constant-one full-link CPU fixture may use the new zero hole')
     for name,job in jobs:
         result=subprocess.run(job,capture_output=True,timeout=180,env=env)
         (args.out/(name+'.private.log')).write_bytes(result.stdout+result.stderr)
@@ -115,6 +127,23 @@ def main():
             bounded,bounded_startup_policy=bind(original_converted,args.bounded_CPU_startup_heap_bytes)
             bounded_startup_policy.update(control_package=record(args.bounded_CPU_startup_control),control_converted_ELF=record(old_converted))
             (args.out/'default-libc-parameters.elf').write_bytes(original_converted);converted.write_bytes(bounded)
+        if name=='convert' and early_tables:
+            if args.CPU_libc_heap_bytes is not None or args.bounded_CPU_startup_control:
+                raise ValueError('The early-table CPU fixture has exactly its qualified eight-MiB parameter scope')
+            from bounded_CPU_startup_parameters import bind
+            from external_zero_layout import exclude_converted
+            original_converted=converted.read_bytes()
+            default,early_conversion_proof=exclude_converted(original_converted,early_tables['layout']['begin'],early_tables['layout']['end'])
+            (args.out/'original-zero-tail-converted.elf').write_bytes(original_converted)
+            bounded,bounded_startup_policy=bind(default,8<<20)
+            if early_model:
+                bounded_startup_policy.update(CPU_only_before_model_source_and_GPU=False,
+                    finite_model_qualification_pending=True,original_tracked_CPU_heap_limit_unchanged=True)
+            early_tables=dict(early_tables,converted_zero_hole_proof=early_conversion_proof)
+            (args.out/'default-libc-parameters.elf').write_bytes(default);converted.write_bytes(bounded)
+            bounded_startup_policy.update(control_package=early_tables['original_CPU_package'],
+                original_CPU_completion=early_tables['original_CPU_completion'],
+                control_converted_ELF=record(args.out/'default-libc-parameters.elf'),early_owned_zero_scope=True)
     expected=bytearray(converted.read_bytes());expected[18:20]=struct.pack('<H',0x3e)
     if expected[7] in (0,3):expected[7]=9
     if struct.unpack_from('<H',expected,16)[0]==0:struct.pack_into('<H',expected,16,2)
@@ -128,7 +157,12 @@ def main():
         if recovered[offset:offset+size]!=expected[offset:offset+size]:raise ValueError('SELF roundtrip segment differs')
         checked+=1
     if b'integrity: valid' not in (args.out/'inspect.private.log').read_bytes():raise ValueError('SELF integrity inspection failed')
-    geometry=None if relink.get('CPU_only') else audit_converted_storage(image,converted,prior['lossless_driver_tables'])
+    if early_tables:
+        reference=early_tables['control_native']
+        if record(reference['path'])!=reference:raise ValueError('The full original table control changed')
+        geometry=audit_converted_storage(Path(reference['path']),converted,prior['lossless_driver_tables'],
+            (early_tables['layout']['begin'],early_tables['layout']['end']))
+    else:geometry=None if relink.get('CPU_only') else audit_converted_storage(image,converted,prior['lossless_driver_tables'])
     external_rodata=None
     if relink.get('external_rodata_probe'):
         if not relink.get('CPU_only') or relink.get('driver_code_linked'):
@@ -156,6 +190,7 @@ def main():
     if libc_parameter_policy:report['CPU_libc_parameter_policy']=libc_parameter_policy
     if bounded_startup_policy:report['CPU_startup_libc_parameter_policy']=bounded_startup_policy
     if external_rodata:report['external_rodata_probe']=external_rodata
+    if early_tables:report['early_model_CPU_tables' if early_model else 'early_CPU_tables']=early_tables
     (args.out/'result.private.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in report.items() if k not in ('relink','SELF','preferred_formatter_sources','formatter','commands','driver_table_geometry','effective_application_policy')}))
 

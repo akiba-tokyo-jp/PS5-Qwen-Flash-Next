@@ -166,7 +166,7 @@ def audit_linked_storage(image,manifest):
         all_actual_relocated_targets_and_hashes_verified=True,actual_linked_pool_SHA256=manifest['pool']['sha256'],
         original_code_and_relocations_unchanged=True,image_SHA256=record(image)['sha256'])
 
-def audit_converted_storage(image,converted,manifest):
+def audit_converted_storage(image,converted,manifest,excluded_CPU_zero_range=None):
     """Check loader-visible data and every critical relative relocation.
 
     The pinned converter normalizes executable flags and moves generic dynamic
@@ -194,8 +194,13 @@ def audit_converted_storage(image,converted,manifest):
     relative={at:add for at,info,add in relas if info==8}
     begin=elf.symbols['__qwen_driver_tables_start']['value'];end=elf.symbols['__qwen_driver_tables_end']['value']
     cover=[p for p in loads if p[3]<=begin<end<=p[3]+p[6]]
-    if len(cover)!=1 or cover[0][1]&7!=6 or cover[0][3]+cover[0][5]>begin:
-        raise ValueError('Conversion changed exclusive writable NOBITS table coverage')
+    if excluded_CPU_zero_range is None:
+        if len(cover)!=1 or cover[0][1]&7!=6 or cover[0][3]+cover[0][5]>begin:
+            raise ValueError('Conversion changed exclusive writable NOBITS table coverage')
+    else:
+        low,high=excluded_CPU_zero_range
+        if low!=begin or not end<=high<=end+65536 or any(p[3]<high and low<p[3]+p[6] for p in loads):
+            raise ValueError('The exact pre-CXX CPU Direct range must remain outside every converted LOAD')
     plan=elf.symbols['qwen_driver_table_storage']['value'];tables=elf.pointer(plan);packed=elf.pointer(plan+16)
     if hashlib.sha256(read(packed,manifest['packed_bytes'])).hexdigest()!=manifest['pool']['sha256']:
         raise ValueError('Conversion changed exact embedded compressed bytes')
@@ -209,6 +214,7 @@ def audit_converted_storage(image,converted,manifest):
             raise ValueError('A converted table size, offset or original hash changed')
     return dict(passed=True,critical_relative_pointers=len(critical),table_count=len(manifest['tables']),
         exclusive_NOBITS_bytes=geometry['exclusive_NOBITS_bytes'],all_converted_scalars_hashes_and_pool_exact=True,
+        pre_CXX_CPU_Direct_backing_required=excluded_CPU_zero_range is not None,
         image_SHA256=record(image)['sha256'],converted_SHA256=record(converted)['sha256'])
 
 if __name__=='__main__':

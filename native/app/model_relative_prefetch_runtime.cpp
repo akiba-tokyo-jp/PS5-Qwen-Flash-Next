@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: MIT
 #include "model_relative_prefetch.h"
 #include "model_relative_prefetch_runtime.h"
+// Keep this stricter read-only helper separate from the selected frontend's
+// phase-aware inline function; never contribute a conflicting definition.
+#define qualified_system_headroom relative_prefetch_qualified_system_headroom
 #include "system_memory.h"
+#undef qualified_system_headroom
 #include <fcntl.h>
 #include <ps5platform/heap.h>
 #include <sys/stat.h>
@@ -71,7 +75,7 @@ void prepare_model_relative_prefetch(bool enabled,bool(*admit)(std::size_t),std:
     hooks.admit=[heap_limit,reserve](std::size_t){try{
         struct ps5_heap_stats heap{};ps5_heap_stats(&heap);
         return !heap.libc_fallbacks&&heap.mapped_bytes<=heap_limit&&heap.peak_bytes<=heap_limit&&
-            qualified_system_headroom(observe_native_system_memory())>=reserve;
+            relative_prefetch_qualified_system_headroom(observe_native_system_memory())>=reserve;
         }catch(...){return false;}};
     owner=new ModelRelativePrefetch(std::move(hooks),allocation,capacity,scratch);
     if(!ps5_heap_owns(owner))qwen_native_halt("relative_model_owner_allocation_not_tracked_backing_retained");

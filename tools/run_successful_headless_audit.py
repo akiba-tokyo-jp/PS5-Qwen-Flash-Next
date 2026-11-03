@@ -55,7 +55,10 @@ def main():
         need(passive != original,'Exactly one compiled CPU reader scope required')
         if passive:need(scope['maximum_passive_ms']==5000 and scope['additional_pre_read_working_pages']==1152,'Exact passive scope required')
         if original:
-            if package.get('CPU_startup_libc_parameter_policy'):
+            if package.get('early_CPU_tables'):
+                from price_early_CPU_tables import require_pricing
+                require_pricing(a.cpu_startup_pricing,a.package,a.current)
+            elif package.get('CPU_startup_libc_parameter_policy'):
                 from price_bounded_CPU_startup import require_pricing
                 require_pricing(a.cpu_startup_pricing,a.package,a.current)
             else:
@@ -120,7 +123,8 @@ def main():
             while child.poll() is None:
                 if time.monotonic()>=notice:print(json.dumps(dict(phase=name,host_child_running=True)),flush=True);notice=time.monotonic()+30
                 time.sleep(1)
-        need(child.returncode==0 or (early_refusal is not None and early_refusal.is_file()),
+        early_tables_returned=(package.get('early_CPU_tables') or package.get('early_model_CPU_tables')) and (a.out/'case/host-early-CPU-tables-refusal.private.json').is_file()
+        need(child.returncode==0 or (early_refusal is not None and early_refusal.is_file()) or early_tables_returned,
              'Audit stopped; inspect '+str(a.out/(label+'.private.log'))+'; never resubmit a consumed operation')
     common=['--workspace',a.workspace,'--current',a.current,'--mount-plan',a.mount_plan]
     clock=a.out/'clock';case=a.out/'case';closed=a.out/'closed'
@@ -140,6 +144,10 @@ def main():
     poll=max(used,default=-1)+1
     while True:
         run('observe_successful_model_start.py',['--case-plan',case/'plan.private.json'],'observe-'+str(poll),case/'host-early-self-refusal.private.json');poll+=1
+        if (case/'host-early-CPU-tables-refusal.private.json').exists():
+            need(package.get('early_CPU_tables') or package.get('early_model_CPU_tables'),'Only an explicit source-bound pre-application CPU table scope may close this returned failure')
+            run('close_early_CPU_tables_failure.py',common+transport+['--case-plan',case/'plan.private.json','--out',closed],'early-CPU-tables-close')
+            raise RuntimeError('Known returned early CPU table failure closed and restored; no replay')
         if (case/'host-early-self-refusal.private.json').exists():
             run('close_successful_early_self_refusal.py',common+transport+['--case-plan',case/'plan.private.json','--out',closed],'early-close')
             raise RuntimeError('Known returned CPU SELF refusal closed; no repeated launch')
@@ -156,6 +164,25 @@ def main():
          terminal['kind']==profile['headless_audit_kind'] and terminal['all_model_source_device_owners_positively_retired'] and
          terminal['device_ledger_live_bytes']==0 and terminal['model_loads']==(0 if unloaded else 1) and
          len(terminal['requests'])==count,'Exact positive finite model/source/device retirement required')
+    early_table_completion=None
+    if package.get('early_CPU_tables') or package.get('early_model_CPU_tables'):
+        stages=(case/'native-stages.private.log').read_bytes()
+        rows=re.findall(rb'early_CPU_tables_returned status=(\d+) mapped=(\d) zeroed=(\d) checksum=(\d) mapping_bytes=(\d+) allocation_bytes=(\d+) minimum_free=(\d+) CPU_IO_returned=1 model_GPU_calls=0',stages)
+        entered=re.findall(rb'initializer_enter index=(0x[0-9a-f]+) address=(0x[0-9a-f]+)',stages)
+        returned=re.findall(rb'initializer_return index=(0x[0-9a-f]+) address=(0x[0-9a-f]+)',stages)
+        expected_constructors=package['early_model_CPU_tables']['total_constructors'] if package.get('early_model_CPU_tables') else 32
+        need(len(rows)==2 and entered==returned and len(entered)==expected_constructors and b'CXX_initializers_completed\n' in stages and
+            [tuple(map(int,row[:6])) for row in rows]==[(0,1,1,0,9502720,9502720),(0,1,1,1,9502720,9502720)] and
+            min(int(row[6]) for row in rows)>=919,'Both early CPU zero/SHA/FNV boundaries and all32 constructor returns must pass')
+        early_table_completion=dict(completed=True,all32_constructors_returned=expected_constructors==32,
+            all_original_and_added_constructors_returned=True,total_constructors=expected_constructors,original_platform_initializers_preserved=2,
+            mapped_CPU_Direct_bytes=9502720,original_table_bytes=9486336,whole_zero_SHA256_and_subsequent_FNV_passed=True,
+            minimum_sampled_free=min(int(row[6]) for row in rows),source_payload_IO=0,model_GPU_calls=0,
+            process_lifetime_CPU_backing_retained_until_ordinary_OS_close=True)
+        save(case/'early-CPU-tables-positive.private.json',early_table_completion)
+        if package.get('early_model_CPU_tables'):
+            need(stages.count(b'original_CPU_Direct_table_backing_adopted_no_second_allocation_GPU_not_started\n')==1,
+                 'The model must positively adopt the same early backing exactly once')
     observer=case/'headless-observer';observer.mkdir();(observer/'native.private.bin').write_bytes((case/'native.result.private.json').read_bytes())
     lan=lan_module();remote=PHYSICAL+plan['report'][5:]
     outputs=[('.audit','native.audit.private.json')]
@@ -173,7 +200,8 @@ def main():
     save(a.out/'result.private.json',dict(completed=True,kind=profile['headless_audit_kind'],native_requests=count,
         terminal=record(observer/'native.private.bin'),audit=record(observer/'native.audit.private.json'),
         closure=record(closed/'result.private.json'),all_counting_and_finite_checks=all(r['counting_quality_passed'] and r['full_F32_finite'] for r in terminal['requests']),
-        native_owners=0,unknown_completion=False,HTTP_requests=0,VideoOut_starts=0,automatic_retries=0,production_adopted=False))
+        native_owners=0,unknown_completion=False,HTTP_requests=0,VideoOut_starts=0,automatic_retries=0,production_adopted=False,
+        **({'early_CPU_tables_completion':record(case/'early-CPU-tables-positive.private.json')} if early_table_completion else {})))
     print(json.dumps(dict(completed=True,native_requests=count,kind=profile['headless_audit_kind'],current_restored=True,owners=0)))
 
 

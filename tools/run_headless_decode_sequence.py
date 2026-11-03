@@ -38,14 +38,14 @@ def main():
     p.add_argument('--control-price',type=Path);p.add_argument('--candidate-price',type=Path)
     p.add_argument('--native-VM-proof',type=Path)
     p.add_argument('--default-readiness-pages',type=int,default=7374)
-    p.add_argument('--scope',choices=('S1','P1','G1'),required=True);p.add_argument('--case-base',type=int,required=True)
+    p.add_argument('--scope',choices=('S1','P1','G1','I1'),required=True);p.add_argument('--case-base',type=int,required=True)
     p.add_argument('--completed-case',type=Path,action='append',default=[],help='Reuse only the already completed prefix of this exact ABBA')
     a=p.parse_args();proof=load(a.numerical_proof)
     need(proof['completed'],'A completed numerical decision is required')
     if a.scope=='S1':need(proof.get('actual_target_tokens_bytes_causal_inputs_routes_and_all69_F32_rows_exact') is True,'Actual compact MTP lifetime and causal qualification required')
     else:
         need(proof['tokens_and_output_bytes_exact'] and all(proof['ordered_routes_exact_per_request']), 'Actual target outputs and ordered routes must match')
-        if a.scope=='G1':need(proof['whole_F32_bytes_routes_tokens_exact'],'Same-computation fused ranking requires all69 exact rows')
+        if a.scope in ('G1','I1'):need(proof['whole_F32_bytes_routes_tokens_exact'],'Same-computation changes require all69 exact rows')
         else:need(proof['matching_F32_rows']==69 or (proof['matching_F32_rows']==68 and
             [(r['request'],r['row']) for r in proof['differing_rows']]==[(1,1)] and
             proof['first_row_maximum_absolute_error_against_original'] is not None), 'P1 differences must be completely bounded and disclosed')
@@ -77,7 +77,10 @@ def main():
             save(a.out/'stopped.private.json',dict(completed=False,positive_completed_cases=rows,failed_index=index,
                 failed_case=str(root),log=record(log),automatic_retries=0,remaining_cases_not_submitted=True))
             raise RuntimeError('Sequence stopped; retain completed cases and inspect '+str(log)+'; never replay a consumed operation')
-        row=returned(root,package);rows.append(row);save(a.out/'progress.private.json',dict(scope=a.scope,positive_completed_cases=rows))
+        row=returned(root,package);rows.append(row)
+        progress=dict(scope=a.scope,positive_completed_cases=rows)
+        save(a.out/('progress-'+str(index)+'.private.json'),progress)
+        (a.out/'progress.private.json').write_text(json.dumps(progress,indent=2)+'\n')
     save(a.out/'result.private.json',dict(completed=True,scope=a.scope,cases=rows,order=[0,1,1,0],
         numerical_proof=record(a.numerical_proof),all_ordinary_closes_and_exact_restores=True,automatic_retries=0,
         native_requests=12,performance_analysis_pending=True,production_adopted=False))

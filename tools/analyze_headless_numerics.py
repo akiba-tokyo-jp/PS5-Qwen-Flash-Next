@@ -27,7 +27,7 @@ def full_rows(path):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('case','reference-case-record','out'):p.add_argument('--'+name,type=Path,required=True)
-    p.add_argument('--scope',choices=('P1-tail-eight','G1-fused-full-sort'),required=True);a=p.parse_args()
+    p.add_argument('--scope',choices=('P1-tail-eight','G1-fused-full-sort','I1-relative-model-prefetch'),required=True);a=p.parse_args()
     original=load(a.reference_case_record)
     for key in ('case_plan','close','native_terminal'):need(record(original[key]['path'])==original[key],'Original control evidence changed')
     reference=load(original['native_terminal']['path']);reference_close=load(original['close']['path']);positive(reference,reference_close)
@@ -50,12 +50,16 @@ def main():
         need(actual[23][3]==expected[0][3],'The existing first-row comparator must bind the original first-row reference')
         first_error=terminal['requests'][1].get('first_row_maximum_absolute_logit_error')
     identical=not differences and tokens and all(route_equal)
+    source_prefetch=None
+    if a.scope=='I1-relative-model-prefetch':
+        from model_relative_prefetch_evidence import review
+        source_prefetch=review(terminal,True)
     save(a.out,dict(completed=True,scope=a.scope,whole_F32_bytes_routes_tokens_exact=identical,
         all69_full_vocabulary_F32_rows_SHA256_exact=not differences,matching_F32_rows=69-len(differences),differing_rows=differences,
         first_row_maximum_absolute_error_against_original=first_error,tokens_and_output_bytes_exact=tokens,
         ordered_routes_exact_per_request=route_equal,all_counting_finite_reset_and_retirement_checks=True,
         all_ordinary_closes_and_exact_restores=True,performance_timings_usable=False,broader_prompt_quality_qualified=False,
-        full_F32_bytes_compared=False,columns=248320,evidence=evidence,PS5_operations=0,production_adopted=False))
+        full_F32_bytes_compared=False,columns=248320,evidence=evidence,actual_source_prefetch=source_prefetch,PS5_operations=0,production_adopted=False))
     print(dict(completed=True,scope=a.scope,matching_F32_rows=69-len(differences),tokens_exact=tokens,routes_exact=all(route_equal),first_row_error=first_error))
 
 

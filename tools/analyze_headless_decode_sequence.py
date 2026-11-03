@@ -25,14 +25,13 @@ def compare(values):
 
 
 def compare_time(values):
-    result=compare(values)
-    result['mean_time_reduction_percent']=-result.pop('rate_change_percent')
-    result['paired_savings_ms']=[-x for x in result.pop('paired_gains')]
-    faster=result.pop('both_paired_regressions_exceed_control_spread')
-    slower=result.pop('both_paired_gains_exceed_control_spread')
-    result.update(both_paired_time_savings_exceed_control_spread=faster,
-                  both_paired_time_regressions_exceed_control_spread=slower)
-    return result
+    need(len(values)==4 and all(math.isfinite(x) and x>=0 for x in values),'Four finite nonnegative native times required')
+    A=[values[0],values[3]];B=[values[1],values[2]];control=statistics.mean(A);candidate=statistics.mean(B)
+    spread=abs(A[1]-A[0]);savings=[a-b for a,b in zip(A,B)]
+    return dict(control=A,candidate=B,control_mean=control,candidate_mean=candidate,control_AA_spread=spread,
+        paired_savings_ms=savings,mean_time_reduction_percent=100*(1-candidate/control) if control else None,
+        both_paired_time_savings_exceed_control_spread=min(savings)>spread,
+        both_paired_time_regressions_exceed_control_spread=min(-x for x in savings)>spread)
 
 
 def main():
@@ -55,7 +54,8 @@ def main():
         profiles.append(exact(package['effective_application_policy']['profile']))
         roots.append(root);terminals.append(terminal);evidence.extend((row['terminal'],row['closure'],row['plan'],row['package']))
     groups=[]
-    ordinary_S1=sequence['scope']=='S1' and all(t['audit'].get('three_ordinary_requests',False) for t in terminals)
+    ordinary_S1=sequence['scope']=='S1' and all(p['headless_audit_kind'] in
+        ('S1-persistent-MTP-online','S1-ordinary-target-control') for p in profiles)
     for index in range(3):
         requests=[t['requests'][index] for t in terminals];reference=requests[0];rates=[];routes=[]
         for root,r in zip(roots,requests):
@@ -103,6 +103,15 @@ def main():
         need([p['overrides']['native_P1_headless_arm'] for p in profiles]==[0,1,1,0],'Actual bounded P1 control/candidate sequence required')
     elif sequence['scope']=='G1':
         need([p['G1_arm'] for p in profiles]==['control','candidate','candidate','control'],'Actual linked fused sort arms required')
+    elif sequence['scope']=='I1':
+        from model_relative_prefetch_evidence import review
+        need([p['I1_arm'] for p in profiles]==['control','candidate','candidate','control'],
+             'Actual bounded source-prefetch arms required')
+        lifecycle=dict(actual_source_prefetch=[review(t,enabled) for t,enabled in
+            zip(terminals,(False,True,True,False))],
+            complete_request_including_relative_setup_and_drain_ms=[compare_time([
+                t['requests'][index]['complete_request_including_relative_setup_and_drain_ms']
+                for t in terminals]) for index in range(3)])
     result=dict(completed=True,scope=sequence['scope'],primary_metric='(generated_tokens-1)/decode_seconds',
         groups=groups,auxiliary_lifecycle=lifecycle,all_twelve_requests_positively_completed=True,
         separate_numerical_proof=sequence['numerical_proof'],qualification_SHA_observer_excluded=True,

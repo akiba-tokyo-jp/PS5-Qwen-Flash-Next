@@ -3,6 +3,27 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest65069 G1 full-model F32 execution completes all3 requests, positive
+retirement, one ordinary close and exact seven-file restoration.65070 reuses
+64950:all69 F32 rows, all ordered routes, tokens and bytes exact. Timing65071
+refuses first case65072 BEFORE publication at5998<7374;zero timing launches.
+Do not repeat that unchanged refused scope or call it a speed regression.
+CPU65068 completes both early zero SHA/FNV boundaries,32 constructors and the
+original SELF reader, then ordinary close/exact restore. SELF min940>=919 at
+preflight6123 is global, not an exclusive RAM gain; observed CPU drop5183 plus
+919+256 is6358, so old experimental6061 is not a universal bound. Never replay
+this CPU scope as a recovery probe. New model65078 adopts the exact same early
+CPU backing without a second allocation/map and preserves673 SHA checks/RO
+protection and live reserves. Its17 new ownership controls pass; actual G1 has
+31 original constructors,33 with the prelude. Successful host compile/link are
+reused across host-audit fixes. New native65079 retains7374 prelaunch admission.
+I1 corrected namespace-separated provider65056 and model F32 packages65057
+resolve actual native imports. Timing65076 reuses the14 identical scope controls;
+no native I1 prefetch has run.65077 retires2 exited-PID logs/1147983 bytes after
+PC preservation and native whole SHA checks. Keep S1 completed65050 for resume.
+See docs/continued-model-integration-20261103.md. Continue remaining native/model
+timing and Q2/Q3 decisions; a checkpoint must not end the user's requested work.
+
 Latest65044 is the FIRST actual full-link CPU8MiB/no-extension launch. It
 completes the original30 constructors,33664KiB SELF reads/SHA/identity/EOF,
 16MiB tracked heap with zero libc fallback, source/model/GPU0, one ordinary

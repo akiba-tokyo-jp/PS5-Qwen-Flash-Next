@@ -46,6 +46,19 @@ def main():
                 pid=int(owners[0]['pid']);boot=load(case['model_proof']['path'])['current_boot']
                 path=PHYSICAL+'/qwen-runtime/entry-b'+str(boot[0])+'-'+str(boot[1])+'-'+str(pid)+'.stages'
                 raw=get(path,8<<20)
+                if raw and case.get('package'):
+                    from early_CPU_tables_completion import FATAL
+                    if raw.endswith(FATAL):
+                        need(record(case['package']['path'])==case['package'],'The accepted early CPU package changed')
+                        package=load(case['package']['path']);early=package.get('early_CPU_tables') or package.get('early_model_CPU_tables')
+                        need(early, 'An explicit early CPU table scope is required')
+                        from early_CPU_tables_completion import review
+                        reviewed=review(raw,early['control_native']['path'])
+                        target=out/'early-CPU-table-stages.private.log';target.write_bytes(raw)
+                        observed=out/'host-early-CPU-tables-refusal.private.json'
+                        if not observed.exists():save(observed,dict(case_plan=record(args.case_plan),pid=pid,boot=boot,
+                            journal=dict(record(target),remote=path),review=reviewed,source_bound_CPU_close_required=True))
+                        raise RuntimeError('Returned early CPU table refusal observed; close this same source-bound owner without replay')
                 if raw and raw.endswith(b'fatal_operation=main_SELF_Direct_integrity_returned_refusal\n'):
                     target=out/'early-boot-stages.private.log';target.write_bytes(raw)
                     observed=out/'host-early-self-refusal.private.json'
