@@ -775,7 +775,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "65352",
+  "latest_update": "65354",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -1030,6 +1030,28 @@
     "automatic_adoption": false,
     "broader_quality_pending": true,
     "native_work_submitted_by_continuation_at_observation": 0,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65354": {
+    "transfer_notification_positive_files": 21,
+    "total_transfer_files": 108,
+    "Gate_completed_at_observation": 18,
+    "Gate_failed": 0,
+    "source_handoff_monitor_active": true,
+    "reserved_next_workflow": 65352,
+    "heldout_quality_path_PC_prepared": true,
+    "heldout_quality_tasks": "Established Japanese instruction, arithmetic, JSON extraction",
+    "source_derivation_controls": 65353,
+    "original_guard_bodies_unchanged": 6,
+    "answer_classification_controls": 65354,
+    "answer_positive_controls": 7,
+    "answer_negative_controls": 9,
+    "native_quality_compiled": false,
+    "native_quality_executed": false,
+    "quality_only_after_decode_benefit": true,
+    "retain_every_current_P1_correct_answer": true,
+    "shared_queued_tools_unchanged": true,
+    "native_replays": 0,
     "campaign_complete": false
   }
 }

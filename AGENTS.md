@@ -3,6 +3,32 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Checkpoint65354:the active transfer/handoff monitor is functions cellg10:1887.
+It tracks every positive reply from25865 and,only after all108 and the expected
+quarantined-local-ELF host exit,submits65340 once,waits350 seconds quietly,and
+collects that same helper at180-second intervals. Do not restart this monitor,
+the transfer or sealer. Its live store updates may not be visible to a separate
+functions.exec until the cell completes; follow its notifications and wait on
+the existing cell. Last notification is21/108 positive stores. The queued
+19016 workflow still owns the next console scope after that finalizer.
+
+PC Gate observation is18/48 complete,zero failures. Two new unrun quality
+tools reuse the established Japanese instruction/arithmetic/JSON prompts from
+build_expert_quality_cohort.py. They derive independent contexts,disable prefix
+handoff,and scan complete finite logits without comparing unrelated prompts.
+They preserve all six original model memory/identity/reset guards. Source-only
+controls65353 verify those unchanged bodies against the completed default
+control65300,with zero native replays. Answer-classifier controls65354 pass
+7positive/9negative,including malformed UTF8 and JSON bool/float/extra-key cases.
+No quality model has been compiled or run. Only prepare/run these packages
+after a candidate shows a decode benefit. The existing counting comparison
+plus these three held-out semantic inputs forms the finite four-task screen.
+Retain every correct current-P1 answer; general reasoning quality is unclaimed.
+One immutable normal-P1 quality control may be reused for later candidates
+only with the same production manifest and actual parent model identity.
+The queued ten tools have not changed. New quality tools are not frozen inputs
+to19016 and do not touch its timing cohort or current console owner.
+
 Checkpoint65352 reserves the next console workflow:run_full_iq2_up_candidate.py,
 host session19016,outQ2-full-Up-automatic-continuation-65352. It is currently
 waiting only on local65334/result.private.json. After65340 seals that prefix

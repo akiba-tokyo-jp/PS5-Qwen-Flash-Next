@@ -19,6 +19,20 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Host-only checkpoint65354 prepares a separate conditional quality path using
+the established Japanese instruction,arithmetic and JSON-extraction prompts.
+The new source derivation preserves all six original memory/identity/reset
+guards and clears context independently for each prompt. Complete finite
+logit rows are checked; unrelated prompts are not compared for F32 identity.
+The actual completed control source passes these derivation controls65353
+without native replay. Established-answer classification passes7positive/
+9negative controls65354. These quality packages are uncompiled/unrun and will
+be used only for a candidate with a measured speed benefit. The counting
+comparison plus these three semantic tasks is a finite four-task screen,
+requiring retention of every correct current-P1 answer. It makes no general
+reasoning-quality claim. A normal P1 quality control may be reused across
+candidates with the same immutable production manifest and actual model parent.
+
 Continuation65352 is queued on the positive prefix source receipt. After the
 existing source owner retires,it stages only the remaining four Up layers,
 builds the complete model pair,requires fresh CPU capacity admission,and runs
