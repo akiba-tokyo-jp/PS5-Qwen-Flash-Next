@@ -22,6 +22,9 @@ def main():
     for name in ('workspace', 'current', 'mount-plan', 'package', 'direct-staging-proof', 'out'):
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--execute', action='store_true')
+    p.add_argument('--external-rodata-controls',type=Path)
+    p.add_argument('--native-VM-proof',type=Path)
+    p.add_argument('--cold-payload-proof',type=Path,help='Reuse only the already sealed exact unchanged prototype payload')
     a = p.parse_args()
     a.out.mkdir(parents=True, exist_ok=False)
     package = load(a.package)
@@ -35,6 +38,17 @@ def main():
          'Actual CPU source and non-eliminated small libc allocation required')
     image = package['SELF']
     need(record(image['path']) == image and image['bytes'] <= 4 << 20, 'Exact independently bounded CPU SELF required')
+    cold=package.get('external_rodata_probe')
+    if cold:
+        need(a.external_rodata_controls is not None and a.native_VM_proof is not None,
+             'New restorer fault controls and the qualified shell-free VM reader are required')
+        controls=load(a.external_rodata_controls)
+        need(controls['completed'] and controls['relink']==package['relink'] and controls['positive_controls']==2 and
+             controls['negative_controls']==18 and controls['zero_link_native_title_view_qualified'] and
+             all(record(controls[k]['path'])==controls[k] for k in ('source','test')) and
+             cold==relink['external_rodata_probe'] and cold['payload']['bytes']==8<<20 and
+             record(cold['payload']['path'])==cold['payload'] and cold['layout']['external_range_has_no_LOAD_coverage'],
+             'Exact standalone payload, actual restorer controls and the absent LOAD range are required')
     state_path = a.current / 'active-console.private.json'
     state = load(state_path)
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and
@@ -48,25 +62,48 @@ def main():
     headers = [struct.unpack_from('<IIQQQQQQ', raw, offset + i * stride) for i in range(count)]
     load_pages = sum((h[6] + 16383) // 16384 for h in headers if h[0] == 1)
     required = 898 + 256 + 512 + load_pages + 1024
+    if cold:required+=512
     pricing = dict(CPU_only=True, ordinary_model_screen_unchanged=7374,
         OS_minimum=898, operational_reserve=256, encoded_libc_heap_pages=512,
         actual_ELF_LOAD_pages=load_pages, independent_process_allowance_pages=1024,
         selected_CPU_scope_screen_pages=required, universal_kernel_allocation_bound_claimed=False,
         inactive_pages_counted_as_free=False, source_workers=0, GPU_calls=0)
+    if cold:pricing.update(new_Direct_metadata_allowance_pages=512,external_readonly_CPU_bytes=8<<20,
+        original_CPU_scope_rule_preserved=True,empirical_previous_loader_global_drop_pages=3428,
+        previous_global_drop_is_not_an_exclusive_allocation_bound=True)
     save(a.out / 'pricing.private.json', pricing)
     if not a.execute:
         print(json.dumps(dict(prepared=True, pricing=pricing, PS5_operations=0)))
         return
     lan = lan_module()
     vm_dir = a.out / 'VM-before'
-    vm_dir.mkdir()
-    before = query(lan.HOST, vm_dir)
+    if a.native_VM_proof:
+        proof=load(a.native_VM_proof)
+        need(proof['completed'] and proof['shell_commands']==proof['title_launches']==proof['GPU_calls']==0 and
+             proof['same_original_counter_names_sizes_and_shape_review'], 'Qualified original-size native VM reader required')
+        from native_VM_observation import query as native_query
+        before=native_query(a.workspace,a.current,a.mount_plan,a.out/'native-VM-observation')
+    else:
+        vm_dir.mkdir()
+        before = query(lan.HOST, vm_dir)
+    if not vm_dir.exists():vm_dir.mkdir()
     need(before['boot_before'] == before['boot_after'] == state['current_boot'] and before['minimum'] == 898 and
          before['page_bytes'] == 16384, 'Exact current native CPU geometry required')
     admitted = min(before['free_first'], before['free_last']) >= required
     save(vm_dir / 'result.private.json', dict(completed=True, observations=before, pricing=pricing,
         admitted=admitted, title_launches=0, GPU_calls=0))
     need(admitted, 'Independent CPU scope refuses before any publication or launch')
+    if cold:
+        if a.cold_payload_proof:
+            prior=load(a.cold_payload_proof)
+            need(prior['completed'] and all(prior['pack'][k]==cold['payload'][k] for k in ('bytes','sha256')) and prior['whole_SHA256_both_namespaces'] and
+                prior['immutable_mode']==292 and prior['current_seven_unchanged'] and prior['target']==PHYSICAL+cold['application_path'][5:],
+                'Only the exact already sealed CPU payload may be reused')
+            save(a.out/'cold-payload-reuse.private.json',dict(completed=True,prior=record(a.cold_payload_proof),
+                payload=cold['payload'],new_transfers=0,new_publications=0,fresh_native_whole_SHA_before_use_required=True))
+        else:
+            from publish_cold_rodata_payload import publish_payload
+            publish_payload(a,lan,cold,current_files(a.current),a.out/'cold-payload')
     run = secrets.token_hex(16)
     report = '/app0/qwen-runtime/plan-' + run + '.json'
     policy = dict(schema='ps5-qwen-CPU-loader-v1', run_id=run, SELF_bytes=image['bytes'],
@@ -83,7 +120,7 @@ def main():
     launch = build(a.workspace, a.mount_plan, new, new, [], 'launch', a.out / 'launch')
     save(a.out / 'plan.private.json', dict(completed=True, package=record(a.package), run_id=run,
         report=report, SELF=image, old_files=old, new_files=new, pending=pending, CPU_only=True,
-        source_payload_reads=0, GPU_calls=0, maximum_title_launches=1, initializer_requests=0,
+        source_payload_reads=128 if cold else 0, GPU_calls=0, maximum_title_launches=1, initializer_requests=0,
         ordinary_close_and_exact_production_restore_required=True))
     state['active_successful_native_case'] = dict(plan=record(a.out / 'plan.private.json'), run_id=run, phase='CPU-loader-publication')
     state['state'] = 'independent_CPU_loader_publication_in_progress'
@@ -127,6 +164,13 @@ def main():
         path = a.out / name
         path.write_bytes(content)
         reports.append(dict(record(path), remote=remote_path))
+    if cold:
+        cold_raw=lan.web('/fs'+urllib.parse.quote(remote+'.cold',safe='/'),4096,8)
+        cold_path=a.out/'native-cold.private.json';cold_path.write_bytes(cold_raw)
+        reports.append(dict(record(cold_path),remote=remote+'.cold'))
+        detail=lan.web('/fs'+urllib.parse.quote(remote+'.cold-source',safe='/'),4096,8)
+        detail_path=a.out/'native-cold-source.private.json';detail_path.write_bytes(detail)
+        reports.append(dict(record(detail_path),remote=remote+'.cold-source'))
     close_proof = dict(CPU_only=True, all_CPU_IO_returned=True, pid=first['pid'],
                        app_id=launched['app_id'], reports=reports)
     state.update(unknown_completion=False, native_owners=1, observed_native_pid=first['pid'])

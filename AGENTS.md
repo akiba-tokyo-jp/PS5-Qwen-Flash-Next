@@ -3,6 +3,47 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest65044 is the FIRST actual full-link CPU8MiB/no-extension launch. It
+completes the original30 constructors,33664KiB SELF reads/SHA/identity/EOF,
+16MiB tracked heap with zero libc fallback, source/model/GPU0, one ordinary
+close and exact native-hashed restoration. Minimum960>=919; before6392,
+SELF-before1596/after3639 and after-policy3571 are GLOBAL, not exclusive gains.
+Do not repeat this CPU scope or call its old refused65025 a launched test.
+G1 changed-state65042 refuses before publication6388<7374, zero title/GPU.
+S1 timing65046 completes fresh control65050's all3 requests, positive retirement,
+ordinary close and exact restore. Retained65051 refuses BEFORE publication
+6137<6738;65052/53 are unsubmitted. Save/reuse65050 using --completed-case if
+the SAME timing ABBA can resume after a meaningful scope/state change. Never
+replay65050 or retry unchanged65051. No matched S1 speed gain is qualified yet.
+I1 native predictor65045 independently reproduces4336 calls/3449 eligible/
+9 predictions/2 hits/7 unused, with largest prediction1540096 bytes. New actual
+concurrent adapter65047 has8 controls; changed65048 adds read-only worker
+admission,9 controls total. One2MiB scratch/one pending/one worker/zero extraFDs,
+original maximum4 total reads, original close waits for its same pending read.
+Unknown completion retains actual backing. No real-model I1 prefetch has run.
+Provider65049 stops in host compilation on misleading indentation; changed
+65054 compiles for the actual PS5 ABI with both wrappers and ZERO new global
+CXX initializers. No model package or native I1 prefetch is qualified yet.
+Console is restored/idle with no native owner or unknown completion.
+
+Latest continuation: model-free CPU cold-rodata65041 passes12864KiB reads,
+whole8MiB SHA, EOF/identity, exact fixed CPU Direct mapping, read-only protection,
+subsequent full-byte FNV constructor, whole SELF SHA and small libc allocation.
+One ordinary close and exact seven-file native-hashed restoration complete;
+native owners0/unknown completion false. First65037 mapped its owned
+hole but returned a source predicate failure and then ordinarily closed/restored.
+I1's already completed64710 trace shows all3456 candidate title reads have
+st_nlink0. Changed65038 uses the successful existing links<=1 contract, with
+mode/Direct/identity/SHA/reserve checks retained.2 positive/18 fault controls pass.
+Do not replay65037. The input is reused with no second payload transfer.
+Full-link CPU private8/4MiB packages65024/65026 remain UNLAUNCHED:65025/65027
+refuse before staging. No such parameter or cold-rodata migration is adopted.
+Native65028 qualifies a single original-size13-counter reader without shell
+commands; later optional runner adapters retain each exact model price/floor.
+No RAM gain, model rate or overall campaign completion is claimed. See
+docs/CPU-cold-rodata-qualification-20261103.md. Continue outstanding G1/S1/P1/I1
+integration and timing; a CPU primitive is not an endpoint for this request.
+
 Latest checkpoint: P1 tail-eight65016 completes all3 requests, positive owner
 retirement, ordinary close and exact restoration. Analysis65017 reuses original
 control64950:68/69 full F32 hashes exact, only cold request1 row1 differs, with

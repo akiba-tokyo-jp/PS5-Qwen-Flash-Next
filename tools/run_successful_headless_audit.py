@@ -27,6 +27,7 @@ def main():
     p.add_argument('--cpu-startup-pricing',type=Path)
     p.add_argument('--ordinary-target-pricing',type=Path)
     p.add_argument('--staged-MTP-startup-pricing',type=Path)
+    p.add_argument('--native-VM-proof',type=Path,help='Use the qualified fixed-counter native reader without shell commands')
     p.add_argument('--collect',action='store_true',help='Continue observing/finalizing the exact accepted owner; never stage or launch again')
     p.add_argument('--quiet-seconds',type=int,default=0,help='Optional host-quiet interval for a separately instrumented component')
     a=p.parse_args();need(0<=a.quiet_seconds<=600,'Finite host-quiet interval required')
@@ -54,8 +55,12 @@ def main():
         need(passive != original,'Exactly one compiled CPU reader scope required')
         if passive:need(scope['maximum_passive_ms']==5000 and scope['additional_pre_read_working_pages']==1152,'Exact passive scope required')
         if original:
-            from price_cpu_startup_original_reader import require_pricing
-            require_pricing(a.cpu_startup_pricing,a.package)
+            if package.get('CPU_startup_libc_parameter_policy'):
+                from price_bounded_CPU_startup import require_pricing
+                require_pricing(a.cpu_startup_pricing,a.package,a.current)
+            else:
+                from price_cpu_startup_original_reader import require_pricing
+                require_pricing(a.cpu_startup_pricing,a.package)
         qualification(a.direct_staging_proof)
         need(a.cpu_startup_pricing is not None,'Explicit source/geometry-based CPU-only pricing required')
         price=load(a.cpu_startup_pricing)
@@ -94,7 +99,14 @@ def main():
     else:
         need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and not state['unknown_completion'],
              'Completed idle current deployment required')
-        vm=a.out/'VM-before';vm.mkdir();values=query(lan_module().HOST,vm)
+        vm=a.out/'VM-before';vm.mkdir()
+        if a.native_VM_proof:
+            proof=load(a.native_VM_proof)
+            need(proof['completed'] and proof['shell_commands']==proof['title_launches']==proof['GPU_calls']==0 and
+                proof['same_original_counter_names_sizes_and_shape_review'],'Qualified original-size native VM reader required')
+            from native_VM_observation import query as native_query
+            values=native_query(a.workspace,a.current,a.mount_plan,a.out/'native-VM-observation')
+        else:values=query(lan_module().HOST,vm)
         need(values['boot_before']==values['boot_after']==state['current_boot'] and a.readiness_pages>=values['minimum']+21,
              'Same boot and unchanged original CPU floor required')
         ready=min(values['free_first'],values['free_last'])>=a.readiness_pages

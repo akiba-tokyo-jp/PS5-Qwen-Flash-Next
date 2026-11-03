@@ -2,6 +2,48 @@
   "schema": "ps5-qwen-distinct-refinement-followup-v1",
   "date": "2026-11-03",
   "campaign_complete": false,
+  "continuation_65044_65051": {
+    "CPU_eight_MiB_no_extension_first_launch": {
+      "case": 65044,
+      "completed": true,
+      "ordinary_close_and_exact_original_restoration": true,
+      "original_constructors": 30,
+      "SELF_read_calls": 336,
+      "minimum_global_free_pages": 960,
+      "unchanged_CPU_floor_pages": 919,
+      "source_model_GPU_operations": 0,
+      "exclusive_memory_saving_measured": false,
+      "model_admission_granted": false
+    },
+    "G1": {"case": 65042, "free_pages": 6388, "required_pages": 7374, "refused_before_publication": true, "native_model_launches": 0},
+    "S1_timing_ABBA": {
+      "sequence": 65046,
+      "completed_control_cases_to_reuse": [65050],
+      "completed_native_requests": 3,
+      "next_case": 65051,
+      "next_case_free_pages": 6137,
+      "required_pages_unchanged": 6738,
+      "next_case_refused_before_publication": true,
+      "remaining_cases_unsubmitted": [65052, 65053],
+      "matched_speed_comparison_complete": false
+    },
+    "I1_native_implementation": {
+      "predictor_port_proof": 65045,
+      "actual_trace_calls": 4336,
+      "independent_reference_statistics_exact": true,
+      "predictions": 9,
+      "hits": 2,
+      "largest_prediction_bytes": 1540096,
+      "concurrent_adapter_proof": 65048,
+      "new_host_concurrent_controls": 9,
+      "maximum_total_parallel_reads": 4,
+      "maximum_extra_workers": 1,
+      "scratch_bytes": 2097152,
+      "additional_source_descriptors": 0,
+      "real_model_speculative_IO_qualified": false,
+      "model_decode_speed_measured": false
+    }
+  },
   "primary_metric": {
     "name": "complete_model_decode_tokens_per_second",
     "formula": "(generated_tokens-1)/decode_seconds",

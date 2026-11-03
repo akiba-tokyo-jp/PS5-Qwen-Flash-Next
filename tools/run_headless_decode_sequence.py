@@ -36,6 +36,7 @@ def main():
     for name in ('workspace','current','mount-plan','model-proof','direct-staging-proof','control','candidate','numerical-proof','out'):
         p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--control-price',type=Path);p.add_argument('--candidate-price',type=Path)
+    p.add_argument('--native-VM-proof',type=Path)
     p.add_argument('--default-readiness-pages',type=int,default=7374)
     p.add_argument('--scope',choices=('S1','P1','G1'),required=True);p.add_argument('--case-base',type=int,required=True)
     p.add_argument('--completed-case',type=Path,action='append',default=[],help='Reuse only the already completed prefix of this exact ABBA')
@@ -65,6 +66,7 @@ def main():
         for name in ('workspace','current','mount-plan','model-proof','direct-staging-proof'):
             command+=['--'+name,str(getattr(a,name.replace('-','_')))]
         command+=['--package',str(package),'--out',str(root),'--readiness-pages',str(readiness)]+flags
+        if a.native_VM_proof:command+=['--native-VM-proof',str(a.native_VM_proof)]
         log=a.out/f'case-{a.case_base+index}.private.log'
         with log.open('xb') as stream:
             child=subprocess.Popen(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT);notice=0

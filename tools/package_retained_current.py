@@ -38,7 +38,11 @@ def main():
     parser.add_argument('--formatter-from',type=Path,help='Reuse a verified formatter from a completed retained package')
     parser.add_argument('--identity-provider',type=Path,help='Audit restored-input data definitions in the actual linked ELF')
     parser.add_argument('--CPU-libc-heap-bytes',type=int,help='Separate CPU-only8MiB libc parameter experiment')
+    parser.add_argument('--bounded-CPU-startup-control',type=Path,help='Separate full-link CPU-only8MiB no-extension startup experiment; never model admission')
+    parser.add_argument('--bounded-CPU-startup-heap-bytes',type=int,choices=(4<<20,8<<20),default=8<<20)
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
+    if args.CPU_libc_heap_bytes is not None and args.bounded_CPU_startup_control:raise ValueError('One distinct CPU parameter scope required')
+    if args.bounded_CPU_startup_heap_bytes!=8<<20 and not args.bounded_CPU_startup_control:raise ValueError('A changed startup heap requires its exact CPU-only control')
     load=lambda p:json.loads(Path(p).read_text(encoding='utf-8-sig'))
     package=load(args.current/'provenance/receipt.private.json')
     prior=load(args.current/'provenance/native-link.receipt.private.json')
@@ -86,6 +90,7 @@ def main():
              ('inspect',[str(tool),'self','--inspect','--file',str(executable)]),
              ('extract',[str(tool),'self','--extract','--file',str(executable),'--out',str(roundtrip)])]
     libc_parameter_policy=None
+    bounded_startup_policy=None
     for name,job in jobs:
         result=subprocess.run(job,capture_output=True,timeout=180,env=env)
         (args.out/(name+'.private.log')).write_bytes(result.stdout+result.stderr)
@@ -98,6 +103,18 @@ def main():
             bounded,libc_parameter_policy=bind_heap(original_converted,args.CPU_libc_heap_bytes)
             (args.out/'default-libc-parameters.elf').write_bytes(original_converted)
             converted.write_bytes(bounded)
+        if name=='convert' and args.bounded_CPU_startup_control:
+            from price_cpu_startup_original_reader import require_CPU_profile
+            from bounded_CPU_startup_parameters import bind
+            control,CPU_profile=require_CPU_profile(args.bounded_CPU_startup_control)
+            if control['relink']!=record(args.relink) or CPU_profile['headless_audit_kind']!='CPU-startup-staging-memory':
+                raise ValueError('The exact completed full-link CPU fixture must be reused without code changes')
+            old_command=next(command for label,command in control['commands'] if label=='convert')
+            old_converted=Path(old_command[old_command.index('--out')+1]);original_converted=converted.read_bytes()
+            if original_converted!=old_converted.read_bytes():raise ValueError('The complete default converted CPU ELF must reproduce exactly')
+            bounded,bounded_startup_policy=bind(original_converted,args.bounded_CPU_startup_heap_bytes)
+            bounded_startup_policy.update(control_package=record(args.bounded_CPU_startup_control),control_converted_ELF=record(old_converted))
+            (args.out/'default-libc-parameters.elf').write_bytes(original_converted);converted.write_bytes(bounded)
     expected=bytearray(converted.read_bytes());expected[18:20]=struct.pack('<H',0x3e)
     if expected[7] in (0,3):expected[7]=9
     if struct.unpack_from('<H',expected,16)[0]==0:struct.pack_into('<H',expected,16,2)
@@ -112,6 +129,16 @@ def main():
         checked+=1
     if b'integrity: valid' not in (args.out/'inspect.private.log').read_bytes():raise ValueError('SELF integrity inspection failed')
     geometry=None if relink.get('CPU_only') else audit_converted_storage(image,converted,prior['lossless_driver_tables'])
+    external_rodata=None
+    if relink.get('external_rodata_probe'):
+        if not relink.get('CPU_only') or relink.get('driver_code_linked'):
+            raise ValueError('The new external-rodata scope is limited to the driver-free CPU prototype')
+        external_rodata=relink['external_rodata_probe']
+        begin=external_rodata['layout']['begin'];end=begin+external_rodata['layout']['bytes']
+        for i in range(count):
+            header=struct.unpack_from('<IIQQQQQQ',expected,phoff+i*stride)
+            if header[0]==1 and header[3]<end and begin<header[3]+header[6]:
+                raise ValueError('The formatter recreated LOAD coverage of the exclusive cold-data hole')
     self_record=record(executable)
     if relink.get('CPU_only') and self_record['bytes']>4<<20:raise ValueError('CPU-only SELF exceeds its independent bound')
     if relink['baseline_relink'] and self_record['sha256']!=package['SELF']['sha256']:
@@ -127,6 +154,8 @@ def main():
     if identity_audit:report['required_bundle_identity_audit']=identity_audit
     if relink.get('effective_application_policy'):report['effective_application_policy']=relink['effective_application_policy']
     if libc_parameter_policy:report['CPU_libc_parameter_policy']=libc_parameter_policy
+    if bounded_startup_policy:report['CPU_startup_libc_parameter_policy']=bounded_startup_policy
+    if external_rodata:report['external_rodata_probe']=external_rodata
     (args.out/'result.private.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in report.items() if k not in ('relink','SELF','preferred_formatter_sources','formatter','commands','driver_table_geometry','effective_application_policy')}))
 

@@ -16,6 +16,9 @@
 #include <unistd.h>
 #include "sha256.h"
 #include "loader_probe_context.h"
+#ifdef QWEN_COLD_RODATA_PROBE
+#include "cold_rodata_probe.h"
+#endif
 extern void qwen_native_stage(const char*);
 extern void qwen_native_halt(const char*) __attribute__((noreturn));
 static int journal=-1;
@@ -71,7 +74,27 @@ int main(void){
     void*allocation=malloc(4096);const int allocated=allocation!=NULL;
     if(allocation){for(unsigned i=0;i<4096;++i)((volatile unsigned char*)allocation)[i]=0x39;free(allocation);}
     ok=vm(&last);int IO_closed=!close(journal);journal=-1;
-    const int success=exact&&allocated&&ok&&IO_closed;
+    int success=exact&&allocated&&ok&&IO_closed;
+#ifdef QWEN_COLD_RODATA_PROBE
+    success=success&&!qwen_cold_probe.status&&qwen_cold_probe.source_closed&&
+        qwen_cold_probe.readonly&&qwen_cold_probe.constructor_checked;
+    snprintf(path,sizeof(path),"/app0/qwen-runtime/plan-%s.json.cold",context.run);
+    snprintf(text,sizeof(text),"{\"status\":%d,\"source_closed\":%d,\"readonly\":%d,\"constructor_checked\":%d,\"allocation_retained_until_OS_close\":%d,\"mapped_bytes\":%llu,\"checksum\":%llu,\"free_before\":%u,\"free_after\":%u,\"minimum_free\":%u,\"GPU_calls\":0,\"model_loads\":0}\n",
+        qwen_cold_probe.status,qwen_cold_probe.source_closed,qwen_cold_probe.readonly,
+        qwen_cold_probe.constructor_checked,qwen_cold_probe.allocation_retained,
+        (unsigned long long)qwen_cold_probe.mapped_bytes,(unsigned long long)qwen_cold_probe.checksum,
+        qwen_cold_probe.free_before,qwen_cold_probe.free_after,qwen_cold_probe.minimum_free);
+    if(!fresh(path,text))qwen_native_halt("CPU_loader_cold_report_returned_failure");
+    snprintf(path,sizeof(path),"/app0/qwen-runtime/plan-%s.json.cold-source",context.run);
+    char digest_hex[65];for(unsigned i=0;i<32;++i)snprintf(digest_hex+2*i,3,"%02x",qwen_cold_probe.observed_digest[i]);
+    snprintf(text,sizeof(text),"{\"failure_step\":%d,\"source_flags\":%d,\"source_errno\":%d,\"source_mode\":%llu,\"source_uid\":%llu,\"source_gid\":%llu,\"source_links\":%llu,\"source_bytes\":%llu,\"last_read\":%lld,\"completed_reads\":%llu,\"observed_digest\":\"%s\"}\n",
+        qwen_cold_probe.failure_step,qwen_cold_probe.source_flags,qwen_cold_probe.source_errno,
+        (unsigned long long)qwen_cold_probe.source_mode,(unsigned long long)qwen_cold_probe.source_uid,
+        (unsigned long long)qwen_cold_probe.source_gid,(unsigned long long)qwen_cold_probe.source_links,
+        (unsigned long long)qwen_cold_probe.source_bytes,(long long)qwen_cold_probe.last_read,
+        (unsigned long long)qwen_cold_probe.completed_reads,digest_hex);
+    if(!fresh(path,text))qwen_native_halt("CPU_loader_cold_source_report_returned_failure");
+#endif
     snprintf(path,sizeof(path),"/app0/qwen-runtime/plan-%s.json",context.run);
     snprintf(text,sizeof(text),"{\"schema\":\"ps5-qwen-CPU-loader-footprint-v1\",\"completed\":%s,\"pid\":%d,\"run_id\":\"%s\",\"SELF_sha256\":\"%s\",\"heap_parameter_bytes\":%llu,\"SELF_verified\":%s,\"small_libc_allocation_returned\":%s,\"VM_main_free\":%u,\"VM_final_free\":%u,\"VM_main_inactive\":%u,\"VM_final_inactive\":%u,\"VM_main_wired\":%u,\"VM_final_wired\":%u,\"all_CPU_IO_returned\":true,\"GPU_calls\":0,\"model_loads\":0,\"source_workers\":0}\n",
         success?"true":"false",getpid(),context.run,context.sha,context.heap,exact?"true":"false",allocated?"true":"false",
