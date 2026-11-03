@@ -3,6 +3,18 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Checkpoint65351 adds a PC-only metadata coordinator,session93825,out65351.
+It waits for the already running Gate encoder65345,then prepares the combined
+48+48 metadata exactly once. Do not edit prepare_iq2_up_model_overlay.py while
+it waits: its current digest is frozen in65351/intent.private.json. At the new
+observation Gate has4/48 complete,zero failures; FTP has11/108 positive replies.
+Full timing runner/analyzer now admit Q2/Q3 with their actual native arithmetic
+proofs and sealed candidate source. Lossy precision may change cross-arm routes
+or outputs; each arm must reproduce its own discrete outputs and ordered routes
+and pass counting/finite/reset/durable-completion checks. Broader quality stays
+pending. Normal P1 control,original cohort and primary decode metric remain.
+No timing or native math has been replayed for these host workflow changes.
+
 Checkpoint65350 supersedes execution-state notes below. Console IO remains
 exclusively owned by FTP25865/PID11252/publication65334:10/108 positive file
 replies observed. No PS5 query, native operation or title may overlap it.

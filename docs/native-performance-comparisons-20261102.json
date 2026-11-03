@@ -775,7 +775,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "65350",
+  "latest_update": "65351",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -995,5 +995,21 @@
       "retained",
       "exact-prefix"
     ]
+  },
+  "latest_checkpoint_65351": {
+    "Gate_completed_at_observation": 4,
+    "Gate_failed": 0,
+    "Gate_metadata_coordinator": 65351,
+    "Gate_metadata_coordinator_PC_only": true,
+    "positive_source_store_replies": 11,
+    "source_store_total": 108,
+    "IQ2_ABBA_runner_and_analyzer_implemented": true,
+    "within_arm_output_and_route_reproducibility_required": true,
+    "cross_precision_route_changes_disclosed": true,
+    "counting_finite_reset_and_durable_completion_required": true,
+    "broader_quality_qualification_pending": true,
+    "primary_metric_unchanged": true,
+    "native_replays": 0,
+    "campaign_complete": false
   }
 }

@@ -104,3 +104,27 @@ def require_cache_layout(profile):
         require_gate_input_qualification(scope.get('Gate_input_identity'))
     else:
         need(not scope.get('IQ2_Gate_layers'),'A Gate conversion requires its explicit combined model scope')
+
+
+def require_IQ2_comparison(profiles, scope, numerical_proof):
+    need(scope in ('Q2','Q3') and len(profiles) in (2,4),'One explicit IQ2 pair or ABBA is required')
+    kinds={'Q2':('Q2-IQ2-Up-model','Q2-IQ2-Gate-Up-model'),'Q3':('Q3-IQ2-Down-model',)}
+    expected=['control','candidate'] if len(profiles)==2 else ['control','candidate','candidate','control']
+    need(len({p['headless_audit_kind'] for p in profiles})==1 and profiles[0]['headless_audit_kind'] in kinds[scope],
+         'A single uniform IQ2 model scope must match the original proposal')
+    for profile,arm in zip(profiles,expected):
+        require_cache_layout(profile)
+        compiled=profile['overrides']['native_headless_model_audit']
+        need(compiled['arm']==arm and compiled['arithmetic_qualification']==numerical_proof and
+             profile['performance_timings_usable'] and not profile.get('qualification_observer') and
+             profile['headless_requests']==3 and compiled['original_cold_retained_exact_prefix_sequence'],
+             'Exact timed original-cohort arms and the same completed native arithmetic proof are required')
+        if arm=='control':
+            need(compiled['backend_environment']=={} and 'model_layer' not in profile,
+                 'The control must use normal adopted P1 without additional quantized layers')
+        else:
+            layer=profile['model_layer'];publication=load(layer['publication']['path'])
+            need(record(layer['publication']['path'])==layer['publication'] and publication['completed'] and
+                 publication['whole_new_bytes_and_all_parent_identities_qualified'] and
+                 record(layer['model_receipt']['path'])==layer['model_receipt'],
+                 'The complete candidate must retain its positive whole-source seal')

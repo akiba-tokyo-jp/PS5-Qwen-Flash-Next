@@ -54,6 +54,10 @@ def main():
         profiles.append(exact(package['effective_application_policy']['profile']))
         roots.append(root);terminals.append(terminal);evidence.extend((row['terminal'],row['closure'],row['plan'],row['package']))
     groups=[]
+    lossy_precision=sequence['scope'] in ('Q2','Q3')
+    if lossy_precision:
+        from iq2_up_model_scope import require_IQ2_comparison
+        require_IQ2_comparison(profiles,sequence['scope'],sequence['numerical_proof'])
     ordinary_S1=sequence['scope']=='S1' and all(p['headless_audit_kind'] in
         ('S1-persistent-MTP-online','S1-ordinary-target-control') for p in profiles)
     cross_feature=ordinary_S1 and proof.get('scope')=='S1-ordinary-vs-retained'
@@ -75,7 +79,14 @@ def main():
             routes.append(trace['records']);evidence.append(record(path))
         tokens=all(r['token_ids']==reference['token_ids'] and r['output_bytes']==reference['output_bytes'] for r in requests)
         ordered=all(r==routes[0] for r in routes)
-        if cross_feature:
+        within_arm_outputs=(requests[0]['token_ids']==requests[3]['token_ids'] and
+            requests[0]['output_bytes']==requests[3]['output_bytes'] and
+            requests[1]['token_ids']==requests[2]['token_ids'] and requests[1]['output_bytes']==requests[2]['output_bytes'])
+        within_arm_routes=routes[0]==routes[3] and routes[1]==routes[2]
+        if lossy_precision:
+            need(within_arm_outputs and within_arm_routes,
+                 'Each precision must reproduce its own counting outputs and ordered routes across its two matched runs')
+        elif cross_feature:
             need(tokens and routes[0]==routes[3] and routes[1]==routes[2],
                 'Target outputs must agree and each feature must reproduce its own ordered routes')
             for arm,actual in ((0,routes[0]),(1,routes[1])):
@@ -91,6 +102,9 @@ def main():
         spans['complete_request_span_ms']=compare_time([r['complete_request_span_ms'] for r in requests])
         groups.append(dict(condition=labels[index],native_arm=reference['arm'],tokens_and_output_bytes_exact=tokens,
             ordered_routes_exact=ordered,original_source_demand_equal=source_equal,
+            within_arm_outputs_exact=within_arm_outputs,within_arm_routes_exact=within_arm_routes,
+            generated_tokens_by_run=[r['metrics']['generated_tokens'] for r in requests],
+            lossy_precision_comparison=lossy_precision,
             qualified_cross_feature_computation=cross_feature,route_record_counts=[len(x) for x in routes],
             decode_tokens_per_second=compare(rates),additional_time_metrics=spans))
     lifecycle=None
@@ -127,6 +141,7 @@ def main():
     result=dict(completed=True,scope=sequence['scope'],primary_metric='(generated_tokens-1)/decode_seconds',
         groups=groups,auxiliary_lifecycle=lifecycle,all_twelve_requests_positively_completed=True,
         separate_numerical_proof=sequence['numerical_proof'],qualification_SHA_observer_excluded=True,
+        lossy_precision_comparison=lossy_precision,broader_quality_qualification_pending=lossy_precision,
         all_ordinary_closes_and_exact_restores=True,production_adopted=False,PS5_operations=0,evidence=evidence)
     save(a.out,result)
     print(json.dumps(dict(completed=True,scope=sequence['scope'],groups=[dict(condition=g['condition'],

@@ -19,6 +19,17 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Host workflow checkpoint65351 queues combined Gate/Up metadata immediately
+after the original Gate worker completes,without restarting any encoding.
+Gate has4/48 complete,zero failures,and placement has11/108 positive file
+replies at this observation. The timing sequence/analyzer now admit Q2/Q3 only
+with the actual native arithmetic proof and a positively sealed full model.
+Each arm must reproduce its own discrete outputs and ordered routes across
+matched runs,with counting/finite/reset/durable-completion checks. Cross-arm
+route or output differences are reported for lossy precision,not relabeled as
+an exact-computation optimization. Broader semantic quality remains pending.
+This adds no native replay and changes neither the cohort nor the speed metric.
+
 Checkpoint65350 completes all96 original Up/Down encodings,zero failures.
 All48 Down carriers are also complete. A host coordinator read an encoder's
 mutable progress file during its write; its46 positive carriers are preserved
