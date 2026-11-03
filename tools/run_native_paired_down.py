@@ -145,6 +145,7 @@ def main():
     p.add_argument('--component-pack-proof',type=Path)
     p.add_argument('--pre-device-exit-proof',type=Path)
     p.add_argument('--post-completion-close-proof',type=Path)
+    p.add_argument('--P1-contract-close-proof',type=Path)
     p.add_argument('--execute',action='store_true')
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
     package=load(a.package);relink=exact(package['relink'])
@@ -164,9 +165,22 @@ def main():
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'],'Restored idle native process state required')
     readmission=None
     if state['unknown_completion'] or state.get('GPU_retirement_readmission_pending'):
-        need(a.mode=='CPU' and (a.pre_device_exit_proof is not None or a.post_completion_close_proof is not None) and relink['CPU_Direct_capacity_readmission'],
+        need(a.mode=='CPU' and sum(x is not None for x in (a.pre_device_exit_proof,a.post_completion_close_proof,a.P1_contract_close_proof))==1 and relink['CPU_Direct_capacity_readmission'],
              'Only an explicitly qualified CPU capacity readmission may run while GPU capacity admission is pending')
-        if a.post_completion_close_proof:
+        if a.P1_contract_close_proof:
+            readmission=load(a.P1_contract_close_proof)
+            known_P1=(readmission['all_five_initialization_GPU_epochs_completed'] and readmission['target_request_operations']==0) or (
+                 readmission.get('checkpoint_preallocation_refusal') is True and readmission.get('last_active_epoch_positive_checkpoint') is True and
+                 readmission['target_request_operations']==2) or (
+                 readmission.get('G1_integrated_device_refusal') is True and readmission['target_request_operations']==0) or (
+                 readmission.get('S1_post_request_certificate_refusal') is True and readmission['target_request_operations']==1)
+            need(readmission['completed'] and readmission['ordinary_OS_closes']==1 and readmission['ordinary_exit_observed'] and
+                 readmission['current_seven_restored_and_native_hashed'] and known_P1 and
+                 not readmission['unknown_completion'] and readmission['GPU_capacity_readmission_pending'] and
+                 state['GPU_retirement_readmission_proof']==record(a.P1_contract_close_proof) and
+                 record(readmission['source_audit']['path'])==readmission['source_audit'],
+                 'Exact P1 pre-request CPU refusal, completed initialization epochs and ordinary exit required')
+        elif a.post_completion_close_proof:
             readmission=load(a.post_completion_close_proof)
             need(readmission['completed'] and readmission['ordinary_OS_closes']==1 and readmission['ordinary_exit_observed'] and
                  readmission['current_seven_restored_and_native_hashed'] and readmission['positive_reference_dispatches']==24 and
@@ -274,7 +288,7 @@ def main():
              min(capacity['available_first'],capacity['available_last'])>=capacity['baseline_bytes']==12184453120,
              'Completed native capacity baseline and ordinary exit required before clearing the pending gate')
         state['GPU_retirement_readmission_pending']=False
-        state['standalone_pre_device_exit_capacity_readmission']=dict(source=record(a.post_completion_close_proof or a.pre_device_exit_proof),native=record(a.out/'native-result.private.json'),
+        state['standalone_pre_device_exit_capacity_readmission']=dict(source=record(a.P1_contract_close_proof or a.post_completion_close_proof or a.pre_device_exit_proof),native=record(a.out/'native-result.private.json'),
             individual_old_BO_release_claimed=False,ordinary_exit_observed=True)
     state_path.write_text(json.dumps(state,indent=2)+'\n')
     passed=terminal['completed'] and (CPU if a.mode=='CPU' else GPU and terminal['all_outputs_passed'])

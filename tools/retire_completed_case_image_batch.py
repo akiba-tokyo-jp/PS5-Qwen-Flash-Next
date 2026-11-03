@@ -12,18 +12,33 @@ from start_success_route import load,need,save
 from success_case_control import ALIAS,PHYSICAL,build,complete,current_files,digest_expression,execute,lan_module
 
 
-def prepare(case_record,current,state):
+def prepare(case_record,current,state,include_latest_closed=False,archive_missing=False):
     completed=load(case_record)
-    for key in ('case_plan','close','native_terminal'):need(record(completed[key]['path'])==completed[key],'Closed-case evidence changed')
+    for key in ('case_plan','close'):need(record(completed[key]['path'])==completed[key],'Closed-case evidence changed')
+    terminal_path=Path(completed['native_terminal']['path'])
+    if archive_missing and not terminal_path.exists():
+        duplicate=Path(completed['case_plan']['path']).parent/'native.result.private.json'
+        expected=completed['native_terminal'];actual=record(duplicate)
+        need(all(actual[key]==expected[key] for key in ('bytes','sha256')),'Exact retained terminal duplicate required')
+        with terminal_path.open('xb') as stream:stream.write(duplicate.read_bytes())
+    need(record(terminal_path)==completed['native_terminal'],'Closed terminal evidence changed')
     case=load(completed['case_plan']['path']);closed=load(completed['close']['path']);terminal=load(completed['native_terminal']['path'])
     need(completed['all_intended_events_exercised'] and closed['completed'] and closed['ordinary_exit_observed'] and
          closed['current_seven_restored_and_native_hashed'] and not closed['unknown_completion'] and terminal['completed'] and
          terminal['all_model_source_device_owners_positively_retired'] and terminal['device_ledger_live_bytes']==0 and len(terminal['requests'])==3,
          'Only positively completed and ordinarily restored three-request model cases are admitted')
     need(re.fullmatch('[0-9a-f]{32}',case['run_id']) and case['report']=='/app0/qwen-runtime/plan-'+case['run_id']+'.json' and
-         state['active_successful_native_case']['run_id']!=case['run_id'],'The active/latest case is protected')
+         (state['active_successful_native_case']['run_id']!=case['run_id'] or include_latest_closed),'The active/latest case is protected')
     latest=state['successful_route_20261102']['current_boot_model_proof']['case']
-    need(Path(latest['path']).resolve()!=Path(completed['case_plan']['path']).resolve(),'The current real-model proof is protected')
+    is_latest=Path(latest['path']).resolve()==Path(completed['case_plan']['path']).resolve()
+    need(not is_latest or include_latest_closed,'The current real-model proof is protected')
+    if include_latest_closed:
+        need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and not state['unknown_completion'],
+             'Only positively closed display images may retire; no active title is admitted')
+        if is_latest:
+            model=state['successful_route_20261102']['current_boot_model_proof']
+            need(all(record(model[k]['path'])==model[k] for k in ('native_terminal','observer','case','SELF')),
+                 'Latest model admission metadata and exact SELF must remain preserved')
     root=Path(completed['case_plan']['path']).parent;observer=root/'passive-observer';observed=load(observer/'complete.private.json')
     frames=observed['actual_native_frames']
     need(observed['completed'] and observed['model_source_GPU_owners_positively_retired'] and len(frames)==2 and
@@ -33,11 +48,22 @@ def prepare(case_record,current,state):
     for ordinal,frame in zip((1,2),frames):
         path=(observer/('native.arm'+str(ordinal)+'.display.bmp.private.bin')).resolve()
         need(path.is_relative_to(campaign) and not path.is_symlink(),'Only exact owned campaign image copies are admitted')
-        value=record(path);need(value['bytes']==frame['BMP_bytes'] and 54<value['bytes']<=16<<20,'Full independent bounded PC BMP copy required')
         remote=PHYSICAL+case['report'][5:]+'.arm'+str(ordinal)+'.display.bmp'
+        if archive_missing and not path.exists():
+            need(54<frame['BMP_bytes']<=16<<20,'Bounded completed display payload required')
+            raw=lan_module().web('/fs'+urllib.parse.quote(remote,safe='/'),frame['BMP_bytes'])
+            need(len(raw)==frame['BMP_bytes'] and raw[:2]==b'BM','Complete native BMP export required')
+            with path.open('xb') as stream:stream.write(raw)
+        value=record(path);need(value['bytes']==frame['BMP_bytes'] and 54<value['bytes']<=16<<20,'Full independent bounded PC BMP copy required')
         targets.append(dict(value,remote=remote,alias=ALIAS+remote[len(PHYSICAL):]))
-    reports=[dict(completed['native_terminal'],remote=PHYSICAL+case['report'][5:]),
-        dict(record(observer/'native.arm2.result.private.bin'),remote=PHYSICAL+case['report'][5:]+'.arm2.result')]
+    arm=observer/'native.arm2.result.private.bin';arm_remote=PHYSICAL+case['report'][5:]+'.arm2.result'
+    if archive_missing and not arm.exists():
+        raw=lan_module().web('/fs'+urllib.parse.quote(arm_remote,safe='/'),1<<20);value=json.loads(raw)
+        need(value['run_id']==case['run_id'] and value['pid']==terminal['pid'] and value['request_reset_completed'] and
+             value['counting_quality_passed'] and value['full_F32_finite'] and value['token_ids']==terminal['requests'][2]['token_ids'],
+             'Returned display result must match the immutable completed terminal')
+        with arm.open('xb') as stream:stream.write(raw)
+    reports=[dict(completed['native_terminal'],remote=PHYSICAL+case['report'][5:]),dict(record(arm),remote=arm_remote)]
     return dict(case_record=record(case_record),case_plan=completed['case_plan'],closed=completed['close'],targets=targets,reports=reports)
 
 
@@ -45,12 +71,14 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','mount-plan','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--case-record',type=Path,action='append',required=True)
+    p.add_argument('--include-latest-closed-images',action='store_true',help='Retire only returned display payloads; retain exact latest model proof metadata')
+    p.add_argument('--archive-missing-host-images',action='store_true',help='Copy only positively completed native BMPs before exact native SHA retirement')
     p.add_argument('--remove-host-copies',action='store_true');p.add_argument('--execute',action='store_true');p.add_argument('--collect',action='store_true')
     a=p.parse_args();need(1<=len(a.case_record)<=16 and not(a.execute and a.collect),'One bounded list and one native submission/collection phase required')
     state=load(a.current/'active-console.private.json')
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and not state['unknown_completion'],
          'Positive idle current deployment required')
-    cases=[prepare(path,a.current,state) for path in a.case_record];targets=[dict(target,case_index=index) for index,case in enumerate(cases) for target in case['targets']]
+    cases=[prepare(path,a.current,state,a.include_latest_closed_images,a.archive_missing_host_images) for path in a.case_record];targets=[dict(target,case_index=index) for index,case in enumerate(cases) for target in case['targets']]
     need(len({row['remote'] for row in targets})==len(targets),'Each exact image may appear only once')
     package=load(a.current/'provenance/current-package.private.json');native=load(a.current/'provenance/native-link.receipt.private.json')
     selected=current_files(a.current)+load(a.current/'provenance/retained-relink-inputs.private.json')+native['formatter_stubs']+[package['formatter']]

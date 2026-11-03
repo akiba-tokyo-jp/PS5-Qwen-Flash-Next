@@ -3,6 +3,109 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest S1: native65000 completed all three source-corrected compact-engine
+fresh-owner requests, positive retirement, ordinary close and exact restoration.
+Its first host observer saw incomplete JSON; --collect recovered the SAME
+PID3192, without restaging, relaunching or replaying model work. Retained65001
+refused before publication (5906 free pages <6738); never repeat unchanged.
+Baseline64989 is already complete/ordinarily restored. Changed-state65004 runs
+package64999 after65003 deletes32 genuinely remaining older console images.
+All three requests, positive owner retirement, ordinary close and exact restore
+complete. Finalizer65010 proves all69 F32 rows, ordered routes, actual causal
+inputs/tokens/bytes exact versus65000; auxiliary creations3->1, KV clears3->3.
+This is numerical/lifetime qualification, not a model-speed claim. New65005
+timing entries change only the terminal label and omit the extra F32 SHA object;
+existing causal auditing remains. No timing results have been measured yet.
+P1 numeric65009 refuses before publication at5620<7260 after65004; no replay.
+Q2/Q3 closed component inputs65011 retire2 exact console files/64847872 bytes,
+preserving full PC originals and all production inputs. Further6 early displayed
+images are being retired by65012. No cache purge, pressure or initializer occurs.
+Read-only console inventory subsequently found older displayed BMPs whose PC
+copies had been removed. Do not infer console absence from absent PC copies.
+Changed cleanup65003 archives native images only from positively closed cases,
+reconstructs missing terminal copies ONLY from SHA-identical retained evidence,
+and verifies complete native SHA and completed display bindings before unlink.
+Native64992 completed49 target/auxiliary epochs,23 finite F32 rows and request
+reset, then its NEW generic backing certificate incorrectly rejected compact
+statistics. That certificate is NOT selected; exact failed source/tests are
+archived privately and removed from maintained code.64995 ordinarily closes
+the same owner once and restores/hashes production; CPU-only64996 returns the
+original Direct capacity and ordinarily restores. Do not replay64992/64995.
+Actual selected engine63c42b7103629454... has a machine-code compact branch that
+skips full capture; actual counters are6 compact/1 rollback. New64997 verifies
+per-request compact deltas and grants NO additional allocation credit.12 NEW
+counter controls pass. Engine/model math, MTP provider and native guards stay.
+New64998/99 completed-phase prices use64992's observed start6807 and phase
+minima3734/3688/2804 after49 positive epochs. CPU6738 dominatesGPU5330/model6133;
+256 CPU and1024 GPU/model slack are preserved. Older CPU-only staged admission
+used for64992 explicitly did not preserve the prelaunch model extrapolation
+margin. It is superseded for new packages, not rewritten or generalized.
+See docs/ordinary-mtp-refinement-20261103.md for the failed assumption and
+actual source/binary/phase evidence. No initializer/reboot/reset/retry.
+
+Earlier checkpoint (superseded by the latest entry above): S1 ordinary target64989 completes all3 requests/F32/routes,
+positive retirement, ordinary close and exact seven-file restore. Fresh-owner
+64992 is executing. Never repeat unlaunched/refused64987 (7342<7374); it changes
+no files and launches no title. The unchanged non-MTP target's bound7260 price
+uses completed original CPU/R1 evidence and keeps1024 phase slack. MTP packages
+64978/79 instead have explicit staged6738 CPU-only admission from original-reader
+CPU and successful MTP64732 evidence; it DOES NOT preserve the historical1024
+prelaunch extrapolation margin or grant GPU/model admission. All live native
+physical/reserve/budget/positive-completion guards remain unchanged. See
+docs/ordinary-mtp-refinement-20261103.md. Do not silently generalize either price.
+S1 entry64975's prefix removal is retained, but its generic checkpoint backing
+certificate is rejected by native64992 and superseded by64997 above. Abstract
+host controls are not proof of the actual compact engine. Original64764/66
+entries/packages never launch. Source/module/graph/driver math stays unchanged.
+Host footprint variants64990/91 are unselected;10 generated files/488161846 bytes
+are retired by64994, with every production input exact. No console RAM gain.
+
+P1 first-row error is now0.1812725067138672 over248320 values, with hashes binding
+the two completed64971 rows to the old differing row. Never replay the two rows
+or the unnecessary third request. Third-prefill preallocation refusal has a
+positive checkpoint and no following GPU submissions;64973 ordinarily closes
+that owner and restores current,64974 returns original Direct capacity.
+The one-row P1 is not adopted on speed alone. Further tail-eight64980 passes16
+NEW shape/phase controls, original sources unchanged. Headless F32 packages64993
+are prepared, not launched. No new precision or rate result is assumed.
+
+G1 fused model64977 stops in CPU context graph construction: the helper excludes
+the actual IGPU type. All two model-upload GPU epochs completed; the last active
+epoch has CPU graph work only.64981 source-binds one ordinary close and exact
+restoration. Root capacity64982 returns/refuses before queries, helper retired;
+never repeat. Existing application-context CPU64985 returns both12184453120+
+capacity samples/canaries and ordinarily restores. Corrected64986 acceptsGPU
+andIGPU, rejectsCPU/ACCEL/META in five NEW controls; unchanged64 software fences
+and104 arena checks are reused with explicit metadata-only shader equivalence.
+Packages64988 are prepared, not launched. Prior64977 is not a GPU numeric failure.
+
+P1 cold-only timing64930/31/32/40 is complete: decode means10.162065->10.436816,
+12.094066->12.172570 and13.264824->13.217511tok/s (+2.704/+0.649/-0.357%).
+Only cold/retained paired gains exceed A/A spread. All12 tokens/routes/source
+counts/durable ledgers match. F32 qualification64950/64955 has68/69 exact rows;
+only the first cold prefill row differs. Never replay those continuations.
+Short diagnostic64961 refuses the original32-token request guard before any
+tokenization/prefill. Its five GPU initialization epochs all complete;64966
+ordinarily closes that exact owner once and restores/hashes current seven.
+CPU-only64969 returns12,262,047,744 Direct bytes, canaries exact, then ordinarily
+restores. No reset/initializer/reboot. Corrected one-token class64967 passes
+eight NEW controls without changing global32-token policy or physical guards;
+native64971 is in progress. See docs/cold-prefill-refinement-20261103.md.
+
+G1 new full-sort fusion64954/64956 passes10 lease and104 real GGML view controls.
+Original GPU executable sections remain byte-exact; only two shader-resource
+references change, with the original decoder/admission lease preserved.
+Software64962 refuses unsupported512-lane geometry before dispatch; do not retry.
+Changed64964 uses128 physical lanes with the same full bitonic comparison/barrier
+order. Software64965 passes64 fences:16 original32/128-column controls and48
+changed32/128/512/1024-column cases, widths1/2/30, ties and exact alias canaries.
+Original512-column execution is not software-qualified. Full-model F32 packages
+64970 are prepared, not yet launched. No native G1 improvement/adoption follows.
+Q2/Q3 scale refinements64934 fit36 NEW encodings, with unchanged code bytes and
+two distinct scale optimizers. All independent C/Python outputs match. Bounded
+ridge improves IQ2 but Up0/9 and Down2/9 beat current Q2, unchanged in count from
+the previous baseline. See docs/iq2-output-scale-refinement-20261103.md.
+
 Native Q3 standalone64871 now passes all24 actual PS5 cases/fences and original
 F64/canary checks, max error1.2140019420292525e-7. Final DeviceWaitIdle and driver
 producer completion return; a subsequent CPU teardown check fails. Source-bound

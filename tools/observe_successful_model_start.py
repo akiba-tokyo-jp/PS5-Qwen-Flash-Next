@@ -27,12 +27,17 @@ def main():
         target=out/name
         if target.exists():need(target.read_bytes()==raw,'Previously captured native evidence changed')
         else:target.write_bytes(raw)
+    def complete_JSON(raw):
+        if not raw or not raw.strip():return False
+        try:json.loads(raw)
+        except (json.JSONDecodeError,UnicodeDecodeError):return False
+        return True
     first_raw=get(remote+'.first.start')
     if first_raw is None:
         state=dict(native_first_start_pending=True,automatic_retries=0)
         for suffix in ('failure','fatal'):
             raw=get(remote+'.'+suffix)
-            if raw is not None:
+            if raw is not None and complete_JSON(raw):
                 immutable('native.'+suffix+'.private.json',raw);state[suffix]=json.loads(raw)
         if 'failure' not in state and 'fatal' not in state:
             with lan.OPENER.open('http://'+lan.HOST+':8084/processes_list',timeout=8) as response:
@@ -49,6 +54,9 @@ def main():
                         native_failure_JSON_present=False,source_audit_and_ordinary_close_still_required=True))
                     raise RuntimeError('Observed returned early SELF refusal; stop without replay and audit ordinary CPU close')
         print(json.dumps(state));return
+    if not complete_JSON(first_raw):
+        print(json.dumps(dict(native_first_start_pending=True,metadata_write_in_progress=True,observed_bytes=len(first_raw),automatic_retries=0)))
+        return
     first=json.loads(first_raw);pid=first['pid']
     need(first['run_id']==case['run_id'] and first['candidate_SELF_sha256']==case['SELF']['sha256'],
          'Exact native run and linked SELF required')
@@ -61,14 +69,14 @@ def main():
         last_native_stage=stages.decode(errors='replace').splitlines()[-1] if stages else None)
     for suffix in ('failure','fatal'):
         raw=get(remote+'.'+suffix)
-        if raw is not None:
+        if raw is not None and complete_JSON(raw):
             immutable('native.'+suffix+'.private.json',raw)
             state[suffix]=json.loads(raw)
     ready=get(remote+'.demo.ready')
-    if ready is not None:
+    if ready is not None and complete_JSON(ready):
         immutable('native.demo.ready.private.json',ready);state['native_demo_ready']=True
     terminal=get(remote)
-    if terminal is not None:
+    if terminal is not None and complete_JSON(terminal):
         immutable('native.result.private.json',terminal);state['native_terminal_observed']=True
     with lan.OPENER.open('http://'+lan.HOST+':8084/processes_list',timeout=8) as response:
         owners=[r for r in json.loads(response.read())['processes'] if r['name']=='eboot.bin']

@@ -19,6 +19,8 @@ def main():
     for name in ('workspace','current','build','identity-provider','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--full-F32-observer',type=Path)
     a=p.parse_args();compiled=load(a.build);policy=load(compiled['application_policy']['path'])
+    need(not(compiled.get('extra_full_F32_SHA_provider_must_be_omitted') and a.full_F32_observer),
+         'A timing entry may not link the qualification-only full-row SHA observer')
     need(compiled['completed'] and policy['completed'] and policy['kind']=='headless-model-audit' and
          policy['headless_model_audit'] and policy['model_and_GPU_guards_preserved'],'Exact guarded headless audit required')
     if policy['headless_audit_kind']=='S1-MTP-shadow':
@@ -40,7 +42,10 @@ def main():
              compiled.get('host_multithread_errno_short_read_identity_and_overflow_controls_passed') is True and compiled['required_link_flags']==['--wrap=pread'])
         target_capture=(policy['headless_audit_kind'] in ('S1-target-hidden-capture-audit','S1-persistent-MTP-online') and compiled['required_link_flags']==
             ['--wrap='+name for name in ('llama_batch_ext_init','llama_batch_ext_free','llama_batch_ext_clear','llama_batch_ext_add_token','llama_process','llama_synchronize')])
-        need(early or original_reads or target_capture,'Only explicitly bound data preservation or observation flags are admitted')
+        prefill_row=(policy['headless_audit_kind']=='P1-prefill-row-difference' and
+            compiled.get('existing_F32_comparator_body_unchanged_except_single_row_bound') is True and
+            compiled['required_link_flags']==['--wrap='+n for n in ('llama_process','llama_sampler_apply','llama_sampler_sample')])
+        need(early or original_reads or target_capture or prefill_row,'Only explicitly bound data preservation or observation flags are admitted')
         arguments+=['--link-flag='+flag for flag in compiled['required_link_flags']]
     if compiled.get('required_additional_objects'):
         need(policy['headless_audit_kind']=='S1-persistent-MTP-online' and

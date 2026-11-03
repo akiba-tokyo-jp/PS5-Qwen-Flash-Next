@@ -102,7 +102,8 @@ def main():
         both_warm_whole_request_gains_beyond_control_spread=all(g['metrics']['complete_request_span_ms']['both_pairs_exceed_control_spread'] for g in groups[1:]),
         final_token_ledger_sync_and_close_included_in_complete_request_span=True,
         primary_metric='(generated_tokens-1)/decode_seconds',
-        cross_program_full_F32_row_SHA256_compared=True,all69_full_vocabulary_F32_rows_exact=f32_exact,
+        cross_program_full_F32_row_SHA256_compared=all(len(rows)==69 for rows in f32_rows),
+        full_vocabulary_F32_rows_observed_per_case=[len(rows) for rows in f32_rows],all69_full_vocabulary_F32_rows_exact=f32_exact,
         cross_program_full_F32_row_bytes_compared=False,all_boundary_states_qualified=False,
         production_adopted=False,evidence=evidence,PS5_operations=0)
     save(args.out,report)

@@ -3,6 +3,7 @@
 """Run one finite model audit and require positive retirement before ordinary close."""
 import argparse
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -24,6 +25,9 @@ def main():
     p.add_argument('--readiness-pages',type=int,required=True)
     p.add_argument('--direct-staging-proof',type=Path)
     p.add_argument('--cpu-startup-pricing',type=Path)
+    p.add_argument('--ordinary-target-pricing',type=Path)
+    p.add_argument('--staged-MTP-startup-pricing',type=Path)
+    p.add_argument('--collect',action='store_true',help='Continue observing/finalizing the exact accepted owner; never stage or launch again')
     p.add_argument('--quiet-seconds',type=int,default=0,help='Optional host-quiet interval for a separately instrumented component')
     a=p.parse_args();need(0<=a.quiet_seconds<=600,'Finite host-quiet interval required')
     package=load(a.package);effective=package['effective_application_policy'];profile=load(effective['profile']['path'])
@@ -60,21 +64,43 @@ def main():
             a.readiness_pages==price['selected_CPU_only_prelaunch_screen_pages'],
             'One exact CPU-only package/pricing scope may not reduce the unchanged model screen')
     unloaded=profile.get('unloaded_CPU_fixture') is True
+    if a.ordinary_target_pricing:
+        from price_ordinary_target_control import require
+        pricing=require(a.ordinary_target_pricing,a.package)
+        need(profile['headless_audit_kind'] in ('S1-ordinary-target-control','P1-tail-eight') and a.readiness_pages==pricing['selected_readiness_pages'],
+             'Only the exact original ordinary target may use its R1-derived pricing')
+    if a.staged_MTP_startup_pricing:
+        from price_staged_mtp_startup import require
+        MTP_pricing=require(a.staged_MTP_startup_pricing,a.package)
+        need(not a.ordinary_target_pricing and profile['headless_audit_kind']=='S1-persistent-MTP-online' and
+             a.readiness_pages==MTP_pricing['selected_readiness_pages'],
+             'Only the corrected finite MTP scope may use measured CPU startup and unchanged live phase admission')
     need(count==scope['requests'] and (count in (1,3) or (count==0 and unloaded and scope['model_loads']==scope['GPU_calls']==0)) and
          scope['HTTP_requests']==scope['VideoOut_starts']==0,'Explicit finite headless request count required')
-    a.out.mkdir(parents=True,exist_ok=False)
-    save(a.out/'intent.private.json',dict(package=record(a.package),native_requests=count,HTTP_requests=0,VideoOut_starts=0,
-        automatic_retries=0,require_positive_retirement_before_close=True))
+    if a.collect:
+        intent=load(a.out/'intent.private.json');case_plan=load(a.out/'case/plan.private.json');launch=load(a.out/'case/launch/result.private.json')
+        need(intent['package']==record(a.package) and intent['native_requests']==count and case_plan['package']==record(a.package) and
+             launch['completed'] and launch['operation_calls']==1,'Only the exact already accepted headless owner may be collected')
+    else:
+        a.out.mkdir(parents=True,exist_ok=False)
+        save(a.out/'intent.private.json',dict(package=record(a.package),native_requests=count,HTTP_requests=0,VideoOut_starts=0,
+            automatic_retries=0,require_positive_retirement_before_close=True))
     state=load(a.current/'active-console.private.json')
-    need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and not state['unknown_completion'],
-         'Completed idle current deployment required')
-    vm=a.out/'VM-before';vm.mkdir();values=query(lan_module().HOST,vm)
-    need(values['boot_before']==values['boot_after']==state['current_boot'] and a.readiness_pages>=values['minimum']+21,
-         'Same boot and unchanged original CPU floor required')
-    ready=min(values['free_first'],values['free_last'])>=a.readiness_pages
-    save(vm/'result.private.json',dict(completed=True,observations=values,selected_readiness_pages=a.readiness_pages,
-        application_policy_not_physical_OS_limit=True,may_launch=ready,title_launches=0,GPU_calls=0))
-    need(ready,'Headless readiness margin insufficient; no staging or launch')
+    if a.ordinary_target_pricing:need(pricing['current_boot']==state['current_boot'],'Pricing boot changed')
+    if a.staged_MTP_startup_pricing:need(MTP_pricing['current_boot']==state['current_boot'],'Pricing boot changed')
+    if a.collect:
+        need(state['active_successful_native_case']['run_id']==case_plan['run_id'] and state['native_running'] and not state['original_restored'],
+             'The same accepted owner must still be installed; no resubmission is permitted')
+    else:
+        need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and not state['unknown_completion'],
+             'Completed idle current deployment required')
+        vm=a.out/'VM-before';vm.mkdir();values=query(lan_module().HOST,vm)
+        need(values['boot_before']==values['boot_after']==state['current_boot'] and a.readiness_pages>=values['minimum']+21,
+             'Same boot and unchanged original CPU floor required')
+        ready=min(values['free_first'],values['free_last'])>=a.readiness_pages
+        save(vm/'result.private.json',dict(completed=True,observations=values,selected_readiness_pages=a.readiness_pages,
+            application_policy_not_physical_OS_limit=True,may_launch=ready,title_launches=0,GPU_calls=0))
+        need(ready,'Headless readiness margin insufficient; no staging or launch')
     def run(name,args,label,early_refusal=None):
         with (a.out/(label+'.private.log')).open('xb') as output:
             child=subprocess.Popen([sys.executable,'-B',str(ROOT/'tools'/name),*map(str,args)],cwd=ROOT,stdout=output,stderr=subprocess.STDOUT)
@@ -86,17 +112,20 @@ def main():
              'Audit stopped; inspect '+str(a.out/(label+'.private.log'))+'; never resubmit a consumed operation')
     common=['--workspace',a.workspace,'--current',a.current,'--mount-plan',a.mount_plan]
     clock=a.out/'clock';case=a.out/'case';closed=a.out/'closed'
-    run('refresh_successful_clock.py',common+['--out',clock,'--execute'],'clock')
     transport=['--direct-staging-proof',a.direct_staging_proof] if a.direct_staging_proof else []
-    run('run_successful_model_case.py',common+transport+['--model-proof',a.model_proof,'--clock',clock/'clock.private.json',
-        '--package',a.package,'--out',case,'--execute'],'start')
-    if a.quiet_seconds:
+    if not a.collect:
+        run('refresh_successful_clock.py',common+['--out',clock,'--execute'],'clock')
+        run('run_successful_model_case.py',common+transport+['--model-proof',a.model_proof,'--clock',clock/'clock.private.json',
+            '--package',a.package,'--out',case,'--execute'],'start')
+    if a.quiet_seconds and not a.collect:
         started=int(time.time()*1000);until=time.monotonic()+a.quiet_seconds
         while time.monotonic()<until:
             print(json.dumps(dict(phase='headless_component_host_quiet',PS5_requests=0,remaining_seconds=max(0,int(until-time.monotonic())))),flush=True)
             time.sleep(min(30,max(0,until-time.monotonic())))
         save(a.out/'quiet-window.private.json',dict(completed=True,start_epoch_ms=started,end_epoch_ms=int(time.time()*1000),PS5_requests=0))
-    deadline=time.monotonic()+1800;poll=0
+    deadline=time.monotonic()+1800
+    used=[int(m[1]) for path in a.out.glob('observe-*.private.log') if (m:=re.fullmatch(r'observe-(\d+)\.private\.log',path.name))]
+    poll=max(used,default=-1)+1
     while True:
         run('observe_successful_model_start.py',['--case-plan',case/'plan.private.json'],'observe-'+str(poll),case/'host-early-self-refusal.private.json');poll+=1
         if (case/'host-early-self-refusal.private.json').exists():
