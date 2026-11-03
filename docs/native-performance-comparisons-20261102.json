@@ -338,12 +338,63 @@
       "default_F16_IQ2_qualified": false
     },
     "backend_profile_comparison": {
-      "build": 65291,
-      "current_P1_weights_unchanged": true,
-      "model_source_publications": 0,
-      "default_case_active": 65300,
-      "F32_case_unrun": true,
-      "whole_model_speed_or_quality_qualified": false
+      "completed": true,
+      "scope": "65314",
+      "unchanged_weights": true,
+      "one_observation_per_profile_and_condition": true,
+      "AA_or_ABBA_qualified": false,
+      "profiles": {
+        "default": [
+          10.375276333882917,
+          12.259395097663003,
+          13.273539904219904
+        ],
+        "F32_forced": [
+          9.581483051479639,
+          11.223791324895986,
+          12.473495263108118
+        ],
+        "only_MMVQ_disabled": [
+          10.43016293532096,
+          12.330737731881463,
+          13.36495257957597
+        ]
+      },
+      "condition_order": [
+        "cold",
+        "retained",
+        "exact_prefix"
+      ],
+      "metric": "(generated_tokens-1)/decode_seconds",
+      "all_output_tokens_and_bytes_match": true,
+      "MMVQ_only_routes_and_source_read_bytes_match": true,
+      "all_ordinary_exits_and_P1_restores": true,
+      "production_adopted": false
+    },
+    "F16_storage_FP32_accumulation_65313": {
+      "completed": true,
+      "native_graphs": 12,
+      "cases": 6,
+      "widths": [
+        30,
+        32
+      ],
+      "groups": 3,
+      "mismatches": 0,
+      "maximum_F64_reference_error": 5.161899025551975e-06,
+      "reference": "F64 of separately decoded FP16-rounded weights and FP16-exact F32 inputs",
+      "tolerance_unchanged": true,
+      "ordinary_exit_and_exact_P1_restore": true,
+      "native_cases_replayed": 0,
+      "full_model_quality_or_speed_qualified": false
+    },
+    "scoped_precision_wrapper_65316": {
+      "actual_selected_PS5_ABI_compiled": true,
+      "only_IQ2_matmul_ID_nodes_use_FP32_accumulation": true,
+      "normal_F16_enabled": true,
+      "MMVQ_disabled": true,
+      "partial_layout_rejected": true,
+      "full_model_quality_or_speed_qualified": false
     }
   },
   "Q3": {
@@ -484,7 +535,7 @@
     "packed_half_fixture": 65296,
     "packed_half_SELF": 65297,
     "packed_half_link_binding_audit": 65299,
-    "packed_half_native_GPU_unrun": true,
+    "packed_half_native_GPU_unrun": false,
     "next_native_GGML_cases": 10,
     "reused_positive_native_GGML_cases": 2,
     "changed_suffix_controls": {
@@ -492,7 +543,32 @@
       "positive": 4,
       "negative": 20,
       "PS5_operations": 0
-    }
+    },
+    "packed_half_native_GPU_active": false,
+    "packed_half_native_GPU_scope": "65302",
+    "packed_half_native_GPU_completed": true,
+    "packed_half_native_GPU_passed": false,
+    "packed_half_native_ordinary_exit_and_P1_restore": true,
+    "actual_wide_resource_trace": "65320",
+    "changed_dequant_selected": false,
+    "generic_refinement": "65321",
+    "generic_software": {
+      "scope": "65324",
+      "distinct_binaries": 1,
+      "resource_aliases": 2,
+      "cases": 6,
+      "values": 357120,
+      "mismatches": 0,
+      "all_canaries_and_fences_passed": true,
+      "maximum_F64_error": 3.781309234063279e-07,
+      "constant_Q2_specialization_of_actual_SPIRV": true,
+      "PS5_operations": 0
+    },
+    "generic_provider": "65325",
+    "generic_fixture": "65326",
+    "generic_SELF": "65327/SELF",
+    "generic_actual_link_audit": "65328",
+    "changed_CPU_capacity_active": "65329"
   },
   "I1": {
     "status": "both_refinements_complete_unadopted",
@@ -670,7 +746,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "2026-11-03",
+  "latest_update": "65331",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -764,18 +840,12 @@
     "latest_failure_classification": 65264
   },
   "current_console_execution": {
-    "snapshot_case": 65300,
-    "selected_P1_seven_files_restored_and_native_hashed": true,
-    "native_running": false,
-    "model_loaded": false,
-    "unknown_completion": false,
-    "GPU_readmission_pending": false,
-    "overlapping_scope_permitted": false,
-    "initializer_replays": 0,
-    "reboot_available": false,
-    "latest_completed_restoration": 65298,
-    "active_scope": 65300,
-    "active_scope_kind": "Default current-P1 three-request backend-profile control; ordinary close and restoration required"
+    "scope": "Q3-generic-indexed-CPU-capacity-65329",
+    "active": true,
+    "host_session": 40819,
+    "mode": "CPU",
+    "GPU_graphs": 0,
+    "ordinary_P1_restore_required": true
   },
   "latest_checkpoint_65281": {
     "campaign_complete": false,
@@ -812,5 +882,24 @@
     "original_quantizer_workers": 2,
     "unchanged_native_tests_replayed": 0,
     "transfer_experiments_closed": true
+  },
+  "latest_checkpoint_65316": {
+    "encoder_completed": 85,
+    "encoder_failed": 0,
+    "encoder_total": 96,
+    "encoder_workers": 2,
+    "full_model_source_publication_started": false,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65331": {
+    "encoder_completed": 87,
+    "encoder_failed": 0,
+    "encoder_total": 96,
+    "encoder_workers": 2,
+    "carrier_parts": 42,
+    "Up_prefix_preparation_layers": 44,
+    "Up_prefix_preparation_active": true,
+    "full_model_source_publication_started": false,
+    "campaign_complete": false
   }
 }

@@ -66,10 +66,17 @@ def main():
         package=load(case['package']['path']);effective=package['effective_application_policy'];profile=load(effective['profile']['path'])
         component=terminal['component']
         scope=profile['overrides']['native_IQ2_fixture'];case_bound=scope['cases'];graph_bound=scope['maximum_GPU_graphs']
+        arithmetic_only=(scope.get('qualification_only') is True and
+                         scope.get('F16_storage_FP32_accumulation') is True and
+                         scope.get('widths')==[30,32] and scope.get('groups')==3 and
+                         case_bound==6 and graph_bound==12 and
+                         scope.get('formats')==['Q2_K','IQ2_XXS'] and
+                         component.get('F16_storage_FP32_accumulation') is True)
         need(record(effective['profile']['path'])==effective['profile'] and effective['kind']=='Q2-IQ2-fixture' and
              profile['unloaded_GPU_fixture'] and terminal['kind']=='Q2-IQ2-fixture' and terminal['model_loads']==0 and
              component['completed'] and component['model_loads']==0 and component['all_backends_positively_retired'] and
-             component['source_descriptor_and_scratch_retired'] and case_bound in (6,12) and graph_bound==12*case_bound and
+             component['source_descriptor_and_scratch_retired'] and case_bound in (6,12) and
+             (graph_bound==12*case_bound or arithmetic_only) and
              1<=len(component['cases'])<=case_bound and 0<=component['GPU_graphs']<=graph_bound and type(component['all_outputs_reference_valid']) is bool and
              all(r['backends_positively_retired'] for r in component['cases']) and completed['unloaded_IQ2_fixture'],
              'Positive finite unloaded IQ2 owner retirement required; a numerical negative may close normally')

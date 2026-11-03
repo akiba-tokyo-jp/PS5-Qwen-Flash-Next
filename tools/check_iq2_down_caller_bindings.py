@@ -71,10 +71,10 @@ def main():
     save(a.out, dict(completed=True, fixture=record(a.fixture), actual_ELF=image,
         provider=linked['model_resource_provider'], original_receipt=record(native_receipt),
         support=record(support), arrays=checked, original_startup_registry_unchanged=True,
-        replacement_SPIRV_resources_byte_exact=13, actual_CPU_initialization_functions_retained=True,
+        replacement_SPIRV_resources_byte_exact=len(shaders), actual_CPU_initialization_functions_retained=True,
         fresh_changed_CPU_startup_required=True, native_CPU_or_GPU_qualified=False, PS5_operations=0))
     print(json.dumps(dict(completed=True, original_and_replacement_array_elements=9,
-        replacement_resources=13, PS5_operations=0)))
+        replacement_resources=len(shaders), PS5_operations=0)))
 
 
 if __name__ == '__main__':

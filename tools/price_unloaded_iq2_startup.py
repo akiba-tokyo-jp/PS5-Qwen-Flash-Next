@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Price only one Direct-staged, model-free F32 IQ2 component scope."""
+"""Price source-bound Direct-staged, model-free IQ2 arithmetic scopes."""
 import argparse
 import json
 from pathlib import Path
@@ -28,10 +28,17 @@ def initializer_count(package):
 
 def make(package_path,CPU_case,memory_evidence,vector_control,prefill_control,canonical_entry):
     package=load(package_path);profile=exact(package['effective_application_policy']['profile']);scope=profile['overrides']['native_IQ2_fixture']
+    F16_reference=scope.get('F16_storage_FP32_accumulation') is True
+    exact_F32=(scope['F32_shader_arithmetic_explicit'] and
+        scope['backend_environment']=={'GGML_VK_DISABLE_MMVQ':'1','GGML_VK_DISABLE_F16':'1'} and
+        scope['widths']==[1,2,30,32] and scope['maximum_GPU_graphs']==144 and scope['cases']==12)
+    exact_F16=(F16_reference and not scope['F32_shader_arithmetic_explicit'] and
+        scope['backend_environment']=={'GGML_VK_DISABLE_MMVQ':'1'} and scope['qualification_only'] and
+        scope['synthetic_inputs_exactly_FP16'] and scope['widths']==[30,32] and
+        scope['maximum_GPU_graphs']==12 and scope['cases']==6)
     need(package['completed'] and package['normalized_SELF_roundtrip_equal'] and package['effective_application_policy']['kind']=='Q2-IQ2-fixture' and
          profile['unloaded_GPU_fixture'] and profile['model_and_GPU_guards_preserved'] and scope['model_loads']==0 and
-         scope['F32_shader_arithmetic_explicit'] and scope['backend_environment']=={'GGML_VK_DISABLE_MMVQ':'1','GGML_VK_DISABLE_F16':'1'} and
-         scope['widths']==[1,2,30,32] and scope['maximum_GPU_graphs']==144 and scope['cases']==12,'Exact finite model-free F32 profile required')
+         (exact_F32 or exact_F16),'Exact finite model-free arithmetic profile required')
     base=load(canonical_entry);canonical=exact(base['application_policy']);need(record(canonical['source']['path'])==canonical['source'] and
          record(profile['source']['path'])==profile['source'],'Exact canonical and changed entries required')
     original=Path(canonical['source']['path']).read_text();changed=Path(profile['source']['path']).read_text()
@@ -40,7 +47,17 @@ def make(package_path,CPU_case,memory_evidence,vector_control,prefill_control,ca
         need(body(original,name)==body(changed,name),'An original CPU, identity or shader admission guard changed')
     reader=profile['CPU_SELF_provider'];need(reader['artifact']==base['reader'] and reader['OS_minimum_plus_21_unchanged'] and
          record(reader['artifact']['path'])==reader['artifact'],'Original selected64KiB SELF reader required')
-    need('setenv("GGML_VK_DISABLE_F16","1",1)' in changed,'Explicit F32 environment must precede initialization')
+    if F16_reference:
+        runtime=profile['arithmetic_reference_runtime'];provider=profile['arithmetic_reference_provider']
+        need(record(runtime['path'])==runtime and record(provider['path'])==provider and
+             provider in exact(package['relink'])['new_inputs'] and 'unsetenv("GGML_VK_DISABLE_F16")' in changed,
+             'The actual FP16-storage runtime, provider and normal environment must remain bound')
+        source=Path(runtime['path']).read_text()
+        need('outputs[format]->op_params[0]=int32_t(GGML_PREC_F32)' in source and
+             'double(ggml_fp16_to_fp32(ggml_fp32_to_fp16(decoded[col])))' in source and
+             'for(unsigned format=0;format<2&&valid;++format)' in source,
+             'FP32 accumulation, the rounded storage reference and twelve distinct graphs are required')
+    else:need('setenv("GGML_VK_DISABLE_F16","1",1)' in changed,'Explicit F32 environment must precede initialization')
     completed=load(CPU_case/'result.private.json');closure=exact(completed['closure']);terminal=exact(completed['terminal']);audit=terminal['audit']
     need(completed['completed'] and closure['ordinary_exit_observed'] and not closure['unknown_completion'] and
          audit['model_loads']==audit['GPU_calls']==0 and audit['main_SELF']['completed'] and audit['main_SELF']['full_current_SELF_SHA256_passed'],

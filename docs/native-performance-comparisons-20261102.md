@@ -19,33 +19,74 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
-The latest real-GGML scope65292 positively completes layer0 widths1 and2,
-with maximum F64 reference error2.1493527319060846e-8. Width30 positively returns
-but all768000 values differ(maximum298567.49206663884);canaries remain exact.
-No graph follows the numerical negative. Every submitted graph/case owner/IO
-returns, the idle device stays live until ordinary exit, and exact P1 restore
-passes. This is a numerical failure, with no model-speed qualification.
+Up arithmetic scope65313 passes all12 distinct graphs: groups0/1/2,
+widths30/32, Q2_K and IQ2_XXS. Every mismatch count is zero; maximum F64 error
+is5.161899025551975e-6. The reference separately rounds decoded weights to
+FP16; synthetic F32 inputs are exactly FP16. Node accumulation is explicitly
+FP32 and the original tolerance remains1e-5+2e-4*abs(reference). No repeated
+decode cases or timing loops run. A stale host close count rejected the new
+scope before any OS close; its exact qualification-only count is now admitted.
+One ordinary close and exact P1 seven-file restoration pass. Final result
+collection reuses all native evidence without replay. This is arithmetic
+qualification, not complete-model quality or speed.
 
-Only the unqualified dequant resource is refined next. Packed-half32-bit
-stores preserve the FP16 output ABI and pass all49152000 FP16 output bits in
-three complete ten-plane banks with12288000-byte descriptor prefixes65294.
-Twelve unchanged resources are reused. Provider65295,fixture65296,SELF65297
-and actual-link audit65299 are complete. Fresh changed CPU/capacity65298 passes
-13 leases/382 lookups/seven successful GGML settings and12262047744 Direct
-bytes twice against12184453120,with ordinary exit/exact P1 restoration. The
-capacity gate is cleared. New suffix validation65293 passes4positive/20negative
-controls on the changed code. The next GPU scope has10 remaining cases and
-reuses the two native decode passes; it is still UNRUN. Shader-resource tracing
-starts only after explicit GPU entry. The software result does not prove the
-cause of the prior wide numerical error or a native speed improvement.
+The unchanged-P1 backend pilot65314 compares one observation per condition:
 
-Before large source publication, comparison65291 prepares unchanged-current-P1
-packages with default and F32-only backend profiles. Control65300 is active;
-the F32 arm is unrun. Both retain the original weights,3712 cache slots,
-source/identity/memory/reset guards and cold/retained/exact-prefix sequence.
-No model weights are sent for this comparison. The original two-worker encoder
-continues; carrier tail65303 consumes each newly completed layer once while
-preserving the completed36-layer prefix. Transfer/compression trials stay closed.
+| Profile | Cold decode tok/s | Retained decode tok/s | Exact-prefix decode tok/s |
+| --- | ---: | ---: | ---: |
+| Default65300 | 10.375276334 | 12.259395098 | 13.273539904 |
+| MMVQ and F16 disabled65305 | 9.581483051 | 11.223791325 | 12.473495263 |
+| Only MMVQ disabled65309 | 10.430162935 | 12.330737732 | 13.364952580 |
+
+All22 output tokens/bytes and counting/finite/reset checks match in every
+condition. The global F32 profile loses7.650816/8.447430/6.027365 percent and
+changes ordered routes. With only MMVQ disabled, routes and source-read bytes
+match default; apparent0.529013/0.581943/0.688684 percent gains are unqualified
+without AA/ABBA. Every arm ordinarily exits and restores P1. No model weights
+are published for these comparisons and no profile is adopted.
+
+The next full IQ2 Up builder keeps normal F16 enabled and uses FP32 accumulation
+only for IQ2_XXS matmul-ID nodes. The small wrapper compiles against the selected
+PS5 ABI65316. Its launch policy requires the completed65313 arithmetic proof,
+all48 uniform Up layers and the original3712 slots; negative partial-layout
+and changed-F16-policy controls pass. Complete-model quality and decode speed
+remain unqualified. All converted layers bypass incompatible old Q2 bundles.
+
+The packed-half Down scope65302 returns the same width30 numerical negative
+as65292:768000 mismatches,max error298567.49206663884,canaries exact. Its one
+submitted graph completes; ordinary exit and exact P1 restoration pass. Trace
+and actual ELF proof65320 identify the original generic indexed matmul shader
+and count-experts resource,with replacement ordinal0. The refined dequant was
+not selected. No unchanged native graph is repeated after this finding.
+
+Generic refinement65321 adds the two actually selected generic aliases and
+reuses all13 prior resources. The Q2_0 branch decodes the sealed carrier; the
+other quantization branches remain unchanged. Packed sixteen-bit row-map
+coordinates retain their exact values in32-bit registers. Both added aliases
+are byte-identical,so software65324 tests one distinct binary. All six changed
+wide cases across layers0/23/47 and widths30/32 pass357120 values,all canaries
+and fences; maximum F64 error3.781309234063279e-7. The software device lacks
+8/16-bit storage; this runs a validated constant Q2/tile specialization of the
+actual new SPIR-V. Other quant branches and native speed are unqualified.
+The initial host fixture incorrectly shortened the output boundary by ten;
+its numerical values matched but its canary check failed.65324 corrects that
+fixture before native submission. Pre-execution declaration refusals and this
+fixture negative are preserved as failures,not reclassified.
+
+Provider65325 preserves every GPU executable byte and the original startup
+registry,with15 resources and no new constructors. Fixture65326,SELF65327/SELF
+and actual binding audit65328 pass. Changed CPU startup/capacity65329 is ACTIVE;
+its fresh6864-page admission passes at7369. The next GPU scope must wait for
+positive ordinary restoration and runs only the ten remaining GGML cases.
+
+The original two-worker encoder65103 continues with87/96 complete and zero
+failures at this observation. Carrier tail65303 has42 parts. Pure-PC source
+preparation65331 uses44 completed whole Up layers while encoding continues.
+Any partial model launch remains prohibited. Whole-file staging may overlap
+the remaining encodes only after active console arithmetic owners close;
+subsequent publication can reuse the sealed whole prefix without copying it.
+Transfer/compression experiments remain closed. Full-model quality and decode
+speed are still unqualified for IQ2.
 
 Historical failure isolation before these scopes follows.
 

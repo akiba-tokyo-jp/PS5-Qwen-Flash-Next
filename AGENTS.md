@@ -3,11 +3,98 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
-Checkpoint65300 supersedes all execution-state notes below. Exactly one console
-scope is active: the default-P1 backend-profile control65300, session68586.
-Do not overlap it. Its paired F32 package65291 is prepared but unrun. These
-use unchanged current model weights and price the F32 prerequisite before any
-large IQ2 source publication. Keep the original primary metric and cohorts.
+Checkpoint65331 supersedes execution-state notes below. The selected P1
+production is unchanged. One console scope is ACTIVE: changed15-resource CPU
+startup/capacity65329,session40819. It passed a fresh6864-page price at7369
+free. It has no GPU graph scope and must ordinarily close/restore before the
+changed native GPU suffix. No other console owner may overlap it.
+
+Packed-half native65302 is COMPLETE,returned numerical negative at layer0
+width30 with the same768000 mismatches/max298567.49206663884. One ordinary
+exit/exact P1 restore passes. Actual trace/ELF proof65320 identifies the original
+matmul_id_quant_f32_fp32 and its subgroup alias plus count_experts_subgroup.
+Both trace replacement ordinals are zero: the changed dequant was never used.
+Do not repeat65302. Retained-device capacity readmission remains required.
+
+Generic refinement65321 reuses13 resources and adds the two observed generic
+aliases. Only the Q2_0 dequant branch changes; packed sixteen-bit row coordinates
+are kept exactly in u32 registers. The two new aliases have identical SPIR-V.
+Software65324 executes one distinct binary on six width30/32 cases across
+layers0/23/47:357120 values,zero mismatches,all canaries/fences pass,max error
+3.781309234063279e-7. The software device lacks8/16-bit storage: the actual new
+SPIR-V is specialized with fixed Q2 type/tile constants,unused declarations are
+removed only with validator acceptance. No other quant branch is executed.
+65319/65322 stopped before GPU execution for unavailable features/declarations.
+65323 returned with zero mathematical mismatches but a host fixture string
+replacement incorrectly shortened the output boundary by ten;65324 fixes that
+fixture. Do not relabel these old scopes as passes or replay them.
+Provider65325 passes15 resource bindings,unchanged GPU executable/startup
+registry,zero new constructors. Fixture65326/package65327/SELF and actual
+binding audit65328 pass. The fixture keeps the two original native decode
+passes and has ten remaining graphs. No complete-model speed is qualified.
+
+Original encoder65103 remains at two workers:87/96 complete,zero failures at
+this observation. Carrier tail65303 is active with42 parts. Pure-PC prefix
+preparation65331,session16237,reads only44 complete whole Up layers. Partial
+model launch remains prohibited. It allows necessary whole-file staging to
+overlap the final encodes after all console arithmetic scopes close. Full
+publication may reuse sealed whole prefixes via --retained-Up-publication;
+no transport protocol,compression or inference-app FTP change is introduced.
+
+Historical checkpoint65316:
+Checkpoint65316 supersedes execution-state notes below. Up arithmetic scope
+65313 is COMPLETE: all12 distinct width30/32 graphs across three groups pass,
+zero mismatches, maximum F64 error5.161899025551975e-6. FP16-rounded reference,
+FP16-exact F32 inputs, explicit FP32 accumulation, original tolerance unchanged.
+A stale host close case-count guard refused before any OS close. The exact new
+qualification-only scope was admitted; closed-qualified completes one ordinary
+close and exact selected P1 seven-file restoration. Final result65313 is a
+post-close collection only,with zero native replays. No model-speed claim.
+
+One console scope is ACTIVE: packed-half Down GGML GPU65302,session29244.
+Fresh7305-page price passes with7482 free. The existing component pack is
+reused without transfer. Only ten remaining graphs may run; the two positive
+native decode cases are not replayed. No other console owner may overlap it.
+
+New scoped precision wrapper native/app/iq2_up_precision.cpp compiles against
+the actual selected PS5 ABI65316. It changes op_params[0] only for IQ2_XXS
+matmul-ID nodes. Full Up model builder now requires the exact completed65313
+qualification,retains normal F16 storage,disables only MMVQ,and links the wrapper
+only in the candidate. Partial-layout and F16-policy negative controls pass.
+Full48-layer model inference and speed remain UNQUALIFIED. Production stays P1.
+Original two-worker encoder65103 has85/96 complete,zero failures at this
+observation. Carrier tail65303 remains active. Do not duplicate either process.
+
+Historical checkpoint65313:
+Checkpoint65313 supersedes all execution-state notes below. One console scope
+is ACTIVE: Up FP16-storage/FP32-accumulation qualification65313,session67860.
+Do not overlap it. Build65310/package65311/price65312 are complete. It executes
+only widths30/32 across three groups and both formats:12 distinct graphs,no
+unchanged decode cases,no repeated timing loops,no420-second timing wait.
+Inputs are FP16-exact F32;reference is F64 of separately decoded,FP16-rounded
+weights. Node op_params[0] is explicitly GGML_PREC_F32. The original numerical
+tolerance is unchanged. This is arithmetic qualification,not model speed.
+The old8.7MB Up pack was absent at a read-only SIZE check; no title was launched
+for that check. New-only publication65315 passes whole SHA256/EOF in both
+namespaces,immutable0444,helper retirement and exact P1 seven-file preservation.
+The active scope reuses65315. Model-free price6736 reuses completed CPU and
+allocation evidence,binds the new runtime/provider and preserves every native
+CPU/GPU guard. It is an application price,not a physical hardware minimum.
+
+Default-P1 profile65300,F32-forced65305 and MMVQ-only-disabled65309 all complete
+3requests,ordinary exit and exact P1 restore. Pilot65314 uses unchanged weights
+and22 matching tokens/bytes in every condition. Default decode cold10.375276334,
+retained12.259395098,prefix13.273539904;forced F32 9.581483051/11.223791325/
+12.473495263(-7.650816/-8.447430/-6.027365%). Forced-F32 ordered routes differ.
+MMVQ-only-disabled 10.430162935/12.330737732/13.364952580(+0.529013/+0.581943/
++0.688683%);all routes and source-read demand match default. One observation per
+condition,no AA/ABBA qualification,no adoption. Keep F16 enabled for the next
+IQ2 path instead of globally forcing all model operations to F32.
+65301 and65307 refused BEFORE publication/launch at7122 and6381 vs7374.
+Complement65304 skips4708/scans47/resident816->0/free7081->7897.
+Complement65308 skips4755/scans87/resident1648->0/free6244->7892.
+Positive complement prefix4842/6076,1234 remain;no old window may replay.
+Large full-model IQ2 source publication remains unstarted.
 
 Q3 GPU65292 positively completes three real-GGML graphs: layer0 width1/2 PASS
 (maximum F64 error2.1493527319060846e-8); width30 is a returned numerical

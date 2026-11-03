@@ -34,7 +34,8 @@ def main():
         profile=load(effective['profile']['path'])
         need(effective['kind']=='Q2-IQ2-fixture' and record(effective['profile']['path'])==effective['profile'] and
              profile['unloaded_GPU_fixture'],'One explicitly compiled unloaded IQ2 program is required')
-        if profile['overrides']['native_IQ2_fixture'].get('F32_shader_arithmetic_explicit'):
+        if (profile['overrides']['native_IQ2_fixture'].get('F32_shader_arithmetic_explicit') or
+                profile['overrides']['native_IQ2_fixture'].get('F16_storage_FP32_accumulation')):
             from price_unloaded_iq2_startup import require_pricing
             need(args.direct_staging_proof and args.model_free_pricing,'Exact Direct transport and source-bound model-free pricing required')
             price=require_pricing(args.model_free_pricing,args.package)
@@ -98,7 +99,8 @@ def main():
     if args.IQ2_fixture:
         # Numerical/model capture may poll; a microbenchmark must not compete
         # with host-triggered console HTTP/FTP/journal reads while measuring.
-        quiet_start=int(time.time()*1000);until=time.monotonic()+420
+        qualification_only=profile['overrides']['native_IQ2_fixture'].get('qualification_only') is True
+        quiet_start=int(time.time()*1000);until=time.monotonic()+(0 if qualification_only else 420)
         while time.monotonic()<until:
             print(json.dumps(dict(phase='unloaded_component_quiet_window',PS5_requests=0,
                 remaining_seconds=max(0,int(until-time.monotonic())))),flush=True)
@@ -143,13 +145,13 @@ def main():
         scope=profile['overrides']['native_IQ2_fixture']
         qualified=component['all_outputs_reference_valid'] and len(component['cases'])==scope['cases'] and component['GPU_graphs']==scope['maximum_GPU_graphs']
         quiet=load(args.out/'quiet-window.private.json');uncertainty=component['clock_uncertainty_ms']
-        quiet_qualified=component['clock_calibrated'] and component['started_epoch_ms']-uncertainty>=quiet['start_epoch_ms'] and \
+        quiet_qualified=not qualification_only and component['clock_calibrated'] and component['started_epoch_ms']-uncertainty>=quiet['start_epoch_ms'] and \
             component['completed_epoch_ms']+uncertainty<=quiet['end_epoch_ms']
         save(args.out/'result.private.json',dict(completed=True,case=record(case/'plan.private.json'),closure=record(closed/'result.private.json'),
             component=record(observer/'native.IQ2-component.private.json'),native_operator_numerics_qualified=qualified,
             component_publication=record(publication/'result.private.json'),
             component_timing_window_free_of_host_PS5_requests=quiet_qualified,quiet_window=record(args.out/'quiet-window.private.json'),
-            matched_component_timing_analysis_pending=True,full_model_quality_or_speed_qualified=False,model_loads=0,automatic_retries=0,production_adopted=False))
+            matched_component_timing_analysis_pending=not qualification_only,full_model_quality_or_speed_qualified=False,model_loads=0,automatic_retries=0,production_adopted=False))
         print(json.dumps(dict(completed=True,model_loads=0,GPU_graphs=component['GPU_graphs'],native_operator_numerics_qualified=qualified,current_restored=True)),flush=True)
         return
     capture=load(observer/'activation-capture.private.json')

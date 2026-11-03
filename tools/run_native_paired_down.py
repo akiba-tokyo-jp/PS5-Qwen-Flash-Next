@@ -101,7 +101,8 @@ def price_GPU(package_path,startup_path,reuse_path=None):
         need(admission.get('completed') is True and admission.get('GPU_calls')==0 and
              admission.get('initialized') is True and admission.get('active_lease') is False and
              admission.get('original_assets')==1527 and admission.get('original_lookups_verified')==382 and
-             admission.get('replacement_resources_verified')==13 and admission.get('shader_file_verified') is True,
+             admission.get('replacement_resources_verified')==linked['replacement_shader_CPU_leases_verified'] and
+             admission.get('shader_file_verified') is True,
              'The exact changed CPU startup must positively admit all shader resources before GPU pricing')
         if linked.get('successful_GGML_environment_verified_before_CPU_return')==7:
             need(admission.get('successful_GGML_environment_verified')==7 and

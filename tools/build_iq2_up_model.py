@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Build a source-sealed IQ2 Up model and its explicit F32 backend-profile control."""
+"""Build a sealed IQ2 Up model with scoped FP32 accumulation and normal F16 storage."""
 import argparse
 import copy
 import hashlib
@@ -15,6 +15,7 @@ from audit_expert_all_q2_safety import body
 from build_performance_quantizer import record
 from build_speculative_batch_probe import once
 from headless_current_entry import headless_entry
+from iq2_up_model_scope import require_arithmetic_qualification
 from prepare_iq2_up_model_overlay import literal
 from start_success_route import load, need, save
 
@@ -63,7 +64,10 @@ def main():
     for name in ('workspace', 'current', 'preparation', 'publication', 'cache-baseline', 'out'):
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--F32-observer', type=Path)
+    p.add_argument('--arithmetic-qualification', type=Path, required=True)
     a = p.parse_args()
+    arithmetic_qualification = record(a.arithmetic_qualification)
+    require_arithmetic_qualification(arithmetic_qualification)
     prep, pub = load(a.preparation), load(a.publication)
     need(prep['completed'] and pub['completed'] and pub['preparation'] == record(a.preparation) and
          pub['whole_new_bytes_and_all_parent_identities_qualified'], 'The exact new-only native IQ2 source publication is required')
@@ -106,7 +110,8 @@ def main():
             HTTP_requests=0, VideoOut_starts=0, maximum_output_tokens_per_request=32,
             original_cold_retained_exact_prefix_sequence=True, IQ2_Up_layers=prep['IQ2_Up_layers'] if arm=='candidate' else [],
             original_BF16_direct_quantization=True, heldout_decode_calibration=False,
-            explicit_F32_profile=dict(GGML_VK_DISABLE_MMVQ='1', GGML_VK_DISABLE_F16='1'),
+            backend_environment=dict(GGML_VK_DISABLE_MMVQ='1'), normal_F16_enabled=True,
+            IQ2_only_FP32_accumulation=True, arithmetic_qualification=arithmetic_qualification,
             selected_cache_slots=3712, original_live_reserves_preserved=True, persistent_caches=False)
         text = baseline
         if arm == 'candidate':
@@ -141,11 +146,13 @@ def main():
         marker = '        const auto policy = Json::parse(policy_file);'
         text = once(text, marker, marker + '\n        if(policy.at("native_headless_model_audit")!=Json::parse(' +
             json.dumps(json.dumps(scope, separators=(',', ':'))) + '))throw std::runtime_error("Exact IQ2 Up model scope required");\n' +
-            '        if(setenv("GGML_VK_DISABLE_MMVQ","1",1)||setenv("GGML_VK_DISABLE_F16","1",1))throw std::runtime_error("Explicit IQ2 F32 backend profile unavailable");')
+            '        if(setenv("GGML_VK_DISABLE_MMVQ","1",1)||unsetenv("GGML_VK_DISABLE_F16")||getenv("GGML_VK_DISABLE_F16"))throw std::runtime_error("Qualified IQ2 backend profile unavailable");')
         text = once(text, '(ordinal==1&&rows!=reference_rows)', 'false')
         text = once(text, '            else if(ordinal==1&&(result.token_ids!=reference_ids||result.output_bytes!=reference_bytes))\n                throw std::runtime_error("Original additional tokens or bytes differ");',
                     '            // Precision quality differences are recorded before ordinary owner retirement.')
         text = headless_entry(text, scope['kind'], 3, 'Json{{"completed",true},{"IQ2_Up_scope",policy.at("native_headless_model_audit")},{"requests",completed}}')
+        if arm == 'candidate':
+            text += '\n' + (ROOT / 'native/app/iq2_up_precision.cpp').read_text()
         if not observer:
             text = once(text, '{"timings_usable_for_performance",false}', '{"timings_usable_for_performance",true}')
         for name in ('observed_system_headroom', 'require_model_CPU_budget', 'wait_for_initial_model_CPU_budget',
@@ -186,6 +193,7 @@ def main():
             '--replace', 'entry.o='+str(entry), '--replace', 'early-SELF.o='+original['CPU_SELF_provider']['artifact']['path'], '--application-policy', policy]
         if arm == 'candidate':
             job += ['--replace', 'cache.o='+cache['path']]
+            job += ['--link-flag=--wrap=ggml_mul_mat_id']
         if observer:
             job += ['--add-object', observer['artifact']['path']] + ['--link-flag='+f for f in observer['link_flags']]
         run(job, arm+'-link')
@@ -197,7 +205,10 @@ def main():
         packages=packages, cache_baseline=record(a.cache_baseline), cache=cache, cache_source=cache_source,
         commands=commands, F32_qualification=bool(observer), original_memory_identity_reset_guards_unchanged=True,
         only_converted_layers_bypass_incompatible_old_bundle_and_quad_paths=True, driver_unchanged=True,
-        explicit_global_F32_backend_profile=True, PS5_operations=0, native_quality_and_rate_qualified=False, production_adopted=False))
+        explicit_global_F32_backend_profile=False, IQ2_only_FP32_accumulation=True,
+        arithmetic_qualification=arithmetic_qualification,
+        precision_wrapper_source=record(ROOT/'native/app/iq2_up_precision.cpp'),
+        PS5_operations=0, native_quality_and_rate_qualified=False, production_adopted=False))
     print(json.dumps(dict(completed=True, model_packages=2, IQ2_Up_layers=prep['IQ2_Up_layers'], PS5_operations=0)))
 
 

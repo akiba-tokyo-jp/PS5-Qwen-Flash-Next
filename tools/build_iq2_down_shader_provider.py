@@ -23,8 +23,21 @@ def main():
     p.add_argument('--resume-compiled',action='store_true',help='Reuse the three exact compiled objects after the incomplete reference audit')
     p.add_argument('--caller-arrays',action='store_true',help='Redirect GPU references to separate arrays and preserve original startup lookups')
     p.add_argument('--trace-GPU-resources',action='store_true',help='Record actual resource addresses only after explicit GPU entry')
+    p.add_argument('--generic-software-proof',type=Path)
     a=p.parse_args();built,software,lease=load(a.shaders),load(a.software_proof),load(a.lease_proof)
     packed=built.get('packed_half_dequant_refinement') is True
+    generic=built.get('generic_indexed_refinement') is True
+    if generic:
+        parent=load(built['ancestor']['path']);old={r['name']:r for r in parent['shaders']};new={r['name']:r for r in built['shaders']}
+        extra={'matmul_id_quant_f32_fp32','matmul_id_subgroup_quant_f32_fp32'}
+        need(record(built['ancestor']['path'])==built['ancestor'] and built['reused_shader_resources']==13 and
+             len(old)==13 and set(new)==set(old)|extra and all(new[k]==v for k,v in old.items()) and
+             a.generic_software_proof is not None,'The immutable thirteen-resource parent and two generic additions are required')
+        proof=load(a.generic_software_proof)
+        need(proof['completed'] and proof['build']==record(a.shaders) and proof['distinct_cases']==6 and
+             set(proof['qualified_resource_names'])==extra and proof['all_outputs_passed'] and
+             proof['all_GPU_resources_positively_retired'] and proof['Q2_specialization_of_actual_new_SPIRV'],
+             'Six positive wide Q2 specializations of the actual new binaries are required')
     if packed:
         parent=load(built['ancestor']['path']);new={r['name']:r for r in built['shaders']};old={r['name']:r for r in parent['shaders']}
         need(record(built['ancestor']['path'])==built['ancestor'] and built['reused_shader_resources']==12 and
@@ -33,8 +46,8 @@ def main():
              load(built['packed_half_software_proof']['path'])['completed'] and new.keys()==old.keys() and
              all(new[k]==old[k] for k in old if k!='dequant_q2_0'),
              'Only one fully qualified packed-half resource may differ from the twelve immutable resources')
-    need(built['completed'] and (built['all_non_declaration_words_byte_exact'] or packed) and
-         software['completed'] and software['build']==record(a.shaders) and
+    need(built['completed'] and (built['all_non_declaration_words_byte_exact'] or packed or generic) and
+         software['completed'] and software['build']==(built['ancestor'] if generic else record(a.shaders)) and
          software['actual_model_matvec_shaders']==6 and software['shape_cases']==18 and software['F32_input_only'] and
          software['all_outputs_passed'] and software['software_SPIRV_reference'] and
          lease['completed'] and lease['new_shader_lease_controls']==10,
@@ -70,7 +83,8 @@ def main():
         mapping.append('{'+name+'_data,'+str(stored)+','+str(decoded)+','+replacement+'_data,'+str(len(raw))+','+replacement+'_sha}')
         target_specs[name]=dict(replacement=replacement,original_stored_bytes=stored,replacement_bytes=len(raw))
         inputs.append(artifact)
-    need(len(mapping)==13 and len(set(rename))==26,'Thirteen distinct actual resource pairs required')
+    resource_count=15 if generic else 13
+    need(len(mapping)==resource_count and len(set(rename))==2*resource_count,'Every distinct actual resource pair is required')
     caller_tables=[]
     if a.caller_arrays:
         receipt=load(a.current/'provenance/native-link.receipt.private.json')
@@ -113,7 +127,7 @@ bool trace_GPU_resources=false;
 extern "C" void qwen_iq2_down_begin_GPU_resource_trace(){trace_GPU_resources=true;}
 extern "C" const void*__wrap_qwen_app_prepare_shader_code(const void*storage,std::size_t bytes,std::size_t*decoded,void**lease){
 '''+(''' if(trace_GPU_resources){
-  unsigned replacement=0;for(unsigned i=0;i<13;++i)if(storage==sources[i].replacement)replacement=i+1;
+  unsigned replacement=0;for(unsigned i=0;i<sizeof(sources)/sizeof(sources[0]);++i)if(storage==sources[i].replacement)replacement=i+1;
   char line[160];std::snprintf(line,sizeof(line),"IQ2_Down_GPU_shader pointer=%p bytes=%zu replacement=%u",storage,bytes,replacement);
   qwen_native_stage(line);
  }
@@ -186,13 +200,14 @@ extern "C" const void*__wrap_qwen_app_prepare_shader_code(const void*storage,std
         original_startup_lookup_expectations_preserved=a.caller_arrays,separate_GPU_caller_arrays=len(caller_tables),
         only_selected_array_relocations_and_lengths_changed=not a.caller_arrays,
         reused_completed_compile_commands=3 if a.resume_compiled else 0,
-        GPU_executable_sections_byte_exact=True,redirected_resource_pairs=13,new_global_initializers=0,
+        GPU_executable_sections_byte_exact=True,redirected_resource_pairs=resource_count,new_global_initializers=0,
         GPU_resource_trace=a.trace_GPU_resources,packed_half_dequant_refinement=packed,
+        generic_indexed_refinement=generic,generic_software_proof=record(a.generic_software_proof) if generic else None,
         link_flags=['--wrap=qwen_app_prepare_shader_code'],commands=commands,
         required_converted_Down_layers=list(range(48)),all_Q2_0_tensors_must_be_IQ2_carriers=True,
         model_profile_requires_MMVQ_and_F16_disabled=True,descriptor_plane_origin_and_cache_view_qualified=False,
         native_full_model_qualified=False,driver_code_changed=False,persistent_caches=False,PS5_operations=0,production_adopted=False))
-    print(dict(completed=True,resource_pairs=13,GPU_instructions_byte_exact=True,new_global_initializers=0,PS5_operations=0))
+    print(dict(completed=True,resource_pairs=resource_count,GPU_instructions_byte_exact=True,new_global_initializers=0,PS5_operations=0))
 
 
 if __name__=='__main__':main()

@@ -30,7 +30,8 @@ def main():
          load(load(native['package']['path'])['relink']['path'])['artifact']==base['artifact'],
          'Reuse the exact completed native carrier operands and ordinary exit')
     need(provider['completed'] and provider['GPU_executable_sections_byte_exact'] and
-         provider['original_codec_registry_unchanged'] and provider['redirected_resource_pairs']==13 and
+         provider['original_codec_registry_unchanged'] and
+         provider['redirected_resource_pairs']==(15 if provider.get('generic_indexed_refinement') else 13) and
          provider['new_global_initializers']==0 and provider.get('original_startup_lookup_expectations_preserved') is True and
          provider.get('separate_GPU_caller_arrays')==3,
          'The corrected caller-only provider must preserve original CPU startup lookup expectations')
@@ -48,7 +49,13 @@ def main():
              all(r['all_outputs_passed'] for r in terminal['cases'][:2]) and not terminal['cases'][2]['all_outputs_passed'],
              'Only the exact two returned decode cases before the numerical negative may be reused')
         old_provider=load(prior_link['model_resource_provider']['path']);changed=load(provider['shaders']['path'])
-        need(provider.get('packed_half_dequant_refinement') and changed['ancestor']==old_provider['shaders'] and
+        if provider.get('generic_indexed_refinement'):
+            parent=load(changed['ancestor']['path'])
+            need(parent['packed_half_dequant_refinement'] and changed['reused_shader_resources']==13 and
+                 all(r in changed['shaders'] for r in parent['shaders']),
+                 'All thirteen prior resources must remain exact for the generic additions')
+            changed=parent
+        need(changed.get('packed_half_dequant_refinement') and changed['ancestor']==old_provider['shaders'] and
              changed['reused_shader_resources']==12,
              'The twelve original resources must remain exact when their two decode cases are reused')
         completed_prefix=2
@@ -82,8 +89,9 @@ def main():
         else:target.write_bytes(expected)
     receipt=load(a.current/'provenance/native-link.receipt.private.json')['lossless_shader_storage']
     shader_build=load(provider['shaders']['path'])
-    need(record(provider['shaders']['path'])==provider['shaders'] and len(shader_build['shaders'])==13,
-         'All thirteen immutable replacement resources are required')
+    need(record(provider['shaders']['path'])==provider['shaders'] and
+         len(shader_build['shaders'])==provider['redirected_resource_pairs'],
+         'Every immutable replacement resource is required')
     header='// SPDX-License-Identifier: MIT\n#pragma once\n#include <cstdint>\n'
     header+='extern "C" {const void*qwen_app_prepare_shader_code(const void*,std::size_t,std::size_t*,void**);void qwen_app_complete_shader_code(void*);\n'
     for row in shader_build['shaders']:
@@ -169,7 +177,7 @@ def main():
         linked_driver=base['linked_driver'],successful_driver_whole_archive_preserved=True,
         CPU_Direct_capacity_readmission=True,backend_free_calls=0,persistent_caches=False,
         CPU_shader_resource_admission_before_GPU=True,fresh_changed_CPU_startup_required=True,
-        replacement_shader_CPU_leases_verified=13,original_all_asset_decode_replayed=False,
+        replacement_shader_CPU_leases_verified=len(shader_build['shaders']),original_all_asset_decode_replayed=False,
         successful_GGML_environment_verified_before_CPU_return=7,native_assertion_journal_installed=True,
         numerical_negative_ordinary_close_admitted_only_after_all_submitted_graphs_complete=True,
         native_GPU_qualified=False,production_adopted=False,PS5_operations=0)

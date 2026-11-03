@@ -21,7 +21,10 @@ def main():
     for name in ('workspace','current','base-entry','samples','out'):parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--prefill',action='store_true',help='Also qualify widths 30/32 with ten selected physical slots and three replicated real matrices')
     parser.add_argument('--F32-shader-arithmetic',action='store_true',help='Use the existing backend F16-disable option for a distinct numerical profile')
+    parser.add_argument('--F16-storage-reference',action='store_true',help='Only new prefill cases: FP16 storage, FP32 accumulation, twelve distinct qualification graphs')
     args=parser.parse_args();base=load(args.base_entry);samples=load(args.samples)
+    need(not args.F16_storage_reference or (args.prefill and not args.F32_shader_arithmetic),
+         'The distinct FP16-storage scope requires prefill and the normal F16 environment')
     need(base['completed'] and base['CPU_minimum_plus_21_unchanged'] and samples['completed'] and
          len(samples['matrices'])==9 and samples['all_nine_Experts_actually_visited'] and not samples['synthetic_uniform_importance_used'],
          'Admitted CPU entry and nine actually calibrated original Up samples are required')
@@ -30,16 +33,21 @@ def main():
     args.out.mkdir(parents=True,exist_ok=False)
     for header in Path(profile['source']['path']).parent.glob('*.h'):shutil.copyfile(header,args.out/header.name)
     remote='/app0/qwen-runtime/iq2-Up-'+samples['pack']['sha256'][:24]+'.bin'
-    widths=[1,2,30,32] if args.prefill else [1,2];cases=3*len(widths)
+    widths=([30,32] if args.F16_storage_reference else [1,2,30,32]) if args.prefill else [1,2];cases=3*len(widths)
+    graph_bound=(2 if args.F16_storage_reference else 12)*cases
     scope=dict(schema='ps5-qwen-calibrated-IQ2-component-v1',model_loads=0,widths=widths,decode_selected_Experts=2,
         prefill_selected_slots=10 if args.prefill else None,prefill_unique_original_Experts_per_layer=3 if args.prefill else None,
-        prefill_replicated_weights_explicit=bool(args.prefill),original_Up_matrices=9,groups=3,cases=cases,maximum_GPU_graphs=12*cases,CPU_deadline_seconds=240,
+        prefill_replicated_weights_explicit=bool(args.prefill),original_Up_matrices=9,groups=3,cases=cases,maximum_GPU_graphs=graph_bound,CPU_deadline_seconds=240,
         formats=['Q2_K','IQ2_XXS'],original_weight_source='BF16',real_PS5_importance=True,
         synthetic_component_inputs=True,component_not_model_speed=True,activation_input_tensor_type='F32',
         vector_MMVQ_disabled=True,larger_width_internal_arithmetic_independently_qualified=False,
         backend_environment=dict(GGML_VK_DISABLE_MMVQ='1',**({'GGML_VK_DISABLE_F16':'1'} if args.F32_shader_arithmetic else {})),
         F32_shader_arithmetic_explicit=args.F32_shader_arithmetic,pack_bytes=samples['pack']['bytes'],pack_sha256=samples['pack']['sha256'],
         HTTP_requests=0,VideoOut_starts=0,automatic_retries=0)
+    if args.F16_storage_reference:
+        scope.update(qualification_only=True,F16_storage_FP32_accumulation=True,
+            reference='F64 of FP16-rounded decoded weights and FP16-exact F32 inputs',
+            synthetic_inputs_exactly_FP16=True,unchanged_decode_cases_replayed=0)
     header=args.out/'calibrated_iq2_assets.h';text='#pragma once\n#include <cstdint>\n'
     text+='inline constexpr unsigned iq2_widths[]={'+','.join(map(str,widths))+'};\n'
     text+='inline constexpr const char*iq2_pack_path='+json.dumps(remote)+';\n'
@@ -64,6 +72,8 @@ def main():
     text=once(text,marker,'\n        if(setenv("GGML_VK_DISABLE_MMVQ","1",1))throw std::runtime_error("F32 component activation policy unavailable");'+marker)
     if args.F32_shader_arithmetic:
         text=once(text,marker,'\n        if(setenv("GGML_VK_DISABLE_F16","1",1))throw std::runtime_error("Explicit component F32 shader profile unavailable");'+marker)
+    if args.F16_storage_reference:
+        text=once(text,marker,'\n        if(unsetenv("GGML_VK_DISABLE_F16")||getenv("GGML_VK_DISABLE_F16"))throw std::runtime_error("Normal F16 environment required");'+marker)
     start=text.index(marker)+len(marker);end=text.index('    }catch(const std::exception &e){',start)
     text=text[:start]+'''        qwen_app::enforce_native_model_compute_limits();
         if(qwen_app::native_model_device_stats().live)throw std::runtime_error("Empty IQ2 component device ledger required");
@@ -109,6 +119,29 @@ def main():
         runtime_text=once(runtime_text,'    Pack pack(stage);',
             '    need(getenv("GGML_VK_DISABLE_F16")&&std::strcmp(getenv("GGML_VK_DISABLE_F16"),"1")==0,"Exact F32 shader environment required");\n    Pack pack(stage);')
         runtime_text=once(runtime_text,'{"vector_MMVQ_disabled",true},','{"vector_MMVQ_disabled",true},{"F32_shader_arithmetic_explicit",true},')
+    if args.F16_storage_reference:
+        runtime_text=once(runtime_text,
+            'float input(unsigned column,unsigned token){return float(int((column+3*token)%13)-6)/1009.0f;}',
+            'float input(unsigned column,unsigned token){return ggml_fp16_to_fp32(ggml_fp32_to_fp16(float(int((column+3*token)%13)-6)/1009.0f));}')
+        runtime_text=once(runtime_text,
+            'outputs[format]=ggml_mul_mat_id(ctx,weights[format],x,ids);ggml_set_output(outputs[format]);',
+            'outputs[format]=ggml_mul_mat_id(ctx,weights[format],x,ids);outputs[format]->op_params[0]=int32_t(GGML_PREC_F32);ggml_set_output(outputs[format]);')
+        runtime_text=once(runtime_text,
+            'sums[(expert*640+row)*13+col%13]+=double(decoded[col]);',
+            'sums[(expert*640+row)*13+col%13]+=double(ggml_fp16_to_fp32(ggml_fp32_to_fp16(decoded[col])));')
+        begin=runtime_text.index('            for(unsigned i=0;i<4&&valid;++i)')
+        end=runtime_text.index('            // A returned numerical negative',begin)
+        runtime_text=runtime_text[:begin]+'''            for(unsigned format=0;format<2&&valid;++format){
+                load(pack,format);compute(format);verify(format);
+                arms.push_back({{"format",format?"IQ2_XXS":"Q2_K"},{"qualification_only",true},{"GPU_graphs",1}});
+            }
+'''+runtime_text[end:]
+        runtime_text=once(runtime_text,'{"reference","F64 of each separately decoded format"}',
+            '{"reference","F64 of FP16-rounded decoded weights and FP16-exact F32 inputs; FP32 accumulation"}')
+        runtime_text=once(runtime_text,'{"vector_MMVQ_disabled",true},',
+            '{"vector_MMVQ_disabled",true},{"qualification_only",true},{"F16_storage_FP32_accumulation",true},{"performance_timings_measured",false},')
+        runtime_text=once(runtime_text,'{"larger_width_internal_arithmetic_independently_qualified",false}',
+            '{"larger_width_internal_arithmetic_independently_qualified",valid}')
     runtime.write_text(runtime_text,encoding='utf-8',newline='\n')
     shutil.copyfile(ROOT/'native/app/calibrated_iq2_fixture.h',args.out/'calibrated_iq2_fixture.h')
     sdk=args.workspace/'toolchain/ps5-sdk-radv/ps5-payload-sdk/target/include'
@@ -126,11 +159,13 @@ def main():
         overrides=dict(profile['overrides'],native_IQ2_fixture=scope),CPU_SELF_provider=profile['CPU_SELF_provider'],
         model_and_GPU_topology_unchanged=False,unloaded_GPU_fixture=True,model_and_GPU_guards_preserved=True,
         component_pack=dict(local=samples['pack'],application_path=remote),native_performance_qualified=False,PS5_operations=0)
+    if args.F16_storage_reference:
+        policy.update(arithmetic_reference_runtime=record(runtime),arithmetic_reference_provider=record(provider))
     path=args.out/'application-policy.private.json';save(path,policy)
     save(args.out/'result.private.json',dict(completed=True,application_policy=record(path),entry=record(obj),reader=base['reader'],
         provider=record(provider),samples=record(args.samples),source=record(source),runtime=record(runtime),header=record(header),
-        commands=[C,command],model_loads=0,maximum_GPU_graphs=12*cases,native_operator_qualified=False,PS5_operations=0,production_adopted=False))
-    print(json.dumps(dict(completed=True,target_compiled=True,model_loads=0,maximum_GPU_graphs=12*cases,PS5_operations=0)))
+        commands=[C,command],model_loads=0,maximum_GPU_graphs=graph_bound,native_operator_qualified=False,PS5_operations=0,production_adopted=False))
+    print(json.dumps(dict(completed=True,target_compiled=True,model_loads=0,maximum_GPU_graphs=graph_bound,PS5_operations=0)))
 
 
 if __name__=='__main__':main()

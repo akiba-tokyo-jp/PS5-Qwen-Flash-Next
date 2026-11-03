@@ -31,7 +31,7 @@ def finish(out, preparation, publication, result):
          'Every new file and unchanged selected parent must positively complete')
     observed = [dict(path=r['application'], bytes=r['local']['bytes'], sha256=r['local']['sha256'],
                      identity=identities[i]) for i, r in enumerate(files)]
-    n = len(prep['new_parts'])
+    n = publication.get('new_part_count',len(prep['new_parts']))
     parts = publication['retained_parts'] + observed[:n]
     seal = dict(schema='ps5-qwen-precision-native-source-v1', completed=True,
         model_receipt_sha256=prep['candidate']['sha256'], parent_model_receipt_sha256=prep['parent_model_sha256'],
@@ -103,6 +103,8 @@ def main():
     p.add_argument('--execute', action='store_true')
     p.add_argument('--collect', action='store_true')
     p.add_argument('--submit-prepared', action='store_true', help='Submit the exact prepared but never uploaded scope once')
+    p.add_argument('--retained-Up-publication',type=Path,
+        help='Reuse the sealed whole-weight prefix from a completed preparation without uploading it again')
     a = p.parse_args()
     need(sum((a.execute, a.collect, a.submit_prepared)) <= 1, 'One explicit publication phase required')
     if a.collect or a.submit_prepared:
@@ -145,6 +147,30 @@ def main():
     for part in retained:
         need(any(r['path'] == part['path'] and r['bytes'] == part['bytes'] and r['identity'] == part['identity']
                  for r in parents), 'Every retained part must be in the complete actual selected source plan')
+    reused_Up=0
+    retained_Up=None
+    if a.retained_Up_publication:
+        previous=load(a.retained_Up_publication)
+        need(previous['completed'] and previous['whole_new_bytes_and_all_parent_identities_qualified'] and
+             record(previous['preparation']['path'])==previous['preparation'] and
+             record(previous['source_integrity']['path'])==previous['source_integrity'],
+             'Only a completed whole-file sealed publication may supply a retained prefix')
+        old_prep=load(previous['preparation']['path']);old_seal=load(previous['source_integrity']['path'])
+        reused_Up=len(old_prep['IQ2_Up_layers'])
+        need(0<reused_Up<len(prep['IQ2_Up_layers']) and
+             old_prep['IQ2_Up_layers']==prep['IQ2_Up_layers'][:reused_Up] and
+             old_prep['retained_precision_parts']==prep['retained_precision_parts'] and
+             old_prep['new_parts'][:reused_Up]==prep['new_parts'][:reused_Up] and
+             old_prep['selected_model_sha256']==prep['selected_model_sha256'] and
+             old_seal['model_receipt_sha256']==old_prep['candidate']['sha256'] and
+             old_seal['CPU_owners_positively_closed'],
+             'The same selected model and exact complete IQ2 weight prefix are required')
+        prefix=old_seal['parts'][len(retained):len(retained)+reused_Up]
+        need(len(prefix)==reused_Up and all((r['bytes'],r['sha256'])==(p['bytes'],p['sha256'])
+             for r,p in zip(prefix,prep['new_parts'])), 'Every retained whole layer must match its prepared bytes')
+        retained+=prefix
+        parents+=prefix
+        retained_Up=record(a.retained_Up_publication)
     a.out.mkdir(parents=True, exist_ok=False)
     nonce = secrets.token_hex(16)
     root, alias, application = PHYSICAL + '/expert-q2-' + nonce, ALIAS + '/expert-q2-' + nonce, '/app0/expert-q2-' + nonce
@@ -152,7 +178,7 @@ def main():
     def add(row, name):
         need(record(row['path']) == row and 0 < row['bytes'] <= 512 << 20, 'Exact bounded new publication input required')
         files.append(dict(local=row, physical=root + '/' + name, alias=alias + '/' + name, application=application + '/' + name))
-    for i, part in enumerate(prep['new_parts'], len(retained)):
+    for i, part in enumerate(prep['new_parts'][reused_Up:], len(retained)):
         add(part, 'precision.part' + str(i) + '.bin')
     add(prep['candidate'], 'model-receipt.json')
     for h in candidate['precision_overlay']['headers']:
@@ -184,7 +210,9 @@ def main():
     rows = current_files(a.current)
     plan = build(a.workspace, a.mount_plan, rows, rows, [], 'seal-shared-Q4', a.out / 'native', source_seal_context=context)
     publication = dict(preparation=record(a.preparation), files=files, directory=root, application_directory=application,
-        retained_parts=retained, parent_source_count=len(parents), native_plan=record(a.out / 'native/plan.private.json'), automatic_retries=0)
+        retained_parts=retained, parent_source_count=len(parents), native_plan=record(a.out / 'native/plan.private.json'),
+        new_part_count=len(prep['new_parts'])-reused_Up,retained_Up_publication=retained_Up,
+        retained_Up_layers=reused_Up,automatic_retries=0)
     save(a.out / 'plan.private.json', publication)
     if not a.execute:
         print(json.dumps(dict(prepared=True, PS5_operations=0, new_files=len(files), retained_parts_copied=0)))

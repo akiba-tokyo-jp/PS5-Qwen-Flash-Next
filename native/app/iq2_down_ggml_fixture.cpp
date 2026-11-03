@@ -37,8 +37,9 @@ static NativeJson qwen_paired_down_prepare_CPU(){
     native_require(stats.initialized&&!stats.failed&&!stats.active_lease&&stats.assets==1527&&
         stats.lookup_entries==382&&stats.CPU_verified_lookups==382&&
         stats.registry_sha256==iq2_original_registry_SHA256&&stats.external_file.verified&&
-        !stats.external_file.failed&&!stats.external_file.read_pending&&verified==13,
-        "Original registry, fresh shader file and all thirteen replacement leases must be admitted before GPU");
+        !stats.external_file.failed&&!stats.external_file.read_pending&&
+        verified==sizeof(iq2_resource_checks)/sizeof(iq2_resource_checks[0]),
+        "Original registry, fresh shader file and every replacement lease must be admitted before GPU");
     native_guard(31);qwen_native_stage("IQ2_Down_shader_CPU_admission_completed_GPU_not_started");
     return {{"completed",true},{"GPU_calls",0},{"initialized",true},{"active_lease",false},
         {"original_assets",stats.assets},{"original_lookups_verified",stats.CPU_verified_lookups},
