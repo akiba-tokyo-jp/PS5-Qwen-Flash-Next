@@ -6,6 +6,73 @@ The primary metric remains complete-model decode tokens/s:
 requests remain separate. Component timing, prediction hits and fewer auxiliary
 creations do not establish a model speedup.
 
+Current continuation: I1 second ABBA65212 reuses control65180 and submits only
+new cases65213/65214/65215. Earlier65207 refused before staging or launch at
+6607<7374. New complement65211 skips3750 completed windows,scans120,observed
+resident2000->0,free6554->8550;the positive prefix is3870/6076. No initializer,
+global purge or repeated completed benchmark is used.
+
+I1 first ABBA65176 completes all twelve requests and exact
+ordinary restoration. Analysis65185 uses the original decode tokens/s formula:
+cold10.160479->10.110316 (-0.493703%),retained12.136504->12.185840 (+0.406506%),
+exact-prefix13.401224->13.307005 (-0.703066%). No paired gain exceeds control
+AA spread in both pairs. This version is unadopted; it does not establish that
+further I1 improvements are impossible. Second refinement native65202 completes
+all3 requests. Offline65204 reuses64950 and finds all69 full-vocabulary hashes,
+ordered routes,tokens and output bytes exact. Its ABBA65205 reuses the exact
+completed control65180 and submits only B1=65207,B2=65208,A3=65209.
+
+Q3 carrier native65190 completes all24 layer/width/workgroup cases,all9,615,360
+output values,F64 tolerances,canaries and positive fences. Maximum absolute F64
+error is1.214001942e-7. The final live-device epoch24 is quiet;two driver
+allocations totaling16,793,600 bytes remain explicitly owned until ordinary
+process exit. The device is never destroyed and its driver backing is never
+manually freed by the component. One ordinary close and exact restoration of
+all seven production files complete. Post-exit registered-title CPU65197 samples
+12,262,047,744 available Direct bytes twice,above12,184,453,120 baseline. It also
+ordinarily closes/restores;the GPU capacity gate is cleared. This is a global
+capacity observation,not individual BO release evidence or a model speed result.
+The lightweight payload capacity helper65194 returns a nonmatching total after
+one call,then exits/removes its files. It is not retried. Its unselected prototype
+is preserved with that failure and removed from the working tools. The successful
+registered-title CPU route is explicitly bound to the completed retained owner.
+
+Carrier pack65186 completes native whole SHA/EOF verification,positive helper
+retirement and fresh immutable publication. Its57,327,616 bytes take107.218s:
+host file reads0.172s,sendall104.716s,0.509913MiB/s including acknowledgement.
+Neither larger windows nor TCP_NODELAY establish a transport speedup. This pack
+is reused for native65190 without retransmission. No235MB probe is repeated.
+
+Actual model matvec software65199 qualifies six F32-input resources across18
+layer cases and54 distinct64-row tiles. Six already positive cases from65198
+are reused;only the remaining twelve execute. The failed no-shared fixture had
+incorrectly specialized a32-lane workgroup rather than the actual subgroup size;
+the corrected fixture queries that property. Its operand/referee body and the
+already completed fixed32-lane cases remain exact. Earlier pre-device refusals
+identify SwiftShader's absent8/16-bit storage. Shader set65195 removes unused
+capability/extension declarations and passes the Vulkan SPIR-V validator while
+every other word,including every executable instruction,is byte exact. Actual
+F16-input resources and the other four resource families remain unqualified.
+
+Resource provider65203 keeps all selected GPU executable bytes and original
+codec lookup entries/relocations unchanged. Matvec references live in selected
+registry arrays,rather than directly in GPU code. Only nine pointer relocation
+targets and their nine literal lengths change there;four direct resource pairs
+change in the GPU object. New undefined symbols/string tables are appended,
+and all other original registry bytes remain exact. The initially considered
+archive member is unselected. The three completed compilations are reused.
+Nine new malformed-object/metadata boundaries65210 refuse before publishing an
+output;the successful positive transform is not replayed. Original ten shader
+lease controls are reused. Full native cache/descriptor origin and complete-model
+quality/rates remain required before any model adoption.
+
+Refused I1 scope65200 performed no staging/launch at7318<7374. Changed cache
+scope65201 skips3631 completed windows,scans119 previously unobserved windows,
+and retires2000 observed resident pages,free7285->9285. All mappings and FDs
+positively retire. The positive complement prefix totals3750/6076,with2326
+unobserved windows remaining. Neither original read ranges nor completed
+complement windows are replayed. No initializer,reboot or global purge is used.
+
 Latest continuation: the final S1 fresh/retained pair65145 completes all twelve
 requests, ordinary closes and exact selected-file restores. Analysis65150 gives
 ordinary cold7.999906->8.010003 tok/s (+0.126217%, uncertain), warm-one

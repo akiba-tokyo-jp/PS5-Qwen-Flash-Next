@@ -3,6 +3,37 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest: I1 second ABBA65212 is ACTIVE. It reuses final control65180 as A0;
+new B1=65213, B2=65214, A3=65215 only. No overlapping console scope.
+65207 refused before staging at6607<7374; no launch or speed result. New
+complement65211 skips3750,scans120,resident2000->0,free6554->8550. The
+completed complement prefix is3870/6076;2206 windows remain unobserved.
+Second I1 F32 native65202 completes all3/ordinary restore.65204 reuses64950:
+all69 hashes,ordered routes,tokens/bytes exact. Refused65200 was BEFORE staging
+at7318<7374. New complement65201 skips3631,scans119,resident2000->0,
+free7285->9285. Positive complement prefix3750/6076;2326 windows remain.
+First I1 ABBA65176/analysis65185 is COMPLETE: primary cold-0.493703%,
+retained+0.406506%,prefix-0.703066%; no gain exceeds AA in both pairs. Do not
+adopt or replay that version; the separately refined second version is active.
+Q3 native65190 completes24 cases,all F64/canaries/fences,maximum error
+1.214001942e-7;live idle device retains2 allocations/16793600 bytes at epoch24,
+then ordinarily exits/exactly restores. Fresh CPU-title capacity65197 observes
+12262047744 bytes twice>=12184453120;GPU readmission pending is cleared.
+Payload helper65194 returned a nonmatching total at1 call and exited/removed.
+Do NOT replay it. Its prototype is preserved with its failure and removed from
+the working tools; use the source-bound registered-title CPU route instead.
+Carrier pack65186 is positively published/reusable:57327616 bytes/107.218s,
+host reads0.172s/sendall104.716s;0.509913MiB/s. No transfer speedup established.
+Q3 actual-model F32 software65199 combines6 completed cases65198 with12 new
+ones,6 shaders/18 layer cases/54 distinct64-row tiles. No repeated passing work.
+The no-shared path now uses actual subgroup width. SwiftShader has no8/16-bit
+storage; unused declarations are removed/validated in65195 with every other
+SPIR-V word exact. F16-input and other resource families remain unqualified.
+Model provider65203 preserves all GPU executable bytes and the original codec
+registry. Only9 selected matvec pointer/length pairs and4 direct resource pairs
+change. Three prior compilations are reused;9 new refusal boundaries65210 pass.
+Descriptor/cache origins and full-model Q2/Q3 remain outstanding; no adoption.
+
 Continuation65176 is ACTIVE: it reuses completed I1 A0=65159/B1=65170,
 completes B2=65179 and starts only final A3=65180. No overlapping console scope.
 65153 and
