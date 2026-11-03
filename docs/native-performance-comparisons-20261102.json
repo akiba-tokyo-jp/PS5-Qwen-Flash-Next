@@ -1117,5 +1117,18 @@
     "Gate_all48_encoding_complete": true,
     "Gate_Up_full_metadata": 65351,
     "full_model_speed_or_quality_qualified": false
+  },
+  "latest_checkpoint_65366": {
+    "separate_all_graph_completion_boundaries": true,
+    "positive_controls": 2,
+    "negative_controls": 14,
+    "actual_corrected_provider_positive_controls": 1,
+    "old_provider_and_wrong_native_negative_controls": 2,
+    "legacy_completion_source_unchanged": true,
+    "frozen_Up_tools_unchanged": true,
+    "required_new_native_graphs": 12,
+    "native_replays": 0,
+    "PS5_operations": 0,
+    "runner_integration_pending_reserved_Up_workflow_retirement": true
   }
 }

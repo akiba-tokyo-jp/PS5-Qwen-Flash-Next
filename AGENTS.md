@@ -43,6 +43,18 @@ The original Up workflow's ten tool inputs remain frozen. Gate encoding and
 combined full48+48 metadata65351 are COMPLETE,zero PS5 operations/re-encodes.
 The preceding29-file interruption is source placement,not a native/math test.
 
+Checkpoint65366 prepares a separate large-cache completion/admission module
+without modifying any queued Up input or the legacy completion validator. New
+boundaries pass2positive/14negative controls; actual corrected provider admission
+passes1positive/2negative controls,including refusal of the old low-index
+provider and wrong native binding. The completed receipt binds the unchanged
+legacy validator,new iq2_down_large_cache_scope.py and its distinct test.
+After19016 retires,wire these boundaries into run_native_paired_down.py and
+iq2_up_model_scope.py/model building. The old65338 controls stay exact and need
+no replay. Select the new validator explicitly for large-cache fixtures; keep
+the legacy validator unchanged to preserve controls and avoid recursive delegation.
+New required native graph count is12; no corrected scope has run.
+
 Checkpoint65356:the controlled held-out source65353 compiles against the
 actual selected PS5 ABI in65356,zero native replays/PS5 calls. It is not a
 quality result or a model launch. Gate has26/48 complete,zero failures at
