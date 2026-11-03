@@ -39,4 +39,17 @@ bad=copy.deepcopy(negative);bad['cases'].append(copy.deepcopy(rows[2]))
 try:validate_terminal(bad)
 except RuntimeError:pass
 else:raise AssertionError('No graph may follow a returned numerical negative')
-print('{"completed":true,"positive_controls":2,"negative_controls":16,"PS5_operations":0}')
+suffix=copy.deepcopy(t);suffix['completed_GGML_case_prefix']=2;suffix['cases']=suffix['cases'][2:]
+validate_terminal(suffix)
+suffix_negative=copy.deepcopy(suffix);suffix_negative['cases']=suffix_negative['cases'][:1]
+suffix_negative['all_outputs_passed']=False;suffix_negative['cases'][0].update(all_outputs_passed=False,mismatches=3)
+validate_terminal(suffix_negative)
+for change in (lambda x:x.update(completed_GGML_case_prefix=1),
+               lambda x:x.update(completed_GGML_case_prefix=True),
+               lambda x:x['cases'].insert(0,copy.deepcopy(rows[1])),
+               lambda x:x['cases'].pop()):
+    bad=copy.deepcopy(suffix);change(bad)
+    try:validate_terminal(bad)
+    except RuntimeError:pass
+    else:raise AssertionError('Only the complete, non-replayed source-bound suffix may close')
+print('{"completed":true,"positive_controls":4,"negative_controls":20,"PS5_operations":0}')

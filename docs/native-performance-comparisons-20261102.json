@@ -327,10 +327,27 @@
       "all12_numerics_and_canaries_passed": true,
       "full_model_quality_or_speed_qualified": false,
       "production_adopted": false
+    },
+    "old_F16_prefill_64460": {
+      "first_width30_format": "Q2_K control",
+      "completed_width30_graphs": 1,
+      "IQ2_width30_graphs": 0,
+      "reference_mismatches": 73401,
+      "maximum_F32_reference_error": 0.0001416096684337953,
+      "IQ2_specific_F16_failure_proved": false,
+      "default_F16_IQ2_qualified": false
+    },
+    "backend_profile_comparison": {
+      "build": 65291,
+      "current_P1_weights_unchanged": true,
+      "model_source_publications": 0,
+      "default_case_active": 65300,
+      "F32_case_unrun": true,
+      "whole_model_speed_or_quality_qualified": false
     }
   },
   "Q3": {
-    "status": "direct_and_padded_format_rejected_cross_row_format_pending",
+    "status": "native_GGML_decode_passes_wide_numerical_negative_refinement_ready",
     "real_Down_activation_moments_available": true,
     "cross_row_format_implemented": false,
     "real_operand_output_reference": {
@@ -418,7 +435,64 @@
     "row_two_four_software_values": 184320,
     "software_only_new_results": true,
     "actual_ELF_shader_initialization_functions_absent": true,
-    "original_startup_registry_provider_prepared": 65266
+    "original_startup_registry_provider_prepared": 65266,
+    "source_bound_shader_barrier": [
+      65271,
+      65273
+    ],
+    "capacity_CPU_readmission": 65277,
+    "capacity_bytes_twice": [
+      12262047744,
+      12262047744
+    ],
+    "corrected_provider": 65266,
+    "corrected_fixture": 65267,
+    "actual_caller_binding_audit": 65268,
+    "corrected_SELF": 65269,
+    "corrected_native_CPU_active": false,
+    "corrected_native_GPU_qualified": false,
+    "corrected_native_CPU_completed": 65281,
+    "corrected_native_GPU_case": 65282,
+    "corrected_process_exited_restoration": 65282,
+    "corrected_closed_driver_archive": 65284,
+    "corrected_kernel_message_snapshot": 65285,
+    "corrected_exit_source_proof": 65286,
+    "corrected_exit_cause": "saved==1 assertion before command work; missing successful environment; abort backtrace invoked forbidden fork",
+    "corrected_post_checkpoint_queue_submissions": 0,
+    "corrected_GPU_capacity_readmission_pending": true,
+    "production_environment_fixture_build": 65287,
+    "latest_native_GGML_case": 65292,
+    "latest_native_GGML_submitted_graphs": 3,
+    "latest_native_GGML_positive_graph_completions": 3,
+    "native_decode_layer0_widths_passed": [
+      1,
+      2
+    ],
+    "native_decode_max_F64_reference_error": 2.1493527319060846e-08,
+    "native_width30_mismatches": 768000,
+    "native_width30_max_F64_reference_error": 298567.49206663884,
+    "native_width30_canaries_exact": true,
+    "latest_ordinary_exit_and_exact_P1_restore": 65292,
+    "changed_CPU_capacity_readmission": 65298,
+    "changed_CPU_capacity_passed": true,
+    "changed_CPU_Direct_available_twice": 12262047744,
+    "changed_CPU_ordinary_exit_and_P1_restore": true,
+    "packed_half_refinement_software": 65294,
+    "packed_half_complete_FP16_output_bits": 49152000,
+    "packed_half_reused_other_resources": 12,
+    "packed_half_provider": 65295,
+    "packed_half_fixture": 65296,
+    "packed_half_SELF": 65297,
+    "packed_half_link_binding_audit": 65299,
+    "packed_half_native_GPU_unrun": true,
+    "next_native_GGML_cases": 10,
+    "reused_positive_native_GGML_cases": 2,
+    "changed_suffix_controls": {
+      "case": 65293,
+      "positive": 4,
+      "negative": 20,
+      "PS5_operations": 0
+    }
   },
   "I1": {
     "status": "both_refinements_complete_unadopted",
@@ -690,13 +764,53 @@
     "latest_failure_classification": 65264
   },
   "current_console_execution": {
+    "snapshot_case": 65300,
     "selected_P1_seven_files_restored_and_native_hashed": true,
     "native_running": false,
     "model_loaded": false,
-    "unknown_completion": true,
-    "GPU_readmission_pending": true,
-    "new_GPU_scope_permitted": false,
+    "unknown_completion": false,
+    "GPU_readmission_pending": false,
+    "overlapping_scope_permitted": false,
     "initializer_replays": 0,
-    "reboot_available": false
+    "reboot_available": false,
+    "latest_completed_restoration": 65298,
+    "active_scope": 65300,
+    "active_scope_kind": "Default current-P1 three-request backend-profile control; ordinary close and restoration required"
+  },
+  "latest_checkpoint_65281": {
+    "campaign_complete": false,
+    "primary_metric": "(generated_tokens-1)/decode_seconds",
+    "source_cache_positive_prefix": 4708,
+    "source_cache_total": 6076,
+    "host_encoded_layers": 67,
+    "host_failed_layers": 0,
+    "unchanged_native_tests_replayed": 0,
+    "transfer_experiments_closed": true
+  },
+  "latest_checkpoint_65286": {
+    "campaign_complete": false,
+    "primary_metric": "(generated_tokens-1)/decode_seconds",
+    "source_cache_positive_prefix": 4708,
+    "source_cache_total": 6076,
+    "host_encoded_layers": 71,
+    "host_failed_layers": 0,
+    "Down_carrier_layers_at_observation": 20,
+    "unchanged_native_tests_replayed": 0,
+    "transfer_experiments_closed": true,
+    "kernel_readonly_ELF_requests": 0
+  },
+  "checkpoint_date": "2026-11-04",
+  "latest_checkpoint_65300": {
+    "campaign_complete": false,
+    "primary_metric": "(generated_tokens-1)/decode_seconds",
+    "source_cache_positive_prefix": 4708,
+    "source_cache_total": 6076,
+    "host_encoded_layers": 77,
+    "host_failed_layers": 0,
+    "Down_carrier_layers_at_observation": 38,
+    "carrier_tail_active": 65303,
+    "original_quantizer_workers": 2,
+    "unchanged_native_tests_replayed": 0,
+    "transfer_experiments_closed": true
   }
 }

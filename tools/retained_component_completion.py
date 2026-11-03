@@ -40,9 +40,13 @@ def validate_close(close, selected):
          relink['paired_down_carrier'] and relink['retained_idle_device_until_ordinary_close'] and
          relink['retained_device_controls'] == 19, 'The qualified source-bound retained-device adapter is required')
     if relink.get('GGML_carrier_ABI'):
-        need(relink['GGML_operator_linked'] and relink['maximum_GGML_graphs']==12 and relink['backend_free_calls']==0 and
+        prefix=relink.get('completed_GGML_case_prefix',0)
+        need(prefix in (0,2) and relink['GGML_operator_linked'] and relink['maximum_GGML_graphs']==12-prefix and relink['backend_free_calls']==0 and
              Path(relink['source']['path']).name=='iq2_down_ggml_fixture.private.cpp',
              'The finite GGML adapter and retained live backend must be source bound')
+        if prefix:
+            proof=relink['completed_GGML_prefix_proof'];need(record(proof['path'])==proof,
+                'The exact positively completed decode prefix must remain bound')
     for row in (relink['source'], *[x for x in relink['inputs_before'] if Path(x['path']).name in
                 ('paired_down_native_support.h', 'retained_completed_device.h', 'native_paired_carrier_adapter.py')]):
         need(record(row['path']) == row, 'A qualified lifetime source changed')
@@ -52,6 +56,9 @@ def validate_close(close, selected):
     first, terminal = load(reports[0]['path']), load(reports[1]['path'])
     need(bool(terminal.get('GGML_carrier_ABI'))==bool(relink.get('GGML_carrier_ABI')),
          'The actual terminal topology must match the compiled component')
+    if relink.get('GGML_carrier_ABI'):
+        need(terminal.get('completed_GGML_case_prefix',0)==relink.get('completed_GGML_case_prefix',0),
+             'The observed skipped prefix must match the compiled, source-bound prefix')
     validate_terminal(terminal)
     need(first['pid'] == terminal['pid'] == close['pid'] and first['run_id'] == terminal['run_id'] and
          first['candidate_SELF_sha256'] == terminal['candidate_SELF_sha256'] == selected[0]['sha256'] and

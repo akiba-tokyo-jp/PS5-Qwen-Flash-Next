@@ -2,12 +2,50 @@
 // The published carrier operands are exercised through the selected GGML ABI.
 #define VK_NO_PROTOTYPES
 #include <vulkan/vulkan.h>
+#include <nlohmann/json.hpp>
+static nlohmann::json qwen_paired_down_prepare_CPU();
 #include "paired_down_native_support.h"
+#include "shader_assets.h"
+#include "iq2_down_resource_checks.h"
 #include "ggml.h"
 #include "ggml-alloc.h"
 #include "ggml-backend.h"
 #include "ggml-vulkan.h"
+#include "native_failure_journal.h"
 #include <cmath>
+
+static NativeJson qwen_paired_down_prepare_CPU(){
+    native_guard(31);qwen_native_stage("IQ2_Down_shader_CPU_admission_before_GPU");
+    qwen_app::install_native_assertion_journal();
+    for(const auto*name:{"GGML_VK_BOUNDED_STAGING","GGML_VK_DISABLE_ASYNC",
+        "GGML_VK_SERIALIZE_SUBMISSIONS","GGML_VK_MAX_NODES_PER_SUBMIT",
+        "GGML_VK_DISABLE_INTEGER_DOT_PRODUCT","GGML_VK_DISABLE_COOPMAT","GGML_VK_DISABLE_COOPMAT2"}){
+        native_require(!setenv(name,"1",1)&&!std::strcmp(getenv(name),"1"),
+            "The successful production GGML environment must be applied before backend initialization");
+    }
+    qwen_app::initialize_native_shader_file(iq2_shader_file_path,iq2_shader_file_bytes,iq2_shader_file_SHA256);
+    qwen_app::initialize_native_shader_assets();
+    unsigned verified=0;
+    for(const auto&resource:iq2_resource_checks){
+        std::size_t bytes=0;void*lease=nullptr;
+        const void*code=qwen_app_prepare_shader_code(resource.data,resource.bytes,&bytes,&lease);
+        native_require(code==resource.data&&bytes==resource.bytes&&lease,
+            "Every replacement shader requires its original CPU lease and whole SHA256");
+        qwen_app_complete_shader_code(lease);++verified;
+    }
+    const auto stats=qwen_app::native_shader_asset_stats();
+    native_require(stats.initialized&&!stats.failed&&!stats.active_lease&&stats.assets==1527&&
+        stats.lookup_entries==382&&stats.CPU_verified_lookups==382&&
+        stats.registry_sha256==iq2_original_registry_SHA256&&stats.external_file.verified&&
+        !stats.external_file.failed&&!stats.external_file.read_pending&&verified==13,
+        "Original registry, fresh shader file and all thirteen replacement leases must be admitted before GPU");
+    native_guard(31);qwen_native_stage("IQ2_Down_shader_CPU_admission_completed_GPU_not_started");
+    return {{"completed",true},{"GPU_calls",0},{"initialized",true},{"active_lease",false},
+        {"original_assets",stats.assets},{"original_lookups_verified",stats.CPU_verified_lookups},
+        {"replacement_resources_verified",verified},{"shader_file_verified",true},
+        {"original_registry_SHA256",stats.registry_sha256},{"original_all_asset_decode_replayed",false},
+        {"successful_GGML_environment_verified",7},{"native_assertion_journal_installed",true}};
+}
 
 static VkInstance fixture_instance=VK_NULL_HANDLE;
 static std::uintptr_t fixture_device=0;
@@ -111,14 +149,21 @@ int qwen_paired_down_component(int argc,char**argv){
     native_require(cases.at("cases").size()==12,"Twelve original layer/width cases required");
     native_require(!setenv("GGML_VK_DISABLE_MMVQ","1",1)&&!setenv("GGML_VK_DISABLE_F16","1",1),
         "Explicit original F32 activation and shader arithmetic profile required");
-    native_component_prepare();fixture_backend=ggml_backend_vk_init(0);
+    native_component_prepare();
+#if IQ2_DOWN_GPU_RESOURCE_TRACE
+    qwen_iq2_down_begin_GPU_resource_trace();
+#endif
+    fixture_backend=ggml_backend_vk_init(0);
     native_require(fixture_backend&&fixture_instance&&fixture_device,"Captured actual live GGML owner required");
     NativeJson result={{"completed",false},{"native_PS5",true},{"model_loads",0},
         {"GGML_carrier_ABI",true},{"cases",NativeJson::array()},{"all_outputs_passed",true},
         {"unknown_completion",false},{"all_GPU_resources_positively_retired",false},
         {"all_case_resources_positively_retired",false},{"whole_model_speed_qualified",false},
         {"GGML_backend_free_calls",0},{"persistent_pipeline_cache",false}};
+    result["completed_GGML_case_prefix"]=iq2_completed_GGML_prefix;
+    unsigned case_index=0;
     for(const auto&c:cases.at("cases")){
+        if(case_index++<iq2_completed_GGML_prefix)continue;
         const auto row=fixture_case(c);result["cases"].push_back(row);native_save(argv[2],result);
         if(!row.at("all_outputs_passed").get<bool>()){result["all_outputs_passed"]=false;break;}
     }

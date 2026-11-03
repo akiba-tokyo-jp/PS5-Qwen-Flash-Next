@@ -19,6 +19,70 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+The latest real-GGML scope65292 positively completes layer0 widths1 and2,
+with maximum F64 reference error2.1493527319060846e-8. Width30 positively returns
+but all768000 values differ(maximum298567.49206663884);canaries remain exact.
+No graph follows the numerical negative. Every submitted graph/case owner/IO
+returns, the idle device stays live until ordinary exit, and exact P1 restore
+passes. This is a numerical failure, with no model-speed qualification.
+
+Only the unqualified dequant resource is refined next. Packed-half32-bit
+stores preserve the FP16 output ABI and pass all49152000 FP16 output bits in
+three complete ten-plane banks with12288000-byte descriptor prefixes65294.
+Twelve unchanged resources are reused. Provider65295,fixture65296,SELF65297
+and actual-link audit65299 are complete. Fresh changed CPU/capacity65298 passes
+13 leases/382 lookups/seven successful GGML settings and12262047744 Direct
+bytes twice against12184453120,with ordinary exit/exact P1 restoration. The
+capacity gate is cleared. New suffix validation65293 passes4positive/20negative
+controls on the changed code. The next GPU scope has10 remaining cases and
+reuses the two native decode passes; it is still UNRUN. Shader-resource tracing
+starts only after explicit GPU entry. The software result does not prove the
+cause of the prior wide numerical error or a native speed improvement.
+
+Before large source publication, comparison65291 prepares unchanged-current-P1
+packages with default and F32-only backend profiles. Control65300 is active;
+the F32 arm is unrun. Both retain the original weights,3712 cache slots,
+source/identity/memory/reset guards and cold/retained/exact-prefix sequence.
+No model weights are sent for this comparison. The original two-worker encoder
+continues; carrier tail65303 consumes each newly completed layer once while
+preserving the completed36-layer prefix. Transfer/compression trials stay closed.
+
+Historical failure isolation before these scopes follows.
+
+Corrected shader CPU startup65281 passes all13 replacement leases and382
+original lookups, then ordinarily exits and restores P1. The first corrected
+GPU graph65282 does not complete; its process exits and exact P1 restoration
+passes. Closed driver archive65284 preserves all1942 bytes. Read-only kernel
+snapshot65285 identifies the actual PID4192 SYSTEM_ILLEGAL_FUNCTION_CALL in
+fork. The kernel backtrace and actual executable proof65286 locate its caller
+at the graph's initial `saved==1` node-cap assertion. Its conditional branch
+precedes all command work; only clock/counter operations precede the check.
+The prior backend synchronization and positive driver checkpoint had returned,
+so no new queue work was issued after that checkpoint. This proof uses the
+actual kernel fault and ELF, independently of the old missing-shader barrier.
+It does not claim ordinary exit or individual BO retirement. Fresh CPU Direct
+capacity readmission is still required before GPU execution can be admitted.
+
+The standalone fixture omitted the successful production environment. Changed
+fixture65287 applies and verifies seven original GGML values before CPU-only
+return, including MAX_NODES_PER_SUBMIT=1, bounded staging, disabled async,
+serialized submissions and disabled integer/cooperative paths. It installs the
+existing native assertion journal so future assertion messages bypass GGML's
+unsupported backtrace fork. The selected driver and mathematical resources are
+reused. Fresh changed CPU startup and capacity must pass before a separately
+priced changed GPU scope. Neither failed package may be replayed in GPU mode.
+Host encoder65103 remains at its original two workers;71/96 layers are complete
+at this observation with zero failures. Carrier conversion65283 reuses all
+completed layers, with20 prepared at this observation. Auxiliary transfer and
+compression experiments remain closed.
+
+The old F16 prefill scope64460 needs a narrower interpretation. Its first
+width30 graph was the existing Q2_K warmup and returned73401 reference mismatches
+(maximum0.0001416096684337953). The saved source and single completed graph show
+that no IQ2 width30 graph ran. That scope fails its stated F32-input reference;
+it does not establish an IQ2-specific F16 defect or qualify default-F16 IQ2.
+The primary performance metric remains complete-model decode tok/s.
+
 P1's adopted cold-output refinement improves complete-model decode from
 10.162065 to10.436816 tok/s (+2.703692%) cold and12.094066 to12.172570 tok/s
 (+0.649106%) retained. Both paired gains exceed control AA spread. Exact-prefix

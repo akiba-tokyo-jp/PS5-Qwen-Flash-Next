@@ -56,6 +56,29 @@ def price_CPU(package,prior_dir):
         empirical_cost_model_not_measured_RAM_gain=True,universal_allocation_bound_claimed=False,ordinary_model_screen_unchanged=7374)
 
 
+def price_changed_CPU(package,control_path):
+    done=load(control_path)
+    need(done['completed'] and done['mode']=='CPU' and done['native_passed'] and done['ordinary_exit_observed'] and
+         done['current_seven_restored_and_native_hashed'],'A positively completed standalone CPU startup control is required')
+    native=exact(done['native']);before=exact(done['VM_before'])['observations'];old=exact(done['package'])
+    need(native['SELF_verified'] and native['GPU_calls']==native['model_loads']==native['source_payload_reads']==0 and
+         native['CPU_libc_fallbacks']==0,'The startup control must complete all CPU calls without GPU work')
+    current_geometry,old_geometry=geometry(package),geometry(old)
+    constructors,old_constructors=initializer_count(package),initializer_count(old)
+    need(constructors<=old_constructors,'Additional constructors need separate accounting')
+    low=min(native['VM_main_free'],native['VM_after_SELF_free'],native['VM_minimum_SELF_free'])
+    drop=max(0,min(before['free_first'],before['free_last'])-low)
+    added=max(0,current_geometry['file_pages']-old_geometry['file_pages'])+max(0,current_geometry['zero_pages']-old_geometry['zero_pages'])
+    new_link,old_link=exact(package['relink']),exact(old['relink'])
+    shader_allowance=256 if new_link.get('CPU_shader_resource_admission_before_GPU') and not old_link.get('CPU_shader_resource_admission_before_GPU') else 0
+    return dict(mode='CPU',required_pages=drop+added+1154+256+shader_allowance,
+        observed_completed_standalone_startup_drop_pages=drop,additional_ELF_pages=added,
+        native_IO_floor=1154,selected_operational_slack=256,selected_changed_shader_CPU_allowance_pages=shader_allowance,
+        control=record(control_path),control_boot=before['boot_before'],geometry=current_geometry,
+        constructors=constructors,control_constructors=old_constructors,
+        empirical_cost_model_not_measured_RAM_gain=True,universal_allocation_bound_claimed=False,ordinary_model_screen_unchanged=7374)
+
+
 def price_GPU(package_path,startup_path,reuse_path=None):
     done=load(startup_path)
     need(done['completed'] and done['mode']=='CPU' and done['native_passed'] and done['ordinary_exit_observed'] and
@@ -72,6 +95,18 @@ def price_GPU(package_path,startup_path,reuse_path=None):
              'Exact actual CPU code/relocations and the sole GPU boundary insertion must be qualified')
         extra=reuse['additional_ELF_pages_priced']
     native=exact(done['native']);before=exact(done['VM_before'])['observations']
+    linked=exact(load(package_path)['relink'])
+    if linked.get('CPU_shader_resource_admission_before_GPU'):
+        admission=native.get('shader_CPU_admission',{})
+        need(admission.get('completed') is True and admission.get('GPU_calls')==0 and
+             admission.get('initialized') is True and admission.get('active_lease') is False and
+             admission.get('original_assets')==1527 and admission.get('original_lookups_verified')==382 and
+             admission.get('replacement_resources_verified')==13 and admission.get('shader_file_verified') is True,
+             'The exact changed CPU startup must positively admit all shader resources before GPU pricing')
+        if linked.get('successful_GGML_environment_verified_before_CPU_return')==7:
+            need(admission.get('successful_GGML_environment_verified')==7 and
+                 admission.get('native_assertion_journal_installed') is True,
+                 'The changed CPU proof must verify the successful environment and assertion journal')
     need(native['SELF_verified'] and native['GPU_calls']==native['model_loads']==native['source_payload_reads']==0 and
          native['CPU_libc_fallbacks']==0 and native['CPU_heap_peak_bytes']<=64<<20,
          'Exact completed standalone CPU allocation observations required')
@@ -146,12 +181,15 @@ def main():
         p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--mode',choices=('CPU','GPU'),required=True)
     p.add_argument('--prior-CPU',type=Path)
+    p.add_argument('--CPU-startup-proof',type=Path,help='Price changed CPU initialization from the latest completed standalone startup')
     p.add_argument('--startup-proof',type=Path)
     p.add_argument('--startup-reuse',type=Path)
     p.add_argument('--component-transfer-proof',type=Path)
     p.add_argument('--component-pack-proof',type=Path)
     p.add_argument('--model-part-receiver-proof',type=Path)
     p.add_argument('--pre-device-exit-proof',type=Path)
+    p.add_argument('--shader-pre-dispatch-exit-proof',type=Path)
+    p.add_argument('--node-cap-pre-dispatch-exit-proof',type=Path)
     p.add_argument('--post-completion-close-proof',type=Path)
     p.add_argument('--P1-contract-close-proof',type=Path)
     p.add_argument('--retained-component-exit-proof',type=Path)
@@ -161,9 +199,14 @@ def main():
     package=load(a.package);relink=exact(package['relink'])
     GGML_fixture=relink.get('GGML_carrier_ABI') is True
     if GGML_fixture:
+        need(a.mode=='CPU' or relink.get('CPU_shader_resource_admission_before_GPU') is True,
+             'The failed legacy GGML fixture omitted shader CPU startup; it may never be launched in GPU mode again')
+        need(a.mode=='CPU' or (relink.get('successful_GGML_environment_verified_before_CPU_return')==7 and
+             relink.get('native_assertion_journal_installed') is True),
+             'The failed node-cap fixture omitted the successful GGML environment; it may never be replayed in GPU mode')
         need(a.GGML_completion_controls is not None,'Changed GGML completion controls are required')
         controls=load(a.GGML_completion_controls)
-        need(controls['completed'] and controls['positive_controls']==2 and controls['negative_controls']==16 and
+        need(controls['completed'] and controls['positive_controls']==4 and controls['negative_controls']==20 and
              controls['PS5_operations']==controls['unchanged_controls_replayed']==0 and
              {Path(r['path']).name for r in controls['inputs']}=={'iq2_down_ggml_completion.py','iq2_down_ggml_completion_test.py'} and
              all(record(r['path'])==r for r in controls['inputs']),
@@ -176,12 +219,14 @@ def main():
          (relink['new_post_device_controls']==15 or (relink.get('retained_idle_device_until_ordinary_close') and
           relink.get('paired_down_carrier') and relink.get('retained_device_controls')==19)) and
          len(relink['linked_driver'])==1 and ((not GGML_fixture and relink['maximum_GPU_dispatches']==24) or
-          (GGML_fixture and relink['maximum_GGML_graphs']==12 and relink['maximum_GPU_dispatches'] is None)) and
+          (GGML_fixture and relink.get('completed_GGML_case_prefix',0) in (0,2) and
+           relink['maximum_GGML_graphs']==12-relink.get('completed_GGML_case_prefix',0) and relink['maximum_GPU_dispatches'] is None)) and
          relink['successful_driver_whole_archive_preserved'] and
          all(r['pointer_matches'] for r in relink['actual_physical_dispatch_audit']),
          'Exact new standalone package and all actual driver callbacks required')
     image=package['SELF'];need(record(image['path'])==image and image['bytes']<=32<<20,'Exact native standalone SELF required')
-    pricing=price_CPU(package,a.prior_CPU) if a.mode=='CPU' else price_GPU(a.package,a.startup_proof,a.startup_reuse)
+    need(a.CPU_startup_proof is None or a.mode=='CPU','A CPU startup control cannot replace the GPU startup proof')
+    pricing=(price_changed_CPU(package,a.CPU_startup_proof) if a.CPU_startup_proof else price_CPU(package,a.prior_CPU)) if a.mode=='CPU' else price_GPU(a.package,a.startup_proof,a.startup_reuse)
     save(a.out/'pricing.private.json',pricing)
     if not a.execute:
         print(json.dumps(dict(prepared=True,pricing=pricing,PS5_operations=0)));return
@@ -189,9 +234,40 @@ def main():
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'],'Restored idle native process state required')
     readmission=None
     if state['unknown_completion'] or state.get('GPU_retirement_readmission_pending'):
-        need(a.mode=='CPU' and sum(x is not None for x in (a.pre_device_exit_proof,a.post_completion_close_proof,a.P1_contract_close_proof,a.retained_component_exit_proof))==1 and relink['CPU_Direct_capacity_readmission'],
+        need(a.mode=='CPU' and sum(x is not None for x in (a.pre_device_exit_proof,a.shader_pre_dispatch_exit_proof,a.node_cap_pre_dispatch_exit_proof,a.post_completion_close_proof,a.P1_contract_close_proof,a.retained_component_exit_proof))==1 and relink['CPU_Direct_capacity_readmission'],
              'Only an explicitly qualified CPU capacity readmission may run while GPU capacity admission is pending')
-        if a.retained_component_exit_proof:
+        if a.node_cap_pre_dispatch_exit_proof:
+            readmission=load(a.node_cap_pre_dispatch_exit_proof)
+            need(GGML_fixture and readmission['completed'] and readmission['source_bound_node_cap_barrier'] and
+                 readmission['process_exit_cause_proved'] and readmission['failed_assertion']=='saved==1' and
+                 readmission['actual_CPU_prefix_only_clock_and_counters'] and
+                 readmission['post_checkpoint_queue_submissions']==0 and
+                 readmission['prior_backend_synchronization_and_driver_checkpoint_positive'] and
+                 readmission['all_preexisting_submitted_work_completed_at_prior_checkpoint'] and
+                 readmission['only_capacity_CPU_readmission_permitted'] and not readmission['GPU_execution_permitted'] and
+                 readmission['current_boot']==state['current_boot'] and
+                 readmission['run_id']==state['active_successful_native_case']['run_id'] and
+                 state['source_classified_node_cap_barrier']==record(a.node_cap_pre_dispatch_exit_proof) and
+                 all(record(readmission[k]['path'])==readmission[k] for k in
+                     ('case','kernel_snapshot','actual_ELF','source','stages','restoration','package')) and
+                 relink.get('successful_GGML_environment_verified_before_CPU_return')==7 and
+                 relink.get('native_assertion_journal_installed') is True,
+                 'Only the kernel/ELF-bound pre-dispatch assertion permits changed CPU startup and capacity readmission')
+        elif a.shader_pre_dispatch_exit_proof:
+            readmission=load(a.shader_pre_dispatch_exit_proof)
+            need(GGML_fixture and readmission['completed'] and readmission['source_bound_pre_dispatch_barrier'] and
+                 readmission['mandatory_shader_admission_flag_permanently_false'] and
+                 readmission['fresh_compute_pipeline_creation_blocked_before_shader_module'] and
+                 readmission['prior_backend_synchronization_and_driver_checkpoint_positive'] and
+                 readmission['all_preexisting_submitted_work_completed_at_prior_checkpoint'] and
+                 readmission['no_intervening_backend_operation_after_positive_synchronization'] and
+                 readmission['post_checkpoint_queue_submissions']==0 and
+                 readmission['only_capacity_CPU_readmission_permitted'] and not readmission['GPU_execution_permitted'] and
+                 readmission['package']==record(a.package) and readmission['current_boot']==state['current_boot'] and
+                 readmission['run_id']==state['active_successful_native_case']['run_id'] and
+                 all(record(readmission[k]['path'])==readmission[k] for k in ('failure','audit','actual_ELF','source','support','stages')),
+                 'Only the exact source-bound shader barrier after a positively drained backend permits CPU capacity readmission')
+        elif a.retained_component_exit_proof:
             readmission=load(a.retained_component_exit_proof)
             from retained_component_completion import validate_terminal
             need(readmission['completed'] and (readmission['native_passed'] or (GGML_fixture and
@@ -199,8 +275,10 @@ def main():
                  readmission['completed_idle_device_retained_until_ordinary_exit'] and readmission['fresh_capacity_readmission_required'] and
                  readmission['current_seven_restored_and_native_hashed'] and not readmission['unknown_completion'] and
                  state['retained_component_ordinary_exit']['native']==readmission['native'] and
-                 readmission['package']==record(a.package) and record(readmission['native']['path'])==readmission['native'],
-                 'The exact completed retained owner, same package and positive ordinary exit are required')
+                 state['retained_component_ordinary_exit']['package']==readmission['package'] and
+                 record(readmission['package']['path'])==readmission['package'] and
+                 record(readmission['native']['path'])==readmission['native'],
+                 'The exact previous retained owner and positive exit are required; the new CPU-only binary is independently priced')
             validate_terminal(load(readmission['native']['path']))
         elif a.P1_contract_close_proof:
             readmission=load(a.P1_contract_close_proof)
@@ -230,6 +308,7 @@ def main():
                  readmission['only_capacity_CPU_readmission_permitted'] and readmission['current_boot']==state['current_boot'],
                  'Exact same-boot pre-device process exit and zero submission evidence required')
     lan=lan_module();vm_dir=a.out/'VM-before';vm_dir.mkdir();vm=query(lan.HOST,vm_dir)
+    need(not pricing.get('control_boot') or pricing['control_boot']==state['current_boot'],'The changed CPU price must use the same current boot')
     need(vm['boot_before']==vm['boot_after']==state['current_boot'] and vm['minimum']==898 and
          vm['reserved']==206 and vm['page_bytes']==16384,'Exact current boot and native page geometry required')
     admitted=min(vm['free_first'],vm['free_last'])>=pricing['required_pages']
@@ -334,7 +413,7 @@ def main():
              min(capacity['available_first'],capacity['available_last'])>=capacity['baseline_bytes']==12184453120,
              'Completed native capacity baseline and ordinary exit required before clearing the pending gate')
         state['GPU_retirement_readmission_pending']=False
-        state['standalone_pre_device_exit_capacity_readmission']=dict(source=record(a.retained_component_exit_proof or a.P1_contract_close_proof or a.post_completion_close_proof or a.pre_device_exit_proof),native=record(a.out/'native-result.private.json'),
+        state['standalone_pre_device_exit_capacity_readmission']=dict(source=record(a.retained_component_exit_proof or a.P1_contract_close_proof or a.post_completion_close_proof or a.node_cap_pre_dispatch_exit_proof or a.shader_pre_dispatch_exit_proof or a.pre_device_exit_proof),native=record(a.out/'native-result.private.json'),
             individual_old_BO_release_claimed=False,ordinary_exit_observed=True)
     state_path.write_text(json.dumps(state,indent=2)+'\n')
     passed=terminal['completed'] and (CPU if a.mode=='CPU' else GPU and terminal['all_outputs_passed'])

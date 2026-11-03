@@ -1,0 +1,14 @@
+#version 450
+// SPDX-License-Identifier: MIT
+// Preserve the original FP16 output ABI using paired 32-bit stores.
+layout(local_size_x=256,local_size_y=1,local_size_z=1) in;
+layout(push_constant) uniform parameter {uint M;uint K;uint stride_a;uint stride_b;uint nel;} p;
+layout(set=0,binding=1,std430) writeonly buffer D {uvec2 values[];} output_half;
+#include "iq2_down_carrier.glsl"
+void main(){
+    const uint group=gl_GlobalInvocationID.x,at=group*4u;
+    if(at>=p.nel)return;
+    output_half.values[group]=uvec2(
+        packHalf2x16(vec2(iq2_down_decode(at),iq2_down_decode(at+1u))),
+        packHalf2x16(vec2(iq2_down_decode(at+2u),iq2_down_decode(at+3u))));
+}

@@ -3,6 +3,103 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Checkpoint65300 supersedes all execution-state notes below. Exactly one console
+scope is active: the default-P1 backend-profile control65300, session68586.
+Do not overlap it. Its paired F32 package65291 is prepared but unrun. These
+use unchanged current model weights and price the F32 prerequisite before any
+large IQ2 source publication. Keep the original primary metric and cohorts.
+
+Q3 GPU65292 positively completes three real-GGML graphs: layer0 width1/2 PASS
+(maximum F64 error2.1493527319060846e-8); width30 is a returned numerical
+negative(all768000 outputs differ,maxerror298567.49206663884,canaries exact).
+All submitted work/case resources/IO returned; device retained to ordinary
+exit, then exact P1 restoration passed. It is not an unknown GPU failure.
+Changed CPU65298 PASSES,all13 resource leases/382 lookups/seven successful
+GGML environment values. Direct available12262047744 twice>=12184453120,
+ordinary exit and exact P1 restoration. The capacity gate is cleared.
+Packed-half refinement65294 passes all49152000 FP16 output bits across three
+full ten-plane/nonzero-view banks on software Vulkan. Only dequant_q2_0 is
+changed;12 resources are reused. Provider65295/fixture65296/SELF65297 are ready;
+new GPU scope is UNRUN and must wait for the single active console scope.
+It runs only10 remaining GGML cases, reusing the two native passes from65292.
+Fresh changed suffix controls65293:4positive/20negative;all24 on changed code,
+zero PS5 calls. Actual binding audit65299 and SELF roundtrip pass. Resource
+creation tracing is enabled only after GPU entry. No new model speed is claimed.
+
+The earlier unexpected exit65282 is separately classified by kernel snapshot
+65285 and ELF/backtrace proof65286: initial saved==1 node-cap assertion, then
+unsupported backtrace fork, before command work. Never replay either failed
+legacy package or use the old missing-shader proof for a corrected image.
+Initialization63121 is consumed; no initialization/reboot/recovery probe.
+Production remains P1 c5afc565.../21929863 bytes, driver872cc126/cumulative-idle,
+persistent caches disabled. Restore selected current_files, never the old SELF.
+Original encoder65103 stays at two workers. Carrier prefix65283 completes36
+layers; tail65303 is ACTIVE,session22013,converting each new completed layer
+once and waiting for remaining encoder markers. Do not duplicate either process.
+Transfer/compression experiments remain closed. The campaign is incomplete.
+
+Historical checkpoint65286:
+Checkpoint65286 supersedes all execution-state notes below. Corrected shader
+CPU startup65281 PASSED with13 replacement leases/382 original lookups,zero GPU
+calls,ordinary exit and exact P1 restoration. GPU65282 then exited at its first
+GGML call; P1 was restored and natively hashed. Kernel snapshot65285 (read-only
+kern.msgbuf,zero ELF/title/GPU requests) identifies PID4192's forbidden fork.
+Actual ELF/backtrace proof65286 binds it to the saved==1 node-cap assertion at
+the beginning of graph_compute, before command work; the preceding backend
+synchronize/driver checkpoint returned. No post-checkpoint queue work was issued.
+This is independent of the old missing-shader-initialization proof, which must
+not be reused for this corrected image. CPU completion is classified; Direct
+capacity readmission remains pending and further GPU work is NOT admitted.
+Never replay65282 or initialize/reboot. Fixture65287 is being built with the
+successful seven GGML environment values and existing assertion journal,
+verified before CPU-only return. Require fresh changed CPU startup/capacity and
+ordinary close/restoration before separately pricing a changed GPU scope.
+Production remains P1 c5afc565.../21929863 bytes on PC and PS5, driver872cc126 /
+cumulative-idle, persistent caches disabled. Do not restore the old SELF.
+Continue original two-worker encoder65103 and carrier conversion65283; reuse
+positive layers and existing staged bytes. No transfer/compression experiments.
+The primary metric stays (generated_tokens-1)/decode_seconds for matched cold,
+retained and exact-prefix conditions. CPU/component/transport results are not
+model decode improvements. The campaign remains incomplete.
+
+Historical checkpoint65281:
+
+Source audits65265/65271/65273 qualify a pre-dispatch shader barrier: the actual
+failed ELF's initialized flag starts zero, has only two readers/no initializer
+or relocated escape, and every fresh pipeline unconditionally calls the
+original CPU admission before shader-module creation. The first view/matmul
+graph follows a returned backend synchronize and positive driver quiet
+checkpoint, with no intervening backend operation. No post-checkpoint queue
+work can pass that barrier. This is source-derived; suppressed journal lines
+do not establish an overall zero-submit count or the exact OS exit cause.
+CPU-only capacity readmission65277 PASSES:12262047744 bytes twice against
+12184453120,zero GPU/model calls,ordinary exit and exact P1 seven-file restore.
+The capacity gate is cleared; initialization/reboot/failed GPU replay remain
+prohibited. New corrected CPU startup65281 is ACTIVE, session44033; do not
+overlap any console scope. It uses SELF28b85ab1.../15170954 bytes, prepared65269.
+Provider65266 preserves the entire original registry and uses three separate
+GPU caller arrays. Corrected fixture65267 performs original CPU initialization
+and13 new shader CPU leases BEFORE the CPU-only early return/GPU initialization.
+It reuses the already qualified unchanged original assets rather than decoding
+all1527 again. Actual-link audit65268 checks nine original/new pointer+length
+pairs and all13 SPIR-V bodies. Fresh native CPU proof is mandatory;65255 cannot
+price this changed binary. The old65222 package is blocked in GPU mode.
+CPU pricing now uses measured same-boot standalone control65277:5782-page drop,
+1154 I/O floor,256 operational slack,256 changed-shader allowance;required7448.
+Refused65278 was BEFORE publication/launch. Complement65274/75/76 skips4314,
+scans117/119/117 and retires1968/1952/2016 pages;free3509/5389/7400.
+Complement65279 skips4667/scans41/retires704/free7269->7973. Positive complement
+prefix4708/6076,1368 remain.65280 was NOT run because the derived target was met.
+Never repeat completed ranges. NewCPU65281 admits at7978>=7448.
+Host encoder65103 remains active with its original two workers;67/96 complete,
+zero failures at the latest observation. Do not restart or repeat completed jobs.
+Old F16 scope64460's first width30 graph is the Q2_K warmup(control), not IQ2:
+the exact saved fixture runsload/compute/verify(i%2) fromi=0, and the native
+receipt returnsGPU_graphs=1/mismatches73401/maxerror0.0001416096684337953.
+No IQ2 width30 graph ran in that scope. It is a failed comparison against its
+F32-input reference, not proof of an IQ2-specific F16 failure. Default-F16
+qualification remains open; do not silently reinterpret it as a passing result.
+
 Current checkpoint65259 supersedes the historical notes below. P1 is ADOPTED
 on PC and PS5, receipt65256, SELF c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed,
 21929863 bytes. All seven files are natively hashed in both console namespaces;

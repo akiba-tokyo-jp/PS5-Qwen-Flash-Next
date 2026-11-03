@@ -22,8 +22,18 @@ def main():
         p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--resume-compiled',action='store_true',help='Reuse the three exact compiled objects after the incomplete reference audit')
     p.add_argument('--caller-arrays',action='store_true',help='Redirect GPU references to separate arrays and preserve original startup lookups')
+    p.add_argument('--trace-GPU-resources',action='store_true',help='Record actual resource addresses only after explicit GPU entry')
     a=p.parse_args();built,software,lease=load(a.shaders),load(a.software_proof),load(a.lease_proof)
-    need(built['completed'] and built['all_non_declaration_words_byte_exact'] and
+    packed=built.get('packed_half_dequant_refinement') is True
+    if packed:
+        parent=load(built['ancestor']['path']);new={r['name']:r for r in built['shaders']};old={r['name']:r for r in parent['shaders']}
+        need(record(built['ancestor']['path'])==built['ancestor'] and built['reused_shader_resources']==12 and
+             built['original_FP16_output_ABI_preserved'] and built['complete_FP16_values_verified']==49152000 and
+             record(built['packed_half_software_proof']['path'])==built['packed_half_software_proof'] and
+             load(built['packed_half_software_proof']['path'])['completed'] and new.keys()==old.keys() and
+             all(new[k]==old[k] for k in old if k!='dequant_q2_0'),
+             'Only one fully qualified packed-half resource may differ from the twelve immutable resources')
+    need(built['completed'] and (built['all_non_declaration_words_byte_exact'] or packed) and
          software['completed'] and software['build']==record(a.shaders) and
          software['actual_model_matvec_shaders']==6 and software['shape_cases']==18 and software['F32_input_only'] and
          software['all_outputs_passed'] and software['software_SPIRV_reference'] and
@@ -82,10 +92,12 @@ def main():
     put(wrapper,'''// SPDX-License-Identifier: MIT
 #include "fused_shader_lease.h"
 #include <cstring>
+#include <cstdio>
 extern "C" {
 #include "hash/sha256/sha256.h"
 const void*__real_qwen_app_prepare_shader_code(const void*,std::size_t,std::size_t*,void**);
 void qwen_app_complete_shader_code(void*);
+void qwen_native_stage(const char*);
 '''+ '\n'.join(declarations)+'''
 }
 namespace {
@@ -96,8 +108,16 @@ bool digest(const void*data,std::size_t bytes,const unsigned char*expected){
 }
 '''+ '\n'.join(sources)+'''
 const qwen_app::FusedShaderSource sources[]={'''+','.join(mapping)+'''};
+bool trace_GPU_resources=false;
 }
+extern "C" void qwen_iq2_down_begin_GPU_resource_trace(){trace_GPU_resources=true;}
 extern "C" const void*__wrap_qwen_app_prepare_shader_code(const void*storage,std::size_t bytes,std::size_t*decoded,void**lease){
+'''+(''' if(trace_GPU_resources){
+  unsigned replacement=0;for(unsigned i=0;i<13;++i)if(storage==sources[i].replacement)replacement=i+1;
+  char line[160];std::snprintf(line,sizeof(line),"IQ2_Down_GPU_shader pointer=%p bytes=%zu replacement=%u",storage,bytes,replacement);
+  qwen_native_stage(line);
+ }
+''' if a.trace_GPU_resources else '')+'''
  for(const auto&source:sources)if(storage==source.replacement)
   return qwen_app::prepare_fused_shader(storage,bytes,decoded,lease,source,
    {__real_qwen_app_prepare_shader_code,qwen_app_complete_shader_code,digest});
@@ -167,6 +187,7 @@ extern "C" const void*__wrap_qwen_app_prepare_shader_code(const void*storage,std
         only_selected_array_relocations_and_lengths_changed=not a.caller_arrays,
         reused_completed_compile_commands=3 if a.resume_compiled else 0,
         GPU_executable_sections_byte_exact=True,redirected_resource_pairs=13,new_global_initializers=0,
+        GPU_resource_trace=a.trace_GPU_resources,packed_half_dequant_refinement=packed,
         link_flags=['--wrap=qwen_app_prepare_shader_code'],commands=commands,
         required_converted_Down_layers=list(range(48)),all_Q2_0_tensors_must_be_IQ2_carriers=True,
         model_profile_requires_MMVQ_and_F16_disabled=True,descriptor_plane_origin_and_cache_view_qualified=False,
