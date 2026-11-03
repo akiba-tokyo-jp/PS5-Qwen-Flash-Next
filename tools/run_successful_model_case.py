@@ -104,6 +104,8 @@ def start(args):
         effective=package['effective_application_policy'];profile=effective['profile']
         need(record(profile['path'])==profile,'Compiled effective application policy changed')
         compiled_profile=load(profile['path'])
+        from iq2_up_model_scope import require_cache_layout
+        require_cache_layout(compiled_profile)
         if compiled_profile.get('headless_audit_kind')=='S1-MTP-shadow':
             require_shadow_host_check(compiled_profile)
             need(compiled_profile.get('successful_MTP_contract_verified') is True and

@@ -33,7 +33,7 @@ def digest_expression(row,path=None):
     return 'qwen_launch_digest_matches('+json.dumps(path or row['remote'])+','+str(row['bytes'])+'ULL,'+json.dumps(row['sha256'])+')'
 
 
-def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None,direct_stage_context=None,closed_log_export_context=None):
+def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None,direct_stage_context=None,closed_log_export_context=None,direct_stage_header=None):
     workspace=Path(workspace);out=Path(out);out.mkdir(parents=True,exist_ok=False)
     base_plan=load(mount_plan);base=base_plan['controller'];need(record(base['path'])==base,'Successful controller input changed')
     text=Path(base['path']).read_text();prefix='/data/ai/moss-qwen-case-'+secrets.token_hex(16)
@@ -85,7 +85,13 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         context+=completed_images_context+'\n'
     if operation=='receive-direct-stage':
         need(isinstance(direct_stage_context,str) and direct_stage_context,'One exact bounded Direct staging protocol required')
-        context+=direct_stage_context+'\n#include "direct_stage_receive.h"\n'
+        if direct_stage_header:
+            original=(ROOT/'native/qwen_flash_next/direct_stage_receive.h').read_text()
+            need(original.count('(32ull<<20)')==1 and Path(direct_stage_header).read_text()==
+                 original.replace('(32ull<<20)','(512ull<<20)',1),
+                 'The isolated model-part receiver may change only its finite payload ceiling')
+            context+=direct_stage_context+'\n#include '+json.dumps(Path(direct_stage_header).resolve().as_posix())+'\n'
+        else:context+=direct_stage_context+'\n#include "direct_stage_receive.h"\n'
     if operation=='export-closed-logs':
         need(isinstance(closed_log_export_context,str) and closed_log_export_context,'Exact obsolete closed-log read-only scope required')
         context+=closed_log_export_context+'\n#include "closed_log_export.h"\n'
@@ -193,7 +199,9 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
               maximum_complete_process_rows=128,whole_integrity_window_bytes=16384,
               CPU_metadata_margin_pages=37 if operation in ('receive-direct-stage','export-closed-logs') else 21,OS_minimum_and_reserved_read_only=True)
     plan['CPU_control_independent_thresholds']=operation!='restore-bundle'
-    if operation=='receive-direct-stage':plan['receiver_source']=record(ROOT/'native/qwen_flash_next/direct_stage_receive.h')
+    if operation=='receive-direct-stage':
+        plan['receiver_source']=record(direct_stage_header or ROOT/'native/qwen_flash_next/direct_stage_receive.h')
+        plan['isolated_large_model_part_receiver']=bool(direct_stage_header)
     if operation=='export-closed-logs':plan['exporter_source']=record(ROOT/'native/qwen_flash_next/closed_log_export.h')
     save(out/'plan.private.json',plan);return plan
 

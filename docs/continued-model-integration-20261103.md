@@ -161,3 +161,77 @@ explicitly select the native component's global F32 backend profile. That
 profile's whole-model cost must also be compared with the original production
 profile before any adoption. Native publication, compilation, model quality and
 decode-rate qualification remain work in progress.
+
+Native source publication65123 now completes40 new files and82 metadata
+operations. Whole Direct SHA256/EOF checks succeed in both console namespaces;
+all518 selected parent identities and directory snapshots remain unchanged.
+The helper positively exits and its files are removed. Three existing selected
+precision parts are reused without copying. No title, GPU or initializer runs.
+Changed complementary cache scope65128 then skips717 already completed windows,
+scans161 additional windows and retires1984 observed resident pages. Its global
+free sample16907->18887 is not exclusive attribution. Preserve its receipt and
+all earlier complement receipts when continuing after window878.
+
+P1 final control65133 completes; analysis65132 reuses65118/65119/65120 rather
+than replaying their work. All12 requests positively retire, ordinarily close
+and restore the exact selected seven files. The unchanged primary metric gives:
+
+| Condition | Control mean tok/s | Tail-eight mean tok/s | Change |
+| --- | ---: | ---: | ---: |
+| Cold | 10.043256 | 10.195971 | +1.520572% |
+| Retained | 12.174326 | 12.181648 | +0.060140% |
+| Exact-prefix | 13.363379 | 13.265768 | -0.730437% |
+
+Neither paired improvement exceeds the control AA spread in both pairs.
+This version is not selected. The one-row cold refinement retains its qualified
++2.703692% cold result from64930/64931/64932/64940 and its disclosed68/69-row
+F32 match; it remains the P1 implementation candidate. Do not reinterpret the
+tail-eight uncertainty as proof that all future P1 refinements are impossible.
+
+First actual I1 model65134 completes all three requests and all worker/scratch/
+source-fd ownership, then ordinarily closes/restores.65135 reuses original64950:
+all69 F32 hashes, all ordered routes, target tokens and bytes match. Final native
+counters record6 predictions,6 positive reads,8781824 speculative bytes,0 hits,
+6 unused spans,one worker,peak4 simultaneous reads andzero additional FDs.
+The request-specific fields were appended after `completed.push_back(row)` and
+the durable result write, so those fields are missing from the returned request
+snapshots. The final native audit is present and reconciles every job/read and
+positive final retirement. The numerical reviewer explicitly records aggregate-
+only availability and never reconstructs missing request counters. There is no
+reason to repeat the completed F32/model work. The timing builder now serializes
+the fields before both snapshots. Its existing14 scope controls are reused by
+following their immutable ancestry; timing65136 is a new instrumentation build,
+not a claimed model-rate result. Eleven new evidence controls exercise strict
+timing receipts, aggregate-only numerical admission and inconsistent-owner
+refusals. S1 resumes its remaining B/B/A sequence65140 while reusing65050.
+
+First-layer IQ2 model packages65131 compile successfully, including a matched
+explicit F32-profile control. Before any candidate publication/launch, structural
+host audit65137 finds that converting one Up layer creates two layout groups:
+the selected cache groups on type and plane stride, while its reset requires
+one group and its retained-map validator requires48 maps. The partial candidate
+is therefore refused by an explicit gate in both launch entry points. Ten new
+gate controls cover complete/control layouts and partial/duplicate/reordered/
+wrong-profile refusals. No failed PS5 model launch or quality/speed regression
+is claimed. The full48-Up uniform layout preserves the original one-group,
+3712-slot contract and remains the required candidate while encoding continues.
+
+Paired-Down carrier65124 preserves the completed original IQ2 payload bytes and
+inverse-verifies all512460800-byte planes. The carrier keeps the old Q2_0 plane
+ABI, with an explicit header and in-plane codebook; it claims no cache or source
+size saving. Component65125 compiles WG64/WG128 four-binding shaders and reuses
+the exact existing IQ2 operands and independent F64 references. Software65126
+is active. Each case's40 dispatches cover distinct64-row tiles of all2560 rows;
+they are not40 repeated measurements. Tiling preserves finite positive-fence
+observation. Native carrier/model qualification is still outstanding.
+
+The first216268800-byte Up FTP transfer takes several minutes. To avoid
+repeating that transport cost for all model parts, isolated receiver65127 changes
+only the finite ceiling32->512MiB. The original receiver remains unchanged.
+Its16KiB window,32KiB socket buffer,180s deadline, source/peer/nonce/SHA/EOF,
+one-connection, reserve and ordinary-close behavior remain intact. Seven NEW
+byte-boundary cases pass against the actual changed body; all14 previous fault
+and10 endpoint cases are reused. No large native transfer has run yet.
+`direct_model_part.py` creates only a new staging file and requires positive
+receiver retirement; a separate complete source publication remains necessary.
+It must wait for the active single-title S1 scope to finish.

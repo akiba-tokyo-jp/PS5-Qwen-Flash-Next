@@ -22,6 +22,7 @@ def main():
     for name in ('workspace','current','provider','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--F32-observer',type=Path)
     p.add_argument('--reuse-scope-controls',type=Path,help='Reuse the exact already completed scope body and controls')
+    p.add_argument('--resume-precompile',action='store_true',help='Resume only a host failure before any entry source/object was produced')
     a=p.parse_args();provider=load(a.provider)
     need(provider['completed'] and provider['new_global_constructors']==0 and provider['actual_native_pread_offset_bytes']==8 and
         record(provider['artifact']['path'])==provider['artifact'] and all(record(r['path'])==r for r in provider['inputs']),
@@ -30,7 +31,9 @@ def main():
         'All actual concurrency and read-only worker-admission controls must be bound')
     selected=load(a.current/'provenance/selected-entry-build.private.json');original=load(selected['application_policy']['path'])
     need(record(original['source']['path'])==original['source'],'The selected original source changed')
-    a.out.mkdir(parents=True,exist_ok=False);old_dir=Path(original['source']['path']).parent
+    a.out.mkdir(parents=True,exist_ok=a.resume_precompile);old_dir=Path(original['source']['path']).parent
+    if a.resume_precompile:need(not(a.out/'entry.private.cpp').exists() and not(a.out/'entry.o').exists() and
+        not(a.out/'result.private.json').exists(),'A completed entry compilation must not be replayed')
     for header in old_dir.glob('*.h'):shutil.copyfile(header,a.out/header.name)
     for name in ('model_relative_prefetch_runtime.h','model_relative_prefetch_scope.h'):
         shutil.copyfile(ROOT/'native/app'/name,a.out/name)
@@ -49,7 +52,12 @@ def main():
              record(test)==prior['scope_test'] and
              record(a.out/'model_relative_prefetch_scope.h')['sha256']==prior['scope_header']['sha256'],
              'Only the identical completed scope body and controls may be reused')
-        scopes=load(a.reuse_scope_controls.parent/'scope-controls.private.log')
+        origin=a.reuse_scope_controls;seen=set()
+        while not(origin.parent/'scope-controls.private.log').exists():
+            need(str(origin) not in seen and len(seen)<8,'One finite immutable scope-control ancestry required');seen.add(str(origin))
+            ancestor=load(origin)['completed_scope_controls_reused']
+            need(record(ancestor['path'])==ancestor,'The actual completed original controls changed');origin=Path(ancestor['path'])
+        scopes=load(origin.parent/'scope-controls.private.log')
     else:
         run([host/'clang++.exe','-std=c++17','-O2','-Wall','-Wextra','-Werror','-I',a.out,'-I',up/'vendor',test,'-o',exe],'scope-compile')
         scopes=json.loads(run([exe],'scope-controls'))
@@ -78,8 +86,11 @@ def main():
     marker='            engine->set_work_guard({});engine->set_logits_observer({});qwen_app_complete_predictive_expert();'
     text=once(text,marker,marker+'\n            const auto relative_prefetch_request=qwen_app::finish_model_relative_prefetch_request();\n            const double relative_complete_span_ms=double(qwen_app::profile_elapsed_ns(relative_request_started))/1e6;')
     text=headless_entry(text,'I1-relative-model-prefetch',3,'qwen_app::retire_model_relative_prefetch_after_original_owners()')
-    marker='            return row;'
+    marker='            completed.push_back(row);write_fresh_report(report_prefix+".result",row);'
     text=once(text,marker,'            row["relative_prefetch"]=relative_prefetch_request;\n            row["complete_request_including_relative_setup_and_drain_ms"]=relative_complete_span_ms;\n'+marker)
+    need(text.index('row["relative_prefetch"]=')<text.index('completed.push_back(row);') and
+         text.index('row["complete_request_including_relative_setup_and_drain_ms"]=')<text.index('completed.push_back(row);'),
+         'Actual request counters must enter the durable result and terminal snapshot')
     if not a.F32_observer:text=once(text,'{"timings_usable_for_performance",false}','{"timings_usable_for_performance",true}')
     for name in ('observed_system_headroom','require_model_CPU_budget','wait_for_initial_model_CPU_budget',
         'model_file_identity','model_directory_identity','resident_reset_empty_context','bind_resident_main_SELF'):

@@ -3,6 +3,60 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+P1 tail-eight completes final control65133 and analysis65132. Mean decode
+changes:cold+1.520572%,retained+0.060140%,exact-prefix-0.730437%;neither paired
+gain exceeds control AA spread in both pairs. Do not rerun or adopt this version.
+The prior one-row cold refinement remains the beneficial P1 candidate (+2.703692%
+cold in64930/31/32/40, with the disclosed68/69 F32 match). Final adoption is pending.
+I1 first actual native65134 completes all3 requests, positive worker/scratch/FD
+retirement, ordinary close and exact current7 restore.65135 reuses64950 and
+confirms all69 F32 hashes, ordered routes, tokens and bytes exact. Final actual
+counts:6 predictions/6 positive reads,8781824 speculative bytes,0 hits/6 unused,
+one worker,peak4 reads,zero extraFDs. Per-request fields were appended AFTER
+completed.push_back/write_result and therefore were not serialized. Never
+fabricate them or repeat this F32 run. Aggregate final counters suffice for its
+numerical/ownership proof only; timing still requires actual per-request records.
+The corrected builder puts fields BEFORE durable snapshots. Timing65136 reuses
+the immutable14-control ancestry and is building; no timing result is claimed.
+S1 resumed ABBA65140 is ACTIVE, starting only B1case65141 and reusing65050.
+Do not start another console/helper scope until this parent returns or stops.
+Q2 first-layer packages65131 compile, but host audit65137 finds TWO layout
+groups against the unchanged ONE-group reset and48-map retention validator.
+The partial candidate is now explicitly refused before publication/launch by
+iq2_up_model_scope.py. Do NOT launch65131candidate. Its control is eligible.
+Prepare the uniform all48-Up IQ2 layout using running encoder65103; retain
+the original single-group/3712-slot reset contract. This is an integration
+restriction found on PC, not a PS5 numerical or speed failure. Ten new cache
+gate controls and11 new evidence-review controls pass without PS5 operations.
+Large Direct receiver65127's seven NEW ceiling boundaries pass; original14
+transport/10 endpoint cases are reused without replay. direct_model_part.py is
+ready for a single large CPU-only staging qualification AFTER the active S1
+scope. No large native transfer has run. The unchanged16KiB/32KiB buffers and
+180s deadline remain; only an isolated header's ceiling changes32->512MiB.
+
+Native publication65123 completes40 new IQ2 Up assets, all whole Direct SHA/EOF
+checks, all518 unchanged parent identities/directory snapshots and82 metadata
+operations. Its helper exits/removes files; no title/GPU/init call. Three sealed
+selected precision parts are reused without copying. First-layer F32 model
+build65131 is in progress using the actual64142 observer; its first invocation
+with a nonexistent observer path failed before creating output or compiling.
+P1 tail-eight65117 retains completed65118/19/20. Final65121 refuses BEFORE
+publication at7053<7260; its VM reader exits/removes files. New complement65128
+skips717 windows, completes161 new ones and retires1984 resident pages; global
+free16907->18887. Resume65129 executes ONLY final control65133, with all three
+completed cases reused. Do not overlap another console scope until it closes.
+Q3 carrier65124 inverse-verifies all512 planes of original-BF16 paired Down
+without re-encoding. It retains the old460800-byte plane ABI and claims no
+cache/IO size saving. New four-binding shader component65125 compiles WG64/128
+and reuses exact original operands/F64 references. Software65126 is ACTIVE.
+Its40 dispatches per case are DISTINCT64-row tiles covering all2560 rows,
+not repeated measurements. Preserve tiling and its finite positive fences.
+Isolated model-part receiver65127 changes ONLY32->512MiB byte ceiling; original
+16KiB window,32KiB receive buffer,180s deadline, peer/file/SHA/reserve guards
+are unchanged. Seven new size-boundary controls pass, old14/10 controls reused.
+The original receiver header is unchanged. Large native transfer is UNRUN;
+tools/direct_model_part.py must wait for the current title's positive closure.
+
 Continuation65110 completes the fused G1 model ABBA, reusing65088/65098/65099
 and executing only final control65109. All12 timed requests positively retire,
 ordinarily close and restore the exact selected seven files. Primary decode

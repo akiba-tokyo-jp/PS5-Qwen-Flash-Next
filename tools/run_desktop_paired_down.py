@@ -19,8 +19,12 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','cache','build','out'):p.add_argument('--'+name,type=Path,required=True)
-    p.add_argument('--first-case-only',action='store_true');p.add_argument('--software-ICD',type=Path);a=p.parse_args();built=load(a.build)
-    need(built['completed'] and built['all14745600_decoded_F32_values_byte_exact'] and not built['native_GPU_execution'],
+    p.add_argument('--first-case-only',action='store_true');p.add_argument('--software-ICD',type=Path)
+    p.add_argument('--carrier',action='store_true',help='Exercise the distinct source-bound Q2_0-plane IQ2 carrier shaders')
+    a=p.parse_args();built=load(a.build)
+    qualified_inputs=(built.get('paired_down_carrier') and built['all_complete_carriers_independently_inverse_verified'] and
+        built['original_IQ2_operands_and_F64_references_preserved']) if a.carrier else built['all14745600_decoded_F32_values_byte_exact']
+    need(built['completed'] and qualified_inputs and not built['native_GPU_execution'],
         'Exact paired decoder and validated SPIRV component required')
     need(record(built['GPU_cases']['path'])==built['GPU_cases'],'GPU cases changed');cases=load(built['GPU_cases']['path'])
     inputs={}
@@ -31,6 +35,11 @@ def main():
     inputs[str(a.build.resolve())]=record(a.build);inputs[str(Path(built['GPU_cases']['path']).resolve())]=built['GPU_cases']
     need(all(record(row['path'])==row for row in inputs.values()),'An independently prepared GPU input changed')
     a.out.mkdir(parents=True,exist_ok=False);source=a.out/'desktop.cpp';shutil.copyfile(ROOT/'tools/check_iq2_paired_down_gpu.cpp',source)
+    if a.carrier:
+        text=source.read_text();old='weights.size()==422400u*planes'
+        need(text.count(old)==1 and cases['paired_down_carrier'] and cases['carrier_plane_bytes']==460800 and not cases['buffer_tables'],
+             'Only the exact changed carrier storage geometry is admitted')
+        source.write_text(text.replace(old,'weights.size()==460800u*planes'),newline='\n')
     host=a.workspace/'toolchain/msys-clang64/clang64/bin'
     exe=a.out/'paired-down-desktop.exe';command=[str(host/'clang++.exe'),'-std=c++17','-O2','-Wall','-Wextra','-Werror',
         '-I',str(a.workspace/'toolchain/Vulkan-Headers/include'),'-I',str(a.cache/('upstream/llama.cpp-'+REVISION)/'vendor'),str(source),'-o',str(exe)]

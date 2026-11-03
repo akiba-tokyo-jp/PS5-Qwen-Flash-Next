@@ -53,7 +53,7 @@ def main():
     source_prefetch=None
     if a.scope=='I1-relative-model-prefetch':
         from model_relative_prefetch_evidence import review
-        source_prefetch=review(terminal,True)
+        source_prefetch=review(terminal,True,allow_aggregate_only=True)
     save(a.out,dict(completed=True,scope=a.scope,whole_F32_bytes_routes_tokens_exact=identical,
         all69_full_vocabulary_F32_rows_SHA256_exact=not differences,matching_F32_rows=69-len(differences),differing_rows=differences,
         first_row_maximum_absolute_error_against_original=first_error,tokens_and_output_bytes_exact=tokens,

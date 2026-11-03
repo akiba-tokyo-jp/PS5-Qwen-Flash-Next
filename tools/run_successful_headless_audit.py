@@ -32,6 +32,8 @@ def main():
     p.add_argument('--quiet-seconds',type=int,default=0,help='Optional host-quiet interval for a separately instrumented component')
     a=p.parse_args();need(0<=a.quiet_seconds<=600,'Finite host-quiet interval required')
     package=load(a.package);effective=package['effective_application_policy'];profile=load(effective['profile']['path'])
+    from iq2_up_model_scope import require_cache_layout
+    require_cache_layout(profile)
     need(effective['kind']=='headless-model-audit' and record(effective['profile']['path'])==effective['profile'] and
          profile['headless_model_audit'] and profile['model_and_GPU_guards_preserved'],'One explicitly compiled headless audit required')
     if profile['headless_audit_kind']=='S1-MTP-shadow':
