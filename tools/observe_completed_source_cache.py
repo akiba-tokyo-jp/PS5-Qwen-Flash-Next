@@ -59,13 +59,27 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','mount-plan','trace-proof','API-proof','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--execute',action='store_true');p.add_argument('--collect',action='store_true')
-    a=p.parse_args();need(not(a.execute and a.collect),'Submit once or collect the same operation')
+    p.add_argument('--finalize-returned',action='store_true',help='Analyze only the already retired native helper and saved raw receipt')
+    p.add_argument('--completed-scope',type=Path,action='append',default=[],help='Skip only the positively retired exact prefix; never repeat it')
+    p.add_argument('--maximum-sync-calls',type=int,choices=(32,128),default=32)
+    a=p.parse_args();need(sum((a.execute,a.collect,a.finalize_returned))<=1,'Submit once, collect the same operation, or finalize saved evidence')
     state=load(a.current/'active-console.private.json');API=load(a.API_proof)
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and not state['unknown_completion'] and
         API['completed'] and API['ordinary_CPU_API_qualified'] and API['full_input_SHA_before_and_after'] and
         API['observations']['unmapped']==API['observations']['fd_closed']==1,'The ordinary CPU mapping API and positive idle ownership must be qualified')
     selected=current_files(a.current);files,extents,inputs=ranges(a.current,a.trace_proof)
-    if not a.collect:
+    cursor=0
+    for path in a.completed_scope:
+        previous=load(path);intent=load(path.parent/'intent.private.json')
+        need(previous['completed'] and previous['all_observed_mappings_and_FDs_positively_retired'] and
+            previous['native']['helper_exited'] and previous['native']['helper_files_removed'] and
+            intent['files']==files and intent['ranges']==extents and intent['boot']==state['current_boot'] and
+            intent.get('starting_range_index',0)==cursor and 0<previous['observations']['scanned']<=len(extents)-cursor,
+            'Only a positive exact original-range prefix may be reused without replay')
+        cursor+=previous['observations']['scanned'];inputs.append(record(path))
+    need(cursor<len(extents),'The exact source scope has already been completely scanned')
+    need(a.maximum_sync_calls==32 or a.completed_scope,'A larger sequential batch requires the completed first32-call native scope')
+    if not a.collect and not a.finalize_returned:
         a.out.mkdir(parents=True,exist_ok=False)
         context='''#include <sys/mman.h>
 struct SourceCacheFile{const char*path;uint64_t identity[10];};
@@ -85,8 +99,8 @@ static int case_retire_completed_images(int*calls){
  if(lstat(MOUNT,&root)||!S_ISDIR(root.st_mode))return 0;
  unsigned scanned=0,resident=0,remaining=0,invalidated=0;uint64_t scanned_bytes=0;
  uint32_t free_begin=source_cache_free();uint64_t begun=qwen_launch_now(NULL);int returned_error=0;
- for(unsigned index=0;index<sizeof(cache_ranges)/sizeof(cache_ranges[0]);++index){
-  if(*calls>=32||source_cache_free()<1154||qwen_launch_now(NULL)-begun>UINT64_C(20000000000))break;
+ for(unsigned index=FIRST_RANGE;index<sizeof(cache_ranges)/sizeof(cache_ranges[0]);++index){
+  if(*calls>=MAXIMUM_SYNC_CALLS||source_cache_free()<1154||qwen_launch_now(NULL)-begun>UINT64_C(20000000000))break;
   const struct SourceCacheRange*r=cache_ranges+index;const struct SourceCacheFile*f=cache_files+r->file;
   struct stat before,after;int fd=open(f->path,O_RDONLY|O_NOFOLLOW);if(fd<0)return 0;
   if(fstat(fd,&before)||!source_cache_identity(&before,f,root.st_dev)){close(fd);return 0;}
@@ -111,31 +125,37 @@ static int case_retire_completed_images(int*calls){
  return report("SOURCE_CACHE_COMPLETE scanned=%u total=%u scanned_bytes=%llu resident=%u remaining=%u invalidated=%u sync_calls=%d returned_error=%d free_before=%u free_after=%u source_writes=0 touched_mapping_bytes=0 GPU_calls=0",
   scanned,(unsigned)(sizeof(cache_ranges)/sizeof(cache_ranges[0])),(unsigned long long)scanned_bytes,resident,remaining,invalidated,*calls,returned_error,free_begin,source_cache_free());
 }
-'''
+'''.replace('FIRST_RANGE',str(cursor)).replace('MAXIMUM_SYNC_CALLS',str(a.maximum_sync_calls))
         file_rows=','.join('{'+json.dumps(row['mounted_path'])+',{'+','.join(str(x)+'ULL' for x in row['identity'])+'}}' for row in files)
         range_rows=','.join('{'+str(row['file'])+','+str(row['offset'])+'ULL,'+str(row['bytes'])+'ULL}' for row in extents)
         context=context.replace('FILES',file_rows).replace('RANGES',range_rows)
         plan=build(a.workspace,a.mount_plan,selected,selected,[],'retire-completed-images',a.out/'native',completed_images_context=context)
         save(a.out/'intent.private.json',dict(inputs=inputs+[record(a.API_proof)],files=files,ranges=extents,boot=state['current_boot'],
-            selected=selected,maximum_live_mapping_bytes=8<<20,maximum_sync_calls=32,maximum_scope_seconds=20,
+            selected=selected,maximum_live_mapping_bytes=8<<20,maximum_sync_calls=a.maximum_sync_calls,maximum_scope_seconds=20,
+            starting_range_index=cursor,completed_scopes_reused=[record(path) for path in a.completed_scope],
             only_previously_completed_original_read_ranges=True,source_writes=0,touched_mapping_bytes=0,global_cache_purge=False))
         if not a.execute:return
     else:
         intent=load(a.out/'intent.private.json');need(intent['boot']==state['current_boot'] and intent['selected']==selected and
             intent['files']==files and intent['ranges']==extents,'Only the same consumed source-cache scope may be collected')
         plan=load(a.out/'native/plan.private.json')
-    lan=lan_module()
-    if a.collect:
+    if a.finalize_returned:
+        result=load(a.out/'native/result.private.json')
+        need(result['completed'] and result['helper_exited'] and result['helper_files_removed'] and
+            record(result['raw']['path'])==result['raw'],'Only saved positive native retirement may be finalized without console calls')
+    elif a.collect:
+        lan=lan_module()
         need((a.out/'native/execution/execution.once.private.json').exists(),'Only the same submitted operation may be collected')
         raw=lan.web('/fs'+urllib.parse.quote(plan['log'],safe='/'),64<<20);path=a.out/'native/collected-native.private.log';path.write_bytes(raw)
         result=complete(lan,plan,a.out/'native',raw,path)
-    else:result=execute(lan,plan,a.out/'native',60)
-    need(result['completed'] and result['operation_calls']<=32,'All actual CPU mappings/fds and the helper must positively retire')
+    else:result=execute(lan_module(),plan,a.out/'native',60)
+    need(result['completed'] and result['operation_calls']<=a.maximum_sync_calls,'All actual CPU mappings/fds and the helper must positively retire')
     rows=re.findall(rb'SOURCE_CACHE_COMPLETE (.*)',Path(result['raw']['path']).read_bytes());need(len(rows)==1,'One exact complete range receipt required')
     observations={k.decode():int(v) for k,v in re.findall(rb'\b([A-Za-z_]+)=(-?\d+)',rows[0])}
     save(a.out/'result.private.json',dict(completed=True,native=result,observations=observations,
         all_observed_mappings_and_FDs_positively_retired=True,source_writes=0,global_cache_purge=False,
-        only_actual_completed_source_ranges=True,full_scope_scanned=observations['scanned']==len(extents),
+        only_actual_completed_source_ranges=True,full_scope_scanned=cursor+observations['scanned']==len(extents),
+        starting_range_index=cursor,remaining_ranges=len(extents)-cursor-observations['scanned'],
         model_launch_admission=False,exclusive_global_RAM_gain_claimed=False))
     print(dict(completed=True,observations=observations,model_launch_admission=False))
 

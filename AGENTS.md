@@ -3,6 +3,29 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Continuation65110 completes the fused G1 model ABBA, reusing65088/65098/65099
+and executing only final control65109. All12 timed requests positively retire,
+ordinarily close and restore the exact selected seven files. Primary decode
+tok/s changes are cold-6.698594%, retained-7.075022%, exact-prefix-5.082302%;
+both paired regressions exceed each control AA spread. Do not adopt or replay
+this G1 version. Its69-row F32/routes/tokens/bytes proof65070 remains valid.
+Scoped readonly source-cache operations65081/82/83 complete all3169 original
+read ranges once. Complement65085/65095/65104/65116 completes717 previously
+unobserved windows; future work must skip that exact positive prefix. No global
+purge, mapping page access, source write, initializer or recovery probe is used.
+P1 tail-eight timing65112 refuses before publication at6239<7260. Its reader
+exits/removes files; no title launch. Changed state65116 removes1984 observed
+resident pages and samples6206->8194 free. P1 ABBA65117 starts with case65118.
+Do not submit another console scope until its same owner positively closes.
+Selected cache source65084 matches the recorded57584 bytes/SHA40239e54...
+and rebuilt object65094 is byte exact to the selected9ff5e962...cache.o, with
+no differing sections. Reuse that baseline and its exact generated aliases/VFS.
+Q2/Q3 prefill-only importance65101 excludes all held-out decode records. Host
+encoder65103 prepares96 original-BF16 Up/paired-Down IQ2 layers with2 workers;
+completed prefixes/layers must be reused. It performs no model inference or
+PS5 operation. First Up/Down layers are complete; model integration/quality/
+rates remain outstanding. Continue work; this is not campaign completion.
+
 Latest65069 G1 full-model F32 execution completes all3 requests, positive
 retirement, one ordinary close and exact seven-file restoration.65070 reuses
 64950:all69 F32 rows, all ordered routes, tokens and bytes exact. Timing65071

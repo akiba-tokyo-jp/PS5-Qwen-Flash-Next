@@ -128,14 +128,21 @@ def start(args):
              'Only an explicitly compiled token-durability or smaller CPU SELF scope is admitted here')
         policy.update(effective['overrides'])
     gate=rebind_directory(policy['native_first_generation_validation'],proof,proof['current_boot'])
-    if args.package and package.get('effective_application_policy',{}).get('kind')=='Q1-shared':
+    if args.package and 'model_layer' in package.get('effective_application_policy',{}):
         layer=package['effective_application_policy']['model_layer'];publication=layer['publication']
         need(record(publication['path'])==publication and load(publication['path'])['completed'] and
              layer['parent_recipe_sha256']==gate['model_receipt_sha256'] and
              record(layer['model_receipt']['path'])==layer['model_receipt'],
              'The exact sealed additional layer over the admitted current model is required')
-        gate.update(model_receipt_bytes=layer['model_receipt']['bytes'],model_receipt_sha256=layer['model_receipt']['sha256'],
-                    shared_Q4_source_integrity=layer['source_policy'])
+        if layer['kind']=='additional-shared-Q4':source_key='shared_Q4_source_integrity'
+        else:
+            need(layer['kind']=='IQ2-Up' and effective['kind']=='headless-model-audit' and
+                 compiled_profile['headless_audit_kind']=='Q2-IQ2-Up-model' and
+                 compiled_profile['model_layer']==layer and load(publication['path'])['whole_new_bytes_and_all_parent_identities_qualified'],
+                 'The exact bounded compiled IQ2 Up model layer is required')
+            source_key='precision_source_integrity'
+        gate.update(model_receipt_bytes=layer['model_receipt']['bytes'],model_receipt_sha256=layer['model_receipt']['sha256'])
+        gate[source_key]=layer['source_policy']
         app['model_receipt']=layer['application_model_receipt']
     gate.update(run_id=run,candidate_SELF_bytes=image['bytes'],candidate_SELF_sha256=image['sha256'])
     policy['native_first_generation_validation']=gate

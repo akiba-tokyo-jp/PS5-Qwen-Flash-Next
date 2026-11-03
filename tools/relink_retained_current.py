@@ -63,10 +63,12 @@ def main():
                 raise ValueError('The exact scoped P1 entry, selector and completed post-trunk graph must be linked together')
         application_policy=dict(profile=record(args.application_policy),overrides=policy['overrides'],kind=policy['kind'],
                                 token_sync_policy=policy['token_sync_policy'])
-        if policy['kind']=='Q1-shared':
+        if policy['kind']=='Q1-shared' or (policy['kind']=='headless-model-audit' and 'model_layer' in policy):
             layer=policy['model_layer']
             if record(layer['publication']['path'])!=layer['publication'] or not load(layer['publication']['path'])['completed']:
                 raise ValueError('A positively completed new-only source publication is required')
+            if policy['kind']=='headless-model-audit' and (layer['kind']!='IQ2-Up' or policy['headless_audit_kind']!='Q2-IQ2-Up-model'):
+                raise ValueError('Only the explicitly compiled IQ2 Up model layer may extend this headless scope')
             application_policy['model_layer']=layer
     tables=original['lossless_driver_tables'];script=args.out/'tables.ld'
     script.write_text(TABLE_SCRIPT,encoding='utf-8',newline='\n')
