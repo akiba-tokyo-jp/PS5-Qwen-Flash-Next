@@ -144,7 +144,7 @@ int main(int argc,char **argv){
 #elif CASE_OPERATION == 14
     if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("retire-completed-images"))goto done;
     success=case_retire_completed_images(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
-#elif CASE_OPERATION == 15
+#elif CASE_OPERATION == 15 || CASE_OPERATION == 20
     if(!idle()||!new_files_valid()||!new_mounted_valid())goto done;
     success=1;
     for(unsigned i=0;i<CASE_DEPENDENCY_COUNT;++i){

@@ -4,6 +4,7 @@
 import argparse
 import concurrent.futures
 import hashlib
+import ipaddress
 import json
 from pathlib import Path
 import secrets
@@ -19,6 +20,8 @@ def main():
     for n in ('workspace','current','mount-plan','layer','out'):p.add_argument('--'+n,type=Path,required=True)
     p.add_argument('--first-Expert',type=int,default=0);p.add_argument('--execute',action='store_true')
     p.add_argument('--prepared',type=Path,help='Reuse the exact already prepared four local parts without copying or encoding again')
+    p.add_argument('--PS5-host',help='Bind execution to the explicitly identified existing console LAN address')
+    p.add_argument('--prior-PS5-publication',type=Path,help='Completed same-console operand placement under the registered title')
     a=p.parse_args();layer=load(a.layer);need(layer['completed'] and layer['complete_layer'] and
         layer['encoded_Experts']==512 and layer['role'] in ('up','down') and layer['pack']['bytes']==216268800 and
         0<=a.first_Expert<=448 and a.first_Expert%64==0,'One completed real IQ2 layer and new 64-Expert fragment required')
@@ -52,6 +55,17 @@ def main():
         deadline_seconds=180,automatic_retries=0,current_seven=selected,source_publication_still_required=True,
         source_offsets_disjoint=True,original_source_writes=0,GPU_calls=0,title_launches=0))
     if not a.execute:print(json.dumps(dict(prepared=True,fragment=fragment,PS5_operations=0)));return
+    need(a.PS5_host is not None and a.prior_PS5_publication is not None,'An explicitly identified authorized PS5 destination is required')
+    lan=lan_module();prior=load(a.prior_PS5_publication)
+    need(ipaddress.ip_address(a.PS5_host).is_private and lan.HOST==a.PS5_host and prior['completed'] and
+         prior['whole_SHA256_both_namespaces'] and prior['current_seven_unchanged'] and
+         prior['target'].startswith('/data/ai/native-moss-image-sft/PPSA99190/qwen-runtime/') and
+         prior['alias'].startswith('/system_ex/app/PPSA99190/qwen-runtime/'),
+         'Only the existing console and its positively completed model-operand placement are authorized')
+    save(a.out/'PS5-destination-binding.private.json',dict(PS5_host=a.PS5_host,
+        prior_same_registered_title_publication=record(a.prior_PS5_publication),
+        intended_use='Owner-authorized PS5 model optimization and placement; not an external service',
+        anonymous_local_FTP=True,internet_destination=False))
     state=load(a.current/'active-console.private.json');need(state['original_restored'] and not state['native_running'] and
         not state['model_loaded'] and not state['unknown_completion'],'One positively idle console owner required')
     values=query(a.workspace,a.current,a.mount_plan,a.out/'VM-before')
@@ -61,7 +75,6 @@ def main():
         full_upload_bytes_charged=True,selected_FTP_service_allowance_pages=512,
         universal_allocation_bound_claimed=False,may_upload=min(values['free_first'],values['free_last'])>=required))
     need(min(values['free_first'],values['free_last'])>=required,'The entire buffered fragment must fit before any upload')
-    lan=lan_module()
     for row in rows:lan.allowed(row['remote']);lan.absent(row['remote'])
     save(a.out/'upload.once.private.json',dict(parts=rows,automatic_retries=0))
     if a.prepared:save(a.prepared.parent/'upload.once.private.json',dict(actual_upload_intent=record(a.out/'upload.once.private.json')))

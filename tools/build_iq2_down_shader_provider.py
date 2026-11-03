@@ -21,6 +21,7 @@ def main():
     for name in ('workspace','current','shaders','software-proof','lease-proof','out'):
         p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--resume-compiled',action='store_true',help='Reuse the three exact compiled objects after the incomplete reference audit')
+    p.add_argument('--caller-arrays',action='store_true',help='Redirect GPU references to separate arrays and preserve original startup lookups')
     a=p.parse_args();built,software,lease=load(a.shaders),load(a.software_proof),load(a.lease_proof)
     need(built['completed'] and built['all_non_declaration_words_byte_exact'] and
          software['completed'] and software['build']==record(a.shaders) and
@@ -60,6 +61,22 @@ def main():
         target_specs[name]=dict(replacement=replacement,original_stored_bytes=stored,replacement_bytes=len(raw))
         inputs.append(artifact)
     need(len(mapping)==13 and len(set(rename))==26,'Thirteen distinct actual resource pairs required')
+    caller_tables=[]
+    if a.caller_arrays:
+        receipt=load(a.current/'provenance/native-link.receipt.private.json')
+        caller_tables=[x for x in receipt['lossless_shader_storage']['lookup_tables'] if x['name'] in
+            ('arr_dmmv_q2_0_f32_f32','arr_dmmv_q2_0_f16_f32','arr_dmmv_id_q2_0_f32_f32')]
+        need(len(caller_tables)==3 and all(t['dimensions']==[3] and len(t['targets'])==3 and
+             all(k in target_specs for k in t['targets']) for t in caller_tables),
+             'Three original array recipes and nine selected targets required')
+        for t in caller_tables:
+            replacement='qwen_iq2_down_'+t['name']
+            rename+=['--redefine-sym='+t['name']+'_data='+replacement+'_data',
+                     '--redefine-sym='+t['name']+'_len='+replacement+'_len']
+            assets+='__attribute__((visibility("hidden"))) const unsigned char*const '+replacement+'_data[3]={'+','.join(
+                target_specs[k]['replacement']+'_data' for k in t['targets'])+'};\n'
+            assets+='__attribute__((visibility("hidden"))) const uint64_t '+replacement+'_len[3]={'+','.join(
+                str(target_specs[k]['replacement_bytes'])+'ULL' for k in t['targets'])+'};\n'
     data=a.out/'IQ2-Down-shader-data.c';put(data,assets)
     wrapper=a.out/'IQ2-Down-shader-lease.private.cpp'
     put(wrapper,'''// SPDX-License-Identifier: MIT
@@ -114,7 +131,13 @@ extern "C" const void*__wrap_qwen_app_prepare_shader_code(const void*storage,std
     new_table=a.out/'IQ2-Down-specialization-registry.o'
     from iq2_down_specialization_arrays import patch_registry
     receipt=load(a.current/'provenance/native-link.receipt.private.json')
-    patched=patch_registry(registry['path'],new_table,target_specs,receipt['lossless_shader_storage']['lookup_tables'])
+    if a.caller_arrays:
+        new_table.write_bytes(Path(registry['path']).read_bytes())
+        patched=dict(completed=True,array_pointer_length_pairs=[],added_undefined_symbols=0,
+            all_other_original_bytes_exact=True,original_codec_registry_entries_and_relocations_unchanged=True,
+            original_startup_lookup_arrays_and_expectations_byte_exact=True,
+            separate_caller_arrays=caller_tables,new_executable_bytes=0)
+    else:patched=patch_registry(registry['path'],new_table,target_specs,receipt['lossless_shader_storage']['lookup_tables'])
     save(a.out/'specialization-array-audit.private.json',patched)
     old_sections,new_sections=section_map(Path(registry['path'])),section_map(new_table)
     need(old_sections.keys()==new_sections.keys() and
@@ -123,16 +146,25 @@ extern "C" const void*__wrap_qwen_app_prepare_shader_code(const void*storage,std
          'The original specialization definitions and constructor instructions must remain exact')
     references=subprocess.check_output([str(host/'llvm-nm.exe'),'--undefined-only','--format=posix',str(new_gpu),str(new_table)],text=True)
     undefined={line.split()[0] for line in references.splitlines() if ' U ' in line}
-    need(all('qwen_iq2_down_'+row['name']+'_data' in undefined for row in built['shaders']) and
-         len(patched['array_pointer_length_pairs'])==9,
-         'All thirteen data references and nine literal array lengths must be redirected')
+    if a.caller_arrays:
+        array_targets={k for t in caller_tables for k in t['targets']}
+        need(all('qwen_iq2_down_'+r['name']+'_data' in undefined for r in built['shaders'] if r['name'] not in array_targets) and
+             all('qwen_iq2_down_'+t['name']+suffix in undefined for t in caller_tables for suffix in ('_data','_len')) and
+             new_table.read_bytes()==Path(registry['path']).read_bytes(),
+             'Direct resources and separate caller arrays must bind without changing startup registry bytes')
+    else:
+        need(all('qwen_iq2_down_'+row['name']+'_data' in undefined for row in built['shaders']) and
+             len(patched['array_pointer_length_pairs'])==9,
+             'All thirteen data references and nine literal array lengths must be redirected')
     save(a.out/'result.private.json',dict(completed=True,shaders=record(a.shaders),software_proof=record(a.software_proof),
         reused_lease_controls=record(a.lease_proof),unchanged_lease_controls_replayed=0,
         inputs=inputs+[record(data),record(wrapper),record(ROOT/'native/app/fused_shader_lease.h')],
         GPU=record(new_gpu),selected_GPU=selected,shader_data=record(data_obj),shader_wrapper=record(wrapper_obj),
         shader_registry=record(new_table),selected_shader_registry=registry,specialization_array_audit=record(a.out/'specialization-array-audit.private.json'),
         existing_specialization_constructor_instructions_preserved=True,original_codec_registry_unchanged=True,
-        original_shader_registry_unchanged=False,only_selected_array_relocations_and_lengths_changed=True,
+        original_shader_registry_unchanged=a.caller_arrays,
+        original_startup_lookup_expectations_preserved=a.caller_arrays,separate_GPU_caller_arrays=len(caller_tables),
+        only_selected_array_relocations_and_lengths_changed=not a.caller_arrays,
         reused_completed_compile_commands=3 if a.resume_compiled else 0,
         GPU_executable_sections_byte_exact=True,redirected_resource_pairs=13,new_global_initializers=0,
         link_flags=['--wrap=qwen_app_prepare_shader_code'],commands=commands,

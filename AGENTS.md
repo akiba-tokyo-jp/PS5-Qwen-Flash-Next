@@ -3,7 +3,62 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
-Latest: S1 absolute ordinary-vs-retained ABBA65228 is ACTIVE, session66290.
+Current checkpoint65259 supersedes the historical notes below. P1 is ADOPTED
+on PC and PS5, receipt65256, SELF c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed,
+21929863 bytes. All seven files are natively hashed in both console namespaces;
+947 retained inputs preserve canonical rebuild provenance. Do not restore the
+historical947a07fd SELF. Always obtain restoration rows from current_files.
+Driver872cc126/cumulative-idle, model weights and disabled persistent caches
+are unchanged. P1 cold decode10.162065->10.436816 (+2.703692%), retained
+12.094066->12.172570 (+0.649106%); exact prefix-0.356682% is inconclusive.
+Tokens/routes match;68/69 full F32 rows match, first cold row maximum absolute
+error0.1812725067138672. Broader prompts remain unqualified.
+S1 absolute ordinary comparison is COMPLETE: sequence65250, analysis65254,
+cold-21.702115%, retained1-4.286942%, retained2-6.544788% decode tok/s.
+Both paired regressions exceed AA in all three conditions; do not adopt MTP.
+I1 second refinement is complete/unadopted65227; G1 complete/unadopted65110.
+Q3 real-GGML CPU startup65255 completes with ordinary restoration. GPU65257
+refuses BEFORE publication/launch at7281<7650 free pages. New complement65258
+skips4269/scans45/resident736->0/free7271->8007; positive prefix4314/6076.
+GPU65259 did NOT complete: PID4032 disappears after the first graph-before-call
+stage, without a graph completion, retained-device certificate or ordinary close.
+Process-exited restoration positively restores/natively hashes current P1's seven
+files. State remains unknown_completion=true and GPU readmission pending; do not
+clear either flag from process absence or a free-memory observation. Archive65260
+preserves the complete1942-byte/18-line driver journal. All three BO allocation/
+map pairs returned; the last quiet checkpoint precedes the graph. Routine success
+records were disabled, so absent submit lines do NOT establish zero submissions.
+Entry archive65261 refuses before native submission: FTP SIZE returns UINT64_MAX;
+the existing LIST procedure records the exact UID1/mode0600 diagnostic file as
+zero bytes. No log payload was lost or archived, and no empty-log native helper
+was launched. The cause of process exit and post-call GPU completion are unknown.
+Do not relaunch65259, force-close an owner, initialize or reboot. Further GPU
+scopes require positive source-bound completion classification, not a lowered
+guard. Host full-IQ2 encoding and changed software scopes may continue.
+Host full-IQ2 coordinator65103 continues with two original workers; do not
+restart or re-encode completed layers. Auxiliary transfer experiments are
+CLOSED: no measured throughput improvement. Use successful ordinary whole-layer
+FTP publication65123 and reuse staged Up0/Up1 bytes once the required native
+scope can proceed. The unexecuted extra whole-layer staging prototype was removed.
+Do not add transfer or
+compression experiments, or count transfer speed as model decode improvement.
+
+New host Q3 scopes65262/65263 pass: all2560 rows/nonzero12288000-byte descriptor
+prefix,18 row-one cases/92160 values and36 NEW row-two/four cases/184320 values;
+all F64/canaries/fences pass. No old tile scope or PS5 call is repeated. These
+do not qualify native graph completion or its exit cause. Classification65264
+binds the actual ELF's31c0c3 routine-debug=false function; no zero-submit claim.
+Linked-code audit65265 finds shader-file/asset initialization functions absent
+from the failed ELF. The standalone entry omitted required CPU shader startup;
+fix that prerequisite before any future graph. This defect alone is not yet a
+qualified post-call GPU completion proof. Provider65266 instead redirects GPU
+callers to three separate resource arrays, preserving the entire original startup
+registry/lookup expectations. Its host build completes with all GPU executable
+bytes exact and zero new global initializers; no native launch.
+Do not initialize a modified lookup registry with original expectations, clear
+the console pending state, or reuse CPU startup65255 for a changed binary.
+
+Historical checkpoint: S1 absolute ordinary-vs-retained ABBA65228 was ACTIVE, session66290.
 A0=65228 and B1=65229 complete all3 requests/ordinary exact restoration;
 B2=65230 and A3=65231 remain. Do not overlap any console scope.
 I1 second refinement is COMPLETE: final sequence65219 reuses A0=65180,

@@ -3,23 +3,23 @@
   "date": "2026-11-02",
   "campaign_complete": false,
   "production": {
-    "SELF_bytes": 21927687,
-    "SELF_sha256": "947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7",
+    "SELF_bytes": 21929863,
+    "SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed",
     "base_source": "2b683814c9b6ed18c13352963c0a989f9e4d0b15",
     "driver": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
     "driver_profile": "cumulative-idle",
     "persistent_caches": false,
     "PC_and_PS5_same_selected_current": true,
-    "native_placement": 64510,
+    "native_placement": 65256,
     "seven_files_hashed_in_both_namespaces": true,
     "canonical_relink": 64512,
     "canonical_SELF": 64513,
-    "retained_current_inputs": 93,
+    "retained_current_inputs": 947,
     "formatter_import_stubs": 7,
     "canonical_entry_ELF_and_SELF_byte_exact": true,
-    "latest_current_seven_native_integrity": 64820,
+    "latest_current_seven_native_integrity": 65256,
     "source_overlay_historical": "9601f9048dc943cf28705f3e8ec784d8d91ca54a",
-    "source_overlay": "a543eac4fdeb59b4ecadf50725b12bd9ece9689f",
+    "source_overlay": "06b2f9a535935fc4f142d73a405401b990d465e5",
     "actual_application_linked_driver_archive_sha256": "a325dcd4584b1f1fccc6b46e90faa081ca86d18544aca610efea9e3ca3774f32"
   },
   "R1": {
@@ -84,12 +84,12 @@
     }
   },
   "P1": {
-    "status": "measured_profile_not_adopted",
+    "status": "adopted_cold_output_refinement",
     "latest_ABBA_cases": [
-      64030,
-      64031,
-      64032,
-      64033
+      64930,
+      64931,
+      64932,
+      64940
     ],
     "native_requests": 12,
     "both_prefills_actually_selected_each_case": true,
@@ -99,7 +99,19 @@
       31.729,
       22.979
     ],
-    "all_prompt_lengths_or_boundary_states_disposed": false
+    "all_prompt_lengths_or_boundary_states_disposed": false,
+    "adoption": 65256,
+    "matching_full_F32_rows": 68,
+    "full_F32_rows": 69,
+    "first_cold_row_maximum_absolute_error": 0.1812725067138672,
+    "general_prompt_quality_qualified": false,
+    "primary_decode_rate_change_percent": {
+      "cold": 2.703692,
+      "retained": 0.649106,
+      "exact_prefix": -0.356682
+    },
+    "both_cold_and_retained_paired_gains_exceed_AA": true,
+    "prefix_gain_established": false
   },
   "G1": {
     "status": "two_GPU_ranking_profiles_measured_not_adopted",
@@ -388,10 +400,28 @@
         "physical_GPU": false,
         "PS5_operations": 0
       }
-    }
+    },
+    "actual_GGML_CPU_startup": 65255,
+    "actual_GGML_GPU_refusal_before_publication": 65257,
+    "full_model_quality_or_speed_qualified": false,
+    "actual_GGML_GPU_case": 65259,
+    "actual_GGML_first_call_unexpected_exit": true,
+    "selected_P1_restoration_complete": true,
+    "closed_driver_archive": 65260,
+    "failure_classification": 65264,
+    "post_call_GPU_completion_qualified": false,
+    "process_exit_cause_proved": false,
+    "zero_submissions_claimed": false,
+    "full_nonzero_descriptor_software_cases": 18,
+    "full_nonzero_descriptor_software_values": 92160,
+    "row_two_four_software_cases": 36,
+    "row_two_four_software_values": 184320,
+    "software_only_new_results": true,
+    "actual_ELF_shader_initialization_functions_absent": true,
+    "original_startup_registry_provider_prepared": 65266
   },
   "I1": {
-    "status": "native_delivery_and_original_model_trace_qualified_no_stride_policy_adopted",
+    "status": "both_refinements_complete_unadopted",
     "native_delivery_case": 64623,
     "finalizer": 64624,
     "useful_prefetch_reads": 24,
@@ -430,10 +460,18 @@
       "model_launches": 0,
       "application_launch_RAM_gain_qualified": false,
       "inference_speed_gain_qualified": false
-    }
+    },
+    "second_refinement_analysis": 65227,
+    "primary_decode_rate_change_percent": {
+      "cold": -0.150948,
+      "retained": 0.58216,
+      "exact_prefix": -0.513796
+    },
+    "retained_gain_below_AA": true,
+    "production_adopted": false
   },
   "S1": {
-    "status": "finite_native_online_causal_protocol_qualified_model_lifetime_and_matched_speed_pending",
+    "status": "both_refinements_complete_unadopted_absolute_regression",
     "consumed_legacy_policy_refusal": 64655,
     "consumed_context_capacity_wrapper_failure": 64662,
     "wrapper_failure_completed_GPU_epochs": 5,
@@ -482,7 +520,7 @@
     "actual_online_all23_full_vocab_rows_finite": true,
     "actual_online_unlike_width_byte_different_rows": 22,
     "actual_online_diagnostic_stages_and_hashes_enabled": true,
-    "matched_whole_speed_qualified": false,
+    "matched_whole_speed_qualified": true,
     "actual_causal_proposals_per_arm": 22,
     "actual_target_prediction_matches": [
       22,
@@ -539,7 +577,18 @@
       "maximum_verifications": 18,
       "maximum_auxiliary_steps": 96,
       "causal_reconciler_control": 64768
-    }
+    },
+    "absolute_ordinary_sequence": 65250,
+    "absolute_ordinary_analysis": 65254,
+    "primary_decode_rate_change_percent": {
+      "ordinary_cold": -21.702115,
+      "ordinary_retained1": -4.286942,
+      "ordinary_retained2": -6.544788
+    },
+    "all_three_conditions_both_regressions_exceed_AA": true,
+    "three_request_span_increase_percent": 17.051953,
+    "exact_prefix_cohort": false,
+    "production_adopted": false
   },
   "initializer_scope_consumed": 63121,
   "initializer_repeated": false,
@@ -629,5 +678,25 @@
     "model_launch_admitted": false,
     "inference_gain_qualified": false,
     "new_assigned_port_native_qualification": 64818
+  },
+  "latest_checkpoint_65259": {
+    "campaign_complete": false,
+    "auxiliary_transfer_experiments_closed": true,
+    "transfer_throughput_improvement_established": false,
+    "next_placement_method": "Reuse successful ordinary whole-layer FTP publication and existing staged bytes",
+    "source_cache_positive_complement_prefix": 4314,
+    "source_cache_complement_total": 6076,
+    "unchanged_completed_tests_replayed": false,
+    "latest_failure_classification": 65264
+  },
+  "current_console_execution": {
+    "selected_P1_seven_files_restored_and_native_hashed": true,
+    "native_running": false,
+    "model_loaded": false,
+    "unknown_completion": true,
+    "GPU_readmission_pending": true,
+    "new_GPU_scope_permitted": false,
+    "initializer_replays": 0,
+    "reboot_available": false
   }
 }

@@ -6,8 +6,11 @@ This is a new application campaign. Closed APR/PFS/Kraken and compatibility
 initialization attempts are not reopened or replayed. Restart is unavailable.
 The initial campaign baseline was SELF56c29e9c..., source2b683814.... The
 [current measured deployment](native-performance-comparisons-20261102.md) is
-completed-stage R1 SELF947a07fd..., reconstructed from source a543eac over that
-baseline. Driver872cc126/cumulative-idle and disabled persistent caches remain.
+P1 over completed-stage R1 SELFc5afc565..., installed on PC and PS5 through
+publication65256. Driver872cc126/cumulative-idle and disabled persistent caches
+remain. The later Q3 component65259 unexpectedly exits without a completion
+certificate; P1 files are positively restored, while further native GPU scopes
+remain pending positive completion classification. Host work continues.
 
 ## Independently controlled candidates
 

@@ -2,10 +2,16 @@
  * Copy only explicitly owned new staging parts. No original model is written.
  */
 #include "bounded_part_concat.h"
+#include "owned_stage_mode.h"
 struct ConcatPart{const char*path;uint64_t bytes;const char*sha256;};
 static const struct ConcatPart concat_parts[]=CONCAT_PARTS;
 static _Alignas(16384) unsigned char concat_input[QWEN_CONCAT_WINDOW],concat_output[QWEN_CONCAT_WINDOW];
 struct ConcatOwner{int input,output,part_initialized;unsigned index;int*calls;uint64_t deadline;struct stat before;struct ai_sha256 part,whole;};
+static struct qwen_stage_facts concat_facts(const struct stat*s){
+    const struct qwen_stage_facts f={(uint64_t)s->st_dev,(uint64_t)s->st_ino,(uint64_t)s->st_size,
+        (uint64_t)s->st_mode,(uint64_t)s->st_uid,(uint64_t)s->st_gid,(uint64_t)s->st_nlink,
+        (uint64_t)s->st_mtim.tv_sec,(uint64_t)s->st_mtim.tv_nsec};return f;
+}
 static int concat_admit(struct ConcatOwner*owner){
     uint32_t free_pages=0;size_t n=4;const uint64_t now=qwen_launch_now(NULL);
     return now&&now<=owner->deadline&&!sysctlbyname("vm.stats.vm0.v_free_count",&free_pages,&n,NULL,0)&&n==4&&
@@ -17,9 +23,17 @@ static int64_t concat_read(void*opaque,unsigned part,uint64_t offset,void*data,s
         if(o->input>=0)return -1;
         o->input=open(concat_parts[part].path,O_RDONLY|O_NOFOLLOW|O_DIRECT);o->index=part;o->part_initialized=0;
         if(o->input<0)return -1;
-        if(fstat(o->input,&o->before)||!S_ISREG(o->before.st_mode)||o->before.st_nlink!=1||
-           (o->before.st_mode&0022)||o->before.st_size!=(off_t)concat_parts[part].bytes||
-           !(fcntl(o->input,F_GETFL)&O_DIRECT))return -1;
+        const int flags=fcntl(o->input,F_GETFL);
+        if(fstat(o->input,&o->before)||flags<0||!(flags&O_DIRECT))return -1;
+        const struct qwen_stage_facts original=concat_facts(&o->before);
+        if(!qwen_stage_before_seal(&original,concat_parts[part].bytes))return -1;
+        // Raw FTP creates mode0777. Seal only this exact new root-owned,
+        // single-link staging inode before reading its verified payload.
+        if((o->before.st_mode&07777)!=0444&&fchmod(o->input,0444))return -1;
+        if(fstat(o->input,&o->before))return -1;
+        const struct qwen_stage_facts sealed=concat_facts(&o->before);
+        if(!qwen_stage_after_seal(&original,&sealed,concat_parts[part].bytes)||
+           !report("CONCAT_SOURCE_SEALED index=%u mode=0444 same_inode_size_owner_mtime=1",part))return -1;
         ai_sha256_init(&o->part);o->part_initialized=1;
     }
     if(o->input<0||o->index!=part)return -1;

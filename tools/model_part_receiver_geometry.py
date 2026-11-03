@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Derive only the two explicitly bounded model-part receiver geometries."""
+"""Derive the explicitly bounded model-part socket and receive profiles."""
 from start_success_route import need
 
 
-def receiver_text(original, window, socket_buffer=32768, verify_socket=False):
+def receiver_text(original, window, socket_buffer=32768, verify_socket=False,wait_all=False):
     need(window in (16384,262144) and original.count('(32ull<<20)')==1,
          'One exact original receiver and bounded supported window required')
     text=original.replace('(32ull<<20)','(512ull<<20)',1)
     need((socket_buffer==32768 and not verify_socket) or
          (window==262144 and socket_buffer==262144 and verify_socket), 'Only the explicitly bounded socket profiles are admitted')
+    need(not wait_all or (window==262144 and socket_buffer==262144 and verify_socket),
+         'Wait-all applies only to the positively bounded larger socket profile')
     if window==16384:return text
     changes=(('unsigned char direct_stage_window[16384]','unsigned char direct_stage_window[262144]'),
              ('offset+=16384','offset+=262144'),
@@ -35,4 +37,14 @@ def receiver_text(original, window, socket_buffer=32768, verify_socket=False):
        !report("DIRECT_STAGE_SOCKET_BUFFER requested=%d observed=%d extra_kernel_reserve_pages=32",receive_bytes,actual_receive_bytes))goto done;
 '''
         text=text.replace(before,check+before,1)
+    if wait_all:
+        before='recv(fd,(unsigned char*)value+offset,bytes-offset,0)'
+        need(text.count(before)==1 and text.count('if(got<=0)return 0;offset+=(size_t)got;')==1,
+             'One exact bounded receive loop is required')
+        text=text.replace(before,'recv(fd,(unsigned char*)value+offset,bytes-offset,MSG_WAITALL)',1)
+        text=text.replace('if(got<=0)return 0;offset+=(size_t)got;',
+            'if(got<=0||(size_t)got>bytes-offset)return 0;offset+=(size_t)got;',1)
+        marker='#include <sys/time.h>\n'
+        need(text.count(marker)==1,'The actual socket ABI must be visible')
+        text=text.replace(marker,marker+'_Static_assert(MSG_WAITALL==0x40,"The qualified PS5 wait-all socket ABI is required");\n',1)
     return text

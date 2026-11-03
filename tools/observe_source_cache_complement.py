@@ -56,8 +56,11 @@ def main():
     for name in ('workspace','current','mount-plan','trace-proof','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--completed-read-scope',type=Path,action='append',required=True)
     p.add_argument('--completed-complement',type=Path,action='append',default=[])
+    p.add_argument('--target-free-pages',type=int,default=0,
+        help='Stop after a complete window once enough pages exist for the next changed model scope')
     p.add_argument('--execute',action='store_true');p.add_argument('--collect',action='store_true')
     a=p.parse_args();need(not(a.execute and a.collect),'Submit once or collect the same exact helper')
+    need(a.target_free_pages==0 or 7374<=a.target_free_pages<=16384,'A target must preserve the original model screen and bounded source scope')
     state=load(a.current/'active-console.private.json');need(state['original_restored'] and not state['native_running'] and
         not state['model_loaded'] and not state['unknown_completion'],'Positive idle model/source/device ownership required')
     files,windows,inputs=plan_ranges(a.current,a.trace_proof,a.completed_read_scope);first=0
@@ -117,13 +120,14 @@ static int case_retire_completed_images(int*calls){
   if(!report("COMPLEMENT_WINDOW index=%u bytes=%llu first_rc=%d resident=%u remaining=%u canaries=%d unmapped=%d fd_closed=%d identity_exact=%d",
    index,(unsigned long long)w->bytes,first_rc,found_window,remaining_window,pages.before==guard&&pages.after==guard,unmapped,closed,identity))return 0;
   if(!unmapped||!identity||!closed||pages.before!=guard||pages.after!=guard)return 0;
-  ++scanned;bytes+=w->bytes;found_total+=found_window;remaining_total+=remaining_window;if(error)break;
+  ++scanned;bytes+=w->bytes;found_total+=found_window;remaining_total+=remaining_window;
+  if(error||(TARGET_FREE_PAGES&&complement_free()>=TARGET_FREE_PAGES))break;
  }
  return report("COMPLEMENT_COMPLETE scanned=%u total=%u bytes=%llu resident=%llu remaining=%llu sync_calls=%d returned_error=%d free_before=%u free_after=%u source_writes=0 touched_mapping_bytes=0 GPU_calls=0",
   scanned,(unsigned)(sizeof(windows)/sizeof(windows[0])),(unsigned long long)bytes,(unsigned long long)found_total,
   (unsigned long long)remaining_total,*calls,error,free_before,complement_free());
 }
-'''.replace('FIRST_WINDOW',str(first))
+'''.replace('FIRST_WINDOW',str(first)).replace('TARGET_FREE_PAGES',str(a.target_free_pages)+'u')
         source_rows=','.join('{'+json.dumps(r['mounted_path'])+',{'+','.join(str(v)+'ULL' for v in r['identity'])+'}}' for r in files)
         window_rows=','.join('{'+str(r['file'])+','+str(r['offset'])+'ULL,'+str(r['bytes'])+'ULL}' for r in windows)
         context=context.replace('FILES',source_rows).replace('WINDOWS',window_rows)
@@ -131,10 +135,15 @@ static int case_retire_completed_images(int*calls){
         save(a.out/'intent.private.json',dict(files=files,windows=windows,inputs=inputs,starting_window=first,boot=state['current_boot'],
             selected=selected,maximum_live_readonly_mapping_bytes=64<<20,maximum_sync_extent_bytes=8<<20,
             maximum_sync_calls=128,maximum_scope_seconds=20,original_read_ranges_excluded=True,source_writes=0,mapping_page_accesses=0,global_cache_purge=False))
+        # The optional target changes only where the positively closed prefix
+        # ends; it never broadens the selected files or lowers a model screen.
+        save(a.out/'target.private.json',dict(target_free_pages=a.target_free_pages,stop_only_after_positive_window_retirement=True))
         if not a.execute:return
     else:
         intent=load(a.out/'intent.private.json');need(intent['files']==files and intent['windows']==windows and
             intent['starting_window']==first and intent['selected']==selected and intent['boot']==state['current_boot'],'Only the same consumed complement may be collected')
+        target=load(a.out/'target.private.json')['target_free_pages'] if (a.out/'target.private.json').exists() else 0
+        need(target==a.target_free_pages,'Only the original selected early-stop target may be collected')
         plan=load(a.out/'native/plan.private.json')
     lan=lan_module()
     if a.collect:

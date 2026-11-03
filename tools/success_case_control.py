@@ -58,7 +58,7 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
 '''
     text+='static int old_files_valid(void){return '+'&&'.join(digest_expression(r) for r in old_files)+';}\n'
     text+='static int pending_valid(void){return '+('&&'.join(digest_expression(r) for r in pending) or '0')+';}\n'
-    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14,'inspect-descriptors':15,'observe-direct':16,'receive-direct-stage':17,'export-closed-logs':18,'concatenate-model-parts':19};need(operation in numbers,'One known operation required')
+    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14,'inspect-descriptors':15,'observe-direct':16,'receive-direct-stage':17,'export-closed-logs':18,'concatenate-model-parts':19,'inspect-staged-parts':20};need(operation in numbers,'One known operation required')
     if operation in ('receive-direct-stage','export-closed-logs'):
         text=text.replace('#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u','#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 37u',1)
     if operation=='concatenate-model-parts':
@@ -95,10 +95,11 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         if direct_stage_header:
             from model_part_receiver_geometry import receiver_text
             original=(ROOT/'native/qwen_flash_next/direct_stage_receive.h').read_text()
-            profiles=((16384,32768,False),(262144,32768,False),(262144,262144,True))
+            profiles=((16384,32768,False,False),(262144,32768,False,False),
+                      (262144,262144,True,False),(262144,262144,True,True))
             matches=[row for row in profiles if Path(direct_stage_header).read_text()==receiver_text(original,*row)]
             need(len(matches)==1,'Only a completely source-bound finite model-part receiver geometry is admitted')
-            receiver_window,receiver_socket,verified_socket=matches[0]
+            receiver_window,receiver_socket,verified_socket,receiver_wait_all=matches[0]
             receiver_socket_pages=32 if verified_socket else 0
             receiver_extra_pages=2*(receiver_window-16384)//16384+receiver_socket_pages
             if receiver_extra_pages:
@@ -121,9 +122,12 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         text=text.replace(marker,'#define QWEN_LAUNCH_CPU_HEADROOM_WAIT 1\n'+marker,1)
         # This still collects every process or refuses the scope; it never
         # truncates enumeration. The complete boot/service/native guards stay.
-    if operation in ('dependencies','inspect-descriptors'):
+    if operation in ('dependencies','inspect-descriptors','inspect-staged-parts'):
         need(dependencies and len(dependencies)<=256 and len(set(dependencies))==len(dependencies) and
-             all(p.startswith((PHYSICAL+'/',ALIAS+'/')) and '..' not in p.split('/') for p in dependencies),'Exact distinct owned dependency paths required')
+             (all(re.fullmatch(r'/data/ai/moss-qwen-case-[0-9a-f]{32}-candidate-SELF\.bin',p) for p in dependencies)
+              if operation=='inspect-staged-parts' else
+              all(p.startswith((PHYSICAL+'/',ALIAS+'/')) and '..' not in p.split('/') for p in dependencies)),
+             'Exact distinct owned dependency paths required')
         context+='#define CASE_DEPENDENCY_COUNT '+str(len(dependencies))+'u\n'
         context+='static const char*case_dependencies[]={'+','.join(map(json.dumps,dependencies))+'};\n'
     if resident:
@@ -229,6 +233,7 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         plan.update(receive_window_bytes=receiver_window,whole_integrity_window_bytes=receiver_window,
                     CPU_metadata_margin_pages=37+receiver_extra_pages,additional_fixed_CPU_buffer_pages=receiver_extra_pages-receiver_socket_pages,
                     receive_socket_buffer_bytes=receiver_socket,additional_socket_kernel_allowance_pages=receiver_socket_pages)
+        plan['receive_wait_all']=receiver_wait_all if direct_stage_header else False
     if operation=='export-closed-logs':plan['exporter_source']=record(ROOT/'native/qwen_flash_next/closed_log_export.h')
     save(out/'plan.private.json',plan);return plan
 

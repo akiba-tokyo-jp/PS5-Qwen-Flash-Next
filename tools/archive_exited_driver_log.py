@@ -20,16 +20,24 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','mount-plan','case','out'):p.add_argument('--'+name,type=Path,required=True)
+    p.add_argument('--log-kind',choices=('driver','entry'),default='driver')
+    p.add_argument('--single-owner-controls',type=Path,help='Reuse the exact completed count-one owner controls')
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
     case=load(a.case/'plan.private.json');restored=load(a.case/'process-exited-restoration/result.private.json')
     need(restored['completed'] and restored['native_process_exit_observed'] and restored['exact_current_seven_restored_and_native_hashed'],
          'Positive process absence and exact restoration required; no normal-exit assertion is made')
-    first=load(a.case/'ongoing-first.private.json');lan=lan_module()
+    first_path=a.case/'observed-first.private.json'
+    if not first_path.exists():first_path=a.case/'ongoing-first.private.json'
+    first=load(first_path);need(first['run_id']==case['run_id'] and
+        first['candidate_SELF_sha256']==case['SELF']['sha256'],'Exact exited standalone owner required');lan=lan_module()
     with lan.OPENER.open('http://'+lan.HOST+':8084/processes_list',timeout=8) as response:raw=response.read(1<<20)
     need(not [r for r in json.loads(raw)['processes'] if r['name']=='eboot.bin' or r['pid']==first['pid']],
          'The exact exited owner must remain absent')
     (a.out/'processes-before.private.json').write_bytes(raw)
-    name='plan-'+case['run_id']+'.json.driver.log';physical=PHYSICAL+'/qwen-runtime/'+name;alias=ALIAS+'/qwen-runtime/'+name
+    boot=load(a.current/'active-console.private.json')['current_boot']
+    name=('plan-'+case['run_id']+'.json.driver.log' if a.log_kind=='driver' else
+          'entry-b'+str(boot[0])+'-'+str(boot[1])+'-'+str(first['pid'])+'.private.log')
+    physical=PHYSICAL+'/qwen-runtime/'+name;alias=ALIAS+'/qwen-runtime/'+name
     with lan.ftplib.FTP() as ftp:
         ftp.connect(lan.HOST,2121,timeout=15);ftp.login()
         need(ftp.sendcmd('SELF')=='226 SELF transfer mode disabled','Exact raw transfer mode required')
@@ -46,9 +54,20 @@ def main():
     host=a.workspace/'toolchain/msys-clang64/clang64/bin';exe=a.out/'single-owner-test.exe'
     jobs=[[str(host/'clang.exe'),'-std=c11','-O2','-Wall','-Wextra','-Werror','-I',str(a.out),str(source),'-o',str(exe)],[str(exe)]]
     env=dict(os.environ,PATH=str(host)+os.pathsep+os.environ.get('PATH',''))
-    for i,job in enumerate(jobs):
-        run=subprocess.run(job,capture_output=True,timeout=30,env=env);(a.out/(str(i)+'.private.log')).write_bytes(run.stdout+run.stderr)
-        need(run.returncode==0,run.stderr.decode(errors='replace')[-3000:])
+    if a.single_owner_controls:
+        prior=load(a.single_owner_controls);previous=a.single_owner_controls.parent
+        prior_intent=load(previous/'intent.private.json')
+        need(prior['completed'] and prior_intent['new_single_count_controls']==3 and
+             prior_intent['source_owner']==record(ROOT/'native/qwen_flash_next/closed_log_owner.h') and
+             prior_intent['source_export']==record(ROOT/'native/qwen_flash_next/closed_log_export.h') and
+             (previous/'closed_log_owner.h').read_text()==owner and
+             (previous/'single-closed-owner-test.c').read_text()==test and
+             b'"cases":3' in (previous/'1.private.log').read_bytes(),
+             'Only exact already completed single-owner implementation controls may be reused')
+    else:
+        for i,job in enumerate(jobs):
+            run=subprocess.run(job,capture_output=True,timeout=30,env=env);(a.out/(str(i)+'.private.log')).write_bytes(run.stdout+run.stderr)
+            need(run.returncode==0,run.stderr.decode(errors='replace')[-3000:])
     context='struct ClosedLog{const char*path;const char*alias;unsigned long long bytes;};\n#define CASE_CLOSED_LOG_COUNT 1u\n'
     context+='static const struct ClosedLog case_closed_logs[]={{'+json.dumps(physical)+','+json.dumps(alias)+','+str(size)+'ULL}};\n'
     context+='#define case_retire_completed_images case_handoff_closed_log\n'+owner+'\n#undef case_retire_completed_images\n'
@@ -61,6 +80,8 @@ def main():
         log=dict(physical=physical,alias=alias,bytes=size),owner_transition=[1,0],mode='0600',payload_writes=0,
         current_seven_unchanged=True,source_owner=record(ROOT/'native/qwen_flash_next/closed_log_owner.h'),
         source_export=record(ROOT/'native/qwen_flash_next/closed_log_export.h'),new_single_count_controls=3,
+        reused_single_count_controls=record(a.single_owner_controls) if a.single_owner_controls else None,
+        log_kind=a.log_kind,
         normal_exit_claimed=False,explicit_log_handling_authorized=True,title_launches=0,GPU_calls=0))
     result=completed_operation(lan,plan,a.out/'native')
     need(result['completed'] and result['operation_calls']==2,'One owner handoff and one read-only archive open required')
@@ -70,7 +91,7 @@ def main():
     seals=re.findall(rb'CLOSED_LOG_SEALED ordinal=0 bytes=(\d+) sha256=([0-9a-f]{64}) full_identity_and_EOF=1',journal)
     need(len(seals)==1 and len(data)==size==int(seals[0][0]) and hashlib.sha256(data).hexdigest()==seals[0][1].decode(),
          'The independent native whole SHA256, EOF and complete exported bytes must agree')
-    archive=a.out/'closed-driver.private.log';archive.write_bytes(data)
+    archive=a.out/('closed-'+a.log_kind+'.private.log');archive.write_bytes(data)
     save(a.out/'result.private.json',dict(completed=True,archived_log=record(archive),whole_native_and_host_SHA256_equal=True,
         physical_and_alias_identity_equal=True,closed_owner_PID=first['pid'],owner_transition=[1,0],mode_changes=0,
         source_payload_writes=0,current_seven_preserved_and_native_hashed=True,native=record(a.out/'native/result.private.json'),

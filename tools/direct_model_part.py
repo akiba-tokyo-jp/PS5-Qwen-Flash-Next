@@ -28,6 +28,13 @@ def stage(capture, remote, out, lan, *, workspace, current_rows, mount_plan, ori
          host['original_qualification'] == qualification(original_proof) and
          record(host['receiver']['path']) == host['receiver'] and record(host['original_receiver']['path']) == host['original_receiver'],
          'Exact original proof, batch geometry and observed bounded socket profile required; never repeat the failed large16KiB scope')
+    if host.get('wait_all_receive'):
+        controls=host['new_wait_all_controls']
+        need(controls['completed'] and controls['positive_controls']==4 and controls['negative_controls']==7 and
+             controls['OS_objects']==controls['PS5_operations']==0 and
+             host['only_receive_flag_and_returned_length_guard_changed'] and
+             host['unchanged_socket_transport_integrity_controls_replayed']==0,
+             'The changed actual receive body and partial/timeout boundaries must pass')
     need(re.fullmatch(r'/data/ai/moss-qwen-case-[0-9a-f]{32}-candidate-SELF\.bin', remote) and
          type(capture['bytes']) is int and 0 < capture['bytes'] <= 512 << 20 and record(capture['path']) == capture,
          'One exact new owned bounded model-part staging file is required')
@@ -55,6 +62,7 @@ def stage(capture, remote, out, lan, *, workspace, current_rows, mount_plan, ori
          plan['CPU_metadata_margin_pages']==host['CPU_metadata_margin_pages']==99 and
          plan['additional_fixed_CPU_buffer_pages']==30 and plan['additional_socket_kernel_allowance_pages']==32,
          'The exact added static buffers and socket allowance must enter stronger native admission')
+    need(plan['receive_wait_all']==bool(host.get('wait_all_receive')),'The actual compiled receive flag must match its profile')
     save(out/'intent.private.json', dict(model_part=capture, remote=remote, receiver=record(receiver/'plan.private.json'),
         receiver_proof=record(receiver_proof), original_proof=record(original_proof), nonce=nonce, peer=peer,
         payload_window_bytes=262144,host_send_window_bytes=262144,TCP_NODELAY=True,receive_buffer_bytes=262144,maximum_connections=1,automatic_retries=0,
@@ -140,7 +148,8 @@ def stage(capture, remote, out, lan, *, workspace, current_rows, mount_plan, ori
         raw_HTTP_payload_readbacks=0, buffered_FTP_model_part_writes=0, connections=1,
         payload_window_bytes=262144,host_send_window_bytes=262144,TCP_NODELAY=True,receive_buffer_bytes=262144,
         actual_host_stream=transfer,host_transfer_and_readback_ack_seconds=elapsed,
-        canonical_file_writes=0, source_publication_still_required=True, model_GPU_operations=0, automatic_retries=0)
+        receive_wait_all=bool(host.get('wait_all_receive')),canonical_file_writes=0,
+        source_publication_still_required=True, model_GPU_operations=0, automatic_retries=0)
     save(out/'result.private.json', result)
     return result
 
@@ -149,15 +158,28 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     for name in ('workspace', 'current', 'mount-plan', 'original-proof', 'receiver-proof', 'model-part', 'out'):
         p.add_argument('--'+name, type=Path, required=True)
+    p.add_argument('--PS5-host',help='Restrict this CLI transfer to the identified existing console LAN address')
     a = p.parse_args()
     state = load(a.current/'active-console.private.json')
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and
          not state['unknown_completion'], 'Positive idle current ownership required')
     part = load(a.model_part)
-    need(part['completed'] and (part.get('complete_layer') or part.get('all_complete_carriers_independently_inverse_verified')),
+    fragment=part.get('complete_verified_IQ2_fragment') is True
+    if fragment:
+        master=load(part['master_encoding']['path'])
+        need(record(part['master_encoding']['path'])==part['master_encoding'] and master['completed'] and master['complete_layer'] and
+             master['encoded_Experts']==512 and part['master_pack']==master['pack'] and
+             part['Experts']==64 and part['first_Expert']%64==0 and 0<=part['first_Expert']<=448 and
+             part['pack']['bytes']==27033600 and part['lossless_byte_slice_only'],
+             'The bounded actual fragment must bind its complete independently decoded master encoding')
+    need(part['completed'] and (part.get('complete_layer') or part.get('all_complete_carriers_independently_inverse_verified') or fragment),
          'A completed actual model encoding/carrier part is required')
+    lan=lan_module()
+    if a.PS5_host:
+        import ipaddress
+        need(ipaddress.ip_address(a.PS5_host).is_private and lan.HOST==a.PS5_host,'Only the identified existing PS5 LAN destination is authorized')
     remote = '/data/ai/moss-qwen-case-'+secrets.token_hex(16)+'-candidate-SELF.bin'
-    result = stage(part['pack'], remote, a.out, lan_module(), workspace=a.workspace, current_rows=current_files(a.current),
+    result = stage(part['pack'], remote, a.out, lan, workspace=a.workspace, current_rows=current_files(a.current),
                    mount_plan=a.mount_plan, original_proof=a.original_proof, receiver_proof=a.receiver_proof)
     print(json.dumps(dict(completed=True, bytes=result['bytes'], transfer_and_readback_ack_seconds=result['host_transfer_and_readback_ack_seconds'],
                           title_launches=0, GPU_calls=0, source_publication_still_required=True)))

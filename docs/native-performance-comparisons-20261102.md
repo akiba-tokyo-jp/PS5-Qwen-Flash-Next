@@ -5,15 +5,71 @@ model inference and ordinary closure are now positively observed on this boot.
 The one authorized runtime initialization63121 is consumed; it is not repeated.
 The existing mount63133 remains. Reboot and recovery are unavailable.
 
-The selected deployment is now completed-stage R1 SELF947a07fd, installed on
-both PC and PS5 through positive seven-file publication64510. It supersedes
-the earlier request-end token-ledger R1a786b8ad. Matched native comparisons use
+The selected deployment is now P1 over completed-stage R1, SELF
+`c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed`,
+installed on both PC and PS5 through positive seven-file publication65256.
+All seven files have complete native hashes in both console namespaces;
+947 retained inputs preserve rebuild provenance. Matched native comparisons use
 the same three restored encoded inputs and authenticated identity-data provider
 63800. Every successfully completed model case releases model/source/device owners, reaches zero
 live device bytes, ordinarily closes and restores/natively hashes all seven
 selected files. Driver872cc126/cumulative-idle and disabled persistent caches
 remain unchanged. R1 is adopted after the combined native proofs below; the
 other candidates retain their stated limits.
+
+## Current implementation and remaining work
+
+P1's adopted cold-output refinement improves complete-model decode from
+10.162065 to10.436816 tok/s (+2.703692%) cold and12.094066 to12.172570 tok/s
+(+0.649106%) retained. Both paired gains exceed control AA spread. Exact-prefix
+13.264824 to13.217511 tok/s (-0.356682%) is inconclusive. All token bytes and
+ordered routes match;68/69 complete F32 vocabulary rows match. The first cold
+row has maximum absolute error0.1812725067138672. Broader prompts remain
+unqualified. Publication65256 reuses the measured ELF and canonical entry,
+graph and selector bytes; it does not repeat compilation or model timing.
+
+S1's absolute comparison with the ordinary application is complete65250/65254:
+cold10.163650 to7.957923 tok/s (-21.702115%), retained1 12.216398 to11.692688
+(-4.286942%), retained2 13.779094 to12.877282 (-6.544788%). Both regressions
+exceed AA spread in every condition. The three-request span rises17.051953%.
+The previously reported retained-MTP gain was relative to fresh MTP, not the
+ordinary application. Neither S1 refinement is adopted. These are three ordinary
+requests, not an exact-prefix cohort.
+
+Q3's actual GGML carrier fixture completes CPU startup65255. GPU attempt65257
+refuses before publication or launch because7281 free pages is below the
+scope's measured7650-page admission. New application-source windows65258
+positively retire736 resident pages; no completed range is replayed. GPU65259
+reuses the existing published operand pack65186 but exits after its first
+graph-before-call marker without a graph completion certificate. Current P1's
+seven files are restored and natively hashed after confirming process absence.
+This is an unexpected process exit, not an ordinary successful close.
+
+The complete1942-byte driver journal65260 ends after the pre-graph quiet
+checkpoint. Routine success records were disabled, so a lack of submit lines
+cannot establish zero submissions. The private diagnostic log is empty by the
+existing LIST procedure; FTP SIZE's UINT64_MAX response was an error sentinel.
+The exact exit cause and post-call GPU completion remain unknown. No repeat
+launch, force-close, initialization or reboot is performed. The console state
+retains GPU completion uncertainty and blocks further GPU launches. Full-model
+Q2/Q3 quality and decode rates remain unqualified; host encoding65103 and new
+software-only verification continue. This is not evidence that every further
+quantization improvement is impossible.
+
+New software-only scopes65262/65263 cover all2560 rows with a12288000-byte
+descriptor prefix. All18 row-one cases (92160 outputs) and36 distinct row-two/
+four cases (184320 outputs) pass F64 references, guards and completion. They
+reuse the actual shader binaries and prior operands, without replaying the old
+tile scope or making PS5 requests. They do not establish native completion.
+Audit65265 also finds a missing prerequisite: the failed standalone ELF contains
+no shader-file or shader-asset CPU initialization function. The fixture must
+perform that startup before any future graph. This does not by itself prove the
+process's exit cause or establish post-call GPU completion.
+
+Transfer experiments are closed without a throughput benefit. They are validation
+tools, not an FTP feature in the inference application. Remaining required data
+placement uses the successful ordinary whole-layer publication procedure and
+reuses already staged bytes. No transfer speed is counted as decode improvement.
 
 ## Primary metric and refinement scope, 2026-11-03
 
@@ -29,7 +85,8 @@ are not cumulative from the historical production baseline.
 | Candidate | Cold control -> candidate tok/s | Retained control -> candidate tok/s | Exact prefix control -> candidate tok/s |
 | --- | ---: | ---: | ---: |
 | Adopted R1 completed-stage sync |10.075792 ->10.214440 (+1.376%) |11.952293 ->12.142559 (+1.592%) |13.031378 ->13.255748 (+1.722%) |
-| P1 narrowed-output post-trunk crop |9.922700 ->10.201818 (+2.813%) |11.803556 ->11.780988 (-0.191%) |12.980358 ->12.771386 (-1.610%) |
+| Adopted P1 cold-output refinement |10.162065 ->10.436816 (+2.704%) |12.094066 ->12.172570 (+0.649%) |13.264824 ->13.217511 (-0.357%, inconclusive) |
+| Earlier P1 narrowed-output post-trunk crop |9.922700 ->10.201818 (+2.813%) |11.803556 ->11.780988 (-0.191%) |12.980358 ->12.771386 (-1.610%) |
 | Q1 additional shared Q4 |10.034906 ->9.778851 (-2.552%) |11.997715 ->12.076353 (+0.655%) |13.117661 ->12.983439 (-1.023%) |
 | G1 per-layer coefficients |9.999300 ->9.413819 (-5.855%) |11.934757 ->11.088216 (-7.093%) |13.029635 ->12.262222 (-5.890%) |
 | G1 batched coefficients |10.009280 ->9.468476 (-5.403%) |11.945037 ->11.022863 (-7.720%) |13.095655 ->12.255242 (-6.417%) |
