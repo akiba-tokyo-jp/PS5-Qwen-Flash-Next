@@ -889,12 +889,13 @@
     "latest_failure_classification": 65264
   },
   "current_console_execution": {
-    "owner": "source suffix65363, then sealer handoff65364, then existing Up workflow65352",
-    "original_FTP_session_25865": "terminated after29 positive stores with ConnectionResetError; no native submission",
-    "active_suffix_session": 58437,
-    "active_handoff_session": 58989,
-    "queued_Up_session": 19016,
-    "completed_file_retransmissions": 0,
+    "owner": "reserved full Up workflow65352/session19016",
+    "phase": "remaining four Up source layers before model capacity and ABBA",
+    "initial_prefix_sealed": true,
+    "suffix_session58437_exit_code": 0,
+    "handoff_session58989_exit_code": 0,
+    "observer": "functions cellg10:1968,19016 phase",
+    "frozen_tools_must_remain_unchanged": true,
     "independent_console_operation_permitted": false
   },
   "latest_checkpoint_65281": {
@@ -1146,5 +1147,29 @@
     "new_GPU_shaders": 0,
     "native_rate_or_equivalence_qualified": false,
     "PS5_operations": 0
+  },
+  "latest_source_publication_update": {
+    "original_prefix_publication": 65334,
+    "completed": true,
+    "transfer_suffix": 65363,
+    "positive_file_stores": 108,
+    "completed_files_preserved": 29,
+    "interrupted_file_restarts": 1,
+    "completed_payload_retransmissions": 0,
+    "native_sealer": 65340,
+    "native_submissions": 1,
+    "operation_calls": 218,
+    "whole_physical_alias_SHA256_EOF_and_parents_passed": true,
+    "helper_exited_and_files_removed": true,
+    "GPU_calls": 0,
+    "initializer_requests": 0,
+    "mount_calls": 0,
+    "full_Up_workflow": 65352,
+    "last_Up_layers_pending": 4,
+    "remaining_publication_files": 71,
+    "remaining_publication_bytes": 888624392,
+    "retained_parts": 47,
+    "retained_parts_copied": 0,
+    "full_model_rate_qualified": false
   }
 }

@@ -26,7 +26,27 @@ Do not modify the queued ten tools until19016 retires. New Down integration
 and admission guards must then require the corrected large-cache proof and
 12-graph native result. Keep all native work behind the existing IO owners.
 
-CURRENT SOURCE OWNER65363:the original uploader25865/PID11252 terminated
+CURRENT CONSOLE OWNER65352/19016:the initial108-file Up source publication
+65334 is COMPLETE after one sealer65340 execution. Both physical/alias whole
+SHA256/EOF and all parents pass;218 operation calls,positive helper exit and
+helper file retirement,GPU/initializer/mount calls0. Uploader58437 and handoff
+58989 both exited0. Existing workflow19016 now owns the remaining four Up
+layers:its publication plan has71 files/888624392 bytes and47 retained parts.
+Do not start independent console operations or edit the frozen ten tools.
+Observer functionsg10:1968 has advanced to its19016 phase. Follow that cell,
+not the retired host sessions. Model build,fresh capacity and full Up ABBA
+still follow this final placement; no complete-model IQ2 rate is qualified.
+
+Completed initial handoff history:all108 source stores completed in65363,
+preserving29 earlier completed files and restarting only one incomplete file.
+The original suffix process58437 exited0. Native sealer65340 has its once marker
+and submitted_once/collection_pending receipt. Host coordinator58989 waits350
+seconds before first collection,then180-second intervals. Do not resubmit it
+or query the console independently. Positive sealing and owner retirement
+still precede queued Up workflow19016. That workflow stages the last four Up
+layers,then runs capacity admission and the original full-model ABBA.
+
+Interrupted transfer history:the original uploader25865/PID11252 terminated
 after29 positive stores with ConnectionResetError during file30. Its terminal
 output and prefix are preserved in65334/interrupted-transfer.private.json.
 The former functionsg10:1887 monitor has ended; do not wait on or restart it.
@@ -34,6 +54,11 @@ Suffix uploader session58437/out65363 preserves all29 completed files and
 restarts only the exact owned partial file30(119341056 observed bytes),then
 uploads the remaining suffix. It persists each positive reply atomically.
 No whole completed file is resent,no new native scope runs during transfer.
+Do not reopen transport tuning:the already completed65186 Direct transfer
+measured107.218 seconds for57327616 bytes(about0.51MiB/s),the same observed
+placement bottleneck. Its unchanged180-second receiver deadline also excludes
+a complete216268800-byte Up file at that observed rate. Reusing that receiver
+does not provide a supported faster large-source placement path.
 Reserved host handoff58989/out65364 waits locally for65363/result,submits
 qualified sealer65340 once,and collects quietly after350/180 seconds. Its
 finish_iq2_source_seal.py hash is frozen; do not edit that finalizer while

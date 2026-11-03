@@ -19,6 +19,15 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Source update:65363 completes all108 positive stores,preserving29 earlier
+completed files and restarting only one incomplete file. One sealer65340
+execution completes all218 operation calls,full physical/alias SHA256/EOF
+and parent checks,with positive helper exit/removal and zero GPU,initializer
+or mount calls. Prefix publication65334 is complete. Reserved workflow65352
+now stages only the final four Up layers(71 files/888624392 bytes),retaining47
+already sealed parts without copying them. Full model build,fresh capacity
+and the original Up ABBA still follow. No complete-model IQ2 rate is claimed.
+
 Checkpoint65365 supersedes the earlier partial progress below. All Gate
 encoding and uniform48+48 Gate/Up metadata65351 are complete. No full IQ2
 model rate or held-out answer quality is qualified yet.
