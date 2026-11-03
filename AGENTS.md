@@ -3,6 +3,24 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Checkpoint65352 reserves the next console workflow:run_full_iq2_up_candidate.py,
+host session19016,outQ2-full-Up-automatic-continuation-65352. It is currently
+waiting only on local65334/result.private.json. After65340 seals that prefix
+and both source owner markers retire,it alone stages the remaining four Up
+layers,reuses all44 sealed layers,builds both model packages,runs the17-resource
+F16 fixture in CPU capacity mode,and runs/analyzes a full Up ABBA65400..65403.
+Its ten tool digests are frozen in65352/intent.private.json; do not edit those
+files while it waits. Do not start an independent console operation after the
+current prefix finalizer:the queued workflow owns that next scope. It stops on
+any failure without retry,initialization,reboot or automatic adoption. If it
+stops,inspect its existing phase log and current local ownership first.
+The six new Down F16 GPU graphs still wait until this Up workflow positively
+finishes or its precise stopping boundary has been handled. The changed Down
+pack must use the already successful same-size bounded receiver proof
+Direct-batched-socket-profile-65147/result.private.json; its old pack65186 has
+different content and is not reusable. The old proof's actual path is
+65186/component-pack/result.private.json,not65186/result.private.json.
+
 Checkpoint65351 adds a PC-only metadata coordinator,session93825,out65351.
 It waits for the already running Gate encoder65345,then prepares the combined
 48+48 metadata exactly once. Do not edit prepare_iq2_up_model_overlay.py while

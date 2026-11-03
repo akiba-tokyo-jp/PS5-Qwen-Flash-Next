@@ -775,7 +775,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "65351",
+  "latest_update": "65352",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -1010,6 +1010,26 @@
     "broader_quality_qualification_pending": true,
     "primary_metric_unchanged": true,
     "native_replays": 0,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65352": {
+    "queued_continuation": 65352,
+    "waits_for_positive_source_prefix": 65334,
+    "reserved_next_console_scope": true,
+    "reused_Up_layers": 44,
+    "new_Up_layers": 4,
+    "fresh_CPU_capacity_required": true,
+    "ABBA_cases": [
+      65400,
+      65401,
+      65402,
+      65403
+    ],
+    "tool_inputs_frozen": true,
+    "automatic_retries": 0,
+    "automatic_adoption": false,
+    "broader_quality_pending": true,
+    "native_work_submitted_by_continuation_at_observation": 0,
     "campaign_complete": false
   }
 }

@@ -19,6 +19,15 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Continuation65352 is queued on the positive prefix source receipt. After the
+existing source owner retires,it stages only the remaining four Up layers,
+builds the complete model pair,requires fresh CPU capacity admission,and runs
+the original three-condition Up ABBA65400..65403. Its tool inputs are frozen;
+each failed phase stops without retry or submitting later work. There is no
+automatic adoption and broader quality remains pending. Down F16 GPU work
+remains after this reserved console workflow. This queues necessary dependent
+work while source placement and Gate encoding proceed independently.
+
 Host workflow checkpoint65351 queues combined Gate/Up metadata immediately
 after the original Gate worker completes,without restarting any encoding.
 Gate has4/48 complete,zero failures,and placement has11/108 positive file
