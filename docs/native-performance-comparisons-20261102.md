@@ -19,6 +19,15 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Checkpoint65356 compiles the controlled quality source against the selected
+PS5 ABI without linking or running a model. Full Down source plan65355 is
+also prepared on the PC,101 files,zero uploads/native submissions. Gate is
+26/48 complete with zero failures at observation; the original Up transfer
+has27/108 positive file replies. The total remaining model placement,including
+Gate and Down,is approximately27GB,about14-15 hours at the observed0.5MiB/s.
+The Up continuation obtains the first full-model decode result before those
+later source sets. No extra unchanged benchmark is run during this wait.
+
 Host-only checkpoint65354 prepares a separate conditional quality path using
 the established Japanese instruction,arithmetic and JSON-extraction prompts.
 The new source derivation preserves all six original memory/identity/reset

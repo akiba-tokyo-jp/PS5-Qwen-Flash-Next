@@ -775,7 +775,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "65354",
+  "latest_update": "65356",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -1052,6 +1052,26 @@
     "retain_every_current_P1_correct_answer": true,
     "shared_queued_tools_unchanged": true,
     "native_replays": 0,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65356": {
+    "heldout_source_PS5_ABI_compiled": 65356,
+    "heldout_native_quality_executed": false,
+    "Down_source_prepared": 65355,
+    "Down_new_files": 101,
+    "Down_source_uploaded": false,
+    "Gate_complete_at_observation": 26,
+    "Gate_failed": 0,
+    "Up_positive_store_replies": 27,
+    "Up_total_files": 108,
+    "total_remaining_placement_approx_GB": 27,
+    "observed_transfer_MiB_s_approx": 0.5,
+    "placement_only_estimate_hours": [
+      14,
+      15
+    ],
+    "estimate_includes_Gate_and_Down": true,
+    "unchanged_native_benchmark_replays": 0,
     "campaign_complete": false
   }
 }

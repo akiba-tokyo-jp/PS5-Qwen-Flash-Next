@@ -3,6 +3,26 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Checkpoint65356:the controlled held-out source65353 compiles against the
+actual selected PS5 ABI in65356,zero native replays/PS5 calls. It is not a
+quality result or a model launch. Gate has26/48 complete,zero failures at
+observation. The original transfer monitor's last notification is27/108;
+22 positive replies are also durably summarized in65334/
+observed-positive-transfer-notifications.private.json. Do not overwrite the
+active monitor's internal tracker with a separate stale functions snapshot.
+Full Down source publication65355 is PREPARED ONLY:101 files,all48 carriers,
+same qualified262KiB source-seal window,no uploads/native submission. Its
+plan is bound to the unchanged selected P1 parent. Do not submit it during
+the current/queued Up ownership or before the distinct F16 Down GPU boundary
+is resolved. The already completed carrier bytes need no rebuilding.
+The owner was told the total remaining placement is approximately27GB,
+about14-15 hours at the observed0.5MiB/s,not the original Up prefix alone.
+The reserved Up workflow obtains its actual decode result first.
+For later large Down/Gate source sets,avoid the legacy two-second full-log
+collection cadence:use a finite host-quiet completion interval instead.
+Do not edit the frozen publisher while19016 is pending; address that
+collection behavior only after this queued workflow retires.
+
 Checkpoint65354:the active transfer/handoff monitor is functions cellg10:1887.
 It tracks every positive reply from25865 and,only after all108 and the expected
 quarantined-local-ELF host exit,submits65340 once,waits350 seconds quietly,and
