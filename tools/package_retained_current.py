@@ -13,12 +13,31 @@ from build_performance_quantizer import record
 from driver_table_storage import audit_converted_storage
 
 
+def audit_identity_provider(relink,provider_path):
+    from native_dispatch import ELF
+    provider=json.loads(Path(provider_path).read_text(encoding='utf-8-sig'))
+    linked_inputs=relink['new_inputs']+relink.get('inputs',[])
+    same_provider=any(all(row[k]==provider['artifact'][k] for k in ('bytes','sha256')) for row in linked_inputs)
+    if not provider['completed'] or provider['executable_bytes'] or not same_provider or len(provider['inputs'])!=3:
+        raise ValueError('Exact data-only identity provider must be part of the actual relink')
+    if record(provider['artifact']['path'])!=provider['artifact']:raise ValueError('Identity provider changed')
+    image=Path(relink['artifact']['path'])
+    if record(image)!=relink['artifact']:raise ValueError('Relinked image changed')
+    linked=ELF(image)
+    for row in provider['inputs']:
+        if linked.symbol_data(row['symbol'])!=struct.pack('<10Q',*row['identity']):
+            raise ValueError('Actual linked identity data differs from the finalized native input')
+    return dict(provider=record(provider_path),linked_definitions_verified=3,
+                original_owner_unchanged=provider['original_owner_unchanged'])
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','relink','out'):
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--formatter-from',type=Path,help='Reuse a verified formatter from a completed retained package')
     parser.add_argument('--identity-provider',type=Path,help='Audit restored-input data definitions in the actual linked ELF')
+    parser.add_argument('--CPU-libc-heap-bytes',type=int,help='Separate CPU-only8MiB libc parameter experiment')
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
     load=lambda p:json.loads(Path(p).read_text(encoding='utf-8-sig'))
     package=load(args.current/'provenance/receipt.private.json')
@@ -27,19 +46,7 @@ def main():
     if record(image)!=relink['artifact']:raise ValueError('Relinked image changed')
     identity_audit=None
     if args.identity_provider:
-        from native_dispatch import ELF
-        provider=load(args.identity_provider)
-        linked_inputs=relink['new_inputs']+relink.get('inputs',[])
-        same_provider=any(all(row[k]==provider['artifact'][k] for k in ('bytes','sha256')) for row in linked_inputs)
-        if not provider['completed'] or provider['executable_bytes'] or not same_provider:
-            raise ValueError('Exact data-only identity provider must be part of the actual relink')
-        if record(provider['artifact']['path'])!=provider['artifact']:raise ValueError('Identity provider changed')
-        linked=ELF(image)
-        for row in provider['inputs']:
-            if linked.symbol_data(row['symbol'])!=struct.pack('<10Q',*row['identity']):
-                raise ValueError('Actual linked identity data differs from the finalized native input')
-        identity_audit=dict(provider=record(args.identity_provider),linked_definitions_verified=3,
-                            original_owner_unchanged=provider['original_owner_unchanged'])
+        identity_audit=audit_identity_provider(relink,args.identity_provider)
     actual_sources=[];source_dir=args.workspace/'driver-work/PS5-Vulkan-Inference/tooling/native'
     for row in package['format_tool_sources']:
         path=source_dir/Path(row['path']).name;value=record(path)
@@ -78,10 +85,19 @@ def main():
              ('self',[str(tool),'self','--sign','--in',str(converted),'--out',str(executable)]),
              ('inspect',[str(tool),'self','--inspect','--file',str(executable)]),
              ('extract',[str(tool),'self','--extract','--file',str(executable),'--out',str(roundtrip)])]
+    libc_parameter_policy=None
     for name,job in jobs:
         result=subprocess.run(job,capture_output=True,timeout=180,env=env)
         (args.out/(name+'.private.log')).write_bytes(result.stdout+result.stderr)
         if result.returncode:raise RuntimeError(result.stderr.decode(errors='replace')[-4000:])
+        if name=='convert' and args.CPU_libc_heap_bytes is not None:
+            if relink.get('CPU_only') is not True or relink.get('driver_code_linked') is not False:
+                raise ValueError('Explicit libc policy is limited to the independent CPU-only fixture')
+            from libc_parameter_policy import bind_heap
+            original_converted=converted.read_bytes()
+            bounded,libc_parameter_policy=bind_heap(original_converted,args.CPU_libc_heap_bytes)
+            (args.out/'default-libc-parameters.elf').write_bytes(original_converted)
+            converted.write_bytes(bounded)
     expected=bytearray(converted.read_bytes());expected[18:20]=struct.pack('<H',0x3e)
     if expected[7] in (0,3):expected[7]=9
     if struct.unpack_from('<H',expected,16)[0]==0:struct.pack_into('<H',expected,16,2)
@@ -110,6 +126,7 @@ def main():
     if relink.get('required_bundle_restore'):report['required_bundle_restore']=relink['required_bundle_restore']
     if identity_audit:report['required_bundle_identity_audit']=identity_audit
     if relink.get('effective_application_policy'):report['effective_application_policy']=relink['effective_application_policy']
+    if libc_parameter_policy:report['CPU_libc_parameter_policy']=libc_parameter_policy
     (args.out/'result.private.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in report.items() if k not in ('relink','SELF','preferred_formatter_sources','formatter','commands','driver_table_geometry','effective_application_policy')}))
 

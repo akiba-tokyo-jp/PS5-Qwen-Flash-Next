@@ -5,6 +5,7 @@ import argparse
 import json
 from pathlib import Path
 import statistics
+import re
 
 from build_performance_quantizer import record
 from start_success_route import load,need,save
@@ -33,6 +34,9 @@ def main():
         terminals.append(terminal);roots.append(Path(row['case_plan']['path']).parent);events.append(row['scope_events'][0][0])
         evidence.extend((row['native_terminal'],row['close']))
     need(events==[0,1,1,0],'Declared control/candidate ABBA must match actually exercised native modes')
+    f32_pattern=re.compile(rb'F32_row request=(\d+) row=(\d+) columns=(\d+) sha256=([0-9a-f]{64})')
+    f32_rows=[f32_pattern.findall((root/'native-stages.private.log').read_bytes()) for root in roots]
+    f32_exact=all(len(rows)==69 and rows==f32_rows[0] and all(r[2]==b'248320' for r in rows) for rows in f32_rows)
     groups=[];all_tokens=True;all_routes=True;all_sources=True;all_quality=True;all_ledger=True
     source_keys=('source_bytes','source_physical_read_bytes','source_physical_read_calls')
     for ordinal in range(3):
@@ -75,10 +79,20 @@ def main():
                 paired_savings_ms=savings,control_AA_spread_ms=spread,
                 both_pairs_exceed_control_spread=min(savings)>spread,
                 mean_reduction_percent=100*(1-statistics.mean(r[name] for r in B)/statistics.mean(r[name] for r in A)))
+        rates=[]
+        for r in complete_metrics:
+            calculated=(r['generated_tokens']-1)*1000/r['decode_ms']
+            need(abs(calculated-r['decode_tokens_per_second'])<=1e-9,'Original decode tok/s formula changed')
+            rates.append(calculated)
+        control_rates=[rates[i] for i in (0,3)];candidate_rates=[rates[i] for i in (1,2)]
+        aa=abs(control_rates[1]-control_rates[0]);gains=[candidate_rates[i]-control_rates[i] for i in range(2)]
         groups.append(dict(condition=reference['arm'],tokens_and_bytes_exact=tokens,ordered_routes_exact=routes,
             source_demand_equal=source_equal,all_counting_and_finite_F32_checks_passed=quality,
             durable_token_payloads_exact=ledger_equal,metrics=metrics,
-            decode_tokens_per_second=dict(control=[r['decode_tokens_per_second'] for r in A],candidate=[r['decode_tokens_per_second'] for r in B])))
+            decode_tokens_per_second=dict(control=control_rates,candidate=candidate_rates,
+                control_mean=statistics.mean(control_rates),candidate_mean=statistics.mean(candidate_rates),
+                rate_change_percent=100*(statistics.mean(candidate_rates)/statistics.mean(control_rates)-1),
+                control_AA_spread=aa,paired_gains=gains,both_pairs_exceed_control_spread=min(gains)>aa)))
         all_tokens&=tokens;all_routes&=routes;all_sources&=source_equal;all_quality&=quality;all_ledger&=ledger_equal
     report=dict(completed=True,scope=sequence['scope'],cases=[r['case'] for r in sequence['cases']],native_requests=12,
         automatic_retries=0,all_ordinary_closes_and_exact_restores=True,all_actual_native_token_bytes_exact=all_tokens,
@@ -87,6 +101,8 @@ def main():
         groups=groups,retained_prefill_gain_beyond_control_spread=groups[1]['metrics']['prefill_ms']['both_pairs_exceed_control_spread'],
         both_warm_whole_request_gains_beyond_control_spread=all(g['metrics']['complete_request_span_ms']['both_pairs_exceed_control_spread'] for g in groups[1:]),
         final_token_ledger_sync_and_close_included_in_complete_request_span=True,
+        primary_metric='(generated_tokens-1)/decode_seconds',
+        cross_program_full_F32_row_SHA256_compared=True,all69_full_vocabulary_F32_rows_exact=f32_exact,
         cross_program_full_F32_row_bytes_compared=False,all_boundary_states_qualified=False,
         production_adopted=False,evidence=evidence,PS5_operations=0)
     save(args.out,report)

@@ -46,14 +46,21 @@ def main():
         guarded_headless=policy['kind']=='Q2-calibration' and policy.get('headless_calibration') and policy.get('model_and_GPU_guards_preserved')
         guarded_fixture=policy['kind']=='Q2-IQ2-fixture' and policy.get('unloaded_GPU_fixture') and policy.get('model_and_GPU_guards_preserved')
         guarded_audit=policy['kind']=='headless-model-audit' and policy.get('headless_model_audit') and policy.get('model_and_GPU_guards_preserved')
-        if not policy['completed'] or policy['kind'] not in ('R1-direct','CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture','headless-model-audit') or not (policy['model_and_GPU_topology_unchanged'] or guarded_headless or guarded_fixture or guarded_audit):
+        if not policy['completed'] or policy['kind'] not in ('R1-direct','CPU-SELF-window','P1-cold-prefill','Q1-shared','Q2-calibration','Q2-IQ2-fixture','headless-model-audit') or not (policy['model_and_GPU_topology_unchanged'] or guarded_headless or guarded_fixture or guarded_audit):
             raise ValueError('A completed scoped direct-entry policy is required')
         if policy['entry_artifact'] not in new or record(policy['entry_artifact']['path'])!=policy['entry_artifact']:
             raise ValueError('The effective policy must belong to the actual replaced entry')
-        if policy['kind'] in ('CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture','headless-model-audit'):
+        if policy['kind'] in ('CPU-SELF-window','P1-cold-prefill','Q1-shared','Q2-calibration','Q2-IQ2-fixture','headless-model-audit'):
             reader=policy['CPU_SELF_provider']['artifact']
             if reader not in new or record(reader['path'])!=reader or not policy['CPU_SELF_provider']['OS_minimum_plus_21_unchanged']:
                 raise ValueError('The smaller SELF window must use the actual audited CPU-only replacement provider')
+        if policy['kind']=='P1-cold-prefill':
+            proof=policy['P1_refinement'];checked=load(proof['path'])
+            if record(proof['path'])!=proof or not checked['completed'] or len(checked['new_selector_controls'])!=16 or not checked['actual_PS5_ABI_compiled']:
+                raise ValueError('Actual completed cold/retained/prefix selector controls required')
+            arm=policy['P1_arm']
+            if arm not in ('control','candidate') or checked['entries'][arm]['entry']!=policy['entry_artifact'] or checked['entries'][arm]['source']!=policy['source'] or checked['selector'] not in new or checked['model_provider_reused'] not in new:
+                raise ValueError('The exact scoped P1 entry, selector and completed post-trunk graph must be linked together')
         application_policy=dict(profile=record(args.application_policy),overrides=policy['overrides'],kind=policy['kind'],
                                 token_sync_policy=policy['token_sync_policy'])
         if policy['kind']=='Q1-shared':

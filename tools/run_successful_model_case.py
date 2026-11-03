@@ -102,7 +102,14 @@ def start(args):
         if effective['kind']=='Q2-calibration':keys.add('native_activation_capture')
         if effective['kind']=='Q2-IQ2-fixture':keys.add('native_IQ2_fixture')
         if effective['kind']=='headless-model-audit':keys.add('native_headless_model_audit')
-        need(effective['kind'] in ('R1-direct','CPU-SELF-window','Q1-shared','Q2-calibration','Q2-IQ2-fixture','headless-model-audit') and set(effective['overrides'])==keys,
+        if effective['kind']=='P1-cold-prefill':
+            checked=compiled_profile['P1_refinement'];need(record(checked['path'])==checked,'P1 phase source controls changed')
+            checked=load(checked['path']);arm=compiled_profile['P1_arm']
+            need(checked['completed'] and checked['actual_PS5_ABI_compiled'] and len(checked['new_selector_controls'])==16 and
+                 checked['entries'][arm]['entry']==compiled_profile['entry_artifact'] and
+                 checked['entries'][arm]['source']==compiled_profile['source'],
+                 'Exact compiled P1 request scope and real ABI controls required')
+        need(effective['kind'] in ('R1-direct','CPU-SELF-window','P1-cold-prefill','Q1-shared','Q2-calibration','Q2-IQ2-fixture','headless-model-audit') and set(effective['overrides'])==keys,
              'Only an explicitly compiled token-durability or smaller CPU SELF scope is admitted here')
         policy.update(effective['overrides'])
     gate=rebind_directory(policy['native_first_generation_validation'],proof,proof['current_boot'])

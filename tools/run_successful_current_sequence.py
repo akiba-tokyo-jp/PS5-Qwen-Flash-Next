@@ -24,7 +24,10 @@ def main():
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--package',action='append',type=Path,required=True)
     parser.add_argument('--clock',type=Path,help='Historical receipt compatibility only; each case always creates a fresh calibration')
-    parser.add_argument('--scope',choices=('P1','R1','R1-direct','R1-stage','G1-shadow','G1','F32','Q1','calibration'),required=True)
+    parser.add_argument('--direct-staging-proof',type=Path)
+    parser.add_argument('--minimum-free-pages',type=int)
+    parser.add_argument('--startup-pricing',type=Path)
+    parser.add_argument('--scope',choices=('P1','P1-cold','R1','R1-direct','R1-stage','G1-shadow','G1','F32','Q1','calibration'),required=True)
     parser.add_argument('--case-base',type=int,required=True)
     args=parser.parse_args();need(1<=len(args.package)<=4,'One explicit scope of at most four packages required')
     args.out.mkdir(parents=True,exist_ok=False)
@@ -46,9 +49,24 @@ def main():
     for index,package in enumerate(args.package):
         current_case=args.case_base+index;case=args.out/('case-'+str(current_case));closed=args.out/('closed-'+str(current_case))
         clock=args.out/('clock-'+str(current_case))
+        if args.minimum_free_pages is not None:
+            from kernel_vm_preflight import query
+            if args.startup_pricing:
+                from price_cold_prefill_startup import require
+                pricing=require(args.startup_pricing,args.package)
+                need(args.scope=='P1-cold' and args.minimum_free_pages==pricing['selected_readiness_pages'],
+                     'Only the explicitly priced ordinary P1 scope may use a changed screen')
+            else:need(args.minimum_free_pages>=7374,'A changed model screen needs completed scope-specific pricing')
+            vm_dir=args.out/('VM-before-'+str(current_case));vm_dir.mkdir()
+            vm=query(lan_module().HOST,vm_dir);state=load(args.current/'active-console.private.json')
+            if args.startup_pricing:need(pricing['current_boot']==state['current_boot'],'Pricing boot changed')
+            admitted=vm['boot_before']==vm['boot_after']==state['current_boot'] and min(vm['free_first'],vm['free_last'])>=args.minimum_free_pages
+            save(vm_dir/'result.private.json',dict(observations=vm,required_pages=args.minimum_free_pages,admitted=admitted))
+            need(admitted,'Changed model scope refuses before publication; do not replay unchanged')
         script('refresh_successful_clock.py',common+['--out',clock,'--execute'],args.out/('clock-'+str(current_case)+'.private.log'))
+        delivery=['--direct-staging-proof',args.direct_staging_proof] if args.direct_staging_proof else []
         script('run_successful_model_case.py',common+['--model-proof',args.model_proof,'--clock',clock/'clock.private.json',
-            '--package',package,'--out',case,'--execute'],args.out/('start-'+str(current_case)+'.private.log'))
+            '--package',package,'--out',case,'--execute']+delivery,args.out/('start-'+str(current_case)+'.private.log'))
         deadline=time.monotonic()+1800;poll=0
         while True:
             script('observe_successful_model_start.py',['--case-plan',case/'plan.private.json'],
@@ -81,13 +99,20 @@ def main():
                          actual['token_ids']==actual['output_bytes']==[], 'Only a completed empty output can have no ledger file')
                     raw=b''
                 (case/('native-arm'+str(ordinal)+'.'+suffix+'.private.bin')).write_bytes(raw)
-        script('close_successful_current_model.py',common+['--case-plan',case/'plan.private.json','--out',closed],
+        script('close_successful_current_model.py',common+['--case-plan',case/'plan.private.json','--out',closed]+delivery,
             args.out/('close-'+str(current_case)+'.private.log'))
         result=load(closed/'result.private.json');need(result['completed'] and result['current_seven_restored_and_native_hashed'] and
             result['ordinary_exit_observed'] and not result['unknown_completion'],'Positive ordinary restore required before the next package')
         journal=(case/'native-stages.private.log').read_bytes()
         G1_stats=None
-        if args.scope=='P1':
+        if args.scope=='P1-cold':
+            profile=load(load(package)['effective_application_policy']['profile']['path'])
+            candidate=profile['P1_arm']=='candidate'
+            phases=[list(map(int,r)) for r in re.findall(rb'P1_before_request_phase ordinal=(\d+) cold_output_crop=(\d+)',journal)]
+            prefill=[list(map(int,r)) for r in re.findall(rb'P1_prefill_selected last_only=(\d+) tokens=(\d+) first_pos=(\d+) output_rows=(\d+)',journal)]
+            events=[[int(candidate),*r] for r in phases]
+            exercised=phases==[[0,int(candidate)],[1,0],[2,0]] and prefill==[[int(candidate),30,0,1 if candidate else 30],[0,30,0,30]]
+        elif args.scope=='P1':
             events=[list(map(int,r)) for r in re.findall(rb'P1_prefill_selected last_only=(\d+) tokens=(\d+) first_pos=(\d+) output_rows=(\d+)',journal)]
             exercised=len(events)==2 and all(r[1:3]==[30,0] and r[3]==(1 if r[0] else 30) for r in events)
         elif args.scope=='R1':

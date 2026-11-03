@@ -12,7 +12,7 @@ from start_success_route import load,need,save
 from success_case_control import ALIAS,PHYSICAL,build,complete,current_files,digest_expression,execute,lan_module
 
 
-def admitted_cases(batches,state):
+def admitted_cases(batches,state,CPU_cases=()):
     cases=[]
     protected={state['active_successful_native_case']['run_id'],
         load(state['successful_route_20261102']['current_boot_model_proof']['case']['path'])['run_id'],
@@ -30,6 +30,20 @@ def admitted_cases(batches,state):
                 case['report']=='/app0/qwen-runtime/plan-'+case['run_id']+'.json','Current native proof is protected')
             need(record(row['reports'][0]['path'])=={key:row['reports'][0][key] for key in ('path','bytes','sha256')},'Complete PC terminal changed')
             cases.append(dict(run_id=case['run_id'],terminal=row['reports'][0],case_plan=row['case_plan'],closed=row['closed'],pid=terminal['pid']))
+    for root in CPU_cases:
+        closed=load(root/'result.private.json');case=load(root/'plan.private.json')
+        native=closed['native'];need(record(native['path'])==native,'Closed CPU result changed')
+        terminal=load(native['path'])
+        native_SHA=terminal.get('candidate_SELF_sha256',terminal.get('SELF_sha256'))
+        need(closed['completed'] and closed['ordinary_exit_observed'] and closed['ordinary_close_calls']==1 and
+             closed['current_seven_restored_and_native_hashed'] and closed['native_owners']==0 and not closed['unknown_completion'] and
+             terminal['all_CPU_IO_returned'] and terminal['GPU_calls']==terminal['model_loads']==0 and
+             terminal['run_id']==case['run_id'] and native_SHA==case['SELF']['sha256'],
+             'Only positively returned, ordinarily closed CPU-only cases are admitted')
+        need(re.fullmatch('[0-9a-f]{32}',case['run_id']) and case['run_id'] not in protected and
+             case['report']=='/app0/qwen-runtime/plan-'+case['run_id']+'.json','Current CPU proof is protected')
+        cases.append(dict(run_id=case['run_id'],terminal=dict(native,remote=PHYSICAL+case['report'][5:]),
+            case_plan=record(root/'plan.private.json'),closed=record(root/'result.private.json'),pid=terminal['pid']))
     need(1<=len(cases)<=32 and len({row['run_id'] for row in cases})==len(cases),'Distinct bounded closed cases required')
     return cases
 
@@ -37,13 +51,14 @@ def admitted_cases(batches,state):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','mount-plan','out'):p.add_argument('--'+name,type=Path,required=True)
-    p.add_argument('--image-batch',type=Path,action='append',required=True)
+    p.add_argument('--image-batch',type=Path,action='append',default=[])
+    p.add_argument('--CPU-case',type=Path,action='append',default=[])
     p.add_argument('--execute',action='store_true');p.add_argument('--collect',action='store_true');a=p.parse_args()
     need(not(a.execute and a.collect),'Submit once or collect the same operation')
     state=load(a.current/'active-console.private.json')
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and not state['unknown_completion'],
         'Positive idle current deployment required')
-    cases=admitted_cases(a.image_batch,state);current=current_files(a.current);lan=lan_module()
+    cases=admitted_cases(a.image_batch,state,a.CPU_case);current=current_files(a.current);lan=lan_module()
     selected=current+load(a.current/'provenance/retained-relink-inputs.private.json')
     package=load(a.current/'provenance/current-package.private.json');native=load(a.current/'provenance/native-link.receipt.private.json')
     selected+=native['formatter_stubs']+[package['formatter']]
@@ -73,11 +88,11 @@ def main():
             # Authenticate each case before deleting its main terminal last.
             chosen.remove(prefix);chosen.append(prefix)
             for name in chosen:
-                fields=names[name];count=int(fields[4]);need(re.fullmatch('[A-Za-z0-9_.-]+',name) and 0<count<=16<<20 and fields[2] in ('0','1') and fields[3]=='0','Bounded regular owned report required')
+                fields=names[name];count=int(fields[4]);need(re.fullmatch('[A-Za-z0-9_.-]+',name) and 0<=count<=16<<20 and fields[2] in ('0','1') and fields[3]=='0','Bounded regular owned report required')
                 if fields[0][7]!='r':
                     unreadable.append(dict(name=name,mode=fields[0],bytes=count,console_copy_preserved=True))
                     continue
-                remote=PHYSICAL+'/qwen-runtime/'+name;raw=lan.web('/fs'+urllib.parse.quote(remote,safe='/'),count)
+                remote=PHYSICAL+'/qwen-runtime/'+name;raw=lan.web('/fs'+urllib.parse.quote(remote,safe='/'),max(1,count))
                 need(len(raw)==count,'Full report export required');path=archive/name;path.write_bytes(raw)
                 value=record(path)
                 if name==prefix:need(all(value[key]==case['terminal'][key] for key in ('bytes','sha256')),'The native completed terminal differs from its original PC proof')
@@ -85,7 +100,8 @@ def main():
         need(1<=len(targets)<=4096 and sum(row['bytes'] for row in targets)<=256<<20,'Finite explicit archive bound required')
         save(a.out/'intent.private.json',dict(cases=cases,targets=targets,unreadable_reports_preserved=unreadable,
             protected=list(protected.values()),PC_archive_preserved=True,recursive_operations=0))
-        context='struct ClosedReport{const char*path;const char*alias;unsigned long long bytes;const char*sha256;unsigned case_index;};\n'
+        context='#include "closed_report_integrity.h"\n#define qwen_launch_digest_matches case_closed_report_digest\n'
+        context+='struct ClosedReport{const char*path;const char*alias;unsigned long long bytes;const char*sha256;unsigned case_index;};\n'
         context+='static const struct ClosedReport closed_reports[]={'+','.join('{'+','.join([json.dumps(row['remote']),json.dumps(row['alias']),str(row['bytes'])+'ULL',json.dumps(row['sha256']),str(row['case_index'])])+'}' for row in targets)+'};\n'
         context+='static unsigned report_index;static unsigned char closed_case_admitted['+str(len(cases))+'];\n'
         context+='#define CASE_COMPLETED_FILE_KIND "closed_report"\n#define CASE_COMPLETED_FILE_LABEL "CLOSED_REPORT"\n'

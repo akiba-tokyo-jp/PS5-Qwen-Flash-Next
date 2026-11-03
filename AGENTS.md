@@ -3,6 +3,33 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Native Q3 standalone64871 now passes all24 actual PS5 cases/fences and original
+F64/canary checks, max error1.2140019420292525e-7. Final DeviceWaitIdle and driver
+producer completion return; a subsequent CPU teardown check fails. Source-bound
+64872 ordinarily closes that SAME owner once and restores/hashes all seven947
+files. No repeated GPU computation or initializer. Do not replay64871 or64872.
+CPU-only64873 after the changed GPU scope returns both canary-protected Direct
+capacity samples12,262,047,744 bytes, above baseline12,184,453,120. Its one ordinary
+close and exact current-seven restoration complete. No individual
+old-BO release or whole-model rate is claimed. See docs/paired-down-native-20261103.md.
+Corrected minimal linking preserves the selected whole-driver archive span and
+audits six actual physical callbacks. Earlier64861 omitted one weak callback;
+its OS exit is not a quantization numerical negative. Never replay that binary.
+P1 cold-only refinement64863/64864 has16 new phase/exception/decode host cases
+and the same post-trunk graph in both arms. Host64920 stops before publication
+because its package omitted the three actual linked identity audit fields.
+64924 checks all six actual definitions and supplements receipts only: no rebuild,
+SELF change or replay. Native comparison64930 is in progress, not yet qualified.
+Scope-specific pricing64914 uses completed original CPU64800 and12 immutable
+phase reports from all four positively closed ordinary R1 models64500–64503.
+CPU6736/GPU7164/model7259 pages =>7259, with zero additional ELF pages, the same
+30 constructors, original native guards,256 CPU slack and1024 model/GPU slack.
+This replaces the unrelated S1-derived7374 host estimate ONLY for the exact two
+P1 binaries. All other scope estimates remain unchanged. No inactive pages or
+causal RAM saving is counted. Failed prepublication screens64900/64910 launch
+zero titles; do not repeat them. CPU report cleanup64905 archives/retires20 exact
+files/27489 bytes with108 selected inputs exact; no RAM saving follows from it.
+
 The owner clarified the primary speed metric on2026-11-03: complete-model
 decode tok/s, using (generated_tokens-1)/decode_seconds. Keep cold, retained
 weights and exact-prefix conditions separate. Report actual matched control
