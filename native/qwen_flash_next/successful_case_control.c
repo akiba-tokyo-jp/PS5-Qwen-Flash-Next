@@ -167,6 +167,9 @@ int main(int argc,char **argv){
 #elif CASE_OPERATION == 18
     if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("export-closed-logs"))goto done;
     success=case_export_closed_logs(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
+#elif CASE_OPERATION == 19
+    if(!idle()||!new_files_valid()||!new_mounted_valid()||!claim("concatenate-model-parts"))goto done;
+    success=case_concatenate_model_parts(&calls)&&new_files_valid()&&new_mounted_valid()&&live_context()&&idle();
 #elif CASE_OPERATION == 16
     if(!idle()||!new_files_valid()||!new_mounted_valid())goto done;
     {

@@ -33,7 +33,7 @@ def digest_expression(row,path=None):
     return 'qwen_launch_digest_matches('+json.dumps(path or row['remote'])+','+str(row['bytes'])+'ULL,'+json.dumps(row['sha256'])+')'
 
 
-def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None,direct_stage_context=None,closed_log_export_context=None,direct_stage_header=None):
+def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None,direct_stage_context=None,closed_log_export_context=None,direct_stage_header=None,concat_context=None):
     workspace=Path(workspace);out=Path(out);out.mkdir(parents=True,exist_ok=False)
     base_plan=load(mount_plan);base=base_plan['controller'];need(record(base['path'])==base,'Successful controller input changed')
     text=Path(base['path']).read_text();prefix='/data/ai/moss-qwen-case-'+secrets.token_hex(16)
@@ -58,16 +58,22 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
 '''
     text+='static int old_files_valid(void){return '+'&&'.join(digest_expression(r) for r in old_files)+';}\n'
     text+='static int pending_valid(void){return '+('&&'.join(digest_expression(r) for r in pending) or '0')+';}\n'
-    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14,'inspect-descriptors':15,'observe-direct':16,'receive-direct-stage':17,'export-closed-logs':18};need(operation in numbers,'One known operation required')
+    numbers={'publish':1,'launch':2,'close':3,'observe':4,'readmission':5,'clock':6,'dependencies':7,'restore-bundle':8,'finalize-bundle':9,'seal-shared-Q4':10,'export-activation':11,'retire-activation':12,'publish-component':13,'retire-completed-images':14,'inspect-descriptors':15,'observe-direct':16,'receive-direct-stage':17,'export-closed-logs':18,'concatenate-model-parts':19};need(operation in numbers,'One known operation required')
     if operation in ('receive-direct-stage','export-closed-logs'):
         text=text.replace('#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u','#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 37u',1)
-    if operation!='restore-bundle':
+    if operation=='concatenate-model-parts':
+        text=text.replace('#define QWEN_LAUNCH_WINDOW 16384u','#define QWEN_LAUNCH_WINDOW 262144u',1)
+        text=text.replace('#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u','#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 68u',1)
+    if operation not in ('restore-bundle','concatenate-model-parts'):
         text=text.replace('#include "launch_integrity_native.h"','#define QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS 1\n#include "launch_integrity_native.h"',1)
     need(len(old_files)==len(new_files)==7 and all(r['remote'].startswith(PHYSICAL+'/') for r in old_files+new_files),
          'Exactly the seven current owned application files are required')
     if operation=='publish':need(len(pending)==3,'One SELF and two startup files are required')
     context='#define CASE_OPERATION '+str(numbers[operation])+'\n#define CASE_ARGUMENT '+json.dumps('--'+operation)+'\n#define CASE_LOG '+json.dumps(prefix+'.log')+'\n'
     context+='int sceSystemServiceKillApp(int,int,int,int);\n'
+    if operation=='concatenate-model-parts':
+        need(isinstance(concat_context,str) and concat_context,'Exact owned input parts and new output required')
+        context+=concat_context+'\n#include "direct_model_concat.h"\n'
     if operation=='seal-shared-Q4':
         need(isinstance(source_seal_context,str) and source_seal_context,'Exact new-only source seal context required')
         context+=source_seal_context+'\n#include "shared_q4_publication.h"\n'
@@ -211,7 +217,12 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
               initializer_requests=0,mount_calls=0,GPU_calls=0,automatic_retries=0,
               maximum_complete_process_rows=128,whole_integrity_window_bytes=16384,
               CPU_metadata_margin_pages=37 if operation in ('receive-direct-stage','export-closed-logs') else 21,OS_minimum_and_reserved_read_only=True)
-    plan['CPU_control_independent_thresholds']=operation!='restore-bundle'
+    plan['CPU_control_independent_thresholds']=operation not in ('restore-bundle','concatenate-model-parts')
+    if operation=='concatenate-model-parts':
+        plan.update(whole_integrity_window_bytes=262144,CPU_metadata_margin_pages=68,
+            additional_fixed_CPU_buffer_pages=47,minimum_live_free_pages=1201,
+            concat_source=record(ROOT/'native/qwen_flash_next/direct_model_concat.h'),
+            stream_source=record(ROOT/'native/qwen_flash_next/bounded_part_concat.h'))
     if operation=='receive-direct-stage':
         plan['receiver_source']=record(direct_stage_header or ROOT/'native/qwen_flash_next/direct_stage_receive.h')
         plan['isolated_large_model_part_receiver']=bool(direct_stage_header)

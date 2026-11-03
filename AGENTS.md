@@ -3,6 +3,42 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest: S1 absolute ordinary-vs-retained ABBA65228 is ACTIVE, session66290.
+A0=65228 and B1=65229 complete all3 requests/ordinary exact restoration;
+B2=65230 and A3=65231 remain. Do not overlap any console scope.
+I1 second refinement is COMPLETE: final sequence65219 reuses A0=65180,
+B1=65213, completes B2=65221/A3=65222. Analysis65227: decode cold-0.150948%,
+retained+0.582160% (below AA),prefix-0.513796% (both regressions beyond AA).
+Both I1 refinements are unadopted; no future-impossibility claim.5 positive
+reads/7241728 bytes/0 hits/5 unused in EACH new candidate; all owners retire.
+Q3 real-GGML fixture65217/SELF65222 is PC-built, native UNRUN. Actual selected
+model resources65203, published carrier pack65186 and original19 lifetime
+controls are reused. It captures real instance/device handles, retains one live
+GGML backend through final completion, executes at most12 distinct layer/width
+graphs, and admits ordinary close after a returned numerical negative only if
+all submitted work/IO has positively completed.2positive/16negative NEW host
+controls pass, .scratch-GGML-carrier-completion-controls. CPU price65223=5787,
+29 constructors<=30 original. No GPU startup or model speed is claimed.
+P1 adoption review65224 reuses actual native evidence:68/69 F32 rows,first-row
+error0.1812725067138672,tokens/routes exact,cold+2.703692%,retained+0.649106%.
+Canonical graph+selector CURRENT/provenance/P1-model-source-65225 and normal
+entry P1-entry-source-65235 reproduce ALL original object bytes. Reuse them
+with adopt_verified_token_sync.py --cold-prefill --canonical-prefill-providers
+and --canonical-prefill-entry; do NOT compile them again. Adoption remains
+UNEXECUTED; current production SELF947a07fd... is unchanged. Broader prompts
+are unqualified and no prefix speed benefit is established.
+Transfer prototype is HOST-ONLY so far: Up1 real64-Expert fragment65232,
+4 disjoint local parts/27033600 bytes; native concat plan65233 compiled.
+8positive/15negative NEW stream controls pass,.scratch-bounded-concat-controls.
+Neither FTP streams nor concat has executed. Native concat uses two256KiB
+buffers+256KiB integrity window,68 metadata pages,live floor1201,additive OS
+thresholds,30s,each input SHA/identity/positive close,output SHA/EOF/close.
+Only after helper exit may the four exact owned inputs be removed; DELE226
+is positive. Stage sender --prepared reuses local parts; never retransmit.
+Complement65218 skips3870/scans118/resident1968->0/free6230->8197;
+65226 skips3988/scans120/resident1936->0/free7280->9212. Positive prefix4108/6076,
+1968 windows remain. Original ranges and completed prefixes must not replay.
+
 Latest: I1 second ABBA65212 is ACTIVE. It reuses final control65180 as A0;
 new B1=65213, B2=65214, A3=65215 only. No overlapping console scope.
 65207 refused before staging at6607<7374; no launch or speed result. New

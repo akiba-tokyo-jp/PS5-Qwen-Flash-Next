@@ -155,15 +155,28 @@ def main():
     p.add_argument('--post-completion-close-proof',type=Path)
     p.add_argument('--P1-contract-close-proof',type=Path)
     p.add_argument('--retained-component-exit-proof',type=Path)
+    p.add_argument('--GGML-completion-controls',type=Path)
     p.add_argument('--execute',action='store_true')
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
     package=load(a.package);relink=exact(package['relink'])
+    GGML_fixture=relink.get('GGML_carrier_ABI') is True
+    if GGML_fixture:
+        need(a.GGML_completion_controls is not None,'Changed GGML completion controls are required')
+        controls=load(a.GGML_completion_controls)
+        need(controls['completed'] and controls['positive_controls']==2 and controls['negative_controls']==16 and
+             controls['PS5_operations']==controls['unchanged_controls_replayed']==0 and
+             {Path(r['path']).name for r in controls['inputs']}=={'iq2_down_ggml_completion.py','iq2_down_ggml_completion_test.py'} and
+             all(record(r['path'])==r for r in controls['inputs']),
+             'The exact changed completion and no-submission-after-negative boundaries must pass')
+    else:need(a.GGML_completion_controls is None,'GGML controls may not relabel an ordinary raw component')
     need(package['completed'] and package['normalized_SELF_roundtrip_equal'] and not package['CPU_only'] and
-         relink['completed'] and not relink['model_engine_linked'] and relink['CPU_startup_only_mode'] and
+         relink['completed'] and (not relink['model_engine_linked'] or
+          (GGML_fixture and relink['GGML_operator_linked'] and relink['model_loads']==0 and relink['backend_free_calls']==0)) and relink['CPU_startup_only_mode'] and
          relink['same_selected_Direct_table_mapping_and_incremental_restoration'] and
          (relink['new_post_device_controls']==15 or (relink.get('retained_idle_device_until_ordinary_close') and
           relink.get('paired_down_carrier') and relink.get('retained_device_controls')==19)) and
-         len(relink['linked_driver'])==1 and relink['maximum_GPU_dispatches']==24 and
+         len(relink['linked_driver'])==1 and ((not GGML_fixture and relink['maximum_GPU_dispatches']==24) or
+          (GGML_fixture and relink['maximum_GGML_graphs']==12 and relink['maximum_GPU_dispatches'] is None)) and
          relink['successful_driver_whole_archive_preserved'] and
          all(r['pointer_matches'] for r in relink['actual_physical_dispatch_audit']),
          'Exact new standalone package and all actual driver callbacks required')
@@ -181,7 +194,8 @@ def main():
         if a.retained_component_exit_proof:
             readmission=load(a.retained_component_exit_proof)
             from retained_component_completion import validate_terminal
-            need(readmission['completed'] and readmission['native_passed'] and readmission['ordinary_exit_observed'] and
+            need(readmission['completed'] and (readmission['native_passed'] or (GGML_fixture and
+                 readmission.get('GGML_carrier_ABI') and readmission.get('all_submitted_GPU_work_positively_completed'))) and readmission['ordinary_exit_observed'] and
                  readmission['completed_idle_device_retained_until_ordinary_exit'] and readmission['fresh_capacity_readmission_required'] and
                  readmission['current_seven_restored_and_native_hashed'] and not readmission['unknown_completion'] and
                  state['retained_component_ordinary_exit']['native']==readmission['native'] and
@@ -328,7 +342,9 @@ def main():
         native=record(a.out/'native-result.private.json'),VM_before=record(vm_dir/'result.private.json'),
         ordinary_exit_observed=True,ordinary_close_calls=1,current_seven_restored_and_native_hashed=True,
         completed_idle_device_retained_until_ordinary_exit=bool(retained_GPU),
-        fresh_capacity_readmission_required=bool(retained_GPU),
+        fresh_capacity_readmission_required=bool(retained_GPU),GGML_carrier_ABI=GGML_fixture,
+        all_submitted_GPU_work_positively_completed=bool(GPU and not CPU),
+        GGML_completion_controls=record(a.GGML_completion_controls) if a.GGML_completion_controls else None,
         model_loads=0,native_owners=0,unknown_completion=False,initializer_requests=0,production_adopted=False))
     print(json.dumps(dict(completed=True,mode=a.mode,native_passed=passed,exact_current_restored=True)),flush=True)
 

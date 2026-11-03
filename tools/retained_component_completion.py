@@ -9,6 +9,9 @@ STAGE = b'paired_Down_native_GPU_completed_idle_device_retained_waiting_for_ordi
 
 
 def validate_terminal(terminal):
+    if terminal.get('GGML_carrier_ABI') is True:
+        from iq2_down_ggml_completion import validate_terminal as validate_GGML
+        return validate_GGML(terminal)
     need(terminal['completed'] and terminal['all_outputs_passed'] and not terminal['unknown_completion'] and
          terminal['native_PS5'] and terminal['model_loads'] == 0 and
          not terminal['all_GPU_resources_positively_retired'] and terminal['all_case_resources_positively_retired'] and
@@ -36,6 +39,10 @@ def validate_close(close, selected):
     need(record(package['relink']['path']) == package['relink'] and relink['completed'] and
          relink['paired_down_carrier'] and relink['retained_idle_device_until_ordinary_close'] and
          relink['retained_device_controls'] == 19, 'The qualified source-bound retained-device adapter is required')
+    if relink.get('GGML_carrier_ABI'):
+        need(relink['GGML_operator_linked'] and relink['maximum_GGML_graphs']==12 and relink['backend_free_calls']==0 and
+             Path(relink['source']['path']).name=='iq2_down_ggml_fixture.private.cpp',
+             'The finite GGML adapter and retained live backend must be source bound')
     for row in (relink['source'], *[x for x in relink['inputs_before'] if Path(x['path']).name in
                 ('paired_down_native_support.h', 'retained_completed_device.h', 'native_paired_carrier_adapter.py')]):
         need(record(row['path']) == row, 'A qualified lifetime source changed')
@@ -43,6 +50,8 @@ def validate_close(close, selected):
     for row in reports:
         need(record(row['path']) == {k: row[k] for k in ('path', 'bytes', 'sha256')}, 'A captured completion report changed')
     first, terminal = load(reports[0]['path']), load(reports[1]['path'])
+    need(bool(terminal.get('GGML_carrier_ABI'))==bool(relink.get('GGML_carrier_ABI')),
+         'The actual terminal topology must match the compiled component')
     validate_terminal(terminal)
     need(first['pid'] == terminal['pid'] == close['pid'] and first['run_id'] == terminal['run_id'] and
          first['candidate_SELF_sha256'] == terminal['candidate_SELF_sha256'] == selected[0]['sha256'] and

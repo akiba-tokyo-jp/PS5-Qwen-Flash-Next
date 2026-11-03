@@ -6,6 +6,42 @@ The primary metric remains complete-model decode tokens/s:
 requests remain separate. Component timing, prediction hits and fewer auxiliary
 creations do not establish a model speedup.
 
+I1 second refinement completes sequence65219,including the two reused cases.
+Analysis65227: cold10.160845->10.145508tok/s(-0.150948%),retained
+12.137640->12.208301(+0.582160%,below AA),exact-prefix13.378158->13.309421
+(-0.513796%,both regressions exceed AA). Each new candidate executes5 positive
+speculative reads/7,241,728 bytes,0 hits and5 unused. All69 F32 hashes had
+separately matched. Both I1 implementations remain unadopted; further work is
+not declared impossible. The absolute S1 comparison65228 is active: ordinary
+control65228 and retained65229 complete all3 requests and ordinary restoration.
+
+Actual GGML carrier fixture65217/SELF65222 is built with the selected model
+shader provider and already published operand pack. Twelve new shape graphs
+will exercise Gate/Up bank prefixes and a nonzero Down view. Real instance and
+device handles are captured while forwarding the original calls;the GGML backend
+remains alive through final producer completion and ordinary exit. Two positive
+and16 negative NEW completion controls pass. CPU startup price65223 is5787
+pages,with29 constructors against30 in the original CPU control. Native startup,
+native GGML numerics and model speed remain unrun.
+
+P1 review65224 assembles the existing timing,69-row and two-row diagnostic
+evidence without rerunning native work. Canonical graph/selector65225 and normal
+UI entry65235 reproduce every original object byte from permanent current
+sources. Adoption tooling reuses those compilations and still requires the
+complete canonical ELF to match the actually measured normal application before
+one publication. Production remains unchanged. The first-row error0.1812725067,
+68/69 matching rows and unqualified broader prompts remain explicitly disclosed.
+
+Transfer preparation65232 contains a real64-Expert Up1 fragment split into four
+disjoint local parts,27,033,600 bytes. No FTP test has run. The bounded native
+concat plan65233 compiles;8 positive/15 negative new streaming controls pass.
+It handles unaligned part boundaries and partial-I/O failures,uses two256KiB
+buffers,charges47 extra fixed pages and preserves additive OS thresholds with
+68 metadata pages and a1201-page live floor. Each source SHA/identity/close and
+whole output SHA/EOF/close must pass before helper exit permits deleting the
+four exact inputs. The prepared data must be reused without re-encoding or
+retransmission. No transport speedup is established yet.
+
 Current continuation: I1 second ABBA65212 reuses control65180 and submits only
 new cases65213/65214/65215. Earlier65207 refused before staging or launch at
 6607<7374. New complement65211 skips3750 completed windows,scans120,observed
