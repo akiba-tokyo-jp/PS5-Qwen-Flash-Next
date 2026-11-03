@@ -1130,5 +1130,21 @@
     "native_replays": 0,
     "PS5_operations": 0,
     "runner_integration_pending_reserved_Up_workflow_retirement": true
+  },
+  "latest_checkpoint_65367": {
+    "PS5_ABI_prefix_cache_compiled": true,
+    "source_and_GPU_slot_stride_bytes": 460800,
+    "reachable_prefix_bytes": 425024,
+    "omitted_tail_bytes": 35776,
+    "existing_pair_pipeline_reused": true,
+    "adjacent_bulk_and_padded_paths_preserved": true,
+    "main48_Down_name_guard": true,
+    "original_layer48_NextN_excluded": true,
+    "normal_production_speculative_model_candidate": false,
+    "new_weight_transfers": 0,
+    "new_quantization": false,
+    "new_GPU_shaders": 0,
+    "native_rate_or_equivalence_qualified": false,
+    "PS5_operations": 0
   }
 }

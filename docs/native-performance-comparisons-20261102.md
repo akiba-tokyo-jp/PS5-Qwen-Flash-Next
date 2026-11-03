@@ -39,6 +39,18 @@ for the queued CPU startup control. Down carrier bytes and metadata65348
 are unaffected and reused. Model admission guards will require this corrected
 lineage after the frozen Up workflow retires.
 
+Inference-only refinement65367 also compiles against the selected PS5 ABI.
+It keeps the460800-byte source/cache stride but reads and uploads only the
+425024-byte reachable prefix:64-byte header,422400-byte payload and2560-byte
+codebook. The35776-byte tail is unused by the bound decoder. Existing pair
+ownership,adjacent bulk reads and padded-cache fallbacks are retained. Only
+main48 trunk Down names qualify; the original NextN layer48 is excluded.
+No weights,source files or GPU shaders change,and no weight retransmission
+is required. Native equality and original-cohort speed remain unqualified.
+The metadata retains an original Q2_0 NextN Down tensor; normal selected
+production has speculative_model_candidate=false. The new Down resource
+provider does not qualify running that unconverted NextN tensor.
+
 The original Up FTP source upload ended with ConnectionResetError after29
 positive whole-file stores,during file30. No native sealing was submitted.
 The exact terminal evidence is retained; completed files are not retransmitted.

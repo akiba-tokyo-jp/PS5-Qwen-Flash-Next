@@ -39,9 +39,30 @@ qualified sealer65340 once,and collects quietly after350/180 seconds. Its
 finish_iq2_source_seal.py hash is frozen; do not edit that finalizer while
 pending. Its successful source receipt and owner retirement release existing
 queued Up workflow19016/out65352. Do not start another console IO operation.
+Host-only observer functionsg10:1968 polls those three existing sessions in
+order58437,58989,19016 and stops at the first nonzero exit. Follow that cell;
+do not poll the same host session concurrently or start another PS5 scope.
 The original Up workflow's ten tool inputs remain frozen. Gate encoding and
 combined full48+48 metadata65351 are COMPLETE,zero PS5 operations/re-encodes.
 The preceding29-file interruption is source placement,not a native/math test.
+
+Checkpoint65367 prepares a distinct inference-only Down refinement,compiled
+against the exact selected PS5 ABI. iq2_down_prefix_cache.py retains the original
+460800-byte source/slot stride but uploads only the425024-byte reachable prefix
+(header64,payload422400,codebook2560),omitting35776 unreachable tail bytes.
+It reuses the existing synchronous pair pipeline and preserves adjacent bulk
+and padded-cache fallbacks. An exact trunk-layer name predicate excludes
+blk.48.ffn_down_exps.weight. All source files and17 GPU shaders stay unchanged;
+no data transfer/re-encoding is required. No native rate or equivalence is
+claimed. After the frozen Up workflow retires,add an explicit builder/cache
+profile option and require the corrected all12-graph Down proof. Compare this
+variant using the existing original-cohort ABBA,not a new speed metric. Compare
+its saved outputs/routes locally with plain Down; do not replay unchanged math.
+The selected metadata has49 Q2_0 Down tensors,including the original NextN
+layer48. Normal selected entry has speculative_model_candidate=false; the
+new global Down resources are qualified only for main48 trunk execution.
+Do not claim the original unconverted NextN Down is an IQ2 carrier or enable
+MTP under that provider without a separate compatible resource qualification.
 
 Checkpoint65366 prepares a separate large-cache completion/admission module
 without modifying any queued Up input or the legacy completion validator. New
@@ -50,7 +71,10 @@ passes1positive/2negative controls,including refusal of the old low-index
 provider and wrong native binding. The completed receipt binds the unchanged
 legacy validator,new iq2_down_large_cache_scope.py and its distinct test.
 After19016 retires,wire these boundaries into run_native_paired_down.py and
-iq2_up_model_scope.py/model building. The old65338 controls stay exact and need
+retained_component_completion.py plus iq2_up_model_scope.py/model building.
+The retained-component validator must explicitly select the new all-graph
+validator before the new GPU result can reach ordinary close/readmission.
+The old65338 controls stay exact and need
 no replay. Select the new validator explicitly for large-cache fixtures; keep
 the legacy validator unchanged to preserve controls and avoid recursive delegation.
 New required native graph count is12; no corrected scope has run.
