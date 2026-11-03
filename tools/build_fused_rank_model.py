@@ -77,6 +77,13 @@ def main():
     marker='        const auto policy = Json::parse(policy_file);'
     text=once(text,marker,marker+'\n        if(policy.at("native_headless_model_audit")!=Json::parse('+json.dumps(json.dumps(scope,separators=(',',':')))+'))throw std::runtime_error("Exact fused full-sort model scope required");')
     text=headless_entry(text,scope['kind'],3,'Json{{"completed",true},{"original_three_request_scope",true},{"requests",completed}}')
+    if a.three_ordinary_control:
+        marker='        run_all_Q2_request(0,[]{return true;},[](const Json&){});'
+        text=once(text,marker,'        const auto ordinary_sequence_started=qwen_app::ProfileClock::now();\n'+marker)
+        marker='        for(unsigned ordinal=1;ordinal<3;++ordinal)run_all_Q2_request(ordinal,[]{return true;},[](const Json&){});'
+        text=once(text,marker,marker+'\n        const double ordinary_sequence_ms=double(qwen_app::profile_elapsed_ns(ordinary_sequence_started))/1e6;')
+        text=once(text,'{"original_three_request_scope",true},{"requests",completed}',
+            '{"original_three_request_scope",true},{"requests",completed},{"complete_request_sequence_ms",ordinary_sequence_ms}')
     if not a.F32_observer:text=once(text,'{"timings_usable_for_performance",false}','{"timings_usable_for_performance",true}')
     baseline=Path(original['source']['path']).read_text(encoding='utf-8')
     for name in ('observed_system_headroom','require_model_CPU_budget','wait_for_initial_model_CPU_budget',
@@ -109,6 +116,7 @@ def main():
             performance_timings_usable=not bool(observer),production_adopted=False,native_performance_qualified=False)
         if a.three_ordinary_control:
             for key in ('G1_fused_provider','G1_software_proof','G1_arm'):profile.pop(key)
+            profile['complete_request_sequence_clock_includes_all_three_requests']=True
         if prefill:
             for key in ('G1_fused_provider','G1_software_proof','G1_arm'):profile.pop(key)
             profile.update(P1_refinement=record(a.prefill_refinement),P1_arm=arm)

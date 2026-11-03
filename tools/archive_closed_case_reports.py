@@ -12,7 +12,7 @@ from start_success_route import load,need,save
 from success_case_control import ALIAS,PHYSICAL,build,complete,current_files,digest_expression,execute,lan_module
 
 
-def admitted_cases(batches,state,CPU_cases=()):
+def admitted_cases(batches,state,CPU_cases=(),headless_cases=()):
     cases=[]
     protected={state['active_successful_native_case']['run_id'],
         load(state['successful_route_20261102']['current_boot_model_proof']['case']['path'])['run_id'],
@@ -44,6 +44,21 @@ def admitted_cases(batches,state,CPU_cases=()):
              case['report']=='/app0/qwen-runtime/plan-'+case['run_id']+'.json','Current CPU proof is protected')
         cases.append(dict(run_id=case['run_id'],terminal=dict(native,remote=PHYSICAL+case['report'][5:]),
             case_plan=record(root/'plan.private.json'),closed=record(root/'result.private.json'),pid=terminal['pid']))
+    for root in headless_cases:
+        result=load(root/'result.private.json');case=load(root/'case/plan.private.json')
+        for key in ('terminal','closure'):need(record(result[key]['path'])==result[key],'Headless completion evidence changed')
+        terminal=load(result['terminal']['path']);closed=load(result['closure']['path'])
+        need(result['completed'] and result['HTTP_requests']==result['VideoOut_starts']==0 and result['all_counting_and_finite_checks'] and
+             terminal['completed'] and terminal['model_loads']==1 and terminal['all_model_source_device_owners_positively_retired'] and
+             terminal['device_ledger_live_bytes']==0 and len(terminal['requests']) in (1,3) and
+             all(r['request_reset_completed'] and r['full_F32_finite'] and r['counting_quality_passed'] for r in terminal['requests']) and
+             closed['completed'] and closed['ordinary_exit_observed'] and closed['current_seven_restored_and_native_hashed'] and
+             not closed['unknown_completion'] and terminal['candidate_SELF_sha256']==case['SELF']['sha256'],
+             'Positive model, source, device and ordinary headless completion required')
+        need(re.fullmatch('[0-9a-f]{32}',case['run_id']) and case['run_id'] not in protected and
+             case['report']=='/app0/qwen-runtime/plan-'+case['run_id']+'.json','Latest headless proofs are protected')
+        cases.append(dict(run_id=case['run_id'],terminal=dict(result['terminal'],remote=PHYSICAL+case['report'][5:]),
+            case_plan=record(root/'case/plan.private.json'),closed=result['closure'],pid=terminal['pid']))
     need(1<=len(cases)<=32 and len({row['run_id'] for row in cases})==len(cases),'Distinct bounded closed cases required')
     return cases
 
@@ -53,12 +68,13 @@ def main():
     for name in ('workspace','current','mount-plan','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--image-batch',type=Path,action='append',default=[])
     p.add_argument('--CPU-case',type=Path,action='append',default=[])
+    p.add_argument('--headless-case',type=Path,action='append',default=[])
     p.add_argument('--execute',action='store_true');p.add_argument('--collect',action='store_true');a=p.parse_args()
     need(not(a.execute and a.collect),'Submit once or collect the same operation')
     state=load(a.current/'active-console.private.json')
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and not state['unknown_completion'],
         'Positive idle current deployment required')
-    cases=admitted_cases(a.image_batch,state,a.CPU_case);current=current_files(a.current);lan=lan_module()
+    cases=admitted_cases(a.image_batch,state,a.CPU_case,a.headless_case);current=current_files(a.current);lan=lan_module()
     selected=current+load(a.current/'provenance/retained-relink-inputs.private.json')
     package=load(a.current/'provenance/current-package.private.json');native=load(a.current/'provenance/native-link.receipt.private.json')
     selected+=native['formatter_stubs']+[package['formatter']]

@@ -17,6 +17,20 @@ from start_success_route import load,need,save
 from success_case_control import build,complete,current_files,execute,lan_module,PHYSICAL
 
 
+def headless_prefill_keys(effective,profile):
+    if effective['kind']!='headless-model-audit' or profile.get('headless_audit_kind')!='P1-tail-eight':return set()
+    proof=profile['P1_refinement'];need(record(proof['path'])==proof,'Exact P1 refinement receipt required')
+    refinement=load(proof['path']);arm=profile['P1_arm'];scope=effective['overrides']['native_headless_model_audit']
+    need(refinement['completed'] and refinement['actual_PS5_ABI_compiled'] and refinement['cold_output_tail_rows']==8 and
+         len(refinement['new_selector_controls'])==16 and arm in ('control','candidate') and
+         scope['kind']=='P1-tail-eight' and scope['requests']==3 and scope['cold_output_tail_rows']==8 and
+         scope['later_output_selection_unchanged'] and scope['original_cold_retained_exact_prefix_sequence'] and
+         type(effective['overrides']['native_P1_headless_arm']) is int and
+         effective['overrides']['native_P1_headless_arm']==int(arm=='candidate'),
+         'Only the source-bound eight-row P1 control or candidate selector is admitted')
+    return {'native_P1_headless_arm'}
+
+
 def metadata(lan,rows):
     with lan.ftplib.FTP() as ftp:
         ftp.connect(lan.HOST,2121,timeout=20);ftp.login();need(ftp.sendcmd('SELF')=='226 SELF transfer mode disabled','Raw transfer mode required')
@@ -102,6 +116,7 @@ def start(args):
         if effective['kind']=='Q2-calibration':keys.add('native_activation_capture')
         if effective['kind']=='Q2-IQ2-fixture':keys.add('native_IQ2_fixture')
         if effective['kind']=='headless-model-audit':keys.add('native_headless_model_audit')
+        keys |= headless_prefill_keys(effective,compiled_profile)
         if effective['kind']=='P1-cold-prefill':
             checked=compiled_profile['P1_refinement'];need(record(checked['path'])==checked,'P1 phase source controls changed')
             checked=load(checked['path']);arm=compiled_profile['P1_arm']

@@ -63,9 +63,23 @@ testing a projection shape beyond one-row GEMV. Sixteen NEW controls cover
 lengths1/2/7/8/9/30/33/65, control/candidate modes, phase transitions, unchanged
 decode selection and flag restoration on exceptions. The original selector
 sources remain unchanged; the same completed post-trunk graph is reused.
-Headless packages64993 preserve the original cold/retained/exact-prefix sequence
-without presentation or HTTP work. Their native numerical result is pending;
-neither restored projection equivalence nor a new speed gain is assumed.
+Headless packages64993 are superseded without launch by65002, which also records
+first-row maximum error using the existing comparator. Native65016 completes
+the original cold/retained/exact-prefix sequence, all source/device retirement,
+ordinary close and exact seven-file restoration. The old normal control64950
+is reused without replay. Analysis65017 finds68/69 exact full F32 hashes,
+identical complete ordered routes, token IDs and output bytes. Only the first
+cold row differs; its hash is exactly the one-row variant's9cc764... row, and
+its maximum error is again0.1812725067138672. Retaining eight rows therefore
+does not restore original projection rounding for this prompt. It is not
+classified as a speed failure; its matched decode comparison remains unrun.
+
+Earlier65009/65013 refuse before publication after fresh changed-state screens.
+Cleanup65014 retires1007 positively closed reports;65015 then passes its memory
+screen but stops before staging because the host's policy-key whitelist omits
+the new P1 selector. A narrow source-bound selector check admits exact0/1 arms,
+with two new positive and eight new refusal controls.65016 uses that corrected
+host check; no consumed model request or original numerical control is replayed.
 
 Host64944's corrected analysis derives all rates from the same immutable native
 records and explicitly records zero whole-row hashes in the timing programs.

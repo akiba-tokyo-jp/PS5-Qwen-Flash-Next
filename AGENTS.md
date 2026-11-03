@@ -3,6 +3,32 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest checkpoint: P1 tail-eight65016 completes all3 requests, positive owner
+retirement, ordinary close and exact restoration. Analysis65017 reuses original
+control64950:68/69 full F32 hashes exact, only cold request1 row1 differs, with
+the SAME9cc764... row and0.1812725067138672 maximum error as the one-row version.
+All tokens/bytes/ordered routes agree. No tail-eight timing/adoption is claimed.
+Native65015 first stopped BEFORE publication because the host omitted the new
+P1 selector key from its whitelist. A narrow source-bound selector check now
+admits exact control/candidate0/1 only;2 new positive/8 new negative controls pass.
+Do not replay65015. G1 numeric65018/65020/65023 each refuse before staging due
+to headroom; no corrected IGPU fused shader has run on PS5 yet. Latest65023 free
+is5373<7374. Do not repeat that unchanged scope or count inactive pages as free.
+Cleanup65003 deletes32 old BMPs;65011 deletes2 closed component inputs;
+65012 deletes6 more BMPs.65014 retires1007 reports/17462176 bytes;65019 retires
+631 reports/10760407 bytes. PC originals and latest proof metadata remain.
+Closed entry logs65021:72 nonempty exited-PID logs/32322780 bytes transferred
+UID1->0 using the qualified handoff body, copied raw to PC, then native whole
+SHA checked and retired. Latest model/live PID logs are protected; empty logs
+remain explicitly listed. No RAM gain is inferred; the subsequent65023 is low.
+Timing packages65005(S1),65007(P1),65008(G1) omit extra F32 SHA and are unrun.
+New S1 ordinary timing control65022 additionally clocks all3 requests outside
+model cleanup, matching the existing MTP sequence span including auxiliary
+setup/retirement; original decode metrics and model math remain unchanged.
+run_headless_decode_sequence.py preserves any completed prefix of an ABBA
+and never retries a failed later case. No native timing sequence has run yet.
+Private-heap/process-parameter changes have NOT been made in this campaign.
+
 Latest S1: native65000 completed all three source-corrected compact-engine
 fresh-owner requests, positive retirement, ordinary close and exact restoration.
 Its first host observer saw incomplete JSON; --collect recovered the SAME
