@@ -70,6 +70,8 @@ def start(args):
         args.package=args.current/'provenance/current-package.private.json'
     args.out.mkdir(parents=True,exist_ok=False)
     old=current_files(args.current);proof=load(args.model_proof);state_path=args.current/'active-console.private.json';state=load(state_path)
+    need(not state.get('CPU_source_seal_owner') and not state.get('source_publication_owner'),
+         'The active source IO owner must positively retire before model startup')
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and
          not state['unknown_completion'] and not state['current_boot_shader_CPU_proof_pending'],'Completed idle successful route required')
     image={k:old[0][k] for k in ('path','bytes','sha256')}
@@ -138,8 +140,9 @@ def start(args):
              'The exact sealed additional layer over the admitted current model is required')
         if layer['kind']=='additional-shared-Q4':source_key='shared_Q4_source_integrity'
         else:
-            need(layer['kind']=='IQ2-Up' and effective['kind']=='headless-model-audit' and
-                 compiled_profile['headless_audit_kind']=='Q2-IQ2-Up-model' and
+            need((layer['kind'],compiled_profile['headless_audit_kind']) in
+                 (('IQ2-Up','Q2-IQ2-Up-model'),('IQ2-Gate-Up','Q2-IQ2-Gate-Up-model'),('IQ2-Down','Q3-IQ2-Down-model')) and
+                 effective['kind']=='headless-model-audit' and
                  compiled_profile['model_layer']==layer and load(publication['path'])['whole_new_bytes_and_all_parent_identities_qualified'],
                  'The exact bounded compiled IQ2 Up model layer is required')
             source_key='precision_source_integrity'

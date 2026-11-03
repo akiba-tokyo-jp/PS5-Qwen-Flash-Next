@@ -14,7 +14,18 @@ from start_success_route import load, need, save
 from success_case_control import ALIAS, PHYSICAL, build, complete, current_files, execute, lan_module
 
 
-def finish(out, preparation, publication, result):
+def verify_input(file):
+    row=file['local']
+    if 'encoder_completion' in file:
+        marker=file['encoder_completion'];pack=Path(row['path'])
+        need(record(marker['path'])==marker and load(marker['path'])['pack']==row and
+             pack.stat().st_size==row['bytes'] and pack.stat().st_mtime_ns<=Path(marker['path']).stat().st_mtime_ns,
+             'The completed immutable encoder payload changed before native whole-file sealing')
+    else:
+        need(record(row['path'])==row,'An exact publication input changed')
+
+
+def finish(out, preparation, publication, result, native_result_path=None, source_handoff=None):
     prep = load(preparation)
     files = publication['files']
     raw = Path(result['raw']['path']).read_bytes()
@@ -48,7 +59,8 @@ def finish(out, preparation, publication, result):
     text = seal_path.read_text()
     save(out / 'result.private.json', dict(completed=True, preparation=record(preparation), source_integrity=record(seal_path),
         policy=dict(schema='ps5-qwen-precision-source-policy-v1', raw=text, sha256=hashlib.sha256(text.encode()).hexdigest()),
-        native_result=record(out / 'native/result.private.json'), new_files=count,
+        native_result=record(native_result_path or out / 'native/result.private.json'), new_files=count,
+        source_window_handoff=record(source_handoff) if source_handoff else None,
         retained_parts=len(publication['retained_parts']), retained_parts_copied=0,
         whole_new_bytes_and_all_parent_identities_qualified=True, PS5_model_inference=False, production_adopted=False))
     print(json.dumps(dict(completed=True, new_files=count, retained_parts_copied=0, GPU_calls=0, title_launches=0)))
@@ -58,10 +70,15 @@ def submit(a, publication, plan):
     state = load(a.current / 'active-console.private.json')
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'] and
          not state['unknown_completion'], 'Positive idle current ownership required')
+    need(not state.get('CPU_source_seal_owner') and not state.get('source_publication_owner'),
+         'The prior source IO owner must positively finish before a new publication')
     need(not (a.out / 'upload-intent.private.json').exists() and
          not (a.out / 'native/execution/execution.once.private.json').exists(), 'Never repeat an upload or native submission')
     files, root = publication['files'], publication['directory']
     lan = lan_module()
+    state['source_publication_owner']=dict(publication=str(a.out),plan=record(a.out/'plan.private.json'),
+        phase='whole-file-transfers',GPU_calls=0,title_launches=0)
+    (a.current/'active-console.private.json').write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
     save(a.out / 'upload-intent.private.json', dict(files=files, directory=root, automatic_retries=0))
     lan.absent(root)
     with lan.ftplib.FTP() as ftp:
@@ -72,7 +89,7 @@ def submit(a, publication, plan):
         save(a.out / 'MKD-reply.private.json', dict(directory=root, reply=reply))
         need(reply.startswith(('226 ', '250 ', '257 ')), 'The new owned namespace creation must complete')
         for i, f in enumerate(files):
-            need(record(f['local']['path']) == f['local'], 'A prepared publication input changed')
+            verify_input(f)
             lan.absent(f['physical'])
             with Path(f['local']['path']).open('rb') as stream:
                 reply = ftp.storbinary('STOR ' + f['physical'], stream, 65536)
@@ -94,6 +111,10 @@ def submit(a, publication, plan):
             need(time.monotonic() < deadline, 'Same helper completion remains unknown; never resubmit')
             time.sleep(2)
     finish(a.out, a.preparation, publication, result)
+    state=load(a.current/'active-console.private.json')
+    need(state['source_publication_owner']['plan']==record(a.out/'plan.private.json'),'The exact source owner must retire')
+    state.pop('source_publication_owner')
+    (a.current/'active-console.private.json').write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
 
 
 def main():
@@ -105,6 +126,8 @@ def main():
     p.add_argument('--submit-prepared', action='store_true', help='Submit the exact prepared but never uploaded scope once')
     p.add_argument('--retained-Up-publication',type=Path,
         help='Reuse the sealed whole-weight prefix from a completed preparation without uploading it again')
+    p.add_argument('--source-seal-window-proof',type=Path,
+        help='Use the completed262KiB Direct integrity control for large new source sets')
     a = p.parse_args()
     need(sum((a.execute, a.collect, a.submit_prepared)) <= 1, 'One explicit publication phase required')
     if a.collect or a.submit_prepared:
@@ -124,8 +147,22 @@ def main():
         finish(a.out, a.preparation, publication, complete(lan, plan, a.out / 'native', raw, path))
         return
     prep = load(a.preparation)
-    need(prep['completed'] and prep['all_changed_headers_independently_parsed'] and prep['IQ2_Up_layers'] and
-         prep['selected_tensors'] == 109 + len(prep['IQ2_Up_layers']), 'One explicitly prepared IQ2 Up overlay required')
+    down=bool(prep.get('IQ2_Down_layers'))
+    Gate_layers=prep.get('IQ2_Gate_layers',[])
+    layers=prep['IQ2_Down_layers'] if down else prep['IQ2_Up_layers']
+    need(prep['completed'] and prep['all_changed_headers_independently_parsed'] and layers and
+         prep['selected_tensors'] == 109 + len(layers)+len(Gate_layers), 'One explicitly prepared complete IQ2 overlay required')
+    if Gate_layers:
+        from iq2_up_model_scope import require_gate_input_qualification
+        need(not down and Gate_layers==layers==list(range(48)), 'Only a uniform complete Gate/Up overlay is permitted')
+        require_gate_input_qualification(prep['Gate_input_identity'])
+    if down:
+        from iq2_up_model_scope import require_down_qualification
+        native=load(prep['native_operator_proof']['path'])
+        provider=load(load(native['package']['path'])['relink']['path'])['model_resource_provider']
+        need(layers==list(range(48)) and not prep['IQ2_Up_layers'] and not a.retained_Up_publication,
+             'Only the complete uniform Down source may use its carrier resources')
+        require_down_qualification(prep['native_operator_proof'],provider)
     candidate = load(prep['candidate']['path'])
     need(record(prep['candidate']['path']) == prep['candidate'], 'The complete candidate metadata changed')
     state = load(a.current / 'active-console.private.json')
@@ -157,7 +194,8 @@ def main():
              'Only a completed whole-file sealed publication may supply a retained prefix')
         old_prep=load(previous['preparation']['path']);old_seal=load(previous['source_integrity']['path'])
         reused_Up=len(old_prep['IQ2_Up_layers'])
-        need(0<reused_Up<len(prep['IQ2_Up_layers']) and
+        need(0<reused_Up<=len(prep['IQ2_Up_layers']) and not old_prep.get('IQ2_Gate_layers') and
+             (reused_Up<len(prep['IQ2_Up_layers']) or Gate_layers==list(range(48))) and
              old_prep['IQ2_Up_layers']==prep['IQ2_Up_layers'][:reused_Up] and
              old_prep['retained_precision_parts']==prep['retained_precision_parts'] and
              old_prep['new_parts'][:reused_Up]==prep['new_parts'][:reused_Up] and
@@ -175,9 +213,17 @@ def main():
     nonce = secrets.token_hex(16)
     root, alias, application = PHYSICAL + '/expert-q2-' + nonce, ALIAS + '/expert-q2-' + nonce, '/app0/expert-q2-' + nonce
     files = []
+    completed_packs={}
+    for marker in prep.get('completed_encoding_receipts',[]):
+        need(record(marker['path'])==marker,'A completed encoding receipt changed')
+        completed=load(marker['path']);completed_packs[completed['pack']['path']]=marker
     def add(row, name):
-        need(record(row['path']) == row and 0 < row['bytes'] <= 512 << 20, 'Exact bounded new publication input required')
-        files.append(dict(local=row, physical=root + '/' + name, alias=alias + '/' + name, application=application + '/' + name))
+        need(0 < row['bytes'] <= 512 << 20, 'Exact bounded new publication input required')
+        file=dict(local=row, physical=root + '/' + name, alias=alias + '/' + name, application=application + '/' + name)
+        if row['path'] in completed_packs:
+            file['encoder_completion']=completed_packs[row['path']]
+        verify_input(file)
+        files.append(file)
     for i, part in enumerate(prep['new_parts'][reused_Up:], len(retained)):
         add(part, 'precision.part' + str(i) + '.bin')
     add(prep['candidate'], 'model-receipt.json')
@@ -208,7 +254,10 @@ def main():
     context += '};\n#define SHARED_Q4_DIRECTORY_COUNT ' + str(len(directories)) + 'u\n'
     context += 'static const char*shared_Q4_directories[]={' + ','.join(map(json.dumps, sorted(directories))) + '};\n'
     rows = current_files(a.current)
-    plan = build(a.workspace, a.mount_plan, rows, rows, [], 'seal-shared-Q4', a.out / 'native', source_seal_context=context)
+    need(sum(f['local']['bytes'] for f in files)<=512<<20 or a.source_seal_window_proof is not None,
+         'Large source sets require the qualified larger integrity window before any upload')
+    plan = build(a.workspace, a.mount_plan, rows, rows, [], 'seal-shared-Q4', a.out / 'native',
+        source_seal_context=context,source_seal_window_proof=a.source_seal_window_proof)
     publication = dict(preparation=record(a.preparation), files=files, directory=root, application_directory=application,
         retained_parts=retained, parent_source_count=len(parents), native_plan=record(a.out / 'native/plan.private.json'),
         new_part_count=len(prep['new_parts'])-reused_Up,retained_Up_publication=retained_Up,

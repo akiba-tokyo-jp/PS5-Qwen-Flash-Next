@@ -207,7 +207,7 @@ def main():
              'The failed node-cap fixture omitted the successful GGML environment; it may never be replayed in GPU mode')
         need(a.GGML_completion_controls is not None,'Changed GGML completion controls are required')
         controls=load(a.GGML_completion_controls)
-        need(controls['completed'] and controls['positive_controls']==4 and controls['negative_controls']==20 and
+        need(controls['completed'] and (controls['positive_controls'],controls['negative_controls']) in ((4,20),(6,25)) and
              controls['PS5_operations']==controls['unchanged_controls_replayed']==0 and
              {Path(r['path']).name for r in controls['inputs']}=={'iq2_down_ggml_completion.py','iq2_down_ggml_completion_test.py'} and
              all(record(r['path'])==r for r in controls['inputs']),
@@ -221,7 +221,7 @@ def main():
           relink.get('paired_down_carrier') and relink.get('retained_device_controls')==19)) and
          len(relink['linked_driver'])==1 and ((not GGML_fixture and relink['maximum_GPU_dispatches']==24) or
           (GGML_fixture and relink.get('completed_GGML_case_prefix',0) in (0,2) and
-           relink['maximum_GGML_graphs']==12-relink.get('completed_GGML_case_prefix',0) and relink['maximum_GPU_dispatches'] is None)) and
+           relink['maximum_GGML_graphs']==(6 if relink.get('F16_arithmetic_only') else 12-relink.get('completed_GGML_case_prefix',0)) and relink['maximum_GPU_dispatches'] is None)) and
          relink['successful_driver_whole_archive_preserved'] and
          all(r['pointer_matches'] for r in relink['actual_physical_dispatch_audit']),
          'Exact new standalone package and all actual driver callbacks required')
@@ -232,6 +232,8 @@ def main():
     if not a.execute:
         print(json.dumps(dict(prepared=True,pricing=pricing,PS5_operations=0)));return
     state_path=a.current/'active-console.private.json';state=load(state_path)
+    need(not state.get('CPU_source_seal_owner') and not state.get('source_publication_owner'),
+         'The active source IO owner must positively retire before native startup')
     need(state['original_restored'] and not state['native_running'] and not state['model_loaded'],'Restored idle native process state required')
     readmission=None
     if state['unknown_completion'] or state.get('GPU_retirement_readmission_pending'):

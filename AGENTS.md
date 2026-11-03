@@ -3,6 +3,146 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Checkpoint65350 supersedes execution-state notes below. Console IO remains
+exclusively owned by FTP25865/PID11252/publication65334:10/108 positive file
+replies observed. No PS5 query, native operation or title may overlap it.
+P1 remains restored. Preserve the quarantined unsubmitted16KiB ELF; let the
+original upload finish and exit on its absent local control.elf before any
+native submission. Dedicated finish_iq2_source_seal.py is now implemented.
+After all108 replies, persist the terminal proof from functions store
+q2_65334_FTP_progress; submit only sealer65340 once, wait350 seconds quietly,
+collect that same helper and finalize65334 without retransmission. Old and
+replacement native execution markers are still absent at this checkpoint.
+
+Original Up/Down encoding65103 is COMPLETE96/96,zero failures. Full48 Up
+preparation65341 is complete. Carrier coordinator65303 stopped on a host-only
+mutable-progress read race,not a failed carrier. Positive46-prefix65346 reuses
+all completed bytes; suffix65347 builds only layers46/47 and completes48/48.
+Full Down metadata65348 completes,823014-byte receipt,49 new parts,no payload
+rehash and no PS5 call. Preserve original BF16 masters for active Gate jobs.
+
+Gate encoder65345/session2348 is active with two workers,2/48 complete and
+zero failures at observation. Its frozen encoder reuses unchanged original
+BF16 identity/SHA receipts and native1200-pair Gate/Up input identity64546.
+The metadata preparer, publisher, model builder and launch/relink policies now
+support the uniform48+48 Gate/Up candidate. Completed Up weights are retained
+without resending. This combined metadata/model has NOT yet been built or run.
+Gate/Up layout controls pass2positive/8negative against the real native proofs.
+
+Full-model comparisons use normal selected P1 as control: both backend flags
+unset. Only the scoped IQ2 candidate disables MMVQ,keeping normal F16 storage.
+The legacy global-F32 Down candidate remains separately explicit.17-resource
+F16 Down admission is implemented but requires positive native six-wide-case
+qualification plus the original F32/decode lineage. No F16 native scope has run.
+Fixture65342/SELF65343 and actual17-resource binding65344 are complete. Host-only
+CPU startup pricing65349 requires6582 pages; fresh observations remain mandatory
+after the current source IO owner finishes. Completion controls65338 remain
+6positive/25negative. Reuse the six unchanged decode cases; do not replay them.
+
+Campaign/full-model IQ2 quality and decode rates remain incomplete. Continue
+the authorized work; do not stop at this checkpoint or call IQ2 adopted. Keep
+the same primary(generated_tokens-1)/decode_seconds metric and the original
+cold/retained/exact-prefix cohort. No auxiliary transfer optimization is open.
+
+Historical checkpoint65340:
+Checkpoint65340 supersedes execution-state notes below. One console IO scope
+is ACTIVE: Up prefix FTP25865,host PID11252,out65334. No PS5 operation may
+overlap it. P1 remains exactly restored; no title/GPU is running.
+IMPORTANT planned handoff: the local,NEVER-SUBMITTED16KiB sealer ELF was
+quarantined as65334/native/control.unsubmitted-16KiB.elf. Do NOT restore it.
+Measured prior whole-layer namespace traces total1584436 bytes;43 layers alone
+would emit68130748 bytes,exceeding the67108864-byte collector limit. The active
+FTP process is unchanged and must finish all108 positive file replies normally.
+Afterwards its old execute call will fail on the absent local control.elf BEFORE
+any native submission. That expected host-only failure is not a PS5 failure.
+Do not restart uploads or retransmit completed files. Its exact loaded source
+is preserved in65334/active-publisher-source.private.py/.json.
+
+Replacement sealer65340 is PREPARED,UNSUBMITTED. It reads the same108 files and
+519 parents through the already successful262KiB Direct whole-integrity method
+65238. All physical+alias SHA256/EOF and identity/current-file checks remain;
+only the window,scoped log prefix and stronger additive1201-page floor change.
+Controller byte-equivalence proof and pre-submission handoff receipt are in
+65340/source-equivalence.private.json and pre-submission-handoff.private.json.
+Its margin97 preserves OS minimum+reserved plus the metadata allowance; no OS
+threshold is written. Old/new native execution markers are absent. After all
+FTP replies and host exit,submit only this new sealer once and collect the same
+helper,then finalize65334 with the new native result reference. A dedicated
+handoff finalizer is NOT YET WRITTEN. publish_iq2_up_model_overlay.finish now
+accepts native_result_path/source_handoff. Future large publications require
+--source-seal-window-proof pointing to65238/result.private.json.
+functions store key q2_65334_FTP_progress tracks observed positive store rows;
+currently4/108. Seed rows1..3 were positively observed before tracker attachment.
+Update this store when polling25865 and persist its terminal proof after exit.
+Do not allow an unsubmitted old helper to execute or duplicate native work.
+
+Native65330 all ten changed F32 graphs PASS,maxerror4.2755845591768704e-7,
+ordinary exit/exact P1 restore PASS. Six original decode cases remain reusable.
+GPU capacity readmission is pending after the retained-device ordinary exit.
+CPU65329 is complete. No unchanged numerical case may be replayed.
+
+Host-only Down work: full48-carrier metadata preparer added but UNRUN until the
+carrier coordinator has a completed48-part result. Model builder supports the
+qualified15-resource global-F32 Down candidate against normal P1 control,
+original3712 slots,and mandatory bypass of old bundle/six/quad payloads.
+Actual PS5 ABI cache65335 passes and must be reused via --cache-provider-proof,
+not recompiled. Model relink guards bind the exact native15-resource proof and
+cache provider. Down source publisher admission is NOT YET implemented.
+
+Next Down refinement is NORMAL F16 storage with scoped FP32 accumulation.
+65336 compiles two F16 generic aliases,reusing all15 native-qualified resources.
+65337 produces six new FP16-domain wide F64 references,4761600 values,with
+unchanged weights/ids and original tolerance,one CPU math thread. Its pack is
+57327616 bytes; six unchanged decode cases must be skipped. Provider65339
+completes17 resources,unchanged GPU executable/startup registry,zero new ctors;
+it is ARITHMETIC ONLY and cannot enter model admission before native F16 pass.
+Native fixture source and completion validator now support this six-wide-case
+contract; new host boundary controls65338 pass6positive/25negative,zero PS5.
+Old65293 control receipt no longer matches changed source. Fixture builder
+support for the F16 operand pack is NOT YET IMPLEMENTED; no F16 CPU/GPU scope
+has run. Current queued work must remain PC-only while FTP25865 owns console IO.
+
+Encoder65103 stays at original two workers,last93/96 complete,zero failures;
+carrier tail65303 has46 parts at that observation. Do not restart or re-encode.
+Keep BF16 masters and all live source dependencies. Repository259f23d is pushed;
+subsequent source preparation/Down/handoff refinements are uncommitted. Campaign
+and full-model IQ2 quality/decode rates remain incomplete; do not issue a final
+completion report or stop while actionable unverified work remains.
+
+Historical checkpoint65334:
+Checkpoint65334 supersedes execution-state notes below. No native title is
+running; selected P1 is exactly restored. Generic GGML GPU65330 PASSES all ten
+remaining distinct graphs,maximum F64 error4.2755845591768704e-7,all canaries,
+fences/case owners/IO complete. Its two original decode passes remain bound to
+65292. Ordinary exit/exact P1 restoration pass. The idle device was retained
+until ordinary exit,so fresh CPU capacity readmission is required before any
+subsequent GPU scope. Do not replay completed numerical cases.
+Changed CPU65329 PASSES all15 resource leases/382 lookups/seven environment
+values,Direct available12262047744 twice>=12184453120 and ordinary P1 restore.
+
+One console IO scope is ACTIVE: whole Up prefix publication65334,session25865.
+Do not overlap any PS5 operation with it. It stages43 whole new Up layers,
+reuses the sealed Up0 publication65123,and has108 new files/9323037975 bytes.
+The44-layer metadata65333 independently parses every changed GGUF descriptor
+and preserves dense-Q4,parent shared-Q8,then base-Q2 header precedence. It is
+not a launchable model; all48 uniform Up layers remain mandatory.
+Full native physical+alias SHA256/EOF and all parent identities must pass before
+source/model admission. Completed original encoder receipts replace redundant
+PC payload rehash; mtime/size and tiny immutable receipt hashes are checked.
+The earlier write-free PC preparation PID9584 was stopped after a recorded
+5GB redundant scan competed with the original encoders. Its parent session
+16237 ends code1,with zero writes.65331/65332 header preparations are negatives;
+65333 fixes the selected header precedence and completes in about8 seconds.
+Do not restart or retransmit the active publication. Transport/compression
+experiments remain closed. This is necessary model placement,not model speed.
+
+Original encoder65103 stays at two workers:89/96 complete,zero failures at this
+observation. Carrier tail65303 remains active with44 whole parts. Do not
+restart/re-encode either stream or delete BF16/source dependencies. Full-model
+IQ2 quality and the original decode-tok/s metric remain unqualified. Repository
+259f23d is pushed; the latest source-preparation refinements are not yet committed.
+
+Historical checkpoint65331:
 Checkpoint65331 supersedes execution-state notes below. The selected P1
 production is unchanged. One console scope is ACTIVE: changed15-resource CPU
 startup/capacity65329,session40819. It passed a fresh6864-page price at7369

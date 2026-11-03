@@ -22,7 +22,8 @@ def stamp(path):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','cache','importance','reference','out'):p.add_argument('--'+name,type=Path,required=True)
-    p.add_argument('--role',choices=('up','down'),required=True);p.add_argument('--layer',type=int,required=True)
+    p.add_argument('--role',choices=('gate','up','down'),required=True);p.add_argument('--layer',type=int,required=True)
+    p.add_argument('--Gate-input-proof',type=Path)
     p.add_argument('--Experts',type=int,default=512)
     p.add_argument('--reuse-prefix',type=Path,help='Reuse exact already encoded Experts without encoding them again')
     p.add_argument('--source-hash-proof',type=Path,help='Reuse a complete BF16 shard hash only with unchanged full host identity')
@@ -30,6 +31,14 @@ def main():
     need(0<=a.layer<48 and 1<=a.Experts<=512,'Only target trunk layers and a bounded Expert prefix are permitted')
     os.environ['OPENBLAS_NUM_THREADS']='4';import numpy as np
     importance=load(a.importance);reference=load(a.reference)
+    if a.role=='gate':
+        need(a.Gate_input_proof is not None,'Actual Gate/Up input identity is required before reusing Up importance')
+        gate=load(a.Gate_input_proof)
+        need(gate['completed'] and gate['native_input_identity_qualified'] and gate['all48_layers_per_width'] and
+             gate['calls']==1200 and set(gate['graph_construction_widths'])=={1,2,30,32} and
+             gate['original_GGML_operations_preserved'] and record(gate['audit']['path'])==gate['audit'] and
+             record(gate['closure']['path'])==gate['closure'] and load(gate['closure']['path'])['ordinary_exit_observed'],
+             'The complete native1200-pair input/ID identity audit and ordinary retirement are required')
     need(importance['completed'] and importance['no_heldout_decode_values_used'] and importance['no_synthetic_uniform_importance'] and
         record(importance['output']['path'])==importance['output'],'Completed actual prefill-only layer importance required')
     library=reference['reference_library'];need(record(library['path'])==library,'The pinned already qualified quantization-only library changed')
@@ -58,7 +67,7 @@ def main():
     down=a.role=='down';columns,rows=(640,2560) if down else (2560,640)
     need(tensor.tensor_type==Type.BF16 and list(tensor.shape)==[columns,rows,512] and tensor.n_bytes==columns*rows*512*2,
          'Exact original target Expert geometry required')
-    moments=np.load(importance['output']['path'])[a.role][a.layer]
+    moments=np.load(importance['output']['path'])['up' if a.role=='gate' else a.role][a.layer]
     moments=np.ascontiguousarray(np.tile(moments,2) if down else moments,dtype=np.float32)
     host=a.workspace/'toolchain/msys-clang64/clang64/bin';directory=os.add_dll_directory(str(host));lib=ctypes.CDLL(library['path'])
     class Params(ctypes.Structure):_fields_=[('mem_size',ctypes.c_size_t),('mem_buffer',ctypes.c_void_p),('no_alloc',ctypes.c_bool)]
@@ -114,6 +123,8 @@ def main():
         codec='IQ2_XXS',paired_original_rows=down,pack=record(pack),Experts=results,host_model_inference=False,
         encoder_source=record(__file__),completed_Expert_prefix_reused=record(a.reuse_prefix) if a.reuse_prefix else None,
         original_BF16_SHA_reused=record(hash_proof) if hash_proof else None,encoded_Expert_journal=record(journal),
+        Gate_input_identity=record(a.Gate_input_proof) if a.role=='gate' else None,
+        importance_input_role='up' if a.role=='gate' else a.role,
         target_GPU_format_and_model_integration_qualified=False,full_model_quality_or_speed_qualified=False,PS5_operations=0))
 
 

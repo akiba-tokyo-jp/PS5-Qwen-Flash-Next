@@ -67,8 +67,26 @@ def main():
             layer=policy['model_layer']
             if record(layer['publication']['path'])!=layer['publication'] or not load(layer['publication']['path'])['completed']:
                 raise ValueError('A positively completed new-only source publication is required')
-            if policy['kind']=='headless-model-audit' and (layer['kind']!='IQ2-Up' or policy['headless_audit_kind']!='Q2-IQ2-Up-model'):
-                raise ValueError('Only the explicitly compiled IQ2 Up model layer may extend this headless scope')
+            if policy['kind']=='headless-model-audit':
+                valid=(layer['kind'],policy['headless_audit_kind']) in (
+                    ('IQ2-Up','Q2-IQ2-Up-model'),('IQ2-Gate-Up','Q2-IQ2-Gate-Up-model'),('IQ2-Down','Q3-IQ2-Down-model'))
+                if not valid:raise ValueError('Only an explicitly compiled and qualified IQ2 model layer may extend this headless scope')
+                from iq2_up_model_scope import require_cache_layout
+                require_cache_layout(policy)
+                if layer['kind']=='IQ2-Down':
+                    scope=policy['overrides']['native_headless_model_audit'];provider=load(scope['Down_resource_provider']['path'])
+                    for name,key in (('gpu.o','GPU'),('shader-registry.o','shader_registry')):
+                        matches=[p for p in replacements if Path(p).name==name]
+                        if len(matches)!=1 or replacements[matches[0]]!=provider[key]['path']:
+                            raise ValueError('The exact qualified Down GPU and registry providers must be selected')
+                    if any(provider[k] not in new for k in ('shader_data','shader_wrapper')) or not all(f in args.link_flag for f in provider['link_flags']):
+                        raise ValueError('The complete qualified Down data and shader lease providers must be linked')
+                    caches=[p for p in replacements if Path(p).name=='cache.o']
+                    if len(caches)!=1 or replacements[caches[0]]!=policy['candidate_cache_provider']['path'] or not policy['original_Q2_bundle_six_refill_and_quad_paths_disabled']:
+                        raise ValueError('The Down carrier cache must disable incompatible original Q2 payload paths')
+                    source=policy['candidate_cache_source']
+                    if record(source['path'])!=source or 'const bool bundle_refill=false;' not in Path(source['path']).read_text() or 'const bool six_refill=false;' not in Path(source['path']).read_text():
+                        raise ValueError('The exact compiled Down cache source must disable original bundle and six-bank payloads')
             application_policy['model_layer']=layer
     tables=original['lossless_driver_tables'];script=args.out/'tables.ld'
     script.write_text(TABLE_SCRIPT,encoding='utf-8',newline='\n')

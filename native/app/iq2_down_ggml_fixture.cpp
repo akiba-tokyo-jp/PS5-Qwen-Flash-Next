@@ -13,6 +13,9 @@ static nlohmann::json qwen_paired_down_prepare_CPU();
 #include "ggml-vulkan.h"
 #include "native_failure_journal.h"
 #include <cmath>
+#ifndef IQ2_DOWN_F16_REFERENCE
+#define IQ2_DOWN_F16_REFERENCE 0
+#endif
 
 static NativeJson qwen_paired_down_prepare_CPU(){
     native_guard(31);qwen_native_stage("IQ2_Down_shader_CPU_admission_before_GPU");
@@ -97,6 +100,7 @@ static NativeJson fixture_case(const NativeJson&c){
     auto*indices=ggml_new_tensor_2d(ctx,GGML_TYPE_I32,selected,width);
     auto*guard=ggml_new_tensor_1d(ctx,GGML_TYPE_F32,128);
     auto*y=ggml_mul_mat_id(ctx,view,x,indices);
+    if(IQ2_DOWN_F16_REFERENCE)y->op_params[0]=int32_t(GGML_PREC_F32);
     ggml_set_input(x);ggml_set_input(indices);ggml_set_output(y);ggml_set_output(guard);
     ggml_set_name(gate,"fixture.moe_cache.Gate");ggml_set_name(up,"fixture.moe_cache.Up");
     ggml_set_name(bank,"fixture.moe_cache.Down");ggml_set_name(view,"fixture.nonzero.Down.view");
@@ -148,8 +152,10 @@ int qwen_paired_down_component(int argc,char**argv){
     native_require(argc==3,"One finite GGML carrier component required");
     const auto cases=NativeJson::parse(paired_cases_json);
     native_require(cases.at("cases").size()==12,"Twelve original layer/width cases required");
-    native_require(!setenv("GGML_VK_DISABLE_MMVQ","1",1)&&!setenv("GGML_VK_DISABLE_F16","1",1),
-        "Explicit original F32 activation and shader arithmetic profile required");
+    native_require(!setenv("GGML_VK_DISABLE_MMVQ","1",1)&&
+        (IQ2_DOWN_F16_REFERENCE?(!unsetenv("GGML_VK_DISABLE_F16")&&!getenv("GGML_VK_DISABLE_F16")):
+                               !setenv("GGML_VK_DISABLE_F16","1",1)),
+        "The exact scoped storage and accumulation profile is required");
     native_component_prepare();
 #if IQ2_DOWN_GPU_RESOURCE_TRACE
     qwen_iq2_down_begin_GPU_resource_trace();
@@ -162,8 +168,11 @@ int qwen_paired_down_component(int argc,char**argv){
         {"all_case_resources_positively_retired",false},{"whole_model_speed_qualified",false},
         {"GGML_backend_free_calls",0},{"persistent_pipeline_cache",false}};
     result["completed_GGML_case_prefix"]=iq2_completed_GGML_prefix;
+    result["F16_storage_FP32_accumulation"]=bool(IQ2_DOWN_F16_REFERENCE);
+    result["reused_decode_cases"]=IQ2_DOWN_F16_REFERENCE?6:0;
     unsigned case_index=0;
     for(const auto&c:cases.at("cases")){
+        if(IQ2_DOWN_F16_REFERENCE&&c.at("width").get<unsigned>()<=2)continue;
         if(case_index++<iq2_completed_GGML_prefix)continue;
         const auto row=fixture_case(c);result["cases"].push_back(row);native_save(argv[2],result);
         if(!row.at("all_outputs_passed").get<bool>()){result["all_outputs_passed"]=false;break;}

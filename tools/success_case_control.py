@@ -33,7 +33,7 @@ def digest_expression(row,path=None):
     return 'qwen_launch_digest_matches('+json.dumps(path or row['remote'])+','+str(row['bytes'])+'ULL,'+json.dumps(row['sha256'])+')'
 
 
-def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None,direct_stage_context=None,closed_log_export_context=None,direct_stage_header=None,concat_context=None):
+def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None,direct_stage_context=None,closed_log_export_context=None,direct_stage_header=None,concat_context=None,source_seal_window_proof=None):
     workspace=Path(workspace);out=Path(out);out.mkdir(parents=True,exist_ok=False)
     base_plan=load(mount_plan);base=base_plan['controller'];need(record(base['path'])==base,'Successful controller input changed')
     text=Path(base['path']).read_text();prefix='/data/ai/moss-qwen-case-'+secrets.token_hex(16)
@@ -64,7 +64,17 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
     if operation=='concatenate-model-parts':
         text=text.replace('#define QWEN_LAUNCH_WINDOW 16384u','#define QWEN_LAUNCH_WINDOW 262144u',1)
         text=text.replace('#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u','#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 68u',1)
-    if operation not in ('restore-bundle','concatenate-model-parts'):
+    if source_seal_window_proof:
+        qualified=load(source_seal_window_proof)
+        original=load(Path(source_seal_window_proof).parent/'intent.private.json')['native_plan']
+        need(operation=='seal-shared-Q4' and qualified['completed'] and qualified['whole_SHA256_and_EOF'] and
+             qualified['all_source_and_target_descriptors_positively_closed'] and qualified['helper_exited'] and
+             record(original['path'])==original and load(original['path'])['whole_integrity_window_bytes']==262144 and
+             load(original['path'])['CPU_metadata_margin_pages']==68,
+             'A completed original262KiB Direct whole-file read and positive owner retirement are required')
+        text=text.replace('#define QWEN_LAUNCH_WINDOW 16384u','#define QWEN_LAUNCH_WINDOW 262144u',1)
+        text=text.replace('#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u','#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 97u',1)
+    if operation not in ('restore-bundle','concatenate-model-parts') and not source_seal_window_proof:
         text=text.replace('#include "launch_integrity_native.h"','#define QWEN_LAUNCH_CPU_INDEPENDENT_THRESHOLDS 1\n#include "launch_integrity_native.h"',1)
     need(len(old_files)==len(new_files)==7 and all(r['remote'].startswith(PHYSICAL+'/') for r in old_files+new_files),
          'Exactly the seven current owned application files are required')
@@ -222,6 +232,11 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
               maximum_complete_process_rows=128,whole_integrity_window_bytes=16384,
               CPU_metadata_margin_pages=37 if operation in ('receive-direct-stage','export-closed-logs') else 21,OS_minimum_and_reserved_read_only=True)
     plan['CPU_control_independent_thresholds']=operation not in ('restore-bundle','concatenate-model-parts')
+    if source_seal_window_proof:
+        plan.update(whole_integrity_window_bytes=262144,CPU_metadata_margin_pages=97,
+            CPU_control_independent_thresholds=False,minimum_live_free_pages=1201,
+            qualified_large_window=record(source_seal_window_proof),
+            application_source_seal_only=True,full_physical_alias_SHA256_EOF_unchanged=True)
     if operation=='concatenate-model-parts':
         plan.update(whole_integrity_window_bytes=262144,CPU_metadata_margin_pages=68,
             additional_fixed_CPU_buffer_pages=47,minimum_live_free_pages=1201,

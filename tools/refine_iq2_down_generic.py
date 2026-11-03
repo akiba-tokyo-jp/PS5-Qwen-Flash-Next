@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 """Refine the two indexed generic resources selected by the completed native trace."""
 import argparse
+import json
 import os
 from pathlib import Path
 import shutil
@@ -18,10 +19,15 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     for name in ('workspace', 'parent', 'native', 'out'):
         p.add_argument('--' + name, type=Path, required=True)
+    p.add_argument('--F16-storage-profile',action='store_true')
     a = p.parse_args()
     parent, native = load(a.parent), load(a.native)
-    need(parent['completed'] and parent['packed_half_dequant_refinement'] and len(parent['shaders']) == 13 and
-         native['completed'] and not native['native_passed'] and native['ordinary_exit_observed'] and
+    F16=a.F16_storage_profile
+    names=('matmul_id_quant_f32','matmul_id_subgroup_quant_f32') if F16 else NAMES
+    need(parent['completed'] and
+         ((F16 and parent['generic_indexed_refinement'] and len(parent['shaders'])==15) or
+          (not F16 and parent['packed_half_dequant_refinement'] and len(parent['shaders'])==13)) and
+         native['completed'] and native['native_passed']==F16 and native['ordinary_exit_observed'] and
          native['current_seven_restored_and_native_hashed'], 'The completed immutable parent and returned native negative are required')
     recipes = load(parent['recipes']['path'])
     directory = Path(recipes['source']['path']).parent
@@ -56,7 +62,7 @@ def main():
     need(record(emitter) == recipes['emitter'], 'The exact pinned recipe emitter changed')
     text = once(emitter.read_text(),
         '    if(name.find("q2_0")==std::string::npos||name.find("tq2_0")!=std::string::npos)return;',
-        '    if(name!="matmul_id_quant_f32_fp32"&&name!="matmul_id_subgroup_quant_f32_fp32")return;')
+        '    if(name!='+json.dumps(names[0])+'&&name!='+json.dumps(names[1])+')return;')
     source, exe = a.out / 'generator.private.cpp', a.out / 'generator.exe'
     source.write_text(text, newline='\n')
     host = a.workspace / 'toolchain/msys-clang64/clang64/bin'
@@ -74,25 +80,32 @@ def main():
     added = []
     for line in manifest.splitlines():
         name, filename, fp16, coop, coop2, *defines = line.split('\t')
-        need(name in NAMES and fp16 == coop == coop2 == '0', 'Only the two observed F32 indexed generic recipes are required')
+        need(name in names and fp16==('1' if F16 else '0') and coop==coop2=='0',
+             'Only the exact two selected indexed generic storage-profile recipes are required')
         flags = dict(x.split('=', 1) for x in defines)
+        need(flags['ACC_TYPE']=='float' and (not F16 or flags['FLOAT_TYPE']=='float16_t'),
+             'The new storage profile must retain explicit FP32 accumulation')
         output = a.out / (name + '.spv')
         run([shaderc/'glslc.exe', '-fshader-stage=compute', '--target-env=vulkan1.2', '-O',
              overlay/filename, '-o', output, *['-D'+k+'='+v for k,v in sorted(flags.items())]], name+'-compile')
         run([host/'spirv-val.exe', '--target-env', 'vulkan1.2', output], name+'-validate')
         added.append(dict(name=name, artifact=record(output), recipe=dict(name=name, source=record(directory/filename),
-            fp16=False, coopmat=False, coopmat2=False, defines=flags)))
-    need({r['name'] for r in added} == set(NAMES), 'Both new resources must complete')
+            fp16=F16, coopmat=False, coopmat2=False, defines=flags)))
+    need({r['name'] for r in added} == set(names), 'Both new resources must complete')
     result = dict(parent)
     result.update(ancestor=record(a.parent), shaders=parent['shaders']+added, commands=commands,
-        generic_indexed_refinement=True, packed_half_dequant_refinement=False, reused_shader_resources=13,
-        native_selection_evidence=record(a.native), changed_sources=[record(shader),record(funcs)],
+        generic_indexed_refinement=not F16,generic_indexed_F16_refinement=F16,
+        packed_half_dequant_refinement=False, reused_shader_resources=len(parent['shaders']),
+        native_selection_evidence=record(a.native),
+        changed_sources=[record(shader),record(funcs),record(overlay/'mul_mm_id_funcs.glsl')],
         carrier_decoder=record(ROOT/'native/app/iq2_down_carrier.glsl'),
         only_Q2_0_branch_changed=True, other_quantization_branches_unchanged=True,
         packed_row_map_coordinates_preserved_in_u32=True,
         software_model_shader_qualified=False, native_model_shader_qualified=False)
+    result.update(F16_storage_FP32_accumulation=F16,MMVQ_and_F16_must_be_disabled=not F16,
+                  native_F16_arithmetic_qualified=False)
     save(a.out/'result.private.json', result)
-    print(dict(completed=True, new_resources=2, reused_resources=13, PS5_operations=0))
+    print(dict(completed=True, new_resources=2, reused_resources=len(parent['shaders']), PS5_operations=0))
 
 
 if __name__ == '__main__':

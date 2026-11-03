@@ -19,6 +19,45 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Checkpoint65350 completes all96 original Up/Down encodings,zero failures.
+All48 Down carriers are also complete. A host coordinator read an encoder's
+mutable progress file during its write; its46 positive carriers are preserved
+in65346,only the two unfinished layers are packed in65347,and full Down
+metadata65348 completes in about5 seconds. No quantization is repeated and
+no PS5 operation is involved. Full Up metadata65341 is also complete.
+
+Gate encoding65345 closes the original Gate/Up proposal using two workers
+after the original96 jobs positively exit. It reuses unchanged full BF16
+identity/SHA receipts and native1200-pair Gate/Up input identity64546.2/48 are
+complete with zero failures at this observation. The uniform48+48 model path
+now supports retaining completed Up sources without retransmission; layout
+admission passes2positive/8negative controls against the actual native proofs.
+Its combined metadata, whole source publication and full model are unrun.
+
+The17-resource Down F16 fixture65342/SELF65343 and actual binding65344 are
+prepared. Its changed CPU startup cost is6582 pages in host-only pricing65349;
+fresh post-transfer capacity observations and all six changed native wide
+graphs remain required. Six unchanged native decode cases are reused. The
+model builder can accept this refinement only after a positive native F16
+proof with the original F32/decode lineage. It does not admit a prepared shader
+as a successful model. Source carriers and full Down metadata remain reusable.
+
+Full-model control packages use normal selected P1 with both backend flags
+unset. The scoped IQ2 candidate alone disables MMVQ while retaining normal
+F16 storage. This compares the complete change against the actual adopted
+runtime. The primary metric remains(generated_tokens-1)/decode_seconds for the
+same cold/retained/exact-prefix sequence. No IQ2 full-model rate is available.
+
+Whole Up source placement65334 remains the exclusive console IO owner,with
+10/108 positive store replies observed. The unsubmitted16KiB sealer was
+quarantined before execution because its projected log exceeds the collector
+bound. After normal transfer completion,the expected absent local ELF stops
+the original host path before native submission. Dedicated finalizer code
+then submits only prepared sealer65340,using the previously qualified262KiB
+integrity window and stronger additive CPU allowance. Every physical+alias
+SHA256/EOF and parent identity check remains. No payload is retransmitted.
+This source placement is necessary test data; it is not an inference gain.
+
 Up arithmetic scope65313 passes all12 distinct graphs: groups0/1/2,
 widths30/32, Q2_K and IQ2_XXS. Every mismatch count is zero; maximum F64 error
 is5.161899025551975e-6. The reference separately rounds decoded weights to
@@ -75,18 +114,39 @@ fixture negative are preserved as failures,not reclassified.
 
 Provider65325 preserves every GPU executable byte and the original startup
 registry,with15 resources and no new constructors. Fixture65326,SELF65327/SELF
-and actual binding audit65328 pass. Changed CPU startup/capacity65329 is ACTIVE;
-its fresh6864-page admission passes at7369. The next GPU scope must wait for
-positive ordinary restoration and runs only the ten remaining GGML cases.
+and actual binding audit65328 pass. Changed CPU startup/capacity65329 passes all15 leases,382 original lookups and
+seven successful environment values. Direct available is12262047744 twice
+against12184453120; ordinary exit/exact P1 restore passes. Generic GPU65330
+then passes all ten remaining distinct GGML graphs,with maximum F64 error
+4.2755845591768704e-7. Every canary/fence/case owner/IO completes. Ordinary
+exit and exact P1 restore pass. The two previously completed decode cases are
+reused. Fresh CPU capacity readmission is required before the next GPU scope
+because the completed idle device was retained until ordinary process exit.
+No complete-model speed or quality benefit is inferred from these arithmetic
+results.
 
-The original two-worker encoder65103 continues with87/96 complete and zero
-failures at this observation. Carrier tail65303 has42 parts. Pure-PC source
-preparation65331 uses44 completed whole Up layers while encoding continues.
-Any partial model launch remains prohibited. Whole-file staging may overlap
-the remaining encodes only after active console arithmetic owners close;
-subsequent publication can reuse the sealed whole prefix without copying it.
-Transfer/compression experiments remain closed. Full-model quality and decode
-speed are still unqualified for IQ2.
+Whole Up prefix publication65334 is ACTIVE:43 new whole weight layers and
+metadata/headers total9323037975 bytes/108 files; sealed Up0 is reused. This
+placement overlaps the remaining original encodes and may supply a sealed
+44-layer prefix to the later uniform48-layer model. Partial model launches
+remain prohibited. Full native physical/alias SHA256/EOF and all original
+parent identities must pass before source admission.
+
+A redundant PC full-payload rehash competed with the encoders. The exact
+write-free host preparation process was stopped after about5GB read and zero
+writes. Source preparation now reuses each original completed encoder receipt,
+checks size/mtime and receipt digests,then defers full payload authentication
+to native publication. It still hashes/parses every selected header. The
+selected source precedence is dense-Q4,parent shared-Q8,then base-Q2; missing
+header and incorrect-base-header preparations are retained as failures.
+Corrected44-layer preparation65333 completes in about8 seconds,with every
+changed descriptor independently read back. No encoder or native case is
+restarted for this correction.
+
+Encoder65103 has89/96 complete and zero failures at this observation,with its
+original two workers. Carrier tail65303 has44 parts. Transfer/compression
+experiments remain closed. Full-model quality and the original cold/retained/
+exact-prefix decode tok/s remain unqualified for IQ2.
 
 Historical failure isolation before these scopes follows.
 

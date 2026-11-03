@@ -395,7 +395,9 @@
       "MMVQ_disabled": true,
       "partial_layout_rejected": true,
       "full_model_quality_or_speed_qualified": false
-    }
+    },
+    "original_Up_complete_layers": 48,
+    "Gate_encoding_active": 65345
   },
   "Q3": {
     "status": "native_GGML_decode_passes_wide_numerical_negative_refinement_ready",
@@ -568,7 +570,34 @@
     "generic_fixture": "65326",
     "generic_SELF": "65327/SELF",
     "generic_actual_link_audit": "65328",
-    "changed_CPU_capacity_active": "65329"
+    "changed_CPU_capacity_active": false,
+    "changed_CPU_capacity_scope": "65329",
+    "generic_native_GPU": {
+      "scope": "65330",
+      "completed": true,
+      "passed": true,
+      "new_cases": 10,
+      "reused_cases": 2,
+      "maximum_F64_reference_error": 4.2755845591768704e-07,
+      "all_canaries_fences_case_owners_IO_passed": true,
+      "ordinary_exit_and_exact_P1_restore": true,
+      "fresh_CPU_capacity_readmission_required": true,
+      "full_model_quality_or_speed_qualified": false
+    },
+    "all48_Down_carriers_complete": 65347,
+    "full_Down_metadata_preparation": 65348,
+    "F16_refinement": {
+      "shader": 65336,
+      "operand_reference": 65337,
+      "completion_controls": 65338,
+      "provider": 65339,
+      "fixture": 65342,
+      "SELF": 65343,
+      "actual_binding": 65344,
+      "CPU_host_pricing": 65349,
+      "native_executed": false,
+      "model_qualified": false
+    }
   },
   "I1": {
     "status": "both_refinements_complete_unadopted",
@@ -746,7 +775,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "65331",
+  "latest_update": "65350",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -840,12 +869,16 @@
     "latest_failure_classification": 65264
   },
   "current_console_execution": {
-    "scope": "Q3-generic-indexed-CPU-capacity-65329",
+    "scope": "Q2-completed-whole-Up-prefix-publication-65334",
     "active": true,
-    "host_session": 40819,
-    "mode": "CPU",
-    "GPU_graphs": 0,
-    "ordinary_P1_restore_required": true
+    "host_session": 25865,
+    "title_running": false,
+    "GPU_calls": 0,
+    "original_P1_restored": true,
+    "new_files": 108,
+    "new_bytes": 9323037975,
+    "retained_whole_Up_layers": 1,
+    "source_admission_pending": true
   },
   "latest_checkpoint_65281": {
     "campaign_complete": false,
@@ -901,5 +934,66 @@
     "Up_prefix_preparation_active": true,
     "full_model_source_publication_started": false,
     "campaign_complete": false
+  },
+  "latest_checkpoint_65334": {
+    "encoder_completed": 89,
+    "encoder_failed": 0,
+    "encoder_total": 96,
+    "encoder_workers": 2,
+    "carrier_parts": 44,
+    "completed_Up_preparation": "65333",
+    "Up_prefix_layers": 44,
+    "Up_prefix_source_publication_active": true,
+    "full_native_SHA256_EOF_before_source_admission_required": true,
+    "host_redundant_payload_rehash_replaced_by_completed_encoder_receipts": true,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65350": {
+    "original_encoder_complete": 96,
+    "original_encoder_failed": 0,
+    "Down_carriers_complete": 48,
+    "preserved_carrier_prefix": 65346,
+    "only_new_carrier_suffix": 65347,
+    "full_Up_preparation": 65341,
+    "full_Down_preparation": 65348,
+    "host_progress_read_race_did_not_replay_successful_work": true,
+    "Gate_encoding": 65345,
+    "Gate_completed_at_observation": 2,
+    "Gate_failed_at_observation": 0,
+    "Gate_workers": 2,
+    "Gate_Up_identity_proof": 64546,
+    "combined_Gate_Up_model_preparation_and_admission_implemented": true,
+    "combined_Gate_Up_model_executed": false,
+    "combined_layout_controls": {
+      "positive": 2,
+      "negative": 8,
+      "PS5_operations": 0
+    },
+    "F16_Down_fixture": 65342,
+    "F16_Down_SELF": 65343,
+    "F16_actual_binding": 65344,
+    "F16_CPU_host_pricing": 65349,
+    "F16_CPU_required_pages": 6582,
+    "F16_native_executed": false,
+    "F16_model_admission_requires_native_six_wide_and_original_decode_lineage": true,
+    "full_model_control": "Normal adopted P1 with MMVQ and F16 disable flags unset",
+    "candidate_scoped_backend": "Only MMVQ disabled; normal F16 storage and selected FP32 accumulation",
+    "source_IO_owner": 65334,
+    "positive_store_replies": 10,
+    "total_store_replies_required": 108,
+    "old_sealer_quarantined_before_submission": true,
+    "replacement_sealer": 65340,
+    "replacement_sealer_submitted": false,
+    "source_handoff_finalizer_implemented": true,
+    "required_integrity_window_bytes": 262144,
+    "native_full_physical_alias_SHA256_EOF_preserved": true,
+    "payload_retransmissions": 0,
+    "campaign_complete": false,
+    "primary_metric": "(generated_tokens - 1) / decode_seconds",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ]
   }
 }

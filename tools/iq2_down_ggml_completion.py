@@ -14,7 +14,10 @@ def validate_terminal(t):
          'Every submitted graph, case owner and source call must return before ordinary close')
     rows=t['cases'];passed=t['all_outputs_passed'];prefix=t.get('completed_GGML_case_prefix',0)
     need(type(prefix) is int and prefix in (0,2),'Only the separately bound two-case prefix may be reused')
-    order=ORDER[prefix:]
+    F16=t.get('F16_storage_FP32_accumulation') is True
+    if F16:
+        need(prefix==0 and t.get('reused_decode_cases')==6,'Only the six separately bound unchanged decode cases may be reused')
+    order=[r for r in ORDER if r[1]>2] if F16 else ORDER[prefix:]
     need(1<=len(rows)<=len(order) and [(r['layer'],r['width']) for r in rows]==order[:len(rows)] and
          all(r['GGML_graphs']==1 and r['positive_fence'] and r['all_case_resources_retired'] and
              r['actual_Gate_Up_prefix_bytes']>0 and r['actual_Down_view_offset']==460800 and

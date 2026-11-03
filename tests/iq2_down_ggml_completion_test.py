@@ -52,4 +52,19 @@ for change in (lambda x:x.update(completed_GGML_case_prefix=1),
     try:validate_terminal(bad)
     except RuntimeError:pass
     else:raise AssertionError('Only the complete, non-replayed source-bound suffix may close')
-print('{"completed":true,"positive_controls":4,"negative_controls":20,"PS5_operations":0}')
+half=copy.deepcopy(t);half.update(F16_storage_FP32_accumulation=True,reused_decode_cases=6)
+half['cases']=[r for r in half['cases'] if r['width']>2]
+validate_terminal(half)
+half_negative=copy.deepcopy(half);half_negative['cases']=half_negative['cases'][:1]
+half_negative['all_outputs_passed']=False;half_negative['cases'][0].update(all_outputs_passed=False,mismatches=3)
+validate_terminal(half_negative)
+for change in (lambda x:x.update(completed_GGML_case_prefix=2),
+               lambda x:x.update(reused_decode_cases=5),
+               lambda x:x['cases'].insert(0,copy.deepcopy(rows[0])),
+               lambda x:x['cases'].pop(),
+               lambda x:x.update(F16_storage_FP32_accumulation=False)):
+    bad=copy.deepcopy(half);change(bad)
+    try:validate_terminal(bad)
+    except RuntimeError:pass
+    else:raise AssertionError('Only the six changed wide FP16-domain cases may close')
+print('{"completed":true,"positive_controls":6,"negative_controls":25,"PS5_operations":0}')
