@@ -17,14 +17,18 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('workspace','current','prior','provider','out'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--resume',action='store_true',help='Reuse only completed immutable SELF arms; never repeat their relink/formatting')
+    p.add_argument('--cached-predictor-refinement',action='store_true')
+    p.add_argument('--candidate-only',action='store_true',help='Reuse the unchanged completed control package')
     a=p.parse_args();old=load(a.prior);provider=load(a.provider);original=load(old['provider']['path'])
     need(old['completed'] and old['new_scope_controls']==dict(positive=2,negative=12) and provider['completed'] and
-        provider['new_global_constructors']==0 and provider['controls']==original['controls'] and
+        provider['new_global_constructors']==0 and
+        (a.cached_predictor_refinement or provider['controls']==original['controls']) and
         all(record(old[k]['path'])==old[k] for k in ('source','entry','scope_header','scope_test')) and
         record(provider['artifact']['path'])==provider['artifact'],'Exact new provider and unchanged controlled entry required')
     previous={Path(r['path']).name:r for r in original['inputs']};current={Path(r['path']).name:r for r in provider['inputs']}
+    changed_name='model_relative_prefetch.h' if a.cached_predictor_refinement else 'model_relative_prefetch_runtime.cpp'
     for name in previous:
-        if name!='model_relative_prefetch_runtime.cpp':need(previous[name]['sha256']==current[name]['sha256'],'An unchanged provider dependency differs')
+        if name!=changed_name:need(previous[name]['sha256']==current[name]['sha256'],'An unchanged provider dependency differs')
     left=Path(previous['model_relative_prefetch_runtime.cpp']['path']).read_text()
     right=Path(current['model_relative_prefetch_runtime.cpp']['path']).read_text()
     before='#include "system_memory.h"'
@@ -33,9 +37,20 @@ def main():
 #define qualified_system_headroom relative_prefetch_qualified_system_headroom
 #include "system_memory.h"
 #undef qualified_system_headroom'''
-    need(left.replace(before,after,1).replace('qualified_system_headroom(observe_native_system_memory())',
-        'relative_prefetch_qualified_system_headroom(observe_native_system_memory())',1)==right,
-        'Only the uniquely named stricter read-only helper may change')
+    if a.cached_predictor_refinement:
+        from refine_model_relative_runtime import refined_header
+        controls=load(provider['controls']['path'])
+        need(provider['ancestor']==record(old['provider']['path']) and controls['ancestor']==original['controls'] and
+            record(provider['controls']['path'])==provider['controls'] and controls['completed'] and
+            controls['new_concurrent_controls']==9 and controls['new_refinement_controls']==3 and
+            controls['fresh_worker_before_after_checks'] and controls['fresh_scratch_use_checks']==2 and
+            controls['cached_metadata_is_predictor_hint_only'] and left==right and
+            Path(current[changed_name]['path']).read_text()==refined_header(Path(previous[changed_name]['path']).read_text()),
+            'Only the source-qualified cached predictor keys and fresh scratch-use checks may change')
+    else:
+        need(left.replace(before,after,1).replace('qualified_system_headroom(observe_native_system_memory())',
+            'relative_prefetch_qualified_system_headroom(observe_native_system_memory())',1)==right,
+            'Only the uniquely named stricter read-only helper may change')
     if a.resume:need(a.out.is_dir() and not(a.out/'result.private.json').exists(),'Only an incomplete host build may resume')
     else:a.out.mkdir(parents=True,exist_ok=False)
     packages={};commands=[];old_root=Path(a.prior).parent;reused=0
@@ -44,6 +59,11 @@ def main():
         (a.out/(label+'.private.log')).write_bytes(result.stdout+result.stderr)
         need(not result.returncode,(result.stdout+result.stderr).decode(errors='replace')[-4000:])
     for arm in ('control','candidate'):
+        if arm=='control' and a.candidate_only:
+            package=old['packages'][arm];done=load(package['path'])
+            need(record(package['path'])==package and done['completed'] and record(done['SELF']['path'])==done['SELF'],
+                'The exact complete unchanged control package is required')
+            packages[arm]=package;reused+=1;continue
         profile=load(old_root/(arm+'-policy.private.json'));profile['I1_relative_provider']=record(a.provider)
         policy=a.out/(arm+'-policy.private.json')
         if policy.exists():need(a.resume and load(policy)==profile,'The previous controlled policy changed')
@@ -80,6 +100,7 @@ def main():
         source_guard_unique_namespace=True,original_frontend_guard_not_redefined=True,
         old_entry_and_host_controls_reused_without_replay=True,actual_imports_resolved_both_arms=True,
         completed_host_SELF_arms_reused_without_relink=reused,
+        cached_predictor_key_refinement=a.cached_predictor_refinement,unchanged_control_package_reused=a.candidate_only,
         original_native_guards_unchanged=True,PS5_operations=0,native_qualified=False,production_adopted=False))
     print(dict(completed=True,packages=2,entry_recompilations=0,old_host_tests_replayed=0,PS5_operations=0))
 

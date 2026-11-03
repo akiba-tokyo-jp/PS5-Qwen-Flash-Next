@@ -113,7 +113,8 @@ def publish_pack(a,lan,relink,rows):
             pack=local,new_transfers=0,new_publications=0,fresh_whole_SHA_required_natively_before_GPU=True))
         return
     out=a.out/'component-pack';out.mkdir()
-    need(a.component_transfer_proof is not None,'Completed new component-size controls required before native transfer')
+    need(a.component_transfer_proof is not None or a.model_part_receiver_proof is not None,
+         'Completed component-size or bounded model-part receiver controls required before native transfer')
     size_control=a.component_transfer_proof
     pending='/data/ai/moss-qwen-case-'+secrets.token_hex(16)+'-candidate-SELF.bin'
     target=PHYSICAL+application[5:];alias=ALIAS+application[5:]
@@ -127,8 +128,14 @@ def publish_pack(a,lan,relink,rows):
         need(remote==pending,'Exact new component staging path required')
         result=completed_operation(lan,plan,out/'native');need(result['operation_calls']==1,'One complete new-only publication required')
         return dict(whole_native_SHA256_identity_EOF_verified=True,all_reads_returned=True,sha256=local['sha256'],bytes=local['bytes'])
-    upload(local,pending,out/'Direct-transfer',lan,verify,current_rows=rows,workspace=a.workspace,
-           mount_plan=a.mount_plan,qualified=a.direct_staging_proof,component_control=size_control)
+    if a.model_part_receiver_proof:
+        from direct_model_part import stage
+        stage(local,pending,out/'Direct-transfer',lan,workspace=a.workspace,current_rows=rows,
+              mount_plan=a.mount_plan,original_proof=a.direct_staging_proof,receiver_proof=a.model_part_receiver_proof)
+        verify(local,pending)
+    else:
+        upload(local,pending,out/'Direct-transfer',lan,verify,current_rows=rows,workspace=a.workspace,
+               mount_plan=a.mount_plan,qualified=a.direct_staging_proof,component_control=size_control)
     save(out/'result.private.json',dict(completed=True,pack=local,target=target,alias=alias,whole_SHA256_both_namespaces=True,
         immutable_mode=292,current_seven_unchanged=True,title_launches=0,GPU_calls=0))
 
@@ -143,6 +150,7 @@ def main():
     p.add_argument('--startup-reuse',type=Path)
     p.add_argument('--component-transfer-proof',type=Path)
     p.add_argument('--component-pack-proof',type=Path)
+    p.add_argument('--model-part-receiver-proof',type=Path)
     p.add_argument('--pre-device-exit-proof',type=Path)
     p.add_argument('--post-completion-close-proof',type=Path)
     p.add_argument('--P1-contract-close-proof',type=Path)
@@ -151,7 +159,9 @@ def main():
     package=load(a.package);relink=exact(package['relink'])
     need(package['completed'] and package['normalized_SELF_roundtrip_equal'] and not package['CPU_only'] and
          relink['completed'] and not relink['model_engine_linked'] and relink['CPU_startup_only_mode'] and
-         relink['same_selected_Direct_table_mapping_and_incremental_restoration'] and relink['new_post_device_controls']==15 and
+         relink['same_selected_Direct_table_mapping_and_incremental_restoration'] and
+         (relink['new_post_device_controls']==15 or (relink.get('retained_idle_device_until_ordinary_close') and
+          relink.get('paired_down_carrier') and relink.get('retained_device_controls')==19)) and
          len(relink['linked_driver'])==1 and relink['maximum_GPU_dispatches']==24 and
          relink['successful_driver_whole_archive_preserved'] and
          all(r['pointer_matches'] for r in relink['actual_physical_dispatch_audit']),
@@ -237,7 +247,9 @@ def main():
             last=stages.splitlines()[-1]
             need(not last.startswith(b'fatal_operation='),'Native owner is retained at a fatal boundary; audit this SAME process, never relaunch')
             CPU=last==b'paired_Down_native_CPU_returned_GPU_not_started_waiting_for_ordinary_close'
-            GPU=last==b'paired_Down_native_GPU_completed_owners_retired_waiting_for_ordinary_close'
+            from retained_component_completion import STAGE
+            retained_GPU=last==STAGE and relink.get('retained_idle_device_until_ordinary_close') is True
+            GPU=last==b'paired_Down_native_GPU_completed_owners_retired_waiting_for_ordinary_close' or retained_GPU
             if CPU or GPU:break
         except urllib.error.HTTPError as error:need(error.code==404,'Native observation state unknown')
         need(time.monotonic()<deadline,'Native completion unknown; retain the SAME owner and never resubmit')
@@ -253,6 +265,9 @@ def main():
     need(terminal['run_id']==run and terminal['pid']==first['pid'] and terminal['candidate_SELF_sha256']==image['sha256'],
          'Exact native completion owner and artifact required')
     if CPU:need(terminal['CPU_only'] and terminal['all_CPU_IO_returned'] and terminal['GPU_calls']==terminal['model_loads']==0,'Positive returned CPU scope required')
+    elif retained_GPU:
+        from retained_component_completion import validate_terminal
+        validate_terminal(terminal)
     else:need(terminal['completed'] and not terminal['unknown_completion'] and terminal['all_GPU_resources_positively_retired'] and
         terminal['device_ledger_live_bytes']==0 and terminal['all_model_source_device_owners_positively_retired'] and
         terminal['positive_reference_dispatches']<=24,'Positive GPU fences and exact owner retirement required')
@@ -263,6 +278,7 @@ def main():
     IO=lan.web('/fs'+urllib.parse.quote(remote+'.IO',safe='/'),1<<20,8);(a.out/'native-IO.private.log').write_bytes(IO)
     close_proof=dict(pid=first['pid'],app_id=launched['app_id'],reports=reports)
     if CPU:close_proof.update(CPU_only=True,all_CPU_IO_returned=True)
+    elif retained_GPU:close_proof.update(completed=True,retained_component_package=record(a.package))
     else:close_proof.update(completed=True,all_model_source_device_owners_positively_retired=True,device_ledger_live_bytes=0)
     state.update(unknown_completion=False,native_owners=1,observed_native_pid=first['pid']);state_path.write_text(json.dumps(state,indent=2)+'\n')
     close=build(a.workspace,a.mount_plan,new,new,[],'close',a.out/'ordinary-close',close=close_proof)
@@ -281,6 +297,11 @@ def main():
     publish(lan,restore_pending,restore,a.out/'restore',direct_staging=direct)
     state.update(state='standalone_Q3_ordinary_exit_exact_current_restored',original_restored=True,native_running=False,
                  model_loaded=False,gateway_running=False,native_owners=0,unknown_completion=False)
+    if retained_GPU:
+        state['GPU_retirement_readmission_pending']=True
+        state['retained_component_ordinary_exit']=dict(package=record(a.package),native=record(a.out/'native-result.private.json'),
+            ordinary_exit_observed=True,all_case_resources_retired=True,device_retained_until_ordinary_exit=True,
+            individual_old_BO_release_claimed=False,fresh_capacity_readmission_required=True)
     state.pop('temporary_installed_SELF',None);state['active_successful_native_case'].update(phase='standalone-completed-original-restored',native_pid=first['pid'])
     if readmission and terminal['completed']:
         capacity=terminal['Direct_readmission']
@@ -295,6 +316,8 @@ def main():
     save(a.out/'result.private.json',dict(completed=True,mode=a.mode,native_passed=passed,package=record(a.package),
         native=record(a.out/'native-result.private.json'),VM_before=record(vm_dir/'result.private.json'),
         ordinary_exit_observed=True,ordinary_close_calls=1,current_seven_restored_and_native_hashed=True,
+        completed_idle_device_retained_until_ordinary_exit=bool(retained_GPU),
+        fresh_capacity_readmission_required=bool(retained_GPU),
         model_loads=0,native_owners=0,unknown_completion=False,initializer_requests=0,production_adopted=False))
     print(json.dumps(dict(completed=True,mode=a.mode,native_passed=passed,exact_current_restored=True)),flush=True)
 

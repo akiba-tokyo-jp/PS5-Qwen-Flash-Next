@@ -42,7 +42,17 @@ def main():
     p.add_argument('--completed-case',type=Path,action='append',default=[],help='Reuse only the already completed prefix of this exact ABBA')
     a=p.parse_args();proof=load(a.numerical_proof)
     need(proof['completed'],'A completed numerical decision is required')
-    if a.scope=='S1':need(proof.get('actual_target_tokens_bytes_causal_inputs_routes_and_all69_F32_rows_exact') is True,'Actual compact MTP lifetime and causal qualification required')
+    if a.scope=='S1':
+        if proof.get('scope')=='S1-ordinary-vs-retained':
+            causal=load(proof['causal_proof']['path'])
+            need(record(proof['causal_proof']['path'])==proof['causal_proof'] and causal['completed'] and
+                causal['actual_target_tokens_bytes_causal_inputs_routes_and_all69_F32_rows_exact'] and
+                proof['tokens_and_output_bytes_exact'] and proof['compact_retained_causal_and_lifetime_qualified'],
+                'The separate original-output and exact retained causal qualifications are required')
+            kinds=[load(load(x)['effective_application_policy']['profile']['path'])['headless_audit_kind'] for x in (a.control,a.candidate)]
+            need(kinds==['S1-ordinary-target-control','S1-persistent-MTP-online'],
+                'Cross-feature evidence is restricted to ordinary versus qualified retained MTP')
+        else:need(proof.get('actual_target_tokens_bytes_causal_inputs_routes_and_all69_F32_rows_exact') is True,'Actual compact MTP lifetime and causal qualification required')
     else:
         need(proof['tokens_and_output_bytes_exact'] and all(proof['ordered_routes_exact_per_request']), 'Actual target outputs and ordered routes must match')
         if a.scope in ('G1','I1'):need(proof['whole_F32_bytes_routes_tokens_exact'],'Same-computation changes require all69 exact rows')

@@ -85,11 +85,20 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         context+=completed_images_context+'\n'
     if operation=='receive-direct-stage':
         need(isinstance(direct_stage_context,str) and direct_stage_context,'One exact bounded Direct staging protocol required')
+        receiver_window=16384;receiver_extra_pages=0;receiver_socket=32768;receiver_socket_pages=0
         if direct_stage_header:
+            from model_part_receiver_geometry import receiver_text
             original=(ROOT/'native/qwen_flash_next/direct_stage_receive.h').read_text()
-            need(original.count('(32ull<<20)')==1 and Path(direct_stage_header).read_text()==
-                 original.replace('(32ull<<20)','(512ull<<20)',1),
-                 'The isolated model-part receiver may change only its finite payload ceiling')
+            profiles=((16384,32768,False),(262144,32768,False),(262144,262144,True))
+            matches=[row for row in profiles if Path(direct_stage_header).read_text()==receiver_text(original,*row)]
+            need(len(matches)==1,'Only a completely source-bound finite model-part receiver geometry is admitted')
+            receiver_window,receiver_socket,verified_socket=matches[0]
+            receiver_socket_pages=32 if verified_socket else 0
+            receiver_extra_pages=2*(receiver_window-16384)//16384+receiver_socket_pages
+            if receiver_extra_pages:
+                text=text.replace('#define QWEN_LAUNCH_WINDOW 16384u','#define QWEN_LAUNCH_WINDOW '+str(receiver_window)+'u',1)
+                text=text.replace('#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 37u',
+                    '#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES '+str(37+receiver_extra_pages)+'u',1)
             context+=direct_stage_context+'\n#include '+json.dumps(Path(direct_stage_header).resolve().as_posix())+'\n'
         else:context+=direct_stage_context+'\n#include "direct_stage_receive.h"\n'
     if operation=='export-closed-logs':
@@ -135,6 +144,10 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         context+='static const char*case_pending[]={'+','.join(json.dumps(r['remote']) for r in pending)+'};\n'
         context+='static const char*case_targets[]={'+','.join(json.dumps(r['target']) for r in pending)+'};\n'
     if operation=='close':
+        retained_component=False
+        if close and close.get('retained_component_package'):
+            from retained_component_completion import validate_close
+            retained_component=validate_close(close,new_files)
         CPU_closed=close and close.get('CPU_only') is True and close.get('all_CPU_IO_returned') is True
         model_closed=close and close.get('completed') is True and close.get('all_model_source_device_owners_positively_retired') is True and close.get('device_ledger_live_bytes')==0
         pre_GPU=close and close.get('known_returned_pre_GPU_exception') is True and close.get('native_resources_started') is False and close.get('model_loaded') is False and close.get('CPU_worker_completion_unknown') is False and close.get('all_probe_ranges_unmapped') is True
@@ -145,7 +158,7 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
         checkpoint_P1=close and close.get('known_P1_checkpoint_preallocation_refusal') is True and close.get('model_loaded') is True and close.get('completed_requests')==2 and close.get('completed_GPU_epochs')==15 and close.get('last_active_epoch_positive_checkpoint') is True and close.get('post_checkpoint_GPU_submissions')==0 and close.get('all_source_IO_completed') is True and close.get('CPU_worker_completion_unknown') is False and close.get('source_audit_SHA256')=='411515f3af833fde580b3aa8a418d47efbcc2634f76358474582bcb458df3f78' and close.get('SELF_SHA256')=='7c2433678ba088085d9c627ab2112cbebc928a9a54ca1da1bac38d7081c4e26d'
         idle_G1=close and close.get('known_G1_IGPU_graph_contract_failure') is True and close.get('model_loaded') is True and close.get('completed_GPU_epochs')==2 and close.get('last_active_epoch_CPU_graph_only') is True and close.get('target_request_operations')==0 and close.get('all_source_IO_completed') is True and close.get('CPU_worker_completion_unknown') is False and close.get('source_audit_SHA256')=='57a0dc13258bc4550e8f8f1d276fe02765e83c6be02ca2c05c916b8e46c20301' and close.get('SELF_SHA256')=='fc74cb5865e9caf7d061f0f5f5190124e65d541a2f32ac216566c3c6cdb742fc'
         idle_S1=close and close.get('known_S1_post_request_backing_certificate_failure') is True and close.get('model_loaded') is True and close.get('completed_GPU_epochs')==49 and close.get('completed_F32_rows')==23 and close.get('completed_token_records')==22 and close.get('auxiliary_positively_retired') is True and close.get('all_source_IO_completed') is True and close.get('CPU_worker_completion_unknown') is False and close.get('source_audit_SHA256')=='ad4bedee1fa68fde8c5ac932813aad403401bbd15508becde377b8e649624112' and close.get('SELF_SHA256')=='e5284dfcaaca41562c2bf9e9003240d3a0fc566bb4cf4b80c516521758147163'
-        need(CPU_closed or model_closed or pre_GPU or unloaded or idle_MTP or idle_paired or idle_P1 or checkpoint_P1 or idle_G1 or idle_S1,'Positive returned work and exact scoped owner completion required')
+        need(CPU_closed or model_closed or retained_component or pre_GPU or unloaded or idle_MTP or idle_paired or idle_P1 or checkpoint_P1 or idle_G1 or idle_S1,'Positive returned work and exact scoped owner completion required')
         if idle_MTP:context+='#define CASE_RETAINED_IDLE_MTP_CLOSE 1\n'
         need(close['pid']>0 and close['app_id']>0,'Exact native PID and application ID required')
         need(len(close.get('reports',[]))>=2,'Two immutable completed native reports required')
@@ -202,6 +215,9 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
     if operation=='receive-direct-stage':
         plan['receiver_source']=record(direct_stage_header or ROOT/'native/qwen_flash_next/direct_stage_receive.h')
         plan['isolated_large_model_part_receiver']=bool(direct_stage_header)
+        plan.update(receive_window_bytes=receiver_window,whole_integrity_window_bytes=receiver_window,
+                    CPU_metadata_margin_pages=37+receiver_extra_pages,additional_fixed_CPU_buffer_pages=receiver_extra_pages-receiver_socket_pages,
+                    receive_socket_buffer_bytes=receiver_socket,additional_socket_kernel_allowance_pages=receiver_socket_pages)
     if operation=='export-closed-logs':plan['exporter_source']=record(ROOT/'native/qwen_flash_next/closed_log_export.h')
     save(out/'plan.private.json',plan);return plan
 

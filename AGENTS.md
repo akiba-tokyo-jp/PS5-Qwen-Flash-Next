@@ -3,6 +3,42 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Continuation65176 is ACTIVE: it reuses completed I1 A0=65159/B1=65170,
+completes B2=65179 and starts only final A3=65180. No overlapping console scope.
+65153 and
+65160 refused BEFORE staging/launch at5883/6798 against7374; no speed verdict.
+New complement65157 skips997 windows, scans1628;65167 skips2625, scans457.
+65174 skips3082,scans549,resident1712->0,free6281->7993. The cumulative positive
+complement prefix is3631/6076; never replay it unchanged.65171 also refuses
+before publication at6319<7374; its query is retired before65174.
+Q3 carrier software65126 completes all960 distinct tiles. New native link65164 /
+SELF65165 retain a positively idle device until ordinary close rather than
+repeating the failed post-destroy path. Two positive/17 negative lifetime
+controls and21 changed host streaming/completion controls pass; native UNRUN.
+Direct transfers65138/65151 both RETURN failure, all CPU calls returned, helpers
+exited/removed, exact owned partial files removed. No publication/model/GPU calls.
+Do not replay235MB with the same180s/16KiB sender. Next changed sender uses256KiB
+and TCP_NODELAY; qualify/reuse the actual57.3MB carrier component pack first.
+S1 fresh/retained ABBA65145 completes12 requests, analysis65150. Primary warm
+rates+3.170355%/+3.620426%, three-request span-6.503829%, ONLY versus fresh MTP.
+Absolute ordinary-vs-retained quality65163 reuses64989/65004: target tokens/
+bytes exact, only3/69 F32 hashes exact, routes1104vs864 calls/request. Do not
+claim identical computation or weaken other same-computation gates. Separate
+causal/lifetime proof65010 remains exact; absolute model speed is still UNRUN.
+No production switch or campaign completion is implied by this checkpoint.
+I1 second refinement65182 qualifies cached predictor-only descriptor keys with
+9 changed-implementation concurrency cases+3 new boundaries. Actual worker
+reads and scratch hits still require fresh identities; close invalidates keys.
+65175's first fixture accidentally repeated a learned transition; diagnostic
+line101 identifies that fixture assertion. Nonrepeating fixture65182 passes;
+no PS5 failure is implied. Candidate-only F32 package65183 is building, reusing
+the old entry,scope controls and completed control SELF. Native UNRUN.
+Q3 recipe65173 extracts18 definitions/13 selected float resources from the
+pinned generator.65181 compiles/validates all13 for uniform all48-Down carrier
+sources. No original Q2_0 payload may enter these forced-format shaders. Source
+view/descriptor origins,software model shader math and native model remain
+unqualified; this shader build must not be treated as launch admission.
+
 P1 tail-eight completes final control65133 and analysis65132. Mean decode
 changes:cold+1.520572%,retained+0.060140%,exact-prefix-0.730437%;neither paired
 gain exceeds control AA spread in both pairs. Do not rerun or adopt this version.

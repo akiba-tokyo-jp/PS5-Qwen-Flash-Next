@@ -6,6 +6,77 @@ The primary metric remains complete-model decode tokens/s:
 requests remain separate. Component timing, prediction hits and fewer auxiliary
 creations do not establish a model speedup.
 
+Latest continuation: the final S1 fresh/retained pair65145 completes all twelve
+requests, ordinary closes and exact selected-file restores. Analysis65150 gives
+ordinary cold7.999906->8.010003 tok/s (+0.126217%, uncertain), warm-one
+11.372762->11.733319 (+3.170355%) and warm-two12.443991->12.894517 (+3.620426%).
+Both warm gains exceed control AA spread in both pairs. The complete three-
+request span, including auxiliary creation and final retirement, falls
+13205.843152->12346.957705ms (-6.503829%); both savings exceed AA spread.
+These are improvements over fresh-MTP creation, not over the ordinary release.
+The ordinary comparison reuses numerical64989 and retained65004 in65163:
+all target tokens/bytes agree,3/69 full-vocabulary hashes agree, and route calls
+differ1104 versus864 per request. The changed speculative batching is not an
+identical-computation optimization. Its independently completed compact causal
+and lifetime proof65010 remains exact; the absolute speed ABBA is outstanding.
+
+I1 timing65152 refuses before publication at5883<7374. After changed cache
+scope65157, sequence65158 completes only control65159, all three requests,
+ordinary close and exact restoration. Its next case65160 refuses before
+publication at6798<7374. Complement65167 then scans457 previously unobserved
+windows. Sequence65168 reuses65159 and runs only the remaining cases. No I1
+rate decision is claimed before the complete paired measurements. The positive
+source-cache complement prefix now totals3082/6076 windows; never replay it
+unchanged. Both new helpers positively retire all mappings and descriptors.
+
+The two large CPU-only transfers65138 and65151 return failure at the existing
+180-second receive bound. Both existing logs are collected without replay;
+all socket/file calls return, helpers exit/remove their files, and exact partial
+owned files are removed (95,272,960 and95,944,704 bytes). The second native
+receiver actually uses256KiB read/write windows and observes256KiB SO_RCVBUF;
+its throughput remains approximately0.5MiB/s. Log overhead alone is therefore
+not an established cause. The next host sender uses256KiB windows/TCP_NODELAY
+and records file-read versus sendall time. It will qualify and reuse the actual
+57,327,616-byte carrier pack, avoiding another235MB transport-only attempt.
+The original root receiver,180s/60s deadlines and OS memory predicates remain.
+
+Q3 four-binding carrier software65126 completes960 distinct64-row tiles across
+all24 shape/workgroup cases, F64 tolerances, canaries and positive resource
+retirement. New native65164/SELF65165 preserve the selected872cc126 cumulative-
+idle driver, disabled persistent caches and complete physical callback table.
+After all case resources positively retire, they complete the final live-device
+epoch and explicitly retain the idle device/instance plus driver backing until
+ordinary OS close. They never repeat the failed post-device-destruction path or
+claim zero driver ownership. Two positive/17 negative new lifetime controls and
+21 new host stream/completion boundaries pass. Native execution and a fresh
+post-exit Direct capacity observation remain required. No release is switched.
+
+Further continuation: I1 B1=65170 completes all three timed requests and exact
+ordinary restoration. Actual counters are5 predictions/5 positive reads,
+7,241,728 speculative bytes,zero hits and5 unused jobs,all in the cold request.
+65171 refuses before publication at6319<7374. New complement65174 skips3082
+completed windows,scans549,observes1712 resident pages->0 and free6281->7993.
+The positive complement prefix is now3631/6076. Sequence65176 reuses A0/B1,
+completes B2=65179 and proceeds only to A3=65180. No paired rate verdict yet.
+
+I1 second refinement65182 removes repeated metadata syscalls used only for
+predictor training. The expected descriptor identity is a hint,never an I/O
+integrity receipt or permission to copy scratch. Both actual worker boundaries
+and two fresh scratch-use checks remain; wrapped close invalidates the cached
+key. Nine concurrency cases on the changed implementation and three new
+boundaries pass. The first65175 fixture was accidentally predictive; its line101
+assertion is diagnosed,then only that fixture sequence is corrected. No native
+failure is claimed. F32 package65183 reuses the original entry,scope controls
+and completed control package while linking only the changed candidate runtime.
+
+Q3 recipe65173 recovers18 Q2 definitions from the actual pinned generator and
+all13 selected float resource recipes. Model shader build65181 compiles and
+validates those13 resources with a forced IQ2 carrier decoder. It requires all
+48 Down layers converted and forbids original Q2_0 payloads in the candidate;
+the ordinary control retains its original resources. This avoids relying on a
+hybrid payload detector. Descriptor/cache plane origins,software execution of
+the model shaders and native full-model quality/rates are still unqualified.
+
 G1 native65069 completes all three requests, positive model/source/device
 retirement, one ordinary close and exact restoration of the selected seven files.
 Analysis65070 reuses control64950 without replaying it: all69 full-vocabulary

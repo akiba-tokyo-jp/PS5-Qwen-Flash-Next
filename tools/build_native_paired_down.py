@@ -29,20 +29,38 @@ def main():
     for name in ('workspace', 'current', 'component', 'software-proof', 'out'):
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--reuse-retirement-controls',type=Path)
+    p.add_argument('--carrier',action='store_true')
+    p.add_argument('--retained-device-controls',type=Path)
     a = p.parse_args()
     component, proof = load(a.component), load(a.software_proof)
-    need(component['completed'] and component['buffer_tables'] and component['all14745600_decoded_F32_values_byte_exact'] and
-         proof['completed'] and proof['all_outputs_passed'] and proof['software_SPIRV_reference'] and
+    if a.carrier:
+        need(component['completed'] and component['paired_down_carrier'] and
+             component['all_complete_carriers_independently_inverse_verified'] and
+             component['original_IQ2_operands_and_F64_references_preserved'] and a.retained_device_controls,
+             'The independently verified four-binding carrier and lifetime controls are required')
+    else:need(component['completed'] and component['buffer_tables'] and component['all14745600_decoded_F32_values_byte_exact'],
+              'The original buffer-codebook component is required')
+    need(proof['completed'] and proof['all_outputs_passed'] and proof['software_SPIRV_reference'] and
          proof['Vulkan_dispatches'] == 960 and proof['all_GPU_resources_positively_retired'] and
          proof['build'] == record(a.component), 'Reuse the exact completed buffer-codebook software component')
     cases = load(component['GPU_cases']['path'])
     need(record(component['GPU_cases']['path']) == component['GPU_cases'] and len(cases['cases']) == 12 and
-         len(cases['shader']) == 2 and cases['buffer_tables'], 'Exact original twelve cases and two shaders required')
+         len(cases['shader']) == 2 and cases['buffer_tables']==(not a.carrier), 'Exact original twelve cases and two shaders required')
     desktop = ROOT / 'tools/check_iq2_paired_down_gpu.cpp'
-    need(record(desktop)['sha256'] == proof['source']['sha256'], 'The completed desktop component source changed')
+    if a.carrier:
+        qualified=Path(proof['source']['path'])
+        need(record(qualified)==proof['source'] and qualified.read_text()==once(desktop.read_text(),
+             'weights.size()==422400u*planes','weights.size()==460800u*planes'),
+             'Only the carrier plane stride may differ from the completed component source')
+        desktop=qualified
+    else:need(record(desktop)['sha256'] == proof['source']['sha256'], 'The completed desktop component source changed')
     a.out.mkdir(parents=True, exist_ok=False)
     support=a.out/'paired_down_native_support.h'
     shutil.copyfile(ROOT/'native/app/paired_down_native_support.h',support)
+    if a.carrier:
+        from native_paired_carrier_adapter import support_text,controls
+        retained_controls=controls(a.retained_device_controls,ROOT)
+        support.write_text(support_text(support.read_text()),encoding='utf-8',newline='\n')
     builder_snapshot=a.out/'builder.private.py';shutil.copyfile(Path(__file__),builder_snapshot)
     source_inputs = [record(a.component), record(a.software_proof), component['GPU_cases'], record(desktop),
                      record(support),
@@ -112,8 +130,10 @@ def main():
     start = text.index('        auto library=LoadLibraryA(')
     end = text.index('        const auto create=', start)
     text = text[:start] + '        const auto get=vkGetInstanceProcAddr;\n' + text[end:]
-    text = once(text, 'void close(){vkDestroyDevice(device,nullptr);device=VK_NULL_HANDLE;destroy_instance(instance,nullptr);instance=VK_NULL_HANDLE;}',
-                'void close(){qwen_native_driver_complete();const auto epoch=native_completed_epoch();vkDestroyDevice(device,nullptr);device=VK_NULL_HANDLE;destroy_instance(instance,nullptr);instance=VK_NULL_HANDLE;native_component_finish(epoch);}')
+    close_body='void close(){qwen_native_driver_complete();const auto epoch=native_completed_epoch();'
+    close_body+=('native_component_retain(reinterpret_cast<uintptr_t>(device),reinterpret_cast<uintptr_t>(instance),epoch);}' if a.carrier else
+        'vkDestroyDevice(device,nullptr);device=VK_NULL_HANDLE;destroy_instance(instance,nullptr);instance=VK_NULL_HANDLE;native_component_finish(epoch);}')
+    text = once(text, 'void close(){vkDestroyDevice(device,nullptr);device=VK_NULL_HANDLE;destroy_instance(instance,nullptr);instance=VK_NULL_HANDLE;}',close_body)
     text = once(text, '    Buffer b;b.bytes=bytes;', '    native_guard();Buffer b;b.bytes=bytes;')
     text = once(text, '        const auto started=std::chrono::steady_clock::now();',
                 '        native_guard(31);const auto started=std::chrono::steady_clock::now();') if text.count('        const auto started=std::chrono::steady_clock::now();') else once(text,
@@ -133,8 +153,11 @@ def main():
     text = text.replace('for(;;)Sleep(1000);', 'qwen_native_driver_retain();qwen_native_halt("paired_Down_native_fence_unknown_resources_retained");')
     text = text.replace('{"PS5_operations",0}', '{"PS5_GPU_execution",true}')
     text = text.replace('"desktop_dispatch_and_fence_wall_us"', '"native_dispatch_and_fence_wall_us"')
-    text = once(text, 'result["unknown_completion"]=false;save(argv[2],result);',
-                'result["unknown_completion"]=false;result["native_PS5"]=true;result["model_loads"]=0;result["all_model_source_device_owners_positively_retired"]=true;result["device_ledger_live_bytes"]=0;save(argv[2],result);')
+    if a.carrier:
+        text=once(text,'result["all_GPU_resources_positively_retired"]=true;','result["all_GPU_resources_positively_retired"]=false;')
+        ending='result["unknown_completion"]=false;result["native_PS5"]=true;result["model_loads"]=0;result["all_case_resources_positively_retired"]=true;result["retained_completed_device"]=native_retained_receipt();native_retained_result=result;save(argv[2],result);'
+    else:ending='result["unknown_completion"]=false;result["native_PS5"]=true;result["model_loads"]=0;result["all_model_source_device_owners_positively_retired"]=true;result["device_ledger_live_bytes"]=0;save(argv[2],result);'
+    text = once(text, 'result["unknown_completion"]=false;save(argv[2],result);',ending)
     text = once(text, '}catch(const std::exception&e){std::cerr<<e.what()<<\'\\n\';return 1;}}',
                 '}catch(...){throw;}}')
     need(not any(token in text for token in ('LoadLibraryA(', 'GetProcAddress(', 'Sleep(')), 'Desktop OS calls must be absent')
@@ -205,14 +228,18 @@ def main():
     link[link.index('-o')+1] = str(image)
     link[1:1] = [str(obj),str(sha_obj),str(integrity_obj)]
     commands.append(link)
-    source_inputs += [record(ROOT/'native/app/post_device_retirement.h'),record(ROOT/'tests/post_device_retirement_test.cpp')]
+    source_inputs += ([record(ROOT/'native/app/retained_completed_device.h'),record(ROOT/'tests/retained_completed_device_test.cpp')]
+        if a.carrier else [record(ROOT/'native/app/post_device_retirement.h'),record(ROOT/'tests/post_device_retirement_test.cpp')])
     inputs += source_inputs[-2:]
     host=a.workspace/'toolchain/msys-clang64/clang64/bin'
     test=a.out/'post-device-retirement.exe'
     controls=[[str(host/'clang++.exe'),'-std=c++17','-O2','-Wall','-Wextra','-Werror',
                '-I',str(ROOT/'native/app'),str(ROOT/'tests/post_device_retirement_test.cpp'),'-o',str(test)],[str(test)]]
     reused_controls=None
-    if a.reuse_retirement_controls:
+    if a.carrier:
+        reused_controls=retained_controls;controls=[]
+        inputs.append(record(ROOT/'tools/native_paired_carrier_adapter.py'))
+    elif a.reuse_retirement_controls:
         previous=load(a.reuse_retirement_controls)
         need(previous['completed'] and previous['new_post_device_controls']==15,'Exact completed retirement controls required')
         known={Path(row['path']).name:row for row in previous['inputs_before']}
@@ -254,7 +281,9 @@ def main():
         component=record(a.component),software_proof=record(a.software_proof),source=record(source),commands=commands,
         link_command=link,component_pack=dict(local=pack_record,application_path=remote),parts=parts,
         original_case_geometry=original,maximum_GPU_dispatches=24,CPU_heap_cap=64<<20,device_owner_cap=128<<20,
-        native_GPU_qualified=False,new_post_device_controls=15,unchanged_retirement_controls_reused=reused_controls,
+        native_GPU_qualified=False,new_post_device_controls=0 if a.carrier else 15,
+        retained_device_controls=19 if a.carrier else 0,retained_idle_device_until_ordinary_close=a.carrier,
+        paired_down_carrier=a.carrier,unchanged_retirement_controls_reused=reused_controls,
         same_selected_Direct_table_mapping_and_incremental_restoration=True,
         CPU_startup_only_mode=True,successful_driver_whole_archive_preserved=True,
         actual_physical_dispatch_audit=callbacks,CPU_Direct_capacity_readmission=True,PS5_operations=0,production_adopted=False)

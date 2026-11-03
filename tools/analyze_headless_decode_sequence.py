@@ -56,6 +56,11 @@ def main():
     groups=[]
     ordinary_S1=sequence['scope']=='S1' and all(p['headless_audit_kind'] in
         ('S1-persistent-MTP-online','S1-ordinary-target-control') for p in profiles)
+    cross_feature=ordinary_S1 and proof.get('scope')=='S1-ordinary-vs-retained'
+    if cross_feature:
+        need([p['headless_audit_kind'] for p in profiles]==['S1-ordinary-target-control','S1-persistent-MTP-online',
+            'S1-persistent-MTP-online','S1-ordinary-target-control'] and proof['tokens_and_output_bytes_exact'] and
+            proof['compact_retained_causal_and_lifetime_qualified'],'Explicit qualified feature comparison required')
     for index in range(3):
         requests=[t['requests'][index] for t in terminals];reference=requests[0];rates=[];routes=[]
         for root,r in zip(roots,requests):
@@ -70,7 +75,13 @@ def main():
             routes.append(trace['records']);evidence.append(record(path))
         tokens=all(r['token_ids']==reference['token_ids'] and r['output_bytes']==reference['output_bytes'] for r in requests)
         ordered=all(r==routes[0] for r in routes)
-        need(tokens and ordered,'Timed target tokens, output bytes and ordered routes must agree')
+        if cross_feature:
+            need(tokens and routes[0]==routes[3] and routes[1]==routes[2],
+                'Target outputs must agree and each feature must reproduce its own ordered routes')
+            for arm,actual in ((0,routes[0]),(1,routes[1])):
+                expected=exact(proof['route_evidence_by_feature'][arm][index])
+                need(actual==expected['records'],'Each timed feature must match its numerical route qualification')
+        else:need(tokens and ordered,'Timed target tokens, output bytes and ordered routes must agree')
         keys=('source_bytes','source_physical_read_bytes','source_physical_read_calls')
         source_equal=all(len({r['completed_performance']['delta'][k] for r in requests})==1 for k in keys)
         labels=('ordinary-cold','ordinary-retained-1','ordinary-retained-2') if ordinary_S1 else ('cold','retained','exact-prefix')
@@ -80,6 +91,7 @@ def main():
         spans['complete_request_span_ms']=compare_time([r['complete_request_span_ms'] for r in requests])
         groups.append(dict(condition=labels[index],native_arm=reference['arm'],tokens_and_output_bytes_exact=tokens,
             ordered_routes_exact=ordered,original_source_demand_equal=source_equal,
+            qualified_cross_feature_computation=cross_feature,route_record_counts=[len(x) for x in routes],
             decode_tokens_per_second=compare(rates),additional_time_metrics=spans))
     lifecycle=None
     if sequence['scope']=='S1':
