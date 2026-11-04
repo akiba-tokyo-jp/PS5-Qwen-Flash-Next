@@ -10,7 +10,7 @@ import urllib.parse
 from build_performance_quantizer import record
 from run_successful_model_case import publish
 from start_success_route import load,need,save
-from success_case_control import build,current_files,execute,lan_module,PHYSICAL
+from success_case_control import build,complete,current_files,execute,lan_module,PHYSICAL
 
 
 def completed_terminal_journal(stages,CPU_startup=False):
@@ -33,6 +33,8 @@ def main():
     parser.add_argument('--IQ2-fixture',action='store_true')
     parser.add_argument('--headless-audit',action='store_true')
     parser.add_argument('--direct-staging-proof',type=Path)
+    parser.add_argument('--collect-close',action='store_true',
+        help='Collect the exact submitted close after a host timeout; never submit another close')
     parser.add_argument('--prior-refused-close',type=Path,
         help='An exited zero-operation helper whose headless route proof used the wrong arm')
     args=parser.parse_args();need(sum((args.headless_calibration,args.IQ2_fixture,args.headless_audit))<=1,'One explicit completed scope is required')
@@ -98,7 +100,11 @@ def main():
     need(len(rows)==count and all(r['request_reset_completed'] and r['full_F32_finite'] and type(r['counting_quality_passed']) is bool for r in rows),
          'All three original finite requests must positively complete')
     need(launch['completed'] and launch['operation_calls']==1 and launch['app_id']>0,'One accepted ordinary native launch required')
-    args.out.mkdir(parents=True,exist_ok=False)
+    if args.collect_close:
+        need(args.out.is_dir() and (args.out/'ordinary-close/execution/execution.once.private.json').is_file() and
+             not (args.out/'restore').exists() and not (args.out/'result.private.json').exists(),
+             'Collect only the submitted close before any restore publication')
+    else:args.out.mkdir(parents=True,exist_ok=False)
     remote=PHYSICAL+case['report'][5:]
     arm=count-1 if finite and not args.IQ2_fixture else 2
     reports=[dict(record(terminal_path),remote=remote)]
@@ -129,16 +135,26 @@ def main():
         close['source_bound_CPU_startup_profile']=package['effective_application_policy']['profile']
     state_path=args.current/'active-console.private.json';state=load(state_path)
     need(state['active_successful_native_case']['run_id']==case['run_id'] and state['native_running'], 'Exact active native case required')
-    state.update(model_loaded=False,unknown_completion=False,state='current_model_positively_retired_ordinary_close_pending')
+    state.update(model_loaded=False,unknown_completion=bool(args.collect_close and state.get('ordinary_close_completion_unknown')),
+        state='current_model_positively_retired_ordinary_close_pending')
     state_path.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
     lan=lan_module();boot=load(case['model_proof']['path'])['current_boot']
     journal=PHYSICAL+'/qwen-runtime/entry-b'+str(boot[0])+'-'+str(boot[1])+'-'+str(first['pid'])+'.stages'
-    deadline=time.monotonic()+5
-    while True:
-        stages=lan.web('/fs'+urllib.parse.quote(journal,safe='/'),8<<20)
-        if completed_terminal_journal(stages,CPU_startup):break
-        need(time.monotonic()<deadline,'Complete native terminal journal is pending; retain owner');time.sleep(.1)
-    stage_path=args.out/'completed-native-stages.private.log';stage_path.write_bytes(stages)
+    stage_path=args.out/'completed-native-stages.private.log'
+    if args.collect_close:
+        submitted=load(args.out/'ordinary-close/plan.private.json')
+        stage_proof=submitted['close_admission']['reports'][-1]
+        need(record(stage_path)=={k:stage_proof[k] for k in ('path','bytes','sha256')} and stage_proof['remote']==journal,
+             'Reuse the exact original completed native journal admitted by the submitted close')
+        stages=stage_path.read_bytes()
+        need(completed_terminal_journal(stages,CPU_startup),'The original positive native journal changed')
+    else:
+        deadline=time.monotonic()+5
+        while True:
+            stages=lan.web('/fs'+urllib.parse.quote(journal,safe='/'),8<<20)
+            if completed_terminal_journal(stages,CPU_startup):break
+            need(time.monotonic()<deadline,'Complete native terminal journal is pending; retain owner');time.sleep(.1)
+        stage_path.write_bytes(stages)
     reports.append(dict(record(stage_path),remote=journal))
     prior_refusal=None
     if args.prior_refused_close:
@@ -162,8 +178,31 @@ def main():
         prior_refusal=dict(result=record(args.prior_refused_close/'result.private.json'),
             plan=record(args.prior_refused_close/'plan.private.json'),changed_scope='Correct third-arm route path',
             previous_OS_close_calls=0,model_relaunches=0)
-    plan=build(args.workspace,args.mount_plan,case['new_files'],case['new_files'],[],'close',args.out/'ordinary-close',close=close)
-    execute(lan,plan,args.out/'ordinary-close')
+    if args.collect_close:
+        plan=submitted;once=load(args.out/'ordinary-close/execution/execution.once.private.json')
+        need(plan['operation']=='close' and plan['close_admission']==close and
+             plan['old_files']==plan['new_files']==case['new_files'] and
+             once['artifact']['path']==plan['remote'] and once['artifact']['sha256']==plan['artifact']['sha256'] and
+             once['request']['elf']==plan['remote'] and record(plan['artifact']['path'])==plan['artifact'],
+             'Only the identical once-submitted close, owner and original admission may be collected')
+        collected=args.out/'ordinary-close/result.private.json'
+        if collected.exists():
+            returned=load(collected)
+            need(record(returned['raw']['path'])==returned['raw'],'Collected close journal changed')
+        else:
+            raw_path=args.out/'ordinary-close/collected-after-host-timeout.private.log'
+            deadline=time.monotonic()+90
+            while True:
+                raw=lan.web('/fs'+urllib.parse.quote(plan['log'],safe='/'),8<<20,20)
+                if b'\nEND ' in raw:break
+                need(time.monotonic()<deadline,'Same submitted close remains pending; retain owner');time.sleep(1)
+            with raw_path.open('xb') as stream:stream.write(raw)
+            returned=complete(lan,plan,args.out/'ordinary-close',raw,raw_path)
+        need(returned['completed'] and returned['operation']=='close' and returned['operation_calls']==1 and
+             returned['helper_exited'] and returned['helper_files_removed'], 'The original ordinary close must positively retire exactly once')
+    else:
+        plan=build(args.workspace,args.mount_plan,case['new_files'],case['new_files'],[],'close',args.out/'ordinary-close',close=close)
+        execute(lan,plan,args.out/'ordinary-close')
     deadline=time.monotonic()+15
     while True:
         with lan.OPENER.open('http://'+lan.HOST+':8084/processes_list',timeout=8) as response:
@@ -180,6 +219,12 @@ def main():
     state.update(state='unloaded_GPU_fixture_completed_ordinarily_closed_current_restored' if args.IQ2_fixture else 'current_model_completed_ordinarily_closed_original_restored',
         native_running=False,model_loaded=False,gateway_running=False,native_owners=0,unknown_completion=False,original_restored=True)
     state.pop('temporary_installed_SELF',None)
+    if args.collect_close:
+        state.pop('ordinary_close_completion_unknown',None)
+        state.pop('current_candidate_restoration_unconfirmed',None)
+        if state.get('interrupted_strata_validation'):
+            state['interrupted_strata_validation']['resolved_by_same_positive_close']=record(args.out/'ordinary-close/result.private.json')
+            state['interrupted_strata_validation']['PS5_current_restoration']=True
     state['active_successful_native_case'].update(phase='model-complete-ordinary-close-original-restored',native_pid=first['pid'])
     if not args.IQ2_fixture and not unloaded_CPU:
         state.update(current_boot_Qwen_model_admitted=True,current_boot_readmission_pending=False)
@@ -195,6 +240,9 @@ def main():
         all_counting_quality_passed=None if args.IQ2_fixture else all(r['counting_quality_passed'] for r in rows),
         optimization_benefit_qualified=False,production_adopted=False)
     if prior_refusal:result['corrected_headless_proof_after_zero_operation_refusal']=prior_refusal
+    if args.collect_close:result['same_submitted_close_collected_after_host_timeout']=dict(
+        original_once=record(args.out/'ordinary-close/execution/execution.once.private.json'),
+        positive_close=record(args.out/'ordinary-close/result.private.json'),additional_close_calls=0,model_relaunches=0)
     save(args.out/'result.private.json',result)
     print(json.dumps({k:v for k,v in result.items() if k not in ('native_terminal','observer')}))
 

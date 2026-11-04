@@ -95,9 +95,10 @@ def start(args):
         dependency_proof=state['required_bundle_inputs']
         need(record(dependency_proof['path'])==dependency_proof,'Required live-input proof changed')
         dependencies=load(dependency_proof['path'])
+        from retained_identity_proof import require_same_provider
         need(dependencies['completed'] and dependencies['live_native_metadata_verified'] and
              dependencies['physical_and_mounted_observations']==138 and
-             dependencies['identity_provider']==identity_audit['provider'],
+             require_same_provider(dependencies['identity_provider'],identity_audit['provider'],args.current),
              'The same linked data provider must match all 69 physically observed inputs')
     need(record(image['path'])==image,'Selected SELF changed')
     run=secrets.token_hex(16);nonce=secrets.token_hex(16);report='/app0/qwen-runtime/plan-'+run+'.json'

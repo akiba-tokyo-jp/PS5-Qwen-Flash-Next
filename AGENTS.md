@@ -3,6 +3,74 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65611 (2026-11-05 JST): Strata validation is INTERRUPTED by console
+transport loss during collection of the FIRST submitted ordinary close for
+ST3-campaign-65608/group-first. Hosts73912 and collection93037 are RETIRED
+exit1. No active host IO owner, queued successor or automatic retry exists.
+Never poll/restart either host or replay any model, close or initializer.
+The CURRENT65608 ownership statements below are historical.
+
+Both distinct ST3 refinements match all69 full-vocabulary F32 hashes, ordered
+routes, tokens and bytes against selected P1 reference65016; their numerical
+cases positively normally close and restore. Timed control-first also closes
+and restores:10.401232/12.199695/13.349245 tok/s. Timed group-first completes
+all3 requests/source windows, positive source/device retirement and zero live
+device bytes:10.446024/12.258107/13.373284 tok/s, but its OS close is UNKNOWN
+and original restoration has NOT started. These rates are incomplete paired
+evidence, not a qualified gain. No new candidate is adopted.
+
+The model terminal is positive, but ordinary-close's execution.once exists
+without any locally collected native close journal/result. Same-close-only
+collection also times out connecting. One distinct reachability observation
+finds TCP8080/8084/2121 timed out and ICMP reports Destination host unreachable
+from PC192.168.68.71. Ping exit0 is NOT a PS5 response. Cause/power state is
+unknown. Do not infer a crash, ordinary exit, original restoration or idle.
+PS5's last authenticated installed SELF is group-timed66ee5fda..., not current
+c5afc565. Host current remains c5afc565; preserve ALL trial binaries/evidence
+while the original close owner/restoration is unresolved. Active-console
+records unknown_completion=true, original_restored=false and a pending-owner
+native_running marker; the latter does NOT prove a live process.
+
+No initializer, reboot, recovery, model relaunch or second close is submitted.
+Readback-first timing, control-last and any justified extension remain PENDING.
+The owner was asked only whether power/LAN availability changed; never request
+or depend on a restart. On an actual external availability change, first
+collect the EXACT existing ordinary-close plan with --collect-close, then
+positively restore and record_closed_strata_case.py. A guarded
+--completed-prefix-from continuation reuses both numerical results and both
+first timed cases; it is PREPARED ONLY, never started. Do not rerun completed
+work. Preserve every completed-model source cache cohort/window cursor.
+
+CURRENT65608 (2026-11-05 JST): the owner authorized actual validation of the
+three Strata candidates after source review. New work is isolated on branch
+perf/strata-validation-20261105. Sole console IO owner is host73912, running
+tools/run_strata_sync_campaign.py at
+D:/PS5-AI/qwen-flash-next/strata-validation-20261105/ST3-campaign-65608.
+Its first group qualification is REUSED, not relaunched. Group host76289,
+build57365 and applicability collector13449 are RETIRED exit0; never poll or
+restart them. Follow the same73912 owner. No initializer or reboot is permitted.
+
+Applicability65602 completes3 requests/7259 source windows and ordinary exact
+restore. ST1/ST2 have no existing Q8_1 activation path under the selected
+integer-dot/coopmat disable policy; both decode and prefill are checked.
+ST3's GPU-event-ring adaptation is inapplicable to the four CPU leases, but
+cache-local stream waits have actual46/4/5 opportunities. Two refinements are
+built: keep the first wait per stream scope (`group`), or reuse the completed
+ID-readback boundary (`readback`). Group65607 matches all69 F32 hashes, actual
+routes/tokens/bytes against selected P1 reference65016 and normally closes.
+Readback qualification and shared-control timing screens are owned by73912;
+only promising screens advance. No new speedup or adoption is established.
+
+Campaign tools and packages are FROZEN through73912's completion. Preserve
+new completed-model cache cohort cursors; original1154/7374 floors and all
+source/GPU completion gates remain exact. Canonical identity-path rebinding
+passes2 positives/9 negative controls without regenerating identity data.
+Original-source Strata owner admission passes1 positive/8 negative controls.
+Selected production remains c5afc565/R1+P1, driver872cc126/cumulative-idle,
+persistent caches OFF. See docs/strata-validation-20261105.md for scope and
+the new private receipt root above. Earlier eight-family campaign is complete
+and is not reopened by these new candidates.
+
 Latest source-only review (2026-11-05 JST): see
 docs/strata-candidate-review-20261105.md/.json. Strata main is pinned at
 ffa80d73133ea5c548aefe57889a16e8085a938f. ST1 input-conversion sharing,

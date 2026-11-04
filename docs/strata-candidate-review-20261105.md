@@ -1,5 +1,13 @@
 # Strata source review, 2026-11-05
 
+Subsequent user-authorized work is recorded in
+[Strata validation](strata-validation-20261105.md). ST1/ST2 are ineligible under
+the selected activation policy. Both distinct ST3 cache-wait refinements pass
+native numerical/route equivalence. Timing is interrupted by console transport
+loss while collecting an already submitted ordinary close; console restoration
+is unconfirmed. No new speedup is adopted. The source-only review below remains
+the historical basis for that work.
+
 The latest `Niko1221/Strata` main observed for this review is
 [`ffa80d73133ea5c548aefe57889a16e8085a938f`](https://github.com/Niko1221/Strata/tree/ffa80d73133ea5c548aefe57889a16e8085a938f),
 committed 2026-11-02 22:37:27 UTC (2026-11-03 JST). GitHub's branch API and the

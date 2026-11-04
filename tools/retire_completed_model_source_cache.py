@@ -17,6 +17,30 @@ ROOT = Path(__file__).resolve().parents[1]
 LEDGER = 'completed_model_source_cache_cohorts'
 
 
+def require_strata_original_sources(profile, native, current):
+    """Bind the new original-model scopes without admitting archived source layers."""
+    kind = profile['headless_audit_kind']
+    scope = profile['overrides']['native_headless_model_audit']
+    selected = load(load(current / 'provenance/selected-entry-build.private.json')['application_policy']['path'])
+    policy = load(current / 'qwen-runtime/development.json')
+    need(kind in ('Strata-applicability', 'ST3-stream-sync') and scope['kind'] == kind and
+         not profile.get('model_layer') and profile['model_and_GPU_guards_preserved'] and
+         scope['requests'] == 3 and scope['model_loads'] == 1 and
+         scope['HTTP_requests'] == scope['VideoOut_starts'] == 0 and
+         scope['original_cold_retained_exact_prefix_sequence'] and
+         {k: v for k, v in profile['overrides'].items() if k != 'native_headless_model_audit'} == selected['overrides'] and
+         native['model_receipt_sha256'] == policy['native_first_generation_validation']['model_receipt_sha256'],
+         'Only the exact original-model Strata observation or cache-local wait scope may retire its completed reads')
+    if kind == 'Strata-applicability':
+        need(scope['GPU_instructions_unchanged'] and scope['source_IO_and_completion_unchanged'],
+             'The applicability scope must preserve source IO and GPU work')
+    else:
+        need(profile['ST3_mode'] in ('control', 'group', 'readback') and
+             scope['original_arithmetic_and_GPU_buffers_preserved'] and scope['original_source_leases_preserved'] and
+             scope['selected_ID_readback_completion_preserved'] and scope['positive_upload_callback_completion_preserved'],
+             'The stream-wait scope must preserve actual readback, upload and source ownership')
+
+
 def cohort_entry(entries, case_record, completed_records):
     matches = [entry for entry in entries if entry['case_result'] == case_record]
     need(len(matches) <= 1, 'One completed model may own only one source-residency cohort')
@@ -54,7 +78,9 @@ def sources(current, case):
     profile_row = package['effective_application_policy']['profile']
     need(record(profile_row['path']) == profile_row, 'The compiled model profile changed')
     profile = load(profile_row['path'])
-    need(profile['headless_audit_kind'] in ('Q2-IQ2-Up-model', 'Q2-IQ2-Gate-Up-model', 'Q3-IQ2-Down-model') and
+    strata = profile['headless_audit_kind'] in ('Strata-applicability', 'ST3-stream-sync')
+    need(profile['headless_audit_kind'] in ('Q2-IQ2-Up-model', 'Q2-IQ2-Gate-Up-model', 'Q3-IQ2-Down-model',
+                                         'Strata-applicability', 'ST3-stream-sync') and
          profile['model_and_GPU_guards_preserved'], 'Only the explicit remaining original-model cohorts are eligible')
     parent = current / 'provenance/model-source-plan.private.json'
     required = current / 'provenance/required-bundle-inputs.private.json'
@@ -74,6 +100,8 @@ def sources(current, case):
         seal = load(publication['source_integrity']['path'])
         rows += seal['parts'] + seal['headers']
         evidence += [layer['publication'], publication['source_integrity']]
+    elif strata:
+        require_strata_original_sources(profile, native, current)
     else:
         need(profile['overrides']['native_headless_model_audit']['arm'] == 'control',
              'An original-source cohort must be the exact compiled control')
