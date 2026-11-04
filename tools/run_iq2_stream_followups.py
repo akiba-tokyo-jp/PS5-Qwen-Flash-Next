@@ -12,6 +12,7 @@ import time
 from build_performance_quantizer import record
 from iq2_up_model_scope import require_IQ2_comparison
 from run_headless_decode_sequence import returned
+from source_cache_pools import command as cache_command, has_windows, validate as validate_cache_pools
 from start_success_route import load, need, save
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,6 +34,8 @@ def main():
         'run_successful_model_case.py', 'close_successful_current_model.py', 'success_case_control.py',
         'retire_published_iq2_source_cache.py', 'analyze_iq2_pair_screen.py', 'analyze_headless_decode_sequence.py',
         'build_iq2_heldout_quality.py', 'analyze_iq2_heldout_quality.py')]
+    frozen += [record(ROOT / 'tools' / name) for name in (
+        'source_cache_pools.py', 'observe_source_cache_complement.py', 'observe_completed_source_cache.py')]
     frozen += [record(a.config), record(Path(__file__))]
     if config.get('minimum_request_alignment_control'):
         path = Path(config['minimum_request_alignment_control'])
@@ -51,8 +54,7 @@ def main():
         frozen.append(record(prior))
     initial = load(a.initial_cache_scopes)
     pools[0]['completed_scopes'] = initial + pools[0].get('completed_scopes', [])
-    need(all(pool['scope'] in ('Gate48', 'Down48', 'Up-prefix', 'Up-final4') for pool in pools),
-         'Only the exact positively sealed new source pools are eligible')
+    validate_cache_pools(pools)
     (a.out / 'cache-pools.private.json').write_text(json.dumps(pools, indent=2) + '\n', encoding='utf-8')
     save(a.out / 'intent.private.json', dict(tools=frozen, profiles=config['profiles'],
         changed_source_cache_pools=pools, primary_metric='(generated_tokens-1)*1000/decode_ms',
@@ -105,18 +107,13 @@ def main():
         # target; the subsequent title still needs its own fresh7374-page guard.
         for pool in pools:
             done = pool['completed_scopes']
-            if done and load(done[-1])['remaining_windows'] == 0:
+            if not has_windows(pool):
                 continue
             for _ in range(8):
                 out = a.out / ('cache-' + str(serial))
                 serial += 1
-                flags = common + ['--publication', pool['publication'],
-                                 '--target-free-pages', '16384', '--out', out, '--execute']
-                if pool['scope'] != 'Up-final4':
-                    flags += ['--' + pool['scope']]
-                for completed in done:
-                    flags += ['--completed-scope', completed]
-                run('retire_published_iq2_source_cache.py', flags, label + '-cache-' + str(serial), 300)
+                tool, flags = cache_command(common, pool, out)
+                run(tool, flags, label + '-cache-' + str(serial), 300)
                 path = out / 'result.private.json'
                 result = load(path)
                 need(result['completed'] and result['all_mappings_and_FDs_positively_retired'], 'The changed source window must retire')

@@ -4,6 +4,45 @@ The primary metric remains `(generated_tokens-1)*1000/decode_ms`, reported
 separately for cold, retained and exact-prefix requests. No IQ2 production
 adoption or speed gain is established by this checkpoint.
 
+Checkpoint65538: the minimum-request Up stream passes actual native IO
+equivalence. All69 F32 vocabulary rows (248320 columns), ordered routes,
+tokens and output bytes match the SAME quantized model's plain path. There
+are1043 actual streamed groups; both cases close and exactly restore P1.
+The separate observer-free first screen is:
+
+| Condition | Recorded P1 control tok/s | Up minimum-stream tok/s | Change |
+| --- | ---: | ---: | ---: |
+| cold | 10.479220 | 8.971814 | -14.384711% |
+| retained | 12.093470 | 11.445104 | -5.361290% |
+| exact-prefix | 13.390932 | 13.227152 | -1.223067% |
+
+This improves the earlier unadopted Up implementation but remains slower
+than selected P1 in every condition. It is not replayed or adopted. These
+are single screens, not matched means; no physical-byte reduction is claimed.
+
+Gate-Up's plain observed package is built but its native preflight refused
+at5111<7374 pages, before staging/launch. The added Gate/Up source-cache pools
+are exhausted and their final returned free6497 is below admission. The
+independent, prepared Down source placement therefore runs first. Its new
+source-cache pool will be available after positive whole-source sealing.
+Gate-Up's minimum-stream observed package65535 is prepared PC-only, with no
+additional native model/codec replay.
+
+The successful original complement also retains1234 UNscanned windows:
+PC65536 reconstructs the current582-file/6076-window geometry exactly and
+preserves all three original read scopes and22 completed complement scopes
+(4842 windows). Five new invalid handoffs/pools refuse;65538 confirms the main
+pipeline dispatches the unscanned suffix after an exhausted primary pool.
+These controls perform zero PS5 operations. No consumed range is re-entered.
+The same existing native bodies keep64MiB readonly mappings,8MiB sync extents,
+128 calls/20 seconds, no source writes and unchanged7374-page model admission.
+
+Coordinator65537 waits only on PC receipts until the owned Down publication
+positively seals and clears its IO owners. It then runs the remaining
+Gate-Up profile and Down screens. Completed cache prefixes pass between
+roles; duplicate pool keys refuse and the Down fallback ledger excludes its
+primary pool. No source upload or completed native case is resubmitted.
+
 Checkpoint65531: all124 Gate files, including all48 large layer files, are
 placed and positively sealed through whole physical/alias SHA256, EOF and
 parent identities. No completed source payload was retransmitted. The first

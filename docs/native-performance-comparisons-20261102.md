@@ -19,7 +19,14 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
-Checkpoint65531 supersedes the active-owner statements below. All124 Gate
+Checkpoint65538 supersedes the active-owner statements below. Up minimum
+streaming passes69 full-vocabulary F32 rows/routes/tokens/bytes against the
+same quantized model (1043 actual streamed groups). Observer-free rates are
+8.971814/11.445104/13.227152 tok/s, below recorded P1 control in all conditions;
+it is not replayed or adopted. Gate-Up's native case remains unlaunched after
+an exact readiness refusal. Down first placement runs before remaining cases;
+the successful original cache complement retains1234 unscanned windows and
+complete cursors pass between roles without replay. All124 Gate
 files are positively sealed. Its first MMVQ-off screen is7.986276/9.982410/
 11.722984 tok/s (cold/retained/exact-prefix), below recorded P1 control
 10.479220/12.093470/13.390932 in all three conditions. Exact tokens/bytes,
@@ -30,7 +37,7 @@ Complete compact startup JSON fits the unchanged1MiB bound. A separate
 MMVQ-on readiness refusal before staging/launch is continued only after
 unscanned Gate cache windows return10403 pages, above unchanged7374 admission.
 The existing build, completed screen and source/cache prefixes are retained.
-Native stream IO and remaining Gate/Down rates are pending; R1+P1 remains
+Gate-Up/Down native stream IO and remaining rates are pending; R1+P1 remains
 production. See [capacity and inference follow-ups](source-capacity-and-stream-followups-20261104.md).
 All older checkpoints retain their limits and historical ownership records.
 

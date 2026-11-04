@@ -1538,5 +1538,74 @@
       "retained",
       "exact-prefix"
     ]
+  },
+  "latest_checkpoint_65538": {
+    "Up_minimum_stream_IO": {
+      "qualified": true,
+      "same_quantized_model_compared": true,
+      "F32_rows_exact": 69,
+      "vocabulary_columns": 248320,
+      "ordered_routes_and_tokens_bytes_exact": true,
+      "actual_streamed_groups": 1043,
+      "all_ordinary_closes_and_exact_P1_restores": true
+    },
+    "Up_minimum_stream_speed": {
+      "observations_per_arm": 1,
+      "control_tok_s": [
+        10.479219859004738,
+        12.093470064022155,
+        13.390932153594475
+      ],
+      "candidate_tok_s": [
+        8.971814387531557,
+        11.445104094855894,
+        13.227152080312035
+      ],
+      "change_percent": [
+        -14.384710806290368,
+        -5.3612897351533295,
+        -1.2230670083596684
+      ],
+      "all_conditions_slower": true,
+      "matched_ABBA": false,
+      "adopted": false,
+      "unchanged_case_replayed": false
+    },
+    "Gate_Up": {
+      "plain_observed_package_built": true,
+      "minimum_stream_observed_package": 65535,
+      "native_plain_readiness_refusal_pages": 5111,
+      "native_title_launches": 0,
+      "added_pools_last_free_pages": 6497
+    },
+    "added_Gate_Up_source_cache_pools_exhausted": true,
+    "original_complement": {
+      "files": 582,
+      "total_windows": 6076,
+      "completed_windows": 4842,
+      "unscanned_windows": 1234,
+      "completed_read_scopes": 3,
+      "completed_complement_scopes": 22,
+      "current_PC_geometry_exact": true,
+      "new_invalid_handoff_controls": 5,
+      "PS5_operations": 0
+    },
+    "new_main_handoff_dispatch_control": 65538,
+    "completed_cursors_pass_between_roles": true,
+    "duplicate_pool_keys_refused": true,
+    "Down_primary_pool_excluded_from_its_fallback_ledger": true,
+    "Down_initial_source_publication_active": true,
+    "waiting_post_source_coordinator": 65537,
+    "waiter_PS5_operations_before_positive_source_retirement": 0,
+    "model_readiness_pages": 7374,
+    "source_cache_soft_target_pages": 16384,
+    "old_GPU_codec_tests_replayed": 0,
+    "production_remains": "R1+P1",
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ]
   }
 }

@@ -11,9 +11,24 @@ import time
 
 from build_performance_quantizer import record
 from run_headless_decode_sequence import returned
+from source_cache_pools import command as cache_command, has_windows, validate as validate_cache_pools
 from start_success_route import load, need, save
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def completed_source_cache_prefix(followups, publication, role):
+    result = load(followups)
+    need(result['completed'] and result['ordinary_restoration_after_every_case'] and
+         result['unchanged_primary_metric'] and not result['production_adopted'],
+         'Only positively finished follow-ups may hand off a source-cache prefix')
+    ledger = followups.parent / 'cache-pools.private.json'
+    matches = [pool for pool in load(ledger) if pool['scope'] == role + '48' and
+               Path(pool['publication']) == publication]
+    need(len(matches) == 1, 'One exact publication and role must own the inherited cache prefix')
+    scopes = [Path(path) for path in matches[0]['completed_scopes']]
+    need(len(scopes) == len(set(scopes)), 'A consumed cache scope cannot occur twice in a handoff')
+    return scopes, [record(followups), record(ledger)]
 
 
 def main():
@@ -33,6 +48,8 @@ def main():
     parser.add_argument('--prebuilt-first-profile', type=Path,
                         help='Reuse the exact candidate whose host-only startup preflight was refused')
     parser.add_argument('--completed-cache-scope', type=Path, action='append', default=[])
+    parser.add_argument('--completed-source-cache-followups', type=Path,
+                        help='Preserve the exact cache prefix consumed by completed follow-ups using this source role')
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()
     need(args.execute, 'Explicit execution is required for source placement and native screens')
@@ -53,12 +70,24 @@ def main():
              'build_iq2_up_model.py', 'iq2_up_model_scope.py', 'iq2_down_prefix_scope.py',
              'iq2_down_prefix_cache.py', 'run_successful_headless_audit.py',
              'run_successful_model_case.py', 'close_successful_current_model.py',
-             'success_case_control.py', 'analyze_iq2_pair_screen.py')
+             'success_case_control.py', 'analyze_iq2_pair_screen.py', 'source_cache_pools.py',
+             'observe_source_cache_complement.py', 'observe_completed_source_cache.py')
     frozen = [record(ROOT / 'tools' / name) for name in names]
     frozen.append(record(Path(__file__)))
     followups = args.followups or args.publication / 'model-followups.private.json'
     if followups.exists():
         frozen += [record(followups), record(ROOT / 'tools/run_iq2_stream_followups.py')]
+    fallback_pools = []
+    if args.completed_source_cache_followups:
+        need(not args.host_preflight_continuation and not args.prebuilt_first_profile and not args.completed_cache_scope,
+             'A completed source-cache handoff cannot be mixed with a host-only preflight continuation')
+        args.completed_cache_scope, handoff = completed_source_cache_prefix(
+            args.completed_source_cache_followups, args.publication / 'result.private.json', args.role)
+        frozen += handoff
+        fallback_pools = [pool for pool in load(args.completed_source_cache_followups.parent / 'cache-pools.private.json')
+                          if not (pool['scope'] == args.role + '48' and
+                                  Path(pool.get('publication', '')) == args.publication / 'result.private.json')]
+        validate_cache_pools(fallback_pools)
     if args.host_preflight_continuation:
         continuation = load(args.host_preflight_continuation)
         need(continuation['completed'] and continuation['PS5_operations'] == 0 and
@@ -71,7 +100,8 @@ def main():
              'Only the exact corrected host-only preflight may reuse its unexecuted candidate and completed cache prefix')
         frozen.append(record(args.host_preflight_continuation))
     else:
-        need(not args.prebuilt_first_profile and not args.completed_cache_scope,
+        need(not args.prebuilt_first_profile and
+             (not args.completed_cache_scope or args.completed_source_cache_followups),
              'Previously prepared inputs require their exact zero-operation preflight continuation')
     if args.prebuilt_first_profile:
         built = load(args.prebuilt_first_profile)
@@ -85,6 +115,8 @@ def main():
              'The exact already built first profile must match every source and arithmetic input')
         frozen.append(record(args.prebuilt_first_profile))
     args.out.mkdir(parents=True, exist_ok=False)
+    fallback_ledger = args.out / 'fallback-cache-pools.private.json'
+    save(fallback_ledger, fallback_pools)
     save(args.out / 'intent.private.json', dict(role=args.role, preparation=record(args.preparation),
         publication_directory=str(args.publication), baseline=baseline, tools=frozen,
         native_profiles=2, readiness_pages=7374, initial_native_collection_quiet_seconds=35,
@@ -165,28 +197,47 @@ def main():
              intent['boot'] == load(args.current / 'active-console.private.json')['current_boot'],
              'Only the exact same-boot positive source-cache prefix may be retained')
         first += value['observations']['scanned']
+        frozen += [record(path), record(path.parent / 'intent.private.json')]
+    serial = len(cache_scopes)
+
+    def primary_pool():
+        return dict(scope=args.role + '48', publication=str(publication_result),
+                    completed_scopes=[str(path) for path in cache_scopes])
+
+    def any_windows():
+        return has_windows(primary_pool()) or any(has_windows(pool) for pool in fallback_pools)
+
     def retire_cache():
-        out = args.out / ('source-cache-' + str(len(cache_scopes)))
-        flags = common + ['--publication', publication_result, '--' + args.role + '48',
-                          '--target-free-pages', '16384', '--out', out, '--execute']
-        for completed in cache_scopes:
-            flags += ['--completed-scope', completed]
-        run('retire_published_iq2_source_cache.py', flags, out.name, 300)
+        nonlocal serial
+        primary = primary_pool()
+        pool = primary if has_windows(primary) else next((pool for pool in fallback_pools if has_windows(pool)), None)
+        need(pool is not None, 'No unscanned source-cache window remains; do not repeat admission unchanged')
+        out = args.out / ('source-cache-' + str(serial))
+        serial += 1
+        tool, flags = cache_command(common, pool, out)
+        run(tool, flags, out.name, 300)
         result_path = out / 'result.private.json'
         result = load(result_path)
         need(result['completed'] and result['all_mappings_and_FDs_positively_retired'],
              'The exact source-cache window must retire')
-        cache_scopes.append(result_path)
+        if pool is primary:
+            cache_scopes.append(result_path)
+        else:
+            pool['completed_scopes'].append(str(result_path))
+            fallback_ledger.write_text(json.dumps(fallback_pools, indent=2) + '\n', encoding='utf-8')
         return result
 
     for index in range(8):
-        if cache_scopes and (value['observations']['free_after'] >= 16384 or value['remaining_windows'] == 0):
-            need(value['observations']['free_after'] >= 7374, 'The preserved prefix cannot replace model readiness')
-            break
+        if cache_scopes:
+            if value['observations']['free_after'] >= 16384:
+                break
+            if not has_windows(primary_pool()) and value['observations']['free_after'] >= 7374:
+                break
+        need(any_windows(), 'The exhausted pools cannot justify another readiness query')
         value = retire_cache()
         if value['observations']['free_after'] >= 16384:
             break
-        if value['remaining_windows'] == 0:
+        if not any_windows():
             need(value['observations']['free_after'] >= 7374, 'The exhausted source scope cannot satisfy unchanged model readiness')
             break
     else:
@@ -222,7 +273,7 @@ def main():
         if not run('run_successful_headless_audit.py', native_flags + ['--out', case],
                    variant + '-native', prelaunch_out=case):
             for _ in range(8):
-                need(value['remaining_windows'] > 0, 'Never replay an exhausted source-cache pool')
+                need(any_windows(), 'Never replay an exhausted source-cache pool')
                 value = retire_cache()
                 if value['observations']['free_after'] >= 7374:
                     break

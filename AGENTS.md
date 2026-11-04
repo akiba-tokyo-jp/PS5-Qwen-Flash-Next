@@ -3,21 +3,103 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65538: Console IO remains solely owned by Down publisher host54446 /
+observerg10:2356. At this checkpoint three whole carriers are complete and
+file4 is transferring; use that observer for live counts, never poll54446
+separately. Host61830 Gate-Up minimum-stream observed build65535 RETIRED exit0.
+Host26402 is a PC-only WAITING coordinator65537/sequence.private.py, already
+started once. DO NOT start it again. It waits on PC publication/state files,
+with ZERO console IO until65355 positively seals, its helper/files retire,
+source owners clear and exact P1/boot admission holds. Then it automatically
+runs the remaining Gate-Up follow-up using BOTH prebuilt observed models,
+followed by Down original/stream profiles. After54446 finishes, follow26402.
+
+Correction to the scope of65534: only added Gate/Up pools are exhausted. The
+successful ORIGINAL complement still has1234 UNscanned windows. PC65536
+reconstructs all582 files/6076 windows exactly, preserves all three original
+read scopes and22 positive complement scopes (4842 windows), and admits ONLY
+the remaining suffix. Five new invalid handoffs/pools refuse, zero PS5 calls.
+Do not replay any consumed source window or invent a cache epoch/reset.
+65538 dispatch control proves main screens skip an exhausted primary pool
+and request that exact unscanned original suffix before any new admission;
+real Down ownership stays untouched. No old GPU/codec/model test was replayed.
+
+New source_cache_pools.py routes the SAME existing native retirement bodies.
+Main and stream workflows preserve all cursors, reject duplicate pool keys,
+and keep7374 readiness/16384 soft target. Completed Gate-Up cache receipts
+hand off to main Down through--completed-source-cache-followups. Main writes
+Down/fallback-cache-pools.private.json WITHOUT its primary Down pool; the
+Down stream config reads that filtered ledger, avoiding divergent duplicate
+Down cursors.65537 configs/sequence are prepared and waiting under26402.
+Runtime/tool edits must retain the exact65538 PC-tested hashes: the waiter
+checks them and freezes all tools/configs when source completion arrives.
+Up stream speed is below P1 in all three conditions; R1+P1 stays production.
+
+CURRENT65534: Sole console/source owner is host54446 / observerg10:2356,
+running publish_iq2_up_model_overlay.py--submit-prepared for the NEVER uploaded
+Down publication65355 (101 files, all48 carriers). Gate supervisor97461 and
+observerg10:2340 are RETIRED exit1 after a readiness-only refusal, not a model
+failure. Gate-Up plain observed build is COMPLETE at65531/Gate/stream-followups/
+Gate-Up/plain-observed-model/result.private.json, but its case was NEVER staged
+or launched (free5111<7374). All eligible old pools are now EXHAUSTED:
+Gate192/192,Up-prefix172/172,Up-final4 16/16. Final new-scope free6497<7374;
+do not repeat the refused query or any consumed cache window. Every helper
+closed positively, current P1 is restored, native/model owners absent and
+unknown_completion=false.65531/Gate/stream-followups/cache-pools.private.json
+is the authoritative complete exhausted ledger. Preserve Up timed negative
+and69-row IO positives; never replay completed profiles.
+Down placement is independent authorized work, not an initializer/recovery
+probe. After positive sealing, its NEW source-cache pool may supply changed
+state for remaining Gate-Up then Down cases, keeping7374 admission. Reuse the
+built Gate-Up plain model; prebuild its minimum-stream observed counterpart
+PC-only. Still needed: one-profile Gate-Up config with Down48 as primary pool,
+and a completed-cache handoff into main Down screens so consumed Down windows
+cannot replay. Do not resubmit54446 or start any separate console operation.
+The prepared Down sealer is submitted only once after all whole stores.
+
+CURRENT65533: Same host97461 / observerg10:2340 solely owns console IO.
+Up minimum-stream first timed screen COMPLETE, all outputs/counting/finite
+checks, ordinary close and exact P1 restore pass. Rates cold8.9718143875 /
+retained11.4451040949 / exact-prefix13.2271520803 tok/s versus recorded P1
+10.4792198590 /12.0934700640 /13.3909321536, changes-14.3847108063 /
+-5.3612897352 /-1.2230670084 percent. Source is65531/Gate/stream-followups/Up/
+first-screen.private.json. ALL conditions slower: no unchanged replay/ABBA/
+adoption. This improves the earlier unadopted Up candidate but is still below
+selected production. Up native IO qualification remains positive (69 rows,
+1043 streamed groups); no physical-byte reduction is claimed.
+The live phase is Gate-Up plain observed build, then its stream/IO/timing;
+Down source and profiles remain queued under the same supervisor. Keep the
+ENTIRE live cache-pool ledger prefix. All tool/config freezes still apply.
+
+CURRENT65532: Same sole owner host97461 / observerg10:2340. Up stream IO
+equivalence is now POSITIVE at65531/Gate/stream-followups/Up/IO-equivalence.private.json:
+all69 full-vocabulary F32 rows (248320 columns), ordered routes, tokens/bytes
+are exact between the SAME quantized model's plain and minimum-stream paths;
+actual streamed_groups1043, both ordinary closes/exact P1 restores positive.
+This is IO equivalence, NOT a speed or baseline-quality qualification. The
+observer-free timed pair is built; first timed candidate is pending after
+distinct source-cache retirement. Use the LIVE65531/Gate/stream-followups/
+cache-pools.private.json ledger for ALL consumed prefixes. Gate-Up stream
+and Down remain queued. Do not replay the original slower Up/Gate profiles,
+poll97461 separately, or edit any frozen tools/config/runtime inputs.
+
 CURRENT65531: Sole console owner is host97461 / observerg10:2340, coordinator
 Q2-Q3-completed-Gate-owner-continuation-65531/sequence.private.py. All previous
 hosts/observers are RETIRED, including69318 collector andg10:2337. Both original
 Gate screens COMPLETE, all22 tokens/bytes exact, ordinary close/exact P1 restore.
 MMVQ-on rates8.009480/10.003726/11.633629 versus10.479220/12.093470/13.390932,
 changes-23.567978/-17.279941/-13.123080 percent. Both slower profiles are not
-adopted/replayed. Up plain69-row observed case is now active under the new
-stream follow-up owner, using prebuilt65514; stream uses minimum model65519.
+adopted/replayed. Up/Gate-Up69-row plain/stream comparisons are running under
+the new follow-up owner, using prebuilt65514 and minimum stream model65519.
 65530 supervisor stopped on exclusive reuse of host-owner.private.json AFTER
 spawning startup child18900. That SAME child positively accepted app32792,
 run a4750e1a079fc163549068ab994d919b. Collector69318 used--collect, completed
 the SAME three requests and exactly restored P1; no publication/title retry.
 65531 uses distinct per-phase owner files and checks absence BEFORE dispatch.
-Gate cache prefix is STILL22/192 consumed: original65513/source-cache0 plus
-65530/Gate/source-cache1 (starting1,scanned21,remaining170). Preserve both.
+Gate cache prefix was22/192 consumed at entry: original65513/source-cache0
+plus65530/Gate/source-cache1 (starting1,scanned21,remaining170). The LIVE
+65531/Gate/stream-followups/cache-pools.private.json ledger also records every
+newly consumed scope. Preserve its ENTIRE prefix, not merely the entry pair.
 Down inherits65531/Gate/stream-followups/cache-pools.private.json. Do not poll
 97461 separately or edit frozen runtime/tool/config inputs. Remaining IO/rate
 work is pending; R1+P1 remains production. No initializer or recovery replay.
