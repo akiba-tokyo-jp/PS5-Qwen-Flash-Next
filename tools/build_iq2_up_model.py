@@ -44,6 +44,9 @@ def compile_cache(a, run, down_carriers=False):
          not proof['section_differences'] and record(proof['artifact']['path']) == proof['artifact'] and
          record(proof['source']['path']) == proof['source'], 'The full byte-identical selected cache reconstruction is required')
     changed=cache_text(Path(proof['source']['path']).read_text(),down_carriers)
+    if getattr(a, 'format_stream_provider', None):
+        from iq2_format_stream_cache import transform
+        changed = transform(Path(proof['source']['path']).read_text(), down_carriers)
     if getattr(a, 'Down_prefix_cache', False):
         from iq2_down_prefix_cache import transform
         changed = transform(changed)
@@ -94,6 +97,8 @@ def main():
     p.add_argument('--MMVQ-decode-qualification',type=Path,help='Enable normal MMVQ only after its twelve distinct native decode graphs pass')
     p.add_argument('--Down-prefix-cache',action='store_true',help='Reuse the compiled index-safe Down prefix provider with explicit physical/logical byte accounting')
     p.add_argument('--candidate-only',action='store_true',help='Build only a first-screen candidate; a new matched normal control remains required before adoption')
+    p.add_argument('--format-stream-provider', type=Path, help='Reuse the exact compiled four-lease cache and original-owner wrapper')
+    p.add_argument('--format-stream-IO-proof', type=Path, help='Require all69 native rows/routes/outputs before observer-free streaming timing')
     a = p.parse_args()
     need(not (a.candidate_only and a.completed_control_case), 'Choose a candidate-only screen or exact completed-control reuse')
     arithmetic_qualification = record(a.arithmetic_qualification)
@@ -119,6 +124,13 @@ def main():
         need(not down_carriers and Gate_layers==prep['IQ2_Up_layers']==list(range(48)),
              'Only the complete uniform Gate/Up model may use this scope')
         require_gate_input_qualification(prep['Gate_input_identity'])
+    stream = None
+    if a.format_stream_provider:
+        from iq2_format_stream_scope import require_compiled_stream
+        need(not a.Down_prefix_cache and a.cache_provider_proof == a.format_stream_provider and
+             (a.F32_observer is not None or a.format_stream_IO_proof is not None),
+             'Format streaming requires the exact cache, a distinct observed IO qualification or its positive native proof')
+        stream = require_compiled_stream(record(a.format_stream_provider), 'Down' if down_carriers else ('Gate-Up' if Gate_layers else 'Up'))
     Down_format_proof=(load(load(a.Down_resource_provider)['F16_operands']['path'])['native_F32_proof']
                       if Down_F16 else arithmetic_qualification)
     need(not down_carriers or (prep['IQ2_Down_layers']==list(range(48)) and
@@ -206,6 +218,10 @@ def main():
         elif Gate_layers:
             scope.update(schema='ps5-qwen-IQ2-Gate-Up-model-v1',kind='Q2-IQ2-Gate-Up-model',
                 IQ2_Gate_layers=Gate_layers if arm=='candidate' else [],Gate_input_identity=prep['Gate_input_identity'])
+        if stream and arm == 'candidate':
+            scope.update(format_stream_provider=record(a.format_stream_provider),
+                format_stream_model_receipt=prep['candidate'], format_stream_observation_only=bool(a.F32_observer),
+                format_stream_IO_qualification=record(a.format_stream_IO_proof) if a.format_stream_IO_proof else None)
         require_cache_layout(dict(headless_audit_kind=scope['kind'],overrides=dict(native_headless_model_audit=scope)))
         text = baseline
         if arm == 'candidate':
@@ -298,19 +314,26 @@ def main():
             headless_audit_kind=scope['kind'], headless_requests=3, model_and_GPU_topology_unchanged=False,
             model_and_GPU_guards_preserved=True, overrides=dict(original['overrides'], native_headless_model_audit=scope),
             performance_timings_usable=not bool(observer), native_performance_qualified=False, production_adopted=False)
+        profile['qualification_observer'] = record(a.F32_observer) if observer else None
         if arm == 'candidate':
             profile['model_layer'] = dict(kind='IQ2-Down' if down_carriers else ('IQ2-Gate-Up' if Gate_layers else 'IQ2-Up'), parent_recipe_sha256=prep['selected_model_sha256'],
                 model_receipt=prep['candidate'], application_model_receipt=seal['source_directory']+'/model-receipt.json',
                 source_policy=pub['policy'], publication=record(a.publication))
             if down_carriers:
                 profile.update(candidate_cache_provider=cache,candidate_cache_source=cache_source,
-                    original_Q2_bundle_six_refill_and_quad_paths_disabled=True)
+                    original_Q2_bundle_six_refill_and_quad_paths_disabled=not bool(stream),
+                    original_Q2_bundle_and_six_refill_paths_disabled=True)
+            if stream:
+                profile.update(candidate_cache_provider=cache, candidate_cache_source=cache_source)
         policy = root / 'application-policy.private.json'
         save(policy, profile)
         job = [sys.executable, '-B', ROOT/'tools/relink_retained_current.py', '--current', a.current, '--out', root/'link',
             '--replace', 'entry.o='+str(entry), '--replace', 'early-SELF.o='+original['CPU_SELF_provider']['artifact']['path'], '--application-policy', policy]
         if arm == 'candidate':
             job += ['--replace', 'cache.o='+cache['path']]
+            if stream and stream['wrapper']:
+                job += ['--add-object', stream['wrapper']['path']]
+                job += ['--link-flag=' + flag for flag in stream['required_link_flags']]
             if down_carriers:
                 provider=load(a.Down_resource_provider)
                 for key,name in [('GPU','gpu.o'),('shader_registry','shader-registry.o')]:
@@ -338,6 +361,8 @@ def main():
         Down_only_FP32_accumulation=Down_F16,
         arithmetic_qualification=arithmetic_qualification,
         MMVQ_decode_qualification=MMVQ_proof,
+        format_stream_provider=record(a.format_stream_provider) if stream else None,
+        format_stream_IO_qualification=record(a.format_stream_IO_proof) if a.format_stream_IO_proof else None,
         Down_source_prefix_cache=record(a.cache_provider_proof) if a.Down_prefix_cache else None,
         Down_resource_provider=Down_provider,
         precision_wrapper_source=record(ROOT/'native/app/iq2_up_precision.cpp') if not down_carriers or Down_F16 else None,

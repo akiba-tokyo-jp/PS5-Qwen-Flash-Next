@@ -238,7 +238,7 @@
     "protected_current_seven_whole_digests_equal": true
   },
   "Q2": {
-    "status": "native_decode_vector_components_qualified_full_model_and_prefill_pending",
+    "status": "two_complete_Up_screens_negative_Gate_source_suffix_resumed_stream_IO_pending",
     "pre_main_refusal_case": 64310,
     "returned_CPU_reads": 7,
     "refused_free_pages": 882,
@@ -397,7 +397,7 @@
       "full_model_quality_or_speed_qualified": false
     },
     "original_Up_complete_layers": 48,
-    "Gate_encoding_active": 65345,
+    "Gate_encoding_active": false,
     "first_full_Up_screen_case": 65407,
     "full_Up_screen_positive_speedup": false,
     "MMVQ_refinement_screen_running": false,
@@ -405,7 +405,7 @@
     "MMVQ_refinement_speedup": false
   },
   "Q3": {
-    "status": "native_GGML_decode_passes_wide_numerical_negative_refinement_ready",
+    "status": "corrected_all12_native_GPU_and_capacity_passed_full_model_source_placement_pending",
     "real_Down_activation_moments_available": true,
     "cross_row_format_implemented": false,
     "real_operand_output_reference": {
@@ -800,7 +800,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "Full-cache Down index correction prepared; interrupted Up source suffix resumed; full-model IQ2 speed and quality remain unqualified",
+  "latest_update": "Disk capacity reclaimed with all live/prepared sources preserved; six Gate stores retained, suffix resumed; observed Up stream packages built, native IO and model screens queued",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -894,10 +894,11 @@
     "latest_failure_classification": 65264
   },
   "current_console_execution": {
-    "owner": "sequential Gate/Down workflow65396/session36731",
-    "phase": "Gate source placement65390",
+    "owner": "sequential suffix/Gate/Down workflow65513/session18314",
+    "phase": "Gate suffix placement65390, first seven whole stores complete at checkpoint",
     "native_overlap_permitted": false,
-    "tools_frozen": true,
+    "running_transfer_tool_frozen": true,
+    "later_native_stage_freezes_its_inputs_on_start": true,
     "initializers": 0,
     "reboots": 0,
     "automatic_retries": 0
@@ -1153,28 +1154,23 @@
     "PS5_operations": 0
   },
   "latest_source_publication_update": {
-    "original_prefix_publication": 65334,
-    "completed": true,
-    "transfer_suffix": 65363,
-    "positive_file_stores": 108,
-    "completed_files_preserved": 29,
-    "interrupted_file_restarts": 1,
+    "all48_Up_layers_whole_sealed": true,
+    "Up_retransmissions": 0,
+    "Gate_publication": 65390,
+    "interrupted_during_file": 7,
+    "failure": "550 No space left on device",
+    "positive_original_files_preserved": 6,
+    "owned_partial_retired_once": 65500,
+    "zero_write_cleanup_refusal": 65509,
+    "readonly_allocation_diagnosis": 65510,
+    "positive_unused_chunk_reclamation": 65511,
+    "suffix_workflow": 65513,
+    "new_positive_whole_files_at_checkpoint": 1,
+    "complete_whole_files_at_checkpoint": 7,
+    "remaining_Gate_plus_Down_bytes_at_resumption": 20444524558,
     "completed_payload_retransmissions": 0,
-    "native_sealer": 65340,
-    "native_submissions": 1,
-    "operation_calls": 218,
-    "whole_physical_alias_SHA256_EOF_and_parents_passed": true,
-    "helper_exited_and_files_removed": true,
-    "GPU_calls": 0,
-    "initializer_requests": 0,
-    "mount_calls": 0,
-    "full_Up_workflow": 65352,
-    "last_Up_layers_pending": 4,
-    "remaining_publication_files": 71,
-    "remaining_publication_bytes": 888624392,
-    "retained_parts": 47,
-    "retained_parts_copied": 0,
-    "full_model_rate_qualified": false
+    "Gate_native_sealer_submissions": 0,
+    "full_model_speedup_qualified": false
   },
   "latest_checkpoint_65388": {
     "first_Up_screen": {
@@ -1403,5 +1399,36 @@
     "native_rate_pending": true,
     "integration_deferred_until_current_owner_retires": true,
     "production_adopted": false
+  },
+  "latest_checkpoint_65516": {
+    "report": "source-capacity-and-stream-followups-20261104.md",
+    "prior_workflow65396_retired": true,
+    "allocation_overhead_bytes_per_chunk": 65536,
+    "unused_chunks_reclaimed": 52,
+    "logical_bytes_released": 27917287424,
+    "verified_allocated_bytes_released": 27920695296,
+    "all630_protected_files_preserved": true,
+    "authenticated_PC_originals_retained": true,
+    "observed_Up_packages": [
+      65514,
+      65515
+    ],
+    "compiled_stream_providers": [
+      65397,
+      65398,
+      65399
+    ],
+    "new_admission_negatives": 8,
+    "existing_codec_or_native_tests_replayed": 0,
+    "native_IO_equivalence_pending": true,
+    "production_adopted": false,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ],
+    "model_readiness_pages": 7374,
+    "stream_followups_run_under_existing_sequential_owner": true
   }
 }

@@ -19,6 +19,17 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Checkpoint65513 supersedes the active-owner statements below. Gate placement
+stopped for disk capacity before native sealing. Corrected cleanup65511
+positively reclaimed52 unused original BF16 chunks while preserving all live
+and prepared sources and authenticated PC originals. The suffix coordinator
+now preserves six completed stores and transfers only the remaining files.
+Observed Up IO packages65514/65515 are built PC-only; new streamed Up/Gate/Down
+follow-ups are queued under that same owner. Native IO equality and speed are
+pending. See [capacity and inference follow-ups](source-capacity-and-stream-followups-20261104.md)
+for the exact evidence and unchanged three-condition metric. The older
+checkpoints retain their original limits and are historical ownership records.
+
 Current checkpoint65396: corrected Down GPU65394 passes all12 new graphs,
 zero mismatches,all canaries exact,maximum F64-reference error5.9842750488e-7.
 It ordinarily exits and exactly restores P1. Fresh CPU capacity65395 then

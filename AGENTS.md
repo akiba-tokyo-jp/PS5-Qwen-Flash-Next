@@ -3,6 +3,75 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65513: Sole source/console owner is host18314, sequential coordinator
+Q2-Q3-capacity-resolved-suffix-and-screens-65513/sequence.private.py. Gate
+suffix transfer is ACTIVE; seven whole files are now positively complete
+(six retained, one newly completed). Do not start any other FTP, native helper,
+title or GPU request. No initializer or recovery action is permitted.
+Follow18314 only. Hosts77589,11304,80750,5314 and prior36731 are RETIRED.
+
+Storage65510 diagnosed the earlier zero-write refusal: every candidate has
+512MiB payload plus64KiB actual allocation overhead. All630 protected files
+pass. Corrected65511 positively truncates52 unused original BF16 chunks,
+releases27920695296 allocated bytes (27917287424 logical bytes), preserves
+every protected stat identity and directory entry, and retires the helper.
+Authenticated PC BF16 originals remain intact. Original minimum/model guards
+are unchanged; only the finite CPU metadata helper margin was increased.
+The known146735104-byte partial was already removed in65500; never delete it
+again. Preflight65512 failed PC-only on a receipt-list schema mismatch before
+any console call; corrected65513 uses the exact six original positive records.
+
+65513 now uploads only Gate files7..124, then submits existing prepared262KiB
+sealer once, followed by the remaining Gate and Down screens. Remaining Gate
+plus Down bytes were20444524558 at resumption; freed allocation alone covers
+both plus1GiB. No completed payload is retransmitted. Do not edit the running
+resume_iq2_source_upload.py or the active private coordinator. The later
+run_remaining_iq2_screens.py stage freezes its own tool inputs when it starts.
+
+PC-only Up IO-observed packages65514/65515 COMPLETE. The original and stream
+cache variants link/package against the actual selected PS5 ABI, with original
+owner f87f931a byte exact and no new workers/scratch/GPU buffers. All three
+compiled stream providers pass actual-source admission; eight NEW admission
+negatives refuse. No old codec/native tests were replayed. Native69-F32,
+route/token equality and speed remain PENDING, not qualified by compilation.
+
+Gate/Down publication directories now contain model-followups.private.json.
+After the original two screens, the same sole owner runs
+run_iq2_stream_followups.py: Up then Gate-Up before Down placement; Down stream
+after its original full-plane/prefix screens. Reuse observed Up builds. Each
+stream profile first compares the SAME quantized model with69 full F32 rows,
+ordered routes/tokens/bytes and positive ordinary restoration. Only positive
+actual stream IO evidence admits observer-free timing. A slower single screen
+is not repeated; promising screens get fresh ABBA and then heldout quality.
+No automated production adoption is claimed. Continue implementation for
+qualified winners after this coordinator completes. All cases keep the same
+cold/retained/exact-prefix metric and fresh7374-page launch guard.
+Cache retirement advances only to unscanned windows; its16384-page soft target
+cannot replace the unchanged7374-page admission. The shared cache-pool ledger
+prevents Down follow-ups from rescanning windows consumed by Gate follow-ups.
+
+All earlier CURRENT notes below are historical, including65510/65396 ownership.
+
+CURRENT65510: Workflow65396/host36731 has RETIRED with exit1. No console
+operation, title, GPU work or source transfer is running. Its former tool
+freeze is released. Gate publication65390 stopped during file7 with FTP
+550 No space left on device; six positive whole stores are preserved.
+The exact146735104-byte partial file7 was positively deleted in65500; never
+delete it again. Do not resume placement before actual allocation is freed.
+Native source sealing has not been submitted. Source ownership remains
+reserved in active-console.private.json, phase disk-full.
+
+Cleanup65509 RETIRED: completed=false, operation_calls=0, helper_exited=true,
+helper_files_removed=true. No target data was written. Its raw log is saved
+locally; do not collect the removed remote log or replay the unchanged helper.
+Current P1 is restored, no native/model owner, unknown_completion=false.
+The next changed scope is read-only allocation/guard diagnosis of the exact
+unused BF16 chunks. Keep authenticated PC originals, all current/prepared
+maps and inode aliases protected. Do not delete unrelated project models.
+
+The statements below about active65396 or earlier owners are historical;
+they do not authorize replay or describe the current console owner.
+
 CURRENT65396: Sole console/source owner is sequential Gate+Down workflow,
 host session36731,outQ2-Q3-remaining-source-and-screen-sequence-65396. The PC
 wrappersequence.private.py runs Gate then Down via run_remaining_iq2_screens.py.

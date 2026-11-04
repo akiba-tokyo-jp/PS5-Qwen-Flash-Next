@@ -100,6 +100,9 @@ def require_down_qualification(row, provider_row):
 
 
 def require_cache_layout(profile):
+    if profile.get('headless_audit_kind') in ('Q2-IQ2-Up-model', 'Q2-IQ2-Gate-Up-model', 'Q3-IQ2-Down-model'):
+        from iq2_format_stream_scope import require_stream_profile
+        require_stream_profile(profile)
     if profile.get('headless_audit_kind')=='Q3-IQ2-Down-model':
         scope=profile['overrides']['native_headless_model_audit']
         F16=scope.get('Down_only_FP32_accumulation') is True

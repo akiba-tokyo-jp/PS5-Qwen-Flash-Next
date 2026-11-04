@@ -123,6 +123,10 @@ def price_GPU(package_path,startup_path,reuse_path=None):
 def completed_operation(lan,plan,out):
     try:return execute(lan,plan,out,60)
     except Exception:
+        # A terminal refusal already retires its helper files in complete().
+        # Preserve that result instead of collecting a removed remote log.
+        if (out/'result.private.json').exists():
+            raise
         need((out/'execution/execution.once.private.json').exists(),'No submitted operation exists to collect')
         from success_case_control import complete
         deadline=time.monotonic()+90

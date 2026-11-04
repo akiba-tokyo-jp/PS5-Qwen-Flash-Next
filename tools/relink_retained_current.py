@@ -73,6 +73,19 @@ def main():
                 if not valid:raise ValueError('Only an explicitly compiled and qualified IQ2 model layer may extend this headless scope')
                 from iq2_up_model_scope import require_cache_layout
                 require_cache_layout(policy)
+                from iq2_format_stream_scope import require_stream_profile
+                stream = require_stream_profile(policy)
+                if stream:
+                    caches=[p for p in replacements if Path(p).name=='cache.o']
+                    owner=stream['unchanged_original_source_owner']
+                    if len(caches)!=1 or replacements[caches[0]]!=stream['artifact']['path'] or owner not in actual or any(Path(p).name=='owner.o' for p in replacements):
+                        raise ValueError('Format streaming must link its exact cache with the byte-exact original source owner')
+                    if stream['wrapper'] and (stream['wrapper'] not in new or not all(f in args.link_flag for f in stream['required_link_flags'])):
+                        raise ValueError('The exact request wrapper and explicit link flag must be linked together')
+                    if policy['overrides']['native_headless_model_audit']['format_stream_observation_only']:
+                        observer=load(policy['qualification_observer']['path'])
+                        if observer['artifact'] not in new or not all(f in args.link_flag for f in observer['link_flags']):
+                            raise ValueError('Native stream observation requires the actual complete F32 observer')
                 if layer['kind']=='IQ2-Down':
                     scope=policy['overrides']['native_headless_model_audit'];provider=load(scope['Down_resource_provider']['path'])
                     for name,key in (('gpu.o','GPU'),('shader-registry.o','shader_registry')):
@@ -82,7 +95,8 @@ def main():
                     if any(provider[k] not in new for k in ('shader_data','shader_wrapper')) or not all(f in args.link_flag for f in provider['link_flags']):
                         raise ValueError('The complete qualified Down data and shader lease providers must be linked')
                     caches=[p for p in replacements if Path(p).name=='cache.o']
-                    if len(caches)!=1 or replacements[caches[0]]!=policy['candidate_cache_provider']['path'] or not policy['original_Q2_bundle_six_refill_and_quad_paths_disabled']:
+                    disabled = policy.get('original_Q2_bundle_and_six_refill_paths_disabled') if stream else policy['original_Q2_bundle_six_refill_and_quad_paths_disabled']
+                    if len(caches)!=1 or replacements[caches[0]]!=policy['candidate_cache_provider']['path'] or not disabled:
                         raise ValueError('The Down carrier cache must disable incompatible original Q2 payload paths')
                     source=policy['candidate_cache_source']
                     if record(source['path'])!=source or 'const bool bundle_refill=false;' not in Path(source['path']).read_text() or 'const bool six_refill=false;' not in Path(source['path']).read_text():

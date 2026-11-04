@@ -27,6 +27,7 @@ def main():
     parser.add_argument('--MMVQ-decode-qualification', type=Path)
     parser.add_argument('--Down-resource-provider', type=Path)
     parser.add_argument('--Down-prefix-provider', type=Path)
+    parser.add_argument('--followups', type=Path, help='Bind additional source-role follow-ups after the original two screens')
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()
     need(args.execute, 'Explicit execution is required for source placement and native screens')
@@ -50,6 +51,9 @@ def main():
              'success_case_control.py', 'analyze_iq2_pair_screen.py')
     frozen = [record(ROOT / 'tools' / name) for name in names]
     frozen.append(record(Path(__file__)))
+    followups = args.followups or args.publication / 'model-followups.private.json'
+    if followups.exists():
+        frozen += [record(followups), record(ROOT / 'tools/run_iq2_stream_followups.py')]
     args.out.mkdir(parents=True, exist_ok=False)
     save(args.out / 'intent.private.json', dict(role=args.role, preparation=record(args.preparation),
         publication_directory=str(args.publication), baseline=baseline, tools=frozen,
@@ -121,9 +125,12 @@ def main():
         cache_scopes.append(result_path)
         if value['observations']['free_after'] >= 16384:
             break
-        need(value['remaining_windows'] > 0, 'The distinct source scope is exhausted; never rescan completed windows')
+        if value['remaining_windows'] == 0:
+            need(value['observations']['free_after'] >= 7374, 'The exhausted source scope cannot satisfy unchanged model readiness')
+            break
     else:
-        raise RuntimeError('The finite source-cache allowance ended; preserve all positive receipts without replay')
+        need(value['observations']['free_after'] >= 7374,
+             'The finite source-cache allowance ended below unchanged model readiness; never replay consumed windows')
     profiles = ('MMVQ-off', 'MMVQ-on') if args.role == 'Gate' else ('full-plane', 'source-prefix')
     screens = []
     for variant in profiles:
@@ -156,10 +163,20 @@ def main():
         run('analyze_iq2_pair_screen.py', ['--control-case', args.baseline_case, '--candidate-case', case,
             '--out', analysis], variant + '-analysis', 120)
         screens.append(dict(variant=variant, result=record(case / 'result.private.json'), analysis=record(analysis)))
+    followed = None
+    if followups.exists():
+        scopes = args.out / 'initial-followup-cache-scopes.private.json'
+        save(scopes, [str(path) for path in cache_scopes])
+        followed = args.out / 'stream-followups'
+        run('run_iq2_stream_followups.py', common + ['--model-proof', args.model_proof,
+            '--direct-staging-proof', args.direct_staging_proof, '--native-VM-proof', args.native_VM_proof,
+            '--cache-baseline', args.cache_baseline, '--baseline-case', args.baseline_case,
+            '--config', followups, '--initial-cache-scopes', scopes, '--out', followed], 'stream-followups', 6 * 3600)
     save(args.out / 'result.private.json', dict(completed=True, role=args.role, source=record(publication_result),
         screens=screens, observations_per_arm=1, matched_ABBA=False, ordinary_restoration_after_every_case=True,
         initializer_requests=0, automatic_retries=0, production_adopted=False,
-        matched_control_and_heldout_quality_required_for_any_gain=True))
+        matched_control_and_heldout_quality_required_for_any_gain=True,
+        format_stream_followups=record(followed / 'result.private.json') if followed else None))
     print(json.dumps(dict(completed=True, role=args.role, screened_profiles=2, production_adopted=False)), flush=True)
 
 

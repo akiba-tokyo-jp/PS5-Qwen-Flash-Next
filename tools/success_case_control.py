@@ -33,7 +33,7 @@ def digest_expression(row,path=None):
     return 'qwen_launch_digest_matches('+json.dumps(path or row['remote'])+','+str(row['bytes'])+'ULL,'+json.dumps(row['sha256'])+')'
 
 
-def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None,direct_stage_context=None,closed_log_export_context=None,direct_stage_header=None,concat_context=None,source_seal_window_proof=None):
+def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=None,readmission_context=None,resident=None,dependencies=None,bundle_link=None,finalize_context=None,source_seal_context=None,activation_export_context=None,component_publish_context=None,completed_images_context=None,direct_stage_context=None,closed_log_export_context=None,direct_stage_header=None,concat_context=None,source_seal_window_proof=None,CPU_metadata_extra_pages=0):
     workspace=Path(workspace);out=Path(out);out.mkdir(parents=True,exist_ok=False)
     base_plan=load(mount_plan);base=base_plan['controller'];need(record(base['path'])==base,'Successful controller input changed')
     text=Path(base['path']).read_text();prefix='/data/ai/moss-qwen-case-'+secrets.token_hex(16)
@@ -41,6 +41,11 @@ def build(workspace,mount_plan,old_files,new_files,pending,operation,out,close=N
     marker='#include "launch_integrity_native.h"'
     need(text.count(marker)==1 and text.count('512*sizeof(struct kinfo_proc)')==1,'Exact complete process enumeration and integrity window required')
     text=text.replace(marker,'#define QWEN_LAUNCH_WINDOW 16384u\n#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u\n'+marker,1)
+    need(type(CPU_metadata_extra_pages) is int and 0<=CPU_metadata_extra_pages<=256 and
+         (CPU_metadata_extra_pages==0 or operation=='retire-completed-images'), 'Additional CPU metadata may only increase a finite retirement scope')
+    if CPU_metadata_extra_pages:
+        text=text.replace('#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES 21u',
+                          '#define QWEN_LAUNCH_CPU_METADATA_MARGIN_PAGES '+str(21+CPU_metadata_extra_pages)+'u',1)
     text=text.replace('512*sizeof(struct kinfo_proc)','128*sizeof(struct kinfo_proc)',1)
     for name,rows,mounted in (('new_files_valid',new_files,False),('new_mounted_valid',new_files,True)):
         expression='&&'.join(digest_expression(r,ALIAS+r['remote'][len(PHYSICAL):] if mounted else None) for r in rows)
