@@ -19,6 +19,25 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Current checkpoint65396: corrected Down GPU65394 passes all12 new graphs,
+zero mismatches,all canaries exact,maximum F64-reference error5.9842750488e-7.
+It ordinarily exits and exactly restores P1. Fresh CPU capacity65395 then
+passes with12262047744 bytes available before/after,above12184453120 baseline,
+and total12280922112 bytes. Ordinary exit/exact restoration pass and the
+retained-device readmission gate is clear. No old GPU graph is repeated.
+
+The remaining sequential workflow65396 is active with Gate source placement
+65390 first. It retains all48 Up layers and uploads only the new Gate files,
+then seals them and screens MMVQ-off/on. It subsequently places prepared Down
+source65355 and screens full-plane/source-prefix. Each case has the original
+three conditions,7374-page readiness,positive retirement and ordinary P1
+restoration. Only unscanned newly sealed source cache windows may be retired.
+No production adoption is automated: any actual gain needs matched control
+and heldout quality. Per-file positive receipts and byte progress are PC logs;
+there are no extra console probes or transfer-protocol changes. The source
+placement estimate remains11-12 hours for about21.7GB. The following checkpoints
+are historical and retain their original evidence limits.
+
 Latest checkpoint65388: all48 Up layers are sealed and reusable. The first
 corrected complete-model candidate65407 positively finishes all three requests,
 ordinary exit and exact P1 restoration. Its single-pair screen65384 shows:

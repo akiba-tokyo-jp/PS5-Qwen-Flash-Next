@@ -19,7 +19,10 @@ def main():
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--completed-scope', type=Path, action='append', default=[])
     p.add_argument('--target-free-pages', type=int, default=7374)
-    p.add_argument('--Up-prefix', action='store_true', help='Select the distinct sealed forty-three-file Up prefix instead of the last four')
+    role = p.add_mutually_exclusive_group()
+    role.add_argument('--Up-prefix', action='store_true', help='Select the distinct sealed forty-three-file Up prefix instead of the last four')
+    role.add_argument('--Gate48', action='store_true', help='Select only the newly sealed forty-eight Gate files')
+    role.add_argument('--Down48', action='store_true', help='Select only the newly sealed forty-eight Down carrier files')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
     need(7374 <= a.target_free_pages <= 16384, 'Preserve the original model screen and bounded source scope')
@@ -31,9 +34,15 @@ def main():
          'Only the positively sealed new publication is eligible')
     seal = load(publication['source_integrity']['path'])
     known = {r['path']: r for r in seal['parts']}
-    candidates = [r for r in plan['files'] if r['local']['bytes'] == 216268800]
-    need(len(candidates) == (43 if a.Up_prefix else 4),
-         'Only the exact sealed Up prefix or distinct final four source files are eligible')
+    if a.Gate48 or a.Down48:
+        need(record(publication['preparation']['path']) == publication['preparation'], 'The source preparation changed')
+        preparation = load(publication['preparation']['path'])
+        need(preparation['completed'] and preparation.get('IQ2_Down_layers' if a.Down48 else 'IQ2_Gate_layers') == list(range(48)),
+             'Only a complete newly sealed forty-eight-layer source role is eligible')
+    plane_file_bytes = 235929600 if a.Down48 else 216268800
+    candidates = [r for r in plan['files'] if r['local']['bytes'] == plane_file_bytes]
+    need(len(candidates) == (48 if a.Gate48 or a.Down48 else 43 if a.Up_prefix else 4),
+         'Only the exact sealed new role, Up prefix or distinct final four files are eligible')
     files, windows = [], []
     for row in reversed(candidates):
         source = known[row['application']]
@@ -74,7 +83,7 @@ def main():
     save(a.out / 'intent.private.json', dict(publication=record(a.publication), plan=record(plan_path),
         template=record(template), files=files, windows=windows, starting_window=first,
         boot=state['current_boot'], selected=selected, target_free_pages=a.target_free_pages,
-        publication_scope='Up-prefix43' if a.Up_prefix else 'Up-final4',
+        publication_scope='Gate48' if a.Gate48 else 'Down48' if a.Down48 else 'Up-prefix43' if a.Up_prefix else 'Up-final4',
         maximum_live_readonly_mapping_bytes=64 << 20, maximum_sync_extent_bytes=8 << 20,
         maximum_sync_calls=128, maximum_scope_seconds=20, native_API_body_unchanged=True,
         old_original_source_windows_replayed=0, source_writes=0, global_cache_purge=False))

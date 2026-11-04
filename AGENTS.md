@@ -3,41 +3,57 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
-CURRENT65394: Sole console/IO owner is index-safe Down GPU host session13960,
-outQ3-index-safe-all12-native-GPU-65394. It first publishes the NEW57,327,616B
-F16 reference pack via qualified same-size receiver65147,then submits all12
-changed graphs using corrected SELF65362. Do not start another console action
-or edit native runner/retained close/success-case/large-cache guards until it
-retires. Old65343 must never run in GPU mode. Positive GPU completion,ordinary
-close/exact P1 restore then fresh Direct capacity readmission are required.
+CURRENT65396: Sole console/source owner is sequential Gate+Down workflow,
+host session36731,outQ2-Q3-remaining-source-and-screen-sequence-65396. The PC
+wrappersequence.private.py runs Gate then Down via run_remaining_iq2_screens.py.
+Gate source placement65390 is ACTIVE. Do not start any other console request,
+FTP,helper,title or GPU operation. The host prints local-log progress every30s
+with zero extra console probes. Follow36731; do not poll retired hosts13960,
+96390,66958,29352,18506,64546,17974 or85033.
 
-CPU65393 COMPLETE:actual corrected SELF,17 resource/382 lookup/7 environment
-admission,free10989>=7374,ordinary close and exact P1 restore. Host66958 ended0.
-EarlierCPU65391 refused BEFORE staging/title at5282<7374. New cache scope65392
-skipped the prior19 Up-prefix windows,scanned20 further windows,cleared5728
-pages to0,free5299->11027,125 sync calls,source writes/GPU0. Prefix39/172 windows
-are consumed; remaining133 are unscanned. Final-four windows11/16 remain
-consumed. Never rescan those ranges or old original ranges.
+Frozen until the workflow retires:publish_iq2_up_model_overlay.py,
+retire_published_iq2_source_cache.py,build_iq2_up_model.py,iq2_up_model_scope.py,
+iq2_down_prefix_scope.py,iq2_down_prefix_cache.py,run_successful_headless_audit.py,
+run_successful_model_case.py,close_successful_current_model.py,
+success_case_control.py,analyze_iq2_pair_screen.py,run_remaining_iq2_screens.py.
+Do not edit these or resubmit any consumed phase. Documentation may be updated.
 
-MMVQ component65383 and fullUp65388 are COMPLETE; hosts18506/29352 ended0,
-all model/source/device owners retired,ordinary close/exact P1 restore pass.
-FullUp screen65389 rates7.390107726/9.397052781/12.452027984 tok/s,changes
--29.478455/-22.296473/-7.011492% versus recorded P1 control65400. This is one
-observation per arm,not matched ABBA. Do not repeat unchanged slower profiles.
-Earlier MMVQ-off Up65407 screen65384 is also negative. No IQ2 adoption.
+Down native65394 COMPLETE:all12 changed graphs at layers0/23/47,widths1/2/30/32,
+zero mismatches,all canaries exact,maximum F64 error5.9842750488e-7,ordinary
+exit and exact P1 seven-file restoration. CPU capacity65395 COMPLETE with
+Directavailablefirst/last12262047744>=baseline12184453120,total12280922112;
+ordinary close/exact restore pass,GPU_retirement_readmission_pending=false.
+Both native hosts ended0. Corrected65362,all17 resources and full-cache model
+qualification are now positively bound. Never run old65343 in GPU mode.
 
-Gate publication65390 is PREPARED ONLY:124 files,all48 Up layers reused,zero
-uploads. The remaining Gate/Down source placement is about21.7GB/11-12 hours.
-No transport tuning is reopened. Publisher collects the same large-source
-helper after350 seconds then180-second intervals,finite1800 seconds. Native
-source SHA256/EOF/parent checks and all once-only ownership remain unchanged.
+Remaining sequence:place only48 Gate layers,retaining all48 sealed Up files;
+seal every new physical/alias SHA256/EOF and parent;retire only unscanned newly
+sealed Gate cache;screen MMVQ-off and MMVQ-on. Then place already prepared Down
+source65355,seal it,retire only unscanned new Down cache,and screen full-plane
+and source-prefix. Each first screen uses the same cold/retained/exact-prefix
+metric and recorded P1 control65400. No matched-mean/adoption claim follows a
+single pair. Any actual gain still needs matched control and heldout quality.
+Native readiness remains7374; each new source cache target is16384 with the
+unchanged finite readonly body,maximum8 distinct positive-prefix scopes.
+Any failed operation stops the child without replay,preserving exact receipts.
 
-Down runner,retained-close and full-model admission select all12 index-safe
-graphs. Prefix-cache/entry ABI65377/65378 and actual compiled source admission
-pass on PC; model integration is prepared but native rate remains unqualified.
---candidate-only avoids rebuilding an unused normal control for a first screen;
-matched controls and quality remain required before adopting any actual gain.
-New prefix module does not modify the already compiled transform source.
+Gate source plan65390 contains124 new files;Down65355 contains101. About21.7GB
+remains to place,roughly11-12 hours at measured throughput. Transfer protocol
+is unchanged. Positive per-file receipts and byte progress are host logging;
+large native source sealing collects the SAME helper after350 seconds then
+180-second intervals,finite1800 seconds. No initializer/reboot is requested.
+
+Previous fullUp screens65384/65389 are negative. MMVQ-off candidate65407 gives
+8.002037471/9.358198875/12.391922418 tok/s;MMVQ-on65388 gives
+7.390107726/9.397052781/12.452027984. Recorded P1 gives
+10.479219859/12.093470064/13.390932154. Each has one observation per condition,
+not matched ABBA. Both fully retire/normally restore. Do not repeat those
+unchanged slower profiles. No IQ2 production adoption has occurred.
+
+Up-prefix39/172 cache windows are consumed in65380/65392;remaining133 are
+unscanned. Final-four11/16 are consumed in65371/65375. Never rescan these
+ranges or old original ranges. CPU65391 and candidate65408 were prelaunch
+readiness refusals,not shader failures;neither was staged or launched.
 
 All original Up source stores and seals are COMPLETE, including65334 and
 65352/publication; never retransmit completed files. CPU readmission65373

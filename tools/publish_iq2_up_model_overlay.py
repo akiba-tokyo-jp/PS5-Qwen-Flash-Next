@@ -91,11 +91,21 @@ def submit(a, publication, plan):
         for i, f in enumerate(files):
             verify_input(f)
             lan.absent(f['physical'])
+            sent, notice = 0, 16 << 20
+            def progress(block):
+                nonlocal sent, notice
+                sent += len(block)
+                if sent >= notice:
+                    print(json.dumps(dict(uploading_file=i+1, total=len(files), sent_bytes=sent,
+                        file_bytes=f['local']['bytes'], additional_PS5_probes=0)), flush=True)
+                    notice += 16 << 20
             with Path(f['local']['path']).open('rb') as stream:
-                reply = ftp.storbinary('STOR ' + f['physical'], stream, 65536)
+                reply = ftp.storbinary('STOR ' + f['physical'], stream, 65536, callback=progress)
             need(reply.startswith(('226 ', '250 ')), 'One complete new-file transfer required')
+            save(a.out / ('positive-store-' + str(i).zfill(3) + '.private.json'),
+                 dict(completed=True, file=i, source=f['local'], target=f['physical'], positive_reply=reply))
             print(json.dumps(dict(uploaded_file=i+1, total=len(files), bytes=f['local']['bytes'])), flush=True)
-    large_source_set = sum(f['local']['bytes'] for f in files) > 128 << 20
+    large_source_set = sum(f['local']['bytes'] for f in files) > (128 << 20)
     try:
         result = execute(lan, plan, a.out / 'native', observation_seconds=1 if large_source_set else 20)
     except RuntimeError:

@@ -894,10 +894,12 @@
     "latest_failure_classification": 65264
   },
   "current_console_execution": {
-    "owner": "index-safe Down GPU65394/session13960",
-    "phase": "new component pack publication before twelve new graphs",
-    "original_floor_pages": 7374,
-    "initializer_requests": 0,
+    "owner": "sequential Gate/Down workflow65396/session36731",
+    "phase": "Gate source placement65390",
+    "native_overlap_permitted": false,
+    "tools_frozen": true,
+    "initializers": 0,
+    "reboots": 0,
     "automatic_retries": 0
   },
   "latest_checkpoint_65281": {
@@ -1322,6 +1324,51 @@
       "actual_compiled_source_65377_reused": true,
       "native_model_pending": true
     },
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65396": {
+    "Down_GPU": {
+      "case": 65394,
+      "completed": true,
+      "native_passed": true,
+      "distinct_graphs": 12,
+      "mismatches": 0,
+      "canaries_exact": true,
+      "maximum_absolute_F64_error": 5.984275048831478e-07,
+      "ordinary_exit_and_exact_P1_restore": true
+    },
+    "capacity": {
+      "case": 65395,
+      "completed": true,
+      "available_first": 12262047744,
+      "available_last": 12262047744,
+      "baseline": 12184453120,
+      "total": 12280922112,
+      "ordinary_exit_and_exact_P1_restore": true,
+      "GPU_retirement_readmission_pending": false
+    },
+    "remaining_sequence": {
+      "case": 65396,
+      "active": true,
+      "Gate_publication": 65390,
+      "Down_publication": 65355,
+      "Gate_profiles": [
+        "MMVQ-off",
+        "MMVQ-on"
+      ],
+      "Down_profiles": [
+        "full-plane",
+        "source-prefix"
+      ],
+      "Up_layers_retransmitted": 0,
+      "original_readiness_pages": 7374,
+      "new_source_cache_target_pages": 16384,
+      "maximum_distinct_cache_scopes_per_role": 8,
+      "transfer_protocol_unchanged": true,
+      "extra_PS5_progress_probes": 0
+    },
+    "matched_ABBA_and_quality_required_for_any_gain": true,
+    "production_adopted": false,
     "campaign_complete": false
   }
 }
