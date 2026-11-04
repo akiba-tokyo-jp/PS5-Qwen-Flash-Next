@@ -3,6 +3,15 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+Latest source-only review (2026-11-05 JST): see
+docs/strata-candidate-review-20261105.md/.json. Strata main is pinned at
+ffa80d73133ea5c548aefe57889a16e8085a938f. ST1 input-conversion sharing,
+ST2 activation/conversion fusion and ST3 transfer-event bookkeeping are
+conditional adaptation candidates, not implemented or measured PS5 gains.
+One upstream CPU event-rule test passes; its trial executable is retired.
+No PS5 IO, deployment or new model campaign is started. The previous campaign
+below stays complete; no initializer or completed case may be replayed.
+
 CURRENT65576 (2026-11-05 JST): the eight-candidate campaign is COMPLETE.
 There are NO active console/source/model/helper owners or queued successors.
 Hosts36274/72965 and observersg10:2491/2486 are RETIRED exit0. Never poll or
