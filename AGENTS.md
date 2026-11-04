@@ -3,6 +3,85 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65568: sole console IO owner is host72965 / observerg10:2486, running
+Q2-Gate-Up-completed-plain-continuation-65564. Never poll72965 separately.
+The prior successful plain observation is REUSED, not relaunched. New stream
+observation COMPLETE:69 full-vocabulary F32 hashes/routes/tokens/bytes exact,
+1068 actual streamed groups,ordinary exits/exact P1 restores. Source:
+65564/Gate-Up/IO-equivalence.private.json. Timed observer-free model BUILD is
+complete and its FIRST native timed case is active; no new usable tok/s yet.
+Do not replay either completed IO case.
+
+PC-only successor host36274 / observerg10:2491 is ALREADY STARTED ONCE. It
+waits for65564's positive result and idle ownership, performing ZERO PS5 IO
+while waiting, then runs Down in65567/Down with BOTH prebuilt models65559/61.
+Do not start another waiter, observer, model or source operation. After72965
+retires, follow EXISTINGg10:2491. Down continuation source/configs/tools are
+FROZEN:65566 PC controls pass2 actual prebuilt models/12 invalid variants;
+65565 passes actual plain-case reuse/6 invalid archived observations and
+preserves the23-window latest-owner prefix. Editing any frozen tool/config
+would stop the existing successor before dispatch; do not do so casually.
+
+Completed-model source cache65563 is POSITIVE under the NEW actual read-owner
+qualification below:23/3805 windows,127 sync calls,5856 resident pages ->0,
+free3090->8945,source writes/touched mapping bytes0,positive mappings/FD/helper
+retirement,current-seven hashes pass. Registry is stored in active-console's
+completed_model_source_cache_cohorts, bound to exact6fade... case result.
+Old five pool ledgers remain exhausted and UNCHANGED; physical overlap across
+different ACTUAL completed model owners is explicit, not hidden. Within one
+model owner, registry rejects reset prefixes/duplicate keys/pending helpers.
+65562 controls pass actual13685 completed reads,8 invalid owners,2 positive
+ledger cases/4 invalid ledgers. Original native cache API body and1154/7374
+floors remain exact. A refused/no-read/incomplete model cannot create a new
+cohort. All earlier initializers, GPU/codec controls and stopped hosts remain
+retired. Retain all actual new per-owner cursors through the remaining runs.
+
+CURRENT65563 preparation (2026-11-05 JST): host26402/observerg10:2379 RETIRED
+exit1 after the Gate-Up STREAM preflight refused BEFORE staging/launch. Do
+not poll either, restart65537, or replay its COMPLETED plain observed case.
+Plain case65537/Gate-Up/Gate-Up/plain-observed-case is COMPLETE: three
+requests,69 F32 rows,all13685 source windows completed,zero live device bytes,
+positive ordinary exit/current-seven restoration. Its run_id is
+6fade1096bba6010aaafafa3cc25060d. This is not a usable speed observation.
+The old Down pool's remaining188 windows and original complement's1234
+windows both finish with ZERO resident pages. ALL FIVE old pools are now
+exhausted. Last returned free3797<7374. Preserve EVERY old cursor unchanged.
+65560 positively removes two exact inactive staging images (54067200 bytes),
+current-seven native hashes pass;free3300->3300. No source payload is removed.
+PC Down full-plane65559 and source-prefix65561 are BOTH COMPLETE; their host
+sessions68901/32948 are retired0. No Down model has yet launched.
+
+New read-owner qualification is being prepared, NOT an arbitrary cache epoch:
+retire_completed_model_source_cache.py requires the exact LATEST completed
+model,actual positive source_windows==source_completed_windows>0,matching
+SELF/recipe,sealed model inputs,positive ordinary exit and current-seven
+restoration. Low free pages, a refused launch or an unloaded fixture cannot
+create a new cohort. A persistent per-model ledger rejects reused case keys,
+reset prefixes and pending helpers. Earlier pool cursors remain exhausted;
+physical ranges MAY overlap an earlier owner's inputs because an ACTUAL NEW
+model read occurred. This narrow changed-scope qualification supersedes the
+earlier global no-rescan wording ONLY after all those positive owner proofs.
+Within one read-owner cohort, never repeat a completed window or reset its
+cursor. Original64MiB RO maps/8MiB sync/128calls/20s/1154 floor and7374 model
+admission remain exact. Qualify the new host admission and ledger guards
+before its first native operation; no initializer/reboot/OS budget change.
+
+CURRENT65557: source host93368 RETIRED exit0.65554 positively seals ALL101
+Down files through whole physical/alias SHA256/EOF, unchanged518 parents and
+all parent directory snapshots, then normalizes metadata. Original source
+payloads are never rewritten. Its helper exited/files removed. Original65355
+publication is now COMPLETE, truthfully pointing to NEW65554 native result.
+The original65355 native result remains the historical zero-operation refusal.
+The four actually consumed Down windows bridge to the exact sealed identities
+at65554/sealed-cache-prefix/result.private.json; remaining188/192.65537's
+Gate-Up config ALREADY contains that prefix before either source owner clears.
+Both source owners are clear, unknown_completion=false, current P1 restored.
+The EXISTING host26402/observerg10:2379 has started its Gate-Up successor phase
+(intent and Gate-Up-followups-host-owner receipts exist). It is now sole
+console IO owner. Follow that SAME observer; never poll26402 separately or
+start another coordinator. Gate-Up stream and Down model rates remain pending.
+Do not replay any completed/refused helper, consumed window or initializer.
+
 CURRENT65556 (2026-11-05 JST): sole console IO owner is host93368, running
 seal_after_staged_source_cache.py for NEW scope65554. The original65355
 sealer is RETIRED: free1196<1201, zero operations, helper exited/files removed.

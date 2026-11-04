@@ -37,6 +37,12 @@ def main():
     frozen += [record(ROOT / 'tools' / name) for name in (
         'source_cache_pools.py', 'observe_source_cache_complement.py', 'observe_completed_source_cache.py')]
     frozen += [record(a.config), record(Path(__file__))]
+    model_cache_controls = config.get('completed_model_cache_controls')
+    compact_marker_control = config.get('compact_marker_control')
+    if model_cache_controls:
+        from model_source_cache_continuation import qualification
+        need(compact_marker_control, 'An exact diagnostic marker qualification is required')
+        frozen += qualification(Path(model_cache_controls), Path(compact_marker_control))
     if config.get('minimum_request_alignment_control'):
         path = Path(config['minimum_request_alignment_control'])
         control = load(path)
@@ -100,6 +106,7 @@ def main():
     native = common + ['--model-proof', a.model_proof, '--direct-staging-proof', a.direct_staging_proof,
                       '--native-VM-proof', a.native_VM_proof, '--readiness-pages', '7374', '--quiet-seconds', '35']
     serial = 0
+    model_cache_scopes = []
 
     def capacity(label):
         nonlocal serial
@@ -123,6 +130,23 @@ def main():
                     return True
                 if result['remaining_windows'] == 0:
                     break
+        if model_cache_controls:
+            from model_source_cache_continuation import available, flags
+            for _ in range(8):
+                if not available(a.current):
+                    break
+                out = a.out / ('completed-model-cache-' + str(serial))
+                serial += 1
+                arguments = flags(a.current, common, Path(compact_marker_control), out)
+                run('retire_completed_model_source_cache.py', arguments, label + '-model-cache-prepare-' + str(serial), 300)
+                run('retire_completed_model_source_cache.py', arguments + ['--execute-prepared'], label + '-model-cache-retire-' + str(serial), 300)
+                path = out / 'result.private.json'
+                result = load(path)
+                need(result['completed'] and result['all_mappings_and_FDs_positively_retired'], 'The exact latest model cache owner must retire')
+                model_cache_scopes.append(record(path))
+                (a.out / 'completed-model-cache-scopes.private.json').write_text(json.dumps(model_cache_scopes, indent=2) + '\n', encoding='utf-8')
+                if result['observations']['free_after'] >= 7374:
+                    return True
         # Insufficient returned capacity cannot justify another admission query.
         print(json.dumps(dict(phase=label, distinct_cache_pool_allowance_ended=True,
             model_admission=False, readiness_pages=7374, cache_windows_replayed=0)), flush=True)
@@ -169,7 +193,15 @@ def main():
                     flags += ['--format-stream-provider', item['compiled_stream'], '--cache-provider-proof', item['compiled_stream']]
                 run('build_iq2_up_model.py', flags, label + '-' + arm + '-observed-build')
             root = out / (arm + '-observed-case')
-            root, outcome = case(model / 'candidate/SELF/result.private.json', root, label + '-' + arm + '-observed-native')
+            if arm == 'plain' and item.get('completed_plain_case'):
+                from model_source_cache_continuation import reused_observation
+                root = Path(item['completed_plain_case'])
+                outcome, archived = reused_observation(root, model / 'candidate/SELF/result.private.json')
+                frozen += archived
+                save(out / 'plain-reused-observation.private.json', dict(completed=True, case=str(root), evidence=archived,
+                    native_cases_replayed=0, source_publications=0, title_launches=0))
+            else:
+                root, outcome = case(model / 'candidate/SELF/result.private.json', root, label + '-' + arm + '-observed-native')
             if not outcome['all_counting_and_finite_checks']:
                 negative_observation = dict(label=label, observed_arm=arm,
                     result=record(root / 'result.private.json'), counting_or_finite_negative=True,
@@ -238,7 +270,8 @@ def main():
         decisions.append(decision)
         save(out / 'decision.private.json', decision)
     save(a.out / 'result.private.json', dict(completed=True, profiles=decisions,
-        ordinary_restoration_after_every_case=True, unchanged_primary_metric=True, production_adopted=False))
+        ordinary_restoration_after_every_case=True, unchanged_primary_metric=True, production_adopted=False,
+        completed_model_cache_scopes=model_cache_scopes))
     print(json.dumps(dict(completed=True, profiles=len(decisions), production_adopted=False)), flush=True)
 
 

@@ -19,6 +19,25 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Checkpoint65568: Gate-Up minimum stream passes69 full-vocabulary F32 hashes,
+routes, tokens and bytes against its completed plain observation, with1068
+actual streamed groups and ordinary P1 restoration. The successful plain case
+is reused. Its first observer-free timed native case is active; no new tok/s is
+claimed. Both independent Down variants build PC-only and are queued for reuse.
+After the actual plain model's13685 completed source windows, a new strictly
+model-owner-bound cache scope frees5856 resident pages (free3090->8945), keeping
+old exhausted pool cursors intact and original1154/7374 floors. Reuse of a
+model owner, reset prefixes and incomplete owners refuse. Physical overlap
+with earlier completed read owners is explicit; see the detailed
+[source and continuation record](source-capacity-and-stream-followups-20261104.md).
+
+Checkpoint65557: all101 Down source files now seal positively through whole
+physical/alias SHA256 and EOF, unchanged518 parents and directory snapshots.
+The source helper exits and retires its files. The four consumed cache windows
+transfer to the sealed prefix, preserving188/192 remaining windows. Both source
+owners clear and the existing queued65537 coordinator starts Gate-Up, then
+Down. Remaining model rates are pending; no additional adoption is claimed.
+
 Checkpoint65556 supersedes the source ownership below: all101 Down files are
 transferred. Its first source sealer refuses before any operation at1196<1201
 pages and retires normally. Two distinct staging-cache scopes also stop before

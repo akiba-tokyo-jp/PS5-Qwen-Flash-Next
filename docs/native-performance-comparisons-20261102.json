@@ -238,7 +238,7 @@
     "protected_current_seven_whole_digests_equal": true
   },
   "Q2": {
-    "status": "original_Up_and_Gate_and_minimum_Up_stream_screens_negative_Gate_Up_minimum_stream_pending",
+    "status": "original_Up_and_Gate_and_minimum_Up_stream_screens_negative_Gate_Up_minimum_IO_exact_timing_pending",
     "pre_main_refusal_case": 64310,
     "returned_CPU_reads": 7,
     "refused_free_pages": 882,
@@ -405,7 +405,7 @@
     "MMVQ_refinement_speedup": false
   },
   "Q3": {
-    "status": "all48_Down_carriers_transferred_changed_state_whole_source_sealing_active_model_screens_pending",
+    "status": "all48_Down_sources_whole_sealed_both_independent_models_built_queued_after_Gate_Up",
     "real_Down_activation_moments_available": true,
     "cross_row_format_implemented": false,
     "real_operand_output_reference": {
@@ -800,7 +800,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "2026-11-05 JST: preserved all101 Down stores; changed owned consumption and positive four-window cache retirement; exact original whole-source sealing active.",
+  "latest_update": "2026-11-05 JST: Gate-Up minimum native IO exact and first timed native case active; both Down builds queued; actual completed-model source cache owners qualified with old ledgers intact.",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -1684,6 +1684,98 @@
     "model_readiness_pages": 7374,
     "primary_metric": "(generated_tokens-1)*1000/decode_ms",
     "new_inference_rates": null,
+    "production_adopted": false,
+    "initializer_repeated": false
+  },
+  "latest_checkpoint_65557": {
+    "date": "2026-11-05",
+    "source_seal_case": 65554,
+    "source_files": 101,
+    "whole_physical_alias_SHA256_EOF": true,
+    "unchanged_parent_sources": 518,
+    "unchanged_parent_directory_snapshots": true,
+    "helper_exited": true,
+    "helper_files_removed": true,
+    "original_source_writes": 0,
+    "original_zero_operation_refusal_preserved": true,
+    "total_source_sealer_submissions": 2,
+    "consumed_Down_windows": 4,
+    "remaining_Down_windows": 188,
+    "whole_Down_windows": 192,
+    "prefix_handed_off_before_source_owner_release": true,
+    "both_source_owners_clear": true,
+    "existing_queued_coordinator": 65537,
+    "phase": "Gate-Up followups started; Down next",
+    "new_inference_rates": null,
+    "production_adopted": false,
+    "model_readiness_pages": 7374,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms"
+  },
+  "latest_checkpoint_65568": {
+    "date": "2026-11-05",
+    "Gate_Up_IO": {
+      "case": 65564,
+      "completed": true,
+      "F32_rows_exact": 69,
+      "whole_vocabulary_columns": 248320,
+      "ordered_routes_tokens_and_bytes_exact": true,
+      "streamed_groups": 1068,
+      "ordinary_closes_and_P1_restores": true,
+      "completed_plain_case_replayed": false,
+      "timing_phase": "first-observer-free-native-case-active"
+    },
+    "old_source_cache_pools": {
+      "all_five_exhausted": true,
+      "remaining_Down_windows": 0,
+      "remaining_original_complement_windows": 0,
+      "ledgers_reset": false
+    },
+    "staging_image_cleanup": {
+      "case": 65560,
+      "files": 2,
+      "bytes": 54067200,
+      "free_before": 3300,
+      "free_after": 3300,
+      "current_seven_hashes_pass": true
+    },
+    "completed_read_owner_qualification": {
+      "controls": 65562,
+      "actual_completed_source_windows": 13685,
+      "owner_negatives": 8,
+      "ledger_positives": 2,
+      "ledger_negatives": 4,
+      "requires_latest_actual_model_and_positive_ordinary_exit": true,
+      "duplicate_case_keys_and_reset_prefixes_refused": true,
+      "physical_overlap_across_actual_model_owners_explicit": true
+    },
+    "native_owner_cache": {
+      "case": 65563,
+      "scanned_windows": 23,
+      "total_windows": 3805,
+      "sync_calls": 127,
+      "resident_pages_before": 5856,
+      "resident_pages_after": 0,
+      "free_before": 3090,
+      "free_after": 8945,
+      "source_writes": 0,
+      "touched_mapping_bytes": 0,
+      "all_mappings_FDs_and_helper_positively_retired": true,
+      "old_pool_ledgers_unchanged": true,
+      "native_API_body_unchanged": true
+    },
+    "Down_prebuilt": {
+      "full_plane": 65559,
+      "source_prefix": 65561,
+      "PC_only": true,
+      "reuse_controls": 65566,
+      "positive_models": 2,
+      "invalid_variants": 12,
+      "queued_successor": 65567
+    },
+    "model_readiness_pages": 7374,
+    "cache_floor_pages": 1154,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "additional_usable_tok_s": null,
     "production_adopted": false,
     "initializer_repeated": false
   }

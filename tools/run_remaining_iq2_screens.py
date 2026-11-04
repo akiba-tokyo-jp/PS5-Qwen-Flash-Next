@@ -17,6 +17,18 @@ from start_success_route import load, need, save
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def validate_prebuilt_down(built, variant, expected, prefix):
+    need(variant in ('full-plane', 'source-prefix') and built['completed'] and
+         built['candidate_only_screen'] and set(built['packages']) == {'candidate'} and
+         all(built[key] == value for key, value in expected.items()) and
+         not built['F32_qualification'] and not built['MMVQ_decode_qualification'] and
+         not built['format_stream_provider'] and built['Down_only_FP32_accumulation'] and
+         built['Down_source_prefix_cache'] == (prefix if variant == 'source-prefix' else None) and
+         built['reused_cache_provider'] == (prefix if variant == 'source-prefix' else None) and
+         built['PS5_operations'] == 0 and not built['production_adopted'],
+         'Reuse only the exact independent full-plane/prefix build with unchanged source, arithmetic and compiled cache scope')
+
+
 def completed_source_cache_prefix(followups, publication, role):
     result = load(followups)
     need(result['completed'] and result['ordinary_restoration_after_every_case'] and
@@ -51,6 +63,9 @@ def main():
     parser.add_argument('--completed-source-cache-followups', type=Path,
                         help='Preserve the exact cache prefix consumed by completed follow-ups using this source role')
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--completed-model-cache-controls', type=Path)
+    parser.add_argument('--compact-marker-control', type=Path)
+    parser.add_argument('--prebuilt-profiles', type=Path, help='Reuse the exact two independent PC-only Down packages')
     args = parser.parse_args()
     need(args.execute, 'Explicit execution is required for source placement and native screens')
     prep = load(args.preparation)
@@ -74,6 +89,27 @@ def main():
              'observe_source_cache_complement.py', 'observe_completed_source_cache.py')
     frozen = [record(ROOT / 'tools' / name) for name in names]
     frozen.append(record(Path(__file__)))
+    if args.completed_model_cache_controls:
+        from model_source_cache_continuation import qualification
+        need(args.compact_marker_control, 'The exact marker qualification must accompany completed-model cache admission')
+        frozen += qualification(args.completed_model_cache_controls, args.compact_marker_control)
+    prebuilt = {}
+    if args.prebuilt_profiles:
+        need(args.role == 'Down' and not args.prebuilt_first_profile and not args.host_preflight_continuation,
+             'Independent prebuilt Down models cannot be mixed with a host-refusal continuation')
+        rows = load(args.prebuilt_profiles)
+        need(set(rows) == {'full-plane', 'source-prefix'}, 'Both exact independent Down builds are required')
+        expected = dict(preparation=record(args.preparation), publication=record(args.publication / 'result.private.json'),
+            arithmetic_qualification=record(args.arithmetic_qualification), cache_baseline=record(args.cache_baseline),
+            Down_resource_provider=record(args.Down_resource_provider))
+        prefix = record(args.Down_prefix_provider)
+        for variant, row in rows.items():
+            need(record(row['path']) == row, 'A prebuilt Down model receipt changed')
+            built = load(row['path'])
+            validate_prebuilt_down(built, variant, expected, prefix)
+            prebuilt[variant] = (row, built['packages']['candidate'])
+            frozen += [row, built['packages']['candidate']]
+        frozen.append(record(args.prebuilt_profiles))
     followups = args.followups or args.publication / 'model-followups.private.json'
     if followups.exists():
         frozen += [record(followups), record(ROOT / 'tools/run_iq2_stream_followups.py')]
@@ -199,21 +235,38 @@ def main():
         first += value['observations']['scanned']
         frozen += [record(path), record(path.parent / 'intent.private.json')]
     serial = len(cache_scopes)
+    model_cache_scopes = []
 
     def primary_pool():
         return dict(scope=args.role + '48', publication=str(publication_result),
                     completed_scopes=[str(path) for path in cache_scopes])
 
     def any_windows():
-        return has_windows(primary_pool()) or any(has_windows(pool) for pool in fallback_pools)
+        if has_windows(primary_pool()) or any(has_windows(pool) for pool in fallback_pools):
+            return True
+        if args.completed_model_cache_controls:
+            from model_source_cache_continuation import available
+            return available(args.current)
+        return False
 
     def retire_cache():
         nonlocal serial
         primary = primary_pool()
         pool = primary if has_windows(primary) else next((pool for pool in fallback_pools if has_windows(pool)), None)
-        need(pool is not None, 'No unscanned source-cache window remains; do not repeat admission unchanged')
         out = args.out / ('source-cache-' + str(serial))
         serial += 1
+        if pool is None:
+            need(args.completed_model_cache_controls, 'No unscanned source-cache window remains; do not repeat admission unchanged')
+            from model_source_cache_continuation import flags
+            arguments = flags(args.current, common, args.compact_marker_control, out)
+            run('retire_completed_model_source_cache.py', arguments, out.name + '-model-prepare', 300)
+            run('retire_completed_model_source_cache.py', arguments + ['--execute-prepared'], out.name + '-model-retire', 300)
+            result_path = out / 'result.private.json'
+            result = load(result_path)
+            need(result['completed'] and result['all_mappings_and_FDs_positively_retired'], 'The exact completed-model cache prefix must retire')
+            model_cache_scopes.append(record(result_path))
+            (args.out / 'completed-model-cache-scopes.private.json').write_text(json.dumps(model_cache_scopes, indent=2) + '\n', encoding='utf-8')
+            return result
         tool, flags = cache_command(common, pool, out)
         run(tool, flags, out.name, 300)
         result_path = out / 'result.private.json'
@@ -259,7 +312,12 @@ def main():
             flags += ['--Down-resource-provider', args.Down_resource_provider]
             if variant == 'source-prefix':
                 flags += ['--Down-prefix-cache', '--cache-provider-proof', args.Down_prefix_provider]
-        if variant == profiles[0] and args.prebuilt_first_profile:
+        if variant in prebuilt:
+            build_record, package_record = prebuilt[variant]
+            package = Path(package_record['path'])
+            save(args.out / (variant + '-reused-build.private.json'), dict(completed=True,
+                build=build_record, package=package_record, compilations_replayed=0, prior_PS5_operations=0))
+        elif variant == profiles[0] and args.prebuilt_first_profile:
             package = Path(built['packages']['candidate']['path'])
             save(args.out / (variant + '-reused-build.private.json'), dict(completed=True,
                 build=record(args.prebuilt_first_profile), package=record(package), compilations_replayed=0))
@@ -304,6 +362,7 @@ def main():
         screens=screens, observations_per_arm=1, matched_ABBA=False, ordinary_restoration_after_every_case=True,
         initializer_requests=0, automatic_retries=0, production_adopted=False,
         matched_control_and_heldout_quality_required_for_any_gain=True,
+        completed_model_cache_scopes=model_cache_scopes,
         format_stream_followups=record(followed / 'result.private.json') if followed else None))
     print(json.dumps(dict(completed=True, role=args.role, screened_profiles=2, production_adopted=False)), flush=True)
 

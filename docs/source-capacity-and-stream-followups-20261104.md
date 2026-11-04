@@ -4,6 +4,60 @@ The primary metric remains `(generated_tokens-1)*1000/decode_ms`, reported
 separately for cold, retained and exact-prefix requests. No IQ2 production
 adoption or speed gain is established by this checkpoint.
 
+Checkpoint65568: Gate-Up minimum streaming passes the actual native IO
+comparison: all69 full-vocabulary F32 hashes, ordered routes, tokens and output
+bytes match the SAME quantized model's plain path.1068 streamed groups execute.
+Both observations close ordinarily and restore the exact selected P1 files.
+The completed plain observation is reused; only its previously unlaunched
+stream counterpart runs. The observer-free timed model builds and its first
+native speed case is active.
+Down full-plane65559 and source-prefix65561 both build PC-only and will be
+reused by the already queued65567 successor. Two positive and12 invalid
+prebuilt-profile controls prevent unnecessary recompilation or scope mixing.
+
+After the plain model, the old Down and original-complement pools finish their
+remaining188/1234 windows with zero resident pages. All five old pools are
+exhausted and remain unchanged. The next stream preflight refuses before any
+publication or launch below7374 pages. Cleanup65560 removes two exact inactive
+staging images (54067200 bytes), preserving current-seven hashes; free pages
+remain3300. This removal alone supplies no RAM or inference gain.
+
+The completed plain model supplies a materially different source-read owner:
+all13685 source windows complete, device live bytes reach zero, and ordinary
+exit/current-file restoration pass. New eligibility is bound to that EXACT
+latest model, compiled SELF, recipe, sealed input set and positive closure.
+A persistent per-model ledger refuses duplicate case keys, reset prefixes,
+pending helpers, no-read fixtures and incomplete owners. Low free pages or a
+refused launch cannot create another owner. Physical ranges may overlap an
+earlier owner's inputs after an actual new model read; this fact is explicit,
+and old pool cursors are not reset. This narrows the earlier blanket no-rescan
+rule to the actual completed read owner. It does not claim exact per-range
+read attribution or permit arbitrary cache epochs.
+
+The native cache body remains byte-exact:64MiB readonly maps,8MiB sync extents,
+128 calls/20 seconds, unchanged1154 cache floor, positive identity/canary/unmap/
+descriptor retirement and no mapped data touches. Model admission stays7374.
+Host65562 binds the actual positive read owner and rejects eight invalid owners
+and four invalid ledger states. First native65563 processes23/3805 eligible
+windows with127 sync calls:5856 resident pages become zero, free3090->8945.
+Every source/FD/mapping/helper completes positively; original ledgers remain
+intact. No exclusive global RAM attribution or inference gain is claimed.
+Continuation65565 also rejects six invalid archived observations, preventing
+the successful plain case from being rerun. Remaining cases can use only a
+different actual completed model owner or the unscanned suffix of the SAME
+owner, retaining its exact prefix through the new registry.
+
+Checkpoint65557: new source-seal65554 completes all101 files with whole
+physical/alias SHA256 and EOF, unchanged518 selected parents and unchanged
+parent directory snapshots. Its helper exits and its files are removed. The
+original65355 publication points to this new positive native result; its
+original zero-operation refusal remains intact. The four actually consumed
+cache windows bind to the sealed identities and appear in the queued65537
+Gate-Up config before both source owners clear.188/192 Down windows remain.
+The existing coordinator starts the Gate-Up phase, followed by Down; no new
+coordinator, upload or completed model comparison is started again. Inference
+rates for those remaining profiles are still pending.
+
 Checkpoint65556 (2026-11-05 JST): all101 Down files are positively transferred,
 including all48 carriers. The original seven successful stores are preserved;
 the disconnected partial is restarted once and no completed payload is sent
