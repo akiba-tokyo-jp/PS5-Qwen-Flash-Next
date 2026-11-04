@@ -28,6 +28,11 @@ def main():
     parser.add_argument('--Down-resource-provider', type=Path)
     parser.add_argument('--Down-prefix-provider', type=Path)
     parser.add_argument('--followups', type=Path, help='Bind additional source-role follow-ups after the original two screens')
+    parser.add_argument('--host-preflight-continuation', type=Path,
+                        help='Continue only a recorded zero-publication, zero-title host refusal')
+    parser.add_argument('--prebuilt-first-profile', type=Path,
+                        help='Reuse the exact candidate whose host-only startup preflight was refused')
+    parser.add_argument('--completed-cache-scope', type=Path, action='append', default=[])
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()
     need(args.execute, 'Explicit execution is required for source placement and native screens')
@@ -54,6 +59,31 @@ def main():
     followups = args.followups or args.publication / 'model-followups.private.json'
     if followups.exists():
         frozen += [record(followups), record(ROOT / 'tools/run_iq2_stream_followups.py')]
+    if args.host_preflight_continuation:
+        continuation = load(args.host_preflight_continuation)
+        need(continuation['completed'] and continuation['PS5_operations'] == 0 and
+             continuation['previous_title_launches'] == continuation['previous_source_publications'] == 0 and
+             continuation['serializer'] == record(ROOT / 'tools/run_successful_model_case.py') and
+             continuation['all_original_policy_fields_and_values_preserved'] and
+             continuation['unchanged_native_metadata_limit_bytes'] == 1 << 20 and
+             args.prebuilt_first_profile and len(args.completed_cache_scope) == 1 and
+             continuation['prior_source_cache_scope'] == record(args.completed_cache_scope[0]),
+             'Only the exact corrected host-only preflight may reuse its unexecuted candidate and completed cache prefix')
+        frozen.append(record(args.host_preflight_continuation))
+    else:
+        need(not args.prebuilt_first_profile and not args.completed_cache_scope,
+             'Previously prepared inputs require their exact zero-operation preflight continuation')
+    if args.prebuilt_first_profile:
+        built = load(args.prebuilt_first_profile)
+        need(built['completed'] and built['preparation'] == record(args.preparation) and
+             built['publication'] == record(args.publication / 'result.private.json') and
+             built['arithmetic_qualification'] == record(args.arithmetic_qualification) and
+             built['cache_baseline'] == record(args.cache_baseline) and not built['F32_qualification'] and
+             not built['MMVQ_decode_qualification'] and not built['Down_source_prefix_cache'] and
+             not built['format_stream_provider'] and
+             built['packages']['candidate'] == continuation['reused_candidate_package'],
+             'The exact already built first profile must match every source and arithmetic input')
+        frozen.append(record(args.prebuilt_first_profile))
     args.out.mkdir(parents=True, exist_ok=False)
     save(args.out / 'intent.private.json', dict(role=args.role, preparation=record(args.preparation),
         publication_directory=str(args.publication), baseline=baseline, tools=frozen,
@@ -112,8 +142,20 @@ def main():
     need(publication['completed'] and publication['preparation'] == record(args.preparation) and
          publication['whole_new_bytes_and_all_parent_identities_qualified'], 'All source bytes must positively seal first')
     idle()
-    cache_scopes = []
+    cache_scopes = args.completed_cache_scope.copy()
+    first = 0
+    for path in cache_scopes:
+        value, intent = load(path), load(path.parent / 'intent.private.json')
+        need(value['completed'] and value['all_mappings_and_FDs_positively_retired'] and
+             value['starting_window'] == first and intent['publication'] == record(publication_result) and
+             intent['publication_scope'] == args.role + '48' and
+             intent['boot'] == load(args.current / 'active-console.private.json')['current_boot'],
+             'Only the exact same-boot positive source-cache prefix may be retained')
+        first += value['observations']['scanned']
     for index in range(8):
+        if cache_scopes and (value['observations']['free_after'] >= 16384 or value['remaining_windows'] == 0):
+            need(value['observations']['free_after'] >= 7374, 'The preserved prefix cannot replace model readiness')
+            break
         out = args.out / ('source-cache-' + str(index))
         flags = common + ['--publication', publication_result, '--' + args.role + '48',
                           '--target-free-pages', '16384', '--out', out, '--execute']
@@ -148,8 +190,13 @@ def main():
             flags += ['--Down-resource-provider', args.Down_resource_provider]
             if variant == 'source-prefix':
                 flags += ['--Down-prefix-cache', '--cache-provider-proof', args.Down_prefix_provider]
-        run('build_iq2_up_model.py', flags, variant + '-build')
-        package = package_root / 'candidate/SELF/result.private.json'
+        if variant == profiles[0] and args.prebuilt_first_profile:
+            package = Path(built['packages']['candidate']['path'])
+            save(args.out / (variant + '-reused-build.private.json'), dict(completed=True,
+                build=record(args.prebuilt_first_profile), package=record(package), compilations_replayed=0))
+        else:
+            run('build_iq2_up_model.py', flags, variant + '-build')
+            package = package_root / 'candidate/SELF/result.private.json'
         case = args.out / (variant + '-case')
         run('run_successful_headless_audit.py', common + ['--package', package, '--model-proof', args.model_proof,
             '--direct-staging-proof', args.direct_staging_proof, '--native-VM-proof', args.native_VM_proof,

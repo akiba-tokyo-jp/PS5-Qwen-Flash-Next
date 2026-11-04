@@ -3,6 +3,33 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65528: Sole console owner is host47000 / observerg10:2316, coordinator
+Q2-Q3-compact-policy-continuation-65528/sequence.private.py. Host18314 and
+observersg10:2248/g10:2300 are RETIRED. Gate source65390 is fully sealed;
+source-cache0 (one of192 windows,191 remain) and the MMVQ-off package are reused.
+The previous Gate startup stopped PC-only BEFORE publication/launch because
+pretty JSON was1063907 bytes, above the UNCHANGED1048576-byte native bound.
+65526 proves compact serialization preserves EVERY value and fits1010366
+bytes; actual startup preparation passes, PS5 operations=0.65527 proves the
+continuation dispatches native startup first without transfer/cache/build
+replay. New host47000 now runs that changed-policy scope, then Gate follow-ups
+and Down. Its private Down config inherits the NEW Gate cache-pool ledger.
+Do not poll47000 separately or edit its frozen runtime/tool inputs. No new
+inference rate is known yet; R1+P1 remains production.
+
+CURRENT65525: All124 Gate source stores are COMPLETE, including all48 large
+layer files. Host18314 / observerg10:2300 is now collecting the SAME prepared
+Gate native source sealer, submitted ONCE. The first350-second collection
+returned a pending4,061,124-byte journal;180-second quiet collection continues.
+Do not resubmit the helper or start separate console IO. Main Gate/stream and
+Down stages remain queued under the same coordinator. No new rate is known.
+
+CURRENT65524: Host18314 still solely owns console IO. Gate46 whole stores
+are complete and file47 is progressing. Observerg10:2248 was retired before
+its replacement observerg10:2300 began collecting the SAME host session.
+Do not poll18314 separately. No source transfer, helper or model case was
+restarted for this observer handover. All workflow/tool freezes still apply.
+
 CURRENT65523: Host18314/observerg10:2248 still solely owns console IO. Gate40
 whole stores are complete and file41 is progressing. No extra console probe
 or native model operation was made for this checkpoint.

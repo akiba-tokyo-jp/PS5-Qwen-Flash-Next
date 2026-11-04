@@ -160,7 +160,11 @@ def start(args):
     app.update(admission_report=report,clock_calibration=load(args.clock))
     app_path=args.out/'app.json';policy_path=args.out/'development.json'
     save(app_path,app)
-    if args.package and package.get('effective_application_policy',{}).get('kind')=='Q1-shared':
+    compact_policy = args.package and (
+        package.get('effective_application_policy',{}).get('kind')=='Q1-shared' or
+        package.get('effective_application_policy',{}).get('model_layer',{}).get('kind') in
+        ('IQ2-Up','IQ2-Gate-Up','IQ2-Down'))
+    if compact_policy:
         with policy_path.open('x',encoding='utf-8',newline='\n') as stream:
             stream.write(json.dumps(policy,separators=(',',':'))+'\n')
     else:save(policy_path,policy)
