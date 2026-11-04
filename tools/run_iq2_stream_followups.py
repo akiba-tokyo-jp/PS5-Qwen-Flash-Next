@@ -140,6 +140,7 @@ def main():
         if item.get('Down_resource_provider'):
             build_flags += ['--Down-resource-provider', item['Down_resource_provider']]
         observed = []
+        negative_observation = None
         for arm in ('plain', 'stream'):
             built = item.get('prebuilt_' + arm)
             if built:
@@ -156,8 +157,17 @@ def main():
                     flags += ['--format-stream-provider', item['compiled_stream'], '--cache-provider-proof', item['compiled_stream']]
                 run('build_iq2_up_model.py', flags, label + '-' + arm + '-observed-build')
             root = out / (arm + '-observed-case')
-            root, _ = case(model / 'candidate/SELF/result.private.json', root, label + '-' + arm + '-observed-native')
+            root, outcome = case(model / 'candidate/SELF/result.private.json', root, label + '-' + arm + '-observed-native')
+            if not outcome['all_counting_and_finite_checks']:
+                negative_observation = dict(label=label, observed_arm=arm,
+                    result=record(root / 'result.private.json'), counting_or_finite_negative=True,
+                    IO_equivalence_qualified=False, adopted=False)
+                break
             observed.append(root)
+        if negative_observation:
+            decisions.append(negative_observation)
+            save(out / 'decision.private.json', negative_observation)
+            continue
         proof = out / 'IO-equivalence.private.json'
         run('analyze_iq2_stream_equivalence.py', ['--control-case', observed[0], '--candidate-case', observed[1],
             '--compiled-stream', item['compiled_stream'], '--out', proof], label + '-IO-analysis', 120)

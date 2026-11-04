@@ -65,6 +65,9 @@ tokens, bytes and ordinary restoration must match, and actual stream groups
 must execute. Only then can an observer-free speed screen run. Clearly slower
 screens are not repeated. Promising candidates receive fresh ABBA and the
 existing heldout quality tasks before adoption is considered.
+An ordinarily closed counting/finite negative is recorded without timing and
+the next independent profile proceeds. Unknown owner completion still stops
+the sequence; it never authorizes another native operation.
 
 Every changed native scope keeps fresh7374-page admission, positive owner
 completion and exact P1 restoration. Cache retirement uses only unscanned
