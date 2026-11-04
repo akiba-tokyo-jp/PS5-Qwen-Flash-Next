@@ -1037,5 +1037,13 @@
       "archive_tag": null,
       "branch_action": "remove-after-main-integration"
     }
-  ]
+  ],
+  "cleanup_completed": true,
+  "integration_merge_commit": "222ab133d4274c6dbdaf0b9ef11f348b451aa303",
+  "remote_branches_removed": 83,
+  "local_work_refs_removed": 86,
+  "remote_branches_after": 2,
+  "local_branches_after": 2,
+  "unique_history_discarded": 0,
+  "history_rewritten": false
 }

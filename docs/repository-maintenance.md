@@ -28,6 +28,12 @@ advanced to the same documentation baseline, so it does not retain an obsolete
 README. These are ordinary fast-forward/merge operations, not rewritten history.
 No unique head is discarded and no release tag is repurposed.
 
+Cleanup is complete: 83 remote work branches were removed, leaving two.
+86 local work refs were removed, including the temporary publication branch.
+Both maintained branches share the updated documentation baseline. The archive
+tags are present on the remote, and the local worktree is clean. Repository
+visibility was not changed by this cleanup.
+
 Archive tags are historical controls, not recommended configurations. To inspect
 one, list them with `git tag --list "archive/20261105/*"`, then use
 `git show <tag>` or create a new branch from that tag. Existing immutable report
