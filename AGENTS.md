@@ -3,6 +3,78 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65556 (2026-11-05 JST): sole console IO owner is host93368, running
+seal_after_staged_source_cache.py for NEW scope65554. The original65355
+sealer is RETIRED: free1196<1201, zero operations, helper exited/files removed.
+Never resubmit that old scope. All101 Down stores are complete and preserved.
+65543 was a returned zero-operation staging-mode refusal; readonly65545 found
+exact0777 staging files (sealing later normalizes0644). Corrected65546 checks
+all48 identities but scansZERO windows at1113<1154; compact-journal65549 also
+scansZERO at1117<1154. Both helpers exited/removed, their CPU owners cleared.
+Do not replay them or treat their zero-operation returns as consumed windows.
+
+Authorized cleanup65551 removes ONE archived, positively closed57,327,616-byte
+Down fixture input;65552 removes20 byte-exact PC-archived reports from five
+positively closed cohorts. Whole native hashes, both aliases absent, runtime
+directory owner restoration and current-seven hashes pass. PC originals remain.
+After that actual consumption change,65553 positively retires ONLY four new
+Down windows:14,400 resident pages become zero, free2613->17013,29 sync calls,
+source writes0, every mapping/FD/helper retired. Remaining Down windows188/192.
+Its prefix must transfer through whole-source sealing; never scan those four
+again. All original cache1154/source-sealer1201/model7374 guards stay intact.
+
+65554 uses EXACT original source context,262KiB window,97-page margin and
+additive OS guard. Total source-sealer submissions are TWO: the original
+zero-operation refusal and this changed-state attempt. It has a NEW nonce.
+Host93368 owns quiet350/180-second same-helper collection; no other PS5 IO.
+After positive sealing, it builds a truthful staged-to-sealed cache-prefix
+bridge (0777->0644; ctime may change, inode/size/mtime/SHA remain bound), updates
+the65537 Gate-Up config BEFORE releasing both source owners, and releases the
+ALREADY WAITING host26402/observerg10:2379. Do not start another coordinator.
+Follow that existing observer for Gate-Up then Down.65555 PC bridge controls
+pass2 positives/8 negatives. Native source qualification/model rates are still
+pending; production remains R1+P1. Initialization63121 remains consumed.
+
+CURRENT65542 (2026-11-05): ALL101 Down files, including all48 carriers, are
+positively transferred.65540/transfer/result.private.json is complete/exit0,
+preserves the original seven stores, completed_payload_retransmissions0 and
+interrupted_file_restarts1. Host46658 / observerg10:2376 now owns the SAME
+original65355 native source sealer, submitted ONCE, initial quiet350 seconds.
+Do not resubmit it or start extra console IO. Host26402 / observerg10:2379
+remains the already queued successor, with zero console IO before positive
+whole-source sealing/helper retirement/ownership release. After source
+completion, continue EXISTINGg10:2379 for Gate-Up then Down. All source and
+runtime/config/tool freezes remain; no new inference speed is claimed.
+
+CURRENT65541: Console/source owner is STILL host46658 / observerg10:2376.
+Down40 whole carriers are complete, file41 active at this checkpoint. The
+already-started PC-only waiter26402 now has its OWN stdout observerg10:2379.
+Do not poll EITHER host separately. Observerg10:2379 is quiet until the exact
+positive65355 source/owner barrier releases26402; neither performs extra PS5
+probes while waiting. After46658/g10:2376 finish, use EXISTINGg10:2379 for
+Gate-Up then Down, not another observer/coordinator. No new native test or
+helper was launched for this observer preparation. All tool freezes remain.
+
+CURRENT65540: Sole console/source owner is now host46658 / observerg10:2376,
+coordinator Q3-Down-disconnect-suffix-and-seal-65540/sequence.private.py.
+Host54446 and observerg10:2356 RETIRED exit1: WinError10054 during file8.
+All seven positive235929600-byte stores (1651507200 bytes) remain untouched.
+The source sealer was NEVER submitted. Read-only65539 confirms ftpsrv.elf
+pid88/v0.21.1 responds, partial precision.part10.bin is199884800 bytes, and
+the process endpoint is alive with no eboot owner. LIST on a FILE returned
+550 Not a directory; this is not a No-space response or a new source write.
+65540 interruption binds every positive receipt and the exact partial;
+resume preflight passes PC-only (7 preserved,94 remaining). The resumed scope
+restarts ONLY that partial, then writes the suffix and submits the ORIGINAL
+prepared65355 source sealer ONCE. No completed payload is retransmitted.
+Do not poll46658 separately, replay54446, or rerun initialization.
+Host26402 remains the SAME PC-only65537 waiter, already started once. It
+watches the ORIGINAL65355 publication and ownership barrier, so the resumed
+writer/sealer will release it normally. Do not start another waiter/model.
+Oldsource host54446 is merely its recorded original publisher, not a live
+owner. After46658 completes, follow26402 for remaining Gate-Up then Down.
+Native inference still selects R1+P1. All current source-tool freezes apply.
+
 CURRENT65538: Console IO remains solely owned by Down publisher host54446 /
 observerg10:2356. At this checkpoint three whole carriers are complete and
 file4 is transferring; use that observer for live counts, never poll54446

@@ -4,6 +4,48 @@ The primary metric remains `(generated_tokens-1)*1000/decode_ms`, reported
 separately for cold, retained and exact-prefix requests. No IQ2 production
 adoption or speed gain is established by this checkpoint.
 
+Checkpoint65556 (2026-11-05 JST): all101 Down files are positively transferred,
+including all48 carriers. The original seven successful stores are preserved;
+the disconnected partial is restarted once and no completed payload is sent
+again. The original whole-source sealer exits positively as a returned refusal
+before any metadata operation:1196 free pages versus its unchanged1201 floor.
+Its result and helper retirement are retained; that submission is never replayed.
+
+Read-only native metadata65545 observes exact root-owned0777 staging files.
+These acquire0644 permissions only after whole physical/alias SHA256 and EOF
+sealing. Corrected cache helper65546 checks all48 identities but scans zero
+windows at1113<1154. Compact diagnostic markers65549 reduce the helper journal
+from469857 to9777 bytes, preserving the actual read/returned state, per-file
+completion counts, SHA/EOF, identity, clock and admission bodies. It still
+scans zero windows at1117<1154. Both helpers exit and remove their own files;
+neither supplies a RAM or inference gain. No unchanged refused scope is retried.
+
+Cleanup65551 removes the exact57327616-byte archived Down fixture input after
+positive ordinary fixture exit. Cleanup65552 removes20 whole-hashed console
+report copies from five positively closed cases. PC originals and archives
+remain retained; both aliases disappear, the runtime directory owner is
+restored and the current seven files pass native hashes. Neither cleanup
+changes a selected or pending model source or a snapshotted parent directory.
+
+In that changed state,65553 retires four previously unscanned Down windows,
+235929600 bytes, using29 sync calls:14400 resident pages become zero and free
+pages increase2613->17013. All canaries, identities, readonly mappings, file
+descriptors and the helper retire positively. Source writes and mapped data
+touches are zero. The existing1154 cache floor,1201 source-sealer floor and
+7374 model floor are unchanged.188 of192 Down windows remain unscanned.
+
+New source-seal scope65554 now runs the exact original101-file context with
+the original262KiB window,97-page margin and additive OS admission. Its
+submission is separate from the original zero-operation refusal; total source
+sealer submissions are two, with no payload retransmission. Only the same
+helper is collected after the existing350/180-second quiet intervals.
+After positive sealing, the controller must bind the four consumed windows
+to the sealed inode/ownership/size/mtime and whole hashes, explicitly allowing
+the expected0777->0644 and ctime transition. Host controls65555 pass two
+positive and eight changed-source negative cases. This cache prefix is handed
+to the already queued65537 successor before source ownership clears. These
+are readiness/source results, not additional inference-speed measurements.
+
 Checkpoint65538: the minimum-request Up stream passes actual native IO
 equivalence. All69 F32 vocabulary rows (248320 columns), ordered routes,
 tokens and output bytes match the SAME quantized model's plain path. There

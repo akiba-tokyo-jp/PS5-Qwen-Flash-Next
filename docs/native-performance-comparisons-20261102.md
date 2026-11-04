@@ -19,6 +19,19 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Checkpoint65556 supersedes the source ownership below: all101 Down files are
+transferred. Its first source sealer refuses before any operation at1196<1201
+pages and retires normally. Two distinct staging-cache scopes also stop before
+any window at the unchanged1154 floor. Archival cleanup then removes one
+closed57MB fixture input and20 whole-hashed console report copies, retaining
+PC originals. The changed-state65553 scope positively retires four unscanned
+Down windows, with free2613->17013 pages and14400 resident pages retired.
+New65554 now performs the exact original whole-source seal with unchanged
+1201/7374 source/model guards; the consumed four-window prefix transfers to
+the queued Gate-Up/Down workflow before ownership release. No additional
+inference-speed gain is claimed. Details and refusal limits are in the
+[source follow-up record](source-capacity-and-stream-followups-20261104.md).
+
 Checkpoint65538 supersedes the active-owner statements below. Up minimum
 streaming passes69 full-vocabulary F32 rows/routes/tokens/bytes against the
 same quantized model (1043 actual streamed groups). Observer-free rates are

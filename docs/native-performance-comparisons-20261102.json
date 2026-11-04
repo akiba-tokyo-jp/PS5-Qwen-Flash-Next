@@ -238,7 +238,7 @@
     "protected_current_seven_whole_digests_equal": true
   },
   "Q2": {
-    "status": "two_complete_Up_screens_negative_Gate_source_suffix_resumed_stream_IO_pending",
+    "status": "original_Up_and_Gate_and_minimum_Up_stream_screens_negative_Gate_Up_minimum_stream_pending",
     "pre_main_refusal_case": 64310,
     "returned_CPU_reads": 7,
     "refused_free_pages": 882,
@@ -405,7 +405,7 @@
     "MMVQ_refinement_speedup": false
   },
   "Q3": {
-    "status": "corrected_all12_native_GPU_and_capacity_passed_full_model_source_placement_pending",
+    "status": "all48_Down_carriers_transferred_changed_state_whole_source_sealing_active_model_screens_pending",
     "real_Down_activation_moments_available": true,
     "cross_row_format_implemented": false,
     "real_operand_output_reference": {
@@ -800,7 +800,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "Disk capacity reclaimed with all live/prepared sources preserved; six Gate stores retained, suffix resumed; observed Up stream packages built, native IO and model screens queued",
+  "latest_update": "2026-11-05 JST: preserved all101 Down stores; changed owned consumption and positive four-window cache retirement; exact original whole-source sealing active.",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -1607,5 +1607,84 @@
       "retained",
       "exact-prefix"
     ]
+  },
+  "latest_checkpoint_65556": {
+    "date": "2026-11-05",
+    "phase": "same_changed_state_full_source_sealer_active",
+    "source_files_transferred": 101,
+    "source_payload_retransmissions": 0,
+    "original_source_sealer": {
+      "case": 65355,
+      "free_pages": 1196,
+      "required_pages": 1201,
+      "operation_calls": 0,
+      "helper_exited": true,
+      "helper_files_removed": true,
+      "replayed": false
+    },
+    "staging_metadata": {
+      "case": 65545,
+      "all48_exact": true,
+      "mode": "0777 before seal;0644 after seal"
+    },
+    "cache_zero_window_scopes": [
+      {
+        "case": 65546,
+        "free_pages": 1113,
+        "floor": 1154
+      },
+      {
+        "case": 65549,
+        "free_pages": 1117,
+        "floor": 1154
+      }
+    ],
+    "closed_component_retirement": {
+      "case": 65551,
+      "files": 1,
+      "bytes": 57327616,
+      "PC_original_preserved": true
+    },
+    "archived_report_retirement": {
+      "case": 65552,
+      "files": 20,
+      "bytes": 2112635,
+      "PC_archives_preserved": true
+    },
+    "positive_changed_state_cache": {
+      "case": 65553,
+      "windows": 4,
+      "total_windows": 192,
+      "remaining_windows": 188,
+      "sync_calls": 29,
+      "resident_pages_before": 14400,
+      "resident_pages_after": 0,
+      "free_pages_before": 2613,
+      "free_pages_after": 17013,
+      "source_writes": 0,
+      "all_mappings_FDs_and_helper_retired": true
+    },
+    "new_source_seal": {
+      "case": 65554,
+      "phase": "active",
+      "original_context_exact": true,
+      "window_bytes": 262144,
+      "metadata_margin_pages": 97,
+      "minimum_pages": 1201,
+      "total_sealer_submissions_including_old_refusal": 2,
+      "whole_source_qualification_complete": false
+    },
+    "prefix_transition_controls": {
+      "case": 65555,
+      "positives": 2,
+      "negatives": 8,
+      "PS5_operations": 0
+    },
+    "queued_successor": 65537,
+    "model_readiness_pages": 7374,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "new_inference_rates": null,
+    "production_adopted": false,
+    "initializer_repeated": false
   }
 }
