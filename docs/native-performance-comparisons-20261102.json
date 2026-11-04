@@ -1370,5 +1370,38 @@
     "matched_ABBA_and_quality_required_for_any_gain": true,
     "production_adopted": false,
     "campaign_complete": false
+  },
+  "latest_checkpoint_65399": {
+    "PC_only": true,
+    "PS5_operations": 0,
+    "Up_ABI": 65397,
+    "Gate_Up_ABI": 65398,
+    "Down_ABI": 65399,
+    "existing_source_leases": 4,
+    "existing_scratch_bytes": 8388608,
+    "new_workers": 0,
+    "new_GPU_buffers": 0,
+    "unchanged_original_owner_SHA256": "f87f931a6a537cf32f8e1d92678182cdbc8db5c9f624cdec84b009ed4e86b02e",
+    "actual_IQ2_upload_bytes": 422400,
+    "accepted_request_bytes": 537600,
+    "unused_requested_bytes_per_IQ2": 115200,
+    "lower_physical_bytes_claimed": false,
+    "wrapper_host_controls": [
+      {
+        "layout": 1,
+        "positive": 4,
+        "negative": 24
+      },
+      {
+        "layout": 2,
+        "positive": 4,
+        "negative": 28
+      }
+    ],
+    "wrapper_global_constructors": 0,
+    "native_IO_equivalence_pending": true,
+    "native_rate_pending": true,
+    "integration_deferred_until_current_owner_retires": true,
+    "production_adopted": false
   }
 }

@@ -55,6 +55,24 @@ unscanned. Final-four11/16 are consumed in65371/65375. Never rescan these
 ranges or old original ranges. CPU65391 and candidate65408 were prelaunch
 readiness refusals,not shader failures;neither was staged or launched.
 
+PC-only follow-up65397/65398/65399 is COMPLETE and does not touch the frozen
+pipeline tools. New iq2_format_stream_cache.py restores the four existing
+leases with strict tensor type/size checks and skips positively streamed
+Experts in the generic loop even when bundle_refill is false. Up/Gate-Up use
+an additive request wrapper:actual IQ2 upload422400,original accepted request
+537600,115200 unused requested bytes. Original file-range/EOF/overlap/identity
+and completion checks remain in the BYTE-EXACT original owner f87f931a.
+This intentionally overfetches; do NOT claim fewer physical source bytes.
+Final-Expert/range refusal keeps the original fallback before any callback.
+Down needs no wrapper because all actual source sizes are already accepted.
+Host tests cover both layouts:4 positives and24/28 negatives,exact destination
+canaries. PS5 wrapper imports only the original stream API,zero new global
+constructors;cache and wrappers compile against the selected PS5 ABI. ZERO
+PS5 calls. Native69-F32 IO equivalence,integration and speed are PENDING.
+After36731 retires,integrate these as separate profiles and validate actual
+F32/routes before timing. Do not interrupt the current source/measurement
+owner or edit its frozen files to integrate this follow-up early.
+
 All original Up source stores and seals are COMPLETE, including65334 and
 65352/publication; never retransmit completed files. CPU readmission65373
 completed, and corrected65407 subsequently retired normally. Last-four source

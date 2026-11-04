@@ -26,6 +26,23 @@ passes with12262047744 bytes available before/after,above12184453120 baseline,
 and total12280922112 bytes. Ordinary exit/exact restoration pass and the
 retained-device readmission gate is clear. No old GPU graph is repeated.
 
+PC-only follow-up65397/65398/65399 prepares another distinct refinement:
+restore the four existing source leases for explicitly sized IQ2 triplets,
+without new workers,scratch or GPU buffers. It also fixes the generic-loop
+skip condition so positively streamed Experts are not uploaded twice when
+original bundles are disabled. Up/Gate-Up wrap the unchanged source API's
+accepted537600-byte request,while uploading only the actual422400-byte prefix;
+115200 unused bytes are requested per IQ2 operand. This deliberately trades
+extra reads for concurrency and does not establish a lower byte count or gain.
+The original byte-identical owner retains all range,EOF,overlap,identity and
+positive-completion checks. An insufficient final suffix falls back before
+any callback. Down already uses accepted sizes and needs no wrapper.
+Both new host layouts pass4 positives and24/28 negatives with destination
+canaries exact. The wrapper has no new global constructor and only the original
+stream API import. All three cache/wrapper variants compile against the actual
+PS5 ABI,with zero PS5 calls. Integration,native full-F32/route equality and
+model speed remain pending after the active sequential workflow retires.
+
 The remaining sequential workflow65396 is active with Gate source placement
 65390 first. It retains all48 Up layers and uploads only the new Gate files,
 then seals them and screens MMVQ-off/on. It subsequently places prepared Down
