@@ -19,6 +19,81 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
+Latest checkpoint65388: all48 Up layers are sealed and reusable. The first
+corrected complete-model candidate65407 positively finishes all three requests,
+ordinary exit and exact P1 restoration. Its single-pair screen65384 shows:
+
+| Condition | P1 control65400 tok/s | IQ2 Up65407 tok/s | Change |
+| --- | ---: | ---: | ---: |
+| Cold | 10.479220 | 8.002037 | -23.639% |
+| Retained | 12.093470 | 9.358199 | -22.618% |
+| Exact-prefix | 13.390932 | 12.391922 | -7.460% |
+
+The metric is unchanged: `(generated_tokens-1)*1000/decode_ms`. Each arm has
+one observation; this is not a completed ABBA or a matched-mean result. All
+22 token IDs/output bytes match, with counting/finite/reset/route checks passed.
+The next unchanged candidate65408 never stages or launches: its readiness screen
+returns5976 free pages versus7374. Repeating the clearly slower variant is
+stopped. This does not establish that the design cannot be improved.
+
+A distinct refinement enables normal MMVQ while preserving IQ2-only FP32
+accumulation and the qualified prefill path. Native65383 passes twelve new
+width1/2 graphs across all three groups with zero mismatches and maximum
+F64-reference error1.8015271053e-8. Inputs are exactly Q8_1-representable;
+this arithmetic scope does not establish general answer quality. All owners
+retire, one ordinary close and exact P1 restoration pass. The complete-model
+candidate65385 reuses all48 weights, the completed normal control65400 and
+the actual compiled cache. Native first screen65388 now positively completes all three requests and exact
+ordinary P1 restoration. Rates are7.390108/9.397053/12.452028 tok/s for cold,
+retained and exact-prefix,or-29.478455/-22.296473/-7.011492 percent against the
+same single P1 observation. Screen65389 is not a matched ABBA; no speed gain
+or adoption follows. This unchanged profile is not repeated.
+One actual native positive and six changed admission negatives pass in65387.
+
+The initial65383 command was rejected before execution because automatic
+approval interpreted the component's6736-page price as lowering the ordinary
+7374-page floor. The launcher now requires max(7374,source-bound price), and
+65383 actually starts at7374. No weaker guard was executed. Readonly cache
+retirement65380 scans only19 new-prefix windows,clears5344 resident pages,
+and raises free5855->11199. All mappings/descriptors retire,with zero source
+writes,GPU calls or replay of old original/final-four windows.153 of172 new
+prefix windows remain unscanned; final-four windows11/16 remain consumed.
+
+The earlier65401 stop was a post-reset CPU route-accounting exception: the
+old1536000-byte triplet constant did not match Up1420800. All30 producer epochs
+and reset had completed. Source-bound ordinary close/restoration65368 passes.
+Geometry65369 and candidate rebuild65372 preserve the actual uniform triplet
+bytes:P1/Up/Gate-Up/Down1536000/1420800/1305600/1536000. No completed source,
+control or arithmetic test was replayed to fix this counter.
+
+Down's corrected all12-graph/17-resource lineage is integrated into runner,
+retained ordinary-close validation and full-model admission. Old low-index
+proofs remain available for format preparation but cannot admit a full-cache
+model. Actual corrected CPU scope preparation65386 passes on the PC. CPU65391 stops
+BEFORE staging/title at5282 pages versus7374. Distinct unscanned prefix
+retirement65392 skips the prior19 windows,clears5728 pages in20 further
+windows,and raises free5299->11027. There are39/172 consumed prefix windows.
+Changed CPU65393 then passes at10989 pages,all17 resources and7 environment
+checks,ordinary close/exact P1 restoration. Corrected Down GPU65394 is now
+active; its new reference pack reuses the qualified same-size Direct receiver.
+Its result and subsequent capacity readmission are still pending. Prefix-cache ABI65377 and explicit
+route-accounting entry ABI65378 pass: copied bytes and independently omitted
+padding are recorded separately. No source or shader retransmission is needed
+for that refinement.
+
+Gate encoding/combined metadata and all48 Down carriers/metadata are complete.
+Gate/Down full source uploads have not started. About21.7GB remains,roughly
+11-12 hours at the already measured placement rate. No transport tuning is
+reopened. Prepared Gate publication65390 contains124 new files and retains all48 Up
+parts without copying. No Gate upload has started. Candidate-only package
+construction now permits inexpensive first screens against the recorded P1
+cohort; a new matched normal control remains required before any adoption.
+Large-set source collection now waits350 seconds and then180-second
+intervals on the same submitted helper,with a finite1800-second collection
+bound,retaining all full SHA256/EOF/parent checks and zero resubmissions.
+Heldout quality runs remain conditional on an actual complete-model speed gain.
+The subsequent entries are historical checkpoints,not current live owners.
+
 Source update:65363 completes all108 positive stores,preserving29 earlier
 completed files and restarting only one incomplete file. One sealer65340
 execution completes all218 operation calls,full physical/alias SHA256/EOF

@@ -95,12 +95,19 @@ def submit(a, publication, plan):
                 reply = ftp.storbinary('STOR ' + f['physical'], stream, 65536)
             need(reply.startswith(('226 ', '250 ')), 'One complete new-file transfer required')
             print(json.dumps(dict(uploaded_file=i+1, total=len(files), bytes=f['local']['bytes'])), flush=True)
+    large_source_set = sum(f['local']['bytes'] for f in files) > 128 << 20
     try:
-        result = execute(lan, plan, a.out / 'native')
+        result = execute(lan, plan, a.out / 'native', observation_seconds=1 if large_source_set else 20)
     except RuntimeError:
         need(not (a.out / 'native/result.private.json').exists() and
              (a.out / 'native/execution/execution.once.private.json').exists(), 'Only collect the same durable native helper')
-        deadline = time.monotonic() + 600
+        deadline = time.monotonic() + (1800 if large_source_set else 600)
+        if large_source_set:
+            save(a.out / 'quiet-source-collection.private.json', dict(
+                initial_quiet_seconds=350, interval_seconds=180, maximum_collection_seconds=1800,
+                same_helper_only=True, automatic_retries=0, source_payload_retransmissions=0))
+            print(json.dumps(dict(phase='same-source-sealer-quiet-collection', quiet_seconds=350)), flush=True)
+            time.sleep(350)
         while True:
             raw = lan.web('/fs' + urllib.parse.quote(plan['log'], safe='/'), 64 << 20)
             if re.search(rb'\nEND success=\d+ operation_calls=\d+ app_id=-?\d+ log_healthy=\d+ GPU_calls=0 initializer_requests=0 mount_calls=0\n$', raw):
@@ -109,7 +116,7 @@ def submit(a, publication, plan):
                 result = complete(lan, plan, a.out / 'native', raw, path)
                 break
             need(time.monotonic() < deadline, 'Same helper completion remains unknown; never resubmit')
-            time.sleep(2)
+            time.sleep(min(180 if large_source_set else 2, max(0, deadline - time.monotonic())))
     finish(a.out, a.preparation, publication, result)
     state=load(a.current/'active-console.private.json')
     need(state['source_publication_owner']['plan']==record(a.out/'plan.private.json'),'The exact source owner must retire')

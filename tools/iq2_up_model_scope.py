@@ -31,10 +31,42 @@ def require_arithmetic_qualification(row):
          not closure['unknown_completion'], 'The twelve qualified graphs and positive ordinary retirement are required')
 
 
+def require_MMVQ_qualification(row):
+    need(row is not None and record(row['path']) == row, 'The native MMVQ decode qualification changed')
+    proof = load(row['path'])
+    need(proof['completed'] and proof['native_operator_numerics_qualified'] and
+         not proof['full_model_quality_or_speed_qualified'], 'A separate completed MMVQ arithmetic qualification is required')
+    for name in ('component', 'closure', 'case'):
+        need(record(proof[name]['path']) == proof[name], 'An MMVQ qualification input changed')
+    component, closure, case = (load(proof[name]['path']) for name in ('component', 'closure', 'case'))
+    need(record(case['package']['path']) == case['package'], 'The actual MMVQ package changed')
+    package = load(case['package']['path'])
+    profile_row = package['effective_application_policy']['profile']
+    need(record(profile_row['path']) == profile_row, 'The compiled MMVQ scope changed')
+    scope = load(profile_row['path'])['overrides']['native_IQ2_fixture']
+    need(scope.get('MMVQ_decode_FP32_accumulation') is True and scope['backend_environment'] == {} and
+         scope['qualification_only'] and scope['widths'] == [1, 2] and scope['maximum_GPU_graphs'] == 12 and
+         scope['synthetic_inputs_exactly_Q8_1'] and not scope['vector_MMVQ_disabled'] and
+         component['completed'] and component.get('MMVQ_decode_FP32_accumulation') is True and
+         component.get('synthetic_inputs_exactly_Q8_1') is True and component.get('vector_MMVQ_disabled') is False and
+         component['GPU_graphs'] == 12 and len(component['cases']) == 6 and
+         {(r['group'], r['width']) for r in component['cases']} == {(g, w) for g in range(3) for w in (1, 2)} and
+         all(r['GPU_graphs'] == 2 and r['mismatches'] == 0 and r['all_outputs_and_canaries_passed'] for r in component['cases']) and
+         component['all_outputs_reference_valid'] and component['all_backends_positively_retired'] and
+         component['source_descriptor_and_scratch_retired'] and closure['completed'] and closure['ordinary_exit_observed'] and
+         closure['current_seven_restored_and_native_hashed'] and not closure['unknown_completion'],
+         'All twelve new normal-MMVQ decode graphs and ordinary restoration must positively pass')
+
+
 def require_down_qualification(row, provider_row):
     need(record(row['path'])==row and record(provider_row['path'])==provider_row,
          'The native Down qualification or selected resource provider changed')
     proof=load(row['path']);provider=load(provider_row['path'])
+    if provider.get('large_cache_index_safe'):
+        from iq2_down_large_cache_scope import require_model_qualification
+        require_model_qualification(row, provider_row)
+        require_arithmetic_qualification(provider['F16_Up_prerequisite'])
+        return
     need(proof['completed'] and proof['native_passed'] and proof['GGML_carrier_ABI'] and
          proof['ordinary_exit_observed'] and proof['current_seven_restored_and_native_hashed'] and
          record(proof['native']['path'])==proof['native'] and record(proof['package']['path'])==proof['package'],
@@ -80,6 +112,22 @@ def require_cache_layout(profile):
              load(scope['Down_resource_provider']['path']).get('F16_arithmetic_only',False)==F16,
              'Only a uniform48-layer Down carrier model and original slot count may launch')
         require_down_qualification(scope['arithmetic_qualification'],scope['Down_resource_provider'])
+        from iq2_down_large_cache_scope import require_model_qualification
+        require_model_qualification(scope['arithmetic_qualification'], scope['Down_resource_provider'])
+        if scope.get('Down_source_prefix_cache'):
+            need(scope['arm'] == 'candidate', 'The normal control must retain its original full-plane cache')
+            from iq2_down_prefix_scope import require_compiled_prefix
+            prefix = require_compiled_prefix(scope['Down_source_prefix_cache'], scope['Down_resource_provider'])
+            if 'entry_artifact' in profile:
+                need(profile['candidate_cache_provider'] == prefix['artifact'] and
+                     profile['candidate_cache_source'] == prefix['source'] and record(profile['source']['path']) == profile['source'],
+                     'The actual model must link the exact compiled prefix cache and bound accounting entry')
+                from pathlib import Path
+                text = Path(profile['source']['path']).read_text(encoding='utf-8')
+                need('uploaded+result.omitted_carrier_padding_bytes!=misses*1536000ull+result.predictive_bytes' in text and
+                     'const auto omitted_padding_before=qwen_iq2_down_omitted_carrier_padding_bytes();' in text and
+                     '{"logical_admitted_weight_bytes",result.uploaded+result.omitted_carrier_padding_bytes}' in text,
+                     'Actual transfer bytes and separately completed omitted padding must preserve complete route accounting')
         return
     if profile.get('headless_audit_kind') not in ('Q2-IQ2-Up-model','Q2-IQ2-Gate-Up-model'):
         return
@@ -87,14 +135,23 @@ def require_cache_layout(profile):
     need(scope['arm'] in ('control', 'candidate') and scope['selected_cache_slots'] == 3712,
          'The exact original slot count and arm are required')
     if scope.get('IQ2_only_FP32_accumulation') is True:
-        need(scope['backend_environment'] == ({} if scope['arm']=='control' else dict(GGML_VK_DISABLE_MMVQ='1')) and
+        MMVQ = scope.get('MMVQ_decode_qualification')
+        need(scope['backend_environment'] == ({} if scope['arm']=='control' or MMVQ else dict(GGML_VK_DISABLE_MMVQ='1')) and
              scope.get('normal_F16_enabled') is True,
-             'The control uses normal P1; only the candidate disables MMVQ and keeps normal F16 storage')
+              'The candidate must retain its independently qualified MMVQ profile and normal F16 storage')
         require_arithmetic_qualification(scope['arithmetic_qualification'])
+        if MMVQ:
+            need(scope['arm'] == 'candidate', 'The unchanged normal control needs no candidate arithmetic refinement')
+            require_MMVQ_qualification(MMVQ)
     else:
         need(scope['explicit_F32_profile'] == dict(GGML_VK_DISABLE_MMVQ='1', GGML_VK_DISABLE_F16='1'),
              'The legacy explicit F32 backend profile is required')
     expected = [] if scope['arm'] == 'control' else list(range(48))
+    accounting = 1536000 if scope['arm'] == 'control' else (
+        1305600 if profile['headless_audit_kind']=='Q2-IQ2-Gate-Up-model' else 1420800)
+    need(scope.get('actual_Expert_triplet_bytes',1536000 if scope['arm']=='control' else None)==accounting and
+         (scope['arm']=='control' or scope.get('completed_route_accounting_uses_uniform_tensor_bytes') is True),
+         'Route accounting must use the actual uniform Expert triplet bytes')
     need(scope['IQ2_Up_layers'] == expected,
          'Partial IQ2 Up layouts create multiple cache groups and cannot use the unchanged single-group reset; '
          'require the full48-layer uniform layout before any publication or launch')

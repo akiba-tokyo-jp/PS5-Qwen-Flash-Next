@@ -15,7 +15,8 @@ from audit_expert_all_q2_safety import body
 from build_performance_quantizer import record
 from build_speculative_batch_probe import once
 from headless_current_entry import headless_entry
-from iq2_up_model_scope import require_arithmetic_qualification, require_down_qualification, require_gate_input_qualification, require_cache_layout
+from iq2_up_model_scope import require_arithmetic_qualification, require_down_qualification, require_gate_input_qualification, require_cache_layout, require_MMVQ_qualification
+from iq2_route_geometry import correct_accounting, triplet_bytes
 from prepare_iq2_up_model_overlay import literal
 from start_success_route import load, need, save
 
@@ -43,6 +44,9 @@ def compile_cache(a, run, down_carriers=False):
          not proof['section_differences'] and record(proof['artifact']['path']) == proof['artifact'] and
          record(proof['source']['path']) == proof['source'], 'The full byte-identical selected cache reconstruction is required')
     changed=cache_text(Path(proof['source']['path']).read_text(),down_carriers)
+    if getattr(a, 'Down_prefix_cache', False):
+        from iq2_down_prefix_cache import transform
+        changed = transform(changed)
     if getattr(a,'cache_provider_proof',None):
         built=load(a.cache_provider_proof)
         need(built['completed'] and built['actual_selected_PS5_ABI_compiled'] and
@@ -86,11 +90,25 @@ def main():
     p.add_argument('--arithmetic-qualification', type=Path, required=True)
     p.add_argument('--Down-resource-provider',type=Path)
     p.add_argument('--cache-provider-proof',type=Path,help='Reuse an already completed exact selected-ABI cache provider')
+    p.add_argument('--completed-control-case',type=Path,help='Reuse the exact already completed normal control without rebuilding it')
+    p.add_argument('--MMVQ-decode-qualification',type=Path,help='Enable normal MMVQ only after its twelve distinct native decode graphs pass')
+    p.add_argument('--Down-prefix-cache',action='store_true',help='Reuse the compiled index-safe Down prefix provider with explicit physical/logical byte accounting')
+    p.add_argument('--candidate-only',action='store_true',help='Build only a first-screen candidate; a new matched normal control remains required before adoption')
     a = p.parse_args()
+    need(not (a.candidate_only and a.completed_control_case), 'Choose a candidate-only screen or exact completed-control reuse')
     arithmetic_qualification = record(a.arithmetic_qualification)
     down_carriers=a.Down_resource_provider is not None
+    MMVQ_proof = record(a.MMVQ_decode_qualification) if a.MMVQ_decode_qualification else None
+    if MMVQ_proof:
+        need(not down_carriers, 'The stock IQ2 MMVQ refinement does not qualify custom Down carriers')
+        require_MMVQ_qualification(MMVQ_proof)
     Down_provider=record(a.Down_resource_provider) if down_carriers else None
     Down_F16=down_carriers and load(a.Down_resource_provider).get('F16_arithmetic_only') is True
+    if a.Down_prefix_cache:
+        need(down_carriers and Down_F16 and a.cache_provider_proof is not None,
+             'A Down prefix model requires its exact compiled cache and F16 index-safe operator provider')
+        from iq2_down_prefix_scope import require_compiled_prefix
+        require_compiled_prefix(record(a.cache_provider_proof), Down_provider)
     if down_carriers:require_down_qualification(arithmetic_qualification,Down_provider)
     else:require_arithmetic_qualification(arithmetic_qualification)
     prep, pub = load(a.preparation), load(a.publication)
@@ -136,9 +154,31 @@ def main():
     candidate_raw = Path(prep['candidate']['path']).read_text()
     need(record(prep['candidate']['path']) == prep['candidate'], 'The prepared complete candidate changed')
     candidate = json.loads(candidate_raw)
+    candidate_triplet_bytes = triplet_bytes(candidate)
     packages = {}
+    arms = ('candidate',) if a.candidate_only else ('control', 'candidate')
+    if a.completed_control_case:
+        from run_headless_decode_sequence import returned
+        from success_case_control import current_files
+        prior_plan = load(a.completed_control_case/'case/plan.private.json')
+        prior_package = Path(prior_plan['package']['path'])
+        returned(a.completed_control_case, prior_package)
+        package = load(prior_package)
+        policy_row = package['effective_application_policy']['profile']
+        need(record(policy_row['path'])==policy_row, 'The completed control policy changed')
+        policy = load(policy_row['path'])
+        require_cache_layout(policy)
+        control_scope = policy['overrides']['native_headless_model_audit']
+        expected_kind = 'Q3-IQ2-Down-model' if down_carriers else ('Q2-IQ2-Gate-Up-model' if Gate_layers else 'Q2-IQ2-Up-model')
+        need(policy['headless_audit_kind']==expected_kind and control_scope['arm']=='control' and
+             control_scope['arithmetic_qualification']==arithmetic_qualification and
+             control_scope['backend_environment']=={} and 'model_layer' not in policy and
+             prior_plan['old_files']==current_files(a.current),
+             'Only the same normal current control and arithmetic lineage may be reused')
+        packages['control'] = record(prior_package)
+        arms = ('candidate',)
     identity = load(a.current / 'provenance/current-package.private.json')['required_bundle_identity_audit']['provider']
-    for arm in ('control', 'candidate'):
+    for arm in arms:
         root = a.out / arm
         root.mkdir()
         for path in old_dir.glob('*.h'):
@@ -150,6 +190,10 @@ def main():
             backend_environment={} if arm=='control' else dict(GGML_VK_DISABLE_MMVQ='1'), normal_F16_enabled=True,
             IQ2_only_FP32_accumulation=True, arithmetic_qualification=arithmetic_qualification,
             selected_cache_slots=3712, original_live_reserves_preserved=True, persistent_caches=False)
+        scope['actual_Expert_triplet_bytes'] = candidate_triplet_bytes if arm == 'candidate' else 1536000
+        scope['completed_route_accounting_uses_uniform_tensor_bytes'] = True
+        if MMVQ_proof and arm == 'candidate':
+            scope.update(backend_environment={}, MMVQ_decode_qualification=MMVQ_proof)
         if down_carriers:
             scope.update(schema='ps5-qwen-IQ2-Down-model-v1',kind='Q3-IQ2-Down-model',IQ2_Up_layers=[],
                 IQ2_Down_layers=prep['IQ2_Down_layers'] if arm=='candidate' else [],
@@ -157,6 +201,8 @@ def main():
                 backend_environment={} if arm=='control' else (
                     dict(GGML_VK_DISABLE_MMVQ='1') if Down_F16 else dict(GGML_VK_DISABLE_MMVQ='1',GGML_VK_DISABLE_F16='1')),
                 global_F32_candidate_only=not Down_F16,Down_only_FP32_accumulation=Down_F16,Down_resource_provider=Down_provider)
+            if a.Down_prefix_cache and arm == 'candidate':
+                scope['Down_source_prefix_cache'] = record(a.cache_provider_proof)
         elif Gate_layers:
             scope.update(schema='ps5-qwen-IQ2-Gate-Up-model-v1',kind='Q2-IQ2-Gate-Up-model',
                 IQ2_Gate_layers=Gate_layers if arm=='candidate' else [],Gate_input_identity=prep['Gate_input_identity'])
@@ -198,7 +244,7 @@ def main():
                         'type==GGML_TYPE_IQ2_XXS?"IQ2_XXS":type==GGML_TYPE_Q4_0?"Q4_0":type==GGML_TYPE_Q8_0?')
         marker = '        const auto policy = Json::parse(policy_file);'
         environment='        if(setenv("GGML_VK_DISABLE_MMVQ","1",1)||unsetenv("GGML_VK_DISABLE_F16")||getenv("GGML_VK_DISABLE_F16"))throw std::runtime_error("Qualified IQ2 backend profile unavailable");'
-        if arm=='control':
+        if arm=='control' or MMVQ_proof:
             environment='        if(unsetenv("GGML_VK_DISABLE_MMVQ")||unsetenv("GGML_VK_DISABLE_F16"))throw std::runtime_error("Normal P1 backend profile unavailable");'
         elif down_carriers and not Down_F16:
             environment=('        if(unsetenv("GGML_VK_DISABLE_MMVQ")||unsetenv("GGML_VK_DISABLE_F16"))' if arm=='control' else
@@ -211,6 +257,11 @@ def main():
         text = once(text, '            else if(ordinal==1&&(result.token_ids!=reference_ids||result.output_bytes!=reference_bytes))\n                throw std::runtime_error("Original additional tokens or bytes differ");',
                     '            // Precision quality differences are recorded before ordinary owner retirement.')
         text = headless_entry(text, scope['kind'], 3, 'Json{{"completed",true},{"IQ2_Up_scope",policy.at("native_headless_model_audit")},{"requests",completed}}')
+        if arm == 'candidate':
+            text = correct_accounting(text, candidate_triplet_bytes)
+            if a.Down_prefix_cache:
+                from iq2_down_prefix_cache import accounting_entry
+                text = accounting_entry(text)
         if arm == 'candidate' and (not down_carriers or Down_F16):
             wrapper=(ROOT / 'native/app/iq2_up_precision.cpp').read_text()
             if Down_F16:
@@ -279,15 +330,20 @@ def main():
     save(a.out/'result.private.json', dict(completed=True, preparation=record(a.preparation), publication=record(a.publication),
         packages=packages, cache_baseline=record(a.cache_baseline), cache=cache, cache_source=cache_source,
         reused_cache_provider=record(a.cache_provider_proof) if a.cache_provider_proof else None,
+        reused_completed_control=record(a.completed_control_case/'result.private.json') if a.completed_control_case else None,
+        candidate_only_screen=bool(a.candidate_only),new_matched_control_required_before_adoption=bool(a.candidate_only),
         commands=commands, F32_qualification=bool(observer), original_memory_identity_reset_guards_unchanged=True,
         only_converted_layers_bypass_incompatible_old_bundle_and_quad_paths=True, driver_unchanged=True,
         explicit_global_F32_backend_profile=down_carriers and not Down_F16, IQ2_only_FP32_accumulation=not down_carriers,
         Down_only_FP32_accumulation=Down_F16,
         arithmetic_qualification=arithmetic_qualification,
+        MMVQ_decode_qualification=MMVQ_proof,
+        Down_source_prefix_cache=record(a.cache_provider_proof) if a.Down_prefix_cache else None,
         Down_resource_provider=Down_provider,
         precision_wrapper_source=record(ROOT/'native/app/iq2_up_precision.cpp') if not down_carriers or Down_F16 else None,
+        actual_candidate_Expert_triplet_bytes=candidate_triplet_bytes,
         PS5_operations=0, native_quality_and_rate_qualified=False, production_adopted=False))
-    print(json.dumps(dict(completed=True, model_packages=2, IQ2_Up_layers=prep['IQ2_Up_layers'],
+    print(json.dumps(dict(completed=True, model_packages=len(packages), IQ2_Up_layers=prep['IQ2_Up_layers'],
                          IQ2_Gate_layers=Gate_layers,
                          IQ2_Down_layers=prep.get('IQ2_Down_layers',[]), PS5_operations=0)))
 

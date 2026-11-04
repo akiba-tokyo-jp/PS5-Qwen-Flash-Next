@@ -67,11 +67,14 @@ def main():
         component=terminal['component']
         scope=profile['overrides']['native_IQ2_fixture'];case_bound=scope['cases'];graph_bound=scope['maximum_GPU_graphs']
         arithmetic_only=(scope.get('qualification_only') is True and
-                         scope.get('F16_storage_FP32_accumulation') is True and
-                         scope.get('widths')==[30,32] and scope.get('groups')==3 and
+                         ((scope.get('F16_storage_FP32_accumulation') is True and
+                           scope.get('widths')==[30,32] and component.get('F16_storage_FP32_accumulation') is True) or
+                          (scope.get('MMVQ_decode_FP32_accumulation') is True and scope.get('widths')==[1,2] and
+                           scope.get('backend_environment')=={} and scope.get('synthetic_inputs_exactly_Q8_1') is True and
+                           component.get('MMVQ_decode_FP32_accumulation') is True and
+                           component.get('vector_MMVQ_disabled') is False)) and scope.get('groups')==3 and
                          case_bound==6 and graph_bound==12 and
-                         scope.get('formats')==['Q2_K','IQ2_XXS'] and
-                         component.get('F16_storage_FP32_accumulation') is True)
+                         scope.get('formats')==['Q2_K','IQ2_XXS'])
         need(record(effective['profile']['path'])==effective['profile'] and effective['kind']=='Q2-IQ2-fixture' and
              profile['unloaded_GPU_fixture'] and terminal['kind']=='Q2-IQ2-fixture' and terminal['model_loads']==0 and
              component['completed'] and component['model_loads']==0 and component['all_backends_positively_retired'] and

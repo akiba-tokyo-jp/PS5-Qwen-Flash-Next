@@ -3,6 +3,65 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65394: Sole console/IO owner is index-safe Down GPU host session13960,
+outQ3-index-safe-all12-native-GPU-65394. It first publishes the NEW57,327,616B
+F16 reference pack via qualified same-size receiver65147,then submits all12
+changed graphs using corrected SELF65362. Do not start another console action
+or edit native runner/retained close/success-case/large-cache guards until it
+retires. Old65343 must never run in GPU mode. Positive GPU completion,ordinary
+close/exact P1 restore then fresh Direct capacity readmission are required.
+
+CPU65393 COMPLETE:actual corrected SELF,17 resource/382 lookup/7 environment
+admission,free10989>=7374,ordinary close and exact P1 restore. Host66958 ended0.
+EarlierCPU65391 refused BEFORE staging/title at5282<7374. New cache scope65392
+skipped the prior19 Up-prefix windows,scanned20 further windows,cleared5728
+pages to0,free5299->11027,125 sync calls,source writes/GPU0. Prefix39/172 windows
+are consumed; remaining133 are unscanned. Final-four windows11/16 remain
+consumed. Never rescan those ranges or old original ranges.
+
+MMVQ component65383 and fullUp65388 are COMPLETE; hosts18506/29352 ended0,
+all model/source/device owners retired,ordinary close/exact P1 restore pass.
+FullUp screen65389 rates7.390107726/9.397052781/12.452027984 tok/s,changes
+-29.478455/-22.296473/-7.011492% versus recorded P1 control65400. This is one
+observation per arm,not matched ABBA. Do not repeat unchanged slower profiles.
+Earlier MMVQ-off Up65407 screen65384 is also negative. No IQ2 adoption.
+
+Gate publication65390 is PREPARED ONLY:124 files,all48 Up layers reused,zero
+uploads. The remaining Gate/Down source placement is about21.7GB/11-12 hours.
+No transport tuning is reopened. Publisher collects the same large-source
+helper after350 seconds then180-second intervals,finite1800 seconds. Native
+source SHA256/EOF/parent checks and all once-only ownership remain unchanged.
+
+Down runner,retained-close and full-model admission select all12 index-safe
+graphs. Prefix-cache/entry ABI65377/65378 and actual compiled source admission
+pass on PC; model integration is prepared but native rate remains unqualified.
+--candidate-only avoids rebuilding an unused normal control for a first screen;
+matched controls and quality remain required before adopting any actual gain.
+New prefix module does not modify the already compiled transform source.
+
+All original Up source stores and seals are COMPLETE, including65334 and
+65352/publication; never retransmit completed files. CPU readmission65373
+completed, and corrected65407 subsequently retired normally. Last-four source
+cache scopes65371/65375 have retired11/16 windows; do not repeat those11.
+The distinct43-file sealed Up prefix has not been cache-retired. The existing
+readonly native mmap/mincore/msync body can select that exact new prefix via
+--Up-prefix without reading/writing source pages or rescanning old originals.
+Preserve7374 model readiness; use actual finite retirement for a changed scope.
+Initializer63121 and reboot/recovery remain prohibited.
+
+Route geometry65369 and correctedbuild65372 are COMPLETE. P1/Up/Gate-Up/Down
+triplet bytes are1536000/1420800/1305600/1536000. Candidate65401's post-reset
+CPU accounting exception was ordinarily closed/restored in65368; do not replay
+it. The corrected candidate reuses the completed control65400 and cache object.
+
+Down prefix cache now has explicit physical/logical accounting:65377 cache ABI
+and65378 entry ABI passed, zero PS5 calls. Actual uploaded bytes stay actual;
+independent atomic omitted-padding counter accounts35776 bytes only after
+positive copy/source completion. Native equivalence/rate is still unqualified.
+
+The following current-boot indexing warning remains active; later historical
+owner references below do not create an active workflow or authorize replay.
+
 IMPORTANT65365:source review found a REAL full-cache Down overflow. The cache
 has3713 planes/6083379200 logical scalar weights. Old custom shader callers
 multiply global packed indices by4 or64 into uint32 before plane division.

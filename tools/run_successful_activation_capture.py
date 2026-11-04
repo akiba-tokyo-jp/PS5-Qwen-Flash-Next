@@ -35,11 +35,13 @@ def main():
         need(effective['kind']=='Q2-IQ2-fixture' and record(effective['profile']['path'])==effective['profile'] and
              profile['unloaded_GPU_fixture'],'One explicitly compiled unloaded IQ2 program is required')
         if (profile['overrides']['native_IQ2_fixture'].get('F32_shader_arithmetic_explicit') or
-                profile['overrides']['native_IQ2_fixture'].get('F16_storage_FP32_accumulation')):
+                profile['overrides']['native_IQ2_fixture'].get('F16_storage_FP32_accumulation') or
+                profile['overrides']['native_IQ2_fixture'].get('MMVQ_decode_FP32_accumulation')):
             from price_unloaded_iq2_startup import require_pricing
             need(args.direct_staging_proof and args.model_free_pricing,'Exact Direct transport and source-bound model-free pricing required')
             price=require_pricing(args.model_free_pricing,args.package)
-            need(args.readiness_pages==price['selected_model_free_readiness_pages'],'Exact model-free readiness screen required')
+            need(args.readiness_pages==max(7374,price['selected_model_free_readiness_pages']),
+                 'Preserve the ordinary7374-page floor and any higher source-bound component price')
     else:need(effective['kind']=='Q2-calibration' and effective['overrides']['native_activation_capture']['headless'],
               'One explicitly compiled headless activation program is required')
     case=args.out/'case';closed=args.out/'closed';clock=args.out/'clock'

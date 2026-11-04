@@ -6,6 +6,14 @@ from build_speculative_batch_probe import once
 PLANE_BYTES = 460800
 PREFIX_BYTES = 64 + 422400 + 2560
 
+COUNTER = '''#include <atomic>
+#include <cstdint>
+namespace {std::atomic<std::uint64_t> iq2_down_omitted_padding_bytes{0};}
+extern "C" std::uint64_t qwen_iq2_down_omitted_carrier_padding_bytes(){
+    return iq2_down_omitted_padding_bytes.load(std::memory_order_relaxed);
+}
+'''
+
 BRANCH = '''                // All custom Down loads end at byte425024 of the460800-byte plane.
                 // Keep the original source/slot stride and omit only unused tail padding.
                 if(n==1&&w->type==GGML_TYPE_Q2_0&&expert_size==460800&&[](const char*name){
@@ -31,6 +39,7 @@ BRANCH = '''                // All custom Down loads end at byte425024 of the460
                                     throw std::runtime_error("Down prefix upload exceeds its bank");
                                 ggml_backend_tensor_set(u.bank,window,offset,425024);
                             });
+                        iq2_down_omitted_padding_bytes.fetch_add(2*(460800-prefix_bytes),std::memory_order_relaxed);
                         bytes+=2*prefix_bytes;i+=2;continue;
                     }
                     ggml_backend_synchronize(backend);
@@ -44,6 +53,7 @@ BRANCH = '''                // All custom Down loads end at byte425024 of the460
                         ggml_backend_tensor_set(bank,window,destination+done,copied);
                         qwen_app_model_source_chunk_completed();done+=copied;
                     }
+                    iq2_down_omitted_padding_bytes.fetch_add(460800-prefix_bytes,std::memory_order_relaxed);
                     bytes+=prefix_bytes;++i;continue;
                 }
 '''
@@ -51,4 +61,29 @@ BRANCH = '''                // All custom Down loads end at byte425024 of the460
 
 def transform(source):
     marker = '                // Queue only the next known miss while the producer consumes\n'
-    return once(source, marker, BRANCH + marker)
+    return COUNTER + once(source, marker, BRANCH + marker)
+
+
+def accounting_entry(source):
+    """Keep actual transfer counters and independently certify omitted padding."""
+    source = once(source, 'struct CompletedRouteEvidence {',
+        'extern "C" std::uint64_t qwen_iq2_down_omitted_carrier_padding_bytes();\n'
+        'struct CompletedRouteEvidence {\n    std::uint64_t omitted_carrier_padding_bytes=0;')
+    source = once(source, 'std::uint64_t before_predictive) {',
+        'std::uint64_t before_predictive,std::uint64_t before_omitted_padding) {')
+    source = once(source, '    if(hits+misses!=result.unique||uploaded!=misses*1536000ull+result.predictive_bytes)',
+        '''    const auto omitted_after=qwen_iq2_down_omitted_carrier_padding_bytes();
+    if(omitted_after<before_omitted_padding)throw qwen_app::ExpertRouteCaptureError("Down padding counter moved backwards");
+    result.omitted_carrier_padding_bytes=omitted_after-before_omitted_padding;
+    if(result.omitted_carrier_padding_bytes%35776||result.omitted_carrier_padding_bytes>misses*35776ull)
+        throw qwen_app::ExpertRouteCaptureError("Down padding counter exceeds complete demand fills");
+    if(hits+misses!=result.unique||uploaded+result.omitted_carrier_padding_bytes!=misses*1536000ull+result.predictive_bytes)''')
+    source = once(source, '            const auto predicted=predictive_cache_bytes();',
+        '            const auto predicted=predictive_cache_bytes();\n'
+        '            const auto omitted_padding_before=qwen_iq2_down_omitted_carrier_padding_bytes();')
+    source = once(source,
+        'routes[ordinal]=completed_route_evidence(*engine,perf.at("process_calls").get<std::uint64_t>(),*cache,predicted);',
+        'routes[ordinal]=completed_route_evidence(*engine,perf.at("process_calls").get<std::uint64_t>(),*cache,predicted,omitted_padding_before);')
+    return once(source, '{"uploaded_bytes",result.uploaded},',
+        '{"uploaded_bytes",result.uploaded},{"omitted_carrier_padding_bytes",result.omitted_carrier_padding_bytes},'
+        '{"logical_admitted_weight_bytes",result.uploaded+result.omitted_carrier_padding_bytes},')

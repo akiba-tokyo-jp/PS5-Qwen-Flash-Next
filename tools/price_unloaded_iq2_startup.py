@@ -29,6 +29,7 @@ def initializer_count(package):
 def make(package_path,CPU_case,memory_evidence,vector_control,prefill_control,canonical_entry):
     package=load(package_path);profile=exact(package['effective_application_policy']['profile']);scope=profile['overrides']['native_IQ2_fixture']
     F16_reference=scope.get('F16_storage_FP32_accumulation') is True
+    MMVQ_reference=scope.get('MMVQ_decode_FP32_accumulation') is True
     exact_F32=(scope['F32_shader_arithmetic_explicit'] and
         scope['backend_environment']=={'GGML_VK_DISABLE_MMVQ':'1','GGML_VK_DISABLE_F16':'1'} and
         scope['widths']==[1,2,30,32] and scope['maximum_GPU_graphs']==144 and scope['cases']==12)
@@ -36,9 +37,13 @@ def make(package_path,CPU_case,memory_evidence,vector_control,prefill_control,ca
         scope['backend_environment']=={'GGML_VK_DISABLE_MMVQ':'1'} and scope['qualification_only'] and
         scope['synthetic_inputs_exactly_FP16'] and scope['widths']==[30,32] and
         scope['maximum_GPU_graphs']==12 and scope['cases']==6)
+    exact_MMVQ=(MMVQ_reference and not scope['F32_shader_arithmetic_explicit'] and
+        scope['backend_environment']=={} and not scope['vector_MMVQ_disabled'] and scope['qualification_only'] and
+        scope['synthetic_inputs_exactly_Q8_1'] and scope['widths']==[1,2] and
+        scope['maximum_GPU_graphs']==12 and scope['cases']==6)
     need(package['completed'] and package['normalized_SELF_roundtrip_equal'] and package['effective_application_policy']['kind']=='Q2-IQ2-fixture' and
          profile['unloaded_GPU_fixture'] and profile['model_and_GPU_guards_preserved'] and scope['model_loads']==0 and
-         (exact_F32 or exact_F16),'Exact finite model-free arithmetic profile required')
+         (exact_F32 or exact_F16 or exact_MMVQ),'Exact finite model-free arithmetic profile required')
     base=load(canonical_entry);canonical=exact(base['application_policy']);need(record(canonical['source']['path'])==canonical['source'] and
          record(profile['source']['path'])==profile['source'],'Exact canonical and changed entries required')
     original=Path(canonical['source']['path']).read_text();changed=Path(profile['source']['path']).read_text()
@@ -47,14 +52,18 @@ def make(package_path,CPU_case,memory_evidence,vector_control,prefill_control,ca
         need(body(original,name)==body(changed,name),'An original CPU, identity or shader admission guard changed')
     reader=profile['CPU_SELF_provider'];need(reader['artifact']==base['reader'] and reader['OS_minimum_plus_21_unchanged'] and
          record(reader['artifact']['path'])==reader['artifact'],'Original selected64KiB SELF reader required')
-    if F16_reference:
+    if F16_reference or MMVQ_reference:
         runtime=profile['arithmetic_reference_runtime'];provider=profile['arithmetic_reference_provider']
         need(record(runtime['path'])==runtime and record(provider['path'])==provider and
              provider in exact(package['relink'])['new_inputs'] and 'unsetenv("GGML_VK_DISABLE_F16")' in changed,
              'The actual FP16-storage runtime, provider and normal environment must remain bound')
         source=Path(runtime['path']).read_text()
         need('outputs[format]->op_params[0]=int32_t(GGML_PREC_F32)' in source and
-             'double(ggml_fp16_to_fp32(ggml_fp32_to_fp16(decoded[col])))' in source and
+             (('double(ggml_fp16_to_fp32(ggml_fp32_to_fp16(decoded[col])))' in source) if F16_reference else
+              ('constexpr int values[13]={-127,-64,-32,-16,-8,-4,0,4,8,16,32,64,127}' in source and
+               'return float(values[(column+3*token)%13])/1024.0f;' in source and
+               '!getenv("GGML_VK_DISABLE_MMVQ")' in source and
+               'double(decoded[col])' in source)) and
              'for(unsigned format=0;format<2&&valid;++format)' in source,
              'FP32 accumulation, the rounded storage reference and twelve distinct graphs are required')
     else:need('setenv("GGML_VK_DISABLE_F16","1",1)' in changed,'Explicit F32 environment must precede initialization')

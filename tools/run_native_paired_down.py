@@ -207,11 +207,24 @@ def main():
              'The failed node-cap fixture omitted the successful GGML environment; it may never be replayed in GPU mode')
         need(a.GGML_completion_controls is not None,'Changed GGML completion controls are required')
         controls=load(a.GGML_completion_controls)
-        need(controls['completed'] and (controls['positive_controls'],controls['negative_controls']) in ((4,20),(6,25)) and
+        large_cache = relink.get('large_cache_index_safe') is True
+        expected_inputs = ({'iq2_down_ggml_completion.py', 'iq2_down_large_cache_scope.py', 'iq2_down_large_cache_completion_test.py'}
+                           if large_cache else {'iq2_down_ggml_completion.py','iq2_down_ggml_completion_test.py'})
+        expected_counts = ((2,14),) if large_cache else ((4,20),(6,25))
+        need(controls['completed'] and (controls['positive_controls'],controls['negative_controls']) in expected_counts and
              controls['PS5_operations']==controls['unchanged_controls_replayed']==0 and
-             {Path(r['path']).name for r in controls['inputs']}=={'iq2_down_ggml_completion.py','iq2_down_ggml_completion_test.py'} and
+             {Path(r['path']).name for r in controls['inputs']}==expected_inputs and
              all(record(r['path'])==r for r in controls['inputs']),
              'The exact changed completion and no-submission-after-negative boundaries must pass')
+        if large_cache:
+            from iq2_down_large_cache_scope import require_provider
+            provider = require_provider(relink['model_resource_provider'])
+            need(controls['large_cache_index_safe'] and controls['required_native_graphs'] == 12 and
+                 controls['provider'] == relink['model_resource_provider'] and
+                 relink['large_cache_index_proof'] == provider['large_cache_index_proof'] and
+                 relink['maximum_GGML_graphs'] == 12 and relink['completed_GGML_case_prefix'] == 0 and
+                 relink['unchanged_native_decode_cases_reused'] == 0,
+                 'The corrected full-cache fixture must execute all twelve changed graphs')
     else:need(a.GGML_completion_controls is None,'GGML controls may not relabel an ordinary raw component')
     need(package['completed'] and package['normalized_SELF_roundtrip_equal'] and not package['CPU_only'] and
          relink['completed'] and (not relink['model_engine_linked'] or
@@ -221,13 +234,16 @@ def main():
           relink.get('paired_down_carrier') and relink.get('retained_device_controls')==19)) and
          len(relink['linked_driver'])==1 and ((not GGML_fixture and relink['maximum_GPU_dispatches']==24) or
           (GGML_fixture and relink.get('completed_GGML_case_prefix',0) in (0,2) and
-           relink['maximum_GGML_graphs']==(6 if relink.get('F16_arithmetic_only') else 12-relink.get('completed_GGML_case_prefix',0)) and relink['maximum_GPU_dispatches'] is None)) and
+           relink['maximum_GGML_graphs']==(6 if relink.get('F16_arithmetic_only') and not relink.get('large_cache_index_safe') else 12-relink.get('completed_GGML_case_prefix',0)) and relink['maximum_GPU_dispatches'] is None)) and
          relink['successful_driver_whole_archive_preserved'] and
          all(r['pointer_matches'] for r in relink['actual_physical_dispatch_audit']),
          'Exact new standalone package and all actual driver callbacks required')
     image=package['SELF'];need(record(image['path'])==image and image['bytes']<=32<<20,'Exact native standalone SELF required')
     need(a.CPU_startup_proof is None or a.mode=='CPU','A CPU startup control cannot replace the GPU startup proof')
     pricing=(price_changed_CPU(package,a.CPU_startup_proof) if a.CPU_startup_proof else price_CPU(package,a.prior_CPU)) if a.mode=='CPU' else price_GPU(a.package,a.startup_proof,a.startup_reuse)
+    if GGML_fixture and relink.get('large_cache_index_safe'):
+        pricing['required_pages'] = max(7374, pricing['required_pages'])
+        pricing['selected_original_model_readiness_floor_pages'] = 7374
     save(a.out/'pricing.private.json',pricing)
     if not a.execute:
         print(json.dumps(dict(prepared=True,pricing=pricing,PS5_operations=0)));return
@@ -285,17 +301,23 @@ def main():
             validate_terminal(load(readmission['native']['path']))
         elif a.P1_contract_close_proof:
             readmission=load(a.P1_contract_close_proof)
+            IQ2_route_refusal=False
+            if readmission.get('IQ2_post_request_route_accounting_refusal') is True:
+                from iq2_route_refusal import close_proof_valid
+                need(record(readmission['source_audit']['path'])==readmission['source_audit'],
+                     'The exact returned route guard audit changed')
+                IQ2_route_refusal=close_proof_valid(load(readmission['source_audit']['path'])['proof'])
             known_P1=(readmission['all_five_initialization_GPU_epochs_completed'] and readmission['target_request_operations']==0) or (
                  readmission.get('checkpoint_preallocation_refusal') is True and readmission.get('last_active_epoch_positive_checkpoint') is True and
                  readmission['target_request_operations']==2) or (
                  readmission.get('G1_integrated_device_refusal') is True and readmission['target_request_operations']==0) or (
-                 readmission.get('S1_post_request_certificate_refusal') is True and readmission['target_request_operations']==1)
+                 readmission.get('S1_post_request_certificate_refusal') is True and readmission['target_request_operations']==1) or IQ2_route_refusal
             need(readmission['completed'] and readmission['ordinary_OS_closes']==1 and readmission['ordinary_exit_observed'] and
                  readmission['current_seven_restored_and_native_hashed'] and known_P1 and
                  not readmission['unknown_completion'] and readmission['GPU_capacity_readmission_pending'] and
                  state['GPU_retirement_readmission_proof']==record(a.P1_contract_close_proof) and
                  record(readmission['source_audit']['path'])==readmission['source_audit'],
-                 'Exact P1 pre-request CPU refusal, completed initialization epochs and ordinary exit required')
+                 'An exact source-bound returned contract, completed epochs and ordinary exit are required')
         elif a.post_completion_close_proof:
             readmission=load(a.post_completion_close_proof)
             need(readmission['completed'] and readmission['ordinary_OS_closes']==1 and readmission['ordinary_exit_observed'] and

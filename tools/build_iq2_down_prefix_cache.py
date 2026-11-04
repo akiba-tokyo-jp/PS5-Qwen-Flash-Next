@@ -64,6 +64,7 @@ def main():
         transform=record(ROOT / 'tools/iq2_down_prefix_cache.py'), commands=[command],
         original_source_and_GPU_slot_stride=PLANE_BYTES, source_upload_prefix_bytes=PREFIX_BYTES,
         unused_tail_bytes_omitted=PLANE_BYTES-PREFIX_BYTES, selected_cache_slots=3712,
+        actual_upload_byte_statistics_preserved=True, independent_omitted_padding_counter=True,
         original_adjacent_bulk_path_preserved=True, existing_pair_pipeline_reused=True,
         source_descriptor_identity_and_completion_guards_preserved=True,
         GPU_shader_resources_unchanged=True, new_weight_files=0, new_weight_transfers=0,

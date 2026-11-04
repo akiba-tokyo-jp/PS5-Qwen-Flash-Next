@@ -10,7 +10,10 @@ STAGE = b'paired_Down_native_GPU_completed_idle_device_retained_waiting_for_ordi
 
 def validate_terminal(terminal):
     if terminal.get('GGML_carrier_ABI') is True:
-        from iq2_down_ggml_completion import validate_terminal as validate_GGML
+        if terminal.get('large_cache_index_safe'):
+            from iq2_down_large_cache_scope import validate_terminal as validate_GGML
+        else:
+            from iq2_down_ggml_completion import validate_terminal as validate_GGML
         return validate_GGML(terminal)
     need(terminal['completed'] and terminal['all_outputs_passed'] and not terminal['unknown_completion'] and
          terminal['native_PS5'] and terminal['model_loads'] == 0 and
@@ -47,6 +50,13 @@ def validate_close(close, selected):
         if prefix:
             proof=relink['completed_GGML_prefix_proof'];need(record(proof['path'])==proof,
                 'The exact positively completed decode prefix must remain bound')
+        if relink.get('large_cache_index_safe'):
+            from iq2_down_large_cache_scope import require_provider
+            provider = require_provider(relink['model_resource_provider'])
+            need(prefix == 0 and relink['maximum_GGML_graphs'] == 12 and
+                 relink['unchanged_native_decode_cases_reused'] == 0 and
+                 relink['large_cache_index_proof'] == provider['large_cache_index_proof'],
+                 'The actual all-graph index-safe package and provider must remain bound')
     for row in (relink['source'], *[x for x in relink['inputs_before'] if Path(x['path']).name in
                 ('paired_down_native_support.h', 'retained_completed_device.h', 'native_paired_carrier_adapter.py')]):
         need(record(row['path']) == row, 'A qualified lifetime source changed')
@@ -59,6 +69,8 @@ def validate_close(close, selected):
     if relink.get('GGML_carrier_ABI'):
         need(terminal.get('completed_GGML_case_prefix',0)==relink.get('completed_GGML_case_prefix',0),
              'The observed skipped prefix must match the compiled, source-bound prefix')
+        need(bool(terminal.get('large_cache_index_safe')) == bool(relink.get('large_cache_index_safe')),
+             'The actual terminal must select the same index-safe completion rules as its package')
     validate_terminal(terminal)
     need(first['pid'] == terminal['pid'] == close['pid'] and first['run_id'] == terminal['run_id'] and
          first['candidate_SELF_sha256'] == terminal['candidate_SELF_sha256'] == selected[0]['sha256'] and

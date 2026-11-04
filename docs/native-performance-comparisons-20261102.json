@@ -397,7 +397,12 @@
       "full_model_quality_or_speed_qualified": false
     },
     "original_Up_complete_layers": 48,
-    "Gate_encoding_active": 65345
+    "Gate_encoding_active": 65345,
+    "first_full_Up_screen_case": 65407,
+    "full_Up_screen_positive_speedup": false,
+    "MMVQ_refinement_screen_running": false,
+    "MMVQ_refinement_screen_complete": 65388,
+    "MMVQ_refinement_speedup": false
   },
   "Q3": {
     "status": "native_GGML_decode_passes_wide_numerical_negative_refinement_ready",
@@ -889,14 +894,11 @@
     "latest_failure_classification": 65264
   },
   "current_console_execution": {
-    "owner": "reserved full Up workflow65352/session19016",
-    "phase": "remaining four Up source layers before model capacity and ABBA",
-    "initial_prefix_sealed": true,
-    "suffix_session58437_exit_code": 0,
-    "handoff_session58989_exit_code": 0,
-    "observer": "functions cellg10:1968,19016 phase",
-    "frozen_tools_must_remain_unchanged": true,
-    "independent_console_operation_permitted": false
+    "owner": "index-safe Down GPU65394/session13960",
+    "phase": "new component pack publication before twelve new graphs",
+    "original_floor_pages": 7374,
+    "initializer_requests": 0,
+    "automatic_retries": 0
   },
   "latest_checkpoint_65281": {
     "campaign_complete": false,
@@ -1171,5 +1173,155 @@
     "retained_parts": 47,
     "retained_parts_copied": 0,
     "full_model_rate_qualified": false
+  },
+  "latest_checkpoint_65388": {
+    "first_Up_screen": {
+      "control": 65400,
+      "candidate": 65407,
+      "observations_per_arm": 1,
+      "complete_ABBA": false,
+      "metric": "(generated_tokens-1)*1000/decode_ms",
+      "conditions": [
+        {
+          "condition": "cold",
+          "control_tok_s": 10.479219859004738,
+          "candidate_tok_s": 8.002037471206446,
+          "change_percent": -23.638996233766985
+        },
+        {
+          "condition": "retained",
+          "control_tok_s": 12.093470064022155,
+          "candidate_tok_s": 9.358198874545423,
+          "change_percent": -22.617753010478868
+        },
+        {
+          "condition": "exact-prefix",
+          "control_tok_s": 13.390932153594475,
+          "candidate_tok_s": 12.39192241782704,
+          "change_percent": -7.46034498800201
+        }
+      ],
+      "production_adopted": false
+    },
+    "MMVQ_refinement": {
+      "native_case": 65383,
+      "completed": true,
+      "new_graphs": 12,
+      "mismatches": 0,
+      "maximum_absolute_error": 1.8015271052718163e-08,
+      "reference": "F64 of decoded weights and exactly Q8_1-representable F32 inputs",
+      "ordinary_exit": true,
+      "exact_P1_restoration": true,
+      "model_package": 65385,
+      "model_screen": 65388,
+      "model_speed_pending": true,
+      "heldout_quality_pending": true
+    },
+    "route_accounting_fix": {
+      "exception_case": 65401,
+      "ordinary_close": 65368,
+      "actual_geometry": 65369,
+      "corrected_model": 65372
+    },
+    "memory": {
+      "new_prefix_retirement": 65380,
+      "scanned": 19,
+      "total": 172,
+      "resident_before": 5344,
+      "resident_after": 0,
+      "free_before": 5855,
+      "free_after": 11199,
+      "source_writes": 0,
+      "GPU_calls": 0
+    },
+    "Down": {
+      "index_safe_admission_integrated": true,
+      "CPU_preparation": 65386,
+      "native_arithmetic_pending": true,
+      "prefix_cache_ABI": 65377,
+      "prefix_accounting_entry_ABI": 65378
+    },
+    "remaining_source_placement": {
+      "Gate_and_Down_bytes_approx": 21700000000,
+      "hours_approx": [
+        11,
+        12
+      ],
+      "uploads_started": false,
+      "transport_tuning": false
+    },
+    "automatic_approval": {
+      "initial6736_command_rejected_before_execution": true,
+      "actual65383_readiness_pages": 7374,
+      "lower_guard_executed": false
+    },
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65394": {
+    "MMVQ_full_Up_screen": {
+      "case": 65388,
+      "completed": true,
+      "ordinary_exit_and_exact_P1_restore": true,
+      "observations_per_arm": 1,
+      "complete_ABBA": false,
+      "metric": "(generated_tokens-1)*1000/decode_ms",
+      "conditions": [
+        {
+          "condition": "cold",
+          "control_tok_s": 10.479219859004738,
+          "candidate_tok_s": 7.390107725675089,
+          "change_percent": -29.478455217973032
+        },
+        {
+          "condition": "retained",
+          "control_tok_s": 12.093470064022155,
+          "candidate_tok_s": 9.397052781063792,
+          "change_percent": -22.296472961719672
+        },
+        {
+          "condition": "exact-prefix",
+          "control_tok_s": 13.390932153594475,
+          "candidate_tok_s": 12.452027984069476,
+          "change_percent": -7.011492245317463
+        }
+      ],
+      "production_adopted": false
+    },
+    "Down_CPU": {
+      "case": 65393,
+      "completed": true,
+      "native_passed": true,
+      "resources": 17,
+      "environment_checks": 7,
+      "ordinary_exit_and_exact_P1_restore": true
+    },
+    "Down_GPU": {
+      "case": 65394,
+      "active": true,
+      "new_graphs_required": 12,
+      "old_decode_reused": 0,
+      "capacity_readmission_after_exit_required": true
+    },
+    "source_cache": {
+      "prefix_windows_consumed": 39,
+      "prefix_total": 172,
+      "final_four_consumed": 11,
+      "final_four_total": 16,
+      "latest_scope": 65392,
+      "latest_cleared_pages": 5728,
+      "source_writes": 0
+    },
+    "Gate_publication_prepared": {
+      "case": 65390,
+      "new_files": 124,
+      "retained_Up_layers": 48,
+      "uploads": 0
+    },
+    "Down_prefix_model_integration": {
+      "completed_on_PC": true,
+      "actual_compiled_source_65377_reused": true,
+      "native_model_pending": true
+    },
+    "campaign_complete": false
   }
 }
