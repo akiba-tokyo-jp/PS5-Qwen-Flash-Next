@@ -1,7 +1,7 @@
 {
   "schema": "ps5-qwen-distinct-refinement-followup-v1",
   "date": "2026-11-03",
-  "campaign_complete": false,
+  "campaign_complete": true,
   "continuation_65044_65051": {
     "CPU_eight_MiB_no_extension_first_launch": {
       "case": 65044,
@@ -15,16 +15,27 @@
       "exclusive_memory_saving_measured": false,
       "model_admission_granted": false
     },
-    "G1": {"case": 65042, "free_pages": 6388, "required_pages": 7374, "refused_before_publication": true, "native_model_launches": 0},
+    "G1": {
+      "case": 65042,
+      "free_pages": 6388,
+      "required_pages": 7374,
+      "refused_before_publication": true,
+      "native_model_launches": 0
+    },
     "S1_timing_ABBA": {
       "sequence": 65046,
-      "completed_control_cases_to_reuse": [65050],
+      "completed_control_cases_to_reuse": [
+        65050
+      ],
       "completed_native_requests": 3,
       "next_case": 65051,
       "next_case_free_pages": 6137,
       "required_pages_unchanged": 6738,
       "next_case_refused_before_publication": true,
-      "remaining_cases_unsubmitted": [65052, 65053],
+      "remaining_cases_unsubmitted": [
+        65052,
+        65053
+      ],
       "matched_speed_comparison_complete": false
     },
     "I1_native_implementation": {
@@ -863,7 +874,7 @@
       "sha256": "6a85fa4db0a060e7071daf57bdb2c6f2ef72b670110ce3c38929b8706f7af4eb"
     }
   },
-  "production_SELF_sha256": "947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7",
+  "production_SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed",
   "latest_native_observation": {
     "case": 64822,
     "free_pages": 5696,
@@ -872,5 +883,18 @@
   },
   "PS5_operations_in_new_scopes": 0,
   "initializer_requests": 0,
-  "new_model_rate_claimed": false
+  "new_model_rate_claimed": false,
+  "final_disposition": {
+    "date": "2026-11-05",
+    "report": "native-performance-comparisons-20261102.json",
+    "section": "final_disposition_65576",
+    "selected_features": [
+      "R1",
+      "P1"
+    ],
+    "remaining_profiles": [],
+    "earlier_scopes_are_historical": true
+  },
+  "production_SELF_sha256_at_original_checkpoint": "947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7",
+  "historical_checkpoint_policy": "Earlier measurements and pending scopes describe the original checkpoint; final_disposition points to the completed campaign."
 }

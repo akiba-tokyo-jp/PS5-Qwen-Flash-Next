@@ -1,8 +1,9 @@
 # Native performance comparisons, 2026-11-02
 
-The new eight-candidate campaign remains active. Successful startup, current
-model inference and ordinary closure are now positively observed on this boot.
-The one authorized runtime initialization63121 is consumed; it is not repeated.
+All model experiments in the eight-candidate campaign are complete as of
+2026-11-05. R1 and P1 are adopted; G1, Q1, Q2, Q3, I1 and S1 are not adopted.
+The completed refinements do not establish an additional decode gain.
+The one authorized runtime initialization63121 is consumed and was not repeated.
 The existing mount63133 remains. Reboot and recovery are unavailable.
 
 The selected deployment is now P1 over completed-stage R1, SELF
@@ -17,7 +18,81 @@ selected files. Driver872cc126/cumulative-idle and disabled persistent caches
 remain unchanged. R1 is adopted after the combined native proofs below; the
 other candidates retain their stated limits.
 
-## Current implementation and remaining work
+## Final performance disposition, 2026-11-05
+
+The metric remains `(generated_tokens-1)*1000/decode_ms`. Cold, retained and
+exact-prefix requests are separate conditions. Adopted P1's matched means over
+its R1 control are **10.162065 -> 10.436816**, **12.094066 -> 12.172570** and
+**13.264824 -> 13.217511 tok/s**, respectively: +2.704%, +0.649% and -0.357%.
+An exact-prefix gain is not established. R1's separate matched comparison gives
++1.376%, +1.592% and +1.722%. These cohorts have different controls; their
+gains must not be combined into an unmeasured cumulative percentage.
+
+The last previously pending observer-free screens are complete:
+
+| Profile | Cold tok/s | Retained tok/s | Exact-prefix tok/s | Disposition |
+| --- | ---: | ---: | ---: | --- |
+| Recorded P1 control65400 | 10.479220 | 12.093470 | 13.390932 | Selected control |
+| Up minimum stream | 8.971814 | 11.445104 | 13.227152 | Not adopted |
+| Gate-Up minimum stream | 9.005970 | 11.877638 | 12.632911 | Not adopted |
+| Down full-plane | 5.725340 | 9.042587 | 11.262401 | Not adopted |
+| Down source-prefix | 5.661682 | 9.035292 | 11.097403 | Not adopted |
+| Down minimum stream | 6.390577 | 10.984585 | 12.224860 | Not adopted |
+
+Each screen has one observation per arm, not matched ABBA means. Every new
+profile is slower in all three conditions, so no repeated timing or heldout
+adoption run is warranted. All22 tokens/output bytes match and every completed
+case ordinarily closes and restores the exact selected seven files. The three
+minimum-stream comparisons also match all69 full-vocabulary F32 hashes and
+ordered routes against the same quantized model's plain path: Up1043,
+Gate-Up1068 and Down1044 actual streamed groups. This IO equivalence does not
+establish general cross-precision answer quality.
+
+| Family | Completed refinement checks | Final decision |
+| --- | --- | --- |
+| R1 | Token-ledger and completed-stage synchronization | Adopted completed-stage R1 |
+| P1 | Narrowed output and cold final-output refinement | Adopted cold-output P1 over R1 |
+| G1 | Per-layer and batched GPU ranking; partial TopK route check | No decode gain; partial TopK routes differ |
+| Q1 | Shared Q4 model comparison and cache reinvestment check | No established gain |
+| Q2 | Up and Gate-Up MMVQ-off/on; both minimum-stream refinements | All integrated screens slower |
+| Q3 | Down full-plane, source-prefix and minimum stream | All integrated screens slower |
+| I1 | Both integrated prefetch refinements | Retained changes below A/A variation; no adoption |
+| S1 | Both speculative refinements | Slower than ordinary decoding; third condition is retained2 |
+
+There are no pending experiments in this campaign. Rejection applies to the
+tested configurations, not to every possible future implementation. The source
+placement, cache retirement and FTP work were experiment preparation, not
+product features or decode-speed gains. No transport optimization is adopted.
+Detailed final screens and cleanup evidence are recorded in the companion JSON
+and the [source follow-up record](source-capacity-and-stream-followups-20261104.md).
+
+## Final artifact retirement, 2026-11-05
+
+PS5 cleanup65572 removes five unselected IQ2 namespaces:444 source files,
+32,192,794,023 logical bytes, plus three closed fixture/prototype inputs totaling
+74,416,128 bytes. Positive receipts preserve every completed deletion. A host
+alias-check error after the first40 files is corrected without replaying those
+deletions or the three completed component deletions. The final native helper
+confirms all five roots absent in both physical and alias namespaces, hashes
+the selected seven files, exits and removes its own files. Cleanup performs no
+title launch, GPU work, mount change or runtime initialization.
+
+PC cleanups65573/65575 remove 7,152 unselected trial binary files
+(71,543,433,510 logical bytes). This sum is not an allocated-space claim;
+hardlinks can share storage. All947 canonical rebuild inputs and current-file
+hashes remain unchanged. Authenticated original BF16 source identities remain
+unchanged without another full-source hash pass. The additional133 trial copies pass complete current-content SHA256
+verification and have no canonical path/file-identity dependency before deletion.
+Source text, logs and receipts remain as evidence. The active runtime and selected source namespaces, including
+their existing placeholders, are preserved. No unselected shared input remains
+pending. All owners are retired; the console is idle with R1+P1 restored and no
+unknown completion.
+
+## Archived checkpoints
+
+The following checkpoints describe observations at their recorded times.
+Their active-owner and pending-work statements are superseded by the final
+disposition above; their measurements and original evidence limits remain.
 
 Checkpoint65568: Gate-Up minimum stream passes69 full-vocabulary F32 hashes,
 routes, tokens and bytes against its completed plain observation, with1068

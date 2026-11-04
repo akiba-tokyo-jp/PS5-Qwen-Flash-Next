@@ -8,76 +8,50 @@ required model component is retained. Learned PC/cloud inference is not used.
 
 ## Current status
 
-The new hardware-bound performance campaign is active. The owner-authorized
-successful startup route now positively completes current-model inference on
-this boot, with ordinary closure and exact selected-file restoration. Read the
-[latest native comparisons](docs/native-performance-comparisons-20261102.md).
-R1 is adopted after complete-request ABBA gains and exact whole-vocabulary F32
-comparison. The measured P1, Q1 and two G1 ranking profiles are not adopted.
-The primary speed metric remains complete-model decode tok/s. Matched R1 mean
-rates improve10.075792->10.214440 cold,11.952293->12.142559 retained, and
-13.031378->13.255748 with exact-prefix reuse:1.376%,1.592% and1.722%.
-These are distinct from complete-request duration reductions. Unadopted means
-the tested configuration is not selected; further refinements remain open.
-New I1 absolute-history and relative-delta screens and Q1 cache reinvestment
-are recorded in the [refinement follow-up](docs/refinement-followup-20261103.json).
-Finite native IQ2 vector, immutable I/O delivery and online MTP causal checks
-pass, with their quality, integration and whole-speed limits recorded separately.
-The explicit F32-arithmetic IQ2 component now also passes all12 cases/144 graphs
-at widths1/2/30/32. One-token compute/fence improves4.5–7.2%; prefill-shaped
-compute/fence takes51–55% longer. These component results do not qualify
-full-model adoption. See the [F32 component results](docs/iq2-explicit-F32-prefill-20261103.json).
-The single runtime initialization is consumed and must not be repeated.
+The eight-candidate hardware-bound performance campaign is complete as of
+2026-11-05. **R1 and P1 are adopted.** G1, Q1, Q2, Q3, I1 and S1 are not adopted
+after their completed comparisons and refinements. Read the
+[final native results](docs/native-performance-comparisons-20261102.md) and
+[source/stream follow-ups](docs/source-capacity-and-stream-followups-20261104.md).
+
+The primary metric remains `(generated_tokens-1)*1000/decode_ms`, separately
+for cold, retained and exact-prefix requests. Matched means are:
+
+| Adopted change | Cold tok/s | Retained tok/s | Exact-prefix tok/s |
+| --- | ---: | ---: | ---: |
+| R1 completed-stage synchronization | 10.075792 -> 10.214440 (+1.376%) | 11.952293 -> 12.142559 (+1.592%) | 13.031378 -> 13.255748 (+1.722%) |
+| P1 cold-output refinement over R1 | 10.162065 -> 10.436816 (+2.704%) | 12.094066 -> 12.172570 (+0.649%) | 13.264824 -> 13.217511 (-0.357%) |
+
+Each comparison has its own control; these gains are not a measured cumulative
+percentage. P1 establishes no exact-prefix gain. Tokens and ordered routes
+match; R1 matches all69 full-vocabulary F32 rows. P1 matches68/69 rows, with a
+maximum first-cold-row difference of0.1812725067138672. Broader prompts remain
+unqualified. Completed token/stage journals synchronize before the request
+result; interruption can lose their unsynced completed tails.
+
+All original and minimum-stream Up/Gate-Up/Down IQ2 model profiles are slower
+than the recorded P1 control in all three conditions. The stream paths match
+all69 F32 vocabulary hashes and ordered routes against the same quantized
+model, but supply no decode gain. Component arithmetic and IO qualification
+do not establish general cross-precision answer quality. The tested
+configurations are closed; this does not prove future improvement impossible.
+
+PC and PS5 retain the same selected R1+P1 application, SELF
+`c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed`
+(21,929,863 bytes), with947 canonical rebuild inputs. The PC package is
+`D:/PS5-AI/qwen-flash-next/current`. Driver
+`872cc1264ad8ba5d6b888b092968fa5858a38c58` / `cumulative-idle` and disabled
+persistent shader/pipeline caches remain unchanged. Trial binaries and unused
+IQ2 source namespaces are retired; current inputs, original authenticated
+BF16 data, source text and evidence are preserved. Selected-file native hashes,
+ordinary closure and restoration pass, and all owners are retired.
+The single runtime initialization63121 is consumed and must not be repeated.
+Reboot and recovery remain unavailable.
 
 The owner closed every current AMPR/APR/PFS, Kraken, compatibility-initializer
 and runtime-entry investigation as failed on2026-11-02. No candidate from that
 campaign is adopted and no remaining validation is queued. See the
 [closure and current-only cleanup record](docs/current-validation-closure-20261102.md).
-
-The selected current application is the scheduler-owned-map program:
-SELF `947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7`,
-canonical reconstruction source `a543eac4fdeb59b4ecadf50725b12bd9ece9689f` over
-the retained base `2b683814c9b6ed18c13352963c0a989f9e4d0b15`.
-The PC package is `D:/PS5-AI/qwen-flash-next/current`; PS5 retains this same
-program, five settings and required model/startup assets. Completed trial images
-and enumerated reports are retired with independent whole-file archives;
-remaining protected or unreadable evidence is disclosed. Driver872cc126/cumulative-idle
-and disabled persistent caches remain. Current-boot inference succeeds with
-the explicitly repaired dependency identities. The original56c deployment
-is replaced by the qualified completed-stage R1 application on both PC and PS5.
-Completed token ledgers and the stage journal synchronize before the request
-result; interruption can lose their unsynced completed tails. Cold, retained
-and prefix complete spans improve0.97%/1.55%/1.76% in the matched fixed workload,
-including final sync and close. All69 full-vocabulary F32 rows match exactly.
-
-Actual calibration-operand checks on2026-11-03 find lower IQ2 output error for
-all nine sampled Down matrices and one of nine Up matrices. The paired640-column
-Down decoder matches14745600 independent F32 values; both shader workgroups
-pass SPIR-V validation. The subsequent prefill-fit/decode-holdout check finds
-lower error for only2/9 Down and0/9 Up matrices; calibration reuse had overstated
-the result. These are separate operands from the same prompt, with no full-model
-quality qualification. See the
-[complete component measurements](docs/iq2-real-operand-components-20261103.json).
-The [heldout measurements](docs/iq2-prefill-fit-decode-holdout-20261103.json)
-record the separate fit/test and coverage-based selection. All24 shapes of the
-paired Down shader pass software SPIR-V execution at widths1/2/30/32,960 positive
-fences, with exact canaries. The historical constant-codebook variant also passes
-24 shapes/960 fences, giving48/1920 total. Physical GPU execution and PS5 speed
-stay unqualified.
-CPU-only64800 completes the unchanged whole-SELF64KiB reader:336 reads,
-full SHA/identity/EOF, minimum1525 free pages, ordinary exit and exact seven-file
-restoration. It starts no model/source/GPU work. Bounded Direct staging is now
-an opt-in successful-route transport, with the existing whole-SHA publisher.
-The [startup qualification](docs/Direct-startup-qualification-20261103.json)
-records the measurements and the separately consumed passive-settle refusal.
-The latest PS5 observation64822 records5696 free pages after positive F32
-component retirement, ordinary close and exact current restoration, against
-the7374 ordinary-model screen. The source-bound model-free6736 screen admitted
-that distinct test without changing native guards. Reboot and another initializer
-are unavailable. OS-assigned-port Direct staging is qualified by an opaque SELF
-copy and actual component/restoration. The17 old private logs are fully archived
-and retired under the owner's log-handling authorization; see the
-[follow-up record](docs/log-retirement-and-prefill-followup-20261103.json).
 
 ### Historical throughput control
 

@@ -1,8 +1,63 @@
 # Source capacity and inference IO follow-ups, 2026-11-04
 
 The primary metric remains `(generated_tokens-1)*1000/decode_ms`, reported
-separately for cold, retained and exact-prefix requests. No IQ2 production
-adoption or speed gain is established by this checkpoint.
+separately for cold, retained and exact-prefix requests. All remaining IQ2
+model experiments are complete as of2026-11-05. None is adopted; production
+remains R1+P1.
+
+## Final model results
+
+| Profile | Cold tok/s (change) | Retained tok/s (change) | Exact-prefix tok/s (change) |
+| --- | ---: | ---: | ---: |
+| Recorded P1 control65400 | 10.479220 | 12.093470 | 13.390932 |
+| Up minimum stream | 8.971814 (-14.385%) | 11.445104 (-5.361%) | 13.227152 (-1.223%) |
+| Gate-Up minimum stream | 9.005970 (-14.059%) | 11.877638 (-1.785%) | 12.632911 (-5.661%) |
+| Down full-plane | 5.725340 (-45.365%) | 9.042587 (-25.228%) | 11.262401 (-15.895%) |
+| Down source-prefix | 5.661682 (-45.972%) | 9.035292 (-25.288%) | 11.097403 (-17.127%) |
+| Down minimum stream | 6.390577 (-39.017%) | 10.984585 (-9.169%) | 12.224860 (-8.708%) |
+
+These are single screens, not matched means. The original Up/Gate-Up
+MMVQ-off/on profiles below were also slower. Every completed model case has
+exact22 token IDs/output bytes, ordinary close and exact P1 restoration.
+All three minimum-stream IO comparisons pass69 complete vocabulary F32 hashes
+and ordered routes against the same quantized model, with1043/1068/1044
+streamed groups for Up/Gate-Up/Down. These observed IO timings are not used for
+the observer-free rates above. The completed Gate-Up plain observation and both
+prebuilt Down models were reused without replay or recompilation.
+
+Final evidence is in65564/Gate-Up/first-screen.private.json and65567/Down's
+full-plane-screen.private.json, source-prefix-screen.private.json and
+stream-followups/Down/first-screen.private.json. All previously pending
+profiles are resolved. No new IQ2 adoption, heldout quality claim or additional
+decode gain follows. Further improvements remain possible outside these
+tested configurations.
+
+## Final artifact retirement, 2026-11-05
+
+PS5 cleanup65572 removes five unselected IQ2 namespaces:444 source files,
+32,192,794,023 logical bytes, plus three closed fixture/prototype inputs totaling
+74,416,128 bytes. Positive receipts preserve every completed deletion. A host
+alias-check error after the first40 files is corrected without replaying those
+deletions or the three completed component deletions. The final native helper
+confirms all five roots absent in both physical and alias namespaces, hashes
+the selected seven files, exits and removes its own files. Cleanup performs no
+title launch, GPU work, mount change or runtime initialization.
+
+PC cleanups65573/65575 remove 7,152 unselected trial binary files
+(71,543,433,510 logical bytes). This sum is not an allocated-space claim;
+hardlinks can share storage. All947 canonical rebuild inputs and current-file
+hashes remain unchanged. Authenticated original BF16 source identities remain
+unchanged without another full-source hash pass. The additional133 trial copies pass complete current-content SHA256
+verification and have no canonical path/file-identity dependency before deletion.
+Source text, logs and receipts remain as evidence. The active runtime and selected source namespaces, including
+their existing placeholders, are preserved. No unselected shared input remains
+pending. All owners are retired; the console is idle with R1+P1 restored and no
+unknown completion.
+
+## Archived checkpoints
+
+The following observations retain their original scope. Their active-owner,
+queued-build and pending-rate statements are historical and superseded above.
 
 Checkpoint65568: Gate-Up minimum streaming passes the actual native IO
 comparison: all69 full-vocabulary F32 hashes, ordered routes, tokens and output

@@ -3,6 +3,40 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65576 (2026-11-05 JST): the eight-candidate campaign is COMPLETE.
+There are NO active console/source/model/helper owners or queued successors.
+Hosts36274/72965 and observersg10:2491/2486 are RETIRED exit0. Never poll or
+restart them. All original and minimum-stream Up/Gate-Up/Down profiles are
+complete and slower than recorded P1 in all three primary-rate conditions.
+No IQ2 profile is adopted. Production remains R1+P1, SELF
+c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed,
+21,929,863 bytes, driver872cc126/cumulative-idle, persistent caches OFF.
+
+Authoritative results: docs/native-performance-comparisons-20261102.md/.json,
+final_disposition_65576; docs/source-capacity-and-stream-followups-20261104.md.
+Primary metric: (generated_tokens-1)*1000/decode_ms, separately for
+cold/retained/exact-prefix. Do not multiply gains from different matched
+controls. S1's third condition is retained2, not exact-prefix.
+
+PS5 cleanup65572 COMPLETE:444 unselected source files in five namespaces plus
+three fixture inputs removed. Exact current-seven native hashes pass; all
+five physical/alias roots are absent. The known host alias-check error was
+corrected without replaying positive first40 source/three component deletions.
+The source owner clears and the last deleted-candidate successful case is
+archived; it cannot qualify a new cache scope. Do not use deleted trial
+publications or immutable old case receipts as fresh current inputs.
+PC cleanups65573/65575 COMPLETE:7,152 trial binaries removed; all947
+canonical rebuild inputs, authenticated original BF16 sources, active runtime,
+source text/logs/receipts preserved. No selected model namespace was pruned
+internally. Initializer63121 remains CONSUMED; NEVER rerun it. No reboot or
+recovery is available or requested.
+
+Numbered checkpoints below are HISTORICAL. Their active/queued ownership and
+pending-work statements are superseded above. Preserve their observations,
+old cache-pool cursors and actual completed-model-owner ledgers. Never reset
+a consumed window or invent a read owner. There is no unfinished campaign
+work to resume. Measured rejection does not prove future improvement impossible.
+
 CURRENT65568: sole console IO owner is host72965 / observerg10:2486, running
 Q2-Gate-Up-completed-plain-continuation-65564. Never poll72965 separately.
 The prior successful plain observation is REUSED, not relaunched. New stream

@@ -1,7 +1,7 @@
 {
   "schema": "ps5-qwen-native-performance-checkpoint-v2",
   "date": "2026-11-02",
-  "campaign_complete": false,
+  "campaign_complete": true,
   "production": {
     "SELF_bytes": 21929863,
     "SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed",
@@ -17,7 +17,7 @@
     "retained_current_inputs": 947,
     "formatter_import_stubs": 7,
     "canonical_entry_ELF_and_SELF_byte_exact": true,
-    "latest_current_seven_native_integrity": 65256,
+    "latest_current_seven_native_integrity": 65572,
     "source_overlay_historical": "9601f9048dc943cf28705f3e8ec784d8d91ca54a",
     "source_overlay": "06b2f9a535935fc4f142d73a405401b990d465e5",
     "actual_application_linked_driver_archive_sha256": "a325dcd4584b1f1fccc6b46e90faa081ca86d18544aca610efea9e3ca3774f32"
@@ -238,7 +238,7 @@
     "protected_current_seven_whole_digests_equal": true
   },
   "Q2": {
-    "status": "original_Up_and_Gate_and_minimum_Up_stream_screens_negative_Gate_Up_minimum_IO_exact_timing_pending",
+    "status": "all_Up_and_Gate_Up_original_and_minimum_stream_profiles_complete_not_adopted",
     "pre_main_refusal_case": 64310,
     "returned_CPU_reads": 7,
     "refused_free_pages": 882,
@@ -273,7 +273,7 @@
     "Gate_Up_input_sharing_independently_qualified": false,
     "broad_calibration_coverage_qualified": false,
     "full_IQ2_model_encoded": false,
-    "native_IQ2_indexed_operator_qualified": false,
+    "native_IQ2_indexed_operator_qualified": true,
     "diagnostic_times_usable_for_performance": false,
     "calibrated_Up_sample_matrices": 9,
     "sample_pack_bytes": 8699904,
@@ -402,12 +402,23 @@
     "full_Up_screen_positive_speedup": false,
     "MMVQ_refinement_screen_running": false,
     "MMVQ_refinement_screen_complete": 65388,
-    "MMVQ_refinement_speedup": false
+    "MMVQ_refinement_speedup": false,
+    "native_IQ2_operator_scope": "F16 storage with IQ2-only FP32 accumulation; historical default-F16 negative unchanged",
+    "all48_Up_layers_encoded": true,
+    "all48_Gate_layers_encoded": true,
+    "full_model_decode_speed_measured": true,
+    "broader_answer_quality_qualified": false,
+    "production_adopted": false,
+    "minimum_stream_profiles_complete": [
+      "Up",
+      "Gate-Up"
+    ],
+    "remaining_profiles": []
   },
   "Q3": {
-    "status": "all48_Down_sources_whole_sealed_both_independent_models_built_queued_after_Gate_Up",
+    "status": "all48_Down_full_plane_source_prefix_and_minimum_stream_complete_not_adopted",
     "real_Down_activation_moments_available": true,
-    "cross_row_format_implemented": false,
+    "cross_row_format_implemented": true,
     "real_operand_output_reference": {
       "case": 64752,
       "matrices": 9,
@@ -478,7 +489,6 @@
     },
     "actual_GGML_CPU_startup": 65255,
     "actual_GGML_GPU_refusal_before_publication": 65257,
-    "full_model_quality_or_speed_qualified": false,
     "actual_GGML_GPU_case": 65259,
     "actual_GGML_first_call_unexpected_exit": true,
     "selected_P1_restoration_complete": true,
@@ -622,7 +632,17 @@
       "unchanged_decode_GPU_results_reused": 0,
       "corrected_native_CPU_or_GPU_submitted": false,
       "full_model_speed_or_quality_qualified": false
-    }
+    },
+    "all48_Down_sources_whole_sealed": true,
+    "full_model_decode_speed_measured": true,
+    "broader_answer_quality_qualified": false,
+    "production_adopted": false,
+    "completed_model_profiles": [
+      "full-plane",
+      "source-prefix",
+      "minimum-stream"
+    ],
+    "remaining_profiles": []
   },
   "I1": {
     "status": "both_refinements_complete_unadopted",
@@ -800,7 +820,7 @@
   "reboot_available": false,
   "automatic_retries": 0,
   "CI_runs": 0,
-  "latest_update": "2026-11-05 JST: Gate-Up minimum native IO exact and first timed native case active; both Down builds queued; actual completed-model source cache owners qualified with old ledgers intact.",
+  "latest_update": "2026-11-05 JST: All remaining screens complete and slower; R1+P1 retained. PS5 and PC trial binary cleanup complete; current files, 947 rebuild inputs and authenticated BF16 sources preserved.",
   "closed_artifact_retirement": {
     "image_batches": [
       64740,
@@ -894,14 +914,15 @@
     "latest_failure_classification": 65264
   },
   "current_console_execution": {
-    "owner": "sequential suffix/Gate/Down workflow65513/session18314",
-    "phase": "Gate suffix placement65390, first seven whole stores complete at checkpoint",
-    "native_overlap_permitted": false,
-    "running_transfer_tool_frozen": true,
-    "later_native_stage_freezes_its_inputs_on_start": true,
-    "initializers": 0,
+    "owner": null,
+    "phase": "campaign_complete_current_R1_P1_idle",
+    "original_restored": true,
+    "native_running": false,
+    "model_loaded": false,
+    "unknown_completion": false,
+    "initializers_repeated": 0,
     "reboots": 0,
-    "automatic_retries": 0
+    "current_SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed"
   },
   "latest_checkpoint_65281": {
     "campaign_complete": false,
@@ -925,7 +946,7 @@
     "transfer_experiments_closed": true,
     "kernel_readonly_ELF_requests": 0
   },
-  "checkpoint_date": "2026-11-04",
+  "checkpoint_date": "2026-11-05",
   "latest_checkpoint_65300": {
     "campaign_complete": false,
     "primary_metric": "(generated_tokens-1)/decode_seconds",
@@ -1778,5 +1799,288 @@
     "additional_usable_tok_s": null,
     "production_adopted": false,
     "initializer_repeated": false
+  },
+  "historical_checkpoint_policy": "Earlier numbered checkpoints retain observations at their recorded times; final_disposition_65576 and current_console_execution supersede pending or active-owner statements.",
+  "final_disposition_65576": {
+    "date": "2026-11-05",
+    "campaign_complete": true,
+    "all_pending_profiles_resolved": true,
+    "selected_features": [
+      "R1",
+      "P1"
+    ],
+    "additional_adoptions": [],
+    "additional_decode_gain_tok_s": 0,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ],
+    "review": {
+      "case": "final-performance-disposition-65571/review.private.json",
+      "bytes": 2674,
+      "sha256": "32675f1a9aae250151ae8ba9e43f9b0ec6bf3985e9a797d9eed1c38b3ce518b9"
+    },
+    "final_screens": [
+      {
+        "profile": "Up_minimum_stream",
+        "receipt": {
+          "case": "Q2-Q3-completed-Gate-owner-continuation-65531/Gate/stream-followups/Up/first-screen.private.json",
+          "bytes": 11639,
+          "sha256": "35628b58c123f00fa5c04c30c6438e219480b474eb2f597022153b20450b0f6a"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 8.971814387531557,
+            "change_percent": -14.384710806290368
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 11.445104094855894,
+            "change_percent": -5.3612897351533295
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 13.227152080312035,
+            "change_percent": -1.2230670083596684
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      },
+      {
+        "profile": "Gate_Up_minimum_stream",
+        "receipt": {
+          "case": "Q2-Gate-Up-completed-plain-continuation-65564/Gate-Up/first-screen.private.json",
+          "bytes": 11522,
+          "sha256": "43b0fef03c4e9dedb83bdf9052a03ba066ce8e428ad19119c0853f6701a35e98"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 9.005969681704336,
+            "change_percent": -14.05877724794986
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 11.877638408465462,
+            "change_percent": -1.7846958268726176
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 12.632910558901429,
+            "change_percent": -5.660708201628617
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      },
+      {
+        "profile": "Down_full_plane",
+        "receipt": {
+          "case": "Q3-Down-prebuilt-after-Gate-Up-continuation-65567/Down/full-plane-screen.private.json",
+          "bytes": 11389,
+          "sha256": "0557faddaa3c32e91320779a7f22b72863c2acd8903933c23e2375d2cbb25fa6"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 5.725339587667985,
+            "change_percent": -45.364829971114396
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 9.042587269925617,
+            "change_percent": -25.227521777829974
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 11.262401229077929,
+            "change_percent": -15.895315577005542
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      },
+      {
+        "profile": "Down_source_prefix",
+        "receipt": {
+          "case": "Q3-Down-prebuilt-after-Gate-Up-continuation-65567/Down/source-prefix-screen.private.json",
+          "bytes": 11511,
+          "sha256": "9245b7f838e4b5c33df1ef64aa2cea646a2242165d24a6710d9ce91cdae9daad"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 5.661682098499102,
+            "change_percent": -45.97229398108249
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 9.035291882338047,
+            "change_percent": -25.287846792477954
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 11.097403445614983,
+            "change_percent": -17.127476128417605
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      },
+      {
+        "profile": "Down_minimum_stream",
+        "receipt": {
+          "case": "Q3-Down-prebuilt-after-Gate-Up-continuation-65567/Down/stream-followups/Down/first-screen.private.json",
+          "bytes": 11672,
+          "sha256": "36b046dffdf9802ec5b7fce1e311b858a9f788c2efdaa68aa2deef211fe79200"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 6.390576962091249,
+            "change_percent": -39.0166725378907
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 10.984584638297548,
+            "change_percent": -9.169290698651666
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 12.224860123226023,
+            "change_percent": -8.707922771869537
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      }
+    ],
+    "minimum_stream_IO": [
+      {
+        "profile": "Up_minimum_stream",
+        "receipt": {
+          "case": "Q2-Q3-completed-Gate-owner-continuation-65531/Gate/stream-followups/Up/IO-equivalence.private.json",
+          "bytes": 8610,
+          "sha256": "651b0f1365a647c2f1e044d0e16c06f926fe0d5459119547f3ee69fe618b9d71"
+        },
+        "F32_rows": 69,
+        "vocabulary_columns": 248320,
+        "actual_streamed_groups": 1043,
+        "same_quantized_model": true,
+        "hashes_routes_tokens_bytes_exact": true,
+        "ordinary_closes_and_restores": true
+      },
+      {
+        "profile": "Gate_Up_minimum_stream",
+        "receipt": {
+          "case": "Q2-Gate-Up-completed-plain-continuation-65564/Gate-Up/IO-equivalence.private.json",
+          "bytes": 8211,
+          "sha256": "b4cca50b45072af9b856cf62e1c43d47b03c4f036fb489afeed8bfe32a2dfbc0"
+        },
+        "F32_rows": 69,
+        "vocabulary_columns": 248320,
+        "actual_streamed_groups": 1068,
+        "same_quantized_model": true,
+        "hashes_routes_tokens_bytes_exact": true,
+        "ordinary_closes_and_restores": true
+      },
+      {
+        "profile": "Down_minimum_stream",
+        "receipt": {
+          "case": "Q3-Down-prebuilt-after-Gate-Up-continuation-65567/Down/stream-followups/Down/IO-equivalence.private.json",
+          "bytes": 8944,
+          "sha256": "c6d724c45421e2ae4bd68812a53a4cd59d36daf69ebb716dd369098969063aa4"
+        },
+        "F32_rows": 69,
+        "vocabulary_columns": 248320,
+        "actual_streamed_groups": 1044,
+        "same_quantized_model": true,
+        "hashes_routes_tokens_bytes_exact": true,
+        "ordinary_closes_and_restores": true
+      }
+    ],
+    "broader_IQ2_answer_quality_qualified": false,
+    "heldout_adoption_runs_needed": false,
+    "reason_no_additional_ABBA": "Every remaining first screen was slower in all three conditions",
+    "current_SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed",
+    "canonical_rebuild_inputs": 947,
+    "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "driver_profile": "cumulative-idle",
+    "persistent_caches": false,
+    "console_idle": true,
+    "unknown_completion": false,
+    "initializer_repeated": false,
+    "PS5_cleanup": {
+      "receipt": {
+        "case": "final-PS5-artifact-retirement-65572/result.private.json",
+        "bytes": 546,
+        "sha256": "c434ee4194fab9079bf22fdeb10592ae5a864e7229f9b78dd3f0f9ca30d5fbe7"
+      },
+      "namespaces": 5,
+      "source_files": 444,
+      "source_logical_bytes": 32192794023,
+      "component_inputs": 3,
+      "component_bytes": 74416128,
+      "both_namespace_absence_confirmed": true,
+      "selected_seven_full_native_hashes_pass": true,
+      "completed_deletions_replayed": 0,
+      "known_host_check_error_corrected": true,
+      "original_selected_namespace_children_preserved": true
+    },
+    "PC_cleanup": {
+      "receipt": {
+        "case": "final-PC-artifact-retirement-65573/result.private.json",
+        "bytes": 2645885,
+        "sha256": "500f5709ccd41895222bd2d1777e22cdc6a4e5b076312b05fa6264684ac23e24"
+      },
+      "files": 7152,
+      "logical_bytes": 71543433510,
+      "protected_canonical_and_evidence_files": 694,
+      "shared_unselected_inputs": 0,
+      "selected_canonical_hashes_unchanged": true,
+      "original_BF16_sources_preserved": true,
+      "source_text_and_logs_preserved": true,
+      "duplicate_retirement": {
+        "case": "final-PC-duplicate-retirement-65575/result.private.json",
+        "bytes": 462,
+        "sha256": "0c4c1b290a4abc2a3ce49d4c9d2e6f5361ccf60841a6229969a4833b90bff581"
+      },
+      "duplicate_current_content_full_SHA256_verified": true
+    },
+    "tested_configuration_rejection_is_not_future_impossibility": true,
+    "prior_report": {
+      "case": "final-campaign-report-65574/result.private.json",
+      "bytes": 9407,
+      "sha256": "d6ceb27056cdfbb2eafcc92ef496c260f6d0c078e2f549925f1b89bae4dd7deb"
+    }
   }
 }
