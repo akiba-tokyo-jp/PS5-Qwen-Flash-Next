@@ -3,6 +3,37 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65520: The sole running console/source owner remains host18314 and
+observer functionsg10:2248; do not poll18314 separately. Gate has16 complete
+whole stores and file17 is in progress at this checkpoint. No native title,
+GPU work or initialization has started during this transfer.
+
+The new minimum-request refinement supersedes the UNEXECUTED large-request
+Up/Gate stream wrappers in the queued model-followups configuration. The
+unchanged owner accepts both537600 and460800 bytes without projection-role
+semantics.65517/65518 select460800 for an actual422400-byte IQ2 upload, reducing
+unused REQUESTED bytes115200->38400. Physical aligned bytes/rate still require
+native observation; do not claim a measured gain. The source wrapper differs
+from the retained original only in that constant and its explanatory comment.
+Each new layout passes the four group sizes, exact output canaries,24/28
+negative boundaries and an additional positive460800-byte suffix boundary.
+The Gate build reuses those completed controls; no old control/native graph
+is replayed. Four NEW minimum-size/source-accounting admission negatives pass.
+
+Up minimum observed model65519 COMPLETE, replacing unsubmitted65515. It reuses
+the compiled cache and original owner; plain observed model65514 is retained.
+New source/data transfers and PS5 calls are zero. The queued Gate follow-ups
+now reference65517 (Up),65518 (Gate-Up),65519 (observed Up). The former config
+is archived under65513/Gate-followups-before-minimum-request.private.json.
+Down65399 is unchanged and uses no wrapper. Host53796 is RETIRED exit0.
+Native69-row IO equivalence/timing remain pending for all three stream modes.
+
+Existing single-pair65384 diagnostics support prioritizing inference IO:
+retained decode grows1736.4743->2244.0216ms while whole-request producer wait
+grows443.7894->951.3900ms; exact-prefix decode grows1568.2254->1694.6523ms while
+whole-request wait grows151.2013->267.0175ms. These are nested whole-request
+source intervals, not decode-only causality or a new improvement metric.
+
 CURRENT65513: Sole source/console owner is host18314, sequential coordinator
 Q2-Q3-capacity-resolved-suffix-and-screens-65513/sequence.private.py. Gate
 suffix transfer is ACTIVE; seven whole files are now positively complete

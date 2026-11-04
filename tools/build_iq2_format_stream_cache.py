@@ -22,7 +22,9 @@ def main():
     parser.add_argument('--mode', choices=('Up', 'Gate-Up', 'Down'), required=True)
     parser.add_argument('--cache-provider-proof', type=Path)
     parser.add_argument('--wrapper-controls', type=Path)
+    parser.add_argument('--minimum-request', action='store_true', help='Request460800 bytes for IQ2 instead of537600 through the same unchanged source API')
     args = parser.parse_args()
+    need(not args.minimum_request or args.mode != 'Down', 'Down already uses its original accepted request sizes')
     baseline = load(args.cache_baseline)
     need(baseline['completed'] and baseline['baseline_provider_qualified'] and baseline['selected_object_byte_exact'] and
          not baseline['section_differences'] and record(baseline['source']['path']) == baseline['source'] and
@@ -79,7 +81,12 @@ def main():
     wrapper = None
     controls = None
     if args.mode != 'Down':
-        inputs = [record(ROOT / 'native/app/iq2_stream_overfetch.cpp'), record(ROOT / 'tests/iq2_stream_overfetch_test.cpp')]
+        stem = 'iq2_stream_minimum_request' if args.minimum_request else 'iq2_stream_overfetch'
+        inputs = [record(ROOT / ('native/app/' + stem + '.cpp')), record(ROOT / ('tests/' + stem + '_test.cpp'))]
+        if args.minimum_request:
+            from iq2_stream_minimum_request import wrapper_text
+            need(Path(inputs[0]['path']).read_text() == wrapper_text((ROOT / 'native/app/iq2_stream_overfetch.cpp').read_text()),
+                 'Only the explicit smaller accepted request may differ from the completed original wrapper')
         if args.wrapper_controls:
             old = load(args.wrapper_controls)
             need(old['completed'] and old['inputs'] == inputs and old['PS5_operations'] == 0 and
@@ -116,10 +123,15 @@ def main():
     save(args.out / 'result.private.json', dict(completed=True, mode=args.mode,
         actual_selected_PS5_ABI_compiled=True, baseline=record(args.cache_baseline), source=cache_source, artifact=cache,
         commands=commands, transform=record(ROOT / 'tools/iq2_format_stream_cache.py'),
-        unchanged_original_source_owner=owner, wrapper_source=record(ROOT / 'native/app/iq2_stream_overfetch.cpp') if wrapper else None,
+        unchanged_original_source_owner=owner, wrapper_source=inputs[0] if wrapper else None,
         wrapper=wrapper, wrapper_controls=controls, required_link_flags=['--wrap=qwen_app_try_Q2_stream'] if wrapper else [],
         original_source_accepted_request_sizes=[537600, 460800], actual_IQ2_upload_bytes=422400,
-        unused_requested_bytes_per_IQ2=115200 if wrapper else 0, whole_source_bytes_reduced_claimed=False,
+        IQ2_request_bytes=460800 if args.minimum_request else 537600 if wrapper else None,
+        minimum_accepted_request_selected=bool(args.minimum_request),
+        minimum_request_transform=record(ROOT / 'tools/iq2_stream_minimum_request.py') if args.minimum_request else None,
+        original_wrapper_source=record(ROOT / 'native/app/iq2_stream_overfetch.cpp') if args.minimum_request else None,
+        unused_requested_bytes_per_IQ2=(38400 if args.minimum_request else 115200) if wrapper else 0,
+        whole_source_bytes_reduced_claimed=False,
         source_leases=4, existing_scratch_bytes=8 << 20, new_workers=0, new_GPU_buffers=0,
         original_source_range_EOF_identity_overlap_and_completion_checks_unchanged=True,
         completed_streamed_Experts_skipped_in_generic_loop=True, adjacent_generic_fallback_preserved=True,

@@ -1430,5 +1430,22 @@
     ],
     "model_readiness_pages": 7374,
     "stream_followups_run_under_existing_sequential_owner": true
+  },
+  "latest_checkpoint_65520": {
+    "minimum_request_providers": [
+      65517,
+      65518
+    ],
+    "Up_observed_model": 65519,
+    "larger_request_model65515_never_executed": true,
+    "IQ2_upload_bytes": 422400,
+    "accepted_request_bytes": 460800,
+    "unused_requested_bytes_per_IQ2": 38400,
+    "new_minimum_admission_negatives": 4,
+    "old_native_graphs_replayed": 0,
+    "new_weight_transfers": 0,
+    "PS5_calls": 0,
+    "native_IO_and_speed_pending": true,
+    "primary_metric_unchanged": true
   }
 }

@@ -35,13 +35,24 @@ def require_compiled_stream(row, mode):
         for key in ('wrapper', 'wrapper_source', 'wrapper_controls'):
             need(record(proof[key]['path']) == proof[key], 'The exact format-request wrapper inputs changed')
         controls = load(proof['wrapper_controls']['path'])
-        need(controls['completed'] and controls['PS5_operations'] == 0 and
+        request = proof.get('IQ2_request_bytes', 537600)
+        need(request in (460800, 537600) and controls['completed'] and controls['PS5_operations'] == 0 and
              {r['layout'] for r in controls['results']} == {1, 2} and
              all(r['completed'] and r['positives'] == 4 and r['destination_canaries_exact'] for r in controls['results']) and
-             proof['actual_IQ2_upload_bytes'] == 422400 and proof['unused_requested_bytes_per_IQ2'] == 115200,
+             proof['actual_IQ2_upload_bytes'] == 422400 and proof['unused_requested_bytes_per_IQ2'] == request - 422400,
              'The exact completed wrapper controls and explicit overfetch accounting are required')
         for item in controls['inputs']:
             need(record(item['path']) == item, 'A wrapper boundary control input changed')
+        if request == 460800:
+            from iq2_stream_minimum_request import wrapper_text
+            need(proof['minimum_accepted_request_selected'] and
+                 all(r['minimum_accepted_suffix_boundary_passed'] for r in controls['results']),
+                 'Both new layouts must positively exercise the smaller accepted suffix boundary')
+            for key in ('minimum_request_transform', 'original_wrapper_source'):
+                need(record(proof[key]['path']) == proof[key], 'A minimum-request source input changed')
+            need(Path(proof['wrapper_source']['path']).read_text() ==
+                 wrapper_text(Path(proof['original_wrapper_source']['path']).read_text()),
+                 'The new wrapper may change only the explicit request size and explanatory comment')
     else:
         need(proof['wrapper'] is None and proof['unused_requested_bytes_per_IQ2'] == 0, 'Down must use the unchanged accepted source requests')
     return proof

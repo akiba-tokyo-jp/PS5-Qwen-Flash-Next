@@ -28,6 +28,7 @@ def main():
     a.out.mkdir(parents=True, exist_ok=False)
     frozen = [record(ROOT / 'tools' / name) for name in (
         'build_iq2_up_model.py', 'iq2_up_model_scope.py', 'iq2_format_stream_scope.py', 'iq2_format_stream_cache.py',
+        'iq2_stream_minimum_request.py',
         'relink_retained_current.py', 'analyze_iq2_stream_equivalence.py', 'run_successful_headless_audit.py',
         'run_successful_model_case.py', 'close_successful_current_model.py', 'success_case_control.py',
         'retire_published_iq2_source_cache.py', 'analyze_iq2_pair_screen.py', 'analyze_headless_decode_sequence.py',
