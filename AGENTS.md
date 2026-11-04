@@ -3,6 +3,25 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65521: Host18314 / observerg10:2248 remains the sole console owner.
+Gate has29 whole stores complete, file30 in progress. Do not poll18314 outside
+the existing observer. Latest user asked to continue after a brief status:
+current deployment is R1+P1; P1 increment over R1 is cold10.162065->10.436816,
+retained12.094066->12.172570, exact-prefix13.264824->13.217511 tok/s (prefix
+gain unestablished). No additional IQ2 speedup has been qualified yet.
+
+Remaining main/stream native cases now pass the EXISTING --quiet-seconds35.
+Recorded completed cases65407/65388 were collected35.297/34.851 seconds after
+launch-helper completion, with nine observations each. The finite quiet
+window reduces repeated observation during the workload; metric/readiness,
+positive completion and ordinary-close requirements stay unchanged. A first
+screen against the older polled control is provisional; fresh matched ABBA
+uses the same quiet policy for both arms before any adoption. This is a PC
+review of saved timestamps, not a replay or new PS5 result.
+The follow-up runner also records a known counting/finite negative only after
+positive ordinary restoration, then continues independent profiles. Unknown
+completion still stops; never treat that as a recoverable quality negative.
+
 CURRENT65520: The sole running console/source owner remains host18314 and
 observer functionsg10:2248; do not poll18314 separately. Gate has16 complete
 whole stores and file17 is in progress at this checkpoint. No native title,

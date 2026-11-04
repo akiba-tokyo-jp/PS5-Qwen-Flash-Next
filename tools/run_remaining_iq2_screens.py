@@ -57,7 +57,8 @@ def main():
     args.out.mkdir(parents=True, exist_ok=False)
     save(args.out / 'intent.private.json', dict(role=args.role, preparation=record(args.preparation),
         publication_directory=str(args.publication), baseline=baseline, tools=frozen,
-        native_profiles=2, readiness_pages=7374, automatic_retries=0, initializer_requests=0,
+        native_profiles=2, readiness_pages=7374, initial_native_collection_quiet_seconds=35,
+        automatic_retries=0, initializer_requests=0,
         matched_control_and_quality_required_before_adoption=True, production_adoption=False))
 
     def idle():
@@ -152,7 +153,7 @@ def main():
         case = args.out / (variant + '-case')
         run('run_successful_headless_audit.py', common + ['--package', package, '--model-proof', args.model_proof,
             '--direct-staging-proof', args.direct_staging_proof, '--native-VM-proof', args.native_VM_proof,
-            '--readiness-pages', '7374', '--out', case], variant + '-native')
+            '--readiness-pages', '7374', '--quiet-seconds', '35', '--out', case], variant + '-native')
         idle()
         returned_case = load(case / 'result.private.json')
         if not returned_case['all_counting_and_finite_checks']:

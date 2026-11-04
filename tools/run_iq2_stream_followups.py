@@ -44,7 +44,8 @@ def main():
     (a.out / 'cache-pools.private.json').write_text(json.dumps(pools, indent=2) + '\n', encoding='utf-8')
     save(a.out / 'intent.private.json', dict(tools=frozen, profiles=config['profiles'],
         changed_source_cache_pools=pools, primary_metric='(generated_tokens-1)*1000/decode_ms',
-        unchanged_readiness_pages=7374, negative_screens_not_replayed=True, production_adoption=False))
+        unchanged_readiness_pages=7374, initial_native_collection_quiet_seconds=35,
+        negative_screens_not_replayed=True, production_adoption=False))
 
     def idle():
         s = load(a.current / 'active-console.private.json')
@@ -83,7 +84,7 @@ def main():
 
     common = ['--workspace', a.workspace, '--current', a.current, '--mount-plan', a.mount_plan]
     native = common + ['--model-proof', a.model_proof, '--direct-staging-proof', a.direct_staging_proof,
-                      '--native-VM-proof', a.native_VM_proof, '--readiness-pages', '7374']
+                      '--native-VM-proof', a.native_VM_proof, '--readiness-pages', '7374', '--quiet-seconds', '35']
     serial = 0
 
     def capacity(label):

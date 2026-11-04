@@ -69,6 +69,14 @@ An ordinarily closed counting/finite negative is recorded without timing and
 the next independent profile proceeds. Unknown owner completion still stops
 the sequence; it never authorizes another native operation.
 
+Completed Up cases65407/65388 were collected35.297/34.851 seconds after their
+launch helpers, with nine observations each. Remaining model cases use the
+existing35-second host-quiet option before initial collection. This reduces
+repeated observation traffic during the finite workload without changing its
+metric, source, arithmetic, readiness or positive-close requirements. A first
+screen against the older control remains provisional; any adoption needs a
+fresh matched control using the same observation policy on both sides.
+
 Every changed native scope keeps fresh7374-page admission, positive owner
 completion and exact P1 restoration. Cache retirement uses only unscanned
 windows, recorded in a shared ledger. Its16384-page target is optional headroom,
