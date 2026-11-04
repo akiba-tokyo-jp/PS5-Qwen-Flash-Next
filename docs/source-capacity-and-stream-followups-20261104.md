@@ -45,10 +45,17 @@ remain pending.
 
 The minimum-request host controls separately exercise both layouts, all four
 group sizes, exact destination canaries,24/28 negative boundaries and a newly
-accepted460800-byte available suffix. Gate reuses the completed Up control
+accepted460800-byte logical suffix. Physical read extents still round to16KiB
+and must fit the backing file; insufficient physical padding still refuses
+before any callback. Gate reuses the completed Up control
 matrix. Four new malformed minimum-size/accounting/source bindings refuse.
 The original larger-request prototypes were never executed on PS5; changing
 them before the first native comparison avoids extra model runs and transfers.
+Supplement65523 tests those two bounds separately at four aligned source
+offsets: eight new positives and ten new EOF/range negatives across both
+layouts, with exact destination canaries. The old wrapper matrix and native
+graphs are not repeated; the runtime wrapper, cache and native builds stay
+unchanged. These are PC boundary controls, not native IO/speed evidence.
 
 Existing65384 single-pair data also supports prioritizing this IO refinement.
 Retained decode increases1736.4743->2244.0216ms, while whole-request producer

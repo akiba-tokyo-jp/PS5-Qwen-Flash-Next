@@ -34,6 +34,16 @@ def main():
         'retire_published_iq2_source_cache.py', 'analyze_iq2_pair_screen.py', 'analyze_headless_decode_sequence.py',
         'build_iq2_heldout_quality.py', 'analyze_iq2_heldout_quality.py')]
     frozen += [record(a.config), record(Path(__file__))]
+    if config.get('minimum_request_alignment_control'):
+        path = Path(config['minimum_request_alignment_control'])
+        control = load(path)
+        need(control['completed'] and control['PS5_operations'] == control['old_wrapper_controls_replayed'] == 0 and
+             {r['layout'] for r in control['results']} == {1, 2} and
+             all(r['new_alignment_positives'] == 4 and r['new_EOF_negatives'] == 5 and
+                 r['logical_and_physical_bounds_separate'] and r['destination_canaries_exact'] for r in control['results']) and
+             all(load(item['compiled_stream'])['wrapper_source'] == control['inputs'][0] for item in config['profiles']),
+             'The supplementary logical/rounded-physical bounds must match both actual minimum-request wrappers')
+        frozen += [record(path), *control['inputs']]
     pools = config['cache_pools']
     if config.get('fallback_cache_pools_from'):
         prior = Path(config['fallback_cache_pools_from'])

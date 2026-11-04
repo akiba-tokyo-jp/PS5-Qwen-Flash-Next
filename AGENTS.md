@@ -3,6 +3,18 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65523: Host18314/observerg10:2248 still solely owns console IO. Gate40
+whole stores are complete and file41 is progressing. No extra console probe
+or native model operation was made for this checkpoint.
+Supplementary PC controls65523 distinguish logical460800-byte availability
+from the16KiB-rounded physical extent, which must independently fit the file.
+Both new layouts pass four offset positives and five EOF/range negatives each,
+with exact destination canaries and no callback before failed admission.
+The original wrapper-control matrix/native graphs were NOT replayed. Runtime
+wrapper/cache/native artifacts and weights are unchanged;65519 stays current.
+Gate's future config now binds the supplementary proof before either minimum
+wrapper runs. Host47464 is RETIRED exit0. Native IO/speed remain PENDING.
+
 CURRENT65521: Host18314 / observerg10:2248 remains the sole console owner.
 Gate has29 whole stores complete, file30 in progress. Do not poll18314 outside
 the existing observer. Latest user asked to continue after a brief status:
