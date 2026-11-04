@@ -1,5 +1,10 @@
 # Original-model transfer preparation
 
+**Scope:** original-checkpoint preparation and transport contracts. These are
+not a complete deployment recipe for later quantized runtime profiles. See
+[getting started](getting-started.md) and [current status](project-status.md).
+No dated transfer receipt supplies fresh console admission.
+
 The complete original checkpoint must finish SHA verification, bounded BF16
 conversion, independent full-payload auditing and every final GGUF hash before
 `tools/plan_model_transfer.py` can produce an offline plan. It compiles and uses

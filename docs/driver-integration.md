@@ -1,4 +1,23 @@
-# Latest shared-driver integration
+# Driver integration and provenance
+
+## Source/profile selection and historical provenance
+
+The qualified application lineage selects PS5-Vulkan-Inference revision
+`872cc1264ad8ba5d6b888b092968fa5858a38c58`, profile `cumulative-idle`, with
+persistent shader/pipeline caches disabled. See [current status](project-status.md)
+and [architecture](architecture.md). Driver builds must retain their exact source,
+profile, application allocator integration and relink provenance.
+
+The generic archive below is an original build input, not a stand-alone recipe
+for the privately retained selected application. Later native generation and
+performance evidence supersede the old initial-admission status; the latest
+console close/restoration is nevertheless unresolved.
+
+## Historical 2026-10-22 integration record
+
+The remainder preserves that dated build and its then-current restrictions.
+Its artifact paths and early runtime failures are historical scope, not portable
+quick-start commands or the latest device state.
 
 Current restriction: console execution and deployment are disabled. The generic
 profile archive below is valid as a shared-driver build, but its generic
