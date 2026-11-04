@@ -79,7 +79,8 @@ fresh matched control using the same observation policy on both sides.
 
 Every changed native scope keeps fresh7374-page admission, positive owner
 completion and exact P1 restoration. Cache retirement uses only unscanned
-windows, recorded in a shared ledger. Its16384-page target is optional headroom,
+windows, recorded in a shared ledger, including the five remaining final-four
+Up windows after the exact11-window65371/65375 prefix. Its16384-page target is optional headroom,
 not a new model launch threshold. The driver remains
 `872cc1264ad8ba5d6b888b092968fa5858a38c58` / `cumulative-idle`, with persistent
 shader/pipeline caches disabled. Initialization63121 remains consumed; no

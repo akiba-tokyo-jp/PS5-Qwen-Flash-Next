@@ -21,6 +21,10 @@ review of saved timestamps, not a replay or new PS5 result.
 The follow-up runner also records a known counting/finite negative only after
 positive ordinary restoration, then continues independent profiles. Unknown
 completion still stops; never treat that as a recoverable quality negative.
+The optional capacity pools also include only the five UNscanned final-four
+Up windows. Preserve the exact65371->65375 completed prefix (11/16 consumed).
+The Up-final4 selector uses the existing default CLI scope, with no role flag;
+Gate/Down inherit the shared pool ledger and must never rescan those11 windows.
 
 CURRENT65520: The sole running console/source owner remains host18314 and
 observer functionsg10:2248; do not poll18314 separately. Gate has16 complete

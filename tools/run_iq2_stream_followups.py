@@ -41,6 +41,8 @@ def main():
         frozen.append(record(prior))
     initial = load(a.initial_cache_scopes)
     pools[0]['completed_scopes'] = initial + pools[0].get('completed_scopes', [])
+    need(all(pool['scope'] in ('Gate48', 'Down48', 'Up-prefix', 'Up-final4') for pool in pools),
+         'Only the exact positively sealed new source pools are eligible')
     (a.out / 'cache-pools.private.json').write_text(json.dumps(pools, indent=2) + '\n', encoding='utf-8')
     save(a.out / 'intent.private.json', dict(tools=frozen, profiles=config['profiles'],
         changed_source_cache_pools=pools, primary_metric='(generated_tokens-1)*1000/decode_ms',
@@ -98,8 +100,10 @@ def main():
             for _ in range(8):
                 out = a.out / ('cache-' + str(serial))
                 serial += 1
-                flags = common + ['--publication', pool['publication'], '--' + pool['scope'],
+                flags = common + ['--publication', pool['publication'],
                                  '--target-free-pages', '16384', '--out', out, '--execute']
+                if pool['scope'] != 'Up-final4':
+                    flags += ['--' + pool['scope']]
                 for completed in done:
                     flags += ['--completed-scope', completed]
                 run('retire_published_iq2_source_cache.py', flags, label + '-cache-' + str(serial), 300)
