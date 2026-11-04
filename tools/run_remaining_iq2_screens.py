@@ -98,7 +98,7 @@ def main():
              not state.get('source_publication_owner') and not state.get('CPU_source_seal_owner'),
              'Positive ordinary restoration and fresh retained-device capacity readmission must precede the next scope')
 
-    def run(name, flags, label, timeout=1800):
+    def run(name, flags, label, timeout=1800, prelaunch_out=None):
         need(all(record(row['path']) == row for row in frozen), 'A queued input changed; stop before the next scope')
         command = [sys.executable, '-B', str(ROOT / 'tools' / name), *map(str, flags)]
         save(args.out / (label + '-command.private.json'), dict(command=command, automatic_retries=0))
@@ -130,7 +130,20 @@ def main():
                         local_log_progress=progress, additional_PS5_probes=0)), flush=True)
                     notice = now + 30
                 time.sleep(1)
+        if child.returncode != 0 and prelaunch_out is not None:
+            path = prelaunch_out / 'VM-before/result.private.json'
+            if path.exists() and not (prelaunch_out / 'case').exists():
+                refusal = load(path)
+                need(refusal['completed'] and not refusal['may_launch'] and
+                     refusal['selected_readiness_pages'] == 7374,
+                     'Only a readiness-only refusal before staging may advance to a distinct cache scope')
+                idle()
+                save(prelaunch_out / 'readiness-only-refusal.private.json', dict(completed=True,
+                    observation=record(path), title_launches=0, source_publications=0,
+                    changed_cache_scope_required_before_next_admission=True))
+                return False
         need(child.returncode == 0, 'Stop without retry; inspect ' + str(log))
+        return True
 
     common = ['--workspace', args.workspace, '--current', args.current, '--mount-plan', args.mount_plan]
     idle()
@@ -152,20 +165,25 @@ def main():
              intent['boot'] == load(args.current / 'active-console.private.json')['current_boot'],
              'Only the exact same-boot positive source-cache prefix may be retained')
         first += value['observations']['scanned']
-    for index in range(8):
-        if cache_scopes and (value['observations']['free_after'] >= 16384 or value['remaining_windows'] == 0):
-            need(value['observations']['free_after'] >= 7374, 'The preserved prefix cannot replace model readiness')
-            break
-        out = args.out / ('source-cache-' + str(index))
+    def retire_cache():
+        out = args.out / ('source-cache-' + str(len(cache_scopes)))
         flags = common + ['--publication', publication_result, '--' + args.role + '48',
                           '--target-free-pages', '16384', '--out', out, '--execute']
         for completed in cache_scopes:
             flags += ['--completed-scope', completed]
-        run('retire_published_iq2_source_cache.py', flags, 'source-cache-' + str(index), 300)
+        run('retire_published_iq2_source_cache.py', flags, out.name, 300)
         result_path = out / 'result.private.json'
-        value = load(result_path)
-        need(value['completed'] and value['all_mappings_and_FDs_positively_retired'], 'The exact source-cache window must retire')
+        result = load(result_path)
+        need(result['completed'] and result['all_mappings_and_FDs_positively_retired'],
+             'The exact source-cache window must retire')
         cache_scopes.append(result_path)
+        return result
+
+    for index in range(8):
+        if cache_scopes and (value['observations']['free_after'] >= 16384 or value['remaining_windows'] == 0):
+            need(value['observations']['free_after'] >= 7374, 'The preserved prefix cannot replace model readiness')
+            break
+        value = retire_cache()
         if value['observations']['free_after'] >= 16384:
             break
         if value['remaining_windows'] == 0:
@@ -198,9 +216,20 @@ def main():
             run('build_iq2_up_model.py', flags, variant + '-build')
             package = package_root / 'candidate/SELF/result.private.json'
         case = args.out / (variant + '-case')
-        run('run_successful_headless_audit.py', common + ['--package', package, '--model-proof', args.model_proof,
+        native_flags = common + ['--package', package, '--model-proof', args.model_proof,
             '--direct-staging-proof', args.direct_staging_proof, '--native-VM-proof', args.native_VM_proof,
-            '--readiness-pages', '7374', '--quiet-seconds', '35', '--out', case], variant + '-native')
+            '--readiness-pages', '7374', '--quiet-seconds', '35']
+        if not run('run_successful_headless_audit.py', native_flags + ['--out', case],
+                   variant + '-native', prelaunch_out=case):
+            for _ in range(8):
+                need(value['remaining_windows'] > 0, 'Never replay an exhausted source-cache pool')
+                value = retire_cache()
+                if value['observations']['free_after'] >= 7374:
+                    break
+            else:
+                need(False, 'No distinct cache scope returned enough capacity; do not query readiness again')
+            case = case.with_name(case.name + '-after-distinct-cache')
+            run('run_successful_headless_audit.py', native_flags + ['--out', case], variant + '-native-after-distinct-cache')
         idle()
         returned_case = load(case / 'result.private.json')
         if not returned_case['all_counting_and_finite_checks']:

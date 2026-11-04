@@ -1447,5 +1447,96 @@
     "PS5_calls": 0,
     "native_IO_and_speed_pending": true,
     "primary_metric_unchanged": true
+  },
+  "latest_checkpoint_65530": {
+    "Gate_source_files_positively_sealed": 124,
+    "Gate_layer_files": 48,
+    "complete_startup_policy_bytes": 1010366,
+    "unchanged_native_policy_limit_bytes": 1048576,
+    "host_preflight_correction_PS5_operations": 0,
+    "Gate_MMVQ_off": {
+      "status": "completed_single_screen_all_conditions_slower_not_adopted",
+      "control_tok_s": [
+        10.479219859004738,
+        12.093470064022155,
+        13.390932153594475
+      ],
+      "candidate_tok_s": [
+        7.986276379574362,
+        9.982410251554805,
+        11.722984378489047
+      ],
+      "change_percent": [
+        -23.7893995256546,
+        -17.4561957923699,
+        -12.45580035783923
+      ],
+      "tokens_and_bytes_exact": true,
+      "ordinary_close_and_exact_P1_restoration": true,
+      "native_case_replayed": false
+    },
+    "Gate_MMVQ_on": {
+      "readiness_only_refusal_free_pages": 5565,
+      "pre_refusal_title_launches": 0,
+      "pre_refusal_source_publications": 0,
+      "existing_build_reused": true,
+      "changed_cache_starting_window": 1,
+      "changed_cache_windows": 21,
+      "changed_cache_free_after": 10403,
+      "remaining_Gate_windows": 170
+    },
+    "model_readiness_pages": 7374,
+    "new_PC_readiness_dispatch_control": 65529,
+    "new_PS5_coordinator": 65530,
+    "stream_IO_and_remaining_rates_pending": true,
+    "production_adopted": false,
+    "production_remains": "R1+P1",
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ]
+  },
+  "latest_checkpoint_65531": {
+    "Gate_original_profiles_complete": true,
+    "Gate_MMVQ_on": {
+      "status": "completed_single_screen_all_conditions_slower_not_adopted",
+      "control_tok_s": [
+        10.479219859004738,
+        12.093470064022155,
+        13.390932153594475
+      ],
+      "candidate_tok_s": [
+        8.009479605084191,
+        10.003725616130831,
+        11.633629356733199
+      ],
+      "change_percent": [
+        -23.56797821927853,
+        -17.279940635965797,
+        -13.12308043013698
+      ],
+      "tokens_and_bytes_exact": true,
+      "ordinary_close_and_exact_P1_restoration": true,
+      "accepted_title_launches": 1,
+      "existing_case_collected_without_relaunch": true
+    },
+    "supervisor65530_terminated_after_duplicate_owner_receipt": true,
+    "existing_case_collector": 69318,
+    "collector_exit_code": 0,
+    "per_phase_owner_receipts_checked_before_dispatch": true,
+    "new_PS5_coordinator": 65531,
+    "Gate_cache_windows_consumed": 22,
+    "Gate_cache_windows_remaining": 170,
+    "Up_plain_stream_native_IO_in_progress": true,
+    "Down_pending": true,
+    "production_remains": "R1+P1",
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ]
   }
 }

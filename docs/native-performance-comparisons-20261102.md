@@ -19,18 +19,22 @@ other candidates retain their stated limits.
 
 ## Current implementation and remaining work
 
-Checkpoint65513 supersedes the active-owner statements below. Gate placement
-stopped for disk capacity before native sealing. Corrected cleanup65511
-positively reclaimed52 unused original BF16 chunks while preserving all live
-and prepared sources and authenticated PC originals. The suffix coordinator
-now preserves six completed stores and transfers only the remaining files.
-Observed Up IO packages65514/65515 are built PC-only; new streamed Up/Gate/Down
-follow-ups are queued under that same owner. Native IO equality and speed are
-pending. See [capacity and inference follow-ups](source-capacity-and-stream-followups-20261104.md)
-for the exact evidence and unchanged three-condition metric. The older
-checkpoints retain their original limits and are historical ownership records.
+Checkpoint65531 supersedes the active-owner statements below. All124 Gate
+files are positively sealed. Its first MMVQ-off screen is7.986276/9.982410/
+11.722984 tok/s (cold/retained/exact-prefix), below recorded P1 control
+10.479220/12.093470/13.390932 in all three conditions. Exact tokens/bytes,
+ordinary close and exact P1 restoration pass; this version is not replayed.
+MMVQ-on is also slower:8.009480/10.003726/11.633629 tok/s, with exact outputs,
+ordinary close and exact restoration. Both original Gate screens are complete.
+Complete compact startup JSON fits the unchanged1MiB bound. A separate
+MMVQ-on readiness refusal before staging/launch is continued only after
+unscanned Gate cache windows return10403 pages, above unchanged7374 admission.
+The existing build, completed screen and source/cache prefixes are retained.
+Native stream IO and remaining Gate/Down rates are pending; R1+P1 remains
+production. See [capacity and inference follow-ups](source-capacity-and-stream-followups-20261104.md).
+All older checkpoints retain their limits and historical ownership records.
 
-Current checkpoint65396: corrected Down GPU65394 passes all12 new graphs,
+Historical checkpoint65396: corrected Down GPU65394 passes all12 new graphs,
 zero mismatches,all canaries exact,maximum F64-reference error5.9842750488e-7.
 It ordinarily exits and exactly restores P1. Fresh CPU capacity65395 then
 passes with12262047744 bytes available before/after,above12184453120 baseline,

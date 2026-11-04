@@ -3,6 +3,46 @@
 Write project documentation, diagrams, code comments and program messages in English.
 Keep conversation in the owner's preferred language.
 
+CURRENT65531: Sole console owner is host97461 / observerg10:2340, coordinator
+Q2-Q3-completed-Gate-owner-continuation-65531/sequence.private.py. All previous
+hosts/observers are RETIRED, including69318 collector andg10:2337. Both original
+Gate screens COMPLETE, all22 tokens/bytes exact, ordinary close/exact P1 restore.
+MMVQ-on rates8.009480/10.003726/11.633629 versus10.479220/12.093470/13.390932,
+changes-23.567978/-17.279941/-13.123080 percent. Both slower profiles are not
+adopted/replayed. Up plain69-row observed case is now active under the new
+stream follow-up owner, using prebuilt65514; stream uses minimum model65519.
+65530 supervisor stopped on exclusive reuse of host-owner.private.json AFTER
+spawning startup child18900. That SAME child positively accepted app32792,
+run a4750e1a079fc163549068ab994d919b. Collector69318 used--collect, completed
+the SAME three requests and exactly restored P1; no publication/title retry.
+65531 uses distinct per-phase owner files and checks absence BEFORE dispatch.
+Gate cache prefix is STILL22/192 consumed: original65513/source-cache0 plus
+65530/Gate/source-cache1 (starting1,scanned21,remaining170). Preserve both.
+Down inherits65531/Gate/stream-followups/cache-pools.private.json. Do not poll
+97461 separately or edit frozen runtime/tool/config inputs. Remaining IO/rate
+work is pending; R1+P1 remains production. No initializer or recovery replay.
+
+CURRENT65530: Sole console owner is host76307 / observerg10:2328, coordinator
+Q2-Q3-Gate-readiness-prefix-continuation-65530/sequence.private.py. Host47000
+and observerg10:2316 are RETIRED. Gate MMVQ-off completed all three requests,
+exact22 tokens/bytes, ordinary close and exact P1 restoration. First-screen
+rates are7.986276/9.982410/11.722984 tok/s versus recorded P1 control
+10.479220/12.093470/13.390932 (-23.789400/-17.456196/-12.455800 percent).
+This clearly slower version is not replayed or adopted. MMVQ-on was built but
+its readiness-only check refused5565<7374 before any staging/title launch.
+65530 retires only UNscanned Gate cache windows after the completed first
+window, requires returned free>=7374 before ONE changed-state admission, then
+runs the exact existing MMVQ-on package and the queued stream/Down stages.
+65529 is a new PC-only dispatch control: no child/PS5 operation, and no new
+readiness query before a distinct cache scope. Main Down screens now follow
+the same bounded readiness-only continuation as stream cases. All current
+tool freezes apply; do not poll76307 separately or rerun initializers.
+Gate-cache1 is now COMPLETE: starting_window1,scanned21,remaining170,
+resident5856->0,free4548->10403. Together with originalcache0 this consumes
+22/192 windows; pass BOTH positive scope receipts to every later Gate pool.
+The current native phase is the existing MMVQ-on model at the changed-state
+case path; do not rebuild it or replay MMVQ-off.
+
 CURRENT65528: Sole console owner is host47000 / observerg10:2316, coordinator
 Q2-Q3-compact-policy-continuation-65528/sequence.private.py. Host18314 and
 observersg10:2248/g10:2300 are RETIRED. Gate source65390 is fully sealed;

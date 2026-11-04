@@ -4,6 +4,47 @@ The primary metric remains `(generated_tokens-1)*1000/decode_ms`, reported
 separately for cold, retained and exact-prefix requests. No IQ2 production
 adoption or speed gain is established by this checkpoint.
 
+Checkpoint65531: all124 Gate files, including all48 large layer files, are
+placed and positively sealed through whole physical/alias SHA256, EOF and
+parent identities. No completed source payload was retransmitted. The first
+full Gate-Up MMVQ-off/on screens complete all three requests with exact22
+tokens and bytes, ordinary close and exact seven-file P1 restoration:
+
+| Condition | Recorded P1 control tok/s | Gate-Up MMVQ-off tok/s | Change |
+| --- | ---: | ---: | ---: |
+| cold | 10.479220 | 7.986276 | -23.789400% |
+| retained | 12.093470 | 9.982410 | -17.456196% |
+| exact-prefix | 13.390932 | 11.722984 | -12.455800% |
+
+The independent MMVQ-on screen is8.009480/10.003726/11.633629 tok/s, changes
+-23.567978/-17.279941/-13.123080 percent in the same three conditions.
+
+This is one screen per arm, not matched means or a speedup qualification.
+The clearly slower version is not replayed or adopted. Its first host-only
+startup preflight had stopped before any publication/launch because pretty
+JSON occupied1063907 bytes. Compact serialization preserves every field and
+value while fitting1010366 bytes under the UNCHANGED1048576-byte native bound;
+actual PC startup preparation passes in65526.
+
+The built MMVQ-on variant subsequently refused BEFORE staging/launch at5565
+free pages versus the unchanged7374-page admission. Coordinator65530 resumes
+only unscanned Gate source-cache windows after the first completed window.
+The next21 windows retire positively (5856 resident pages, no source writes,
+all mappings/FDs retired), with10403 free pages returned and170/192 windows
+remaining. Only this changed state admits a new startup attempt. The existing
+MMVQ-on build and completed MMVQ-off screen are retained. Main Down screens
+now use the same finite readiness-only continuation as stream follow-ups;
+unknown completion never permits a retry. Stream native IO and all remaining
+rates are still pending. Production remains R1+P1.
+
+Supervisor65530 stopped after spawning the second startup child because its
+exclusive owner-log filename was reused. The SAME startup child completed
+one accepted launch (app32792). Collector69318 used `--collect`, completed
+the existing three-request case and ordinarily restored all seven files;
+no publication or title launch was repeated. Supervisor65531 now uses
+distinct per-phase owner receipts and checks absence before dispatch. It
+continues the Up/Gate-Up streaming follow-ups and then Down under one owner.
+
 The Gate source writer stopped during file7 with `550 No space left on
 device`. Its first six positive whole stores remain reusable. No native sealer,
 title or GPU operation had started. The exact146735104-byte partial file was
