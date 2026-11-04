@@ -87,7 +87,6 @@ def main():
 
     def capacity(label):
         nonlocal serial
-        changed = False
         # Each finite scope advances to unscanned windows. This is a soft cache
         # target; the subsequent title still needs its own fresh7374-page guard.
         for pool in pools:
@@ -105,24 +104,22 @@ def main():
                 path = out / 'result.private.json'
                 result = load(path)
                 need(result['completed'] and result['all_mappings_and_FDs_positively_retired'], 'The changed source window must retire')
-                changed |= result['observations']['resident'] > result['observations']['remaining']
                 done.append(str(path))
                 (a.out / 'cache-pools.private.json').write_text(json.dumps(pools, indent=2) + '\n', encoding='utf-8')
                 if result['observations']['free_after'] >= 7374:
-                    return changed
+                    return True
                 if result['remaining_windows'] == 0:
                     break
-        # Exhausting an optional retirement pool does not reject an otherwise
-        # ready model. The next operation still measures the original floor.
+        # Insufficient returned capacity cannot justify another admission query.
         print(json.dumps(dict(phase=label, distinct_cache_pool_allowance_ended=True,
-            model_admission='fresh unchanged7374-page gate', cache_windows_replayed=0)), flush=True)
-        return changed
+            model_admission=False, readiness_pages=7374, cache_windows_replayed=0)), flush=True)
+        return False
 
     def case(package, root, label):
         idle()
         if not run('run_successful_headless_audit.py', native + ['--package', package, '--out', root],
                    label, prelaunch_out=root):
-            need(capacity(label), 'No application-owned source pages were freed; never repeat the unchanged refused admission')
+            need(capacity(label), 'No distinct cache scope returned adequate capacity; never repeat the refused admission unchanged')
             root = root.with_name(root.name + '-after-distinct-cache')
             run('run_successful_headless_audit.py', native + ['--package', package, '--out', root], label + '-after-distinct-cache')
         idle()
