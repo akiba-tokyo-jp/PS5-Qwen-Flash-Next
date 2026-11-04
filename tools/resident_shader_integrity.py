@@ -8,27 +8,7 @@ from shader_storage import record
 ROOT=Path(__file__).resolve().parents[1]
 
 
-def build(parent,out,parent_receipt=None):
-    out=Path(out);out.mkdir()
-    names=('shader_file.h','shader_file_native.h','shader_file.cpp','shader_file_session.cpp')
-    originals={name:ROOT/'native/app'/name for name in names}
-    for path in originals.values():
-        expected=next(r for r in parent['inputs_before']+parent['application_sources']+parent['application_headers']if Path(r['path'])==path)
-        if record(path)!=expected:raise ValueError('Original shader session input changed')
-    (out/'shader_file.h').write_bytes(originals['shader_file.h'].read_bytes())
-    (out/'shader_file_native.h').write_bytes(originals['shader_file_native.h'].read_bytes())
-    file_source=originals['shader_file.cpp'].read_text()
-    declaration='extern "C" bool qwen_app_try_same_launch_shader_integrity(std::uint64_t,const unsigned char*,const std::uint64_t*);\n'
-    file_source=file_source.replace('#include "shader_file.h"','#include "shader_file.h"\n'+declaration,1)
-    anchor='unchanged();sha256_t hash;sha256_init(&hash);'
-    if file_source.count(anchor)!=1:raise ValueError('Unique original shader file SHA verification boundary required')
-    file_source=file_source.replace(anchor,'''unchanged();
-        if(qwen_app_try_same_launch_shader_integrity(file_bytes_,expected.data(),sealed_.data())) {
-            unchanged();stats_.verified=true;return;
-        }
-        sha256_t hash;sha256_init(&hash);''')
-    (out/'shader_file.cpp').write_text(file_source,newline='\n')
-    session=originals['shader_file_session.cpp'].read_text()
+def session_source(session):
     anchor='TrackedOps source;';assert session.count(anchor)==1
     session=session.replace(anchor,anchor+'''
 bool resident_integrity_ready=false;
@@ -58,7 +38,30 @@ extern "C" bool qwen_app_try_same_launch_shader_integrity(std::uint64_t bytes,
     return true;
 }
 '''
-    session=session.replace(anchor,setter+'\n'+anchor)
+    return session.replace(anchor,setter+'\n'+anchor)
+
+
+def build(parent,out,parent_receipt=None):
+    out=Path(out);out.mkdir()
+    names=('shader_file.h','shader_file_native.h','shader_file.cpp','shader_file_session.cpp')
+    originals={name:ROOT/'native/app'/name for name in names}
+    for path in originals.values():
+        expected=next(r for r in parent['inputs_before']+parent['application_sources']+parent['application_headers']if Path(r['path'])==path)
+        if record(path)!=expected:raise ValueError('Original shader session input changed')
+    (out/'shader_file.h').write_bytes(originals['shader_file.h'].read_bytes())
+    (out/'shader_file_native.h').write_bytes(originals['shader_file_native.h'].read_bytes())
+    file_source=originals['shader_file.cpp'].read_text()
+    declaration='extern "C" bool qwen_app_try_same_launch_shader_integrity(std::uint64_t,const unsigned char*,const std::uint64_t*);\n'
+    file_source=file_source.replace('#include "shader_file.h"','#include "shader_file.h"\n'+declaration,1)
+    anchor='unchanged();sha256_t hash;sha256_init(&hash);'
+    if file_source.count(anchor)!=1:raise ValueError('Unique original shader file SHA verification boundary required')
+    file_source=file_source.replace(anchor,'''unchanged();
+        if(qwen_app_try_same_launch_shader_integrity(file_bytes_,expected.data(),sealed_.data())) {
+            unchanged();stats_.verified=true;return;
+        }
+        sha256_t hash;sha256_init(&hash);''')
+    (out/'shader_file.cpp').write_text(file_source,newline='\n')
+    session=session_source(originals['shader_file_session.cpp'].read_text())
     (out/'shader_file_session.cpp').write_text(session,newline='\n')
     frozen=[record(path)for path in [Path(__file__),*originals.values(),*[out/name for name in names]]]
     replacements=[]

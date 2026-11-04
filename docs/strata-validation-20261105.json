@@ -1,0 +1,142 @@
+{
+  "schema": "ps5-qwen-strata-validation-v1",
+  "date": "2026-11-05",
+  "status": "interrupted-console-transport-unreachable",
+  "native_campaign_complete": false,
+  "production_adopted": false,
+  "confirmed_additional_speedup": null,
+  "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+  "conditions": [
+    "cold",
+    "retained",
+    "exact-prefix"
+  ],
+  "host_selected_SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed",
+  "PS5_last_authenticated_installed_SELF_sha256": "66ee5fdaaa9d50faecce07d5f7f1fbf71c49f6b49d7b05ff79c67dcbcd39827d",
+  "PS5_original_restoration": "unconfirmed-not-started",
+  "ordinary_close_submission_receipts": 1,
+  "ordinary_close_result": "unknown",
+  "model_source_GPU_retirement": "positive-zero-live-device-bytes",
+  "unknown_completion": true,
+  "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+  "driver_profile": "cumulative-idle",
+  "persistent_caches": false,
+  "ST1": {
+    "disposition": "ineligible-under-selected-arithmetic",
+    "existing_image_reuse_checked": true,
+    "producer_written_image_checked": true,
+    "routed_and_shared_consumers_checked": true
+  },
+  "ST2": {
+    "disposition": "ineligible-under-selected-arithmetic",
+    "single_token_decode_checked": true,
+    "multi_token_prefill_checked": true
+  },
+  "ST3": {
+    "runtime_wait_opportunities": [
+      {
+        "condition": "cold",
+        "stream_scopes": 1104,
+        "independent_experts": 162,
+        "attempted_groups": 46,
+        "waits_beyond_first": 36,
+        "multiple_group_scopes": 4,
+        "existing_stream_waits": 46,
+        "positive_callbacks": 462,
+        "completed_groups": 43
+      },
+      {
+        "condition": "retained",
+        "stream_scopes": 1104,
+        "independent_experts": 4,
+        "attempted_groups": 4,
+        "waits_beyond_first": 0,
+        "multiple_group_scopes": 0,
+        "existing_stream_waits": 4,
+        "positive_callbacks": 12,
+        "completed_groups": 4
+      },
+      {
+        "condition": "exact-prefix",
+        "stream_scopes": 768,
+        "independent_experts": 5,
+        "attempted_groups": 5,
+        "waits_beyond_first": 0,
+        "multiple_group_scopes": 0,
+        "existing_stream_waits": 5,
+        "positive_callbacks": 12,
+        "completed_groups": 4
+      }
+    ],
+    "qualifications": {
+      "group": {
+        "numerical_qualified": true,
+        "all69_full_vocabulary_F32_rows_SHA256_exact": true,
+        "matching_F32_rows": 69,
+        "ordered_routes_exact_per_request": [
+          true,
+          true,
+          true
+        ],
+        "tokens_and_output_bytes_exact": true
+      },
+      "readback": {
+        "numerical_qualified": true,
+        "all69_full_vocabulary_F32_rows_SHA256_exact": true,
+        "matching_F32_rows": 69,
+        "ordered_routes_exact_per_request": [
+          true,
+          true,
+          true
+        ],
+        "tokens_and_output_bytes_exact": true
+      }
+    },
+    "incomplete_timing_pair": {
+      "control_tok_s": [
+        10.401231589808443,
+        12.199694775113043,
+        13.34924453942857
+      ],
+      "group_tok_s": [
+        10.44602384355868,
+        12.25810746024966,
+        13.373284130568612
+      ],
+      "control_ordinary_exit_and_restore": true,
+      "group_ordinary_exit_and_restore": "unconfirmed",
+      "performance_adoption_qualified": false
+    },
+    "pending_native_scopes": [
+      "readback-first timing",
+      "control-last timing",
+      "conditional promising-screen extension"
+    ]
+  },
+  "transport": {
+    "known_service_TCP_timeouts": [
+      8080,
+      8084,
+      2121
+    ],
+    "icmp_reply": "Destination host unreachable from PC; no console reply",
+    "cause": "unknown"
+  },
+  "initializer_replays": 0,
+  "reboots": 0,
+  "recovery_requests": 0,
+  "model_relaunches": 0,
+  "close_resubmissions": 0,
+  "trial_binary_cleanup": "deferred-unresolved-owner-and-restoration",
+  "prepared_continuation_native_qualified": false,
+  "evidence_root": "D:\\PS5-AI\\qwen-flash-next\\strata-validation-20261105",
+  "evidence_receipts": [
+    "applicability-results-65609.private.json",
+    "identity-path-controls-65603.private.json",
+    "strata-completed-source-owner-controls-65605.private.json",
+    "ST3-campaign-65608/group-numerical.private.json",
+    "ST3-campaign-65608/readback-numerical.private.json",
+    "ST3-campaign-65608/group-first/closed/transport-loss-observation-65610.private.json",
+    "interrupted-ordinary-close-state-65611.private.json"
+  ]
+}

@@ -1,0 +1,2086 @@
+{
+  "schema": "ps5-qwen-native-performance-checkpoint-v2",
+  "date": "2026-11-02",
+  "campaign_complete": true,
+  "production": {
+    "SELF_bytes": 21929863,
+    "SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed",
+    "base_source": "2b683814c9b6ed18c13352963c0a989f9e4d0b15",
+    "driver": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "driver_profile": "cumulative-idle",
+    "persistent_caches": false,
+    "PC_and_PS5_same_selected_current": true,
+    "native_placement": 65256,
+    "seven_files_hashed_in_both_namespaces": true,
+    "canonical_relink": 64512,
+    "canonical_SELF": 64513,
+    "retained_current_inputs": 947,
+    "formatter_import_stubs": 7,
+    "canonical_entry_ELF_and_SELF_byte_exact": true,
+    "latest_current_seven_native_integrity": 65572,
+    "source_overlay_historical": "9601f9048dc943cf28705f3e8ec784d8d91ca54a",
+    "source_overlay": "06b2f9a535935fc4f142d73a405401b990d465e5",
+    "actual_application_linked_driver_archive_sha256": "a325dcd4584b1f1fccc6b46e90faa081ca86d18544aca610efea9e3ca3774f32"
+  },
+  "R1": {
+    "status": "adopted_completed_stage_and_request_end_token_sync",
+    "ABBA_cases": [
+      64500,
+      64501,
+      64502,
+      64503
+    ],
+    "native_requests": 12,
+    "whole_F32_cases": [
+      64480,
+      64481
+    ],
+    "all69_full_vocab_rows_exact": true,
+    "deferrable_completed_stage_names": 7,
+    "completed_stage_deferrals_per_request": [
+      49,
+      49,
+      42
+    ],
+    "before_unknown_fatal_and_probe_syncs_preserved": true,
+    "request_end_token_and_stage_sync_in_complete_span": true,
+    "cold_complete_span_mean_reduction_percent": 0.973301,
+    "retained_complete_span_mean_reduction_percent": 1.550464,
+    "prefix_complete_span_mean_reduction_percent": 1.755848,
+    "all_paired_savings_exceed_AA_spread": true,
+    "tokens_routes_source_demand_and_durable_payloads_exact": true,
+    "ordinary_closes_and_exact_current_restores": true,
+    "interrupted_request_can_lose_unsynced_completed_stage_and_token_tail": true,
+    "previous_token_ledger_only_result": {
+      "status": "previously_adopted_and_superseded_by_completed_stage_R1",
+      "ABBA_cases": [
+        64130,
+        64131,
+        64132,
+        64133
+      ],
+      "native_requests": 12,
+      "actual_control_syncs_per_request": 22,
+      "actual_candidate_syncs_per_request": 1,
+      "final_sync_and_close_included": true,
+      "retained_complete_request_mean_reduction_percent": 1.223742698062602,
+      "prefix_complete_request_mean_reduction_percent": 1.6438812708000072,
+      "both_warm_pairs_exceed_control_variation": true,
+      "consistent_cold_gain_established": false,
+      "tokens_routes_source_demand_and_durable_payloads_exact": true,
+      "numerical_cases": [
+        64150,
+        64151
+      ],
+      "whole_F32_rows_per_case": 69,
+      "vocabulary_columns": 248320,
+      "F32_bytes_hashed_per_case": 68536320,
+      "all_full_rows_SHA256_exact": true,
+      "finite_counting_reset_and_ordinary_closes_passed": true,
+      "token_record_sync_policy": "request_end",
+      "completed_ledger_synced_before_request_result": true,
+      "interrupted_request_may_lose_unsynced_tail": true,
+      "all_other_boundary_states_qualified": false
+    }
+  },
+  "P1": {
+    "status": "adopted_cold_output_refinement",
+    "latest_ABBA_cases": [
+      64930,
+      64931,
+      64932,
+      64940
+    ],
+    "native_requests": 12,
+    "both_prefills_actually_selected_each_case": true,
+    "tokens_routes_sources_and_ledger_payloads_exact": true,
+    "consistent_retained_whole_gain": false,
+    "prefix_whole_paired_regressions_ms": [
+      31.729,
+      22.979
+    ],
+    "all_prompt_lengths_or_boundary_states_disposed": false,
+    "adoption": 65256,
+    "matching_full_F32_rows": 68,
+    "full_F32_rows": 69,
+    "first_cold_row_maximum_absolute_error": 0.1812725067138672,
+    "general_prompt_quality_qualified": false,
+    "primary_decode_rate_change_percent": {
+      "cold": 2.703692,
+      "retained": 0.649106,
+      "exact_prefix": -0.356682
+    },
+    "both_cold_and_retained_paired_gains_exceed_AA": true,
+    "prefix_gain_established": false
+  },
+  "G1": {
+    "status": "two_GPU_ranking_profiles_measured_not_adopted",
+    "native_shadow_case": 64110,
+    "original_ranking_rows_checked_per_request": [
+      1056,
+      1056,
+      2112
+    ],
+    "shadow_geometry_or_variant_failures": 0,
+    "GPU_model_execution_qualified": true,
+    "pre_main_SELF_refusal_case": 64152,
+    "synchronous_CPU_read_returned": true,
+    "free_pages_after_read": 828,
+    "unchanged_application_CPU_threshold_pages": 919,
+    "ordinary_close_and_seven_file_restore": 64154,
+    "changed_CPU_SELF_window_bytes": 65536,
+    "changed_CPU_threshold_or_GPU_guards": false,
+    "all_hit_continuation_implemented": false,
+    "whole_F32_rows_per_case": 69,
+    "vocabulary_columns": 248320,
+    "all_full_rows_SHA256_exact": true,
+    "actual_result_buffer": "Vulkan0",
+    "actual_device_type": 2,
+    "per_layer_ABBA_cases": [
+      64230,
+      64231,
+      64232,
+      64233
+    ],
+    "batched_ABBA_cases": [
+      64290,
+      64291,
+      64292,
+      64293
+    ],
+    "per_layer_complete_regression_percent": {
+      "cold": 2.1907906,
+      "retained": 6.3936003,
+      "prefix": 6.104284
+    },
+    "batched_complete_regression_percent": {
+      "cold": 2.11945524,
+      "retained": 6.85721414,
+      "prefix": 6.69528898
+    },
+    "batched_publications_per_graph": 1,
+    "tokens_routes_sources_and_durable_payloads_exact": true,
+    "all_ordinary_closes_and_exact_restores": true,
+    "partial_TopK_case": 64330,
+    "partial_TopK_all_69_F32_rows_exact": true,
+    "partial_TopK_tokens_exact": true,
+    "partial_TopK_ordered_routes_exact": false,
+    "partial_TopK_differing_route_records": [
+      554,
+      528,
+      459
+    ],
+    "partial_TopK_API_order_unspecified": true,
+    "partial_TopK_advanced_to_timing_or_adoption": false,
+    "cached_run_host_replay": {
+      "case": 64773,
+      "decision_screen": 64774,
+      "actual_three_request_cache_counters_exact": true,
+      "all_hit_layers": [
+        895,
+        821,
+        688
+      ],
+      "decode_layers": [
+        1056,
+        1056,
+        768
+      ],
+      "maximum_initial_prefix": [
+        37,
+        24,
+        40
+      ],
+      "full48_layer_hit_processes": 0,
+      "GPU_continuation_implemented": false,
+      "counts_are_not_latency": true
+    }
+  },
+  "Q1": {
+    "status": "measured_profile_not_adopted",
+    "additional_shared_tensors": 144,
+    "total_selected_Q4_matrices": 253,
+    "source_encoding": "original_BF16_to_Q4_0_replacing_current_Q8_0",
+    "all_independent_encoder_bytes_equal": true,
+    "independent_prefix_and_extent_audit_passed": true,
+    "new_source_publication": 64167,
+    "new_files_whole_SHA256_EOF_verified_both_namespaces": 53,
+    "unchanged_parent_source_identities": 518,
+    "saved_device_weight_bytes": 117964800,
+    "old_weight_packs_copied_or_modified": 0,
+    "native_model_quality_or_speed_measured": true,
+    "native_model_case": 64250,
+    "ABBA_cases": [
+      64280,
+      64281,
+      64282,
+      64283
+    ],
+    "native_requests": 12,
+    "all_counting_token_bytes_and_durable_payloads_exact": true,
+    "ordered_routes_and_source_demand_exact": false,
+    "cold_complete_regression_percent": 1.0175553,
+    "retained_complete_mean_reduction_percent": 0.0808327,
+    "retained_paired_savings_ms": [
+      -5.355023,
+      8.949735
+    ],
+    "retained_control_spread_ms": 7.635015,
+    "prefix_complete_regression_percent": 1.0711696,
+    "broad_answer_quality_qualified": false,
+    "cross_precision_full_F32_qualified": false,
+    "all_ordinary_closes_and_exact_restores": true,
+    "tested_legacy_type_metadata_incorrect": true,
+    "builder_metadata_corrected_but_not_rerun": true,
+    "new_source_retirement_case": 64315,
+    "retired_remote_files": 53,
+    "retired_empty_directories": 1,
+    "protected_current_seven_whole_digests_equal": true
+  },
+  "Q2": {
+    "status": "all_Up_and_Gate_Up_original_and_minimum_stream_profiles_complete_not_adopted",
+    "pre_main_refusal_case": 64310,
+    "returned_CPU_reads": 7,
+    "refused_free_pages": 882,
+    "unchanged_CPU_floor_pages": 919,
+    "ordinary_refusal_close": 64314,
+    "deferred_readiness_case": 64347,
+    "deferred_readiness_launched": false,
+    "headless_native_case": 64360,
+    "headless_native_requests": 1,
+    "actual_generated_tokens": 22,
+    "counting_finite_reset_and_positive_retirement_passed": true,
+    "all_original_model_memory_identity_and_completion_guards_preserved": true,
+    "ordinary_close_and_current_restored": true,
+    "CPU_heap_peak_bytes": 385941504,
+    "device_ledger_peak_bytes": 6048186368,
+    "real_activation_evaluations": 23,
+    "real_activation_records": 2208,
+    "raw_bytes": 108544000,
+    "raw_sha256": "89b1fe0568fed4d46ddead6963450f1359d345ad6dd66990d9ba9552acdf152b",
+    "native_and_host_full_SHA256_equal": true,
+    "CPU_only_read_permission_export_case": 64361,
+    "CPU_only_helper_resubmitted": false,
+    "real_sparse_importance_files": 96,
+    "visited_Experts_per_role": 3267,
+    "total_Experts_per_role": 24576,
+    "visited_Experts_per_layer_range": [
+      42,
+      120
+    ],
+    "unvisited_fallback": "Measured real per-layer mean square; coverage explicit",
+    "synthetic_uniform_importance_used": false,
+    "Gate_Up_input_sharing_independently_qualified": false,
+    "broad_calibration_coverage_qualified": false,
+    "full_IQ2_model_encoded": false,
+    "native_IQ2_indexed_operator_qualified": true,
+    "diagnostic_times_usable_for_performance": false,
+    "calibrated_Up_sample_matrices": 9,
+    "sample_pack_bytes": 8699904,
+    "whole_original_BF16_sources_hashed": 3,
+    "whole_original_BF16_source_bytes": 10740534112,
+    "Q2_K_weight_NRMSE_range": [
+      0.2963985262323974,
+      0.3166754585223855
+    ],
+    "IQ2_weight_NRMSE_range": [
+      0.35383169344838816,
+      0.5704980392518901
+    ],
+    "actual_sample_counts_range": [
+      1,
+      28
+    ],
+    "all_nine_C_Python_decodes_exact": true,
+    "operator_SELF_prepared": 64386,
+    "operator_initial_readiness": 64390,
+    "operator_initial_staging_or_launches": 0,
+    "console_raw_retirement": 64393,
+    "raw_retirement_uses_verified_temporary_directory_owner_lease": true,
+    "console_raw_bytes_removed": 108544000,
+    "post_retirement_free_pages": 9003,
+    "unchanged_OS_minimum_pages": 898,
+    "unchanged_OS_reserved_pages": 206,
+    "real_operand_output_reference": {
+      "case": 64752,
+      "matrices": 9,
+      "actual_input_vectors": 70,
+      "IQ2_lower_output_NRMSE_than_Q2_K": 1,
+      "in_sample_only": true,
+      "full_model_quality_qualified": false
+    },
+    "prefill_fit_decode_holdout": {
+      "case": 64772,
+      "matrices": 9,
+      "IQ2_lower_output_NRMSE": 0,
+      "fit_vectors": 28,
+      "heldout_vectors": 33,
+      "same_prompt": true,
+      "independent_prompts": 0,
+      "full_model_quality_qualified": false
+    },
+    "explicit_F32_prefill_component": {
+      "native": 64820,
+      "analysis": 64823,
+      "results": "iq2-explicit-F32-prefill-20261103.json",
+      "GPU_graphs": 144,
+      "all12_numerics_and_canaries_passed": true,
+      "full_model_quality_or_speed_qualified": false,
+      "production_adopted": false
+    },
+    "old_F16_prefill_64460": {
+      "first_width30_format": "Q2_K control",
+      "completed_width30_graphs": 1,
+      "IQ2_width30_graphs": 0,
+      "reference_mismatches": 73401,
+      "maximum_F32_reference_error": 0.0001416096684337953,
+      "IQ2_specific_F16_failure_proved": false,
+      "default_F16_IQ2_qualified": false
+    },
+    "backend_profile_comparison": {
+      "completed": true,
+      "scope": "65314",
+      "unchanged_weights": true,
+      "one_observation_per_profile_and_condition": true,
+      "AA_or_ABBA_qualified": false,
+      "profiles": {
+        "default": [
+          10.375276333882917,
+          12.259395097663003,
+          13.273539904219904
+        ],
+        "F32_forced": [
+          9.581483051479639,
+          11.223791324895986,
+          12.473495263108118
+        ],
+        "only_MMVQ_disabled": [
+          10.43016293532096,
+          12.330737731881463,
+          13.36495257957597
+        ]
+      },
+      "condition_order": [
+        "cold",
+        "retained",
+        "exact_prefix"
+      ],
+      "metric": "(generated_tokens-1)/decode_seconds",
+      "all_output_tokens_and_bytes_match": true,
+      "MMVQ_only_routes_and_source_read_bytes_match": true,
+      "all_ordinary_exits_and_P1_restores": true,
+      "production_adopted": false
+    },
+    "F16_storage_FP32_accumulation_65313": {
+      "completed": true,
+      "native_graphs": 12,
+      "cases": 6,
+      "widths": [
+        30,
+        32
+      ],
+      "groups": 3,
+      "mismatches": 0,
+      "maximum_F64_reference_error": 5.161899025551975e-06,
+      "reference": "F64 of separately decoded FP16-rounded weights and FP16-exact F32 inputs",
+      "tolerance_unchanged": true,
+      "ordinary_exit_and_exact_P1_restore": true,
+      "native_cases_replayed": 0,
+      "full_model_quality_or_speed_qualified": false
+    },
+    "scoped_precision_wrapper_65316": {
+      "actual_selected_PS5_ABI_compiled": true,
+      "only_IQ2_matmul_ID_nodes_use_FP32_accumulation": true,
+      "normal_F16_enabled": true,
+      "MMVQ_disabled": true,
+      "partial_layout_rejected": true,
+      "full_model_quality_or_speed_qualified": false
+    },
+    "original_Up_complete_layers": 48,
+    "Gate_encoding_active": false,
+    "first_full_Up_screen_case": 65407,
+    "full_Up_screen_positive_speedup": false,
+    "MMVQ_refinement_screen_running": false,
+    "MMVQ_refinement_screen_complete": 65388,
+    "MMVQ_refinement_speedup": false,
+    "native_IQ2_operator_scope": "F16 storage with IQ2-only FP32 accumulation; historical default-F16 negative unchanged",
+    "all48_Up_layers_encoded": true,
+    "all48_Gate_layers_encoded": true,
+    "full_model_decode_speed_measured": true,
+    "broader_answer_quality_qualified": false,
+    "production_adopted": false,
+    "minimum_stream_profiles_complete": [
+      "Up",
+      "Gate-Up"
+    ],
+    "remaining_profiles": []
+  },
+  "Q3": {
+    "status": "all48_Down_full_plane_source_prefix_and_minimum_stream_complete_not_adopted",
+    "real_Down_activation_moments_available": true,
+    "cross_row_format_implemented": true,
+    "real_operand_output_reference": {
+      "case": 64752,
+      "matrices": 9,
+      "actual_input_vectors": 70,
+      "IQ2_lower_output_NRMSE_than_Q2_0": 9,
+      "relative_output_NRMSE_reduction_percent_range": [
+        7.771633179744864,
+        44.57393047427851
+      ],
+      "in_sample_only": true,
+      "full_model_quality_qualified": false
+    },
+    "paired_640_operator": {
+      "build": 64756,
+      "full_F32_values_decoded_byte_exact": 14745600,
+      "original_matrices": 9,
+      "PS5_CPU_decoder_compile": true,
+      "SPIRV_profiles_validated": [
+        64,
+        128
+      ],
+      "GPU_cases_prepared": 12,
+      "formats_and_cache_geometry_not_yet_integrated": true,
+      "native_GPU_execution": false,
+      "desktop_first_case": 64757,
+      "desktop_instance_creation_failed_before_dispatch": true,
+      "desktop_GPU_dispatches": 0
+    },
+    "prefill_fit_decode_holdout": {
+      "case": 64772,
+      "matrices": 9,
+      "IQ2_lower_output_NRMSE": 2,
+      "fit_vectors": 28,
+      "heldout_vectors": 33,
+      "same_prompt": true,
+      "independent_prompts": 0,
+      "full_model_quality_qualified": false
+    },
+    "paired_software_SPIRV": {
+      "case": 64771,
+      "build": 64769,
+      "shapes": 24,
+      "widths": [
+        1,
+        2,
+        30,
+        32
+      ],
+      "workgroups": [
+        64,
+        128
+      ],
+      "positive_dispatches": 960,
+      "all_outputs_and_canaries_passed": true,
+      "physical_GPU": false,
+      "PS5_operations": 0,
+      "model_cache_integration": false,
+      "whole_speed_qualified": false,
+      "historical_constant_shader": {
+        "case": 64762,
+        "build": 64756,
+        "shapes": 24,
+        "positive_dispatches": 960,
+        "all_outputs_and_canaries_passed": true,
+        "physical_GPU": false,
+        "PS5_operations": 0
+      }
+    },
+    "actual_GGML_CPU_startup": 65255,
+    "actual_GGML_GPU_refusal_before_publication": 65257,
+    "actual_GGML_GPU_case": 65259,
+    "actual_GGML_first_call_unexpected_exit": true,
+    "selected_P1_restoration_complete": true,
+    "closed_driver_archive": 65260,
+    "failure_classification": 65264,
+    "post_call_GPU_completion_qualified": false,
+    "process_exit_cause_proved": false,
+    "zero_submissions_claimed": false,
+    "full_nonzero_descriptor_software_cases": 18,
+    "full_nonzero_descriptor_software_values": 92160,
+    "row_two_four_software_cases": 36,
+    "row_two_four_software_values": 184320,
+    "software_only_new_results": true,
+    "actual_ELF_shader_initialization_functions_absent": true,
+    "original_startup_registry_provider_prepared": 65266,
+    "source_bound_shader_barrier": [
+      65271,
+      65273
+    ],
+    "capacity_CPU_readmission": 65277,
+    "capacity_bytes_twice": [
+      12262047744,
+      12262047744
+    ],
+    "corrected_provider": 65266,
+    "corrected_fixture": 65267,
+    "actual_caller_binding_audit": 65268,
+    "corrected_SELF": 65269,
+    "corrected_native_CPU_active": false,
+    "corrected_native_GPU_qualified": false,
+    "corrected_native_CPU_completed": 65281,
+    "corrected_native_GPU_case": 65282,
+    "corrected_process_exited_restoration": 65282,
+    "corrected_closed_driver_archive": 65284,
+    "corrected_kernel_message_snapshot": 65285,
+    "corrected_exit_source_proof": 65286,
+    "corrected_exit_cause": "saved==1 assertion before command work; missing successful environment; abort backtrace invoked forbidden fork",
+    "corrected_post_checkpoint_queue_submissions": 0,
+    "corrected_GPU_capacity_readmission_pending": true,
+    "production_environment_fixture_build": 65287,
+    "latest_native_GGML_case": 65292,
+    "latest_native_GGML_submitted_graphs": 3,
+    "latest_native_GGML_positive_graph_completions": 3,
+    "native_decode_layer0_widths_passed": [
+      1,
+      2
+    ],
+    "native_decode_max_F64_reference_error": 2.1493527319060846e-08,
+    "native_width30_mismatches": 768000,
+    "native_width30_max_F64_reference_error": 298567.49206663884,
+    "native_width30_canaries_exact": true,
+    "latest_ordinary_exit_and_exact_P1_restore": 65292,
+    "changed_CPU_capacity_readmission": 65298,
+    "changed_CPU_capacity_passed": true,
+    "changed_CPU_Direct_available_twice": 12262047744,
+    "changed_CPU_ordinary_exit_and_P1_restore": true,
+    "packed_half_refinement_software": 65294,
+    "packed_half_complete_FP16_output_bits": 49152000,
+    "packed_half_reused_other_resources": 12,
+    "packed_half_provider": 65295,
+    "packed_half_fixture": 65296,
+    "packed_half_SELF": 65297,
+    "packed_half_link_binding_audit": 65299,
+    "packed_half_native_GPU_unrun": false,
+    "next_native_GGML_cases": 10,
+    "reused_positive_native_GGML_cases": 2,
+    "changed_suffix_controls": {
+      "case": 65293,
+      "positive": 4,
+      "negative": 20,
+      "PS5_operations": 0
+    },
+    "packed_half_native_GPU_active": false,
+    "packed_half_native_GPU_scope": "65302",
+    "packed_half_native_GPU_completed": true,
+    "packed_half_native_GPU_passed": false,
+    "packed_half_native_ordinary_exit_and_P1_restore": true,
+    "actual_wide_resource_trace": "65320",
+    "changed_dequant_selected": false,
+    "generic_refinement": "65321",
+    "generic_software": {
+      "scope": "65324",
+      "distinct_binaries": 1,
+      "resource_aliases": 2,
+      "cases": 6,
+      "values": 357120,
+      "mismatches": 0,
+      "all_canaries_and_fences_passed": true,
+      "maximum_F64_error": 3.781309234063279e-07,
+      "constant_Q2_specialization_of_actual_SPIRV": true,
+      "PS5_operations": 0
+    },
+    "generic_provider": "65325",
+    "generic_fixture": "65326",
+    "generic_SELF": "65327/SELF",
+    "generic_actual_link_audit": "65328",
+    "changed_CPU_capacity_active": false,
+    "changed_CPU_capacity_scope": "65329",
+    "generic_native_GPU": {
+      "scope": "65330",
+      "completed": true,
+      "passed": true,
+      "new_cases": 10,
+      "reused_cases": 2,
+      "maximum_F64_reference_error": 4.2755845591768704e-07,
+      "all_canaries_fences_case_owners_IO_passed": true,
+      "ordinary_exit_and_exact_P1_restore": true,
+      "fresh_CPU_capacity_readmission_required": true,
+      "full_model_quality_or_speed_qualified": false
+    },
+    "all48_Down_carriers_complete": 65347,
+    "full_Down_metadata_preparation": 65348,
+    "F16_refinement": {
+      "shader": 65336,
+      "operand_reference": 65337,
+      "completion_controls": 65338,
+      "provider": 65339,
+      "fixture": 65342,
+      "SELF": 65343,
+      "actual_binding": 65344,
+      "CPU_host_pricing": 65349,
+      "native_executed": false,
+      "model_qualified": false,
+      "old_six_graph_GPU_plan_superseded_by_large_cache_index_correction": true
+    },
+    "large_cache_index_correction": {
+      "PC_only_Down": true,
+      "all17_corrected_shaders_compiled_and_validated": 65358,
+      "host_index_controls": 65359,
+      "actual_helper_cases": 24457996,
+      "old_overflow_negative_counterexamples": 13075116,
+      "cache_planes": 3713,
+      "logical_scalar_weights": 6083379200,
+      "physical_carrier_bytes": 1710950400,
+      "new_64_bit_shader_operations": false,
+      "provider": 65360,
+      "fixture": 65361,
+      "SELF": 65362,
+      "linked_binding": 65365,
+      "required_new_native_graphs": 12,
+      "unchanged_decode_GPU_results_reused": 0,
+      "corrected_native_CPU_or_GPU_submitted": false,
+      "full_model_speed_or_quality_qualified": false
+    },
+    "all48_Down_sources_whole_sealed": true,
+    "full_model_decode_speed_measured": true,
+    "broader_answer_quality_qualified": false,
+    "production_adopted": false,
+    "completed_model_profiles": [
+      "full-plane",
+      "source-prefix",
+      "minimum-stream"
+    ],
+    "remaining_profiles": []
+  },
+  "I1": {
+    "status": "both_refinements_complete_unadopted",
+    "native_delivery_case": 64623,
+    "finalizer": 64624,
+    "useful_prefetch_reads": 24,
+    "useful_prefetch_bytes": 12386304,
+    "logical_reads_exact_against_independent_Direct_references": 64,
+    "all_worker_descriptor_and_scratch_owners_positively_retired": true,
+    "actual_model_trace_case": 64708,
+    "actual_model_trace_finalizer": 64710,
+    "original_model_pread_calls": 4336,
+    "original_producers": 6,
+    "large_aligned_candidates_with_stable_full_descriptor_identity": 3456,
+    "trace_overflow": 0,
+    "original_short_reads_with_errno_zero": 4,
+    "all23_F32_rows_and_actual_routes_exact": true,
+    "raw_trace_bytes": 1265152,
+    "raw_trace_sha256": "e2f09daef934992c852d1cc7cdacf0726c1419b69ab2a6d61634ea8df2c8a960",
+    "CPU_heap_peak_bytes": 385941504,
+    "device_peak_bytes": 6048186368,
+    "causal_alternative_stride_screen_case": 64718,
+    "causal_alternative_stride_profiles": 6,
+    "exported_console_trace_retirement": 64722,
+    "console_raw_bytes_retired": 1265152,
+    "complete_PC_raw_preserved": true,
+    "actual_speculative_IO_submitted_by_trace_or_screens": 0,
+    "model_integration_or_speed_qualified": false,
+    "Direct_stage_transport": {
+      "case": 64779,
+      "host_faults": 64778,
+      "bytes": 21927687,
+      "positive_stream_and_native_Direct_readback_SHA": true,
+      "temporary_file_retired": true,
+      "current_seven_unchanged": true,
+      "free_before": 5808,
+      "free_after": 5800,
+      "GPU_calls": 0,
+      "model_launches": 0,
+      "application_launch_RAM_gain_qualified": false,
+      "inference_speed_gain_qualified": false
+    },
+    "second_refinement_analysis": 65227,
+    "primary_decode_rate_change_percent": {
+      "cold": -0.150948,
+      "retained": 0.58216,
+      "exact_prefix": -0.513796
+    },
+    "retained_gain_below_AA": true,
+    "production_adopted": false
+  },
+  "S1": {
+    "status": "both_refinements_complete_unadopted_absolute_regression",
+    "consumed_legacy_policy_refusal": 64655,
+    "consumed_context_capacity_wrapper_failure": 64662,
+    "wrapper_failure_completed_GPU_epochs": 5,
+    "wrapper_failure_target_prefill_calls": 0,
+    "wrapper_failure_auxiliary_contexts": 0,
+    "source_bound_ordinary_close": 64664,
+    "known_exit_pending_Direct_record": 64665,
+    "actual_FirstGeneration_host_control_case": 64671,
+    "actual_FirstGeneration_host_controls_required_for_package_and_launch": true,
+    "CPU_only_title_Direct_query": 64680,
+    "Direct_capacity_finalizer": 64681,
+    "Direct_available_bytes": 12262047744,
+    "required_pre_model_Direct_available_bytes": 12184453120,
+    "Direct_capacity_readmitted": true,
+    "native_causal_replay_case": 64694,
+    "native_causal_replay_finalizer": 64695,
+    "reverse_order_native_case": 64711,
+    "reverse_order_finalizer": 64712,
+    "reverse_order_prediction_matches": [
+      22,
+      22
+    ],
+    "reverse_order_all23_F32_rows_and_actual_routes_exact": true,
+    "controlled_original_target_capture_case": 64723,
+    "controlled_original_target_capture_finalizer": 64725,
+    "controlled_original_target_accepted": 1,
+    "controlled_original_target_rejected": 1,
+    "controlled_target_all_tokens_and_output_bytes_exact": true,
+    "controlled_target_F32_rows_finite": 23,
+    "controlled_unlike_width_byte_different_rows": 22,
+    "controlled_target_added_capture_process_calls": 0,
+    "controlled_target_auxiliary_contexts": 0,
+    "controlled_target_actual_MTP_proposals": 0,
+    "actual_future_bonus_cursor_host_controls": 64724,
+    "actual_online_native_case": 64732,
+    "actual_online_finalizer": 64733,
+    "actual_online_target_attempts": 6,
+    "actual_online_target_accepted": 5,
+    "actual_online_target_rejected": 1,
+    "actual_auxiliary_catchups": 5,
+    "actual_original_target_queued_bonus_samples": 5,
+    "actual_auxiliary_inputs_independently_reconciled": 11,
+    "actual_online_auxiliary_KV_clears": 1,
+    "actual_online_target_process_calls": 18,
+    "actual_online_tokens_and_output_bytes_exact": true,
+    "actual_online_all23_full_vocab_rows_finite": true,
+    "actual_online_unlike_width_byte_different_rows": 22,
+    "actual_online_diagnostic_stages_and_hashes_enabled": true,
+    "matched_whole_speed_qualified": true,
+    "actual_causal_proposals_per_arm": 22,
+    "actual_target_prediction_matches": [
+      22,
+      22
+    ],
+    "KV_clear_counts": [
+      23,
+      1
+    ],
+    "maximum_simultaneous_auxiliary_contexts": 1,
+    "all23_F32_rows_248320_columns_byte_exact": true,
+    "all_actual_target_routes_exact": true,
+    "CPU_heap_peak_bytes": 553779200,
+    "device_ledger_peak_bytes": 6104809472,
+    "component_timings_order_and_cache_confounded": true,
+    "actual_online_accept_reject_catchup_qualified": true,
+    "ordinary_close_and_current_restored": true,
+    "broader_MTP_quality_or_whole_speed_qualified": false,
+    "single_completion_contract": {
+      "source_and_selected_object_byte_exact_case": 64735,
+      "same_full_positive_device_worker_owner_journal_boundary": true,
+      "mandatory_completion_retained": true,
+      "shared_driver_archive_unchanged": true,
+      "native_qualified": false,
+      "prelaunch_refusals": [
+        64738,
+        64742
+      ],
+      "last_refusal_free_pages": 6860,
+      "unchanged_screen_pages": 7374,
+      "staging_and_title_launches": 0
+    },
+    "retained_owner_host_controls": {
+      "case": 64758,
+      "single_requests": 12,
+      "retained_groups": 4,
+      "retained_requests": 12,
+      "exactly_one_context_per_group": true,
+      "one_clear_per_request": true,
+      "wrong_model_and_fourth_request_refused": true,
+      "unknown_boundary_retains_exact_owned_input": true,
+      "native_multi_request_entry_integrated": true,
+      "native_lifetime_or_matched_speed_qualified": false,
+      "native_entry_is_host_built_only": true,
+      "fresh_entry_and_package": [
+        64764,
+        64765
+      ],
+      "retained_entry_and_package": [
+        64766,
+        64767
+      ],
+      "requests": 3,
+      "maximum_verifications": 18,
+      "maximum_auxiliary_steps": 96,
+      "causal_reconciler_control": 64768
+    },
+    "absolute_ordinary_sequence": 65250,
+    "absolute_ordinary_analysis": 65254,
+    "primary_decode_rate_change_percent": {
+      "ordinary_cold": -21.702115,
+      "ordinary_retained1": -4.286942,
+      "ordinary_retained2": -6.544788
+    },
+    "all_three_conditions_both_regressions_exceed_AA": true,
+    "three_request_span_increase_percent": 17.051953,
+    "exact_prefix_cohort": false,
+    "production_adopted": false
+  },
+  "initializer_scope_consumed": 63121,
+  "initializer_repeated": false,
+  "existing_mount": 63133,
+  "reboot_available": false,
+  "automatic_retries": 0,
+  "CI_runs": 0,
+  "latest_update": "2026-11-05 JST: All remaining screens complete and slower; R1+P1 retained. PS5 and PC trial binary cleanup complete; current files, 947 rebuild inputs and authenticated BF16 sources preserved.",
+  "closed_artifact_retirement": {
+    "image_batches": [
+      64740,
+      64744
+    ],
+    "images_per_platform": 34,
+    "bytes_per_platform": 282011436,
+    "unsubmitted_host_argument_refusal": 64741,
+    "host_error_corrected_before_new_scope": true,
+    "report_archive": 64747,
+    "console_reports_retired": 901,
+    "report_bytes": 16148207,
+    "complete_PC_archive_preserved": true,
+    "unreadable_driver_logs_retained": 17,
+    "current_selected_files_protected": 108,
+    "latest_readonly_VM": 64822,
+    "free_pages_after": 5696,
+    "model_launch_screen_pages": 7374,
+    "model_launch_permitted": false,
+    "initializer_requests": 0,
+    "GPU_calls": 0,
+    "owned_directory_positive_fsync": 64754,
+    "exact_superseded_PC_retirement": 64753,
+    "superseded_PC_files": 31,
+    "superseded_PC_bytes": 168402828,
+    "superseded_unlaunched_MTP": {
+      "case": 64780,
+      "scopes": [
+        64759,
+        64763
+      ],
+      "files": 17,
+      "bytes": 199989314,
+      "current_selected108_exact": true,
+      "source_and_receipts_retained": true,
+      "PS5_operations": 0
+    },
+    "remaining_private_logs": {
+      "count": 0,
+      "bytes": 0,
+      "prepared_CPU_exporter": 64783,
+      "native_submissions": 6,
+      "permission_changes": 0,
+      "automatic_approval_review_refused_sensitive_export": true,
+      "explicit_payload_and_PC_destination_permission_pending": false,
+      "archived_and_retired": 17,
+      "archived_bytes": 1161178,
+      "owner_handoff_case": 64806,
+      "archive_retirement_case": 64807,
+      "owner_authorization_received": true,
+      "prepared_exporter_native_submissions": 1
+    },
+    "superseded_unlaunched_CPU": {
+      "case": 64802,
+      "files": 20,
+      "bytes": 209697335,
+      "protected_current_inputs_exact": 108,
+      "sources_and_receipts_preserved": true,
+      "PS5_operations": 0
+    },
+    "unreadable_driver_logs_retained_is_original_64747_snapshot": true,
+    "latest_remaining_private_logs": 0
+  },
+  "checked_source_and_package_review": {
+    "case": 64781,
+    "unique_exact_inputs": 29,
+    "historical_shader_snapshot_separately_bound": true,
+    "latest_MTP_packages_and_current_buffer_shader_exact": true,
+    "PS5_operations": 0
+  },
+  "Direct_startup_qualification": {
+    "record": "Direct-startup-qualification-20261103.json",
+    "latest_completed_native_case": 64820,
+    "CPU_original_reader_whole_SELF_SHA_identity_EOF_passed": true,
+    "ordinary_exit_and_exact_current_restoration": true,
+    "latest_readonly_VM_case": 64822,
+    "free_pages_after": 5696,
+    "model_launch_screen_pages_unchanged": 7374,
+    "model_launch_admitted": false,
+    "inference_gain_qualified": false,
+    "new_assigned_port_native_qualification": 64818
+  },
+  "latest_checkpoint_65259": {
+    "campaign_complete": false,
+    "auxiliary_transfer_experiments_closed": true,
+    "transfer_throughput_improvement_established": false,
+    "next_placement_method": "Reuse successful ordinary whole-layer FTP publication and existing staged bytes",
+    "source_cache_positive_complement_prefix": 4314,
+    "source_cache_complement_total": 6076,
+    "unchanged_completed_tests_replayed": false,
+    "latest_failure_classification": 65264
+  },
+  "current_console_execution": {
+    "owner": null,
+    "phase": "campaign_complete_current_R1_P1_idle",
+    "original_restored": true,
+    "native_running": false,
+    "model_loaded": false,
+    "unknown_completion": false,
+    "initializers_repeated": 0,
+    "reboots": 0,
+    "current_SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed"
+  },
+  "latest_checkpoint_65281": {
+    "campaign_complete": false,
+    "primary_metric": "(generated_tokens-1)/decode_seconds",
+    "source_cache_positive_prefix": 4708,
+    "source_cache_total": 6076,
+    "host_encoded_layers": 67,
+    "host_failed_layers": 0,
+    "unchanged_native_tests_replayed": 0,
+    "transfer_experiments_closed": true
+  },
+  "latest_checkpoint_65286": {
+    "campaign_complete": false,
+    "primary_metric": "(generated_tokens-1)/decode_seconds",
+    "source_cache_positive_prefix": 4708,
+    "source_cache_total": 6076,
+    "host_encoded_layers": 71,
+    "host_failed_layers": 0,
+    "Down_carrier_layers_at_observation": 20,
+    "unchanged_native_tests_replayed": 0,
+    "transfer_experiments_closed": true,
+    "kernel_readonly_ELF_requests": 0
+  },
+  "checkpoint_date": "2026-11-05",
+  "latest_checkpoint_65300": {
+    "campaign_complete": false,
+    "primary_metric": "(generated_tokens-1)/decode_seconds",
+    "source_cache_positive_prefix": 4708,
+    "source_cache_total": 6076,
+    "host_encoded_layers": 77,
+    "host_failed_layers": 0,
+    "Down_carrier_layers_at_observation": 38,
+    "carrier_tail_active": 65303,
+    "original_quantizer_workers": 2,
+    "unchanged_native_tests_replayed": 0,
+    "transfer_experiments_closed": true
+  },
+  "latest_checkpoint_65316": {
+    "encoder_completed": 85,
+    "encoder_failed": 0,
+    "encoder_total": 96,
+    "encoder_workers": 2,
+    "full_model_source_publication_started": false,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65331": {
+    "encoder_completed": 87,
+    "encoder_failed": 0,
+    "encoder_total": 96,
+    "encoder_workers": 2,
+    "carrier_parts": 42,
+    "Up_prefix_preparation_layers": 44,
+    "Up_prefix_preparation_active": true,
+    "full_model_source_publication_started": false,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65334": {
+    "encoder_completed": 89,
+    "encoder_failed": 0,
+    "encoder_total": 96,
+    "encoder_workers": 2,
+    "carrier_parts": 44,
+    "completed_Up_preparation": "65333",
+    "Up_prefix_layers": 44,
+    "Up_prefix_source_publication_active": true,
+    "full_native_SHA256_EOF_before_source_admission_required": true,
+    "host_redundant_payload_rehash_replaced_by_completed_encoder_receipts": true,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65350": {
+    "original_encoder_complete": 96,
+    "original_encoder_failed": 0,
+    "Down_carriers_complete": 48,
+    "preserved_carrier_prefix": 65346,
+    "only_new_carrier_suffix": 65347,
+    "full_Up_preparation": 65341,
+    "full_Down_preparation": 65348,
+    "host_progress_read_race_did_not_replay_successful_work": true,
+    "Gate_encoding": 65345,
+    "Gate_completed_at_observation": 2,
+    "Gate_failed_at_observation": 0,
+    "Gate_workers": 2,
+    "Gate_Up_identity_proof": 64546,
+    "combined_Gate_Up_model_preparation_and_admission_implemented": true,
+    "combined_Gate_Up_model_executed": false,
+    "combined_layout_controls": {
+      "positive": 2,
+      "negative": 8,
+      "PS5_operations": 0
+    },
+    "F16_Down_fixture": 65342,
+    "F16_Down_SELF": 65343,
+    "F16_actual_binding": 65344,
+    "F16_CPU_host_pricing": 65349,
+    "F16_CPU_required_pages": 6582,
+    "F16_native_executed": false,
+    "F16_model_admission_requires_native_six_wide_and_original_decode_lineage": true,
+    "full_model_control": "Normal adopted P1 with MMVQ and F16 disable flags unset",
+    "candidate_scoped_backend": "Only MMVQ disabled; normal F16 storage and selected FP32 accumulation",
+    "source_IO_owner": 65334,
+    "positive_store_replies": 10,
+    "total_store_replies_required": 108,
+    "old_sealer_quarantined_before_submission": true,
+    "replacement_sealer": 65340,
+    "replacement_sealer_submitted": false,
+    "source_handoff_finalizer_implemented": true,
+    "required_integrity_window_bytes": 262144,
+    "native_full_physical_alias_SHA256_EOF_preserved": true,
+    "payload_retransmissions": 0,
+    "campaign_complete": false,
+    "primary_metric": "(generated_tokens - 1) / decode_seconds",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ]
+  },
+  "latest_checkpoint_65351": {
+    "Gate_completed_at_observation": 4,
+    "Gate_failed": 0,
+    "Gate_metadata_coordinator": 65351,
+    "Gate_metadata_coordinator_PC_only": true,
+    "positive_source_store_replies": 11,
+    "source_store_total": 108,
+    "IQ2_ABBA_runner_and_analyzer_implemented": true,
+    "within_arm_output_and_route_reproducibility_required": true,
+    "cross_precision_route_changes_disclosed": true,
+    "counting_finite_reset_and_durable_completion_required": true,
+    "broader_quality_qualification_pending": true,
+    "primary_metric_unchanged": true,
+    "native_replays": 0,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65352": {
+    "queued_continuation": 65352,
+    "waits_for_positive_source_prefix": 65334,
+    "reserved_next_console_scope": true,
+    "reused_Up_layers": 44,
+    "new_Up_layers": 4,
+    "fresh_CPU_capacity_required": true,
+    "ABBA_cases": [
+      65400,
+      65401,
+      65402,
+      65403
+    ],
+    "tool_inputs_frozen": true,
+    "automatic_retries": 0,
+    "automatic_adoption": false,
+    "broader_quality_pending": true,
+    "native_work_submitted_by_continuation_at_observation": 0,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65354": {
+    "transfer_notification_positive_files": 21,
+    "total_transfer_files": 108,
+    "Gate_completed_at_observation": 18,
+    "Gate_failed": 0,
+    "source_handoff_monitor_active": true,
+    "reserved_next_workflow": 65352,
+    "heldout_quality_path_PC_prepared": true,
+    "heldout_quality_tasks": "Established Japanese instruction, arithmetic, JSON extraction",
+    "source_derivation_controls": 65353,
+    "original_guard_bodies_unchanged": 6,
+    "answer_classification_controls": 65354,
+    "answer_positive_controls": 7,
+    "answer_negative_controls": 9,
+    "native_quality_compiled": false,
+    "native_quality_executed": false,
+    "quality_only_after_decode_benefit": true,
+    "retain_every_current_P1_correct_answer": true,
+    "shared_queued_tools_unchanged": true,
+    "native_replays": 0,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65356": {
+    "heldout_source_PS5_ABI_compiled": 65356,
+    "heldout_native_quality_executed": false,
+    "Down_source_prepared": 65355,
+    "Down_new_files": 101,
+    "Down_source_uploaded": false,
+    "Gate_complete_at_observation": 26,
+    "Gate_failed": 0,
+    "Up_positive_store_replies": 27,
+    "Up_total_files": 108,
+    "total_remaining_placement_approx_GB": 27,
+    "observed_transfer_MiB_s_approx": 0.5,
+    "placement_only_estimate_hours": [
+      14,
+      15
+    ],
+    "estimate_includes_Gate_and_Down": true,
+    "unchanged_native_benchmark_replays": 0,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65365": {
+    "PC_only_Down": true,
+    "all17_corrected_shaders_compiled_and_validated": 65358,
+    "host_index_controls": 65359,
+    "actual_helper_cases": 24457996,
+    "old_overflow_negative_counterexamples": 13075116,
+    "cache_planes": 3713,
+    "logical_scalar_weights": 6083379200,
+    "physical_carrier_bytes": 1710950400,
+    "new_64_bit_shader_operations": false,
+    "provider": 65360,
+    "fixture": 65361,
+    "SELF": 65362,
+    "linked_binding": 65365,
+    "required_new_native_graphs": 12,
+    "unchanged_decode_GPU_results_reused": 0,
+    "corrected_native_CPU_or_GPU_submitted": false,
+    "Up_original_positive_stores_before_disconnect": 29,
+    "Up_source_suffix": 65363,
+    "Up_partial_file_observed_bytes": 119341056,
+    "completed_payload_retransmissions": 0,
+    "source_seal_handoff": 65364,
+    "reserved_Up_workflow": 65352,
+    "Gate_all48_encoding_complete": true,
+    "Gate_Up_full_metadata": 65351,
+    "full_model_speed_or_quality_qualified": false
+  },
+  "latest_checkpoint_65366": {
+    "separate_all_graph_completion_boundaries": true,
+    "positive_controls": 2,
+    "negative_controls": 14,
+    "actual_corrected_provider_positive_controls": 1,
+    "old_provider_and_wrong_native_negative_controls": 2,
+    "legacy_completion_source_unchanged": true,
+    "frozen_Up_tools_unchanged": true,
+    "required_new_native_graphs": 12,
+    "native_replays": 0,
+    "PS5_operations": 0,
+    "runner_integration_pending_reserved_Up_workflow_retirement": true
+  },
+  "latest_checkpoint_65367": {
+    "PS5_ABI_prefix_cache_compiled": true,
+    "source_and_GPU_slot_stride_bytes": 460800,
+    "reachable_prefix_bytes": 425024,
+    "omitted_tail_bytes": 35776,
+    "existing_pair_pipeline_reused": true,
+    "adjacent_bulk_and_padded_paths_preserved": true,
+    "main48_Down_name_guard": true,
+    "original_layer48_NextN_excluded": true,
+    "normal_production_speculative_model_candidate": false,
+    "new_weight_transfers": 0,
+    "new_quantization": false,
+    "new_GPU_shaders": 0,
+    "native_rate_or_equivalence_qualified": false,
+    "PS5_operations": 0
+  },
+  "latest_source_publication_update": {
+    "all48_Up_layers_whole_sealed": true,
+    "Up_retransmissions": 0,
+    "Gate_publication": 65390,
+    "interrupted_during_file": 7,
+    "failure": "550 No space left on device",
+    "positive_original_files_preserved": 6,
+    "owned_partial_retired_once": 65500,
+    "zero_write_cleanup_refusal": 65509,
+    "readonly_allocation_diagnosis": 65510,
+    "positive_unused_chunk_reclamation": 65511,
+    "suffix_workflow": 65513,
+    "new_positive_whole_files_at_checkpoint": 1,
+    "complete_whole_files_at_checkpoint": 7,
+    "remaining_Gate_plus_Down_bytes_at_resumption": 20444524558,
+    "completed_payload_retransmissions": 0,
+    "Gate_native_sealer_submissions": 0,
+    "full_model_speedup_qualified": false
+  },
+  "latest_checkpoint_65388": {
+    "first_Up_screen": {
+      "control": 65400,
+      "candidate": 65407,
+      "observations_per_arm": 1,
+      "complete_ABBA": false,
+      "metric": "(generated_tokens-1)*1000/decode_ms",
+      "conditions": [
+        {
+          "condition": "cold",
+          "control_tok_s": 10.479219859004738,
+          "candidate_tok_s": 8.002037471206446,
+          "change_percent": -23.638996233766985
+        },
+        {
+          "condition": "retained",
+          "control_tok_s": 12.093470064022155,
+          "candidate_tok_s": 9.358198874545423,
+          "change_percent": -22.617753010478868
+        },
+        {
+          "condition": "exact-prefix",
+          "control_tok_s": 13.390932153594475,
+          "candidate_tok_s": 12.39192241782704,
+          "change_percent": -7.46034498800201
+        }
+      ],
+      "production_adopted": false
+    },
+    "MMVQ_refinement": {
+      "native_case": 65383,
+      "completed": true,
+      "new_graphs": 12,
+      "mismatches": 0,
+      "maximum_absolute_error": 1.8015271052718163e-08,
+      "reference": "F64 of decoded weights and exactly Q8_1-representable F32 inputs",
+      "ordinary_exit": true,
+      "exact_P1_restoration": true,
+      "model_package": 65385,
+      "model_screen": 65388,
+      "model_speed_pending": true,
+      "heldout_quality_pending": true
+    },
+    "route_accounting_fix": {
+      "exception_case": 65401,
+      "ordinary_close": 65368,
+      "actual_geometry": 65369,
+      "corrected_model": 65372
+    },
+    "memory": {
+      "new_prefix_retirement": 65380,
+      "scanned": 19,
+      "total": 172,
+      "resident_before": 5344,
+      "resident_after": 0,
+      "free_before": 5855,
+      "free_after": 11199,
+      "source_writes": 0,
+      "GPU_calls": 0
+    },
+    "Down": {
+      "index_safe_admission_integrated": true,
+      "CPU_preparation": 65386,
+      "native_arithmetic_pending": true,
+      "prefix_cache_ABI": 65377,
+      "prefix_accounting_entry_ABI": 65378
+    },
+    "remaining_source_placement": {
+      "Gate_and_Down_bytes_approx": 21700000000,
+      "hours_approx": [
+        11,
+        12
+      ],
+      "uploads_started": false,
+      "transport_tuning": false
+    },
+    "automatic_approval": {
+      "initial6736_command_rejected_before_execution": true,
+      "actual65383_readiness_pages": 7374,
+      "lower_guard_executed": false
+    },
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65394": {
+    "MMVQ_full_Up_screen": {
+      "case": 65388,
+      "completed": true,
+      "ordinary_exit_and_exact_P1_restore": true,
+      "observations_per_arm": 1,
+      "complete_ABBA": false,
+      "metric": "(generated_tokens-1)*1000/decode_ms",
+      "conditions": [
+        {
+          "condition": "cold",
+          "control_tok_s": 10.479219859004738,
+          "candidate_tok_s": 7.390107725675089,
+          "change_percent": -29.478455217973032
+        },
+        {
+          "condition": "retained",
+          "control_tok_s": 12.093470064022155,
+          "candidate_tok_s": 9.397052781063792,
+          "change_percent": -22.296472961719672
+        },
+        {
+          "condition": "exact-prefix",
+          "control_tok_s": 13.390932153594475,
+          "candidate_tok_s": 12.452027984069476,
+          "change_percent": -7.011492245317463
+        }
+      ],
+      "production_adopted": false
+    },
+    "Down_CPU": {
+      "case": 65393,
+      "completed": true,
+      "native_passed": true,
+      "resources": 17,
+      "environment_checks": 7,
+      "ordinary_exit_and_exact_P1_restore": true
+    },
+    "Down_GPU": {
+      "case": 65394,
+      "active": true,
+      "new_graphs_required": 12,
+      "old_decode_reused": 0,
+      "capacity_readmission_after_exit_required": true
+    },
+    "source_cache": {
+      "prefix_windows_consumed": 39,
+      "prefix_total": 172,
+      "final_four_consumed": 11,
+      "final_four_total": 16,
+      "latest_scope": 65392,
+      "latest_cleared_pages": 5728,
+      "source_writes": 0
+    },
+    "Gate_publication_prepared": {
+      "case": 65390,
+      "new_files": 124,
+      "retained_Up_layers": 48,
+      "uploads": 0
+    },
+    "Down_prefix_model_integration": {
+      "completed_on_PC": true,
+      "actual_compiled_source_65377_reused": true,
+      "native_model_pending": true
+    },
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65396": {
+    "Down_GPU": {
+      "case": 65394,
+      "completed": true,
+      "native_passed": true,
+      "distinct_graphs": 12,
+      "mismatches": 0,
+      "canaries_exact": true,
+      "maximum_absolute_F64_error": 5.984275048831478e-07,
+      "ordinary_exit_and_exact_P1_restore": true
+    },
+    "capacity": {
+      "case": 65395,
+      "completed": true,
+      "available_first": 12262047744,
+      "available_last": 12262047744,
+      "baseline": 12184453120,
+      "total": 12280922112,
+      "ordinary_exit_and_exact_P1_restore": true,
+      "GPU_retirement_readmission_pending": false
+    },
+    "remaining_sequence": {
+      "case": 65396,
+      "active": true,
+      "Gate_publication": 65390,
+      "Down_publication": 65355,
+      "Gate_profiles": [
+        "MMVQ-off",
+        "MMVQ-on"
+      ],
+      "Down_profiles": [
+        "full-plane",
+        "source-prefix"
+      ],
+      "Up_layers_retransmitted": 0,
+      "original_readiness_pages": 7374,
+      "new_source_cache_target_pages": 16384,
+      "maximum_distinct_cache_scopes_per_role": 8,
+      "transfer_protocol_unchanged": true,
+      "extra_PS5_progress_probes": 0
+    },
+    "matched_ABBA_and_quality_required_for_any_gain": true,
+    "production_adopted": false,
+    "campaign_complete": false
+  },
+  "latest_checkpoint_65399": {
+    "PC_only": true,
+    "PS5_operations": 0,
+    "Up_ABI": 65397,
+    "Gate_Up_ABI": 65398,
+    "Down_ABI": 65399,
+    "existing_source_leases": 4,
+    "existing_scratch_bytes": 8388608,
+    "new_workers": 0,
+    "new_GPU_buffers": 0,
+    "unchanged_original_owner_SHA256": "f87f931a6a537cf32f8e1d92678182cdbc8db5c9f624cdec84b009ed4e86b02e",
+    "actual_IQ2_upload_bytes": 422400,
+    "accepted_request_bytes": 537600,
+    "unused_requested_bytes_per_IQ2": 115200,
+    "lower_physical_bytes_claimed": false,
+    "wrapper_host_controls": [
+      {
+        "layout": 1,
+        "positive": 4,
+        "negative": 24
+      },
+      {
+        "layout": 2,
+        "positive": 4,
+        "negative": 28
+      }
+    ],
+    "wrapper_global_constructors": 0,
+    "native_IO_equivalence_pending": true,
+    "native_rate_pending": true,
+    "integration_deferred_until_current_owner_retires": true,
+    "production_adopted": false
+  },
+  "latest_checkpoint_65516": {
+    "report": "source-capacity-and-stream-followups-20261104.md",
+    "prior_workflow65396_retired": true,
+    "allocation_overhead_bytes_per_chunk": 65536,
+    "unused_chunks_reclaimed": 52,
+    "logical_bytes_released": 27917287424,
+    "verified_allocated_bytes_released": 27920695296,
+    "all630_protected_files_preserved": true,
+    "authenticated_PC_originals_retained": true,
+    "observed_Up_packages": [
+      65514,
+      65515
+    ],
+    "compiled_stream_providers": [
+      65397,
+      65398,
+      65399
+    ],
+    "new_admission_negatives": 8,
+    "existing_codec_or_native_tests_replayed": 0,
+    "native_IO_equivalence_pending": true,
+    "production_adopted": false,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ],
+    "model_readiness_pages": 7374,
+    "stream_followups_run_under_existing_sequential_owner": true
+  },
+  "latest_checkpoint_65520": {
+    "minimum_request_providers": [
+      65517,
+      65518
+    ],
+    "Up_observed_model": 65519,
+    "larger_request_model65515_never_executed": true,
+    "IQ2_upload_bytes": 422400,
+    "accepted_request_bytes": 460800,
+    "unused_requested_bytes_per_IQ2": 38400,
+    "new_minimum_admission_negatives": 4,
+    "old_native_graphs_replayed": 0,
+    "new_weight_transfers": 0,
+    "PS5_calls": 0,
+    "native_IO_and_speed_pending": true,
+    "primary_metric_unchanged": true
+  },
+  "latest_checkpoint_65530": {
+    "Gate_source_files_positively_sealed": 124,
+    "Gate_layer_files": 48,
+    "complete_startup_policy_bytes": 1010366,
+    "unchanged_native_policy_limit_bytes": 1048576,
+    "host_preflight_correction_PS5_operations": 0,
+    "Gate_MMVQ_off": {
+      "status": "completed_single_screen_all_conditions_slower_not_adopted",
+      "control_tok_s": [
+        10.479219859004738,
+        12.093470064022155,
+        13.390932153594475
+      ],
+      "candidate_tok_s": [
+        7.986276379574362,
+        9.982410251554805,
+        11.722984378489047
+      ],
+      "change_percent": [
+        -23.7893995256546,
+        -17.4561957923699,
+        -12.45580035783923
+      ],
+      "tokens_and_bytes_exact": true,
+      "ordinary_close_and_exact_P1_restoration": true,
+      "native_case_replayed": false
+    },
+    "Gate_MMVQ_on": {
+      "readiness_only_refusal_free_pages": 5565,
+      "pre_refusal_title_launches": 0,
+      "pre_refusal_source_publications": 0,
+      "existing_build_reused": true,
+      "changed_cache_starting_window": 1,
+      "changed_cache_windows": 21,
+      "changed_cache_free_after": 10403,
+      "remaining_Gate_windows": 170
+    },
+    "model_readiness_pages": 7374,
+    "new_PC_readiness_dispatch_control": 65529,
+    "new_PS5_coordinator": 65530,
+    "stream_IO_and_remaining_rates_pending": true,
+    "production_adopted": false,
+    "production_remains": "R1+P1",
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ]
+  },
+  "latest_checkpoint_65531": {
+    "Gate_original_profiles_complete": true,
+    "Gate_MMVQ_on": {
+      "status": "completed_single_screen_all_conditions_slower_not_adopted",
+      "control_tok_s": [
+        10.479219859004738,
+        12.093470064022155,
+        13.390932153594475
+      ],
+      "candidate_tok_s": [
+        8.009479605084191,
+        10.003725616130831,
+        11.633629356733199
+      ],
+      "change_percent": [
+        -23.56797821927853,
+        -17.279940635965797,
+        -13.12308043013698
+      ],
+      "tokens_and_bytes_exact": true,
+      "ordinary_close_and_exact_P1_restoration": true,
+      "accepted_title_launches": 1,
+      "existing_case_collected_without_relaunch": true
+    },
+    "supervisor65530_terminated_after_duplicate_owner_receipt": true,
+    "existing_case_collector": 69318,
+    "collector_exit_code": 0,
+    "per_phase_owner_receipts_checked_before_dispatch": true,
+    "new_PS5_coordinator": 65531,
+    "Gate_cache_windows_consumed": 22,
+    "Gate_cache_windows_remaining": 170,
+    "Up_plain_stream_native_IO_in_progress": true,
+    "Down_pending": true,
+    "production_remains": "R1+P1",
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ]
+  },
+  "latest_checkpoint_65538": {
+    "Up_minimum_stream_IO": {
+      "qualified": true,
+      "same_quantized_model_compared": true,
+      "F32_rows_exact": 69,
+      "vocabulary_columns": 248320,
+      "ordered_routes_and_tokens_bytes_exact": true,
+      "actual_streamed_groups": 1043,
+      "all_ordinary_closes_and_exact_P1_restores": true
+    },
+    "Up_minimum_stream_speed": {
+      "observations_per_arm": 1,
+      "control_tok_s": [
+        10.479219859004738,
+        12.093470064022155,
+        13.390932153594475
+      ],
+      "candidate_tok_s": [
+        8.971814387531557,
+        11.445104094855894,
+        13.227152080312035
+      ],
+      "change_percent": [
+        -14.384710806290368,
+        -5.3612897351533295,
+        -1.2230670083596684
+      ],
+      "all_conditions_slower": true,
+      "matched_ABBA": false,
+      "adopted": false,
+      "unchanged_case_replayed": false
+    },
+    "Gate_Up": {
+      "plain_observed_package_built": true,
+      "minimum_stream_observed_package": 65535,
+      "native_plain_readiness_refusal_pages": 5111,
+      "native_title_launches": 0,
+      "added_pools_last_free_pages": 6497
+    },
+    "added_Gate_Up_source_cache_pools_exhausted": true,
+    "original_complement": {
+      "files": 582,
+      "total_windows": 6076,
+      "completed_windows": 4842,
+      "unscanned_windows": 1234,
+      "completed_read_scopes": 3,
+      "completed_complement_scopes": 22,
+      "current_PC_geometry_exact": true,
+      "new_invalid_handoff_controls": 5,
+      "PS5_operations": 0
+    },
+    "new_main_handoff_dispatch_control": 65538,
+    "completed_cursors_pass_between_roles": true,
+    "duplicate_pool_keys_refused": true,
+    "Down_primary_pool_excluded_from_its_fallback_ledger": true,
+    "Down_initial_source_publication_active": true,
+    "waiting_post_source_coordinator": 65537,
+    "waiter_PS5_operations_before_positive_source_retirement": 0,
+    "model_readiness_pages": 7374,
+    "source_cache_soft_target_pages": 16384,
+    "old_GPU_codec_tests_replayed": 0,
+    "production_remains": "R1+P1",
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ]
+  },
+  "latest_checkpoint_65556": {
+    "date": "2026-11-05",
+    "phase": "same_changed_state_full_source_sealer_active",
+    "source_files_transferred": 101,
+    "source_payload_retransmissions": 0,
+    "original_source_sealer": {
+      "case": 65355,
+      "free_pages": 1196,
+      "required_pages": 1201,
+      "operation_calls": 0,
+      "helper_exited": true,
+      "helper_files_removed": true,
+      "replayed": false
+    },
+    "staging_metadata": {
+      "case": 65545,
+      "all48_exact": true,
+      "mode": "0777 before seal;0644 after seal"
+    },
+    "cache_zero_window_scopes": [
+      {
+        "case": 65546,
+        "free_pages": 1113,
+        "floor": 1154
+      },
+      {
+        "case": 65549,
+        "free_pages": 1117,
+        "floor": 1154
+      }
+    ],
+    "closed_component_retirement": {
+      "case": 65551,
+      "files": 1,
+      "bytes": 57327616,
+      "PC_original_preserved": true
+    },
+    "archived_report_retirement": {
+      "case": 65552,
+      "files": 20,
+      "bytes": 2112635,
+      "PC_archives_preserved": true
+    },
+    "positive_changed_state_cache": {
+      "case": 65553,
+      "windows": 4,
+      "total_windows": 192,
+      "remaining_windows": 188,
+      "sync_calls": 29,
+      "resident_pages_before": 14400,
+      "resident_pages_after": 0,
+      "free_pages_before": 2613,
+      "free_pages_after": 17013,
+      "source_writes": 0,
+      "all_mappings_FDs_and_helper_retired": true
+    },
+    "new_source_seal": {
+      "case": 65554,
+      "phase": "active",
+      "original_context_exact": true,
+      "window_bytes": 262144,
+      "metadata_margin_pages": 97,
+      "minimum_pages": 1201,
+      "total_sealer_submissions_including_old_refusal": 2,
+      "whole_source_qualification_complete": false
+    },
+    "prefix_transition_controls": {
+      "case": 65555,
+      "positives": 2,
+      "negatives": 8,
+      "PS5_operations": 0
+    },
+    "queued_successor": 65537,
+    "model_readiness_pages": 7374,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "new_inference_rates": null,
+    "production_adopted": false,
+    "initializer_repeated": false
+  },
+  "latest_checkpoint_65557": {
+    "date": "2026-11-05",
+    "source_seal_case": 65554,
+    "source_files": 101,
+    "whole_physical_alias_SHA256_EOF": true,
+    "unchanged_parent_sources": 518,
+    "unchanged_parent_directory_snapshots": true,
+    "helper_exited": true,
+    "helper_files_removed": true,
+    "original_source_writes": 0,
+    "original_zero_operation_refusal_preserved": true,
+    "total_source_sealer_submissions": 2,
+    "consumed_Down_windows": 4,
+    "remaining_Down_windows": 188,
+    "whole_Down_windows": 192,
+    "prefix_handed_off_before_source_owner_release": true,
+    "both_source_owners_clear": true,
+    "existing_queued_coordinator": 65537,
+    "phase": "Gate-Up followups started; Down next",
+    "new_inference_rates": null,
+    "production_adopted": false,
+    "model_readiness_pages": 7374,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms"
+  },
+  "latest_checkpoint_65568": {
+    "date": "2026-11-05",
+    "Gate_Up_IO": {
+      "case": 65564,
+      "completed": true,
+      "F32_rows_exact": 69,
+      "whole_vocabulary_columns": 248320,
+      "ordered_routes_tokens_and_bytes_exact": true,
+      "streamed_groups": 1068,
+      "ordinary_closes_and_P1_restores": true,
+      "completed_plain_case_replayed": false,
+      "timing_phase": "first-observer-free-native-case-active"
+    },
+    "old_source_cache_pools": {
+      "all_five_exhausted": true,
+      "remaining_Down_windows": 0,
+      "remaining_original_complement_windows": 0,
+      "ledgers_reset": false
+    },
+    "staging_image_cleanup": {
+      "case": 65560,
+      "files": 2,
+      "bytes": 54067200,
+      "free_before": 3300,
+      "free_after": 3300,
+      "current_seven_hashes_pass": true
+    },
+    "completed_read_owner_qualification": {
+      "controls": 65562,
+      "actual_completed_source_windows": 13685,
+      "owner_negatives": 8,
+      "ledger_positives": 2,
+      "ledger_negatives": 4,
+      "requires_latest_actual_model_and_positive_ordinary_exit": true,
+      "duplicate_case_keys_and_reset_prefixes_refused": true,
+      "physical_overlap_across_actual_model_owners_explicit": true
+    },
+    "native_owner_cache": {
+      "case": 65563,
+      "scanned_windows": 23,
+      "total_windows": 3805,
+      "sync_calls": 127,
+      "resident_pages_before": 5856,
+      "resident_pages_after": 0,
+      "free_before": 3090,
+      "free_after": 8945,
+      "source_writes": 0,
+      "touched_mapping_bytes": 0,
+      "all_mappings_FDs_and_helper_positively_retired": true,
+      "old_pool_ledgers_unchanged": true,
+      "native_API_body_unchanged": true
+    },
+    "Down_prebuilt": {
+      "full_plane": 65559,
+      "source_prefix": 65561,
+      "PC_only": true,
+      "reuse_controls": 65566,
+      "positive_models": 2,
+      "invalid_variants": 12,
+      "queued_successor": 65567
+    },
+    "model_readiness_pages": 7374,
+    "cache_floor_pages": 1154,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "additional_usable_tok_s": null,
+    "production_adopted": false,
+    "initializer_repeated": false
+  },
+  "historical_checkpoint_policy": "Earlier numbered checkpoints retain observations at their recorded times; final_disposition_65576 and current_console_execution supersede pending or active-owner statements.",
+  "final_disposition_65576": {
+    "date": "2026-11-05",
+    "campaign_complete": true,
+    "all_pending_profiles_resolved": true,
+    "selected_features": [
+      "R1",
+      "P1"
+    ],
+    "additional_adoptions": [],
+    "additional_decode_gain_tok_s": 0,
+    "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+    "conditions": [
+      "cold",
+      "retained",
+      "exact-prefix"
+    ],
+    "review": {
+      "case": "final-performance-disposition-65571/review.private.json",
+      "bytes": 2674,
+      "sha256": "32675f1a9aae250151ae8ba9e43f9b0ec6bf3985e9a797d9eed1c38b3ce518b9"
+    },
+    "final_screens": [
+      {
+        "profile": "Up_minimum_stream",
+        "receipt": {
+          "case": "Q2-Q3-completed-Gate-owner-continuation-65531/Gate/stream-followups/Up/first-screen.private.json",
+          "bytes": 11639,
+          "sha256": "35628b58c123f00fa5c04c30c6438e219480b474eb2f597022153b20450b0f6a"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 8.971814387531557,
+            "change_percent": -14.384710806290368
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 11.445104094855894,
+            "change_percent": -5.3612897351533295
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 13.227152080312035,
+            "change_percent": -1.2230670083596684
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      },
+      {
+        "profile": "Gate_Up_minimum_stream",
+        "receipt": {
+          "case": "Q2-Gate-Up-completed-plain-continuation-65564/Gate-Up/first-screen.private.json",
+          "bytes": 11522,
+          "sha256": "43b0fef03c4e9dedb83bdf9052a03ba066ce8e428ad19119c0853f6701a35e98"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 9.005969681704336,
+            "change_percent": -14.05877724794986
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 11.877638408465462,
+            "change_percent": -1.7846958268726176
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 12.632910558901429,
+            "change_percent": -5.660708201628617
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      },
+      {
+        "profile": "Down_full_plane",
+        "receipt": {
+          "case": "Q3-Down-prebuilt-after-Gate-Up-continuation-65567/Down/full-plane-screen.private.json",
+          "bytes": 11389,
+          "sha256": "0557faddaa3c32e91320779a7f22b72863c2acd8903933c23e2375d2cbb25fa6"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 5.725339587667985,
+            "change_percent": -45.364829971114396
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 9.042587269925617,
+            "change_percent": -25.227521777829974
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 11.262401229077929,
+            "change_percent": -15.895315577005542
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      },
+      {
+        "profile": "Down_source_prefix",
+        "receipt": {
+          "case": "Q3-Down-prebuilt-after-Gate-Up-continuation-65567/Down/source-prefix-screen.private.json",
+          "bytes": 11511,
+          "sha256": "9245b7f838e4b5c33df1ef64aa2cea646a2242165d24a6710d9ce91cdae9daad"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 5.661682098499102,
+            "change_percent": -45.97229398108249
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 9.035291882338047,
+            "change_percent": -25.287846792477954
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 11.097403445614983,
+            "change_percent": -17.127476128417605
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      },
+      {
+        "profile": "Down_minimum_stream",
+        "receipt": {
+          "case": "Q3-Down-prebuilt-after-Gate-Up-continuation-65567/Down/stream-followups/Down/first-screen.private.json",
+          "bytes": 11672,
+          "sha256": "36b046dffdf9802ec5b7fce1e311b858a9f788c2efdaa68aa2deef211fe79200"
+        },
+        "conditions": [
+          {
+            "condition": "cold",
+            "control_tok_s": 10.479219859004738,
+            "candidate_tok_s": 6.390576962091249,
+            "change_percent": -39.0166725378907
+          },
+          {
+            "condition": "retained",
+            "control_tok_s": 12.093470064022155,
+            "candidate_tok_s": 10.984584638297548,
+            "change_percent": -9.169290698651666
+          },
+          {
+            "condition": "exact-prefix",
+            "control_tok_s": 13.390932153594475,
+            "candidate_tok_s": 12.224860123226023,
+            "change_percent": -8.707922771869537
+          }
+        ],
+        "observations_per_arm": 1,
+        "matched_means": false,
+        "all_conditions_slower": true,
+        "adopted": false
+      }
+    ],
+    "minimum_stream_IO": [
+      {
+        "profile": "Up_minimum_stream",
+        "receipt": {
+          "case": "Q2-Q3-completed-Gate-owner-continuation-65531/Gate/stream-followups/Up/IO-equivalence.private.json",
+          "bytes": 8610,
+          "sha256": "651b0f1365a647c2f1e044d0e16c06f926fe0d5459119547f3ee69fe618b9d71"
+        },
+        "F32_rows": 69,
+        "vocabulary_columns": 248320,
+        "actual_streamed_groups": 1043,
+        "same_quantized_model": true,
+        "hashes_routes_tokens_bytes_exact": true,
+        "ordinary_closes_and_restores": true
+      },
+      {
+        "profile": "Gate_Up_minimum_stream",
+        "receipt": {
+          "case": "Q2-Gate-Up-completed-plain-continuation-65564/Gate-Up/IO-equivalence.private.json",
+          "bytes": 8211,
+          "sha256": "b4cca50b45072af9b856cf62e1c43d47b03c4f036fb489afeed8bfe32a2dfbc0"
+        },
+        "F32_rows": 69,
+        "vocabulary_columns": 248320,
+        "actual_streamed_groups": 1068,
+        "same_quantized_model": true,
+        "hashes_routes_tokens_bytes_exact": true,
+        "ordinary_closes_and_restores": true
+      },
+      {
+        "profile": "Down_minimum_stream",
+        "receipt": {
+          "case": "Q3-Down-prebuilt-after-Gate-Up-continuation-65567/Down/stream-followups/Down/IO-equivalence.private.json",
+          "bytes": 8944,
+          "sha256": "c6d724c45421e2ae4bd68812a53a4cd59d36daf69ebb716dd369098969063aa4"
+        },
+        "F32_rows": 69,
+        "vocabulary_columns": 248320,
+        "actual_streamed_groups": 1044,
+        "same_quantized_model": true,
+        "hashes_routes_tokens_bytes_exact": true,
+        "ordinary_closes_and_restores": true
+      }
+    ],
+    "broader_IQ2_answer_quality_qualified": false,
+    "heldout_adoption_runs_needed": false,
+    "reason_no_additional_ABBA": "Every remaining first screen was slower in all three conditions",
+    "current_SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed",
+    "canonical_rebuild_inputs": 947,
+    "driver_revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "driver_profile": "cumulative-idle",
+    "persistent_caches": false,
+    "console_idle": true,
+    "unknown_completion": false,
+    "initializer_repeated": false,
+    "PS5_cleanup": {
+      "receipt": {
+        "case": "final-PS5-artifact-retirement-65572/result.private.json",
+        "bytes": 546,
+        "sha256": "c434ee4194fab9079bf22fdeb10592ae5a864e7229f9b78dd3f0f9ca30d5fbe7"
+      },
+      "namespaces": 5,
+      "source_files": 444,
+      "source_logical_bytes": 32192794023,
+      "component_inputs": 3,
+      "component_bytes": 74416128,
+      "both_namespace_absence_confirmed": true,
+      "selected_seven_full_native_hashes_pass": true,
+      "completed_deletions_replayed": 0,
+      "known_host_check_error_corrected": true,
+      "original_selected_namespace_children_preserved": true
+    },
+    "PC_cleanup": {
+      "receipt": {
+        "case": "final-PC-artifact-retirement-65573/result.private.json",
+        "bytes": 2645885,
+        "sha256": "500f5709ccd41895222bd2d1777e22cdc6a4e5b076312b05fa6264684ac23e24"
+      },
+      "files": 7152,
+      "logical_bytes": 71543433510,
+      "protected_canonical_and_evidence_files": 694,
+      "shared_unselected_inputs": 0,
+      "selected_canonical_hashes_unchanged": true,
+      "original_BF16_sources_preserved": true,
+      "source_text_and_logs_preserved": true,
+      "duplicate_retirement": {
+        "case": "final-PC-duplicate-retirement-65575/result.private.json",
+        "bytes": 462,
+        "sha256": "0c4c1b290a4abc2a3ce49d4c9d2e6f5361ccf60841a6229969a4833b90bff581"
+      },
+      "duplicate_current_content_full_SHA256_verified": true
+    },
+    "tested_configuration_rejection_is_not_future_impossibility": true,
+    "prior_report": {
+      "case": "final-campaign-report-65574/result.private.json",
+      "bytes": 9407,
+      "sha256": "d6ceb27056cdfbb2eafcc92ef496c260f6d0c078e2f549925f1b89bae4dd7deb"
+    }
+  }
+}

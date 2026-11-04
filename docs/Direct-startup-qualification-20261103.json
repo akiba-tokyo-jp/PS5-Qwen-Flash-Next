@@ -1,0 +1,126 @@
+{
+  "schema": "ps5-qwen-Direct-startup-qualification-v1",
+  "date": "2026-11-03",
+  "campaign_complete": false,
+  "Direct_transport": {
+    "qualified_native_case": 64779,
+    "receiver_host_fault_cases": 14,
+    "opt_in_only": true,
+    "SELF_native_publisher_still_required": true,
+    "same_consumed_journal_collection_only": true,
+    "no_causal_RAM_or_inference_gain_claimed": true
+  },
+  "CPU_passive_settle": {
+    "entry": 64788,
+    "package": 64789,
+    "native_case": 64792,
+    "CXX_initializers_completed": true,
+    "settle_returned_refusal": true,
+    "initial_settle_free_pages": 1086,
+    "final_CPU_observation_free_pages": 1261,
+    "SELF_data_reads": 0,
+    "model_loads": 0,
+    "GPU_calls": 0,
+    "ordinary_exit_and_current_seven_restoration_completed": true,
+    "exact_failure_cause_not_isolated": true,
+    "unchanged_retry_permitted": false,
+    "closure": {
+      "bytes": 371,
+      "sha256": "f03e65f3c376453e814a9fa584d70bbbb4cb21d47deb8a43f34b9fcf99344e61"
+    }
+  },
+  "identical_selected_publication": {
+    "case": 64795,
+    "all_seven_payloads_unchanged_and_native_hashed": true,
+    "protected_PC_inputs_exact": 108,
+    "shader_data_mode": "0644",
+    "fresh_physical_and_alias_identity_checked": true,
+    "prior_identical_content_1527_asset_382_lookup_CPU_proof_preserved": true,
+    "free_before": 7055,
+    "free_after": 7077,
+    "title_launches": 0,
+    "GPU_calls": 0,
+    "initializer_requests": 0,
+    "result": {
+      "bytes": 1858,
+      "sha256": "bb7538e2c1fa4c7897e1e1197a5bae50d3496c173bedbc08124bd9a5c359f700"
+    }
+  },
+  "original_reader_CPU_scope": {
+    "entry": 64796,
+    "package": 64797,
+    "pricing": 64798,
+    "host_closure_controls": 64799,
+    "original_selected_reader_and_object_byte_exact": true,
+    "original_CPU_floor_pages": 919,
+    "CPU_only_screen_pages": 6329,
+    "model_screen_pages_unchanged": 7374,
+    "native_case": 64800,
+    "completed": true,
+    "whole_SELF_SHA_identity_EOF_passed": true,
+    "SELF_bytes": 21938599,
+    "SELF_sha256": "0d81b0f2f121078d7cb9eee342f2743a03daad75f99652e144ab925fbacb1735",
+    "elapsed_ns": 1221970244,
+    "read_calls": 336,
+    "free_before": 2296,
+    "minimum_sampled_free": 1525,
+    "free_after": 2274,
+    "model_loads": 0,
+    "GPU_calls": 0,
+    "model_source_workers": 0,
+    "model_source_payload_reads": 0,
+    "ordinary_OS_closes": 1,
+    "current_seven_restored_and_natively_hashed": true,
+    "CPU_heap_peak_bytes": 16777216,
+    "CPU_libc_fallbacks": 0,
+    "supervisor_terminal_marker_mismatch_stopped_before_close_submission": true,
+    "source_bound_CPU_completion_marker_fixed": true,
+    "title_relaunches": 0,
+    "closure": {
+      "bytes": 1110,
+      "sha256": "a5e6ff623688f98116b04dbfade5926a90df116b29210c45cb6c1b747cf973bc"
+    },
+    "result": {
+      "bytes": 1204,
+      "sha256": "4ffd00c8cc91c0aa4a1cbcdee09a70e4f6037c16a54dda3a70fbb8f3e8ca67c3"
+    },
+    "inference_gain_qualified": false
+  },
+  "production_SELF_sha256": "947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7",
+  "production_optimization_change": false,
+  "initializer_repeated": false,
+  "latest_resource_screen": {
+    "case": 64822,
+    "free_pages": 5696,
+    "model_screen_pages": 7374,
+    "new_model_launch_admitted": false,
+    "native_owners": 0,
+    "unknown_completion": false,
+    "result": {
+      "bytes": 887,
+      "sha256": "5f02a2a34ea56f4535a1312d65914ab8f66266d96bc401a7ec55976576c620c8"
+    }
+  },
+  "superseded_unlaunched_CPU_retirement": {
+    "case": 64802,
+    "scopes": [
+      64784,
+      64785,
+      64787
+    ],
+    "files": 20,
+    "bytes": 209697335,
+    "protected_current_inputs_exact": 108,
+    "latest_CPU_and_MTP_packages_preserved": true,
+    "sources_and_receipts_preserved": true,
+    "PS5_operations": 0
+  },
+  "new_assigned_port_qualification": {
+    "host_case": 64817,
+    "host_controls": 10,
+    "native_opaque_copy": 64818,
+    "native_component_and_restoration": 64820,
+    "original_receiver_and_14_host_inputs_unchanged": true,
+    "inference_or_RAM_gain_qualified": false
+  }
+}

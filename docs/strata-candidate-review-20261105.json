@@ -1,0 +1,245 @@
+{
+  "schema": "ps5-qwen-strata-source-review-v1",
+  "date": "2026-11-05",
+  "review_complete": true,
+  "implementation_started": false,
+  "PS5_operations": 0,
+  "native_performance_measured": false,
+  "production_adopted": false,
+  "upstream": {
+    "repository": "Niko1221/Strata",
+    "revision": "ffa80d73133ea5c548aefe57889a16e8085a938f",
+    "commit_UTC": "2026-11-02T22:37:27Z",
+    "previous_review": "7ddc17a38fe7f31637e895ecfba58c2cd43d65ec",
+    "ahead_commits": 1887,
+    "changed_paths": 1628,
+    "local_checkout": "C:\\Users\\User\\ps5-ai\\strata-source-review-20261105",
+    "worktree_clean": true,
+    "license": "MIT",
+    "relevant_commits": {
+      "1f8ca8de": "1f8ca8de1e870f285892f6d7f9a67f917923df77",
+      "dd97421d": "dd97421d3fbb97a1905598a82ce3188663d865ca",
+      "a11f8b0a": "a11f8b0aa5445389cbbb0a0292402ee8d31aad4a",
+      "f217b23b": "f217b23bd35aacfd611a62b3711c6a932cfdd070"
+    },
+    "files": [
+      {
+        "path": "LICENSE",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/LICENSE",
+        "bytes": 1093,
+        "sha256": "949b9b0aada7476006469e58ee4ffb0e0f68c2d9137e90a356757b61a09d37f0"
+      },
+      {
+        "path": "AGENTS.md",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/AGENTS.md",
+        "bytes": 7349,
+        "sha256": "92a848ce2d596ffff0534f079329847f1596a6bdce912434bfb61bc15558824d"
+      },
+      {
+        "path": "src/core/expert_cache.cpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/src/core/expert_cache.cpp",
+        "bytes": 40749,
+        "sha256": "1edd1af7c0a40408185bec494f7fae4f31ed811098a57b347683b5ce96e3791a"
+      },
+      {
+        "path": "src/core/expert_source.cpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/src/core/expert_source.cpp",
+        "bytes": 353639,
+        "sha256": "3c5204ec0f3a21f603c37aacab568abd9b21502edf63d7ea3212e6321c6d95e2"
+      },
+      {
+        "path": "src/core/verify.cpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/src/core/verify.cpp",
+        "bytes": 322253,
+        "sha256": "41fe8de615913d809169ec7f1d4aac6f78c81d3e9b469568effae4d4e7c3a17a"
+      },
+      {
+        "path": "src/core/layer.cpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/src/core/layer.cpp",
+        "bytes": 122834,
+        "sha256": "e1dd7e8c737c4f9a24e95bbe15c85096e8bd307a0a197dd2e91b152ff42d954b"
+      },
+      {
+        "path": "src/kernels/cuda/shared_expert.cu",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/src/kernels/cuda/shared_expert.cu",
+        "bytes": 28511,
+        "sha256": "c42f589d07f4ea52be2addb1fe8aaf8ca517d1e96e5401ae68cc72a6ae3859eb"
+      },
+      {
+        "path": "include/strata/kernels/shared_expert.hpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/include/strata/kernels/shared_expert.hpp",
+        "bytes": 7254,
+        "sha256": "e74db12dbc6c7b174ae1842521fcc01f12379d4c2a5c4729afac490d4e66baa3"
+      },
+      {
+        "path": "src/kernels/cuda/native_mmvq.cu",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/src/kernels/cuda/native_mmvq.cu",
+        "bytes": 202191,
+        "sha256": "885c1bdb51a13f0f4a5ba1858f4321b3c625859a28d48999e145088c781c1895"
+      },
+      {
+        "path": "src/prefill/moe_mmq.cu",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/src/prefill/moe_mmq.cu",
+        "bytes": 37797,
+        "sha256": "9076f33f1932dd595d47847629aea96b132a16f79b4a5a02bdf91cd2fa3d46a4"
+      },
+      {
+        "path": "include/strata/prefill/moe_mmq.hpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/include/strata/prefill/moe_mmq.hpp",
+        "bytes": 12029,
+        "sha256": "ab259da0ce1154dbeb196d3bef5c7ba462915f91cc14f4ca67c7f42374f4c4fc"
+      },
+      {
+        "path": "include/strata/prefill/copy_events.hpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/include/strata/prefill/copy_events.hpp",
+        "bytes": 2663,
+        "sha256": "16f8f86476984b939e728302b03da44867960ea3b385c84e334f827ce8cd3d57"
+      },
+      {
+        "path": "include/strata/prefill/routed_stream.hpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/include/strata/prefill/routed_stream.hpp",
+        "bytes": 8938,
+        "sha256": "4aac2f5bb781a2932b33135238960993b1c27b3ac1610436dee9d4de0f4d2b73"
+      },
+      {
+        "path": "src/prefill/copy_events_test.cpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/src/prefill/copy_events_test.cpp",
+        "bytes": 9068,
+        "sha256": "6b3415e18064cd5619569d6ae2ff4cfe619b834abc853b7b23645a2bce363098"
+      },
+      {
+        "path": "tests/cuda/prefill_swiglu_quant_test.cpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/tests/cuda/prefill_swiglu_quant_test.cpp",
+        "bytes": 4052,
+        "sha256": "a84208f18ca4b3c8af1071ebe68fcc88f19d0fd4370e5b312692972f459960a2"
+      },
+      {
+        "path": "include/strata/kernels/fused_gr.hpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/include/strata/kernels/fused_gr.hpp",
+        "bytes": 7466,
+        "sha256": "68cb0c1d4880b425f89bff2ea4461d1d12dcf580717e5f68d723111d27db01a5"
+      },
+      {
+        "path": "include/strata/core/uma_cache.hpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/include/strata/core/uma_cache.hpp",
+        "bytes": 2037,
+        "sha256": "be3171518b666b769b6f9283cb6543fdd829d8e14dc879a52c399fbc606bd44a"
+      },
+      {
+        "path": "include/strata/core/dma_batch.hpp",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/include/strata/core/dma_batch.hpp",
+        "bytes": 5986,
+        "sha256": "da42b32773554b9136809ed5103ab3ccb133fada73b985b7124f7951f826c850"
+      },
+      {
+        "path": "docs/GDN_CONTRACT.md",
+        "url": "https://github.com/Niko1221/Strata/blob/ffa80d73133ea5c548aefe57889a16e8085a938f/docs/GDN_CONTRACT.md",
+        "bytes": 6045,
+        "sha256": "b11cd4e3b988201a93210efd2a12c4da3293ea2fabb797d1c5e7a41f9d481f0e"
+      }
+    ]
+  },
+  "production": {
+    "SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed",
+    "features": [
+      "R1",
+      "P1"
+    ],
+    "driver": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
+    "profile": "cumulative-idle",
+    "persistent_caches": false
+  },
+  "candidates": [
+    {
+      "id": "ST1",
+      "mechanism": "Reuse existing activation conversion across projections or branches",
+      "target": [
+        "decode",
+        "prefill"
+      ],
+      "new_single_token_wiring": true,
+      "eligibility": "Only if both incumbent consumers already select the identical Q8_1 representation; current repeated conversion count is unmeasured",
+      "refinements": [
+        "Preserve one generation-bound converted input across shared/routed branches",
+        "Have the original producer emit the existing converted layout"
+      ],
+      "weight_requantization": false,
+      "PS5_adaptation_required": true
+    },
+    {
+      "id": "ST2",
+      "mechanism": "Fuse SwiGLU with the following existing input conversion",
+      "target": [
+        "eligible_decode",
+        "prefill"
+      ],
+      "new_prefill_implementation": true,
+      "existing_decode_reference_predates_delta": true,
+      "upstream_new_path": "CUDA experimental SM60 only; explicitly disabled on HIP",
+      "eligibility": "Selected Vulkan consumer, original arithmetic, layout, padding and buffer lifetimes must match",
+      "refinements": [
+        "Single-token existing-Q8_1 path",
+        "Multi-token prefill and original padding"
+      ],
+      "weight_requantization": false,
+      "PS5_adaptation_required": true
+    },
+    {
+      "id": "ST3",
+      "mechanism": "Sparse transfer completion records and release-wait deduplication",
+      "target": [
+        "prefill"
+      ],
+      "ordinary_decode_benefit_established": false,
+      "refinements": [
+        "Record one covering completion for a bounded in-order copy group",
+        "Deduplicate only current-walk slot-release waits with proven coverage"
+      ],
+      "constraints": [
+        "Ring longer than compute group",
+        "Both releases belong to current walk",
+        "Positive source and consumer completion",
+        "Do not combine with upstream routed-stream switch"
+      ],
+      "weight_requantization": false,
+      "PS5_adaptation_required": true
+    }
+  ],
+  "host_validation": {
+    "test": "upstream src/prefill/copy_events_test.cpp",
+    "runs": 1,
+    "result": "passed",
+    "compiler": "toolchain/msys-clang64/clang64/bin/clang++.exe",
+    "options": [
+      "-std=c++17",
+      "-O2"
+    ],
+    "log": {
+      "path": "C:\\Users\\User\\ps5-ai\\strata-review-host-20261105\\copy-events-test.log",
+      "bytes": 37,
+      "sha256": "1a27cde0a1fec350ef807ff6df61043f26b3a876a5b8d4991e71fdb792cb84fb"
+    },
+    "binary_before_retirement": {
+      "bytes": 25600,
+      "sha256": "6e6455309e5fb92547cdf6bd1221689aa1f67e83ac6cd5d9df94a7dcbad33ba9"
+    },
+    "binary_retired": true,
+    "includes_stale_event_negative_control": true,
+    "PS5_or_GPU_qualification": false
+  },
+  "excluded": [
+    "Unrouted stream-all prefill skip: current selected-miss path already avoids that workload",
+    "Staged RAM-tier promotions: no current second RAM-tier reread saving established",
+    "Unchanged UMA/DMA headers and already integrated checkpoint/GDN fusions",
+    "NVIDIA-specific kernel tables and PTX instructions",
+    "Speculation/window expansion and unrelated model or desktop changes"
+  ],
+  "primary_metric": "(generated_tokens-1)*1000/decode_ms",
+  "conditions": [
+    "cold",
+    "retained",
+    "exact-prefix"
+  ],
+  "estimated_tok_s_gain": null,
+  "previous_campaign_remains_complete": true
+}

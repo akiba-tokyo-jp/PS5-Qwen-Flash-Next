@@ -8,7 +8,9 @@
 #include <stddef.h>
 #include <stdint.h>
 #define QWEN_LAUNCH_ALIGNMENT 16384u
+#ifndef QWEN_LAUNCH_WINDOW
 #define QWEN_LAUNCH_WINDOW (1u<<20)
+#endif
 struct qwen_launch_integrity {
     void *context;
     uint64_t (*now_ns)(void *);

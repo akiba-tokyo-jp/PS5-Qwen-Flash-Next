@@ -12,7 +12,8 @@ from pathlib import Path
 
 def upload(capture,remote,out,lan,native_verify):
     path=Path(capture['path']);out=Path(out)
-    if (not re.fullmatch('/data/ai/native-moss-image-sft/PPSA99190/eboot.pending-qwen-plan-[0-9]+\\.bin',remote)or
+    owned_pending=r'(?:/data/ai/native-moss-image-sft/PPSA99190/eboot.pending-qwen-plan-[0-9]+|/data/ai/moss-qwen-case-[0-9a-f]{32}-(?:candidate|restore)-SELF)\.bin'
+    if (not re.fullmatch(owned_pending,remote)or
         type(capture['bytes'])is not int or not 0<capture['bytes']<=128<<20 or
         not re.fullmatch('[0-9a-f]{64}',capture['sha256'])or not callable(native_verify)):
         raise ValueError('An exact new owned SELF and mandatory native verifier are required')

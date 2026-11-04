@@ -1,5 +1,10 @@
 # Native monitoring and staged validation
 
+**Scope:** this document preserves the staged validation contracts and early
+admissions. Read [current status](project-status.md) for later completed inference
+and the latest unresolved close/restoration. Old runtime bindings and admission
+receipts are not fresh authorization or a reason to replay a completed case.
+
 Committed console/deployment flags remain disabled. The earlier
 [failed initialization](native-bf16-fixed-20261022.json) and shell-state refusal
 are preserved. A subsequent guarded reassessment restored and numerically

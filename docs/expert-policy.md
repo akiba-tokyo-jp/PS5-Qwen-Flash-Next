@@ -1,5 +1,11 @@
 # Strata and Maya application integration
 
+**Scope:** the original cache-policy integration below preserves the arithmetic
+of that original profile. Later selected profiles quantize weights and change
+routing; they are not described by its unchanged-precision claim. See
+[current architecture](architecture.md) and [selected status](project-status.md).
+The dated source-reader observations remain historical evidence.
+
 Current source-path status: the [complete physical session](native-full-generation-success-20261024.md)
 passed arithmetic generation, two external counting requests and every final
 restoration gate. The [replacement source reader](reserved-source-20261024.md)

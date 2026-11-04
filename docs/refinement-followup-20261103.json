@@ -1,0 +1,900 @@
+{
+  "schema": "ps5-qwen-distinct-refinement-followup-v1",
+  "date": "2026-11-03",
+  "campaign_complete": true,
+  "continuation_65044_65051": {
+    "CPU_eight_MiB_no_extension_first_launch": {
+      "case": 65044,
+      "completed": true,
+      "ordinary_close_and_exact_original_restoration": true,
+      "original_constructors": 30,
+      "SELF_read_calls": 336,
+      "minimum_global_free_pages": 960,
+      "unchanged_CPU_floor_pages": 919,
+      "source_model_GPU_operations": 0,
+      "exclusive_memory_saving_measured": false,
+      "model_admission_granted": false
+    },
+    "G1": {
+      "case": 65042,
+      "free_pages": 6388,
+      "required_pages": 7374,
+      "refused_before_publication": true,
+      "native_model_launches": 0
+    },
+    "S1_timing_ABBA": {
+      "sequence": 65046,
+      "completed_control_cases_to_reuse": [
+        65050
+      ],
+      "completed_native_requests": 3,
+      "next_case": 65051,
+      "next_case_free_pages": 6137,
+      "required_pages_unchanged": 6738,
+      "next_case_refused_before_publication": true,
+      "remaining_cases_unsubmitted": [
+        65052,
+        65053
+      ],
+      "matched_speed_comparison_complete": false
+    },
+    "I1_native_implementation": {
+      "predictor_port_proof": 65045,
+      "actual_trace_calls": 4336,
+      "independent_reference_statistics_exact": true,
+      "predictions": 9,
+      "hits": 2,
+      "largest_prediction_bytes": 1540096,
+      "concurrent_adapter_proof": 65048,
+      "new_host_concurrent_controls": 9,
+      "maximum_total_parallel_reads": 4,
+      "maximum_extra_workers": 1,
+      "scratch_bytes": 2097152,
+      "additional_source_descriptors": 0,
+      "real_model_speculative_IO_qualified": false,
+      "model_decode_speed_measured": false
+    }
+  },
+  "primary_metric": {
+    "name": "complete_model_decode_tokens_per_second",
+    "formula": "(generated_tokens-1)/decode_seconds",
+    "first_token_prefill_wait_excluded": true,
+    "cohort_arms_averaged_independently": true,
+    "rate_change_percent": "100*(candidate_mean/control_mean-1)",
+    "cold_retained_and_exact_prefix_separate": true,
+    "historical_cumulative_gain_claimed": false
+  },
+  "matched_native_decode_rates": [
+    {
+      "candidate": "R1",
+      "cases": [
+        64500,
+        64501,
+        64502,
+        64503
+      ],
+      "analysis": {
+        "bytes": 18967,
+        "sha256": "79d179490ab33ff6b2402a83b45c8625be3cd368843478d5903413052d2c76bc"
+      },
+      "conditions": [
+        {
+          "condition": "ordinary-warmup",
+          "control": [
+            10.066085678755634,
+            10.08549816336503
+          ],
+          "candidate": [
+            10.260988501501023,
+            10.167891754157159
+          ],
+          "control_mean": 10.075791921060333,
+          "candidate_mean": 10.214440127829091,
+          "rate_change_percent": 1.3760526999268219
+        },
+        {
+          "condition": "ordinary-prefix-capture",
+          "control": [
+            11.925939845422729,
+            11.978647116877928
+          ],
+          "candidate": [
+            12.124928858067848,
+            12.160189645603193
+          ],
+          "control_mean": 11.952293481150328,
+          "candidate_mean": 12.142559251835522,
+          "rate_change_percent": 1.591876663547942
+        },
+        {
+          "condition": "exact-prefix-and-causal-Expert-sharing",
+          "control": [
+            13.018680544972005,
+            13.044075266275694
+          ],
+          "candidate": [
+            13.24605748269831,
+            13.2654376146305
+          ],
+          "control_mean": 13.031377905623849,
+          "candidate_mean": 13.255747548664406,
+          "rate_change_percent": 1.7217645337698873
+        }
+      ]
+    },
+    {
+      "candidate": "P1",
+      "cases": [
+        64030,
+        64031,
+        64032,
+        64033
+      ],
+      "analysis": {
+        "bytes": 18907,
+        "sha256": "81c0be3769cda898bd83b1da5e3294150a48ca61903c9522312ebfdf10e475f3"
+      },
+      "conditions": [
+        {
+          "condition": "ordinary-warmup",
+          "control": [
+            9.882681808925877,
+            9.962718312549551
+          ],
+          "candidate": [
+            10.172772202591815,
+            10.230863318505827
+          ],
+          "control_mean": 9.922700060737714,
+          "candidate_mean": 10.20181776054882,
+          "rate_change_percent": 2.8129208592681643
+        },
+        {
+          "condition": "ordinary-prefix-capture",
+          "control": [
+            11.800788309856204,
+            11.806324180451073
+          ],
+          "candidate": [
+            11.733586032609015,
+            11.8283898604704
+          ],
+          "control_mean": 11.803556245153638,
+          "candidate_mean": 11.780987946539707,
+          "rate_change_percent": -0.19119914494580836
+        },
+        {
+          "condition": "exact-prefix-and-causal-Expert-sharing",
+          "control": [
+            12.998640491987487,
+            12.962075580876334
+          ],
+          "candidate": [
+            12.755762312666622,
+            12.787010268101618
+          ],
+          "control_mean": 12.98035803643191,
+          "candidate_mean": 12.77138629038412,
+          "rate_change_percent": -1.609907411346212
+        }
+      ]
+    },
+    {
+      "candidate": "Q1",
+      "cases": [
+        64280,
+        64281,
+        64282,
+        64283
+      ],
+      "analysis": {
+        "bytes": 18510,
+        "sha256": "8bbda957e204cc9edbcfdc1a551a977c98bff10d66f7b3c10bc6e2bbc4610542"
+      },
+      "conditions": [
+        {
+          "condition": "ordinary-warmup",
+          "control": [
+            10.050297541994988,
+            10.019514469188808
+          ],
+          "candidate": [
+            9.805724457738782,
+            9.75197756450079
+          ],
+          "control_mean": 10.034906005591898,
+          "candidate_mean": 9.778851011119785,
+          "rate_change_percent": -2.551643177618479
+        },
+        {
+          "condition": "ordinary-prefix-capture",
+          "control": [
+            12.018560702814053,
+            11.97686948258278
+          ],
+          "candidate": [
+            12.036457928984804,
+            12.116248725264288
+          ],
+          "control_mean": 11.997715092698417,
+          "candidate_mean": 12.076353327124547,
+          "rate_change_percent": 0.65544342250623
+        },
+        {
+          "condition": "exact-prefix-and-causal-Expert-sharing",
+          "control": [
+            13.128006707376793,
+            13.107314693514084
+          ],
+          "candidate": [
+            12.957209386123857,
+            13.009669289860334
+          ],
+          "control_mean": 13.117660700445438,
+          "candidate_mean": 12.983439337992095,
+          "rate_change_percent": -1.023211116055045
+        }
+      ]
+    },
+    {
+      "candidate": "G1_per_layer",
+      "cases": [
+        64230,
+        64231,
+        64232,
+        64233
+      ],
+      "analysis": {
+        "bytes": 18504,
+        "sha256": "ad1e29e79baf5f1787a2716423c571924496f3697798fe7ff4a0eda1b90535cf"
+      },
+      "conditions": [
+        {
+          "condition": "ordinary-warmup",
+          "control": [
+            9.98706737552691,
+            10.011532680190847
+          ],
+          "candidate": [
+            9.42183006646813,
+            9.405807336265067
+          ],
+          "control_mean": 9.99930002785888,
+          "candidate_mean": 9.413818701366598,
+          "rate_change_percent": -5.855223114228814
+        },
+        {
+          "condition": "ordinary-prefix-capture",
+          "control": [
+            11.94398096157855,
+            11.925532552084055
+          ],
+          "candidate": [
+            11.09358875830566,
+            11.082844211388933
+          ],
+          "control_mean": 11.934756756831302,
+          "candidate_mean": 11.088216484847297,
+          "rate_change_percent": -7.093066823498139
+        },
+        {
+          "condition": "exact-prefix-and-causal-Expert-sharing",
+          "control": [
+            12.983964694158232,
+            13.075306138546834
+          ],
+          "candidate": [
+            12.240180493689058,
+            12.28426421256064
+          ],
+          "control_mean": 13.029635416352534,
+          "candidate_mean": 12.262222353124848,
+          "rate_change_percent": -5.889750854153308
+        }
+      ]
+    },
+    {
+      "candidate": "G1_batched",
+      "cases": [
+        64290,
+        64291,
+        64292,
+        64293
+      ],
+      "analysis": {
+        "bytes": 18763,
+        "sha256": "aeeba05911f3119273ca661660f51556382eb54fce2bb2da08c1f358614ebf90"
+      },
+      "conditions": [
+        {
+          "condition": "ordinary-warmup",
+          "control": [
+            10.006766689986744,
+            10.0117933204148
+          ],
+          "candidate": [
+            9.494729990570786,
+            9.442221790410375
+          ],
+          "control_mean": 10.009280005200772,
+          "candidate_mean": 9.46847589049058,
+          "rate_change_percent": -5.403027135110539
+        },
+        {
+          "condition": "ordinary-prefix-capture",
+          "control": [
+            11.919007700041533,
+            11.97106640450159
+          ],
+          "candidate": [
+            10.970746653458436,
+            11.074979868275193
+          ],
+          "control_mean": 11.945037052271562,
+          "candidate_mean": 11.022863260866814,
+          "rate_change_percent": -7.720141740618381
+        },
+        {
+          "condition": "exact-prefix-and-causal-Expert-sharing",
+          "control": [
+            13.106434399860866,
+            13.084876004644748
+          ],
+          "candidate": [
+            12.255863941668514,
+            12.254620060153417
+          ],
+          "control_mean": 13.095655202252807,
+          "candidate_mean": 12.255242000910965,
+          "rate_change_percent": -6.41749640138104
+        }
+      ]
+    }
+  ],
+  "execution_policy": {
+    "minimum_two_distinct_refinement_checks_per_candidate": true,
+    "unchanged_passed_checks_reused": true,
+    "unchanged_native_scope_replayed": false,
+    "two_checks_do_not_close_unimplemented_work": true,
+    "component_or_count_result_cannot_substitute_model_rate": true
+  },
+  "new_I1": {
+    "original_calls": 4336,
+    "original_producers": 6,
+    "absolute_context_screens": [
+      {
+        "round": 1,
+        "change": "Most recently completed successor; bounded single-read context",
+        "statistics": {
+          "original_calls": 4336,
+          "eligible_calls": 3449,
+          "predictions": 0,
+          "predicted_bytes": 0,
+          "hits": 0,
+          "hit_bytes": 0,
+          "unused": 0,
+          "live_table_entries_peak": 512,
+          "original_producers": 6,
+          "producers": [
+            {
+              "original_calls": 1197,
+              "eligible_calls": 978,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 512
+            },
+            {
+              "original_calls": 992,
+              "eligible_calls": 793,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 512
+            },
+            {
+              "original_calls": 939,
+              "eligible_calls": 765,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 512
+            },
+            {
+              "original_calls": 904,
+              "eligible_calls": 742,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 512
+            },
+            {
+              "original_calls": 299,
+              "eligible_calls": 169,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 161
+            },
+            {
+              "original_calls": 5,
+              "eligible_calls": 2,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 0
+            }
+          ],
+          "hit_fraction": null,
+          "useful_byte_fraction": null,
+          "eligible_call_coverage": 0.0
+        }
+      },
+      {
+        "round": 2,
+        "change": "Two-read context with two-observation agreement; single-read fallback requires three",
+        "statistics": {
+          "original_calls": 4336,
+          "eligible_calls": 3449,
+          "predictions": 0,
+          "predicted_bytes": 0,
+          "hits": 0,
+          "hit_bytes": 0,
+          "unused": 0,
+          "live_table_entries_peak": 1024,
+          "original_producers": 6,
+          "producers": [
+            {
+              "original_calls": 1197,
+              "eligible_calls": 978,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 1024
+            },
+            {
+              "original_calls": 992,
+              "eligible_calls": 793,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 1024
+            },
+            {
+              "original_calls": 939,
+              "eligible_calls": 765,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 1024
+            },
+            {
+              "original_calls": 904,
+              "eligible_calls": 742,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 1024
+            },
+            {
+              "original_calls": 299,
+              "eligible_calls": 169,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 317
+            },
+            {
+              "original_calls": 5,
+              "eligible_calls": 2,
+              "predictions": 0,
+              "predicted_bytes": 0,
+              "hits": 0,
+              "hit_bytes": 0,
+              "unused": 0,
+              "live_table_entries_peak": 0
+            }
+          ],
+          "hit_fraction": null,
+          "useful_byte_fraction": null,
+          "eligible_call_coverage": 0.0
+        }
+      }
+    ],
+    "relative_delta_screen": {
+      "original_calls": 4336,
+      "eligible_calls": 3449,
+      "predictions": 9,
+      "predicted_bytes": 12943360,
+      "hits": 2,
+      "hit_bytes": 2162688,
+      "unused": 7,
+      "live_table_entries_peak": 1024,
+      "original_producers": 6,
+      "producers": [
+        {
+          "original_calls": 1197,
+          "eligible_calls": 978,
+          "predictions": 1,
+          "predicted_bytes": 1540096,
+          "hits": 0,
+          "hit_bytes": 0,
+          "unused": 1,
+          "live_table_entries_peak": 1024
+        },
+        {
+          "original_calls": 992,
+          "eligible_calls": 793,
+          "predictions": 3,
+          "predicted_bytes": 4620288,
+          "hits": 0,
+          "hit_bytes": 0,
+          "unused": 3,
+          "live_table_entries_peak": 1024
+        },
+        {
+          "original_calls": 939,
+          "eligible_calls": 765,
+          "predictions": 1,
+          "predicted_bytes": 1540096,
+          "hits": 0,
+          "hit_bytes": 0,
+          "unused": 1,
+          "live_table_entries_peak": 1024
+        },
+        {
+          "original_calls": 904,
+          "eligible_calls": 742,
+          "predictions": 2,
+          "predicted_bytes": 3080192,
+          "hits": 0,
+          "hit_bytes": 0,
+          "unused": 2,
+          "live_table_entries_peak": 1014
+        },
+        {
+          "original_calls": 299,
+          "eligible_calls": 169,
+          "predictions": 2,
+          "predicted_bytes": 2162688,
+          "hits": 2,
+          "hit_bytes": 2162688,
+          "unused": 0,
+          "live_table_entries_peak": 51
+        },
+        {
+          "original_calls": 5,
+          "eligible_calls": 2,
+          "predictions": 0,
+          "predicted_bytes": 0,
+          "hits": 0,
+          "hit_bytes": 0,
+          "unused": 0,
+          "live_table_entries_peak": 0
+        }
+      ],
+      "hit_fraction": 0.2222222222222222,
+      "useful_byte_fraction": 0.1670886075949367,
+      "eligible_call_coverage": 0.0005798782255726297
+    },
+    "host_controls_passed": 18,
+    "first_host_attempt_stopped_before_screening_on_test_argument_error": true,
+    "prior_stride_and_absolute_screens_not_replayed": true,
+    "maximum_predictions_per_producer": 6,
+    "maximum_pending_per_producer": 1,
+    "source_admission_latency_and_contention_not_simulated": true,
+    "optimistic_instantaneous_completion": true,
+    "actual_prefetch_IO_submitted": 0,
+    "model_rate_measured": false,
+    "production_adopted": false
+  },
+  "new_Q1": {
+    "change": "Reinvest additional shared-Q4 weight savings in64 cache slots",
+    "original_cache_slots": 3712,
+    "proposed_cache_slots": 3776,
+    "shared_Q4_saved_bytes": 117964800,
+    "additional_payload_bytes": 98304000,
+    "explicit_rounding_allowance_bytes": 6291456,
+    "conservative_extra_bytes": 104595456,
+    "actual_Q4_baseline_counters_exact": true,
+    "conditions": [
+      {
+        "ordinal": 0,
+        "control_hits": 1903,
+        "control_misses": 3286,
+        "additional_slots_hits": 1903,
+        "additional_slots_misses": 3286,
+        "avoided_Expert_fills": 0
+      },
+      {
+        "ordinal": 1,
+        "control_hits": 4930,
+        "control_misses": 259,
+        "additional_slots_hits": 4930,
+        "additional_slots_misses": 259,
+        "avoided_Expert_fills": 0
+      },
+      {
+        "ordinal": 2,
+        "control_hits": 1933,
+        "control_misses": 104,
+        "additional_slots_hits": 1933,
+        "additional_slots_misses": 104,
+        "avoided_Expert_fills": 0
+      }
+    ],
+    "fixed_captured_routes_only": true,
+    "cache_dependent_ranking_not_recomputed": true,
+    "allocation_geometry_not_qualified": true,
+    "model_rate_measured": false,
+    "production_adopted": false
+  },
+  "candidate_followup": [
+    {
+      "candidate": "R1",
+      "distinct_completed_scopes": [
+        {
+          "cases": [
+            64130,
+            64131,
+            64132,
+            64133
+          ],
+          "change": "Direct request-end token synchronization",
+          "level": "native matched model"
+        },
+        {
+          "cases": [
+            64500,
+            64501,
+            64502,
+            64503
+          ],
+          "change": "Completed-stage journal synchronization plus mandatory request-end flush",
+          "level": "native matched model"
+        }
+      ],
+      "selected": true,
+      "remaining": "Broader workloads are not covered by the fixed counting cohort"
+    },
+    {
+      "candidate": "P1",
+      "distinct_completed_scopes": [
+        {
+          "cases": [
+            63930,
+            63931,
+            63932,
+            63933
+          ],
+          "change": "Correct selector to reach both narrowed prefills",
+          "level": "native matched model"
+        },
+        {
+          "cases": [
+            64030,
+            64031,
+            64032,
+            64033
+          ],
+          "change": "Move only narrowed-output crop after the trunk",
+          "level": "native matched model"
+        }
+      ],
+      "selected": false,
+      "remaining": "Investigate phase-specific crop/state/allocation interaction; cold decode improves while prefix decode regresses"
+    },
+    {
+      "candidate": "Q1",
+      "distinct_completed_scopes": [
+        {
+          "cases": [
+            64280,
+            64281,
+            64282,
+            64283
+          ],
+          "change": "Additional shared Q4 encoded independently from original BF16",
+          "level": "native matched model"
+        },
+        {
+          "cases": [
+            64828
+          ],
+          "change": "Reinvest saved bytes in64 additional cache slots",
+          "level": "host fixed-route planner"
+        }
+      ],
+      "selected": false,
+      "remaining": "Other format/role/kernel refinements and expanded-cache ranking/geometry require qualification; zero fixed-route fill savings is not a universal result"
+    },
+    {
+      "candidate": "Q2",
+      "distinct_completed_scopes": [
+        {
+          "cases": [
+            64460
+          ],
+          "change": "Separate delivery/compute/fence intervals and add prefill widths; original Q2_K control fails",
+          "level": "native component known numerical negative"
+        },
+        {
+          "cases": [
+            64820
+          ],
+          "change": "Explicitly disable F16 arithmetic with unchanged reference and tolerance",
+          "level": "native component all12 cases/144 graphs pass"
+        }
+      ],
+      "selected": false,
+      "remaining": "Improve heldout calibration and phase-specific kernel choice; integrate and measure complete-model quality/decode rate"
+    },
+    {
+      "candidate": "Q3",
+      "distinct_completed_scopes": [
+        {
+          "cases": [
+            64762
+          ],
+          "change": "Paired640-column Down operator with constant codebooks",
+          "level": "software SPIRV"
+        },
+        {
+          "cases": [
+            64771
+          ],
+          "change": "Readonly codebook buffer descriptor",
+          "level": "software SPIRV"
+        }
+      ],
+      "selected": false,
+      "remaining": "Actual PS5 operator, mixed-format cache/model integration, heldout quality and complete-model rate"
+    },
+    {
+      "candidate": "G1",
+      "distinct_completed_scopes": [
+        {
+          "cases": [
+            64230,
+            64231,
+            64232,
+            64233
+          ],
+          "change": "Per-layer coefficient publication",
+          "level": "native matched model"
+        },
+        {
+          "cases": [
+            64290,
+            64291,
+            64292,
+            64293
+          ],
+          "change": "One coefficient matrix per graph",
+          "level": "native matched model"
+        }
+      ],
+      "selected": false,
+      "remaining": "Ordered fused selection and GPU cached continuation with predicated state, exact miss resume and GPU-generated indirect arguments"
+    },
+    {
+      "candidate": "I1",
+      "distinct_completed_scopes": [
+        {
+          "cases": [
+            64718
+          ],
+          "change": "Per-source stride and bounded pending retention",
+          "level": "offline actual trace"
+        },
+        {
+          "cases": [
+            64826
+          ],
+          "change": "Absolute-span successor/context learning",
+          "level": "offline actual trace"
+        },
+        {
+          "cases": [
+            64827
+          ],
+          "change": "Relative-offset successor/context learning",
+          "level": "offline actual trace"
+        }
+      ],
+      "selected": false,
+      "remaining": "New prediction designs need a useful coverage case before multi-producer worker integration and matched model rate"
+    },
+    {
+      "candidate": "S1",
+      "distinct_completed_scopes": [
+        {
+          "cases": [
+            64694,
+            64711
+          ],
+          "change": "Persistent auxiliary replay in both orders",
+          "level": "native diagnostic replay"
+        },
+        {
+          "cases": [
+            64732
+          ],
+          "change": "Online causal acceptance/rejection/catch-up/bonus integration",
+          "level": "native model functional"
+        },
+        {
+          "cases": [
+            64758
+          ],
+          "change": "Retain auxiliary owner across three ordinary requests and preserve mandatory completion",
+          "level": "host lifetime controls"
+        }
+      ],
+      "selected": false,
+      "remaining": "Prepared fresh/retained native packages64765/64767 need matched model lifetime, quality and decode-rate comparison"
+    }
+  ],
+  "evidence": {
+    "I1_absolute": {
+      "case": 64826,
+      "bytes": 7851,
+      "sha256": "1365b55c67a50bf77fdca171d212880417f438bc0b68811dbf5fc78827fb64e8"
+    },
+    "I1_relative": {
+      "case": 64827,
+      "bytes": 6039,
+      "sha256": "30fe8d7eb064855bbeafce78888fee6bd46cca9089efa5d2ddcada714093277b"
+    },
+    "Q1_cache": {
+      "case": 64828,
+      "bytes": 6686,
+      "sha256": "6a85fa4db0a060e7071daf57bdb2c6f2ef72b670110ce3c38929b8706f7af4eb"
+    }
+  },
+  "production_SELF_sha256": "c5afc565fdbb4adcf830eae645a32589825331dfa7783a1b9ae2985e7fb5c2ed",
+  "latest_native_observation": {
+    "case": 64822,
+    "free_pages": 5696,
+    "ordinary_model_screen_pages": 7374,
+    "screen_is_application_policy_not_proven_hardware_minimum": true
+  },
+  "PS5_operations_in_new_scopes": 0,
+  "initializer_requests": 0,
+  "new_model_rate_claimed": false,
+  "final_disposition": {
+    "date": "2026-11-05",
+    "report": "native-performance-comparisons-20261102.json",
+    "section": "final_disposition_65576",
+    "selected_features": [
+      "R1",
+      "P1"
+    ],
+    "remaining_profiles": [],
+    "earlier_scopes_are_historical": true
+  },
+  "production_SELF_sha256_at_original_checkpoint": "947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7",
+  "historical_checkpoint_policy": "Earlier measurements and pending scopes describe the original checkpoint; final_disposition points to the completed campaign."
+}

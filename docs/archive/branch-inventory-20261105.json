@@ -1,0 +1,1041 @@
+{
+  "schema": "ps5-qwen-publication-branch-inventory-v1",
+  "date": "2026-11-05",
+  "pre_cleanup_validation_commit": "ba28680ddd86f2bb3d892755a5981fe30593b96b",
+  "remote_branches_before": 85,
+  "local_branches_before": 87,
+  "retained_branches": [
+    "main",
+    "perf/strata-validation-20261105"
+  ],
+  "preservation": "Verified private all-ref Git bundle; ancestors retained through main; non-integrated heads retained by immutable archive tags",
+  "unique_archived_heads": 10,
+  "branches": [
+    {
+      "branch": "analysis/current-speed-20261031",
+      "commit": "15b253ad302aa9d6c1e8a979a199d111c5b0d4f6",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "analysis/q4-io-bottleneck-20261029",
+      "commit": "81088f44d7ba62619f0fb17004f034009af26787",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "analysis/q4-io-bottleneck-20261029",
+      "commit": "a1c66744acfc29c5917699f9d02ec88b794d3d12",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "analysis/read-latency-20261029",
+      "commit": "2eb184603ea5dabc542255e812711e2dcd2f411b",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "analysis/read-latency-20261029",
+      "commit": "d34d142c8f69901f7a49b19a2f4f86dc8168f4b4",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/bf16-indexed-vector",
+      "commit": "b2f78ba70eee3a42817f385b1b37eea5c7c4b232",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/app/bf16-indexed-vector",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/bounded-performance-candidates",
+      "commit": "91c3b5e2d6951be8a708d2a9f788ffffec5948cf",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/bounded-performance-candidates",
+      "commit": "a3bd1f924fcf7d6f39e33b502f6fa92be0f2bc00",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/development-only-session",
+      "commit": "307da974788674c099a2ef241d32b46aaa6013f1",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/development-only-session",
+      "commit": "34bb0699e91df0045b01245bc46c13d59e057fa5",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/file-range-source-io",
+      "commit": "c38fd938dd7816ca8b4b7b19db626a13c5941a70",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/performance-source-io",
+      "commit": "32e283d7bb8af8a7180283743602690cf329e66c",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/performance-source-io",
+      "commit": "a6824a98bc4400a5d1796489ba32391bd38dd1a1",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/source-contention-diagnosis",
+      "commit": "1b36e87acf666a5f3c613d8b1e98515337201a9e",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/source-contention-diagnosis",
+      "commit": "e6de5dd821506bb5122564030580fd96fedacb98",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/split-size-comparison",
+      "commit": "ceb27003cb0086106ae3275c965164316b895c84",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/split-size-comparison",
+      "commit": "dc780802fae44422e7a4e9e61c7b1a4cba290a2d",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "app/split512-model-layout",
+      "commit": "86ef4995c9f6e8cdabb5321227ab80bb09021448",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "cache-cohort-review-20261027",
+      "commit": "0deb786945ddc80b709ef6fe6266e232ca1cc071",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/ampr-direct-pfs-lifecycle-20261102",
+      "commit": "5aef489c6b9f4fffc0b05cf40cff89d4b2802b2c",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/codex/ampr-direct-pfs-lifecycle-20261102",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/ampr-kraken-backend-20261102",
+      "commit": "2f6a997a4608bb77fcc975415c114d7df7088f8c",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/codex/ampr-kraken-backend-20261102",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/ampr-native-recheck-20261101",
+      "commit": "2df2ed674b15089e135ab360b32cce0cab7890ce",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/codex/ampr-native-recheck-20261101",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/ampr-recovery-evidence-20261102",
+      "commit": "3bef234accebf73e23e0e6553f163057cdd32a75",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/codex/ampr-recovery-evidence-20261102",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/apr-direct-pfs-validation-20261102",
+      "commit": "990cbf50102a2596f1f661b4b84ad93e04f15272",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/apr-system-library-analysis-20261101",
+      "commit": "03ab24fb0eda565d113a62611182ea87b9912383",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/codex/apr-system-library-analysis-20261101",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/four-next-optimizations-20261031",
+      "commit": "5c2e120bec2819abf5978b5ba8e4f51f70937cac",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/frontier-validation",
+      "commit": "46faa4700729b347a3f83b59ed3f587f90afcefe",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/frontier-validation",
+      "commit": "e8f7bc0bf4f6b0eb3b9037ee3ceafb90895b1ad8",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/initializer-cross-case-audit-20261102",
+      "commit": "b95445d1f7536a9c5e8e54496ba4deb7fd263ad1",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/codex/initializer-cross-case-audit-20261102",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/limit-winners-20261031",
+      "commit": "0c04beb1fff0976fd72b62e110cd4366beca572b",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/load-followup-validation",
+      "commit": "59f488df820bcd4dde4cdf7830326d352de41b38",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/load-followup-validation",
+      "commit": "b54515ac1a3836ab9ff0bae8e14e04cae7764227",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/next-five-20261031",
+      "commit": "618a5dca4b4949e996815d12f829f285f552ff43",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/post-top2-load-analysis",
+      "commit": "4363efa9f4a331e0c6b1efb82d9c41eda1712194",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/post-top2-load-analysis",
+      "commit": "e909298a5a240f619b249c826c21c26dcbfe48fa",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/post-top2-speed",
+      "commit": "5e52a4daebb28b21fa409b65210018578a5d2746",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/post-top2-speed",
+      "commit": "7fbdaea642bc1979f50f66aa64cae955c037b7cb",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/resident-q8-ple-bf16-20261031",
+      "commit": "4df099cd422ca6ddcb432bcfe102f7e7e3dbbeea",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/scheduler-slot-maps-20261101",
+      "commit": "95830400e879e8451b101c3d71dabb9cb1f40586",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/service-kernel-validation",
+      "commit": "c55799824ccf5661f79c15a3a1bd44fee30f1e42",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/service-kernel-validation",
+      "commit": "ec0ae8379b7576e44e5fa74cd10fe0cc77c06964",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/ssd-cleanup-57900",
+      "commit": "f6ac9297712e3e2cf1718a8ca66fe210f4574e77",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/strata-followup-20261031",
+      "commit": "a0196f4b5f2525591e77b84aed7f12a466c8bb87",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/submission-observer",
+      "commit": "bd6983ea2208ed5a620e51aac8d57922d0f8e8eb",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/throughput-validation",
+      "commit": "7749e8640df2f55badc9b437c4bf584a143d5f22",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "codex/throughput-validation",
+      "commit": "830f522ca28a652bac2c6751f1264d90e86fb08a",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "diagnostic/cpu-shader-memory-results-20261026",
+      "commit": "37b935bb3fdf2b3fee06b8e32c9ef0364282e9e9",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "diagnostic/cpu-shader-memory-results-20261026",
+      "commit": "f4946af7946abebe39d82411c673572f4443806a",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "diagnostic/shader-startup-memory-20261026",
+      "commit": "2d717011af033e1f9d0ef1af567162bdc18d3997",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "diagnostic/shader-startup-memory-20261026",
+      "commit": "4f5d7c03121aa0655483dee013bdf8c39ccc2511",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "docs/consolidate-plans-20261026",
+      "commit": "9c457d997a5396b36461079b5fa78c5c26ebb813",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "docs/production-placement-20261025",
+      "commit": "5b5fb00f9bcd471ca15471e5146d06e8d42d7c0f",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/docs/production-placement-20261025",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "docs/radiance-validation-20261026",
+      "commit": "1fc2160f856f70b21161fe3677574185ff96458d",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "experiment/bf16-system-validation-20261025",
+      "commit": "6c5f4435779a163f7fb495fbd28de117a731a4a3",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "experiment/lean-prefill-20261030",
+      "commit": "d83235889a22ec0f8f32bec247e93c020f155920",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "experiment/lossless-expert-io-20261025",
+      "commit": "8c0cd34ffe789441a53682f3ff34fae320388807",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "experiment/speed-followup-20261031",
+      "commit": "5050d576e8da10f87bb6c347f862f11a343a0dbc",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "feature/expert-gate-up-q2-20261029",
+      "commit": "0770af3e2273922f115cdc2892aa1c4422bf77b9",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "feature/expert-q4-20261029",
+      "commit": "4535447ec118fd303ba5c98dacdf3de683ed63e2",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "feature/expert-q4-20261029",
+      "commit": "507bb8c9bb58cc99de157a2970e85dd08867dd50",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "feature/q2-postquant-delivery-20261029",
+      "commit": "4ac40926706f06b10e23b5323a05b4fc01c7227c",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "final-execution-dispositions-20261027",
+      "commit": "7c8f417d4943bcc1a6e9d577309c1e74b6a14a8e",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "gpu-buffer-capacity-20261028",
+      "commit": "7acbf09f4315ad1981f890035fb56b13f13a288b",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "gpu-phase-calibration-20261028",
+      "commit": "dfc6cf458fd5ac8949d35a2084376bfb41f3f3bd",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "implement/prefill16-production-20261030",
+      "commit": "d29954c529d9e90bedf9830abb3b97b8d471de80",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "implement/routing-winners-20261030",
+      "commit": "d9b1ff13e6761bb6e1bdc8782e79c323c51aaade",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "independent-remaining-20261028",
+      "commit": "57b296fb9d9c5b8c70ccd54c8efc996c38811033",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "investigate/q2-io-distribution-20261030",
+      "commit": "4f3d0aaa7d100cbf0541eba6e521cc9870a28817",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "kernel-memory-cause-and-palette-probe-20261026",
+      "commit": "1f8a17ed4f8c1748ec39281d6d15e74c5cb675ff",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "main",
+      "commit": "3ad382db1fa24ecf01312b32d1af0281550b6db0",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "retain-maintained"
+    },
+    {
+      "branch": "maintenance/obsolete-console-versions-20261030",
+      "commit": "dd21c2f6a3e9cf2f0d32e1c2fc6052e76f5b2761",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "memory-attribution-and-fused-palette-20261026",
+      "commit": "4563ef43e6885d201ca14494a75006ecbbd9d619",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "memory-recovery-and-fused-results-20261026",
+      "commit": "80af17fe02977d3de1bc7446542925c7a9d1cea7",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "native-predictive-integration-20261027",
+      "commit": "175c2aa01236d7afa83857f79f800a42c2093174",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "original-source-cpu-20261027",
+      "commit": "5234533f3f8070b7731086340ff6d74c91050295",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/cold-request-20261030",
+      "commit": "219a4df4bf2ec8620a8c09bf82cfe92621e9fbf4",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/delivery-followup-20261030",
+      "commit": "d31c440398abb4630ee685c2a1c63cbd78bb2b99",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/exact-prefix-reuse-20261026",
+      "commit": "20561804df73bc3d4d7a3d7322d4063fea3ffc95",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/exact-prefix-reuse-20261026",
+      "commit": "3a7291569efcf0bec2686ebf7375bf634d719f67",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/hardware-bound-20261102",
+      "commit": "ba28680ddd86f2bb3d892755a5981fe30593b96b",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/hardware-bound-20261102",
+      "commit": "c8606fdb3cf176fea0e698d874744ae69246c3a2",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/limit-boundary-audit-20261031",
+      "commit": "4d3cddc540ef75b26779cdbcf01f3f7a740b5b50",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/memory-delivery-graph-20261030",
+      "commit": "9c4abb43861c628532da8c2bb19603c128026e47",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/ple-native-fixture-20261026",
+      "commit": "6f067d056a6eaae9c0fc38138a0c8dd257a41528",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/ple-native-fixture-20261026",
+      "commit": "f8e860a5c646fe4f7104a1ed6434a0d317344efb",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/ple-width-one-smoke-20261026",
+      "commit": "356a84f514f63329714bf0f0d3d7098472fcae7c",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/ple-width-one-smoke-20261026",
+      "commit": "a25ff976df1bad66aec668cc952baff3418a0d3c",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/ready-bank-allocations-20261027",
+      "commit": "0320138cf843605aed6b3baa966fe329413a5198",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/ready-bank-allocations-20261027",
+      "commit": "5887b1f39325502468ebb7b762a3367a43aa7315",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/ready-expert-validation-20261026",
+      "commit": "067143c0f9368bec53b14b36b40faa9dff463fc6",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/ready-expert-validation-20261026",
+      "commit": "a7e78d801be5dade6021fb383d69f2e8d2b52289",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/remaining-candidate-validation-20261026",
+      "commit": "87287f974e11fba3238d4dcaf15c5be4e0fd4ee2",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/remaining-candidate-validation-20261026",
+      "commit": "c453195878fffdfdb48e320aa9c90e951e9b6aa7",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/remaining-io-gpu-cache-20261031",
+      "commit": "faa2a666ec28d8d9fd320a2745b47b94f4b4c514",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/remaining-memory-and-graphs-20261026",
+      "commit": "2b93483f941cfe10087a9acc90fef164b37440d7",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/remaining-memory-and-graphs-20261026",
+      "commit": "ee0eda6028f314b217918a03d0f99afe6a373990",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/six-candidate-validation-20261030",
+      "commit": "24a83f3984f0d075e724956760e73b857ff31a8a",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "perf/strata-validation-20261105",
+      "commit": "ba28680ddd86f2bb3d892755a5981fe30593b96b",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "retain-maintained"
+    },
+    {
+      "branch": "perf/weight-followup-20261031",
+      "commit": "a656884e131a2ca82b989d7ff80aa6f0888516ab",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "predictive-worker-native-validation-20261027",
+      "commit": "e4176e8fe0f7825feae13de8667da5700d0ed545",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "ready-expert-dispatch-20261027",
+      "commit": "17990298de3c3c2e76d470a061d0ce7b8f98ce18",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "ready-expert-native-fixture-20261027",
+      "commit": "5fed600d9d8fe5a0905d83ab8c93829229058e8d",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "ready-original-source-20261027",
+      "commit": "1e23c6415f3cb47398d571136f5f2785bbc15d65",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "remaining-validation-20261029",
+      "commit": "21f4f2c4aaf8a6563dbb052f11c10b542e208f70",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "remaining-validation-20261029",
+      "commit": "516e9bdedbce8df00f4bbc31e64c993a43714d3b",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "resident-combined-20261028",
+      "commit": "6fd84fe10910b146beaca47247f29af492b66c5f",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/resident-combined-20261028",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "resident-comparison-20261027",
+      "commit": "83397b1d7a35f8bb38d3894b398cc952356e3140",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "resident-comparison-20261027",
+      "commit": "d9abf73a27245aff435a6b198d297545f14258c9",
+      "local": true,
+      "remote": false,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "six-demand-integration-20261028",
+      "commit": "4b8b1620578fec4e9bf8542850ba9755dbc2e80b",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": false,
+      "archive_tag": "archive/20261105/six-demand-integration-20261028",
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "speculative-qualification-20261028",
+      "commit": "1e183ab4b224e0a5691fe2c7b466c852d116f223",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "three-path-validation-20261027",
+      "commit": "0b1b3b3005ea6622051ee66944289e52dbf7da74",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "verify/q2-io-reduction-20261030",
+      "commit": "a5991e26934b8f0706679dee147fe0ea6262c6c4",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "verify/q2-routing-sharing-20261030",
+      "commit": "92875ff8e862c5bd62b89485a04b2a52328da72a",
+      "local": true,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    },
+    {
+      "branch": "vm-admission-review-20261027",
+      "commit": "f0ddaa9b26e4ba99a4ab9e32b7b4651ce0b891fb",
+      "local": false,
+      "remote": true,
+      "contained_in_pre_cleanup_validation_history": true,
+      "archive_tag": null,
+      "branch_action": "remove-after-main-integration"
+    }
+  ]
+}

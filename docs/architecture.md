@@ -1,89 +1,81 @@
-# Original-precision streaming architecture
+# Architecture
 
-## Fixed objective
+The console performs learned text-model inference. The PC authenticates and
+prepares model data, cross-builds the app, transfers owned files and observes
+results. The PC is not a learned inference fallback.
 
-Run Qwen3.8-Flash-Next on a single PS5, retaining original BF16 model weights
-and exact I64 PLE hash constants. Store the full checkpoint and converted
-model on SSD. The host builds, transports, formats requests and inspects
-results; the console performs learned inference.
+## Model and precision
 
-The first execution target is text generation. The model's n-gram lookup is
-required and must not be replaced with zeros or omitted. Vision input and
-MTP acceleration are distinct later execution modes; retaining their original
-checkpoint data does not imply that they have been executed.
+Pinned llama.cpp `qwen4exp` supplies gated delta attention, QSA, hyper-connections,
+PLE hashing/lookup and optional MTP paths. PLE and its exact I64 hash constants
+are required, not replaced with zeros. Text generation is the qualified scope;
+retaining vision/MTP data does not establish execution or a speed gain.
 
-## Existing upstream mechanisms
+The original checkpoint is BF16. Original preparation changes layout/container
+format while preserving the declared reference data. Later tested profiles
+quantize weights and change application routing. The selected profile uses
+Gate/Up Q2_K and Down Q2_0 MSE experts, quantized resident matrices, floating
+activations and F32 KV/recurrent state. Keeping every expert on SSD does not
+make those profiles original-BF16-equivalent. See
+[current status](project-status.md) and [performance limits](performance.md).
 
-The pinned llama.cpp implements `qwen4exp`: gated delta attention, QSA,
-hyper-connections, PLE hashing and lookup, and optional MTP. Its conversion
-path supports BF16 output, preserves the I64 hash constants as metadata, and
-handles the large PLE table through lazy chunks. Conversion is a layout and
-container operation, not model quantization.
+## Data flow
 
-The model loader can map selected weights without eagerly faulting all pages.
-The scheduler's expert-copy callback and `llama_moe_cache` provide bounded
-device expert banks, slot remapping and hit/miss accounting. These are reused
-before introducing a separate cache implementation. The large-batch path can
-need substantially more temporary memory: start with one-token microbatches
-and explicitly sized caches, then increase only after measured admission.
+```mermaid
+flowchart LR
+    P[PC: verify, convert and build] --> S[PS5 SSD: complete text-model data]
+    R[Selected expert misses] --> O[Bounded source owner]
+    S --> O
+    O --> L[Owned staging leases]
+    L --> C[Bounded expert cache]
+    C --> V[Patched GGML Vulkan execution]
+    V --> T[Tokens and durable completion]
+    T --> M[Read-only monitor / HTTP client]
+```
 
-CPU and GPU memory share physical backing on PS5. Moving a weight to a CPU
-buffer does not create capacity. Filesystem mappings, resident allocations,
-staging, device caches and KV/state must be accounted for together.
+This shows ownership/data flow, not measured GPU overlap. Demanded reads use
+four lanes in existing 8 MiB scratch. A completed callback retains its lease
+until its consumer returns. Known adjacent ranges can be coalesced; routing
+does not become an all-expert SSD sweep. Banks, slot remapping and hit/miss
+accounting build on the engine's expert-cache callback.
 
-The upstream loader requests prefetch for ordinary mapped tensors. The application
-patch adds an explicit opt-out, `LLAMA_APP_NO_MMAP_PREFETCH=1`, which the native
-entry point sets before backend initialization. A required link symbol prevents
-using an older unpatched loader silently. The patch applies and compiles to a
-target object on a separate source copy. This removes eager prefetch; it does
-not prove a resident-memory bound or console support for the model's very large
-virtual mapping. Physical residency under sustained cache misses is unqualified.
+The original large file-mmap experiment is a historical failure. The qualified
+reader lineage uses inaccessible virtual keys and bounded owned reads. Do not
+treat the historical mapped-file design as an admitted native RAM tier. See
+[source-reader evidence](reserved-source-20261024.md).
 
-The [application expert policy](expert-policy.md) extends that same cache callback.
-It keeps the selected IDs, coefficients, original tensor types and upload sources
-unchanged. Its UMA admission limit is the minimum of requested cache size, driver
-free memory and observed OS free memory after an explicit reserve. This admits
-only the expert bank budget; it does not bound all context, page-cache or PLE
-allocations. Native memory admission remains a separate qualification milestone.
+## Memory and completion
 
-Only the converted model needs to reside on the console SSD. Retain original
-checkpoint shards on the host data disk; keeping both complete containers on the
-console would exceed the currently observed free space. Storage capacity does
-not establish a working RAM budget or a successful model load.
+CPU/GPU allocations share physical backing. CPU buffers, filesystem residency,
+staging, GPU weights and KV/state must be priced together. An application cache
+limit is a policy, not total hardware capacity. SSD size/bandwidth alone does
+not establish usable inference speed.
 
-## Driver
+Identity and size gates precede allocation/publication. Workers, descriptors,
+leases, GPU resources and request state have separate owners. Upload visibility
+and completion must be positive before backing is released or the app is
+ordinarily closed. Unknown completion retains ownership, not permission to retry.
 
-Use the owner's PS5-Vulkan-Inference repository at the revision and explicit
-`cumulative-idle` profile recorded in the lock file. The 2026-10-22 integration
-is documented in [driver-integration.md](driver-integration.md). The archive
-contains the current H1/H3 compiler and completion changes. It does not advertise native BF16 arithmetic
-or matrix hardware. BF16 support in the application must use supported shader
-operations or explicit exact widening, rather than enabling an unsupported
-device feature. Keep accumulation and numerical validation explicit.
+R1 reuses a completed stage boundary. P1 narrows cold-prefill output selection
+after the required trunk while preserving later request selection. These
+mechanisms are distinct from optional experiments in `native/app/`. Complete
+numerical/route qualification is separate from observer-free timing.
 
-Persistent shader and pipeline caches remain disabled as required by the
-current driver integration contract. A successful build or API feature query
-does not prove numerical acceptance.
+## Driver and frontend
 
-Static engine libraries alone do not establish application integration. The
-2026-10-22 native build links the actual application and the exact selected RADV
-archive into one intermediate PIE, with stable input digests and required
-integration symbols. SELF conversion, runtime admission and console validation
-remain separate from this host link.
+Use [PS5-Vulkan-Inference](https://github.com/akiba-tokyo-jp/PS5-Vulkan-Inference)
+at the selected source/profile in the
+[dependency lock](../native/qwen_flash_next/dependencies.lock.json).
+Measured lineage: `872cc126…` / `cumulative-idle`. Persistent caches stay off.
+Unsupported BF16/cooperative/integer features cannot be inferred from a generic
+API capability alone.
 
-## Milestones and evidence
+The frontend supplies actual allocator, lifecycle and static Vulkan dispatch
+contracts. Engine libraries alone are not a runnable qualified app. Link,
+imports, SELF integrity, memory admission, numerical acceptance and ordinary
+close are separate gates. See [driver provenance](driver-integration.md) and
+[native validation](native-validation.md).
 
-1. Verify every original shard header, dtype, tensor span, index membership and
-   total byte count. Verify full shard SHA256 digests during acquisition.
-2. Cross-build the current model implementation and Vulkan backend with pinned
-   sources and the owner's driver; record all archive identities.
-3. Verify supported BF16 reads/math, mapped-file behavior, bounded memory and
-   normal close with a standalone native fixture.
-4. Load the complete text model with PLE enabled and emit finite logits and
-   tokens on PS5. Record actual CPU/GPU placement and fallback operations.
-5. Compare numerical results and tasks, then tune expert-cache size, microbatch,
-   read sizes and overlap. Add MTP only with measured acceptance and memory.
-
-Record TTFT, final-answer time, prefill and decode separately. Cold files,
-filesystem cache and expert-cache warm state are different conditions. Model
-size or theoretical SSD bandwidth alone cannot establish usable speed.
+One session owner drives generation. HTTP threads queue requests and stream
+events; browser/TV monitors observe. Request resets and exact-prefix reuse are
+explicit, different features. See [application and monitor](application.md).

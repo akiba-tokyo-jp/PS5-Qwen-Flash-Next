@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 #include "service_options.h"
+#include "bounded_token_writer.h"
+#include <cerrno>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -8,20 +10,43 @@
 #include <stdexcept>
 #include <string>
 namespace qwen_service {
-// One bounded file per request; every returned token remains independently synced.
+// The default retains independently synced tokens. Request-end mode is an
+// explicit experimental policy and must complete close() before request success.
 class TokenLedger {
- int fd_=-1;std::uint64_t records_=0,bytes_=0;
+ struct Sink {
+  int fd=-1;std::string path;
+  std::int64_t write(const char*data,std::size_t bytes){
+   if(fd<0){
+    fd=::open(path.c_str(),O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0644);
+    if(fd<0)throw std::runtime_error("Fresh owned token ledger could not be created");
+    if(::fchmod(fd,0644)){const auto value=fd;fd=-1;::close(value);throw std::runtime_error("Token ledger permissions could not be set");}
+   }
+   return ::write(fd,data,bytes);
+  }
+  bool interrupted()const{return errno==EINTR;}
+  bool sync(){int result;do{result=::fsync(fd);}while(result<0&&errno==EINTR);return result==0;}
+  void release(){if(fd>=0){const auto value=fd;fd=-1;if(::close(value))throw std::runtime_error("Token ledger close did not complete");}}
+  ~Sink(){if(fd>=0)::close(fd);}
+ } sink_;
+ BoundedTokenWriter<Sink> writer_;
+ bool closed_=false,close_failed_=false;
  public:
- ~TokenLedger(){if(fd_>=0)::close(fd_);}
+ explicit TokenLedger(TokenLedgerPolicy policy={}):writer_(sink_,policy){}
+ TokenLedger(const TokenLedger&)=delete;
+ TokenLedger&operator=(const TokenLedger&)=delete;
  template<class Json>void append(const std::string&path,const Json&value){
   const auto raw=value.dump()+"\n";
-  if(records_>=32||raw.size()>4096||bytes_+raw.size()>(128u<<10))throw std::runtime_error("Token ledger bounds exceeded");
-  if(fd_<0){fd_=::open(path.c_str(),O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0644);if(fd_<0||::fchmod(fd_,0644))throw std::runtime_error("Fresh owned token ledger could not be created");}
-  if(::write(fd_,raw.data(),raw.size())!=static_cast<ssize_t>(raw.size())||::fsync(fd_))throw std::runtime_error("Token ledger record did not persist");
-  ++records_;bytes_+=raw.size();
+  if(path.empty()||(!sink_.path.empty()&&sink_.path!=path))throw std::runtime_error("One owned path per token ledger required");
+  sink_.path=path;writer_.append(raw.data(),raw.size());
  }
- void close(){if(fd_>=0){const auto value=fd_;fd_=-1;if(::close(value))throw std::runtime_error("Token ledger close did not complete");}}
- std::uint64_t records()const{return records_;}
- std::uint64_t bytes()const{return bytes_;}
+ void close(){
+  if(closed_){if(close_failed_)throw std::runtime_error("Token ledger close previously failed");return;}
+  closed_=true;
+  try{writer_.finish();sink_.release();}
+  catch(...){close_failed_=true;try{sink_.release();}catch(...){}throw;}
+ }
+ std::uint64_t records()const{return writer_.records();}
+ std::uint64_t bytes()const{return writer_.bytes();}
+ std::uint64_t syncs()const{return writer_.syncs();}
 };
 }

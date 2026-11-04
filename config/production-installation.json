@@ -1,18 +1,24 @@
 {
   "schema": "ps5-qwen-production-installation-v1",
-  "date": "2026-11-01",
-  "application_source_revision": "2b683814c9b6ed18c13352963c0a989f9e4d0b15",
+  "date": "2026-11-03",
+  "application_source_revision": "a543eac4fdeb59b4ecadf50725b12bd9ece9689f",
   "application_SELF": {
-    "bytes": 21921847,
-    "sha256": "56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126"
+    "bytes": 21927687,
+    "sha256": "947a07fd75a0600abebec3378c36f73682c9c65f27e4a3fa4eb26807f530b1d7"
   },
   "driver": {
     "repository": "akiba-tokyo-jp/PS5-Vulkan-Inference",
     "revision": "872cc1264ad8ba5d6b888b092968fa5858a38c58",
     "profile": "cumulative-idle",
-    "archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "archive_sha256": "a325dcd4584b1f1fccc6b46e90faa081ca86d18544aca610efea9e3ca3774f32",
     "persistent_shader_cache": false,
-    "persistent_pipeline_cache": false
+    "persistent_pipeline_cache": false,
+    "native_platform_archive_sha256": "b57fe26e969940d147be05c1ffae830503d4865877281dffe03af32328f49925",
+    "profile_archive_sha256": "67fe76cc3362a191ba6e3e1cfad4436624ec1f928b419a867e88c6a9ef30f4e9",
+    "application_linked_archive": "libvulkan-cold-tables.a",
+    "application_linked_archive_bytes": 264340688,
+    "mesa_revision": "1ba9874f478657ccf6da72ce55f0260164cc0bd0",
+    "archive_composition": "Pinned cumulative-idle profile -> native platform archive -> existing lossless externalized cold-table application archive; no driver change in this campaign"
   },
   "precision": {
     "Expert_weights": "Gate/Up Q2_K; Down Q2_0 MSE",
@@ -34,27 +40,27 @@
   "external_requests": [
     {
       "ordinal": 1,
-      "TTFT_ms": 402.0910759996623,
-      "decode_ms": 1849.1389890005812,
-      "decode_tokens_per_second": 11.356636859055163,
+      "TTFT_ms": 377.0064289942384,
+      "decode_ms": 1731.968924999237,
+      "decode_tokens_per_second": 12.124928858067848,
       "generated_tokens": 22,
-      "prefill_ms": 375.61457099951804,
+      "prefill_ms": 351.9734240025282,
       "prompt_tokens": 30,
-      "total_ms": 2345.9937559999526
+      "total_ms": 2198.0648849979043
     },
     {
       "ordinal": 2,
-      "TTFT_ms": 50.743981000036,
-      "decode_ms": 1678.7161830002442,
-      "decode_tokens_per_second": 12.50955951497904,
+      "TTFT_ms": 46.42351000010967,
+      "decode_ms": 1585.3773870021105,
+      "decode_tokens_per_second": 13.24605748269831,
       "generated_tokens": 22,
-      "prefill_ms": 23.479975000023842,
+      "prefill_ms": 21.362919993698597,
       "prompt_tokens": 30,
-      "total_ms": 1835.6631880002096
+      "total_ms": 1728.7356889992952
     }
   ],
-  "normal_application_case": 59400,
-  "production_placement_case": 59800,
+  "normal_application_case": 64501,
+  "production_placement_case": 64510,
   "production_placement_launches": 0,
   "actual_native_frames_viewed": 2,
   "passive_monitor_verified": true,
@@ -69,7 +75,7 @@
   "causal_width_two_enabled": true,
   "adaptive_selection_enabled": false,
   "original_BF16_optimized_profile_preserved": false,
-  "qualification_report": "docs/scheduler-slot-map-adoption-20261101.json",
+  "qualification_report": "docs/completed-stage-sync-20261102.json",
   "historical_installation": "config/production-installation-throughput-20261101.json",
   "execution_mode": "first-generation-validation",
   "run_binding_consumed": true,
@@ -561,7 +567,7 @@
     "GPU_timestamp_diagnostics_enabled": false,
     "service_overhead_mode": 69,
     "token_record_format": "bounded_per_request_JSONL",
-    "per_token_fsync_preserved": true,
+    "per_token_fsync_preserved": false,
     "HC_prefill_no_split": false,
     "HC_prefill_split_two": false,
     "Q4_small_rows_large_workgroup": false,
@@ -576,7 +582,10 @@
     "GDN_common_input_Q4_join": false,
     "empty_retirement_certificate": true,
     "proven_WAR_execution_only": false,
-    "pending_unpublished_writes_preserved": true
+    "pending_unpublished_writes_preserved": true,
+    "token_record_sync_policy": "request_end",
+    "completed_token_ledger_synced_before_request_result": true,
+    "interrupted_request_may_lose_unsynced_tail": true
   },
   "normal_counting_quality_by_request": [
     true,
@@ -603,24 +612,119 @@
   "obsolete_backups_remaining": 0,
   "current_program_copies": 1,
   "current_settings": 5,
-  "final_native_verification_case": 59860,
+  "final_native_verification_case": 64754,
   "previous_production_backup_on_console": false,
   "previous_production_archive_on_host": false,
   "historical_retention_report": "docs/SSD-cleanup-20261101.json",
-  "maintenance_date": "2026-11-02",
-  "current_validation_status": "failed_closed_by_owner",
-  "current_validation_continuation_allowed": false,
-  "current_validation_report": "docs/current-validation-closure-20261102.json",
+  "maintenance_date": "2026-11-03",
+  "current_validation_status": "completed-stage-R1-native-ABBA-and-all69-F32-rows-qualified-adopted",
+  "current_validation_continuation_allowed": true,
+  "current_validation_report": "docs/native-performance-comparisons-20261102.md",
   "PC_package": "D:/PS5-AI/qwen-flash-next/current",
   "host_retention": "current-only",
   "old_host_rollback_archives_retained": false,
-  "current_boot_inference_qualified": false,
-  "current_boot_readmission_required": true,
-  "current_boot_compatibility_runtime_loaded": false,
+  "current_boot_inference_qualified": true,
+  "current_boot_readmission_required": false,
+  "current_boot_compatibility_runtime_loaded": true,
   "current_file_maintenance": {
     "completed": true,
     "program_and_settings_full_raw_SHA256_verified": 6,
     "shader_storage_full_raw_SHA256_verified": true,
     "native_inference_admission_implied": false
+  },
+  "previous_application_before_R1": {
+    "application_source_revision": "2b683814c9b6ed18c13352963c0a989f9e4d0b15",
+    "application_SELF": {
+      "bytes": 21921847,
+      "sha256": "56c29e9c871f5b068181675353c9098a4ff3513c29b00bb5dc4c1840897c0126"
+    },
+    "normal_application_case": 59400,
+    "production_placement_case": 59800,
+    "current_validation_status": "failed_closed_by_owner"
+  },
+  "R1_adoption": {
+    "native_ABBA_cases": [
+      64500,
+      64501,
+      64502,
+      64503
+    ],
+    "matched_requests": 12,
+    "cold_complete_request_reduction_percent": 0.9733009356812872,
+    "retained_complete_request_reduction_percent": 1.550464311439037,
+    "prefix_complete_request_reduction_percent": 1.7558484355245874,
+    "final_journal_token_sync_and_close_included": true,
+    "all_paired_savings_exceed_AA_spread": true,
+    "whole_F32_rows_compared": 69,
+    "vocabulary_columns": 248320,
+    "whole_F32_SHA256_routes_and_tokens_exact": true,
+    "canonical_relink_and_SELF_byte_exact": true,
+    "source_guards_model_and_driver_unchanged": true,
+    "interruption_may_lose_unsynced_completed_stage_and_token_tail": true,
+    "all_other_campaign_candidates_complete": false
+  },
+  "application_source_provenance": {
+    "kind": "exact reconstructed composite source and retained93-input relink",
+    "source_overlay_commit": "a543eac4fdeb59b4ecadf50725b12bd9ece9689f",
+    "selected_entry_bytes": 245924,
+    "selected_entry_sha256": "0e7c9bc47bba835f02601d5677c9bf14aea44128b66687b93a37130658c75062",
+    "native_ELF": {
+      "bytes": 101070432,
+      "sha256": "9879d713197c417742022efdc3a069093367ab6d4c13025142616fe2551b7c37"
+    },
+    "canonical_reproduction_cases": [
+      64511,
+      64512,
+      64513
+    ]
+  },
+  "previous_token_ledger_only_R1_adoption": {
+    "native_ABBA_cases": [
+      64130,
+      64131,
+      64132,
+      64133
+    ],
+    "matched_requests": 12,
+    "retained_complete_request_reduction_percent": 1.223742698062602,
+    "prefix_complete_request_reduction_percent": 1.6438812708000072,
+    "final_fsync_and_close_included": true,
+    "cold_gain_established": false,
+    "whole_F32_rows_compared": 69,
+    "vocabulary_columns": 248320,
+    "whole_F32_SHA256_routes_and_tokens_exact": true,
+    "canonical_relink_and_SELF_byte_exact": true,
+    "source_guards_model_and_driver_unchanged": true,
+    "all_other_campaign_candidates_complete": false
+  },
+  "current_resource_screen": {
+    "case": 64822,
+    "free_pages": 5696,
+    "selected_model_launch_screen_pages": 7374,
+    "model_launch_admitted": false,
+    "title_or_GPU_owner": false,
+    "initializer_repeated": false,
+    "read_only_observation": "After positively completed model-free F32 IQ2 component, ordinary close and exact selected-file restoration"
+  },
+  "latest_closed_output_cleanup": {
+    "case": 64747,
+    "console_report_files_retired": 901,
+    "whole_native_and_PC_SHA256_verified": true,
+    "PC_archive_preserved": true,
+    "selected_files_unchanged": 108,
+    "unreadable_old_driver_logs_preserved": 17,
+    "owned_directory_fsync_case": 64754,
+    "superseded_unlaunched_CPU_retirement": {
+      "case": 64802,
+      "PC_files_retired": 20,
+      "bytes": 209697335,
+      "all108_selected_inputs_exact": true
+    },
+    "private_driver_logs_archived_and_retired": 17,
+    "private_driver_log_bytes": 1161178,
+    "private_driver_log_retirement_case": 64807,
+    "owner_log_handling_authorized": true,
+    "unreadable_old_driver_logs_preserved_is_64747_snapshot": true,
+    "latest_remaining_private_logs": 0
   }
 }

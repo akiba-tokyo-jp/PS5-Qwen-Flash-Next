@@ -1,0 +1,221 @@
+{
+  "schema": "ps5-qwen-log-retirement-and-prefill-followup-v1",
+  "date": "2026-11-03",
+  "campaign_complete": false,
+  "obsolete_private_logs": {
+    "owner_authorized_log_handling": true,
+    "logs_archived_and_retired": 17,
+    "bytes": 1161178,
+    "independent_whole_PC_native_SHA_and_EOF_equal": true,
+    "original_0600_mode_preserved_until_unlink": true,
+    "owner_handoff_case": 64806,
+    "owner_transition": [
+      1,
+      0
+    ],
+    "payload_writes": 0,
+    "mode_changes": 0,
+    "all108_current_inputs_exact": true,
+    "current_seven_native_hashed": true,
+    "original_runtime_directory_owner_restored": true,
+    "PC_archives_preserved": true,
+    "retirement": {
+      "bytes": 1120,
+      "sha256": "81f73880daeac46e0fb6520f89fc483ea1be2acb1f264244cb025a3b4a48fb4b"
+    },
+    "archive_sizes_and_SHA256": [
+      {
+        "bytes": 68342,
+        "sha256": "e652e2bd994567f7fe06d8dd1fa2f0407622bff9de10347ace1e05e99553f34d"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "ffb6d74aef2b235303c7a57bc2bd726779df95da48e5b86f77861a205495a1d6"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "7c13f68cd368a30cb3ec248b2bdc1775307165732ddc3f609f762409b23b3d16"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "19deaca647ab2eefdfc59a82099183812dfad3f95c8bae4490274f664104ba3a"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "cf13ae5bcd5c96c3c7f1329511f404772398f694fa9d435702e3dad1645522b9"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "bfc4fa51be7848ceed341794b35b582e421786f462cc8aeb4dfd6aeff2e5a1e1"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "f76935431cb2003aa48370f3752a610a3b98ff480a23b755b851b95a97fa3125"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "10dba9838760009750159b15ad7cde688fb41fcbb56d3fbc49c1ed068396c9f2"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "3f750d93d5baff166b08b3842cf236c295dc384b6ee3ce2b492da65bce45a8d3"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "f86a946ca2ae1c1bdeadfe7d9481d6ef36d1964a9b5b3ca98169b470e23cfd28"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "59acef43d6b58146fe20311744ba03180e238d4ffcbcf0dcd05afbafe576c83b"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "0219becf02a96a662298adf9efcfec8e32d3877fcf446006cb015b8d2d025f4f"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "bef75240e1418fc2ba53cb063d163b0263c75e788d0551d3a0bd486c10ad262e"
+      },
+      {
+        "bytes": 68130,
+        "sha256": "254cea51a6348e823e46690d0b9ab2a2b5327822acc7336617b55e4690000657"
+      },
+      {
+        "bytes": 68130,
+        "sha256": "39a3fcfe0cd980a5277675fda5c09aecf46bb676e69bb51f0316300e253db5f6"
+      },
+      {
+        "bytes": 68342,
+        "sha256": "e8d3b18838828504fab71d47f30ab77e7f5b87553f1a16b9cd12682530e55994"
+      },
+      {
+        "bytes": 68130,
+        "sha256": "92d22d50bf438079a632fd2349141472e7b6a10b13f0c89b3c3cf72b12b1f4d3"
+      }
+    ],
+    "initial_export_64783_returned_EACCES": true,
+    "descriptor_observation_64804_EACCES_both_namespaces": true,
+    "inverse_owner_precondition_64805_refused_before_changes": true,
+    "permission_pending": false
+  },
+  "successful_memory_reports": {
+    "case": 64808,
+    "cases": [
+      64694,
+      64732,
+      64523
+    ],
+    "before_GPU_free_pages": [
+      2451,
+      2907,
+      2570
+    ],
+    "unchanged_native_before_GPU_required_pages": 1185,
+    "private_numeric_metadata_only": true,
+    "HTTP_404_not_replayed": true,
+    "FTP_0644_metadata_reads_completed": true,
+    "PS5_mutations": 0
+  },
+  "prefill_arithmetic_audit": {
+    "case": 64810,
+    "original_selected_SPIRV_assets": 8,
+    "all_validation_passed": true,
+    "dispatch_selection_observed": false,
+    "pipeline_selection_not_inferred": true,
+    "PS5_operations": 0
+  },
+  "simple_F16_rounding_hypotheses": {
+    "case": 64811,
+    "native_control_mismatches": 73401,
+    "all_three_hypotheses_predict_mismatches": 0,
+    "maximum_predicted_error": 2.7165531263362297e-06,
+    "native_maximum_error": 0.0001416096684337953,
+    "simple_rounding_does_not_explain_native_negative": true,
+    "original_tolerance_unchanged": true,
+    "CPU_reference_correction_qualified": false,
+    "native_replay": false
+  },
+  "explicit_F32_component": {
+    "entry": 64812,
+    "package": 64813,
+    "pricing": 64814,
+    "widths": [
+      1,
+      2,
+      30,
+      32
+    ],
+    "model_loads": 0,
+    "maximum_GPU_graphs": 144,
+    "same_original_weights_inputs_and_tolerance": true,
+    "candidate_and_CPU_control_constructors": 30,
+    "additional_ELF_LOAD_pages": 0,
+    "CPU_phase_screen_pages": 6736,
+    "GPU_phase_screen_pages": 6671,
+    "ordinary_model_screen_pages_unchanged": 7374,
+    "native_case_64815": {
+      "prelaunch_free_pages": 6821,
+      "receiver_returned_refusal_before_READY": true,
+      "receiver_helper_exited_and_removed": true,
+      "connections": 0,
+      "file_open_calls": 0,
+      "publication_calls": 0,
+      "title_launches": 0,
+      "GPU_calls": 0,
+      "new_F32_numerics_qualified": false
+    },
+    "new_qualified_endpoint_case": 64820,
+    "new_prelaunch_free_pages": 6813,
+    "native_completed": true,
+    "native_operator_numerics_qualified": true,
+    "GPU_graphs": 144,
+    "cases_passed": 12,
+    "maximum_absolute_F64_reference_error": 2.4925405305714632e-08,
+    "ordinary_close_calls": 1,
+    "current_seven_restored": true,
+    "full_model_quality_or_speed_qualified": false,
+    "production_adopted": false,
+    "results": "iq2-explicit-F32-prefill-20261103.json"
+  },
+  "socket_diagnostic": {
+    "case": 64816,
+    "one_socket_creation_options_OS_assigned_bind_listen_and_close_passed": true,
+    "accept_calls": 0,
+    "payload_calls": 0,
+    "GPU_calls": 0,
+    "prior_refusal_cause_not_isolated": true
+  },
+  "new_endpoint_adapter": {
+    "host_case": 64817,
+    "host_controls": 10,
+    "original_receiver_and_14_host_inputs_unchanged": true,
+    "native_opaque_copy_case": 64818,
+    "native_completed": true,
+    "opaque_SELF_bytes": 21927687,
+    "stream_and_independent_native_Direct_SHA_exact": true,
+    "temporary_copy_retired": true,
+    "helper_exited_and_removed": true,
+    "current_seven_native_hashed": true,
+    "inference_or_RAM_gain_qualified": false
+  },
+  "returned_staging_metadata_retirement": {
+    "case": 64819,
+    "files": 2,
+    "whole_native_SHA_before_unlink": true,
+    "current_seven_native_hashed": true,
+    "title_launches": 0,
+    "GPU_calls": 0
+  },
+  "F16_accumulator_asset": {
+    "case": 64821,
+    "original_matmul_id_f16_f32_f16acc_validated": true,
+    "typed_F16_FMA_instructions": 4,
+    "native_pipeline_selection_observed": false
+  },
+  "latest_restored_VM": {
+    "case": 64822,
+    "free_pages": 5696,
+    "ordinary_model_screen_pages": 7374,
+    "ordinary_model_launch_admitted": false
+  }
+}
